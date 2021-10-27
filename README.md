@@ -4,10 +4,10 @@
 ```bash
 npm install
 ```
-```bash
 npm install -g @quasar/cli
-```
+
 ### Verificar los permisos
+
 
 ### Iniciar la App en modo desarrollador
 ```bash

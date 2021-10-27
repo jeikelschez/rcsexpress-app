@@ -25,6 +25,7 @@ module.exports = configure((ctx) => ({
   boot: [
     'i18n',
     'axios',
+    'firebase',
   ],
 
   // https://v2.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
@@ -96,7 +97,7 @@ module.exports = configure((ctx) => ({
     // directives: [],
 
     // Quasar plugins
-    plugins: [],
+    plugins: ['Notify', 'Dialog'],
   },
 
   // animations: 'all', // --- includes all animations
