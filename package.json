@@ -21,6 +21,7 @@
   "devDependencies": {
     "@babel/eslint-parser": "^7.13.14",
     "@quasar/app": "^3.0.0",
+    "@quasar/cli": "^0.17",
     "eslint": "^7.14.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.20.1",
@@ -36,7 +37,7 @@
     "last 8 ChromeAndroid versions",
     "last 8 FirefoxAndroid versions",
     "last 10 iOS versions",
-    "last 5 Opera versions"
+    "last 5 Opera versions" 
   ],
   "engines": {
     "node": ">= 12.22.1",
