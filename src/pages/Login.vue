@@ -55,7 +55,10 @@
     </q-page-container>
   </q-layout>
 </template>
+
 <script>
+import { api } from 'boot/axios';
+
 export default {
   name: 'PageLogin',
   data() {
@@ -69,7 +72,13 @@ export default {
     };
   },
   mounted() {
-    //
+    api.get('/products')
+      .then((response) => {
+        console.log(response);
+      })
+      .catch(() => {
+        console.log('error');
+      });
   },
   methods: {
     onSubmit() {
