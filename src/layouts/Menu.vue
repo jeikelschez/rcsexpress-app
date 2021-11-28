@@ -9,7 +9,7 @@
           class="q-mr-sm"
         />
         <q-toolbar-title>SCEN - Sistema de Control de Encomiendas</q-toolbar-title>
-        <q-btn flat round dense icon="search" class="q-mr-xs">
+        <!-- <q-btn flat round dense icon="search" class="q-mr-xs">
         <q-tooltip
           transition-show="flip-right"
           transition-hide="flip-left"
@@ -44,7 +44,7 @@
           color="primary"
           max-height="30px"
         >Informacion</q-tooltip>
-        </q-btn>
+        </q-btn> -->
          <q-space ></q-space>
         <q-btn flat dense>
           <q-avatar size="42px">
