@@ -7,4 +7,5 @@ export default {
   blank_user: 'You must enter the username',
   blank_pass: 'You must enter the password',
   not_login: 'Your login name or password is invalid',
+  records_per_page: 'Productos por pagina',
 };

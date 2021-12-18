@@ -150,22 +150,37 @@
                       :loading="loadingTable"
                       style="width:100%"
                       :grid="$q.screen.xs"
-                      :selected-rows-label="getSelectedString"
-                      selection="multiple"
-                      v-model:selected="selected"
-                      :pagination-label="getPaginationLabel"
+                      v-model:pagination="pagination"
+                      hide-pagination
                     >
+                    <template v-slot:body-cell-actions="props">
+            <q-td :props="props">
+              <q-btn dense round flat color="primary"
+              @click="onEdit(props.row)"
+              icon="edit"></q-btn>
+              <q-btn dense round flat color="primary"
+              @click="onDelete(props.row)"
+              icon="delete"></q-btn>
+            </q-td>
+          </template>
                     </q-table>
+
                     <!-- fin q-table-->
                   </div>
                   <div class="full-width row justify-center items-center content-center"
       style="margin-top:25px">
-        <q-btn  label="Guardar" type="submit" color="primary" icon="save"
+                <q-pagination
+                  v-model="pagination.page"
+                  color="primary"
+                  :max="pagesNumber"
+                  size="md"
+      />
+        <!-- <q-btn  label="Guardar" type="submit" color="primary" icon="save"
         class="col-md-2 col-sm-3 col-xs-12 btnmovil"/>
         <q-btn label="Insertar" type="" color="primary" flat icon="person_add"
          class="col-md-2 col-sm-3 col-xs-12 btnmovil"/>
         <q-btn label="Eliminar" type="reset" color="primary"
-        icon="person_remove" class="col-md-2 col-sm-3 col-xs-12 btnmovil"/>
+        icon="person_remove" class="col-md-2 col-sm-3 col-xs-12 btnmovil"/> -->
       </div>
 
           </div>
@@ -189,7 +204,7 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 import { api } from 'boot/axios';
 
@@ -223,6 +238,9 @@ const columns = [
   },
   {
     name: 'iron', label: 'Iron (%)', field: 'iron', sortable: true, sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
+  },
+  {
+    name: 'actions', label: 'Opciones', field: '', align: 'center',
   },
 ];
 
@@ -342,14 +360,32 @@ export default {
     };
   },
   setup() {
+    const onEdit = (row) => {
+      console.log(`Editing row - '${row.name}'`);
+    };
+
+    const onDelete = (row) => {
+      console.log(`Deleting row - '${row.name}'`);
+    };
+    const pagination = ref({
+      sortBy: 'desc',
+      descending: false,
+      page: 2,
+      rowsPerPage: 4,
+      // rowsNumber: xx if getting data from a server
+    });
     return {
       separator: ref('vertical'),
       label: ref('Click me'),
       label2: ref('Also click me'),
       alert: ref(false),
       selected: ref([]),
+      pagesNumber: computed(() => Math.ceil(rows.length / pagination.value.rowsPerPage)),
       columns,
+      pagination,
       rows,
+      onEdit,
+      onDelete,
     };
   },
   mounted() {
@@ -360,26 +396,6 @@ export default {
       .catch(() => {
         console.log('error');
       });
-  },
-  methods: {
-    onSubmit() {
-      if (this.user.hasError || this.pass.hasError) {
-        this.formHasError = true;
-      } else if (this.user === 'admin' && this.pass === 'admin') {
-        this.isAuthenticated = true;
-        sessionStorage.setItem('isAuthenticated', this.isAuthenticated);
-        this.$router.push('/dashboard');
-      } else {
-        this.$q.notify({
-          color: 'negative',
-          message: this.$t('Login.not_login'),
-        });
-      }
-    },
-    onReset() {
-      this.user = '';
-      this.pass = '';
-    },
   },
 };
 </script>

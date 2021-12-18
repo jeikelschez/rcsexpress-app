@@ -74,7 +74,7 @@ export default {
   mounted() {
     api.get('/products')
       .then((response) => {
-        console.log(response);
+        console.log(response.data);
       })
       .catch(() => {
         console.log('error');

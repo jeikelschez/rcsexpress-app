@@ -4,6 +4,7 @@ export default {
   rights: 'All Rights Reserved.',
   sales: 'Sales',
   operations: 'Operations',
+  records_per_page: 'Productos por pagina',
   administration: 'Administration',
   reports: 'Reports',
   system: 'System',

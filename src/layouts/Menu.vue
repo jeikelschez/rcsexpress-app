@@ -3,7 +3,22 @@
     <q-header elevated>
       <q-toolbar class="bg-indigo-9">
         <q-btn flat dense round
-          @click="drawerClick"
+          @click.capture="drawerClick"
+          @click="primero=toggle;
+          segundo=toggle;
+          tercero=toggle;
+          cuarto=toggle;
+          quinto=toggle;
+          sexto=toggle;
+          septimo=toggle;
+          octavo=toggle;
+          noveno=toggle;
+          decimo=toggle;
+          decimoprimero=toggle;
+          decimosegundo=toggle;
+          decimotercero=toggle;
+          decimocuarto=toggle;
+          "
           icon="menu"
           aria-label="Menu"
           class="q-mr-sm"
@@ -69,19 +84,20 @@
       :breakpoint="500"
       bordered
       :mini="!drawer || miniState"
-        @click="miniState = false"
+        @click="miniState = false;"
       width="350"
       content-class="bg-grey-3"
     >
-      <q-list>
+    <q-list>
 
 <div>
     <q-list class="rounded-borders">
-
       <q-expansion-item
         expand-separator
         icon="dashboard"
         label="Operaciones"
+        expanded=primero
+        v-model="primero"
       >
         <q-expansion-item
           :header-inset-level="0.40"
@@ -89,6 +105,8 @@
           expand-separator
           icon="assignment"
           label="Relacion de despacho"
+          expanded=segundo
+          v-model="segundo"
         >
          <q-item clickable tag="a" to="/Operativa" exact>
           <q-item-section avatar>
@@ -138,6 +156,8 @@
           expand-separator
           icon="directions_bus_filled"
           label="Costos de Transporte"
+          expanded=tercero
+          v-model="tercero"
         >
          <q-item clickable tag="a" to="/Registrodecostos" exact>
           <q-item-section avatar>
@@ -207,6 +227,8 @@
         expand-separator
         icon="sell"
         label="Ventas"
+        expanded=cuarto
+        v-model="cuarto"
       >
 <div class="q-pl-lg">
       <q-item clickable tag="a" to="/Registroserviciocarga" exact>
@@ -301,12 +323,16 @@
       <q-expansion-item
         expand-separator
         icon="topic"
+        expanded=quinto
+        v-model="quinto"
         label="Administracion"
       >
         <q-expansion-item
           :header-inset-level="0.40"
           :content-inset-level="0.90"
           expand-separator
+          expanded=sexto
+        v-model="sexto"
           icon="menu_book"
           label="Notas Contables"
         >
@@ -396,6 +422,8 @@
           :header-inset-level="0.40"
           :content-inset-level="0.90"
           expand-separator
+          expanded=septimo
+        v-model="septimo"
           icon="price_check"
           label="Cuentas por Pagar"
         >
@@ -444,6 +472,8 @@
           :header-inset-level="0.40"
           :content-inset-level="0.90"
           expand-separator
+          expanded=octavo
+        v-model="octavo"
           icon="list"
           label="Control de Comisiones"
         >
@@ -536,6 +566,8 @@
           :header-inset-level="0.40"
           :content-inset-level="0.90"
           expand-separator
+          expanded=noveno
+        v-model="noveno"
           icon="paid"
           label="Movimientos Bancarios"
         >
@@ -606,6 +638,8 @@
 
       <q-expansion-item
         expand-separator
+        expanded=decimo
+        v-model="decimo"
         icon="summarize"
         label="Consultas y Reportes"
       >
@@ -812,12 +846,16 @@
       <q-expansion-item
         expand-separator
         icon="settings_applications"
+        expanded=decimoprimero
+        v-model="decimoprimero"
         label="Mantenimiento"
       >
         <q-expansion-item
           :header-inset-level="0.40"
           :content-inset-level="0.90"
           expand-separator
+          expanded=decimosegundo
+        v-model="decimosegundo"
           icon="table_rows"
           label="Datos Generales"
         >
@@ -1018,6 +1056,8 @@
           :header-inset-level="0.40"
           :content-inset-level="0.90"
           expand-separator
+          expanded=decimotercero
+        v-model="decimotercero"
           icon="widgets"
           label="Registros Basicos"
         >
@@ -1219,6 +1259,8 @@
           :content-inset-level="0.90"
           expand-separator
           icon="security"
+          expanded=decimocuarto
+        v-model="decimocuarto"
           label="Seguridad"
         >
          <q-item clickable tag="a" to="/Roles" exact>
@@ -1369,6 +1411,8 @@
 </template>
 
 <script>
+import { ref } from 'vue';
+
 export default {
   name: 'MainLayout',
   data() {
@@ -1377,6 +1421,13 @@ export default {
       miniState: false,
       dashboard: this.$t('Menu.dashboard'),
       picture: 'logo_rc4.bmp',
+    };
+  },
+  setup() {
+    return {
+      expanded: ref(false),
+      primero: ref(false),
+      segundo: ref(false),
     };
   },
   mounted() {
