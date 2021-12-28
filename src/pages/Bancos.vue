@@ -14,7 +14,7 @@
 <div class="col-md-6 col-xs-12">
    <q-input
         outlined
-        v-model="name"
+        v-model="form.name"
         label="Nombre"
         hint=""
         class="pcform"
@@ -29,11 +29,10 @@
 <div class="col-md-6 col-xs-12">
       <q-input
         outlined
-        v-model="telefono"
-        label="Telefono"
+        v-model="form.price"
+        label="Precio"
         hint=""
         lazy-rules
-        mask="phone"
         :rules="[ val => val && val.length > 0 || 'Inserta un telefono valido']">
         <template v-slot:prepend>
           <q-icon name="event" />
@@ -94,7 +93,112 @@
 
 <div class="full-width row justify-center items-center content-center"
       style="margin-bottom:10px">
-        <q-btn label="Agregar cliente" type="submit" color="primary"
+        <q-btn label="Agregar Banco" type="submit"
+        v-on:click="createDato(); getdatos();"
+        color="primary" v-close-popup @click="medium=true"
+        class="col-md-5 col-sm-5 col-xs-12" icon="person_add"/>
+        <q-btn label="Cerrar" type="close" color="primary" flat
+        class="col-md-5 col-sm-5 col-xs-12 btnmovil" icon="close" v-close-popup/>
+      </div>
+
+</q-card>
+        </q-dialog>
+
+        <q-dialog v-model="alert2">
+<q-card class="q-pa-md" bordered style="width: 999px" >
+      <q-card-section>
+        <q-form
+      @submit="onSubmit"
+      @reset="onReset"
+    >
+
+<div class="row">
+
+<div class="col-md-6 col-xs-12">
+   <q-input
+        outlined
+        v-model="formedit.name"
+        label="Nombre"
+        hint=""
+        class="pcform"
+        lazy-rules
+        :rules="[ val => val && val.length > 0 || 'Por favor escribe un nombre']">
+        <template v-slot:prepend>
+          <q-icon name="event" />
+        </template>
+        </q-input>
+</div>
+
+<div class="col-md-6 col-xs-12">
+      <q-input
+        outlined
+        v-model="formedit.price"
+        label="Precio"
+        hint=""
+        lazy-rules
+        :rules="[ val => val && val.length > 0 || 'Inserta un telefono valido']">
+        <template v-slot:prepend>
+          <q-icon name="event" />
+        </template>
+        </q-input>
+</div>
+
+<div class="col-12">
+      <q-input
+        outlined
+        v-model="fax"
+        label="Fax"
+        hint=""
+        lazy-rules
+        mask="####-#######################"
+        :rules="[ val => val && val.length > 0 || 'Inserta un Fax valido']">
+        <template v-slot:prepend>
+          <q-icon name="event" />
+        </template>
+        </q-input>
+</div>
+
+<div class="col-md-6 col-xs-12">
+      <q-input
+        outlined
+        v-model="codigopostal"
+        label="Codigo Postal"
+        hint=""
+        class="pcform"
+        lazy-rules
+        mask="##########"
+        :rules="[ val => val && val.length > 0 || 'Inserta un codigo postal valido']">
+        <template v-slot:prepend>
+          <q-icon name="event" />
+        </template>
+        </q-input>
+</div>
+
+<div class="col-md-6 col-xs-12">
+      <q-input
+        outlined
+        v-model="mail"
+        label="Correo Electronico"
+        hint=""
+        type="email"
+        lazy-rules
+        :rules="[ val => val && val.length > 0 || 'Inserta un correo valido']">
+        <template v-slot:prepend>
+          <q-icon name="event" />
+        </template>
+        </q-input>
+</div>
+
+</div>
+
+    </q-form>
+</q-card-section>
+
+<div class="full-width row justify-center items-center content-center"
+      style="margin-bottom:10px">
+        <q-btn label="Editar Banco" type="submit"
+        v-on:click="putDato(); getdatos();"
+        color="primary" v-close-popup
         class="col-md-5 col-sm-5 col-xs-12" icon="person_add"/>
         <q-btn label="Cerrar" type="close" color="primary" flat
         class="col-md-5 col-sm-5 col-xs-12 btnmovil" icon="close" v-close-popup/>
@@ -109,7 +213,7 @@
         <div class="row">
           <div class="col-md-3 col-xs-12" style="align-self: center;text-align: center;
           margin-right:16px">
-            <h4>Lista de clientes</h4>
+            <h4>Lista de Bancos</h4>
           </div>
           <div class="col-md-6 col-sm-7 col-xs-6" style="align-self: center;margin-right:20px">
             <q-input
@@ -127,7 +231,7 @@
           </div>
           <div class="col-md-2 col-sm-4 col-xs-5" style="text-align: center;align-self: center;">
             <q-btn
-              label="Crear Contacto"
+              label="Añadir Banco"
               rounded
               color="primary"
               @click="alert = true"
@@ -155,9 +259,11 @@
                     <template v-slot:body-cell-action="props">
         <q-td :props="props">
           <q-btn dense round flat color="primary"
-              icon="edit" @click="editdato(props.row.id)"></q-btn>
+              icon="edit" @click="selectedEdit = props.row.id; getdatosedit(selectedEdit);
+              alert2=true"></q-btn>
               <q-btn dense round flat color="primary"
-              icon="delete" @click="deletedato(props.row.id)"></q-btn>
+              icon="delete" @click="selected = props.row.id; getdatos();"
+              @click.capture="small = true"></q-btn>
         </q-td>
       </template>
                     </q-table>
@@ -195,6 +301,40 @@
         @record-saved="onRecordSaved()"
         @record-not-deleted="onRecordNotDeleted()"
       />
+    </q-dialog>
+
+     <q-dialog
+      v-model="small"
+    >
+      <q-card style="width: 700px">
+        <q-card-section>
+          <div class="text-h5"
+          style="font-size:18px;">¿Estas seguro que quieres eliminar este elemento?</div>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Cancelar" color="primary" v-close-popup/>
+          <q-btn flat label="Aceptar" color="primary" v-close-popup
+          @click="deletedato(selected); getdatos();"/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog
+      v-model="medium"
+    >
+      <q-card style="width: 250px">
+        <q-card-section>
+          <div class="text-h5"
+          style="font-size:18px;">Contacto Añadido</div>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Aceptar" color="primary" v-close-popup
+          />
+        </q-card-actions>
+
+      </q-card>
     </q-dialog>
 
   </q-page>
@@ -238,7 +378,12 @@ export default {
           sortable: true,
         },
       ],
+      form: {
+        name: '',
+        price: '',
+      },
       datos: [],
+      formedit: [],
       selected: [],
       isAuthenticated: false,
       routes: [],
@@ -261,13 +406,15 @@ export default {
       label: ref('Click me'),
       label2: ref('Also click me'),
       alert: ref(false),
+      alert2: ref(false),
       pagination,
+      medium: ref(false),
+      small: ref(false),
       filter: ref(''),
     };
   },
   mounted() {
     this.getdatos();
-    this.deletedato();
   },
   methods: {
     getdatos() {
@@ -279,8 +426,39 @@ export default {
           console.log(err);
         });
     },
+    getdatosedit(selectedEdit) {
+      api.get(`/products/${selectedEdit}`)
+        .then((res) => {
+          this.formedit = res.data;
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
     deletedato(idpost) {
       api.delete(`/products/${idpost}`);
+      api.get('/products')
+        .then((res) => {
+          this.datos = res.data;
+        });
+    },
+    createDato() {
+      api.post('/products', this.form);
+    },
+    editdato(idpost) {
+      api.delete(`/products/${idpost}`);
+      api.get('/products')
+        .then((res) => {
+          this.datos = res.data;
+        });
+    },
+    putDato() {
+      api.patch(`/products/${this.formedit.id}`, this.formedit);
+      api.get('/products')
+        .then((res) => {
+          this.datos = res.data;
+        });
     },
   },
 };

@@ -4,7 +4,11 @@
       <q-toolbar class="bg-indigo-9">
         <q-btn flat dense round
           @click.capture="drawerClick"
-          @click="primero=toggle;
+          @click="
+          desplegable=toggle;
+          desplegable1=toggle;
+          desplegable2=toggle;
+          desplegable3=toggle;
           segundo=toggle;
           tercero=toggle;
           cuarto=toggle;
@@ -93,11 +97,12 @@
 <div>
     <q-list class="rounded-borders">
       <q-expansion-item
+        @click.capture="desplegable = true"
         expand-separator
         icon="dashboard"
         label="Operaciones"
-        expanded=primero
-        v-model="primero"
+        expanded=desplegable
+        v-model="desplegable"
       >
         <q-expansion-item
           :header-inset-level="0.40"
@@ -105,8 +110,9 @@
           expand-separator
           icon="assignment"
           label="Relacion de despacho"
-          expanded=segundo
-          v-model="segundo"
+          expanded=desplegable2
+          v-model="desplegable2"
+          @click.capture="desplegable2 = true"
         >
          <q-item clickable tag="a" to="/Operativa" exact>
           <q-item-section avatar>
@@ -156,8 +162,9 @@
           expand-separator
           icon="directions_bus_filled"
           label="Costos de Transporte"
-          expanded=tercero
-          v-model="tercero"
+          expanded=desplegable3
+          v-model="desplegable3"
+          @click.capture="desplegable3 = true"
         >
          <q-item clickable tag="a" to="/Registrodecostos" exact>
           <q-item-section avatar>
@@ -229,6 +236,7 @@
         label="Ventas"
         expanded=cuarto
         v-model="cuarto"
+        @click.capture="cuarto = true"
       >
 <div class="q-pl-lg">
       <q-item clickable tag="a" to="/Registroserviciocarga" exact>
@@ -326,6 +334,7 @@
         expanded=quinto
         v-model="quinto"
         label="Administracion"
+        @click.capture="quinto = true"
       >
         <q-expansion-item
           :header-inset-level="0.40"
@@ -335,6 +344,7 @@
         v-model="sexto"
           icon="menu_book"
           label="Notas Contables"
+          @click.capture="sexto = toggle"
         >
          <q-item clickable tag="a" to="/Notasdebito" exact>
           <q-item-section avatar>
@@ -423,7 +433,8 @@
           :content-inset-level="0.90"
           expand-separator
           expanded=septimo
-        v-model="septimo"
+          v-model="septimo"
+          @click="septimo = toggle"
           icon="price_check"
           label="Cuentas por Pagar"
         >
@@ -473,7 +484,8 @@
           :content-inset-level="0.90"
           expand-separator
           expanded=octavo
-        v-model="octavo"
+          v-model="octavo"
+          @click.capture="octavo = toggle"
           icon="list"
           label="Control de Comisiones"
         >
@@ -567,7 +579,8 @@
           :content-inset-level="0.90"
           expand-separator
           expanded=noveno
-        v-model="noveno"
+          v-model="noveno"
+          @click.capture="noveno = toggle"
           icon="paid"
           label="Movimientos Bancarios"
         >
@@ -640,6 +653,7 @@
         expand-separator
         expanded=decimo
         v-model="decimo"
+        @click.capture="decimo = toggle"
         icon="summarize"
         label="Consultas y Reportes"
       >
@@ -848,6 +862,7 @@
         icon="settings_applications"
         expanded=decimoprimero
         v-model="decimoprimero"
+        @click.capture="decimoprimero = toggle"
         label="Mantenimiento"
       >
         <q-expansion-item
@@ -855,7 +870,8 @@
           :content-inset-level="0.90"
           expand-separator
           expanded=decimosegundo
-        v-model="decimosegundo"
+          v-model="decimosegundo"
+          @click.capture="decimosegundo = toggle"
           icon="table_rows"
           label="Datos Generales"
         >
@@ -1057,7 +1073,8 @@
           :content-inset-level="0.90"
           expand-separator
           expanded=decimotercero
-        v-model="decimotercero"
+          v-model="decimotercero"
+          @click.capture="decimotercero = toggle"
           icon="widgets"
           label="Registros Basicos"
         >
@@ -1260,7 +1277,8 @@
           expand-separator
           icon="security"
           expanded=decimocuarto
-        v-model="decimocuarto"
+          v-model="decimocuarto"
+          @click.capture="decimocuarto = toggle"
           label="Seguridad"
         >
          <q-item clickable tag="a" to="/Roles" exact>
