@@ -2,11 +2,11 @@ const routes = [
   {
     path: '/',
     redirect: '/dashboard',
-    component: () => import('layouts/Menu.vue'),
+    component: () => import('layouts/MainLayout.vue'),
     children: [
       {
         path: '/dashboard',
-        component: () => import('pages/Index.vue'),
+        component: () => import('pages/Dashboard.vue'),
         meta: { requiresAuth: true },
       },
       {
@@ -319,19 +319,20 @@ const routes = [
         component: () => import('pages/CargaManualGuias.vue'),
         meta: { requiresAuth: true },
       },
-    ],
-  },
-  {
-    path: '/login',
-    component: () => import('pages/Login.vue'),
+    ]
   },
 
   // Always leave this as last one,
   // but you can also remove it
   {
-    path: '/:catchAll(.*)*',
-    component: () => import('pages/Error404.vue'),
+    path: '/login',
+    component: () => import('pages/Login.vue'),
   },
-];
+  {
+    path: '/:catchAll(.*)*',
+    component: () => import('pages/Error404.vue')
+  },
 
-export default routes;
+]
+
+export default routes

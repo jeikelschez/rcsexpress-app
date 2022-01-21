@@ -1,0 +1,22 @@
+/* app global css */
+
+.sombra_svg {
+	/*box-shadow:1px 1px 2px #333;*/
+	-webkit-filter: drop-shadow(0px 0px 5px #333);
+	filter: drop-shadow(0px 0px 5px rgba(12, 12, 12, 0.267));
+}
+
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th
+    /* bg color is important for th; just specify one */
+    {background-color: #ffffff}
+
+	@media screen and (min-width: 800px) {thead tr th
+   {position: sticky; z-index: 1}
+  thead tr:first-child th
+    {top: 0}}
+
+@media screen and (min-width: 800px) {.pcform {margin-right: 20px;}}
+
+@media screen and (max-width: 600px) {.btnmovil {margin-top: 14px;margin-bottom: -14px;}}
