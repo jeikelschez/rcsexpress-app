@@ -552,6 +552,7 @@ export default {
     resetForm() {
       this.form.name = null;
       this.form.price = null;
+      this.form.image = null;
     },
   },
 };
