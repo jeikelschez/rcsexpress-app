@@ -14,7 +14,7 @@
 <div class="col-md-5 col-xs-12">
    <q-input
         outlined
-        v-model="form.name"
+        v-model="form.nb_banco"
         label="Nombre"
         hint=""
         class="pcform"
@@ -29,7 +29,7 @@
 <div class="col-md-7 col-xs-12">
       <q-input
         outlined
-        v-model="form.price"
+        v-model="form.direccion_banco"
         label="Direccion"
         hint=""
         lazy-rules
@@ -43,7 +43,7 @@
 <div class="col-md-6 col-xs-12">
       <q-input
         outlined
-        v-model="fax"
+        v-model="form.fax_banco"
         label="Fax"
         class="pcform"
         hint=""
@@ -59,7 +59,7 @@
 <div class="col-md-6 col-xs-12">
       <q-input
         outlined
-        v-model="telefono"
+        v-model="form.tlf_banco"
         label="Telefono"
         hint=""
         lazy-rules
@@ -74,7 +74,7 @@
 <div class="col-md-5 col-xs-12">
       <q-input
         outlined
-        v-model="codigopostal"
+        v-model="form.cod_postal"
         label="Codigo Postal"
         hint=""
         class="pcform"
@@ -90,7 +90,7 @@
 <div class="col-md-7 col-xs-12">
       <q-input
         outlined
-        v-model="form.image"
+        v-model="form.email_banco"
         label="Correo Electronico"
         hint=""
         type="email"
@@ -133,7 +133,7 @@
 <div class="col-md-5 col-xs-12">
    <q-input
         outlined
-        v-model="formedit.name"
+        v-model="formedit.nb_banco"
         label="Nombre"
         hint=""
         class="pcform"
@@ -148,7 +148,7 @@
 <div class="col-md-7 col-xs-12">
       <q-input
         outlined
-        v-model="formedit.price"
+        v-model="formedit.direccion_banco"
         label="Direccion"
         hint=""
         lazy-rules
@@ -162,7 +162,7 @@
 <div class="col-md-6 col-xs-12">
       <q-input
         outlined
-        v-model="fax"
+        v-model="form.fax_banco"
         label="Fax"
         hint=""
         class="pcform"
@@ -178,7 +178,7 @@
 <div class="col-md-6 col-xs-12">
       <q-input
         outlined
-        v-model="telefono"
+        v-model="form.tlf_banco"
         label="Telefono"
         hint=""
         lazy-rules
@@ -193,7 +193,7 @@
 <div class="col-md-5 col-xs-12">
       <q-input
         outlined
-        v-model="codigopostal"
+        v-model="form.cod_postal"
         label="Codigo Postal"
         hint=""
         class="pcform"
@@ -209,7 +209,7 @@
 <div class="col-md-7 col-xs-12">
       <q-input
         outlined
-        v-model="mail"
+        v-model="form.email_banco"
         label="Correo Electronico"
         hint=""
         type="email"
@@ -279,7 +279,7 @@
 
                     <q-table
                       :rows="datos"
-                      row-key="id"
+                      row-key="cod_banco"
                       :columns= "columns"
                       :separator="separator"
                       class="my-sticky-header-table"
@@ -287,15 +287,14 @@
                       :filter="filter"
                       style="width:100%"
                       :grid="$q.screen.xs"
-                      v-model:pagination="pagination"
                     >
                     <template v-slot:body-cell-action="props">
         <q-td :props="props">
           <q-btn dense round flat color="primary"
-              icon="edit" @click="selectedEdit = props.row.id; getdatosedit(selectedEdit);
+              icon="edit" @click="selectedEdit = props.row.cod_banco; getdatosedit(selectedEdit);
               alert2=true"></q-btn>
               <q-btn dense round flat color="primary"
-              icon="delete" @click="selected = props.row.id; getdatos();"
+              icon="delete" @click="selected = props.row.cod_banco; getdatos();"
               @click.capture="small = true"></q-btn>
         </q-td>
       </template>
@@ -325,7 +324,7 @@
                         square
                       >{{col.value}}</q-chip>
                       <q-btn v-else-if="col.name === 'action'" dense round flat color="primary"
-              icon="edit" @click="selectedEdit = props.row.id; getdatosedit(selectedEdit);
+              icon="edit" @click="selectedEdit = props.row.cod_banco; getdatosedit(selectedEdit);
               alert2=true"></q-btn>
               <q-chip v-if="col.name === 'status'"
                         :color="props.row.status == 'Active' ? 'green':
@@ -336,7 +335,7 @@
                         square
                       >{{col.value}}</q-chip>
                       <q-btn v-else-if="col.name === 'action'" dense round flat color="primary"
-              icon="delete" @click="selected = props.row.id; getdatos();"
+              icon="delete" @click="selected = props.row.cod_banco; getdatos();"
               @click.capture="small = true"></q-btn>
                       <q-item-label v-else caption
                       :class="col.classes ? col.classes : ''">{{ col.value }}</q-item-label>
@@ -404,62 +403,79 @@ export default {
   data() {
     return {
       columns: [
-        {
-          name: 'id',
-          label: 'Codigo',
-          field: 'id',
-          align: 'left',
-          sortable: true,
-        },
-        {
-          name: 'name',
-          label: 'Nombre',
-          field: 'name',
-          align: 'left',
-          sortable: true,
-        },
-        {
-          name: 'price',
-          label: 'Telefono',
-          field: 'price',
-          align: 'left',
-          sortable: true,
-        },
-        {
-          name: 'price',
-          label: 'Fax',
-          field: 'price',
-          align: 'left',
-          sortable: true,
-        },
-        {
-          name: 'price',
-          label: 'Codigo postal',
-          field: 'price',
-          align: 'left',
-          sortable: true,
-        },
-        {
-          name: 'image',
-          label: 'Correo electronico',
-          field: 'image',
-          align: 'left',
-          sortable: true,
-        },
-        {
+                {
           name: 'action',
           label: 'Accion',
           align: 'right',
           sortable: true,
         },
+        {
+          name: 'cod_banco',
+          label: 'Codigo',
+          field: 'cod_banco',
+          align: 'left',
+          sortable: true,
+        },
+        {
+          name: 'nb_banco',
+          label: 'Nombre',
+          field: 'nb_banco',
+          align: 'left',
+          sortable: true,
+        },
+        {
+          name: 'direccion_banco',
+          label: 'Direccion',
+          field: 'direccion_banco',
+          align: 'left',
+          sortable: true,
+        },
+        {
+          name: 'tlf_banco',
+          label: 'Telefono',
+          field: 'tlf_banco',
+          align: 'left',
+          sortable: true,
+        },
+        {
+          name: 'fax_banco',
+          label: 'Fax',
+          field: 'fax_banco',
+          align: 'left',
+          sortable: true,
+        },
+        {
+          name: 'cod_postal',
+          label: 'Codigo postal',
+          field: 'cod_postal',
+          align: 'left',
+          sortable: true,
+        },
+        {
+          name: 'email_banco"',
+          label: 'Correo electronico',
+          field: 'email_banco"',
+          align: 'left',
+          sortable: true,
+        },
       ],
       form: {
-        name: '',
-        price: '',
-        image: '',
+        nb_banco: '',
+        direccion_banco: '',
+        tlf_banco: '',
+        fax_banco: '',
+        cod_postal: '',
+        email_banco: '',
       },
       datos: [],
-      formedit: [],
+      formedit: {
+        nb_banco: '',
+        direccion_banco: '',
+        tlf_banco: '',
+        fax_banco: '',
+        cod_postal: '',
+        email_banco: '',
+      },
       selected: [],
       isAuthenticated: false,
       routes: [],
@@ -513,46 +529,47 @@ export default {
   },
   methods: {
     getdatos() {
-      api.get('/products')
+      api.get('/bancos')
         .then((res) => {
           this.datos = res.data;
         })
     },
     getdatosedit(selectedEdit) {
-      api.get(`/products/${selectedEdit}`)
+      api.get(`/bancos/${selectedEdit}`)
         .then((res) => {
           this.formedit = res.data;
           console.log(res);
         })
     },
     deletedato(idpost) {
-      api.delete(`/products/${idpost}`);
-      api.get('/products')
+      api.delete(`/bancos/${idpost}`);
+      api.get('/bancos')
         .then((res) => {
           this.datos = res.data;
         });
     },
     createDato() {
-      api.post('/products', this.form);
-    },
-    editdato(idpost) {
-      api.delete(`/products/${idpost}`);
-      api.get('/products')
+      api.post('/bancos/', this.form)
+      api.get('/bancos')
         .then((res) => {
           this.datos = res.data;
         });
     },
     putDato() {
-      api.patch(`/products/${this.formedit.id}`, this.formedit);
-      api.get('/products')
+      api.put(`/bancos/${this.formedit.cod_banco}`, this.formedit);
+      console.log(this.formedit)
+      api.get('/bancos')
         .then((res) => {
           this.datos = res.data;
         });
     },
     resetForm() {
-      this.form.name = null;
-      this.form.price = null;
-      this.form.image = null;
+    this.form.nb_banco = null,
+    this.form.direccion_banco = null,
+    this.form.tlf_banco = null,
+    this.form.fax_banco = null,
+    this.form.cod_postal = null,
+    this.form.email_banco = null
     },
   },
 };

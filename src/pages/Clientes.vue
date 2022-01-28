@@ -389,7 +389,7 @@ export default {
     };
   },
   mounted() {
-    api.get('/products')
+    api.get('/bancos')
       .then((response) => {
         console.log(response);
       })
