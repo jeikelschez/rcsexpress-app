@@ -21,7 +21,7 @@
         lazy-rules
         :rules="[val => !!val || 'Por favor escribe un nombre']">
         <template v-slot:prepend>
-          <q-icon name="event" />
+          <q-icon name="person" />
         </template>
         </q-input>
 </div>
@@ -35,7 +35,7 @@
         lazy-rules
         :rules="[val => !!val ||  'Inserta una direccion valida']">
         <template v-slot:prepend>
-          <q-icon name="event" />
+          <q-icon name="location_on" />
         </template>
         </q-input>
 </div>
@@ -51,7 +51,7 @@
         mask="####-#####"
         :rules="[val => !!val || 'Inserta un Fax valido']">
         <template v-slot:prepend>
-          <q-icon name="event" />
+          <q-icon name="fax" />
         </template>
         </q-input>
 </div>
@@ -60,13 +60,13 @@
       <q-input
         outlined
         v-model="form.tlf_banco"
-        label="Telefono"
+        label="Teléfono"
         hint=""
         lazy-rules
         mask="(###) ### - ####"
-        :rules="[val => !!val || 'Inserta un telefono valido']">
+        :rules="[val => !!val || 'Inserta un teléfono valido']">
         <template v-slot:prepend>
-          <q-icon name="event" />
+          <q-icon name="phone" />
         </template>
         </q-input>
 </div>
@@ -75,14 +75,14 @@
       <q-input
         outlined
         v-model="form.cod_postal"
-        label="Codigo Postal"
+        label="Código Postal"
         hint=""
         class="pcform"
         lazy-rules
         mask="##########"
-        :rules="[val => !!val || 'Inserta un codigo postal valido']">
+        :rules="[val => !!val || 'Inserta un código postal valido']">
         <template v-slot:prepend>
-          <q-icon name="event" />
+          <q-icon name="dialpad" />
         </template>
         </q-input>
 </div>
@@ -91,13 +91,13 @@
       <q-input
         outlined
         v-model="form.email_banco"
-        label="Correo Electronico"
+        label="Correo Electrónico"
         hint=""
         type="email"
         lazy-rules
         :rules="[val => !!val || 'Inserta un correo valido']">
         <template v-slot:prepend>
-          <q-icon name="event" />
+          <q-icon name="email" />
         </template>
         </q-input>
 </div>
@@ -111,7 +111,7 @@
       style="margin-bottom:10px">
         <q-btn label="Agregar Banco" type="submit"
         v-on:click="createDato(); getdatos();"
-        color="primary" v-close-popup @click.capture="contactoAñadido"
+        color="primary" v-close-popup
         class="col-md-5 col-sm-5 col-xs-12" icon="person_add"/>
         <q-btn label="Cerrar" type="close" color="primary" flat
         class="col-md-5 col-sm-5 col-xs-12 btnmovil" icon="close" v-close-popup/>
@@ -140,7 +140,7 @@
         lazy-rules
         :rules="[val => !!val || 'Por favor escribe un nombre']">
         <template v-slot:prepend>
-          <q-icon name="event" />
+          <q-icon name="person" />
         </template>
         </q-input>
 </div>
@@ -152,9 +152,9 @@
         label="Direccion"
         hint=""
         lazy-rules
-        :rules="[val => !!val || 'Inserta un telefono valido']">
+        :rules="[val => !!val || 'Inserta una Direccion valida']">
         <template v-slot:prepend>
-          <q-icon name="event" />
+          <q-icon name="location_on" />
         </template>
         </q-input>
 </div>
@@ -170,7 +170,7 @@
         mask="####-#######################"
         :rules="[val => !!val || 'Inserta un Fax valido']">
         <template v-slot:prepend>
-          <q-icon name="event" />
+          <q-icon name="fax" />
         </template>
         </q-input>
 </div>
@@ -179,13 +179,13 @@
       <q-input
         outlined
         v-model="formedit.tlf_banco"
-        label="Telefono"
+        label="Teléfono"
         hint=""
         lazy-rules
         mask="(###) ### - ####"
-        :rules="[val => !!val || 'Inserta un Fax valido']">
+        :rules="[val => !!val || 'Inserta un Teléfono valido']">
         <template v-slot:prepend>
-          <q-icon name="event" />
+          <q-icon name="phone" />
         </template>
         </q-input>
 </div>
@@ -194,14 +194,14 @@
       <q-input
         outlined
         v-model="formedit.cod_postal"
-        label="Codigo Postal"
+        label="Código Postal"
         hint=""
         class="pcform"
         lazy-rules
         mask="##########"
-        :rules="[val => !!val || 'Inserta un codigo postal valido']">
+        :rules="[val => !!val || 'Inserta un código postal valido']">
         <template v-slot:prepend>
-          <q-icon name="event" />
+          <q-icon name="dialpad" />
         </template>
         </q-input>
 </div>
@@ -210,13 +210,13 @@
       <q-input
         outlined
         v-model="formedit.email_banco"
-        label="Correo Electronico"
+        label="Correo Electrónico"
         hint=""
         type="email"
         lazy-rules
         :rules="[val => !!val || 'Inserta un correo valido']">
         <template v-slot:prepend>
-          <q-icon name="event" />
+          <q-icon name="email" />
         </template>
         </q-input>
 </div>
@@ -229,7 +229,7 @@
 <div class="full-width row justify-center items-center content-center"
       style="margin-bottom:10px">
         <q-btn label="Editar Banco" type="submit"
-        v-on:click="putDato(); getdatos();" @click.capture="contactoEditado"
+        v-on:click="putDato(); getdatos();"
         color="primary" v-close-popup
         class="col-md-5 col-sm-5 col-xs-12" icon="person_add"/>
         <q-btn label="Cerrar" type="close" color="primary" flat
@@ -254,7 +254,7 @@
               outlined
               standout
               type="search"
-              label="Busqueda avanzada"
+              label="Búsqueda avanzada"
             >
               <template v-slot:prepend>
                 <q-icon name="search" />
@@ -404,7 +404,7 @@ export default {
       columns: [
         {
           name: 'cod_banco',
-          label: 'Codigo',
+          label: 'Código',
           field: 'cod_banco',
           align: 'left',
           sortable: true,
@@ -491,19 +491,19 @@ export default {
       alert2: ref(false),
       contactoAñadido() {
         $q.notify({
-          message: 'Contacto añadido exitosamente',
+          message: 'Banco añadido exitosamente',
           color: 'green',
         });
       },
       contactoEliminado() {
         $q.notify({
-          message: 'Contacto eliminado exitosamente',
+          message: 'Banco eliminado exitosamente',
           color: 'green',
         });
       },
       contactoEditado() {
         $q.notify({
-          message: 'Contacto actualizado exitosamente',
+          message: 'Banco actualizado exitosamente',
           color: 'green',
         });
       },
