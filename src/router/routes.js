@@ -1,7 +1,7 @@
 const routes = [
   {
     path: '/',
-    redirect: '/dashboard',
+    redirect: '/login',
     component: () => import('layouts/mainlayout.vue'),
     children: [
       {
