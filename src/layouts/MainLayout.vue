@@ -27,14 +27,14 @@
           class="q-mr-sm"
         />
         <q-toolbar-title>SCEN - Sistema de Control de Encomiendas</q-toolbar-title>
-        <q-btn flat round dense icon="dashboard" class="q-mr-xs" to="dashboard">
+        <q-btn flat round dense icon="home" class="q-mr-xs" to="dashboard">
         <q-tooltip
           transition-show="flip-right"
           transition-hide="flip-left"
           class="bg-indigo"
           color="primary"
           max-height="30px"
-        >Dashboard</q-tooltip>
+        >Inicio</q-tooltip>
         </q-btn>
         <q-btn flat round dense icon="account_balance" class="q-mr-xs" to="bancos">
         <q-tooltip
@@ -95,6 +95,15 @@
 
 <div>
     <q-list class="rounded-borders">
+      <q-item clickable tag="a" to="/dashboard" exact>
+          <q-item-section avatar>
+            <q-icon size="28px" name="home" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>{{ $t('Menu.dashboard') }}</q-item-label>
+            <q-item-label caption></q-item-label>
+          </q-item-section>
+        </q-item>
       <q-expansion-item
         expand-separator
         icon="dashboard"

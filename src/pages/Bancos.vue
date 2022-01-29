@@ -282,11 +282,12 @@
                       row-key="cod_banco"
                       :columns= "columns"
                       :separator="separator"
-                      class="my-sticky-header-table"
+                      class="my-sticky-column-table"
                       :loading="loadingTable"
                       :filter="filter"
                       style="width:100%"
                       :grid="$q.screen.xs"
+                      v-model:pagination="pagination"
                     >
                     <template v-slot:body-cell-action="props">
         <q-td :props="props">
@@ -351,12 +352,6 @@
                   </div>
                   <div class="full-width row justify-center items-center content-center"
       style="margin-top:25px">
-                <q-pagination
-                  v-model="pagination.page"
-                  color="primary"
-                  :max="pagesNumber"
-                  size="md"
-      />
         <!-- <q-btn  label="Guardar" type="submit" color="primary" icon="save"
         class="col-md-2 col-sm-3 col-xs-12 btnmovil"/>
         <q-btn label="Insertar" type="" color="primary" flat icon="person_add"
@@ -391,6 +386,10 @@
   </q-page>
 </template>
 
+<style>
+.columna {width: 20px}
+</style>
+
 <script>
 import { ref } from 'vue';
 
@@ -403,12 +402,6 @@ export default {
   data() {
     return {
       columns: [
-                {
-          name: 'action',
-          label: 'Accion',
-          align: 'right',
-          sortable: true,
-        },
         {
           name: 'cod_banco',
           label: 'Codigo',
@@ -424,39 +417,32 @@ export default {
           sortable: true,
         },
         {
-          name: 'direccion_banco',
-          label: 'Direccion',
-          field: 'direccion_banco',
-          align: 'left',
-          sortable: true,
-        },
-        {
           name: 'tlf_banco',
-          label: 'Telefono',
+          label: 'Teléfono',
           field: 'tlf_banco',
           align: 'left',
           sortable: true,
         },
         {
-          name: 'fax_banco',
-          label: 'Fax',
-          field: 'fax_banco',
-          align: 'left',
-          sortable: true,
-        },
-        {
           name: 'cod_postal',
-          label: 'Codigo postal',
+          label: 'Código postal',
           field: 'cod_postal',
           align: 'left',
           sortable: true,
         },
         {
-          name: 'email_banco"',
-          label: 'Correo electronico',
-          field: 'email_banco"',
+          name: 'email_banco',
+          label: 'Correo electrónico',
+          field: 'email_banco',
           align: 'left',
+          type: "string",
+        },
+        {
+          name: 'action',
+          label: 'Acciones',
+          align: 'center',
           sortable: true,
+          required: true,
         },
       ],
       form: {
@@ -495,12 +481,14 @@ export default {
       // rowsNumber: xx if getting data from a server
     });
     return {
+      pagination: ref({
+        rowsPerPage: 10
+      }),
       separator: ref('vertical'),
       label: ref('Click me'),
       label2: ref('Also click me'),
       alert: ref(false),
       alert2: ref(false),
-      pagination,
       contactoAñadido() {
         $q.notify({
           message: 'Contacto añadido exitosamente',
@@ -574,3 +562,23 @@ export default {
   },
 };
 </script>
+
+<style lang="sass">
+.my-sticky-column-table
+  /* specifying max-width so the example can
+    highlight the sticky column on any browser window */
+
+
+  thead tr:first-child th:first-child
+    /* bg color is important for th; just specify one */
+    background-color: #FFFFFF
+
+  td:first-child
+    background-color: #FFFFFF
+
+  th:first-child,
+  td:first-child
+    position: sticky
+    left: 0
+    z-index: 1
+</style>

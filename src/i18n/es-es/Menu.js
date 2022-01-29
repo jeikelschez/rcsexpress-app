@@ -1,5 +1,5 @@
 export default {
-  dashboard: 'Tablero',
+  dashboard: 'Inicio',
   logout: 'Salir',
   rights: 'Todos los Derechos Reservados.',
   sales: 'Ventas',
