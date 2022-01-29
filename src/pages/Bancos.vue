@@ -162,7 +162,7 @@
 <div class="col-md-6 col-xs-12">
       <q-input
         outlined
-        v-model="form.fax_banco"
+        v-model="formedit.fax_banco"
         label="Fax"
         hint=""
         class="pcform"
@@ -178,7 +178,7 @@
 <div class="col-md-6 col-xs-12">
       <q-input
         outlined
-        v-model="form.tlf_banco"
+        v-model="formedit.tlf_banco"
         label="Telefono"
         hint=""
         lazy-rules
@@ -193,7 +193,7 @@
 <div class="col-md-5 col-xs-12">
       <q-input
         outlined
-        v-model="form.cod_postal"
+        v-model="formedit.cod_postal"
         label="Codigo Postal"
         hint=""
         class="pcform"
@@ -209,7 +209,7 @@
 <div class="col-md-7 col-xs-12">
       <q-input
         outlined
-        v-model="form.email_banco"
+        v-model="formedit.email_banco"
         label="Correo Electronico"
         hint=""
         type="email"
@@ -545,7 +545,6 @@ export default {
     },
     putDato() {
       api.put(`/bancos/${this.formedit.cod_banco}`, this.formedit);
-      console.log(this.formedit)
       api.get('/bancos')
         .then((res) => {
           this.datos = res.data;
