@@ -1681,7 +1681,6 @@ export default {
             if ((res.status = 201)) {
               this.getDatosCiudades();
               this.añadidoConExito();
-              this.resetFormCiudades();
             }
           })
           .catch((err) => {
@@ -1694,6 +1693,7 @@ export default {
             }
             this.errorDelServidor();
           });
+          this.resetFormCiudades();
     },
     putDatoCiudades() {
       if (this.formEditCiudades.check_urbano === "Si") {
@@ -1716,7 +1716,6 @@ export default {
           if ((res.status = 201)) {
             this.editadoConExito();
             this.getDatosCiudades();
-            this.resetFormEditCiudades();
           }
         })
         .catch((err) => {
@@ -1730,6 +1729,7 @@ export default {
           console.log(this.formEditEstados);
           this.errorDelServidor();
         });
+        this.resetFormEditCiudades();
     },
     resetFormCiudades() {
       (this.formCiudades.desc_ciudad = null),

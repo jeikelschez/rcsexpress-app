@@ -429,7 +429,7 @@
             label="Aceptar"
             color="primary"
             v-close-popup
-            @click="deletedato(selected)"
+            @click="deleteDato(selected)"
           />
         </q-card-actions>
       </q-card>
