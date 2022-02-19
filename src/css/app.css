@@ -17,6 +17,25 @@
   thead tr:first-child th
     {top: 0}}
 
-@media screen and (min-width: 800px) {.pcform {margin-right: 20px;}}
+    /* CSS de Bancos */
 
+@media screen and (min-width: 1023px) {.pcform {margin-right: 20px;}}
 @media screen and (max-width: 600px) {.btnmovil {margin-top: 14px;margin-bottom: -14px;}}
+
+/* CSS de Paises Estados Ciudades */
+
+@media screen and (min-width: 600px) {.inputestadospc {margin-right: 20px;margin-left:20px;}}
+@media screen and (max-width: 600px) {.inputestadospc2 {margin-top: 20px;}}
+@media screen and (max-width: 600px) {.inputestadospc2 {margin-top: 20px;}}
+@media screen and (min-width: 1023px) {.inputestadospc2 {margin-right: 20px;}}
+@media screen and (max-width: 600px) {.insertarmovil {margin-top: 20px;margin-bottom: -14px;}}
+@media screen and (max-width:1023px) {.insertarestadosmovil {margin-top: 20px;margin-bottom: -14px;}}
+@media screen and (min-width: 1023px) {.inputciudadespc {margin-right: 15px;margin-left:20px;}}
+@media screen and (min-width: 1023px) {.inputciudadespc2 {margin-right: 15px;}}
+@media screen and (max-width: 1023px) {.inputciudadespc {margin-right: 10px;}}
+@media screen and (min-width: 1023px) {.inputpc {margin-right: 13px}}
+@media screen and (max-width: 1023px) {.inputpc {margin-right: 15px;margin-top: 20px;}}
+@media screen and (min-width: 1023px) {.inputpc {margin-right: 12px}}
+@media screen and (max-width: 1023px) {.inputpc {margin-right: 15px;margin-top: 20px;}}
+@media screen and (max-width: 600px) {.inputciudadespc2 {margin-top: 20px;}}
+@media screen and (max-width: 600px) {.inputpc {margin-top: 20px}}

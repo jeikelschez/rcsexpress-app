@@ -201,7 +201,7 @@ const routes = [
       },
       {
         path: '/paisestadociudad',
-        component: () => import('pages/paisestadociudad.vue'),
+        component: () => import('pages/Paisestadociudad.vue'),
         meta: { requiresauth: true },
       },
       {
