@@ -10,6 +10,7 @@
                   outlined
                   v-model="form.nb_banco"
                   label="Nombre"
+                  mask="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                   hint=""
                   class="pcform"
                   lazy-rules
@@ -28,6 +29,7 @@
                   outlined
                   v-model="form.direccion_banco"
                   label="Direccion"
+                  mask="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                   hint=""
                   lazy-rules
                 >
@@ -136,6 +138,7 @@
                   v-model="formEdit.nb_banco"
                   label="Nombre"
                   hint=""
+                  mask="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                   class="pcform"
                   lazy-rules
                   :rules="[
@@ -154,6 +157,7 @@
                   v-model="formEdit.direccion_banco"
                   label="Direccion"
                   hint=""
+                  mask="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                   lazy-rules
                 >
                   <template v-slot:prepend>
