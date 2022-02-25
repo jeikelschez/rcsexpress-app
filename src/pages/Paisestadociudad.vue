@@ -12,7 +12,6 @@
                   v-model="formPaises.desc_pais"
                   label="Pais"
                   hint=""
-                  mask="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                   class="pcform"
                   lazy-rules
                   :rules="[
@@ -79,7 +78,6 @@
                   v-model="formEditPaises.desc_pais"
                   label="Pais"
                   hint=""
-                  mask="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                   input-class="input"
                   class="pcform"
                   lazy-rules
@@ -147,7 +145,6 @@
                   label="Estado"
                   input-class="input"
                   hint=""
-                  mask="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                   class="pcform"
                   lazy-rules
                   :rules="[
@@ -213,7 +210,6 @@
                   outlined
                   v-model="formEditEstados.desc_estado"
                   label="Estado"
-                  mask="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                   input-class="input"
                   hint=""
                   class="pcform"
@@ -282,7 +278,6 @@
                   v-model="formCiudades.desc_ciudad"
                   label="Ciudad"
                   input-class="input"
-                  mask="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                   hint=""
                   class="pcform"
                   lazy-rules
@@ -384,7 +379,6 @@
                   outlined
                   v-model="formEditCiudades.desc_ciudad"
                   label="Estado"
-                  mask="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                   input-class="input"
                   hint=""
                   class="pcform"
@@ -1496,7 +1490,8 @@ export default {
         });
     },
     getDatosEditEstados(selectedEdit) {
-      api.get(`/estados/${selectedEdit}`).then((res) => {
+      api.get(`/estados/${selectedEdit}`)
+      .then((res) => {
         this.formEditEstados.desc_estado = res.data.desc_estado;
         this.formEditEstados.siglas = res.data.siglas;
         this.formEditEstados.id = res.data.id;
@@ -1716,8 +1711,7 @@ export default {
     },
     // Metodos para colocar valores iniciales
     getDatosPaisesIniciar() {
-      api
-        .get(`/paises`)
+      api.get(`/paises`)
         .then((res) => {
           this.paisRef2 = res.data[0].id;
           this.selectedPais = res.data[0].desc_pais;
@@ -1735,8 +1729,7 @@ export default {
         });
     },
     getDatosEstadosIniciar() {
-      api
-        .get(`/paises/${this.paisRef2}/estados`)
+      api.get(`/paises/${this.paisRef2}/estados`)
         .then((res) => {
           this.estados = res.data.estados;
         })
@@ -1752,8 +1745,7 @@ export default {
         });
     },
     getDatosPaisesIniciar2() {
-      api
-        .get(`/paises`)
+      api.get(`/paises`)
         .then((res) => {
           this.selectedPais2 = res.data[0];
           this.paisRef = res.data[0].id;
@@ -1771,8 +1763,7 @@ export default {
         });
     },
     getDatosEstadosIniciar2() {
-      api
-        .get(`/paises/${this.paisRef}/estados`)
+      api.get(`/paises/${this.paisRef}/estados`)
         .then((res) => {
           this.selectedEstado = res.data.estados[0];
           this.estadosCiudades = res.data.estados;
@@ -1791,41 +1782,10 @@ export default {
         });
     },
     getDatosCiudadesIniciar() {
-      api
-        .get(`/estados/${this.estadoRef}/ciudades`)
+      api.get(`/estados/${this.estadoRef}/ciudades`)
         .then((res) => {
           this.ciudades = res.data.ciudades;
-          this.ciudades = this.ciudades.map((ciudades) => {
-            if (ciudades.check_urbano === "E") {
-              return { ...ciudades, check_urbano: "Extra Urbano" };
-            }
-            return ciudades;
-          });
-          this.ciudades = this.ciudades.map((ciudades) => {
-            if (ciudades.check_urbano === "U") {
-              return { ...ciudades, check_urbano: "Urbano" };
-            }
-            return ciudades;
-          });
-          this.ciudades = this.ciudades.map((ciudades) => {
-            if (ciudades.cod_region === "CE") {
-              return { ...ciudades, cod_region: "Central" };
-            }
-            return ciudades;
-          });
-          this.ciudades = this.ciudades.map((ciudades) => {
-            if (ciudades.cod_region === "OC") {
-              return { ...ciudades, cod_region: "Occidental" };
-            }
-            return ciudades;
-          });
-          this.ciudades = this.ciudades.map((ciudades) => {
-            if (ciudades.cod_region === "OR") {
-              return { ...ciudades, cod_region: "Oriental" };
-            }
-            return ciudades;
-          });
-        })
+          })
         .catch((err) => {
           if (err.response) {
             this.error = err.response.data.statusCode;
