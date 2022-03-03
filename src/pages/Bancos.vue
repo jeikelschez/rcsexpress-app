@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <q-page class="q-pa-md">
     <q-dialog v-model="create">
       <q-card class="q-pa-md" bordered style="width: 999px">
@@ -28,7 +28,7 @@
                 <q-input
                   outlined
                   v-model="form.direccion_banco"
-                  label="Direccion"
+                  label="Dirección"
                   mask="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                   hint=""
                   lazy-rules
@@ -155,9 +155,8 @@
                 <q-input
                   outlined
                   v-model="formEdit.direccion_banco"
-                  label="Direccion"
+                  label="Dirección"
                   hint=""
-                  mask="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                   lazy-rules
                 >
                   <template v-slot:prepend>
@@ -422,7 +421,7 @@
       <q-card style="width: 700px">
         <q-card-section>
           <div class="text-h5" style="font-size: 18px">
-            ¿Estas seguro que quieres eliminar este elemento?
+            ¿Estás seguro que quieres eliminar este elemento?
           </div>
         </q-card-section>
 
@@ -694,3 +693,4 @@ export default {
     left: 0
     z-index: 1
 </style>
+

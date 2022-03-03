@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <q-page class="q-pa-md">
 
     <q-dialog v-model="paisesForm">
@@ -10,7 +10,7 @@
                 <q-input
                   outlined
                   v-model="formPaises.desc_pais"
-                  label="Pais"
+                  label="País"
                   hint=""
                   class="pcform"
                   lazy-rules
@@ -29,7 +29,7 @@
                   outlined
                   :options="tipoDePais"
                   v-model="formPaises.tipo_pais"
-                  label="Tipo de Pais"
+                  label="Tipo de País"
                   input-class="input"
                   hint=""
                   :rules="[reglasInputs]"
@@ -47,7 +47,7 @@
               style="margin-bottom: 10px"
             >
               <q-btn
-                label="Agregar Pais"
+                label="Agregar País"
                 type="submit"
                 color="primary"
                 class="col-md-5 col-sm-5 col-xs-12"
@@ -76,7 +76,7 @@
                 <q-input
                   outlined
                   v-model="formEditPaises.desc_pais"
-                  label="Pais"
+                  label="País"
                   hint=""
                   input-class="input"
                   class="pcform"
@@ -96,7 +96,7 @@
                   outlined
                   :options="tipoDePais"
                   v-model="formEditPaises.tipo_pais"
-                  label="Tipo de Pais"
+                  label="Tipo de País"
                   input-class="input"
                   hint=""
                   lazy-rules
@@ -247,7 +247,7 @@
               style="margin-bottom: 10px"
             >
               <q-btn
-                label="Editar Banco"
+                label="Editar Estado"
                 type="submit"
                 color="primary"
                 class="col-md-5 col-sm-5 col-xs-12"
@@ -312,7 +312,7 @@
                 <q-select
                   outlined
                   v-model="formCiudades.cod_region"
-                  label="Region"
+                  label="Región"
                   input-class="input"
                   hint=""
                   :rules="[reglasInputs]"
@@ -414,7 +414,7 @@
                 <q-select
                   outlined
                   v-model="formEditCiudades.cod_region"
-                  label="Region"
+                  label="Región"
                   input-class="input"
                   hint=""
                   :options="tipoDeRegion"
@@ -449,7 +449,7 @@
               style="margin-bottom: 10px"
             >
               <q-btn
-                label="Editar Banco"
+                label="Editar Ciudad"
                 type="submit"
                 color="primary"
                 class="col-md-5 col-sm-5 col-xs-12"
@@ -474,7 +474,7 @@
         class="col-md-6 col-xl-6 col-lg-6 col-xs-12 col-sm-12"
         style="align-self: center; text-align: center; margin-right: 16px"
       >
-        <h4>Mantenimiento - Pais, Estado, Ciudad</h4>
+        <h4>Mantenimiento - País, Estado, Ciudad</h4>
       </div>
       <div
         class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-12"
@@ -691,7 +691,7 @@
                     v-model="selectedPais"
                     outlined
                     standout
-                    label="Escoge un pais"
+                    label="Escoge un país"
                     @update:model-value="getDatosEstadosSelect(selectedPais)"
                   >
                     <template v-slot:prepend>
@@ -876,7 +876,7 @@
                     v-model="selectedPais2"
                     outlined
                     standout
-                    label="Escoge un pais"
+                    label="Escoge un país"
                     @update:model-value="getDatosEstadosSelect2(selectedPais2)"
                   >
                     <template v-slot:prepend>
@@ -1091,7 +1091,7 @@
       <q-card style="width: 700px">
         <q-card-section>
           <div class="text-h5" style="font-size: 18px">
-            ¿Estas seguro que quieres eliminar este elemento?
+            ¿Estás seguro que quieres eliminar este elemento?
           </div>
         </q-card-section>
 
@@ -1113,7 +1113,7 @@
       <q-card style="width: 700px">
         <q-card-section>
           <div class="text-h5" style="font-size: 18px">
-            ¿Estas seguro que quieres eliminar este elemento?
+            ¿Estás seguro que quieres eliminar este elemento?
           </div>
         </q-card-section>
 
@@ -1161,14 +1161,14 @@ export default {
         },
         {
           name: "desc_pais",
-          label: "Pais",
+          label: "País",
           field: "desc_pais",
           align: "left",
           sortable: true,
         },
         {
           name: "tipo_pais_desc",
-          label: "Tipo de Pais",
+          label: "Tipo de País",
           field: "tipo_pais_desc",
           align: "left",
           sortable: true,
@@ -1242,7 +1242,7 @@ export default {
         },
         {
           name: "cod_region_desc",
-          label: "Region",
+          label: "Región",
           field: "cod_region_desc",
           align: "left",
           sortable: true,
@@ -1332,7 +1332,7 @@ export default {
       separator: ref("vertical"),
       reglasSiglas: [
         val => (val !== null && val !== '') || 'Por favor escribe unas Siglas',
-        val => val.length < 5 || 'Deben ser maximo 4 caracteres'
+        val => val.length < 5 || 'Deben ser máximo 4 caracteres'
       ],
       paisesForm: ref(false),
       paisesFormEdit: ref(false),
@@ -1412,6 +1412,10 @@ export default {
           if ((this.error = "400")) {
             this.error =
               "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
+          }
+          if ((this.error = "500")) {
+            this.error =
+             "El pais tiene uno o más Estados/Ciudades asociados, deberás eliminarlos primero";
           }
           this.errorDelServidor();
         });
@@ -1514,6 +1518,10 @@ export default {
           if ((this.error = "400")) {
             this.error =
               "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
+          }
+          if ((this.error = "500")) {
+            this.error =
+             "El Estado tiene una o más Ciudades asociadas, deberás eliminarlas primero";
           }
           this.errorDelServidor();
         });

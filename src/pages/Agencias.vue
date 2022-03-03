@@ -1,21 +1,21 @@
-<template>
+﻿<template>
   <q-page class="q-pa-md">
 
     <q-dialog v-model="create">
-      <q-card class="q-pa-md" bordered style="width: 999px">
+      <q-card class="q-pa-md" bordered style="width: 900px; max-width: 80vw">
         <q-card-section>
           <q-form @submit="createDato" class="q-gutter-md">
             <div class="row">
-              <div class="col-md-5 col-xs-12">
+              <div class="col-md-4 col-xs-12">
                 <q-select
                   outlined
                   v-model="selectedPais"
-                  label="Pais"
+                  label="País"
                   class="pcform"
                   input-class="input"
                   :rules="[reglasSelect]"
                   hint=""
-                  :options="paises"
+                  :options="países"
                   option-label="desc_pais"
                   option-value="id"
                   lazy-rules
@@ -27,7 +27,7 @@
                 </q-select>
               </div>
 
-              <div class="col-md-7 col-xs-12">
+              <div class="col-md-4 col-xs-12">
                 <q-select
                   outlined
                   v-model="selectedEstado"
@@ -35,6 +35,7 @@
                   input-class="input"
                   :rules="[reglasSelect]"
                   hint=""
+                  class="pcform"
                   :options="estados"
                   option-label="desc_estado"
                   option-value="id"
@@ -47,12 +48,11 @@
                 </q-select>
               </div>
 
-              <div class="col-md-5 col-xs-12">
+              <div class="col-md-4 col-xs-12">
                 <q-select
                   outlined
                   v-model="selectedCiudad"
                   label="Ciudad"
-                  class="pcform"
                   input-class="input"
                   :rules="[reglasSelect]"
                   hint=""
@@ -69,12 +69,15 @@
 
               <div class="col-md-7 col-xs-12">
                 <q-input
+                  upper-case
                   outlined
                   v-model="form.nb_agencia"
                   label="Agencia"
+                  class="pcform"
                   hint=""
                   lazy-rules
                   :rules="reglasInputs"
+                  unmasked-value
                 >
                   <template v-slot:prepend>
                     <q-icon name="person" />
@@ -87,7 +90,6 @@
                   outlined
                   v-model="form.persona_contacto"
                   label="Nombre"
-                  class="pcform"
                   hint=""
                   lazy-rules
                 >
@@ -101,7 +103,8 @@
                 <q-input
                   outlined
                   v-model="form.dir_agencia"
-                  label="Direccion"
+                  label="Dirección"
+                  class="pcform"
                   hint=""
                   lazy-rules
                   :rules="reglaInputDireccion"
@@ -118,7 +121,6 @@
                   v-model="form.rif_agencia"
                   label="Rif"
                   hint=""
-                  class="pcform"
                   lazy-rules
                   :rules="reglasInputRifInt"
                 >
@@ -128,12 +130,13 @@
                 </q-input>
               </div>
 
-              <div class="col-md-7 col-xs-12">
+              <div class="col-md-4 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.nit_agencia"
                   label="NIT Agencia"
                   hint=""
+                  class="pcform"
                   lazy-rules
                   :rules="reglasInputRifInt"
                 >
@@ -143,7 +146,7 @@
                 </q-input>
               </div>
 
-              <div class="col-md-5 col-xs-12">
+              <div class="col-md-4 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.fax_agencia"
@@ -159,7 +162,7 @@
                 </q-input>
               </div>
 
-              <div class="col-md-7 col-xs-12">
+              <div class="col-md-4 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.tlf_agencia"
@@ -240,7 +243,7 @@
                 <q-select
                   outlined
                   v-model="selectedPais"
-                  label="Pais"
+                  label="País"
                   class="pcform"
                   input-class="input"
                   :rules="[reglasSelect]"
@@ -331,7 +334,7 @@
                 <q-input
                   outlined
                   v-model="formEdit.dir_agencia"
-                  label="Direccion"
+                  label="Dirección"
                   hint=""
                   lazy-rules
                   :rules="reglaInputDireccion"
@@ -506,7 +509,7 @@
 
         <div class="q-pa-md">
           <div class="q-gutter-y-md">
-            <div bordered flat class="my-card row">
+            <div bordered flat class="row">
               <q-table
                 :rows="datos"
                 row-key="id"
@@ -632,7 +635,7 @@
       <q-card style="width: 700px">
         <q-card-section>
           <div class="text-h5" style="font-size: 18px">
-            ¿Estas seguro que quieres eliminar este elemento?
+            ¿Estás seguro que quieres eliminar este elemento?
           </div>
         </q-card-section>
 
@@ -685,15 +688,8 @@ export default {
           sortable: true,
         },
         {
-          name: "persona_contacto",
-          label: "Nombre",
-          field: "persona_contacto",
-          align: "left",
-          sortable: true,
-        },
-        {
           name: "tlf_agencia",
-          label: "Telefono",
+          label: "Teléfono",
           field: "tlf_agencia",
           align: "left",
           sortable: true,
@@ -775,13 +771,13 @@ export default {
       edit: ref(false),
       reglasInputs: [
         val => (val !== null && val !== '') || 'Debes escribir algo',
-        val => val.length < 50 || 'Deben ser maximo 50 caracteres'
+        val => val.length < 50 || 'Deben ser máximo 50 caracteres'
       ],
       reglaInputDireccion: [
-        val => val.length < 200 || 'Deben ser maximo 200 caracteres'
+        val => val.length < 200 || 'Deben ser máximo 200 caracteres'
       ],
       reglasInputRifInt: [
-        val => val.length < 20 || 'Deben ser maximo 20 caracteres'
+        val => val.length < 20 || 'Deben ser máximo 20 caracteres'
       ],
       errorDelServidor() {
         $q.notify({
@@ -816,6 +812,9 @@ export default {
     this.getDatosPaises();
   },
   methods: {
+    textToUpper(val) {
+      this.text = val.toUpperCase()
+    },
     // Reglas
     reglasSelect(val) {
       if (val === null) {
@@ -1002,12 +1001,12 @@ export default {
       (this.form.persona_contacto = null),
       (this.form.nb_agencia = null),
       (this.form.persona_contacto = null),
-      (this.form.dir_agencia = null),
+      (this.form.dir_agencia = ''),
       (this.form.fax_agencia = null),
       (this.form.email_agencia = null),
       (this.form.tlf_agencia = null),
-      (this.form.rif_agencia = null),
-      (this.form.nit_agencia = null),
+      (this.form.rif_agencia = ''),
+      (this.form.nit_agencia = ''),
       (this.form.estatus = null),
       (this.create = null),
       nb_agencia.value.resetValidation();
