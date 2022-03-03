@@ -15,7 +15,7 @@
                   input-class="input"
                   :rules="[reglasSelect]"
                   hint=""
-                  :options="países"
+                  :options="paises"
                   option-label="desc_pais"
                   option-value="id"
                   lazy-rules
