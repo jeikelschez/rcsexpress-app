@@ -1,6 +1,5 @@
 ﻿<template>
   <q-page class="q-pa-md">
-
     <q-dialog v-model="paisesForm">
       <q-card class="q-pa-md" bordered style="width: 999px">
         <q-card-section>
@@ -14,8 +13,11 @@
                   hint=""
                   class="pcform"
                   lazy-rules
+                  @update:model-value="
+                    formPaises.desc_pais = formPaises.desc_pais.toUpperCase()
+                  "
                   :rules="[
-                    (val) => (val && val.length > 0) ||  'Escribe un Pais',
+                    (val) => (val && val.length > 0) || 'Escribe un Pais',
                   ]"
                 >
                   <template v-slot:prepend>
@@ -81,6 +83,10 @@
                   input-class="input"
                   class="pcform"
                   lazy-rules
+                  @update:model-value="
+                    formEditPaises.desc_pais =
+                      formEditPaises.desc_pais.toUpperCase()
+                  "
                   :rules="[
                     (val) => (val && val.length > 0) || 'Escribe un Pais',
                   ]"
@@ -97,7 +103,6 @@
                   :options="tipoDePais"
                   v-model="formEditPaises.tipo_pais"
                   label="Tipo de País"
-                  input-class="input"
                   hint=""
                   lazy-rules
                 >
@@ -143,9 +148,12 @@
                   outlined
                   v-model="formEstados.desc_estado"
                   label="Estado"
-                  input-class="input"
                   hint=""
                   class="pcform"
+                  @update:model-value="
+                    formEstados.desc_estado =
+                      formEstados.desc_estado.toUpperCase()
+                  "
                   lazy-rules
                   :rules="[
                     (val) => (val && val.length > 0) || 'Escribe un Estado',
@@ -162,10 +170,12 @@
                   outlined
                   v-model="formEstados.siglas"
                   label="Siglas de Estado"
+                  @update:model-value="
+                    formEstados.siglas = formEstados.siglas.toUpperCase()
+                  "
                   mask="AAAA"
                   hint=""
                   lazy-rules
-                  input-class="input"
                   :rules="reglasSiglas"
                 >
                   <template v-slot:prepend>
@@ -210,9 +220,12 @@
                   outlined
                   v-model="formEditEstados.desc_estado"
                   label="Estado"
-                  input-class="input"
                   hint=""
                   class="pcform"
+                  @update:model-value="
+                    formEditEstados.desc_estado =
+                      formEditEstados.desc_estado.toUpperCase()
+                  "
                   lazy-rules
                   :rules="[
                     (val) => (val && val.length > 0) || 'Escribe un Estado',
@@ -232,7 +245,10 @@
                   mask="AAAA"
                   hint=""
                   :rules="reglasSiglas"
-                  input-class="input"
+                  @update:model-value="
+                    formEditEstados.siglas =
+                      formEditEstados.siglas.toUpperCase()
+                  "
                   lazy-rules
                 >
                   <template v-slot:prepend>
@@ -277,7 +293,10 @@
                   outlined
                   v-model="formCiudades.desc_ciudad"
                   label="Ciudad"
-                  input-class="input"
+                  @update:model-value="
+                    formCiudades.desc_ciudad =
+                      formCiudades.desc_ciudad.toUpperCase()
+                  "
                   hint=""
                   class="pcform"
                   lazy-rules
@@ -297,7 +316,9 @@
                   v-model="formCiudades.siglas"
                   label="Siglas de Ciudad"
                   mask="AAAA"
-                  input-class="input"
+                  @update:model-value="
+                    formCiudades.siglas = formCiudades.siglas.toUpperCase()
+                  "
                   hint=""
                   lazy-rules
                   :rules="reglasSiglas"
@@ -313,7 +334,6 @@
                   outlined
                   v-model="formCiudades.cod_region"
                   label="Región"
-                  input-class="input"
                   hint=""
                   :rules="[reglasInputs]"
                   :options="tipoDeRegion"
@@ -378,8 +398,11 @@
                 <q-input
                   outlined
                   v-model="formEditCiudades.desc_ciudad"
+                  @update:model-value="
+                    formEditCiudades.desc_ciudad =
+                      formEditCiudades.desc_ciudad.toUpperCase()
+                  "
                   label="Estado"
-                  input-class="input"
                   hint=""
                   class="pcform"
                   lazy-rules
@@ -399,7 +422,10 @@
                   v-model="formEditCiudades.siglas"
                   label="Siglas"
                   mask="AAAA"
-                  input-class="input"
+                  @update:model-value="
+                    formEditCiudades.siglas =
+                      formEditCiudades.siglas.toUpperCase()
+                  "
                   :rules="reglasSiglas"
                   hint=""
                   lazy-rules
@@ -497,7 +523,8 @@
         :control-type="controlType"
         class="rounded-borders col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 justify-center"
       >
-        <q-carousel-slide name="paises"
+        <q-carousel-slide
+          name="paises"
           class="flex-center col-md-11 col-xl-9 col-lg-9 col-xs-12 col-sm-12"
         >
           <div class="col-md-11 col-xl-9 col-lg-9 col-xs-12 col-sm-12">
@@ -672,7 +699,8 @@
             </div>
           </div>
         </q-carousel-slide>
-        <q-carousel-slide name="estados"
+        <q-carousel-slide
+          name="estados"
           class="flex-center col-md-11 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
         >
           <div class="col-xl-12 col-lg-12 col-xs-12 col-sm-12">
@@ -857,7 +885,8 @@
             </div>
           </div>
         </q-carousel-slide>
-        <q-carousel-slide name="ciudades"
+        <q-carousel-slide
+          name="ciudades"
           class="flex-center col-md-11 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
         >
           <div class="col-md-11 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
@@ -1133,7 +1162,6 @@
 </template>
 
 <script>
-
 import { ref } from "vue";
 
 import { api } from "boot/axios";
@@ -1256,17 +1284,17 @@ export default {
         },
       ],
       tipoDePais: [
-        {label: 'NACIONAL', value: 'N'},
-        {label: 'INTERNACIONAL', value: 'I'}
+        { label: "NACIONAL", value: "N" },
+        { label: "INTERNACIONAL", value: "I" },
       ],
       tipoDeZona: [
-        {label: 'URBANO', value: 'U'},
-        {label: 'EXTRA URBANO', value: 'E'}
+        { label: "URBANO", value: "U" },
+        { label: "EXTRA URBANO", value: "E" },
       ],
       tipoDeRegion: [
-        {label: 'CENTRAL', value: 'CE'},
-        {label: 'OCCIDENTAL', value: 'OC'},
-        {label: 'ORIENTAL', value: 'OR'}
+        { label: "CENTRAL", value: "CE" },
+        { label: "OCCIDENTAL", value: "OC" },
+        { label: "ORIENTAL", value: "OR" },
       ],
       formPaises: {
         desc_pais: "",
@@ -1331,8 +1359,9 @@ export default {
       }),
       separator: ref("vertical"),
       reglasSiglas: [
-        val => (val !== null && val !== '') || 'Por favor escribe unas Siglas',
-        val => val.length < 5 || 'Deben ser máximo 4 caracteres'
+        (val) =>
+          (val !== null && val !== "") || "Por favor escribe unas Siglas",
+        (val) => val.length < 5 || "Deben ser máximo 4 caracteres",
       ],
       paisesForm: ref(false),
       paisesFormEdit: ref(false),
@@ -1381,7 +1410,7 @@ export default {
     // Reglas
     reglasInputs(val) {
       if (val === null) {
-        return 'Debes Seleccionar Algo'        
+        return "Debes Seleccionar Algo";
       }
     },
     // Metodos para paises
@@ -1398,7 +1427,8 @@ export default {
       });
     },
     DeleteDatoPaises(idpost) {
-      api.delete(`/paises/${idpost}`)
+      api
+        .delete(`/paises/${idpost}`)
         .then((res) => {
           if ((res.status = 201)) {
             this.eliminadoConExito();
@@ -1415,14 +1445,15 @@ export default {
           }
           if ((this.error = "500")) {
             this.error =
-             "El pais tiene uno o más Estados/Ciudades asociados, deberás eliminarlos primero";
+              "El pais tiene uno o más Estados/Ciudades asociados, deberás eliminarlos primero";
           }
           this.errorDelServidor();
         });
     },
     createDatoPaises() {
-      this.formPaises.tipo_pais = this.formPaises.tipo_pais.value
-      api.post("/paises/", this.formPaises)
+      this.formPaises.tipo_pais = this.formPaises.tipo_pais.value;
+      api
+        .post("/paises/", this.formPaises)
         .then((res) => {
           if ((res.status = 201)) {
             this.añadidoConExito();
@@ -1442,8 +1473,9 @@ export default {
       this.resetFormpaises();
     },
     putDatoPaises() {
-      this.formEditPaises.tipo_pais = this.formEditPaises.tipo_pais.value
-      api.put(`/paises/${this.formEditPaises.id}`, this.formEditPaises)
+      this.formEditPaises.tipo_pais = this.formEditPaises.tipo_pais.value;
+      api
+        .put(`/paises/${this.formEditPaises.id}`, this.formEditPaises)
         .then((res) => {
           if ((res.status = 201)) {
             this.editadoConExito();
@@ -1464,21 +1496,22 @@ export default {
     },
     resetFormpaises() {
       (this.formPaises.desc_pais = null),
-      (this.formPaises.tipo_pais = null),
-      (this.paisesForm = false),
-      desc_pais.value.resetValidation();
+        (this.formPaises.tipo_pais = null),
+        (this.paisesForm = false),
+        desc_pais.value.resetValidation();
       tipo_pais.value.resetValidation();
     },
     resetFormeditpaises() {
       (this.formEditPaises.desc_pais = null),
-      (this.formEditPaises.tipo_pais = null),
-      (this.paisesFormEdit = false),
-      desc_pais.value.resetValidation();
+        (this.formEditPaises.tipo_pais = null),
+        (this.paisesFormEdit = false),
+        desc_pais.value.resetValidation();
       tipo_pais.value.resetValidation();
     },
     // Metodos para estados
     getDatosEstadosSelect(selectedPais) {
-      api.get(`/paises/${this.selectedPais.id}/estados`)
+      api
+        .get(`/paises/${this.selectedPais.id}/estados`)
         .then((res) => {
           this.estados = res.data.estados;
         })
@@ -1494,15 +1527,15 @@ export default {
         });
     },
     getDatosEditEstados(selectedEdit) {
-      api.get(`/estados/${selectedEdit}`)
-      .then((res) => {
+      api.get(`/estados/${selectedEdit}`).then((res) => {
         this.formEditEstados.desc_estado = res.data.desc_estado;
         this.formEditEstados.siglas = res.data.siglas;
         this.formEditEstados.id = res.data.id;
       });
     },
     deleteDatoEstados(idpost) {
-      api.delete(`/estados/${idpost}`)
+      api
+        .delete(`/estados/${idpost}`)
         .then((res) => {
           if ((res.status = 201)) {
             this.eliminadoConExito();
@@ -1521,14 +1554,15 @@ export default {
           }
           if ((this.error = "500")) {
             this.error =
-             "El Estado tiene una o más Ciudades asociadas, deberás eliminarlas primero";
+              "El Estado tiene una o más Ciudades asociadas, deberás eliminarlas primero";
           }
           this.errorDelServidor();
         });
     },
     createDatoEstados() {
       this.formEstados.cod_pais = `${this.selectedPais.id}`;
-      api.post(`/estados`, this.formEstados)
+      api
+        .post(`/estados`, this.formEstados)
         .then((res) => {
           if ((res.status = 201)) {
             api.get(`/paises/${this.selectedPais.id}/estados`).then((res) => {
@@ -1552,7 +1586,8 @@ export default {
       this.resetFormpaises();
     },
     putDatoEstados() {
-      api.put(`/estados/${this.formEditEstados.id}`, this.formEditEstados)
+      api
+        .put(`/estados/${this.formEditEstados.id}`, this.formEditEstados)
         .then((res) => {
           if ((res.status = 201)) {
             this.editadoConExito();
@@ -1575,21 +1610,22 @@ export default {
     },
     resetFormEstados() {
       (this.formEstados.desc_estado = null),
-      (this.formEstados.siglas = null),
-      (this.estadosForm = false),
-      desc_estado.value.resetValidation();
+        (this.formEstados.siglas = null),
+        (this.estadosForm = false),
+        desc_estado.value.resetValidation();
       siglas.value.resetValidation();
     },
     resetFormEditEstados() {
       (this.formEditEstados.desc_estado = null),
-      (this.formEditEstados.siglas = null),
-      (this.estadosFormEdit = false),
-      desc_estado.value.resetValidation();
+        (this.formEditEstados.siglas = null),
+        (this.estadosFormEdit = false),
+        desc_estado.value.resetValidation();
       siglas.value.resetValidation();
     },
     // Metodos para ciudades
     getDatosEstadosSelect2(selectedPais2) {
-      api.get(`/paises/${this.selectedPais2.id}/estados`)
+      api
+        .get(`/paises/${this.selectedPais2.id}/estados`)
         .then((res) => {
           this.estadosCiudades = res.data.estados;
           this.selectedEstado = "";
@@ -1606,7 +1642,8 @@ export default {
         });
     },
     getDatosCiudades(selectedEstado) {
-      api.get(`/estados/${this.selectedEstado.id}/ciudades`)
+      api
+        .get(`/estados/${this.selectedEstado.id}/ciudades`)
         .then((res) => {
           this.ciudades = res.data.ciudades;
         })
@@ -1622,8 +1659,7 @@ export default {
         });
     },
     getDatosEditCiudades(selectedEdit) {
-      api.get(`/ciudades/${selectedEdit}`)
-      .then((res) => {
+      api.get(`/ciudades/${selectedEdit}`).then((res) => {
         this.formEditCiudades.desc_ciudad = res.data.desc_ciudad;
         this.formEditCiudades.siglas = res.data.siglas;
         this.formEditCiudades.check_urbano = res.data.check_urbano_desc;
@@ -1632,7 +1668,8 @@ export default {
       });
     },
     deleteDatoCiudades(idpost) {
-      api.delete(`/ciudades/${idpost}`)
+      api
+        .delete(`/ciudades/${idpost}`)
         .then((res) => {
           if ((res.status = 201)) {
             this.eliminadoConExito();
@@ -1652,31 +1689,34 @@ export default {
     },
     createDatoCiudades() {
       (this.formCiudades.cod_estado = `${this.selectedEstado.id}`),
-      this.formCiudades.check_urbano = this.formCiudades.check_urbano.value
-      this.formCiudades.cod_region = this.formCiudades.cod_region.value
-        api.post(`/ciudades`, this.formCiudades)
-          .then((res) => {
-            if ((res.status = 201)) {
-              this.getDatosCiudades();
-              this.añadidoConExito();
-            }
-          })
-          .catch((err) => {
-            if (err.response) {
-              this.error = err.response.data.statusCode;
-            }
-            if ((this.error = "400")) {
-              this.error =
-                "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-            }
-            this.errorDelServidor();
-          });
-          this.resetFormCiudades();
+        (this.formCiudades.check_urbano = this.formCiudades.check_urbano.value);
+      this.formCiudades.cod_region = this.formCiudades.cod_region.value;
+      api
+        .post(`/ciudades`, this.formCiudades)
+        .then((res) => {
+          if ((res.status = 201)) {
+            this.getDatosCiudades();
+            this.añadidoConExito();
+          }
+        })
+        .catch((err) => {
+          if (err.response) {
+            this.error = err.response.data.statusCode;
+          }
+          if ((this.error = "400")) {
+            this.error =
+              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
+          }
+          this.errorDelServidor();
+        });
+      this.resetFormCiudades();
     },
     putDatoCiudades() {
-      this.formEditCiudades.check_urbano = this.formEditCiudades.check_urbano.value
-      this.formEditCiudades.cod_region = this.formEditCiudades.cod_region.value
-      api.put(`/ciudades/${this.formEditCiudades.id}`, this.formEditCiudades)
+      this.formEditCiudades.check_urbano =
+        this.formEditCiudades.check_urbano.value;
+      this.formEditCiudades.cod_region = this.formEditCiudades.cod_region.value;
+      api
+        .put(`/ciudades/${this.formEditCiudades.id}`, this.formEditCiudades)
         .then((res) => {
           if ((res.status = 201)) {
             this.editadoConExito();
@@ -1693,33 +1733,34 @@ export default {
           }
           this.errorDelServidor();
         });
-        this.resetFormEditCiudades();
+      this.resetFormEditCiudades();
     },
     resetFormCiudades() {
       (this.formCiudades.desc_ciudad = null),
-      (this.formCiudades.siglas = null),
-      (this.formCiudades.check_urbano = null),
-      (this.formCiudades.cod_region = null),
-      (this.ciudadesForm = false),
-      desc_ciudad.value.resetValidation();
+        (this.formCiudades.siglas = null),
+        (this.formCiudades.check_urbano = null),
+        (this.formCiudades.cod_region = null),
+        (this.ciudadesForm = false),
+        desc_ciudad.value.resetValidation();
       siglas.value.resetValidation();
       check_urbano.value.resetValidation();
       cod_region.value.resetValidation();
     },
     resetFormEditCiudades() {
       (this.formEditCiudades.desc_ciudad = null),
-      (this.formEditCiudades.siglas = null),
-      (this.formEditCiudades.check_urbano = null),
-      (this.formEditCiudades.cod_region = null),
-      (this.ciudadesformedit = false),
-      desc_ciudad.value.resetValidation();
+        (this.formEditCiudades.siglas = null),
+        (this.formEditCiudades.check_urbano = null),
+        (this.formEditCiudades.cod_region = null),
+        (this.ciudadesformedit = false),
+        desc_ciudad.value.resetValidation();
       siglas.value.resetValidation();
       check_urbano.value.resetValidation();
       cod_region.value.resetValidation();
     },
     // Metodos para colocar valores iniciales
     getDatosPaisesIniciar() {
-      api.get(`/paises`)
+      api
+        .get(`/paises`)
         .then((res) => {
           this.paisRef2 = res.data[0].id;
           this.selectedPais = res.data[0].desc_pais;
@@ -1737,7 +1778,8 @@ export default {
         });
     },
     getDatosEstadosIniciar() {
-      api.get(`/paises/${this.paisRef2}/estados`)
+      api
+        .get(`/paises/${this.paisRef2}/estados`)
         .then((res) => {
           this.estados = res.data.estados;
         })
@@ -1753,7 +1795,8 @@ export default {
         });
     },
     getDatosPaisesIniciar2() {
-      api.get(`/paises`)
+      api
+        .get(`/paises`)
         .then((res) => {
           this.selectedPais2 = res.data[0];
           this.paisRef = res.data[0].id;
@@ -1771,7 +1814,8 @@ export default {
         });
     },
     getDatosEstadosIniciar2() {
-      api.get(`/paises/${this.paisRef}/estados`)
+      api
+        .get(`/paises/${this.paisRef}/estados`)
         .then((res) => {
           this.selectedEstado = res.data.estados[0];
           this.estadosCiudades = res.data.estados;
@@ -1790,10 +1834,11 @@ export default {
         });
     },
     getDatosCiudadesIniciar() {
-      api.get(`/estados/${this.estadoRef}/ciudades`)
+      api
+        .get(`/estados/${this.estadoRef}/ciudades`)
         .then((res) => {
           this.ciudades = res.data.ciudades;
-          })
+        })
         .catch((err) => {
           if (err.response) {
             this.error = err.response.data.statusCode;

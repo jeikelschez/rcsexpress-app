@@ -1,6 +1,5 @@
 ﻿<template>
   <q-page class="q-pa-md">
-
     <q-dialog v-model="create">
       <q-card class="q-pa-md" bordered style="width: 900px; max-width: 80vw">
         <q-card-section>
@@ -20,6 +19,7 @@
                   option-value="id"
                   lazy-rules
                   @update:model-value="getDatosEstados(selectedPais)"
+                  @input=""
                 >
                   <template v-slot:prepend>
                     <q-icon name="person" />
@@ -77,7 +77,9 @@
                   hint=""
                   lazy-rules
                   :rules="reglasInputs"
-                  unmasked-value
+                  @update:model-value="
+                    form.nb_agencia = form.nb_agencia.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="person" />
@@ -92,6 +94,9 @@
                   label="Nombre"
                   hint=""
                   lazy-rules
+                  @update:model-value="
+                    form.persona_contacto = form.persona_contacto.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="location_on" />
@@ -108,6 +113,9 @@
                   hint=""
                   lazy-rules
                   :rules="reglaInputDireccion"
+                  @update:model-value="
+                    form.dir_agencia = form.dir_agencia.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="person" />
@@ -123,6 +131,9 @@
                   hint=""
                   lazy-rules
                   :rules="reglasInputRifInt"
+                  @update:model-value="
+                    form.rif_agencia = form.rif_agencia.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="person" />
@@ -139,6 +150,9 @@
                   class="pcform"
                   lazy-rules
                   :rules="reglasInputRifInt"
+                  @update:model-value="
+                    form.nit_agencia = form.nit_agencia.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="location_on" />
@@ -202,6 +216,9 @@
                   hint=""
                   type="email"
                   lazy-rules
+                  @update:model-value="
+                    form.email_agencia = form.email_agencia.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="email" />
@@ -308,6 +325,9 @@
                   hint=""
                   lazy-rules
                   :rules="[reglasInputs]"
+                  @update:model-value="
+                    formEdit.nb_agencia = formEdit.nb_agencia.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="person" />
@@ -323,6 +343,10 @@
                   class="pcform"
                   hint=""
                   lazy-rules
+                  @update:model-value="
+                    formEdit.persona_contacto =
+                      formEdit.persona_contacto.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="location_on" />
@@ -338,6 +362,9 @@
                   hint=""
                   lazy-rules
                   :rules="reglaInputDireccion"
+                  @update:model-value="
+                    formEdit.dir_agencia = formEdit.dir_agencia.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="person" />
@@ -354,6 +381,9 @@
                   class="pcform"
                   lazy-rules
                   :rules="reglasInputRifInt"
+                  @update:model-value="
+                    formEdit.rif_agencia = formEdit.rif_agencia.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="person" />
@@ -369,6 +399,9 @@
                   hint=""
                   lazy-rules
                   :rules="reglasInputRifInt"
+                  @update:model-value="
+                    formEdit.nit_agencia = formEdit.nit_agencia.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="location_on" />
@@ -418,7 +451,6 @@
                   class="pcform"
                   lazy-rules
                   :rules="[reglasSelect]"
-                  
                 >
                   <template v-slot:prepend>
                     <q-icon name="dialpad" />
@@ -434,6 +466,10 @@
                   hint=""
                   type="email"
                   lazy-rules
+                  @update:model-value="
+                    formEdit.email_agencia =
+                      formEdit.email_agencia.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="email" />
@@ -676,7 +712,7 @@ export default {
         {
           name: "Ciudades",
           label: "Ciudad",
-          field: row => row.ciudades.desc_ciudad,
+          field: (row) => row.ciudades.desc_ciudad,
           align: "left",
           sortable: true,
         },
@@ -735,8 +771,8 @@ export default {
         estatus: "",
       },
       estatus: [
-        {label: 'ACTIVA', value: 'A'},
-        {label: 'INACTIVA', value: 'I'}
+        { label: "ACTIVA", value: "A" },
+        { label: "INACTIVA", value: "I" },
       ],
       paises: [],
       estados: [],
@@ -770,14 +806,14 @@ export default {
       create: ref(false),
       edit: ref(false),
       reglasInputs: [
-        val => (val !== null && val !== '') || 'Debes escribir algo',
-        val => val.length < 50 || 'Deben ser máximo 50 caracteres'
+        (val) => (val !== null && val !== "") || "Debes escribir algo",
+        (val) => val.length < 50 || "Deben ser máximo 50 caracteres",
       ],
       reglaInputDireccion: [
-        val => val.length < 200 || 'Deben ser máximo 200 caracteres'
+        (val) => val.length < 200 || "Deben ser máximo 200 caracteres",
       ],
       reglasInputRifInt: [
-        val => val.length < 20 || 'Deben ser máximo 20 caracteres'
+        (val) => val.length < 20 || "Deben ser máximo 20 caracteres",
       ],
       errorDelServidor() {
         $q.notify({
@@ -812,45 +848,26 @@ export default {
     this.getDatosPaises();
   },
   methods: {
-    textToUpper(val) {
-      this.text = val.toUpperCase()
-    },
     // Reglas
     reglasSelect(val) {
       if (val === null) {
-        return 'Debes Seleccionar Algo'        
+        return "Debes Seleccionar Algo";
       }
-    },//
+    },
     getDatosPaises() {
       api.get("/paises").then((res) => {
         this.paises = res.data;
-      })
-    },//
+      });
+    },
     getDatosEstados(selectedPais) {
-      api.get(`/paises/${this.selectedPais.id}/estados`)
+      api
+        .get(`/paises/${this.selectedPais.id}/estados`)
         .then((res) => {
           this.estados = res.data.estados;
-          this.ciudades = []
-          this.ciudades = []
-          this.selectedEstado = null
-          this.selectedCiudad = null
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor()
-        });
-    },//
-    getDatosCiudades(selectedEstado) {
-      api.get(`/estados/${this.selectedEstado.id}/ciudades`)
-        .then((res) => {
-          this.ciudades = res.data.ciudades;
-          this.selectedCiudad= null
+          this.ciudades = [];
+          this.ciudades = [];
+          this.selectedEstado = null;
+          this.selectedCiudad = null;
         })
         .catch((err) => {
           if (err.response) {
@@ -862,73 +879,90 @@ export default {
           }
           this.errorDelServidor();
         });
-    },//
+    },
+    getDatosCiudades(selectedEstado) {
+      api
+        .get(`/estados/${this.selectedEstado.id}/ciudades`)
+        .then((res) => {
+          this.ciudades = res.data.ciudades;
+          this.selectedCiudad = null;
+        })
+        .catch((err) => {
+          if (err.response) {
+            this.error = err.response.data.statusCode;
+          }
+          if ((this.error = "400")) {
+            this.error =
+              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
+          }
+          this.errorDelServidor();
+        });
+    },
     getDato() {
       api.get("/agencias").then((res) => {
         this.datos = res.data;
-      })
-    },//
+      });
+    },
     getDatoEdit(selectedEdit) {
       api.get(`/agencias/${selectedEdit}`).then((res) => {
-        this.formEdit.id = res.data.id
-        this.formEdit.nb_agencia = res.data.nb_agencia
-        this.formEdit.persona_contacto = res.data.persona_contacto
-        this.formEdit.dir_agencia = res.data.dir_agencia
-        this.formEdit.fax_agencia = res.data.fax_agencia
-        this.formEdit.email_agencia = res.data.email_agencia
-        this.formEdit.tlf_agencia = res.data.tlf_agencia
-        this.formEdit.rif_agencia = res.data.rif_agencia
-        this.formEdit.nit_agencia = res.data.nit_agencia
-        this.formEdit.estatus = res.data.estatus_desc
-        this.formEdit.cod_ciudad = res.data.cod_ciudad
-        this.selectedCiudadEdit = res.data.ciudades.cod_estado
-        this.ciudadEdit = res.data.ciudades.id
-        this.getDatoEditCiudades()
-        this.pintarCiudadesEdit()
+        this.formEdit.id = res.data.id;
+        this.formEdit.nb_agencia = res.data.nb_agencia;
+        this.formEdit.persona_contacto = res.data.persona_contacto;
+        this.formEdit.dir_agencia = res.data.dir_agencia;
+        this.formEdit.fax_agencia = res.data.fax_agencia;
+        this.formEdit.email_agencia = res.data.email_agencia;
+        this.formEdit.tlf_agencia = res.data.tlf_agencia;
+        this.formEdit.rif_agencia = res.data.rif_agencia;
+        this.formEdit.nit_agencia = res.data.nit_agencia;
+        this.formEdit.estatus = res.data.estatus_desc;
+        this.formEdit.cod_ciudad = res.data.cod_ciudad;
+        this.selectedCiudadEdit = res.data.ciudades.cod_estado;
+        this.ciudadEdit = res.data.ciudades.id;
+        this.getDatoEditCiudades();
+        this.pintarCiudadesEdit();
       });
-    },//
+    },
     pintarCiudadesEdit() {
       api.get(`/ciudades/${this.ciudadEdit}`).then((res) => {
         this.selectedCiudad = `${res.data.desc_ciudad}`;
         this.estadoEdit = res.data.cod_estado;
         this.pintarEstadosEdit();
       });
-    },//
+    },
     pintarEstadosEdit() {
       api.get(`/estados/${this.estadoEdit}`).then((res) => {
         this.selectedEstado = res.data.desc_estado;
         this.paisEdit = res.data.cod_pais;
         this.pintarPaisesEdit();
       });
-    },//
+    },
     pintarPaisesEdit() {
       api.get(`/paises/${this.paisEdit}`).then((res) => {
         this.selectedPais = res.data.desc_pais;
       });
-    },//
+    },
     getDatoEditCiudades() {
-      api.get(`/estados/${this.selectedCiudadEdit}/ciudades`)
-        .then((res) => {
+      api.get(`/estados/${this.selectedCiudadEdit}/ciudades`).then((res) => {
         this.ciudades = res.data.ciudades;
         this.selectedEstadoEdit = res.data.cod_pais;
-        this.getDatoEditEstados()
-        });
-    },//
+        this.getDatoEditEstados();
+      });
+    },
     getDatoEditEstados() {
-      api.get(`/paises/${this.selectedEstadoEdit}/estados`)
-        .then((res) => {
-          this.estados = res.data.estados;
-          this.selectedPaisEdit = res.data.cod_pais;
-          this.getDatoEditPaises()
-        });
-    },//
+      api.get(`/paises/${this.selectedEstadoEdit}/estados`).then((res) => {
+        this.estados = res.data.estados;
+        this.selectedPaisEdit = res.data.cod_pais;
+        this.getDatoEditPaises();
+      });
+    },
     getDatoEditPaises() {
       api.get("/paises").then((res) => {
         this.paises = res.data;
-      })
-    },//
+      });
+    },
     deleteDato(idpost) {
-      api.delete(`/agencias/${idpost}`)
+      api
+        .delete(`/agencias/${idpost}`)
         .then((res) => {
           if ((res.status = 201)) {
             this.eliminadoConExito();
@@ -947,11 +981,12 @@ export default {
           }
           this.errorDelServidor();
         });
-    },//
+    },
     createDato() {
       this.form.cod_ciudad = this.selectedCiudad.id;
       this.form.estatus = this.form.estatus.value;
-      api.post("/agencias/", this.form)
+      api
+        .post("/agencias/", this.form)
         .then((res) => {
           if ((res.status = 201)) {
             this.añadidoConExito();
@@ -971,15 +1006,16 @@ export default {
           this.errorDelServidor();
         });
       this.resetForm();
-    },//
+    },
     putDato() {
       this.formEdit.cod_ciudad = this.selectedCiudad.id;
       this.formEdit.estatus = this.formEdit.estatus.value;
-      api.put(`/agencias/${this.formEdit.id}`, this.formEdit)
+      api
+        .put(`/agencias/${this.formEdit.id}`, this.formEdit)
         .then((res) => {
           if ((res.status = 201)) {
             this.editadoConExito();
-            this.getDato()
+            this.getDato();
           }
         })
         .catch((err) => {
@@ -992,24 +1028,24 @@ export default {
           }
           this.errorDelServidor();
         });
-        this.resetFormEdit();
-    },//
+      this.resetFormEdit();
+    },
     resetForm() {
       (this.selectedPais = null),
-      (this.selectedEstado = null),
-      (this.selectedCiudad = null),
-      (this.form.persona_contacto = null),
-      (this.form.nb_agencia = null),
-      (this.form.persona_contacto = null),
-      (this.form.dir_agencia = ''),
-      (this.form.fax_agencia = null),
-      (this.form.email_agencia = null),
-      (this.form.tlf_agencia = null),
-      (this.form.rif_agencia = ''),
-      (this.form.nit_agencia = ''),
-      (this.form.estatus = null),
-      (this.create = null),
-      nb_agencia.value.resetValidation();
+        (this.selectedEstado = null),
+        (this.selectedCiudad = null),
+        (this.form.persona_contacto = null),
+        (this.form.nb_agencia = null),
+        (this.form.persona_contacto = null),
+        (this.form.dir_agencia = ""),
+        (this.form.fax_agencia = null),
+        (this.form.email_agencia = null),
+        (this.form.tlf_agencia = null),
+        (this.form.rif_agencia = ""),
+        (this.form.nit_agencia = ""),
+        (this.form.estatus = null),
+        (this.create = null),
+        nb_agencia.value.resetValidation();
       persona_contacto.value.resetValidation();
       dir_agencia.value.resetValidation();
       fax_agencia.value.resetValidation();
@@ -1018,23 +1054,23 @@ export default {
       rif_agencia.value.resetValidation();
       nit_agencia.value.resetValidation();
       estatus.value.resetValidation();
-    },//
+    },
     resetFormEdit() {
       (this.selectedPais = null),
-      (this.selectedEstado = null),
-      (this.selectedCiudad = null),
-      (this.formEdit.persona_contacto = null),
-      (this.formEdit.nb_agencia = null),
-      (this.formEdit.persona_contacto = null),
-      (this.formEdit.dir_agencia = null),
-      (this.formEdit.fax_agencia = null),
-      (this.formEdit.email_agencia = null),
-      (this.formEdit.tlf_agencia = null),
-      (this.formEdit.rif_agencia = null),
-      (this.formEdit.nit_agencia = null),
-      (this.formEdit.estatus = null),
-      (this.edit = null),
-      nb_agencia.value.resetValidation();
+        (this.selectedEstado = null),
+        (this.selectedCiudad = null),
+        (this.formEdit.persona_contacto = null),
+        (this.formEdit.nb_agencia = null),
+        (this.formEdit.persona_contacto = null),
+        (this.formEdit.dir_agencia = null),
+        (this.formEdit.fax_agencia = null),
+        (this.formEdit.email_agencia = null),
+        (this.formEdit.tlf_agencia = null),
+        (this.formEdit.rif_agencia = null),
+        (this.formEdit.nit_agencia = null),
+        (this.formEdit.estatus = null),
+        (this.edit = null),
+        nb_agencia.value.resetValidation();
       persona_contacto.value.resetValidation();
       dir_agencia.value.resetValidation();
       fax_agencia.value.resetValidation();
@@ -1043,7 +1079,7 @@ export default {
       rif_agencia.value.resetValidation();
       nit_agencia.value.resetValidation();
       estatus.value.resetValidation();
-    },//
+    },
   },
 };
 </script>

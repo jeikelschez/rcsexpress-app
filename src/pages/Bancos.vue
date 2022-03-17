@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <q-page class="q-pa-md">
     <q-dialog v-model="create">
       <q-card class="q-pa-md" bordered style="width: 999px">
@@ -10,13 +10,15 @@
                   outlined
                   v-model="form.nb_banco"
                   label="Nombre"
-                  mask="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                   hint=""
                   class="pcform"
                   lazy-rules
                   :rules="[
                     (val) => (val && val.length > 0) || 'Escribe un Nombre',
                   ]"
+                  @update:model-value="
+                    form.nb_banco = form.nb_banco.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="person" />
@@ -28,10 +30,12 @@
                 <q-input
                   outlined
                   v-model="form.direccion_banco"
-                  label="Dirección"
-                  mask="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                  label="Direccion"
                   hint=""
                   lazy-rules
+                  @update:model-value="
+                    form.direccion_banco = form.direccion_banco.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="location_on" />
@@ -94,6 +98,9 @@
                   hint=""
                   type="email"
                   lazy-rules
+                  @update:model-value="
+                    form.email_banco = form.email_banco.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="email" />
@@ -138,7 +145,9 @@
                   v-model="formEdit.nb_banco"
                   label="Nombre"
                   hint=""
-                  mask="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                  @update:model-value="
+                    formEdit.nb_banco = formEdit.nb_banco.toUpperCase()
+                  "
                   class="pcform"
                   lazy-rules
                   :rules="[
@@ -155,8 +164,12 @@
                 <q-input
                   outlined
                   v-model="formEdit.direccion_banco"
-                  label="Dirección"
+                  label="Direccion"
                   hint=""
+                  @update:model-value="
+                    formEdit.direccion_banco =
+                      formEdit.direccion_banco.toUpperCase()
+                  "
                   lazy-rules
                 >
                   <template v-slot:prepend>
@@ -220,6 +233,9 @@
                   hint=""
                   type="email"
                   lazy-rules
+                  @update:model-value="
+                    formEdit.email_banco = formEdit.email_banco.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="email" />
@@ -295,7 +311,7 @@
 
         <div class="q-pa-md">
           <div class="q-gutter-y-md">
-            <div bordered flat class="my-card row">
+            <div bordered flat class="row">
               <q-table
                 :rows="datos"
                 row-key="id"
@@ -421,7 +437,7 @@
       <q-card style="width: 700px">
         <q-card-section>
           <div class="text-h5" style="font-size: 18px">
-            ¿Estás seguro que quieres eliminar este elemento?
+            ¿Estas seguro que quieres eliminar este elemento?
           </div>
         </q-card-section>
 
@@ -590,7 +606,8 @@ export default {
       });
     },
     deleteDato(idpost) {
-      api.delete(`/bancos/${idpost}`)
+      api
+        .delete(`/bancos/${idpost}`)
         .then((res) => {
           if ((res.status = 201)) {
             this.eliminadoConExito();
@@ -611,7 +628,8 @@ export default {
         });
     },
     createDato() {
-      api.post("/bancos/", this.form)
+      api
+        .post("/bancos/", this.form)
         .then((res) => {
           if ((res.status = 201)) {
             this.añadidoConExito();
@@ -634,7 +652,8 @@ export default {
       this.resetForm();
     },
     putDato() {
-      api.put(`/bancos/${this.formEdit.id}`, this.formEdit)
+      api
+        .put(`/bancos/${this.formEdit.id}`, this.formEdit)
         .then((res) => {
           if ((res.status = 201)) {
             this.editadoConExito();
@@ -657,13 +676,13 @@ export default {
     },
     resetForm() {
       (this.form.nb_banco = null),
-      (this.form.direccion_banco = null),
-      (this.form.tlf_banco = null),
-      (this.form.fax_banco = null),
-      (this.form.cod_postal = null),
-      (this.form.email_banco = null),
-      (this.create = false),
-      nameRef.value.resetValidation();
+        (this.form.direccion_banco = null),
+        (this.form.tlf_banco = null),
+        (this.form.fax_banco = null),
+        (this.form.cod_postal = null),
+        (this.form.email_banco = null),
+        (this.create = false),
+        nameRef.value.resetValidation();
       direccionRef.value.resetValidation();
       tlfRef.value.resetValidation();
       faxRef.value.resetValidation();
@@ -693,4 +712,3 @@ export default {
     left: 0
     z-index: 1
 </style>
-

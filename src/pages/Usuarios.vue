@@ -1,8 +1,891 @@
 <template>
-<q-page class="q-pa-md">
+  <q-page class="q-pa-md">
+    <q-dialog v-model="usuariosForm">
+      <q-card class="q-pa-md" bordered style="width: 999px">
+        <q-card-section>
+          <q-form @submit="createDatoUsuarios()" class="q-gutter-md">
+            <div class="row">
+              <div class="col-md-5 col-xs-12">
+                <q-input
+                  outlined
+                  v-model="formUsuarios.login"
+                  label="Login"
+                  hint=""
+                  class="pcform"
+                  @update:model-value="
+                    formUsuarios.login =
+                      formUsuarios.login.toUpperCase()
+                  "
+                  lazy-rules
+                  :rules="reglasLogin"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="south_america" />
+                  </template>
+                </q-input>
+              </div>
 
-<h2>Costos</h2>
+              <div class="col-md-7 col-xs-12">
+                <q-input
+                  outlined
+                  v-model="formUsuarios.password"
+                  label="Contraseña"
+                  :type="isPwd ? 'password' : 'text'"
+                  lazy-rules
+                  :rules="reglasPassword"
+                >
+                  <template v-slot:prepend>
+                    <q-icon
+                    :name="isPwd ? 'visibility_off' : 'visibility'"
+                    class="cursor-pointer"
+                    @click="isPwd = !isPwd"
+                    />
+                  </template>
+                </q-input>
+              </div>
 
-</q-page>
+              <div class="col-md-5 col-xs-12">
+                <q-input
+                  outlined
+                  class="pcform"
+                  v-model="formUsuarios.nombre"
+                  label="Nombre"
+                  hint=""
+                  @update:model-value="
+                    formUsuarios.nombre =
+                      formUsuarios.nombre.toUpperCase()
+                  "
+                  lazy-rules
+                  :rules="reglasNombre"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="text_fields" />
+                  </template>
+                </q-input>
+              </div>
 
+              <div class="col-md-7 col-xs-12">
+                <q-select
+                  outlined
+                  v-model="formUsuarios.activo"
+                  label="Vigente"
+                  hint=""
+                  :rules="[reglasInputs]"
+                  :options="vigente"
+                  lazy-rules
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="text_fields" />
+                  </template>
+                </q-select>
+              </div>
+
+              <div class="col-md-5 col-xs-12">
+                <q-select
+                  class="pcform"
+                  outlined
+                  v-model="formUsuarios.cod_agencia"
+                  label="Agencia"
+                  hint=""
+                  :rules="[reglasInputs]"
+                  :options="agencias"
+                  option-label="nb_agencia"
+                  option-value="id"
+                  lazy-rules
+                  transition-show="flip-up"
+                  transition-hide="flip-down"
+                  @update:model-value="getDatosRolesSelect(formUsuarios.cod_agencia)"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="south_america" />
+                  </template>
+                </q-select>
+              </div>
+
+              <div class="col-md-7 col-xs-12">
+                <q-select
+                  outlined
+                  v-model="formUsuarios.cod_rol"
+                  label="Rol Desempeñado"
+                  hint=""
+                  :rules="[reglasInputs]"
+                  :options="roles"
+                  option-label="descripcion"
+                  option-value="id"
+                  lazy-rules
+                  transition-show="flip-up"
+                  transition-hide="flip-down"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="south_america" />
+                  </template>
+                </q-select>
+              </div>
+            </div>
+
+            <div
+              class="full-width row justify-center items-center content-center"
+              style="margin-bottom: 10px"
+            >
+              <q-btn
+                label="Agregar Usuario"
+                type="submit"
+                color="primary"
+                class="col-md-5 col-sm-5 col-xs-12"
+                icon="person_add"
+              />
+              <q-btn
+                label="Cerrar"
+                color="primary"
+                flat
+                class="col-md-5 col-sm-5 col-xs-12 btnmovil"
+                icon="close"
+                @click="resetFormUsuarios"
+                v-close-popup
+              />
+            </div>
+          </q-form>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog v-model="usuariosFormEdit">
+      <q-card class="q-pa-md" bordered style="width: 999px">
+        <q-card-section>
+          <q-form @submit="putDatoUsuarios()">
+            <div class="row">
+              <div class="col-md-5 col-xs-12">
+                <q-input
+                  outlined
+                  v-model="formEditUsuarios.login"
+                  label="Login"
+                  hint=""
+                  readonly
+                  class="pcform"
+                  @update:model-value="
+                    formEditUsuarios.login =
+                      formEditUsuarios.login.toUpperCase()
+                  "
+                  lazy-rules
+                  :rules="[
+                    (val) => (val && val.length > 0) || 'Debes escribir algo',
+                  ]"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="south_america" />
+                  </template>
+                </q-input>
+              </div>
+
+              <div class="col-md-7 col-xs-12">
+                <q-input
+                  outlined
+                  v-model="formEditUsuarios.password"
+                  label="Contraseña"
+                  :type="isPwd ? 'password' : 'text'"
+                  lazy-rules
+                  :rules="[
+                    (val) => (val && val.length > 0) || 'Debes escribir algo',
+                  ]"
+                >
+                  <template v-slot:prepend>
+                    <q-icon
+                    :name="isPwd ? 'visibility_off' : 'visibility'"
+                    class="cursor-pointer"
+                    @click="isPwd = !isPwd"
+                    />
+                  </template>
+                </q-input>
+              </div>
+
+              <div class="col-md-5 col-xs-12">
+                <q-input
+                  outlined
+                  class="pcform"
+                  v-model="formEditUsuarios.nombre"
+                  label="Nombre"
+                  hint=""
+                  @update:model-value="
+                    formEditUsuarios.nombre =
+                      formEditUsuarios.nombre.toUpperCase()
+                  "
+                  lazy-rules
+                  :rules="[
+                    (val) => (val && val.length > 0) || 'Debes escribir algo',
+                  ]"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="text_fields" />
+                  </template>
+                </q-input>
+              </div>
+
+              <div class="col-md-7 col-xs-12">
+                <q-select
+                  outlined
+                  v-model="formEditUsuarios.activo"
+                  label="Vigente"
+                  hint=""
+                  :rules="[reglasInputs]"
+                  :options="vigente"
+                  lazy-rules
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="text_fields" />
+                  </template>
+                </q-select>
+              </div>
+
+              <div class="col-md-5 col-xs-12">
+                <q-select
+                  class="pcform"
+                  outlined
+                  v-model="formEditUsuarios.cod_agencia"
+                  label="Agencia"
+                  hint=""
+                  :rules="[reglasInputs]"
+                  :options="agencias"
+                  option-label="nb_agencia"
+                  option-value="id"
+                  lazy-rules
+                  transition-show="flip-up"
+                  transition-hide="flip-down"
+                  @update:model-value="getDatosRolesEdit(formEditUsuarios.cod_agencia)"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="south_america" />
+                  </template>
+                </q-select>
+              </div>
+
+              <div class="col-md-7 col-xs-12">
+                <q-select
+                  outlined
+                  v-model="formEditUsuarios.cod_rol"
+                  label="Rol Desempeñado"
+                  hint=""
+                  :rules="[reglasInputs]"
+                  :options="roles"
+                  option-label="descripcion"
+                  option-value="id"
+                  lazy-rules
+                  transition-show="flip-up"
+                  transition-hide="flip-down"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="south_america" />
+                  </template>
+                </q-select>
+              </div>
+            </div>
+
+            <div
+              class="full-width row justify-center items-center content-center"
+              style="margin-bottom: 10px"
+            >
+              <q-btn
+                label="Editar Usuario"
+                type="submit"
+                color="primary"
+                class="col-md-5 col-sm-5 col-xs-12"
+                icon="person_add"
+              />
+              <q-btn
+                label="Cerrar"
+                color="primary"
+                flat
+                class="col-md-5 col-sm-5 col-xs-12 btnmovil"
+                icon="close"
+                @click="resetFormEditUsuarios"
+                v-close-popup
+              />
+            </div>
+          </q-form>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+
+    <div class="row q-pa-sm justify-center">
+      <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
+        <div class="row">
+          <div
+            class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12"
+            style="align-self: center; text-align: center"
+          >
+            <h4 style="font-size: 30px">Seguridad - Usuarios</h4>
+          </div>
+
+          <div
+            class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-5 inputestadospc"
+            style="align-self: center; text-align: center; margin-right: 16px"
+          >
+            <q-select
+              rounded
+              transition-show="flip-up"
+              transition-hide="flip-down"
+              :options="agencias"
+              option-label="nb_agencia"
+              option-value="id"
+              v-model="selectedAgencia"
+              outlined
+              standout
+              label="Escoge una Agencia"
+              @update:model-value="getDatosUsuariosSelect(selectedAgencia)"
+            >
+              <template v-slot:prepend>
+                <q-icon name="search" />
+              </template>
+            </q-select>
+          </div>
+
+          <div
+            class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-6 inputestadospc2"
+            style="align-self: center; text-align: center; margin-right: 16px"
+          >
+            <q-input
+              rounded
+              outlined
+              standout
+              v-model="filterUsuarios"
+              type="search"
+              label="Búsqueda avanzada"
+            >
+              <template v-slot:prepend>
+                <q-icon name="search" />
+              </template>
+            </q-input>
+          </div>
+          <div
+            class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
+            style="text-align: center; align-self: center"
+          >
+            <q-btn
+              label="Insertar"
+              rounded
+              color="primary"
+              @click="usuariosForm = true"
+              size="16px"
+              class="q-px-xl q-py-xs insertarestadosmovil"
+            ></q-btn>
+          </div>
+        </div>
+
+        <div class="q-pa-md" style="margin-top: 20px">
+          <div class="q-gutter-y-md">
+            <div bordered flat class="my-card row">
+              <q-table
+                :rows="usuarios"
+                row-key="id"
+                :columns="columnsUsuarios"
+                :separator="separator"
+                class="my-sticky-column-table"
+                :loading="loadingTable"
+                :filter="filterUsuarios"
+                style="width: 100%"
+                :grid="$q.screen.xs"
+                v-model:pagination="pagination"
+              >
+                <template v-slot:body-cell-action="props">
+                  <q-td :props="props">
+                    <q-btn
+                      dense
+                      round
+                      flat
+                      color="primary"
+                      icon="edit"
+                      @click="
+                        selectedEdit = props.row.login;
+                        getDatosEditUsuarios(selectedEdit);
+                        usuariosFormEdit = true;
+                      "
+                    ></q-btn>
+                    <q-btn
+                      dense
+                      round
+                      flat
+                      color="primary"
+                      icon="delete"
+                      @click="selected = props.row.login"
+                      @click.capture="usuariosDelete = true"
+                    ></q-btn>
+                  </q-td>
+                </template>
+                <template v-slot:item="props">
+                  <div
+                    class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+                    :style="props.selected ? 'transform: scale(0.95);' : ''"
+                  >
+                    <q-card :class="props.selected ? 'bg-grey-2' : ''">
+                      <q-list dense>
+                        <q-item v-for="col in props.cols" :key="col.name">
+                          <q-item-section>
+                            <q-item-label>{{ col.label }}</q-item-label>
+                          </q-item-section>
+                          <q-item-section side>
+                            <q-chip
+                              v-if="col.name === 'status'"
+                              :color="
+                                props.row.status == 'Active'
+                                  ? 'green'
+                                  : props.row.status == 'Disable'
+                                  ? 'red'
+                                  : 'grey'
+                              "
+                              text-color="white"
+                              dense
+                              class="text-weight-bolder"
+                              square
+                              >{{ col.value }}</q-chip
+                            >
+                            <q-btn
+                              v-else-if="col.name === 'action'"
+                              dense
+                              round
+                              flat
+                              color="primary"
+                              icon="edit"
+                              @click="
+                                selectedEdit = props.row.id;
+                                getDatosEditUsuarios(selectedEdit);
+                                usuariosFormEdit = true;
+                              "
+                            ></q-btn>
+                            <q-chip
+                              v-if="col.name === 'status'"
+                              :color="
+                                props.row.status == 'Active'
+                                  ? 'green'
+                                  : props.row.status == 'Disable'
+                                  ? 'red'
+                                  : 'grey'
+                              "
+                              text-color="white"
+                              dense
+                              class="text-weight-bolder"
+                              square
+                              >{{ col.value }}</q-chip
+                            >
+                            <q-btn
+                              v-else-if="col.name === 'action'"
+                              dense
+                              round
+                              flat
+                              color="primary"
+                              icon="delete"
+                              @click="selected = props.row.id"
+                              @click.capture="usuariosDelete = true"
+                            ></q-btn>
+                            <q-item-label
+                              v-else
+                              caption
+                              :class="col.classes ? col.classes : ''"
+                              >{{ col.value }}</q-item-label
+                            >
+                          </q-item-section>
+                        </q-item>
+                      </q-list>
+                    </q-card>
+                  </div>
+                </template>
+              </q-table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <q-dialog v-model="usuariosDelete">
+      <q-card style="width: 700px">
+        <q-card-section>
+          <div class="text-h5" style="font-size: 18px">
+            ¿Estas seguro que quieres eliminar este elemento?
+          </div>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Cancelar" color="primary" v-close-popup />
+          <q-btn
+            flat
+            label="Aceptar"
+            color="primary"
+            v-close-popup
+            @click.capture="contactoEliminado"
+            @click="deleteDatoUsuarios(selected)"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+  </q-page>
 </template>
+
+<script>
+import { ref } from "vue";
+
+import { api } from "boot/axios";
+
+import { useQuasar } from "quasar";
+
+export default {
+  name: "Bancos",
+  data() {
+    return {
+      columnsUsuarios: [
+        {
+          name: "login",
+          label: "Login",
+          field: "login",
+          align: "left",
+          sortable: true,
+        },
+        {
+          name: "nombre",
+          label: "Nombre",
+          field: "nombre",
+          align: "left",
+          sortable: true,
+        },
+        {
+          name: "roles",
+          label: "Rol Desempeñado",
+          field: (row) => row.roles.descripcion,
+          align: "left",
+          sortable: true,
+        },
+        {
+          name: "estatus_desc",
+          label: "Vigente",
+          field: "estatus_desc",
+          align: "left",
+          sortable: true,
+        },
+        {
+          name: "action",
+          label: "Acciones",
+          align: "center",
+          sortable: true,
+          required: true,
+        },
+      ],
+      formUsuarios: {
+        login: "",
+        nombre: "",
+        activo: "",
+        cod_rol: [],
+        password: "",
+        cod_agencia: [],
+      },
+      formEditUsuarios: {
+        login: "",
+        nombre: "",
+        activo: "",
+        cod_rol: "",
+        id: "",
+        password: "",
+        cod_agencia: "",
+      },
+      vigente: [
+        { label: "ACTIVO", value: "1" },
+        { label: "INACTIVO", value: "0" },
+      ],
+      agencias: [],
+      roles: [],
+      usuarios: [],
+      selected: [],
+      selectedAgencia: [],
+      agenciaRef: "",
+      agenciaRef2: "",
+      error: "",
+    };
+  },
+  setup() {
+    const $q = useQuasar();
+    const pagination = ref({
+      sortBy: "desc",
+      descending: false,
+      page: 2,
+      control: 0,
+      rowsPerPage: 4,
+      // rowsNumber: xx if getting data from a server
+    });
+    return {
+      pagination: ref({
+        rowsPerPage: 10,
+      }),
+      separator: ref("vertical"),
+      password: ref(''),
+      isPwd: ref(true),
+      usuariosForm: ref(false),
+      usuariosFormEdit: ref(false),
+      errorDelServidor() {
+        $q.notify({
+          message: this.error,
+          color: "red",
+        });
+      },
+      añadidoConExito() {
+        $q.notify({
+          message: "Agregado exitosamente",
+          color: "green",
+        });
+      },
+      editadoConExito() {
+        $q.notify({
+          message: "Editado exitosamente",
+          color: "green",
+        });
+      },
+      eliminadoConExito() {
+        $q.notify({
+          message: "Eliminado exitosamente",
+          color: "green",
+        });
+      },
+      usuariosDelete: ref(false),
+      filterUsuarios: ref(""),
+      reglasLogin: [(val) =>
+          (val !== null && val !== "") || "Por favor escribe algo",
+        (val) => val.length < 12 || "Deben ser máximo 11 caracteres",
+        (val) => val.length > 3 || "Deben ser minimo 3 caracteres",
+      ],
+      reglasPassword: [(val) =>
+          (val !== null && val !== "") || "Por favor escribe algo",
+        (val) => val.length < 10 || "Deben ser máximo 10 caracteres",
+        (val) => val.length > 3 || "Deben ser minimo 3 caracteres",
+      ],
+      reglasNombre: [(val) =>
+          (val !== null && val !== "") || "Por favor escribe algo",
+        (val) => val.length < 50 || "Deben ser máximo 50 caracteres",
+        (val) => val.length > 3 || "Deben ser minimo 3 caracteres",
+      ],
+    };
+  },
+  mounted() {
+    this.getDatosAgencias();
+    this.getDatosAgenciasIniciar();
+  },
+  methods: {
+    // Reglas
+    reglasInputs(val) {
+      if (val === null) {
+        return "Debes Seleccionar Algo";
+      }
+    },
+    // Metodos para Agencias
+    getDatosAgencias() {
+      api.get("/agencias").then((res) => {
+        this.agencias = res.data;
+      });
+    },
+    getDatosRoles() {
+      api.get(`/agencias/${this.selectedAgencia.id}/roles`)
+        .then((res) => {
+          this.roles = res.data.roles;
+        })
+        .catch((err) => {
+          if (err.response) {
+            this.error = err.response.data.statusCode;
+          }
+          if ((this.error = "400")) {
+            this.error =
+              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
+          }
+          this.errorDelServidor();
+        });
+    },
+    // Metodos para usuarios
+    getDatosUsuariosSelect(selectedAgencia) {
+      api.get(`/agencias/${this.selectedAgencia.id}/usuarios`)
+        .then((res) => {
+          this.usuarios = res.data.usuarios;
+        })
+        .catch((err) => {
+          if (err.response) {
+            this.error = err.response.data.statusCode;
+          }
+          if ((this.error = "400")) {
+            this.error =
+              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
+          }
+          this.errorDelServidor();
+        });
+    },
+    getDatosEditUsuarios(selectedEdit) {
+      api.get(`/usuarios/${selectedEdit}`).then((res) => {
+        this.formEditUsuarios.login = res.data.login;
+        this.formEditUsuarios.nombre = res.data.nombre;
+        this.formEditUsuarios.cod_rol = res.data.roles.descripcion;
+        this.formEditUsuarios.id = res.data.id;
+        this.formEditUsuarios.password = res.data.password;
+        this.formEditUsuarios.activo = res.data.activo_desc;
+        this.formEditUsuarios.cod_agencia = this.selectedAgencia;
+        this.getDatosRoles();
+      });
+    },
+    deleteDatoUsuarios(idpost) {
+      api.delete(`/usuarios/${idpost}`)
+        .then((res) => {
+          if ((res.status = 201)) {
+            this.eliminadoConExito();
+            api
+              .get(`/agencias/${this.selectedAgencia.id}/usuarios`)
+              .then((res) => {
+                this.usuarios = res.data.usuarios;
+              });
+          }
+        })
+        .catch((err) => {
+          if ((err.response.data.statusCode === 400)) {
+            this.error = "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema"
+            this.errorDelServidor();
+          }
+          if ((err.response.statusCode === 500)) {
+            this.error = "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema"
+            this.errorDelServidor();
+          }
+        });
+    },
+    createDatoUsuarios() {
+      this.formUsuarios.activo = this.formUsuarios.activo.value;
+      this.formUsuarios.cod_rol = this.formUsuarios.cod_rol.id;
+      this.formUsuarios.cod_agencia = this.formUsuarios.cod_agencia.id;
+      api.post(`/usuarios`, this.formUsuarios)
+        .then((res) => {
+          if ((res.status = 201)) {
+            api
+              .get(`/agencias/${this.selectedAgencia.id}/usuarios`)
+              .then((res) => {
+                this.usuarios = res.data.usuarios;
+                this.resetformUsuarios();
+              });
+            this.añadidoConExito();
+          }
+        })
+        .catch((err) => {
+        if ((err.response.data.statusCode === 400)) {
+            this.error = "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema"
+            this.errorDelServidor();
+          }
+          if ((err.response.statusCode === 500)) {
+            this.error = "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema"
+            this.errorDelServidor();
+          }
+        });
+        this.resetFormUsuarios();
+    },
+    putDatoUsuarios() {
+      this.formEditUsuarios.activo = this.formEditUsuarios.activo.value;
+      this.formEditUsuarios.cod_rol = this.formEditUsuarios.cod_rol.id;
+      this.formEditUsuarios.cod_agencia = this.formEditUsuarios.cod_agencia.id;
+      api.put(`/usuarios/${this.formEditUsuarios.login}`, this.formEditUsuarios)
+        .then((res) => {
+          if ((res.status = 201)) {
+            this.editadoConExito();
+            api.get(`/agencias/${this.selectedAgencia.id}/usuarios`)
+              .then((res) => {
+                this.usuarios = res.data.usuarios;
+                this.resetFormEditUsuarios();
+              });
+          }
+        })
+        .catch((err) => {
+        if ((err.response.data.statusCode === 400)) {
+            this.error = "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema"
+            this.errorDelServidor();
+          }
+          if ((err.response.statusCode === 500)) {
+            this.error = "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema"
+            this.errorDelServidor();
+          }
+        });
+    },
+    resetFormUsuarios() {
+      (this.formUsuarios.nombre = null),
+      (this.formUsuarios.login = null),
+      (this.formUsuarios.cod_rol = null),
+      (this.formUsuarios.activo = null),
+      (this.formUsuarios.password = null),
+      (this.formUsuarios.cod_agencia = null),
+      (this.usuariosForm = false)
+    },
+    resetFormEditUsuarios() {
+      (this.formEditUsuarios.nombre = null),
+      (this.formEditUsuarios.login = null),
+      (this.formEditUsuarios.cod_rol = null),
+      (this.formEditUsuarios.activo = null),
+      (this.formUsuarios.password = null),
+      (this.formUsuarios.cod_agencia = null),
+      (this.usuariosFormEdit = false)
+    },
+    getDatosRolesSelect(selectedAgencia) {
+      api.get(`/agencias/${this.formUsuarios.cod_agencia.id}/roles`)
+        .then((res) => {
+          this.roles = res.data.roles;
+          this.formUsuarios.cod_rol = "";
+        })
+        .catch((err) => {
+          if (err.response) {
+            this.error = err.response.data.statusCode;
+          }
+          if ((this.error = "400")) {
+            this.error =
+              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
+          }
+          this.errorDelServidor();
+        });
+    },
+    getDatosRolesEdit(selectedAgencia) {
+      api.get(`/agencias/${this.formEditUsuarios.cod_agencia.id}/roles`)
+        .then((res) => {
+          this.roles = res.data.roles;
+          this.formEditUsuarios.cod_rol = "";
+        })
+        .catch((err) => {
+          if (err.response) {
+            this.error = err.response.data.statusCode;
+          }
+          if ((this.error = "400")) {
+            this.error =
+              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
+          }
+          this.errorDelServidor();
+        });
+    },
+    // Metodos para colocar valores iniciales
+    getDatosAgenciasIniciar() {
+      api.get(`/agencias`)
+        .then((res) => {
+          this.agenciaRef2 = res.data[0].id;
+          this.selectedAgencia = res.data[0];
+          this.getDatosUsuariosIniciar();
+        })
+        .catch((err) => {
+          if (err.response) {
+            this.error = err.response.data.statusCode;
+          }
+          if ((this.error = "400")) {
+            this.error =
+              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
+          }
+          this.errorDelServidor();
+        });
+    },
+    getDatosUsuariosIniciar() {
+      api
+        .get(`/agencias/${this.agenciaRef2}/usuarios`)
+        .then((res) => {
+          this.usuarios = res.data.usuarios;
+        })
+        .catch((err) => {
+          if (err.response) {
+            this.error = err.response.data.statusCode;
+          }
+          if ((this.error = "400")) {
+            this.error =
+              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
+          }
+          this.errorDelServidor();
+        });
+    },
+  },
+};
+</script>
