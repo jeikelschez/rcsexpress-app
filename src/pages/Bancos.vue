@@ -3,7 +3,7 @@
     <q-dialog v-model="create">
       <q-card class="q-pa-md" bordered style="width: 999px">
         <q-card-section>
-          <q-form @submit="createDato" class="q-gutter-md">
+          <q-form @submit="createData" class="q-gutter-md">
             <div class="row">
               <div class="col-md-5 col-xs-12">
                 <q-input
@@ -137,7 +137,7 @@
     <q-dialog v-model="edit">
       <q-card class="q-pa-md" bordered style="width: 999px">
         <q-card-section>
-          <q-form @submit="putDato">
+          <q-form @submit="putData">
             <div class="row">
               <div class="col-md-5 col-xs-12">
                 <q-input
@@ -304,7 +304,8 @@
               rounded
               color="primary"
               @click="create = true"
-              @click.capture="resetForm"
+              @click.capture="getData('/bancos','setdata','datos')"
+              :disabled="this.disabledCreate"
             ></q-btn>
           </div>
         </div>
@@ -318,7 +319,6 @@
                 :columns="columns"
                 :separator="separator"
                 class="my-sticky-column-table"
-                :loading="loadingTable"
                 :filter="filter"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -332,9 +332,9 @@
                       flat
                       color="primary"
                       icon="edit"
+                      :disabled="this.disabledEdit"
                       @click="
-                        selectedEdit = props.row.id;
-                        getDatoEdit(selectedEdit);
+                        getData(`/bancos/${props.row.id}`, 'setData', 'formEdit');
                         edit = true;
                       "
                     ></q-btn>
@@ -344,6 +344,7 @@
                       flat
                       color="primary"
                       icon="delete"
+                      :disabled="this.disabledDelete"
                       @click="selected = props.row.id"
                       @click.capture="deletePopup = true"
                     ></q-btn>
@@ -383,9 +384,9 @@
                               flat
                               color="primary"
                               icon="edit"
+                              :disabled="this.disabledEdit"
                               @click="
-                                selectedEdit = props.row.id;
-                                getDatoEdit(selectedEdit);
+                                getData(`/bancos/${props.row.id}`, 'setData', 'formEdit');
                                 edit = true;
                               "
                             ></q-btn>
@@ -411,6 +412,7 @@
                               flat
                               color="primary"
                               icon="delete"
+                              :disabled="this.disabledDelete"
                               @click="selected = props.row.id"
                               @click.capture="deletePopup = true"
                             ></q-btn>
@@ -448,11 +450,15 @@
             label="Aceptar"
             color="primary"
             v-close-popup
-            @click="deleteDato(selected)"
+            @click="deleteData(selected)"
           />
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <user-logout ref="component"
+    @get-Data="getData('/bancos','setData','datos')"
+    @set-data="setData" @set-Data-Edit="setData"
+    @desactivar-Crud-Bancos="desactivarCrudBancos"></user-logout>
   </q-page>
 </template>
 
@@ -463,7 +469,12 @@ import { api } from "boot/axios";
 
 import { useQuasar } from "quasar";
 
+import { LocalStorage } from "quasar";
+
+import userLogoutVue from "src/components/userLogout.vue";
+
 export default {
+  components: { "user-logout": userLogoutVue },
   name: "Bancos",
   data() {
     return {
@@ -544,6 +555,14 @@ export default {
       },
       selected: [],
       error: "",
+      disabledCreate: true,
+      disabledEdit: true,
+      disabledDelete: true,
+      axiosConfig: {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        },
+      },
     };
   },
   setup() {
@@ -592,102 +611,47 @@ export default {
     };
   },
   mounted() {
-    this.getDato();
+    this.getData('/bancos','setData','datos')
+    this.$refs.component.desactivarCrud('c_bancos', 'd_bancos', 'u_bancos', 'desactivarCrudBancos')
   },
   methods: {
-    getDato() {
-      api.get("/bancos").then((res) => {
-        this.datos = res.data;
-      });
+    desactivarCrudBancos(createItem, deleteItem, updateItem) {
+      if (createItem == true) {
+        this.disabledCreate = false
+      }
+      if (deleteItem == true) {
+        this.disabledDelete = false
+      }
+      if (updateItem == true) {
+        this.disabledEdit = false
+      }
     },
-    getDatoEdit(selectedEdit) {
-      api.get(`/bancos/${selectedEdit}`).then((res) => {
-        this.formEdit = res.data;
-      });
+    getData(url, call, dataRes) {
+      this.$refs.component.getData(url, call, dataRes);
     },
-    deleteDato(idpost) {
-      api
-        .delete(`/bancos/${idpost}`)
-        .then((res) => {
-          if ((res.status = 201)) {
-            this.eliminadoConExito();
-            api.get("/bancos").then((res) => {
-              this.datos = res.data;
-            });
-          }
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
+    setData(res, dataRes) {
+      this[dataRes] = res
+    },    
+    deleteData(idpost) {
+      this.$refs.component.deleteData(`/bancos/${idpost}`, 'getData');
     },
-    createDato() {
-      api
-        .post("/bancos/", this.form)
-        .then((res) => {
-          if ((res.status = 201)) {
-            this.añadidoConExito();
-            api.get("/bancos").then((res) => {
-              this.datos = res.data;
-            });
-          }
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
-
+    createData() {
+      this.$refs.component.createData('/bancos', this.form, 'getData');
       this.resetForm();
     },
-    putDato() {
-      api
-        .put(`/bancos/${this.formEdit.id}`, this.formEdit)
-        .then((res) => {
-          if ((res.status = 201)) {
-            this.editadoConExito();
-            api.get("/bancos").then((res) => {
-              this.datos = res.data;
-            });
-          }
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
+    putData() {
+      this.$refs.component.putData(`/bancos/${this.formEdit.id}`, this.formEdit, 'getData');
       this.edit = false;
     },
+    
     resetForm() {
       (this.form.nb_banco = null),
-        (this.form.direccion_banco = null),
-        (this.form.tlf_banco = null),
-        (this.form.fax_banco = null),
-        (this.form.cod_postal = null),
-        (this.form.email_banco = null),
-        (this.create = false),
-        nameRef.value.resetValidation();
-      direccionRef.value.resetValidation();
-      tlfRef.value.resetValidation();
-      faxRef.value.resetValidation();
-      cod_postalRef.value.resetValidation();
-      emailRef.value.resetValidation();
+      (this.form.direccion_banco = null),
+      (this.form.tlf_banco = null),
+      (this.form.fax_banco = null),
+      (this.form.cod_postal = null),
+      (this.form.email_banco = null),
+      (this.create = false);    
     },
   },
 };

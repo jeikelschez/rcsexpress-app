@@ -241,6 +241,8 @@ const routes = [
       },
       {
         path: '/bancos',
+        name: 'Bancos',
+        props: true,
         component: () => import('pages/bancos.vue'),
         meta: { requiresauth: true },
       },

@@ -72,6 +72,10 @@ export default defineComponent({
       ],
     }
   },
+  mounted() {
+  },
+  methods: {
+  },
 
 })
 </script>

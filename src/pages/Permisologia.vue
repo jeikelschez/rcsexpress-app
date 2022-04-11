@@ -3,7 +3,7 @@
     <q-dialog v-model="permisosForm">
       <q-card class="q-pa-md" bordered style="width: 999px">
         <q-card-section>
-          <q-form @submit="createDatoPermisos()" class="q-gutter-md">
+          <q-form @submit="createData()" class="q-gutter-md">
             <div class="row">
               <div class="col-md-12 col-xs-12">
                 <q-select
@@ -74,7 +74,13 @@
               outlined
               standout
               label="Escoge una Agencia"
-              @update:model-value="getDatosRolesSelect2(selectedAgencia)"
+              @update:model-value="
+                getData(
+                  `/agencias/${this.selectedAgencia.id}/roles`,
+                  'setDataRoles',
+                  'rolesPermisos'
+                )
+              "
             >
               <template v-slot:prepend>
                 <q-icon name="search" />
@@ -97,7 +103,13 @@
               outlined
               standout
               label="Escoge un Rol"
-              @update:model-value="getDatosPermisos(selectedRol)"
+              @update:model-value="
+                getData(
+                  `/roles/${this.selectedRol.id}/permisos`,
+                  'setDataPermisos',
+                  'permisos'
+                )
+              "
             >
               <template v-slot:prepend>
                 <q-icon name="search" />
@@ -129,7 +141,6 @@
                 :columns="columnsPermisos"
                 :separator="separator"
                 class="my-sticky-column-table"
-                :loading="loadingTable"
                 :filter="filterPermisos"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -143,6 +154,7 @@
                       flat
                       color="primary"
                       icon="delete"
+                      :disabled="this.disabledDelete"
                       @click="selected = props.row.id"
                       @click.capture="permisosDelete = true"
                     ></q-btn>
@@ -182,6 +194,7 @@
                               flat
                               color="primary"
                               icon="delete"
+                              :disabled="this.disabledDelete"
                               @click="selected = props.row.id"
                               @click.capture="permisosDelete = true"
                             ></q-btn>
@@ -219,12 +232,20 @@
             label="Aceptar"
             color="primary"
             v-close-popup
-            @click.capture="contactoEliminado"
-            @click="deleteDatoPermisos(selected)"
+            @click="deleteData(selected)"
           />
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <user-logout
+      ref="component"
+      @get-Data-Permisos="
+        getData(`/roles/${this.selectedRol.id}/permisos`, 'setDataPermisos','permisos')"
+      @set-data-Roles="setDataRoles"
+      @set-data-Permisos="setDataPermisos"
+      @set-Data="setData"
+      @desactivar-Crud-Permisologia="desactivarCrudPermisologia"
+    ></user-logout>
   </q-page>
 </template>
 
@@ -234,10 +255,16 @@ import { ref } from "vue";
 import { api } from "boot/axios";
 
 import { useQuasar } from "quasar";
-import i18n from 'src/i18n';
+
+import userLogoutVue from "src/components/userLogout.vue";
+
+import i18n from "src/i18n";
+
+import { LocalStorage } from 'quasar';
 
 export default {
-  name: "Bancos",
+  components: { "user-logout": userLogoutVue },
+  name: "Permisologia",
   data() {
     return {
       columnsPermisos: [
@@ -264,18 +291,19 @@ export default {
         },
       ],
       selectedEditRol: [
-    {
-      "id": 8,
-      "codigo": "m_cuentasbancarias",
-      "cod_rol": 1
-    },
-    {
-      "id": 9,
-      "codigo": "m_cuentasporcobrar",
-      "cod_rol": 1
-    },
-    ],
+        {
+          id: 8,
+          codigo: "m_cuentasbancarias",
+          cod_rol: 1,
+        },
+        {
+          id: 9,
+          codigo: "m_cuentasporcobrar",
+          cod_rol: 1,
+        },
+      ],
       permisos: [],
+      agencias: [],
       permisosDuplicados: [],
       roles: [],
       rolesPermisos: [],
@@ -290,29 +318,29 @@ export default {
       },
       pruebaPermisos: [
         {
-        codigo: "Agregar Agencia",
-        cod_rol: "23",
-        id: "1"
+          codigo: "Agregar Agencia",
+          cod_rol: "23",
+          id: "1",
         },
         {
-        codigo: "Editar Agencia",
-        cod_rol: "43",
-        id: "2"
+          codigo: "Editar Agencia",
+          cod_rol: "43",
+          id: "2",
         },
         {
-        codigo: "Eliminar Agencia",
-        cod_rol: "2",
-        id: "3"
+          codigo: "Eliminar Agencia",
+          cod_rol: "2",
+          id: "3",
         },
         {
-        codigo: "Leer Agencia",
-        cod_rol: "4",
-        id: "4"
+          codigo: "Leer Agencia",
+          cod_rol: "4",
+          id: "4",
         },
         {
-        codigo: "Solicitar Agencia",
-        cod_rol: "3",
-        id: "5"
+          codigo: "Solicitar Agencia",
+          cod_rol: "3",
+          id: "5",
         },
       ],
       objetos: [],
@@ -323,6 +351,9 @@ export default {
       agenciaRef: "",
       rolesRef: "",
       error: "",
+      disabledCreate: true,
+      disabledEdit: true,
+      disabledDelete: true,
     };
   },
   setup() {
@@ -336,12 +367,17 @@ export default {
       // rowsNumber: xx if getting data from a server
     });
     return {
+      axiosConfig: {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem('token')}`,
+        }
+      },
       pagination: ref({
         rowsPerPage: 10,
       }),
       separator: ref("vertical"),
-      reglasCodigo: [(val) =>
-        (val !== null && val !== "") || "Por favor escribe algo",
+      reglasCodigo: [
+        (val) => (val !== null && val !== "") || "Por favor escribe algo",
         (val) => val.length < 25 || "Deben ser máximo 25 caracteres",
         (val) => val.length > 3 || "Deben ser minimo 3 caracteres",
       ],
@@ -376,10 +412,8 @@ export default {
     };
   },
   mounted() {
-    this.getDatosAgencias();
-    this.getDatosRoles();
-    this.getDatosAgenciasIniciar();
-    this.getDatosObjetos()
+    this.getData("/agencias", "setData", "agencias");
+    this.$refs.component.desactivarCrud('c_permisos', 'd_permisos', 'u_permisos', 'desactivarCrudPermisologia')
   },
   methods: {
     // Reglas
@@ -388,81 +422,60 @@ export default {
         return "Debes Seleccionar Algo";
       }
     },
-    // Metodos para agencias
-    getDatosAgencias() {
-      api.get("/agencias").then((res) => {
-        this.agencias = res.data;
-      });
+    desactivarCrudPermisologia(createItem, deleteItem, updateItem) {
+      if (createItem == true) {
+        this.disabledCreate = false
+      }
+      if (deleteItem == true) {
+        this.disabledDelete = false
+      }
+      if (updateItem == true) {
+        this.disabledEdit = false
+      }
     },
-    getDatosRoles() {
-      api.get("/roles").then((res) => {
-        this.roles = res.data;
-      });
+
+    getData(url, call, dataRes) {
+      this.$refs.component.getData(url, call, dataRes);
     },
-    getDatosObjetos() {
-      api.get("/objetos").then((res) => {
-        this.objetos = res.data;
-      });
+    setData(res, dataRes) {
+      this[dataRes] = res;
+      if (dataRes == "agencias") {
+        this.getData("/objetos", "setData", "objetos");
+        this.getDataIniciar();
+      }
     },
     // Metodos para permisos
-    getDatosRolesSelect2(selectedAgencia) {
-      api
-        .get(`/agencias/${this.selectedAgencia.id}/roles`)
-        .then((res) => {
-          this.rolesPermisos = res.data.roles;
-          this.selectedRol = "";
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
+    setDataRoles(res, dataRes) {
+      console.log(res);
+      this[dataRes] = res.roles;
+      this.selectedRol = "";
     },
-    getDatosPermisos(selectedRol) {
-      api.get(`/roles/${this.selectedRol.id}/permisos`)
-        .then((res) => {
-          this.permisos = res.data.permisos;
-          this.permisosDuplicados = res.data.permisos;
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
+    setDataPermisos(res, dataRes) {
+      this[dataRes] = res.permisos;
+      this.permisosDuplicados = res.permisos;
     },
-    deleteDatoPermisos(idpost) {
-      api.delete(`/permisos/${idpost}`)
-        .then((res) => {
-          if ((res.status = 201)) {
-            this.eliminadoConExito();
-            this.getDatosPermisos();
-          }
-        })
-        .catch((err) => {
-          if ((err.response.data.statusCode === 400)) {
-            this.error = "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema"
-            this.errorDelServidor();
-          }
-          if ((err.response.data.statusCode === 500)) {
-            this.error = "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema"
-            this.errorDelServidor();
-          }
-        });
+
+    deleteData(selected) {
+      this.$refs.component.deleteData(
+        `/permisos/${selected}`,
+        "getDataPermisos"
+      );
+    },
+    createData() {
+      this.formPermisos.cod_rol = this.selectedRol.id;
+      this.formPermisos.codigo = this.formPermisos.codigo.codigo;
+      this.$refs.component.createData(
+        `/permisos`,
+        this.formPermisos,
+        "getDataPermisos"
+      );
+      this.resetFormPermisos();
     },
     createDatoPermisos() {
       this.formPermisos.cod_rol = this.selectedRol.id;
       this.formPermisos.codigo = this.formPermisos.codigo.codigo;
-      api.post(`/permisos`, this.formPermisos)
+      api
+        .post(`/permisos`, this.formPermisos)
         .then((res) => {
           if ((res.status = 201)) {
             this.getDatosPermisos();
@@ -470,101 +483,58 @@ export default {
           }
         })
         .catch((err) => {
-          if ((err.response.data.statusCode === 409)) {
-            this.error = "El permiso que intenta agregar ya existe en el Rol Seleccionado."
+          if (err.response.data.statusCode === 409) {
+            this.error =
+              "El permiso que intenta agregar ya existe en el Rol Seleccionado.";
             this.errorDelServidor();
           }
-          if ((err.response.data.statusCode === 400)) {
-            this.error = "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema"
+          if (err.response.data.statusCode === 400) {
+            this.error =
+              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
             this.errorDelServidor();
           }
-          if ((err.response.data.statusCode === 500)) {
-            this.error = "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema"
+          if (err.response.data.statusCode === 500) {
+            this.error =
+              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
             this.errorDelServidor();
           }
         });
       this.resetFormPermisos();
     },
     resetFormPermisos() {
-        (this.formPermisos.codigo = null),
+      (this.formPermisos.codigo = null),
         (this.formPermisos.cod_rol = null),
-        (this.permisosForm = false)
-    },
-    resetFormEditPermisos() {
-      (this.formEditPermisos.codigo = null),
-      (this.formEditPermisos.cod_rol = null),
-      (this.permisosFormEdit = false)
+        (this.permisosForm = false);
     },
     // Metodos para colocar valores iniciales
-    getDatosAgenciasIniciar() {
-      api
-        .get(`/agencias`)
-        .then((res) => {
-          this.selectedAgencia = res.data[0];
-          this.agenciaRef = res.data[0].id;
-          this.getDatosRolesIniciar2();
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
-    },
-    getDatosRolesIniciar2() {
-      api
-        .get(`/agencias/${this.agenciaRef}/roles`)
-        .then((res) => {
-          this.selectedRol = res.data.roles[0];
-          this.rolesPermisos = res.data.roles;
-          this.rolesRef = res.data.roles[0].id;
-          this.getDatosPermisosIniciar();
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
-    },
-    getDatosPermisosIniciar() {
-      api.get(`/roles/${this.rolesRef}/permisos`)
+    getDataIniciar() {
+      this.selectedAgencia = this.agencias[0];
+      this.agenciaRef = this.agencias[0].id;
+      api.get(`/agencias/${this.agenciaRef}/roles`, this.axiosConfig)
+      .then((res) => {
+        this.selectedRol = res.data.roles[0];
+        this.rolesPermisos = res.data.roles;
+        this.rolesRef = res.data.roles[0].id;
+
+        api.get(`/roles/${this.rolesRef}/permisos`, this.axiosConfig)
         .then((res) => {
           this.permisos = res.data.permisos;
           this.permisosDuplicados = res.data.permisos;
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
         });
+      });
     },
     eliminarDuplicados() {
-    this.objetosNoDuplicados = JSON.parse(JSON.stringify(this.objetos))
-    for (var e = 0, len = this.permisos.length; e<len; e++) {
-      for (var i = 0, len = this.objetos.length; i<len; i++) {
-        if (this.objetos[i].codigo === this.permisos[e].codigo) 
-        {
-          delete this.objetosNoDuplicados[i]
+      this.objetosNoDuplicados = JSON.parse(JSON.stringify(this.objetos));
+      for (var e = 0, len = this.permisos.length; e < len; e++) {
+        for (var i = 0, len = this.objetos.length; i < len; i++) {
+          if (this.objetos[i].codigo === this.permisos[e].codigo) {
+            delete this.objetosNoDuplicados[i];
+          }
+          if (i == this.objetos.length - 1) break;
         }
-        if (i == this.objetos.length - 1) break
-      };
-    if (e == this.permisos.length - 1) break
-    }
-    }
+        if (e == this.permisos.length - 1) break;
+      }
+    },
   },
 };
 </script>

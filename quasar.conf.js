@@ -5,7 +5,7 @@
 
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
-
+var webpack = require('webpack');
 const { configure } = require('quasar/wrappers');
 
 module.exports = configure(function (/* ctx */) {
@@ -45,6 +45,7 @@ module.exports = configure(function (/* ctx */) {
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
+      extendWebpack (cfg) { cfg.plugins.push( new webpack.ProvidePlugin({ process: 'process/browser', Buffer: ['buffer', 'Buffer'] }) ) },
       vueRouterMode: 'hash', // available values: 'hash', 'history'
 
       // transpile: false,
@@ -93,7 +94,7 @@ module.exports = configure(function (/* ctx */) {
 
       // Quasar plugins
       plugins: [
-        'AppFullscreen', 'Notify', 'Dialog'
+        'AppFullscreen', 'Notify', 'Dialog', 'SessionStorage', 'LocalStorage'
       ]
     },
 

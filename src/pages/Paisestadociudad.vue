@@ -3,7 +3,7 @@
     <q-dialog v-model="paisesForm">
       <q-card class="q-pa-md" bordered style="width: 999px">
         <q-card-section>
-          <q-form @submit="createDatoPaises()" class="q-gutter-md">
+          <q-form @submit="createDataPaises()" class="q-gutter-md">
             <div class="row">
               <div class="col-md-5 col-xs-12">
                 <q-input
@@ -72,7 +72,7 @@
     <q-dialog v-model="paisesFormEdit">
       <q-card class="q-pa-md" bordered style="width: 999px">
         <q-card-section>
-          <q-form @submit="putDatoPaises()">
+          <q-form @submit="putDataPaises()">
             <div class="row">
               <div class="col-md-5 col-xs-12">
                 <q-input
@@ -141,7 +141,7 @@
     <q-dialog v-model="estadosForm">
       <q-card class="q-pa-md" bordered style="width: 999px">
         <q-card-section>
-          <q-form @submit="createDatoEstados()" class="q-gutter-md">
+          <q-form @submit="createDataEstados()" class="q-gutter-md">
             <div class="row">
               <div class="col-md-5 col-xs-12">
                 <q-input
@@ -213,7 +213,7 @@
     <q-dialog v-model="estadosFormEdit">
       <q-card class="q-pa-md" bordered style="width: 999px">
         <q-card-section>
-          <q-form @submit="putDatoEstados()">
+          <q-form @submit="putDataEstados()">
             <div class="row">
               <div class="col-md-5 col-xs-12">
                 <q-input
@@ -286,7 +286,7 @@
     <q-dialog v-model="ciudadesForm">
       <q-card class="q-pa-md" bordered style="width: 999px">
         <q-card-section>
-          <q-form @submit="createDatoCiudades()" class="q-gutter-md">
+          <q-form @submit="createDataCiudades()" class="q-gutter-md">
             <div class="row">
               <div class="col-md-5 col-xs-12">
                 <q-input
@@ -392,7 +392,7 @@
     <q-dialog v-model="ciudadesformedit">
       <q-card class="q-pa-md" bordered style="width: 999px">
         <q-card-section>
-          <q-form @submit="putDatoCiudades()">
+          <q-form @submit="putDataCiudades()">
             <div class="row">
               <div class="col-md-5 col-xs-12">
                 <q-input
@@ -523,8 +523,7 @@
         :control-type="controlType"
         class="rounded-borders col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 justify-center"
       >
-        <q-carousel-slide
-          name="paises"
+        <q-carousel-slide name="paises"
           class="flex-center col-md-11 col-xl-9 col-lg-9 col-xs-12 col-sm-12"
         >
           <div class="col-md-11 col-xl-9 col-lg-9 col-xs-12 col-sm-12">
@@ -560,7 +559,8 @@
                     rounded
                     color="primary"
                     @click="paisesForm = true"
-                    @click.capture="resetFormpaises"
+                    :disabled="this.disabledCreate"
+                    @click.capture="resetFormPaises"
                     size="16px"
                     class="q-px-xl q-py-xs insertarmovil"
                   ></q-btn>
@@ -576,7 +576,6 @@
                       :columns="columnsPaises"
                       :separator="separator"
                       class="my-sticky-column-table"
-                      :loading="loadingTable"
                       :filter="filterPaises"
                       style="width: 100%"
                       :grid="$q.screen.xs"
@@ -590,10 +589,10 @@
                             flat
                             color="primary"
                             icon="edit"
+                            :disabled="this.disabledEdit"
                             @click="
-                              selectedEdit = props.row.id;
-                              getDatosEditPaises(selectedEdit);
-                              paisesFormEdit = true;
+                            getDataPaises(`/paises/${props.row.id}`, 'setDataPaisesEdit', 'formEditPaises');
+                            paisesFormEdit = true;
                             "
                           ></q-btn>
                           <q-btn
@@ -602,10 +601,8 @@
                             flat
                             color="primary"
                             icon="delete"
-                            @click="
-                              selected = props.row.id;
-                              getDatosPaises();
-                            "
+                            :disabled="this.disabledDelete"
+                            @click="selected = props.row.id"
                             @click.capture="paisesDelete = true"
                           ></q-btn>
                         </q-td>
@@ -646,9 +643,9 @@
                                     flat
                                     color="primary"
                                     icon="edit"
+                                    :disabled="this.disabledEdit"
                                     @click="
-                                      selectedEdit = props.row.id;
-                                      getDatosEditPaises(selectedEdit);
+                                      getDataPaises(`/paises/${props.row.id}`, 'setDataPaisesEdit', 'formEditPaises');
                                       paisesFormEdit = true;
                                     "
                                   ></q-btn>
@@ -674,10 +671,8 @@
                                     flat
                                     color="primary"
                                     icon="delete"
-                                    @click="
-                                      selected = props.row.id;
-                                      getDatosPaises();
-                                    "
+                                    :disabled="this.disabledDelete"
+                                    @click="selected = props.row.id"
                                     @click.capture="paisesDelete = true"
                                   ></q-btn>
                                   <q-item-label
@@ -699,8 +694,7 @@
             </div>
           </div>
         </q-carousel-slide>
-        <q-carousel-slide
-          name="estados"
+        <q-carousel-slide name="estados"
           class="flex-center col-md-11 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
         >
           <div class="col-xl-12 col-lg-12 col-xs-12 col-sm-12">
@@ -720,7 +714,7 @@
                     outlined
                     standout
                     label="Escoge un país"
-                    @update:model-value="getDatosEstadosSelect(selectedPais)"
+                    @update:model-value="getDataEstados(`/paises/${this.selectedPais.id}/estados`, 'setDataEstados', 'estados')"
                   >
                     <template v-slot:prepend>
                       <q-icon name="search" />
@@ -751,6 +745,7 @@
                     label="Insertar"
                     rounded
                     color="primary"
+                    :disabled="this.disabledCreate"
                     @click="estadosForm = true"
                     @click.capture="resetFormCiudades"
                     size="16px"
@@ -768,7 +763,6 @@
                       :columns="columnsEstados"
                       :separator="separator"
                       class="my-sticky-column-table"
-                      :loading="loadingTable"
                       :filter="filterEstados"
                       style="width: 100%"
                       :grid="$q.screen.xs"
@@ -782,9 +776,9 @@
                             flat
                             color="primary"
                             icon="edit"
+                            :disabled="this.disabledEdit"
                             @click="
-                              selectedEdit = props.row.id;
-                              getDatosEditEstados(selectedEdit);
+                              getDataEstados(`/estados/${props.row.id}`, 'SetDataEstadosEdit', 'formEditEstados');
                               estadosFormEdit = true;
                             "
                           ></q-btn>
@@ -794,6 +788,7 @@
                             flat
                             color="primary"
                             icon="delete"
+                            :disabled="this.disabledDelete"
                             @click="selected = props.row.id"
                             @click.capture="estadosDelete = true"
                           ></q-btn>
@@ -835,9 +830,9 @@
                                     flat
                                     color="primary"
                                     icon="edit"
+                                    :disabled="this.disabledEdit"
                                     @click="
-                                      selectedEdit = props.row.id;
-                                      getDatosEditEstados(selectedEdit);
+                                      getDataEstados(`/estados/${props.row.id}`, 'SetDataEstadosEdit', 'formEditEstados');
                                       estadosFormEdit = true;
                                     "
                                   ></q-btn>
@@ -863,6 +858,7 @@
                                     flat
                                     color="primary"
                                     icon="delete"
+                                    :disabled="this.disabledDelete"
                                     @click="selected = props.row.id"
                                     @click.capture="estadosDelete = true"
                                   ></q-btn>
@@ -885,8 +881,7 @@
             </div>
           </div>
         </q-carousel-slide>
-        <q-carousel-slide
-          name="ciudades"
+        <q-carousel-slide name="ciudades"
           class="flex-center col-md-11 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
         >
           <div class="col-md-11 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
@@ -906,7 +901,7 @@
                     outlined
                     standout
                     label="Escoge un país"
-                    @update:model-value="getDatosEstadosSelect2(selectedPais2)"
+                    @update:model-value="getDataEstadosSelect(`/paises/${this.selectedPais2.id}/estados`, 'setDataEstadosSelect', 'estadosCiudades')"
                   >
                     <template v-slot:prepend>
                       <q-icon name="search" />
@@ -927,7 +922,7 @@
                     outlined
                     standout
                     label="Escoge un estado"
-                    @update:model-value="getDatosCiudades(selectedEstado)"
+                    @update:model-value="getDataCiudades(`/estados/${this.selectedEstado.id}/ciudades`, 'setDataCiudades', 'ciudades')"
                   >
                     <template v-slot:prepend>
                       <q-icon name="search" />
@@ -958,6 +953,7 @@
                     label="Insertar"
                     rounded
                     color="primary"
+                    :disabled="this.disabledCreate"
                     @click="ciudadesForm = true"
                     size="16px"
                     class="q-px-xl q-py-xs"
@@ -974,7 +970,6 @@
                       :columns="columnsCiudades"
                       :separator="separator"
                       class="my-sticky-column-table"
-                      :loading="loadingTable"
                       :filter="filterCiudades"
                       style="width: 100%"
                       :grid="$q.screen.xs"
@@ -988,10 +983,10 @@
                             flat
                             color="primary"
                             icon="edit"
+                            :disabled="this.disabledEdit"
                             @click="
-                              selectedEdit = props.row.id;
-                              getDatosEditCiudades(selectedEdit);
-                              ciudadesformedit = true;
+                            getDataCiudades(`/ciudades/${props.row.id}`, 'setDataCiudadesEdit', 'formEditCiudades');
+                            ciudadesformedit = true;
                             "
                           ></q-btn>
                           <q-btn
@@ -1000,6 +995,7 @@
                             flat
                             color="primary"
                             icon="delete"
+                            :disabled="this.disabledDelete"
                             @click="selected = props.row.id"
                             @click.capture="ciudadesDelete = true"
                           ></q-btn>
@@ -1041,9 +1037,9 @@
                                     flat
                                     color="primary"
                                     icon="edit"
+                                    :disabled="this.disabledEdit"
                                     @click="
-                                      selectedEdit = props.row.id;
-                                      getDatosEditCiudades(selectedEdit);
+                                      getDataCiudades(`/ciudades/${props.row.id}`, 'setDataCiudadesEdit', 'formEditCiudades');
                                       ciudadesformedit = true;
                                     "
                                   ></q-btn>
@@ -1069,6 +1065,7 @@
                                     flat
                                     color="primary"
                                     icon="delete"
+                                    :disabled="this.disabledDelete"
                                     @click="selected = props.row.id"
                                     @click.capture="ciudadesDelete = true"
                                   ></q-btn>
@@ -1109,8 +1106,7 @@
             label="Aceptar"
             color="primary"
             v-close-popup
-            @click.capture="contactoEliminado"
-            @click="DeleteDatoPaises(selected)"
+            @click="deleteDataPaises(selected)"
           />
         </q-card-actions>
       </q-card>
@@ -1131,8 +1127,7 @@
             label="Aceptar"
             color="primary"
             v-close-popup
-            @click.capture="contactoEliminado"
-            @click="deleteDatoEstados(selected)"
+            @click="deleteDataEstados(selected)"
           />
         </q-card-actions>
       </q-card>
@@ -1153,11 +1148,25 @@
             label="Aceptar"
             color="primary"
             v-close-popup
-            @click="deleteDatoCiudades(selected)"
+            @click="deleteDataCiudades(selected)"
           />
         </q-card-actions>
       </q-card>
     </q-dialog>
+
+    <user-logout ref="component"
+    @get-Data-Paises="getDataPaises('/paises', 'setData', 'paises')"
+    @get-Data-Estados="getDataEstados(`/paises/${this.selectedPais.id}/estados`, 'setDataEstados', 'estados')"
+    @get-Data-Ciudades="getDataCiudades(`/estados/${this.selectedEstado.id}/ciudades`, 'setDataCiudades', 'ciudades')"
+    @set-Data="setData"
+    @set-Data-Estados="setDataEstados"
+    @set-Data-Paises-Edit="setDataPaisesEdit"
+    @set-Data-Estados-Edit="setDataEstadosEdit"
+    @set-Data-Estados-Select="setDataEstadosSelect"
+    @set-Data-Ciudades="setDataCiudades"
+    @set-Data-Ciudades-Edit="setDataCiudadesEdit"
+    @desactivar-Crud-Pais-Estado-Ciudad="desactivarCrudPaisEstadoCiudad"
+    ></user-logout>
   </q-page>
 </template>
 
@@ -1168,7 +1177,12 @@ import { api } from "boot/axios";
 
 import { useQuasar } from "quasar";
 
+import userLogoutVue from "src/components/userLogout.vue";
+
+import { LocalStorage } from 'quasar';
+
 export default {
+  components: { "user-logout": userLogoutVue },
   name: "Bancos",
   data() {
     return {
@@ -1341,6 +1355,9 @@ export default {
       paisRef2: "",
       estadoRef: "",
       error: "",
+      disabledCreate: true,
+      disabledEdit: true,
+      disabledDelete: true,
     };
   },
   setup() {
@@ -1354,6 +1371,11 @@ export default {
       // rowsNumber: xx if getting data from a server
     });
     return {
+      axiosConfig: {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem('token')}`,
+        }
+      },
       pagination: ref({
         rowsPerPage: 10,
       }),
@@ -1402,9 +1424,8 @@ export default {
     };
   },
   mounted() {
-    this.getDatosPaises();
-    this.getDatosPaisesIniciar();
-    this.getDatosPaisesIniciar2();
+    this.getDataPaises('/paises', 'setData', 'paises');
+    this.$refs.component.desactivarCrud('c_ciudades', 'd_ciudades', 'u_ciudades', 'desactivarCrudPaisEstadoCiudad')
   },
   methods: {
     // Reglas
@@ -1413,200 +1434,77 @@ export default {
         return "Debes Seleccionar Algo";
       }
     },
-    // Metodos para paises
-    getDatosPaises() {
-      api.get("/paises").then((res) => {
-        this.paises = res.data;
-      });
-    },
-    getDatosEditPaises(selectedEdit) {
-      api.get(`/paises/${selectedEdit}`).then((res) => {
-        this.formEditPaises.desc_pais = res.data.desc_pais;
-        this.formEditPaises.tipo_pais = res.data.tipo_pais_desc;
-        this.formEditPaises.id = res.data.id;
-      });
-    },
-    DeleteDatoPaises(idpost) {
-      api
-        .delete(`/paises/${idpost}`)
-        .then((res) => {
-          if ((res.status = 201)) {
-            this.eliminadoConExito();
-            this.getDatosPaises();
-          }
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          if ((this.error = "500")) {
-            this.error =
-              "El pais tiene uno o más Estados/Ciudades asociados, deberás eliminarlos primero";
-          }
-          this.errorDelServidor();
-        });
-    },
-    createDatoPaises() {
-      this.formPaises.tipo_pais = this.formPaises.tipo_pais.value;
-      api
-        .post("/paises/", this.formPaises)
-        .then((res) => {
-          if ((res.status = 201)) {
-            this.añadidoConExito();
-            this.getDatosPaises();
-          }
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
-      this.resetFormpaises();
-    },
-    putDatoPaises() {
-      this.formEditPaises.tipo_pais = this.formEditPaises.tipo_pais.value;
-      api
-        .put(`/paises/${this.formEditPaises.id}`, this.formEditPaises)
-        .then((res) => {
-          if ((res.status = 201)) {
-            this.editadoConExito();
-            this.getDatosPaises();
-          }
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
-      this.resetFormeditpaises();
-    },
-    resetFormpaises() {
-      (this.formPaises.desc_pais = null),
-        (this.formPaises.tipo_pais = null),
-        (this.paisesForm = false),
-        desc_pais.value.resetValidation();
-      tipo_pais.value.resetValidation();
-    },
-    resetFormeditpaises() {
-      (this.formEditPaises.desc_pais = null),
-        (this.formEditPaises.tipo_pais = null),
-        (this.paisesFormEdit = false),
-        desc_pais.value.resetValidation();
-      tipo_pais.value.resetValidation();
+    desactivarCrudPaisEstadoCiudad(createItem, deleteItem, updateItem) {
+      if (createItem == true) {
+        this.disabledCreate = false
+      }
+      if (deleteItem == true) {
+        this.disabledDelete = false
+      }
+      if (updateItem == true) {
+        this.disabledEdit = false
+      }
     },
     // Metodos para estados
-    getDatosEstadosSelect(selectedPais) {
-      api
-        .get(`/paises/${this.selectedPais.id}/estados`)
-        .then((res) => {
-          this.estados = res.data.estados;
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
+    getDataPaises(url, call, dataRes) {
+      this.$refs.component.getData(url, call, dataRes);
     },
-    getDatosEditEstados(selectedEdit) {
-      api.get(`/estados/${selectedEdit}`).then((res) => {
-        this.formEditEstados.desc_estado = res.data.desc_estado;
-        this.formEditEstados.siglas = res.data.siglas;
-        this.formEditEstados.id = res.data.id;
-      });
+    setData(res, dataRes) {
+      this[dataRes] = res
+      this.getDataIniciar('/paises', 'setData', 'paises');
+    }, 
+    setDataPaisesEdit(res, dataRes) {
+      this[dataRes].desc_pais = res.desc_pais;
+      this[dataRes].tipo_pais = res.tipo_pais_desc;
+      this[dataRes].id = res.id;
+    },    
+    deleteDataPaises(idpost) {
+      this.$refs.component.deleteData(`/paises/${idpost}`, 'getDataPaises');
     },
-    deleteDatoEstados(idpost) {
-      api
-        .delete(`/estados/${idpost}`)
-        .then((res) => {
-          if ((res.status = 201)) {
-            this.eliminadoConExito();
-            api.get(`/paises/${this.selectedPais.id}/estados`).then((res) => {
-              this.estados = res.data.estados;
-            });
-          }
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          if ((this.error = "500")) {
-            this.error =
-              "El Estado tiene una o más Ciudades asociadas, deberás eliminarlas primero";
-          }
-          this.errorDelServidor();
-        });
+    createDataPaises() {
+      this.formPaises.tipo_pais = this.formPaises.tipo_pais.value;
+      this.$refs.component.createData('/paises', this.formPaises, 'getDataPaises');
+      this.resetFormPaises();
     },
-    createDatoEstados() {
-      this.formEstados.cod_pais = `${this.selectedPais.id}`;
-      api
-        .post(`/estados`, this.formEstados)
-        .then((res) => {
-          if ((res.status = 201)) {
-            api.get(`/paises/${this.selectedPais.id}/estados`).then((res) => {
-              this.estados = res.data.estados;
-              this.resetFormEstados();
-            });
-            this.añadidoConExito();
-          }
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
-
-      this.resetFormpaises();
+    putDataPaises() {
+      this.formEditPaises.tipo_pais = this.formEditPaises.tipo_pais.value;
+      this.$refs.component.putData(`/paises/${this.formEditPaises.id}`, this.formEditPaises, 'getDataPaises');
+      this.edit = false;
+      this.resetFormEditPaises()
     },
-    putDatoEstados() {
-      api
-        .put(`/estados/${this.formEditEstados.id}`, this.formEditEstados)
-        .then((res) => {
-          if ((res.status = 201)) {
-            this.editadoConExito();
-            api.get(`/paises/${this.selectedPais.id}/estados`).then((res) => {
-              this.estados = res.data.estados;
-              this.resetFormEditEstados();
-            });
-          }
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
+    resetFormPaises() {
+      (this.formPaises.desc_pais = null),
+      (this.formPaises.tipo_pais = null),
+      (this.paisesForm = false)
+    },
+    resetFormEditPaises() {
+      (this.formEditPaises.desc_pais = null),
+      (this.formEditPaises.tipo_pais = null),
+      (this.paisesFormEdit = false)
+    },
+    // Metodos para estados
+    getDataEstados(url, call, dataRes) {
+      this.$refs.component.getData(url, call, dataRes);
+    },
+    setDataEstados(res, dataRes) {
+      this[dataRes] = res.estados
+    },
+    setDataEstadosEdit(res, dataRes) {
+      this[dataRes].desc_estado = res.desc_estado;
+      this[dataRes].siglas = res.siglas;
+      this[dataRes].id = res.id;
+    },
+    deleteDataEstados(idpost) {
+      this.$refs.component.deleteData(`/estados/${idpost}`, 'getDataEstados');
+    },
+    createDataEstados() {
+      this.formEstados.cod_pais = this.selectedPais.id;
+      this.$refs.component.createData('/estados', this.formEstados, 'getDataEstados');
+      this.resetFormEstados();
+    },
+    putDataEstados() {
+      this.$refs.component.putData(`/estados/${this.formEditEstados.id}`, this.formEditEstados, 'getDataEstados');
+      this.resetFormEditEstados()
     },
     resetFormEstados() {
       (this.formEstados.desc_estado = null),
@@ -1623,233 +1521,77 @@ export default {
       siglas.value.resetValidation();
     },
     // Metodos para ciudades
-    getDatosEstadosSelect2(selectedPais2) {
-      api
-        .get(`/paises/${this.selectedPais2.id}/estados`)
-        .then((res) => {
-          this.estadosCiudades = res.data.estados;
-          this.selectedEstado = "";
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
+    getDataEstadosSelect(url, call, dataRes) {
+      this.$refs.component.getData(url, call, dataRes);
     },
-    getDatosCiudades(selectedEstado) {
-      api
-        .get(`/estados/${this.selectedEstado.id}/ciudades`)
-        .then((res) => {
-          this.ciudades = res.data.ciudades;
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
+    setDataEstadosSelect(res, dataRes) {
+      this[dataRes] = res.estados
+      this.selectedEstado = "";
     },
-    getDatosEditCiudades(selectedEdit) {
-      api.get(`/ciudades/${selectedEdit}`).then((res) => {
-        this.formEditCiudades.desc_ciudad = res.data.desc_ciudad;
-        this.formEditCiudades.siglas = res.data.siglas;
-        this.formEditCiudades.check_urbano = res.data.check_urbano_desc;
-        this.formEditCiudades.cod_region = res.data.cod_region_desc;
-        this.formEditCiudades.id = res.data.id;
-      });
+    getDataCiudades(url, call, dataRes) {
+      this.$refs.component.getData(url, call, dataRes);
     },
-    deleteDatoCiudades(idpost) {
-      api
-        .delete(`/ciudades/${idpost}`)
-        .then((res) => {
-          if ((res.status = 201)) {
-            this.eliminadoConExito();
-            this.getDatosCiudades();
-          }
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
+    setDataCiudades(res, dataRes) {
+      this[dataRes] = res.ciudades;
     },
-    createDatoCiudades() {
-      (this.formCiudades.cod_estado = `${this.selectedEstado.id}`),
-        (this.formCiudades.check_urbano = this.formCiudades.check_urbano.value);
+    setDataCiudadesEdit(res, dataRes) {
+      this[dataRes].desc_ciudad = res.desc_ciudad;
+      this[dataRes].siglas = res.siglas;
+      this[dataRes].check_urbano = res.check_urbano_desc;
+      this[dataRes].cod_region = res.cod_region_desc;
+      this[dataRes].id = res.id;
+    },
+    deleteDataCiudades(idpost) {
+      this.$refs.component.deleteData(`/ciudades/${idpost}`, 'getDataCiudades');
+    },
+    createDataCiudades() {
+      this.formCiudades.cod_estado = this.selectedEstado.id,
+      this.formCiudades.check_urbano = this.formCiudades.check_urbano.value;
       this.formCiudades.cod_region = this.formCiudades.cod_region.value;
-      api
-        .post(`/ciudades`, this.formCiudades)
-        .then((res) => {
-          if ((res.status = 201)) {
-            this.getDatosCiudades();
-            this.añadidoConExito();
-          }
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
+      this.$refs.component.createData(`/ciudades`, this.formCiudades, 'getDataCiudades');
       this.resetFormCiudades();
     },
-    putDatoCiudades() {
+    putDataCiudades() {
       this.formEditCiudades.check_urbano =
-        this.formEditCiudades.check_urbano.value;
+      this.formEditCiudades.check_urbano.value;
       this.formEditCiudades.cod_region = this.formEditCiudades.cod_region.value;
-      api
-        .put(`/ciudades/${this.formEditCiudades.id}`, this.formEditCiudades)
-        .then((res) => {
-          if ((res.status = 201)) {
-            this.editadoConExito();
-            this.getDatosCiudades();
-          }
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
-      this.resetFormEditCiudades();
+      this.$refs.component.putData(`/ciudades/${this.formEditCiudades.id}`, this.formEditCiudades, 'getDataCiudades');
+      this.resetFormEditCiudades()
     },
     resetFormCiudades() {
       (this.formCiudades.desc_ciudad = null),
-        (this.formCiudades.siglas = null),
-        (this.formCiudades.check_urbano = null),
-        (this.formCiudades.cod_region = null),
-        (this.ciudadesForm = false),
-        desc_ciudad.value.resetValidation();
-      siglas.value.resetValidation();
-      check_urbano.value.resetValidation();
-      cod_region.value.resetValidation();
+      (this.formCiudades.siglas = null),
+      (this.formCiudades.check_urbano = null),
+      (this.formCiudades.cod_region = null),
+      (this.ciudadesForm = false)
     },
     resetFormEditCiudades() {
       (this.formEditCiudades.desc_ciudad = null),
-        (this.formEditCiudades.siglas = null),
-        (this.formEditCiudades.check_urbano = null),
-        (this.formEditCiudades.cod_region = null),
-        (this.ciudadesformedit = false),
-        desc_ciudad.value.resetValidation();
-      siglas.value.resetValidation();
-      check_urbano.value.resetValidation();
-      cod_region.value.resetValidation();
+      (this.formEditCiudades.siglas = null),
+      (this.formEditCiudades.check_urbano = null),
+      (this.formEditCiudades.cod_region = null),
+      (this.ciudadesformedit = false)
     },
+    
     // Metodos para colocar valores iniciales
-    getDatosPaisesIniciar() {
-      api
-        .get(`/paises`)
+    getDataIniciar() {
+      this.paisRef2 = this.paises[0].id;
+      this.selectedPais = this.paises[0].desc_pais;
+      this.selectedPais2 = this.paises[0];
+      this.paisRef = this.paises[0].id;
+      api.get(`/paises/${this.paisRef2}/estados`, this.axiosConfig)
+      .then((res) => {
+        this.estados = res.data.estados;
+        this.selectedEstado = res.data.estados[0];
+        this.estadosCiudades = res.data.estados;
+        this.estadoRef = res.data.estados[0].id;
+        api.get(`/estados/${this.estadoRef}/ciudades`, this.axiosConfig)
         .then((res) => {
-          this.paisRef2 = res.data[0].id;
-          this.selectedPais = res.data[0].desc_pais;
-          this.getDatosEstadosIniciar();
+        this.ciudades = res.data.ciudades;
         })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
+      })
     },
-    getDatosEstadosIniciar() {
-      api
-        .get(`/paises/${this.paisRef2}/estados`)
-        .then((res) => {
-          this.estados = res.data.estados;
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
-    },
-    getDatosPaisesIniciar2() {
-      api
-        .get(`/paises`)
-        .then((res) => {
-          this.selectedPais2 = res.data[0];
-          this.paisRef = res.data[0].id;
-          this.getDatosEstadosIniciar2();
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
-    },
-    getDatosEstadosIniciar2() {
-      api
-        .get(`/paises/${this.paisRef}/estados`)
-        .then((res) => {
-          this.selectedEstado = res.data.estados[0];
-          this.estadosCiudades = res.data.estados;
-          this.estadoRef = res.data.estados[0].id;
-          this.getDatosCiudadesIniciar();
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
-    },
-    getDatosCiudadesIniciar() {
-      api
-        .get(`/estados/${this.estadoRef}/ciudades`)
-        .then((res) => {
-          this.ciudades = res.data.ciudades;
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
-    },
+
   },
 };
 </script>

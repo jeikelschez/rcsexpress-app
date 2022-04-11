@@ -18,8 +18,7 @@
                   option-label="desc_pais"
                   option-value="id"
                   lazy-rules
-                  @update:model-value="getDatosEstados(selectedPais)"
-                  @input=""
+                  @update:model-value="getData(`/paises/${this.selectedPais.id}/estados`, 'setDataEstados', 'estados')"
                 >
                   <template v-slot:prepend>
                     <q-icon name="person" />
@@ -40,7 +39,7 @@
                   option-label="desc_estado"
                   option-value="id"
                   lazy-rules
-                  @update:model-value="getDatosCiudades(selectedEstado)"
+                  @update:model-value="getData(`/estados/${this.selectedEstado.id}/ciudades`, 'setDataCiudades', 'ciudades')"
                 >
                   <template v-slot:prepend>
                     <q-icon name="person" />
@@ -252,7 +251,7 @@
     </q-dialog>
 
     <q-dialog v-model="edit">
-      <q-card class="q-pa-md" bordered style="width: 999px">
+      <q-card class="q-pa-md" bordered style="width: 999px; max-width: 80vw">
         <q-card-section>
           <q-form @submit="putDato">
             <div class="row">
@@ -269,7 +268,7 @@
                   option-label="desc_pais"
                   option-value="id"
                   lazy-rules
-                  @update:model-value="getDatosEstados(selectedPais)"
+                  @update:model-value="getData(`/paises/${this.selectedPais.id}/estados`, 'setDataEstados', 'estados')"
                 >
                   <template v-slot:prepend>
                     <q-icon name="person" />
@@ -289,7 +288,7 @@
                   option-label="desc_estado"
                   option-value="id"
                   lazy-rules
-                  @update:model-value="getDatosCiudades(selectedEstado)"
+                  @update:model-value="getData(`/estados/${this.selectedEstado.id}/ciudades`, 'setDataCiudades', 'ciudades')"
                 >
                   <template v-slot:prepend>
                     <q-icon name="person" />
@@ -417,6 +416,7 @@
                   class="pcform"
                   hint=""
                   lazy-rules
+                  :rules="reglasInputfaxInt"
                   mask="####-#####"
                 >
                   <template v-slot:prepend>
@@ -537,6 +537,7 @@
               label="Insertar Agencia"
               rounded
               color="primary"
+              :disabled="this.disabledCreate"
               @click="create = true"
               @click.capture="resetForm"
             ></q-btn>
@@ -552,7 +553,6 @@
                 :columns="columns"
                 :separator="separator"
                 class="my-sticky-column-table"
-                :loading="loadingTable"
                 :filter="filter"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -566,9 +566,10 @@
                       flat
                       color="primary"
                       icon="edit"
+                      @click.capture="resetFormEdit"
+                      :disabled="this.disabledEdit"
                       @click="
-                        selectedEdit = props.row.id;
-                        getDatoEdit(selectedEdit);
+                        getDataEdit(props.row.id);
                         edit = true;
                       "
                     ></q-btn>
@@ -578,6 +579,7 @@
                       flat
                       color="primary"
                       icon="delete"
+                      :disabled="this.disabledDelete"
                       @click="selected = props.row.id"
                       @click.capture="deletePopup = true"
                     ></q-btn>
@@ -617,9 +619,10 @@
                               flat
                               color="primary"
                               icon="edit"
+                              :disabled="this.disabledEdit"
+                              @click.capture="resetFormEdit"
                               @click="
-                                selectedEdit = props.row.id;
-                                getDatoEdit(selectedEdit);
+                                getDataEdit(props.row.id);
                                 edit = true;
                               "
                             ></q-btn>
@@ -645,6 +648,7 @@
                               flat
                               color="primary"
                               icon="delete"
+                              :disabled="this.disabledDelete"
                               @click="selected = props.row.id"
                               @click.capture="deletePopup = true"
                             ></q-btn>
@@ -687,6 +691,15 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <user-logout ref="component"
+    @get-Data="getData('/agencias','setData','datos')"
+    @set-Data="setData"
+    @set-Data-Edit="setDataEdit"
+    @set-Data-Edit-Ciudades="setDataEditCiudades"
+    @set-Data-Edit-Estados="setDataEditEstados"
+    @set-Data-Estados="setDataEstados"
+    @set-Data-Ciudades="setDataCiudades"
+    @desactivar-Crud-Agencias="desactivarCrudAgencias"></user-logout>
   </q-page>
 </template>
 
@@ -697,7 +710,12 @@ import { api } from "boot/axios";
 
 import { useQuasar } from "quasar";
 
+import userLogoutVue from 'src/components/userLogout.vue';
+
+import { LocalStorage } from 'quasar';
+
 export default {
+  components: { 'user-logout': userLogoutVue },
   name: "Bancos",
   data() {
     return {
@@ -787,6 +805,9 @@ export default {
       CiudadEdit: "",
       EstadoEdit: "",
       PaisEdit: "",
+      disabledCreate: true,
+      disabledEdit: true,
+      disabledDelete: true,
     };
   },
   setup() {
@@ -810,10 +831,18 @@ export default {
         (val) => val.length < 50 || "Deben ser máximo 50 caracteres",
       ],
       reglaInputDireccion: [
+        (val) => (val !== null && val !== "") || "Debes escribir algo",
         (val) => val.length < 200 || "Deben ser máximo 200 caracteres",
+        (val) => val.length > 4 || "Deben ser minimo 4 caracteres",
       ],
       reglasInputRifInt: [
+        (val) => (val !== null && val !== "") || "Debes escribir algo",
         (val) => val.length < 20 || "Deben ser máximo 20 caracteres",
+        (val) => val.length > 4 || "Deben ser minimo 4 caracteres",
+      ],
+      reglasInputfaxInt: [
+        (val) => (val !== null && val !== "") || "Debes escribir algo",
+        (val) => val.length > 4 || "Deben ser minimo 4 caracteres",
       ],
       errorDelServidor() {
         $q.notify({
@@ -844,8 +873,9 @@ export default {
     };
   },
   mounted() {
-    this.getDato();
-    this.getDatosPaises();
+    this.getData('/agencias','setData','datos')
+    this.getData('/paises','setData','paises')
+    this.$refs.component.desactivarCrud('c_agencias', 'd_agencias', 'u_agencias', 'desactivarCrudAgencias')
   },
   methods: {
     // Reglas
@@ -854,231 +884,111 @@ export default {
         return "Debes Seleccionar Algo";
       }
     },
-    getDatosPaises() {
-      api.get("/paises").then((res) => {
-        this.paises = res.data;
-      });
+    desactivarCrudAgencias(createItem, deleteItem, updateItem) {
+      if (createItem == true) {
+        this.disabledCreate = false
+      }
+      if (deleteItem == true) {
+        this.disabledDelete = false
+      }
+      if (updateItem == true) {
+        this.disabledEdit = false
+      }
     },
-    getDatosEstados(selectedPais) {
-      api
-        .get(`/paises/${this.selectedPais.id}/estados`)
-        .then((res) => {
-          this.estados = res.data.estados;
-          this.ciudades = [];
-          this.ciudades = [];
-          this.selectedEstado = null;
-          this.selectedCiudad = null;
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
+
+    getData(url, call, dataRes) {
+      this.$refs.component.getData(url, call, dataRes);
     },
-    getDatosCiudades(selectedEstado) {
-      api
-        .get(`/estados/${this.selectedEstado.id}/ciudades`)
-        .then((res) => {
-          this.ciudades = res.data.ciudades;
-          this.selectedCiudad = null;
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
+    setData(res, dataRes) {
+      this[dataRes] = res
     },
-    getDato() {
-      api.get("/agencias").then((res) => {
-        this.datos = res.data;
-      });
+
+    getDataEdit(id) {
+      this.$refs.component.getDataEdit(`/agencias/${id}`, 'setDataEdit', 'formEdit');
     },
-    getDatoEdit(selectedEdit) {
-      api.get(`/agencias/${selectedEdit}`).then((res) => {
-        this.formEdit.id = res.data.id;
-        this.formEdit.nb_agencia = res.data.nb_agencia;
-        this.formEdit.persona_contacto = res.data.persona_contacto;
-        this.formEdit.dir_agencia = res.data.dir_agencia;
-        this.formEdit.fax_agencia = res.data.fax_agencia;
-        this.formEdit.email_agencia = res.data.email_agencia;
-        this.formEdit.tlf_agencia = res.data.tlf_agencia;
-        this.formEdit.rif_agencia = res.data.rif_agencia;
-        this.formEdit.nit_agencia = res.data.nit_agencia;
-        this.formEdit.estatus = res.data.estatus_desc;
-        this.formEdit.cod_ciudad = res.data.cod_ciudad;
-        this.selectedCiudadEdit = res.data.ciudades.cod_estado;
-        this.ciudadEdit = res.data.ciudades.id;
-        this.getDatoEditCiudades();
-        this.pintarCiudadesEdit();
-      });
+    setDataEdit(res, dataRes) {
+      this[dataRes].id = res.id
+      this[dataRes].nb_agencia = res.nb_agencia
+      this[dataRes].persona_contacto = res.persona_contacto
+      this[dataRes].dir_agencia = res.dir_agencia
+      this[dataRes].fax_agencia = res.fax_agencia
+      this[dataRes].email_agencia = res.email_agencia
+      this[dataRes].tlf_agencia = res.tlf_agencia
+      this[dataRes].rif_agencia = res.rif_agencia
+      this[dataRes].nit_agencia = res.nit_agencia
+      this[dataRes].estatus = res.estatus
+      this.selectedCiudadEdit = res.ciudades.cod_estado,
+      this.selectedCiudad = res.ciudades.desc_ciudad;
+      this.ciudadEdit = res.ciudades.id
+      this.$refs.component.getDataEdit(`/estados/${this.selectedCiudadEdit}/ciudades`, 'setDataEditCiudades', 'ciudades');
     },
-    pintarCiudadesEdit() {
-      api.get(`/ciudades/${this.ciudadEdit}`).then((res) => {
-        this.selectedCiudad = `${res.data.desc_ciudad}`;
-        this.estadoEdit = res.data.cod_estado;
-        this.pintarEstadosEdit();
-      });
+    setDataEditCiudades(res, dataRes) {
+      this[dataRes] = res.ciudades
+      this.selectedEstadoEdit = res.cod_pais;
+      this.selectedEstado = res.desc_estado;
+      this.$refs.component.getDataEdit(
+        `/paises/${this.selectedEstadoEdit}/estados`, 'setDataEditEstados', 'estados');
     },
-    pintarEstadosEdit() {
-      api.get(`/estados/${this.estadoEdit}`).then((res) => {
-        this.selectedEstado = res.data.desc_estado;
-        this.paisEdit = res.data.cod_pais;
-        this.pintarPaisesEdit();
-      });
+    setDataEditEstados(res, dataRes) {
+      this[dataRes] = res.estados
+      this.selectedPais = res.desc_pais;
     },
-    pintarPaisesEdit() {
-      api.get(`/paises/${this.paisEdit}`).then((res) => {
-        this.selectedPais = res.data.desc_pais;
-      });
+
+    setDataEstados(res, dataRes) {
+      this[dataRes] = res.estados
+      this.selectedEstado = ''
+      this.selectedCiudad = ''
     },
-    getDatoEditCiudades() {
-      api.get(`/estados/${this.selectedCiudadEdit}/ciudades`).then((res) => {
-        this.ciudades = res.data.ciudades;
-        this.selectedEstadoEdit = res.data.cod_pais;
-        this.getDatoEditEstados();
-      });
+    setDataCiudades(res, dataRes) {
+      this.selectedCiudad = ''
+      this[dataRes] = res.ciudades
     },
-    getDatoEditEstados() {
-      api.get(`/paises/${this.selectedEstadoEdit}/estados`).then((res) => {
-        this.estados = res.data.estados;
-        this.selectedPaisEdit = res.data.cod_pais;
-        this.getDatoEditPaises();
-      });
-    },
-    getDatoEditPaises() {
-      api.get("/paises").then((res) => {
-        this.paises = res.data;
-      });
-    },
+    
     deleteDato(idpost) {
-      api
-        .delete(`/agencias/${idpost}`)
-        .then((res) => {
-          if ((res.status = 201)) {
-            this.eliminadoConExito();
-            api.get("/agencias").then((res) => {
-              this.datos = res.data;
-            });
-          }
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
+      this.$refs.component.deleteData(`/agencias/${idpost}`, 'getData');
     },
     createDato() {
       this.form.cod_ciudad = this.selectedCiudad.id;
       this.form.estatus = this.form.estatus.value;
-      api
-        .post("/agencias/", this.form)
-        .then((res) => {
-          if ((res.status = 201)) {
-            this.añadidoConExito();
-            api.get("/agencias").then((res) => {
-              this.datos = res.data;
-            });
-          }
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
+      this.$refs.component.createData('/agencias', this.form, 'getData');
       this.resetForm();
     },
     putDato() {
       this.formEdit.cod_ciudad = this.selectedCiudad.id;
       this.formEdit.estatus = this.formEdit.estatus.value;
-      api
-        .put(`/agencias/${this.formEdit.id}`, this.formEdit)
-        .then((res) => {
-          if ((res.status = 201)) {
-            this.editadoConExito();
-            this.getDato();
-          }
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
-      this.resetFormEdit();
+      this.$refs.component.putData(`/agencias/${this.formEdit.id}`, this.formEdit, 'getData');
+      this.edit = false;
     },
+    
     resetForm() {
-      (this.selectedPais = null),
+        (this.selectedPais = null),
         (this.selectedEstado = null),
         (this.selectedCiudad = null),
         (this.form.persona_contacto = null),
         (this.form.nb_agencia = null),
         (this.form.persona_contacto = null),
         (this.form.dir_agencia = ""),
-        (this.form.fax_agencia = null),
+        (this.form.fax_agencia = ""),
         (this.form.email_agencia = null),
         (this.form.tlf_agencia = null),
         (this.form.rif_agencia = ""),
         (this.form.nit_agencia = ""),
         (this.form.estatus = null),
-        (this.create = null),
-        nb_agencia.value.resetValidation();
-      persona_contacto.value.resetValidation();
-      dir_agencia.value.resetValidation();
-      fax_agencia.value.resetValidation();
-      email_agencia.value.resetValidation();
-      tlf_agencia.value.resetValidation();
-      rif_agencia.value.resetValidation();
-      nit_agencia.value.resetValidation();
-      estatus.value.resetValidation();
+        (this.create = null)
     },
     resetFormEdit() {
       (this.selectedPais = null),
-        (this.selectedEstado = null),
-        (this.selectedCiudad = null),
-        (this.formEdit.persona_contacto = null),
-        (this.formEdit.nb_agencia = null),
-        (this.formEdit.persona_contacto = null),
-        (this.formEdit.dir_agencia = null),
-        (this.formEdit.fax_agencia = null),
-        (this.formEdit.email_agencia = null),
-        (this.formEdit.tlf_agencia = null),
-        (this.formEdit.rif_agencia = null),
-        (this.formEdit.nit_agencia = null),
-        (this.formEdit.estatus = null),
-        (this.edit = null),
-        nb_agencia.value.resetValidation();
-      persona_contacto.value.resetValidation();
-      dir_agencia.value.resetValidation();
-      fax_agencia.value.resetValidation();
-      email_agencia.value.resetValidation();
-      tlf_agencia.value.resetValidation();
-      rif_agencia.value.resetValidation();
-      nit_agencia.value.resetValidation();
-      estatus.value.resetValidation();
+      (this.selectedEstado = null),
+      (this.selectedCiudad = null),
+      (this.formEdit.persona_contacto = null),
+      (this.formEdit.dir_agencia = ""),
+      (this.formEdit.fax_agencia = ""),
+      (this.formEdit.email_agencia = null),
+      (this.formEdit.tlf_agencia = null),
+      (this.formEdit.rif_agencia = ""),
+      (this.formEdit.nit_agencia = ""),
+      (this.formEdit.nb_agencia = null),
+      (this.formEdit.estatus = null)
     },
   },
 };

@@ -32,6 +32,19 @@ export default route((/* { store, ssrContext } */) => {
     const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
     const isAuthenticated = sessionStorage.getItem('isAuthenticated');
 
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+      let timeBefore = moment(Router.app.$session.get('1').date);
+      let timeNow = moment(new Date());
+      let timeDiff = moment.duration(timeNow.diff(timeBefore)).asMinutes();
+      if (timeDiff > Router.app.$session.get('1').limit) {
+        next({ path: '/login' });
+      } else {
+        next();
+      }
+    } else {
+      next();
+    }
+
     // Now you need to add your authentication logic here, like calling an API endpoint
     if (requiresAuth && !isAuthenticated) {
       next('login');

@@ -3,7 +3,7 @@
     <q-dialog v-model="usuariosForm">
       <q-card class="q-pa-md" bordered style="width: 999px">
         <q-card-section>
-          <q-form @submit="createDatoUsuarios()" class="q-gutter-md">
+          <q-form @submit="createDataUsuarios()" class="q-gutter-md">
             <div class="row">
               <div class="col-md-5 col-xs-12">
                 <q-input
@@ -94,7 +94,7 @@
                   lazy-rules
                   transition-show="flip-up"
                   transition-hide="flip-down"
-                  @update:model-value="getDatosRolesSelect(formUsuarios.cod_agencia)"
+                  @update:model-value="getData(`/agencias/${this.formUsuarios.cod_agencia.id}/roles`, 'setDataRoles', 'roles')"
                 >
                   <template v-slot:prepend>
                     <q-icon name="south_america" />
@@ -152,7 +152,7 @@
     <q-dialog v-model="usuariosFormEdit">
       <q-card class="q-pa-md" bordered style="width: 999px">
         <q-card-section>
-          <q-form @submit="putDatoUsuarios()">
+          <q-form @submit="putDataUsuarios()">
             <div class="row">
               <div class="col-md-5 col-xs-12">
                 <q-input
@@ -250,7 +250,7 @@
                   lazy-rules
                   transition-show="flip-up"
                   transition-hide="flip-down"
-                  @update:model-value="getDatosRolesEdit(formEditUsuarios.cod_agencia)"
+                  @update:model-value="getData(`/agencias/${this.formEditUsuarios.cod_agencia.id}/roles`, 'setDataRoles', 'roles')"
                 >
                   <template v-slot:prepend>
                     <q-icon name="south_america" />
@@ -330,7 +330,7 @@
               outlined
               standout
               label="Escoge una Agencia"
-              @update:model-value="getDatosUsuariosSelect(selectedAgencia)"
+              @update:model-value="getData(`/agencias/${this.selectedAgencia.id}/usuarios`, 'setDataUsuarios', 'usuarios')"
             >
               <template v-slot:prepend>
                 <q-icon name="search" />
@@ -363,6 +363,7 @@
               label="Insertar"
               rounded
               color="primary"
+              :disabled="this.disabledCreate"
               @click="usuariosForm = true"
               size="16px"
               class="q-px-xl q-py-xs insertarestadosmovil"
@@ -379,7 +380,6 @@
                 :columns="columnsUsuarios"
                 :separator="separator"
                 class="my-sticky-column-table"
-                :loading="loadingTable"
                 :filter="filterUsuarios"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -393,10 +393,10 @@
                       flat
                       color="primary"
                       icon="edit"
+                      :disabled="this.disabledEdit"
                       @click="
-                        selectedEdit = props.row.login;
-                        getDatosEditUsuarios(selectedEdit);
-                        usuariosFormEdit = true;
+                      getData(`/usuarios/${props.row.login}`, 'setDataUsuariosEdit', 'formEditUsuarios');
+                      usuariosFormEdit = true;
                       "
                     ></q-btn>
                     <q-btn
@@ -405,6 +405,7 @@
                       flat
                       color="primary"
                       icon="delete"
+                      :disabled="this.disabledDelete"
                       @click="selected = props.row.login"
                       @click.capture="usuariosDelete = true"
                     ></q-btn>
@@ -444,9 +445,9 @@
                               flat
                               color="primary"
                               icon="edit"
+                              :disabled="this.disabledEdit"
                               @click="
-                                selectedEdit = props.row.id;
-                                getDatosEditUsuarios(selectedEdit);
+                                getData(`/usuarios/${props.row.login}`, 'setDataUsuariosEdit', 'formEditUsuarios');
                                 usuariosFormEdit = true;
                               "
                             ></q-btn>
@@ -472,6 +473,7 @@
                               flat
                               color="primary"
                               icon="delete"
+                              :disabled="this.disabledDelete"
                               @click="selected = props.row.id"
                               @click.capture="usuariosDelete = true"
                             ></q-btn>
@@ -509,23 +511,37 @@
             label="Aceptar"
             color="primary"
             v-close-popup
-            @click.capture="contactoEliminado"
-            @click="deleteDatoUsuarios(selected)"
+            @click="deleteData(selected)"
           />
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <user-logout
+      ref="component"
+      @get-Data="getData(`/agencias/${this.selectedAgencia.id}/usuarios`, 'setDataRoles', 'usuarios')"
+      @get-Data-Usuarios="getData(`/agencias/${this.selectedAgencia.id}/usuarios`, 'setDataUsuarios', 'usuarios')"
+      @set-Data-Usuarios="setDataUsuarios"
+      @set-Data-Usuarios-Edit="setDataUsuariosEdit"
+      @set-Data-Roles="setDataRoles"
+      @set-Data="setData"
+      @desactivar-Crud-Usuarios="desactivarCrudUsuarios"
+    ></user-logout>
   </q-page>
 </template>
 
 <script>
 import { ref } from "vue";
 
+import userLogoutVue from "src/components/userLogout.vue";
+
+import { LocalStorage } from 'quasar';
+
 import { api } from "boot/axios";
 
 import { useQuasar } from "quasar";
 
 export default {
+  components: { "user-logout": userLogoutVue },
   name: "Bancos",
   data() {
     return {
@@ -595,6 +611,9 @@ export default {
       agenciaRef: "",
       agenciaRef2: "",
       error: "",
+      disabledCreate: true,
+      disabledEdit: true,
+      disabledDelete: true,
     };
   },
   setup() {
@@ -608,6 +627,11 @@ export default {
       // rowsNumber: xx if getting data from a server
     });
     return {
+      axiosConfig: {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem('token')}`,
+        }
+      },
       pagination: ref({
         rowsPerPage: 10,
       }),
@@ -648,7 +672,7 @@ export default {
         (val) => val.length > 3 || "Deben ser minimo 3 caracteres",
       ],
       reglasPassword: [(val) =>
-          (val !== null && val !== "") || "Por favor escribe algo",
+        (val !== null && val !== "") || "Por favor escribe algo",
         (val) => val.length < 10 || "Deben ser máximo 10 caracteres",
         (val) => val.length > 3 || "Deben ser minimo 3 caracteres",
       ],
@@ -660,8 +684,8 @@ export default {
     };
   },
   mounted() {
-    this.getDatosAgencias();
-    this.getDatosAgenciasIniciar();
+    this.getData('/agencias', 'setData', 'agencias');
+    this.$refs.component.desactivarCrud('c_usuarios', 'd_usuarios', 'u_usuarios', 'desactivarCrudUsuarios')
   },
   methods: {
     // Reglas
@@ -670,134 +694,58 @@ export default {
         return "Debes Seleccionar Algo";
       }
     },
-    // Metodos para Agencias
-    getDatosAgencias() {
-      api.get("/agencias").then((res) => {
-        this.agencias = res.data;
-      });
+    desactivarCrudUsuarios(createItem, deleteItem, updateItem) {
+      if (createItem == true) {
+        this.disabledCreate = false
+      }
+      if (deleteItem == true) {
+        this.disabledDelete = false
+      }
+      if (updateItem == true) {
+        this.disabledEdit = false
+      }
     },
-    getDatosRoles() {
-      api.get(`/agencias/${this.selectedAgencia.id}/roles`)
-        .then((res) => {
-          this.roles = res.data.roles;
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
+    getData(url, call, dataRes) {
+    this.$refs.component.getData(url, call, dataRes);
     },
-    // Metodos para usuarios
-    getDatosUsuariosSelect(selectedAgencia) {
-      api.get(`/agencias/${this.selectedAgencia.id}/usuarios`)
-        .then((res) => {
-          this.usuarios = res.data.usuarios;
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
+    setData(res, dataRes) {
+      this[dataRes] = res
+      this.getDatosIniciar()
     },
-    getDatosEditUsuarios(selectedEdit) {
-      api.get(`/usuarios/${selectedEdit}`).then((res) => {
-        this.formEditUsuarios.login = res.data.login;
-        this.formEditUsuarios.nombre = res.data.nombre;
-        this.formEditUsuarios.cod_rol = res.data.roles.descripcion;
-        this.formEditUsuarios.id = res.data.id;
-        this.formEditUsuarios.password = res.data.password;
-        this.formEditUsuarios.activo = res.data.activo_desc;
-        this.formEditUsuarios.cod_agencia = this.selectedAgencia;
-        this.getDatosRoles();
-      });
+    setDataUsuarios(res, dataRes) {
+      this[dataRes] = res.usuarios
     },
-    deleteDatoUsuarios(idpost) {
-      api.delete(`/usuarios/${idpost}`)
-        .then((res) => {
-          if ((res.status = 201)) {
-            this.eliminadoConExito();
-            api
-              .get(`/agencias/${this.selectedAgencia.id}/usuarios`)
-              .then((res) => {
-                this.usuarios = res.data.usuarios;
-              });
-          }
-        })
-        .catch((err) => {
-          if ((err.response.data.statusCode === 400)) {
-            this.error = "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema"
-            this.errorDelServidor();
-          }
-          if ((err.response.statusCode === 500)) {
-            this.error = "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema"
-            this.errorDelServidor();
-          }
-        });
+    setDataRoles(res, dataRes) {
+      this[dataRes] = res.roles
+      this.formEditUsuarios.cod_rol = ''
     },
-    createDatoUsuarios() {
+    setDataUsuariosEdit(res, dataRes) {
+      console.log(res)
+      this[dataRes].login = res.login;
+      this[dataRes].nombre = res.nombre;
+      this[dataRes].cod_rol = res.roles.descripcion;
+      this[dataRes].id = res.id;
+      this[dataRes].password = res.password;
+      this[dataRes].activo = res.activo_desc;
+      this[dataRes].cod_agencia = this.selectedAgencia;
+    },
+    deleteData(idpost) {
+      this.$refs.component.deleteData(`/usuarios/${idpost}`, 'getDataUsuarios');
+    },
+    createDataUsuarios() {
       this.formUsuarios.activo = this.formUsuarios.activo.value;
       this.formUsuarios.cod_rol = this.formUsuarios.cod_rol.id;
       this.formUsuarios.cod_agencia = this.formUsuarios.cod_agencia.id;
-      api.post(`/usuarios`, this.formUsuarios)
-        .then((res) => {
-          if ((res.status = 201)) {
-            api
-              .get(`/agencias/${this.selectedAgencia.id}/usuarios`)
-              .then((res) => {
-                this.usuarios = res.data.usuarios;
-                this.resetformUsuarios();
-              });
-            this.añadidoConExito();
-          }
-        })
-        .catch((err) => {
-        if ((err.response.data.statusCode === 400)) {
-            this.error = "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema"
-            this.errorDelServidor();
-          }
-          if ((err.response.statusCode === 500)) {
-            this.error = "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema"
-            this.errorDelServidor();
-          }
-        });
-        this.resetFormUsuarios();
+      this.$refs.component.createData(`/usuarios`, this.formUsuarios, 'getDataUsuarios');
+      this.resetFormUsuarios();
     },
-    putDatoUsuarios() {
+    putDataUsuarios() {
       this.formEditUsuarios.activo = this.formEditUsuarios.activo.value;
       this.formEditUsuarios.cod_rol = this.formEditUsuarios.cod_rol.id;
       this.formEditUsuarios.cod_agencia = this.formEditUsuarios.cod_agencia.id;
-      api.put(`/usuarios/${this.formEditUsuarios.login}`, this.formEditUsuarios)
-        .then((res) => {
-          if ((res.status = 201)) {
-            this.editadoConExito();
-            api.get(`/agencias/${this.selectedAgencia.id}/usuarios`)
-              .then((res) => {
-                this.usuarios = res.data.usuarios;
-                this.resetFormEditUsuarios();
-              });
-          }
-        })
-        .catch((err) => {
-        if ((err.response.data.statusCode === 400)) {
-            this.error = "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema"
-            this.errorDelServidor();
-          }
-          if ((err.response.statusCode === 500)) {
-            this.error = "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema"
-            this.errorDelServidor();
-          }
-        });
-    },
+      this.$refs.component.putData(`/usuarios/${this.formEditUsuarios.login}`, this.formEditUsuarios, 'getDataUsuarios');
+      this.resetFormEditUsuarios()
+    }, 
     resetFormUsuarios() {
       (this.formUsuarios.nombre = null),
       (this.formUsuarios.login = null),
@@ -816,75 +764,15 @@ export default {
       (this.formUsuarios.cod_agencia = null),
       (this.usuariosFormEdit = false)
     },
-    getDatosRolesSelect(selectedAgencia) {
-      api.get(`/agencias/${this.formUsuarios.cod_agencia.id}/roles`)
-        .then((res) => {
-          this.roles = res.data.roles;
-          this.formUsuarios.cod_rol = "";
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
-    },
-    getDatosRolesEdit(selectedAgencia) {
-      api.get(`/agencias/${this.formEditUsuarios.cod_agencia.id}/roles`)
-        .then((res) => {
-          this.roles = res.data.roles;
-          this.formEditUsuarios.cod_rol = "";
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
-    },
+
     // Metodos para colocar valores iniciales
-    getDatosAgenciasIniciar() {
-      api.get(`/agencias`)
-        .then((res) => {
-          this.agenciaRef2 = res.data[0].id;
-          this.selectedAgencia = res.data[0];
-          this.getDatosUsuariosIniciar();
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
-    },
-    getDatosUsuariosIniciar() {
-      api
-        .get(`/agencias/${this.agenciaRef2}/usuarios`)
+    getDatosIniciar() {
+        this.agenciaRef2 = this.agencias[0].id;
+        this.selectedAgencia = this.agencias[0];
+        api.get(`/agencias/${this.agenciaRef2}/usuarios`, this.axiosConfig)
         .then((res) => {
           this.usuarios = res.data.usuarios;
         })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
     },
   },
 };

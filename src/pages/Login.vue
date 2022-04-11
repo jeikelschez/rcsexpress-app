@@ -13,7 +13,7 @@
                     color="blue"
                     bg-color="white"
                     filled
-                    v-model="user"
+                    v-model="form.username"
                     :label="$t('Login.user')"
                     :rules="[val => !!val || $t('Login.blank_user')]"
                   >
@@ -26,7 +26,7 @@
                     standout
                     bg-color="white"
                     filled
-                    v-model="pass"
+                    v-model="form.password"
                     :label="$t('Login.password')"
                     :type="isPwd ? 'password' : 'text'"
                     :rules="[val => !!val || $t('Login.blank_pass')]"
@@ -51,6 +51,7 @@
             </q-form>
           </div>
         </div>
+        <user-logout ref="component"></user-logout>
       </q-page>
     </q-page-container>
   </q-layout>
@@ -58,46 +59,61 @@
 
 <script>
 import { api } from 'boot/axios';
+import { LocalStorage } from 'quasar';
+import { useQuasar } from "quasar";
+import userLogoutVue from "src/components/userLogout.vue";
 
 export default {
+  components: { "user-logout": userLogoutVue },
   name: 'PageLogin',
   data() {
     return {
-      isAuthenticated: false,
       routes: [],
-      user: '',
-      pass: '',
+      form: {
+        username: "",
+        password: "",
+      },
       isPwd: true,
       remember: true,
     };
   },
-  mounted() {
-    api.get('/products')
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch(() => {
-        console.log('error');
-      });
+  setup() {
+    const $q = useQuasar();
+    return {
+      isNotAuthenticated() {
+        $q.notify({
+          message: "Usuario o Contraseña Invalida",
+          color: "red",
+        });
+      },
+    };
   },
+  mounted() {},
   methods: {
     onSubmit() {
-      if (this.user.hasError || this.pass.hasError) {
-        this.formHasError = true;
-      } else if (this.user === 'admin' && this.pass === 'admin') {
-        this.isAuthenticated = true;
-        sessionStorage.setItem('isAuthenticated', this.isAuthenticated);
-        this.$router.push('/dashboard');
-      } else {
-        this.$q.notify({
-          color: 'negative',
-          message: this.$t('Login.not_login'),
+      api.post(`/usuarios/login`, this.form)
+        .then((res) => {
+          if ((res.status = 201)) {
+            LocalStorage.set('token', `${res.data.data.accessToken}`),
+            LocalStorage.set('user', true),
+            LocalStorage.set('refreshToken', `${res.data.data.refreshToken}`),
+            this.$router.push('/dashboard');
+            this.$refs.component.setTimers()
+          }
+        })
+        .catch((err) => {
+          if (err.response) {
+            this.error = err.response.data.statusCode;
+          }
+          if ((this.error = "404")) {
+            this.isNotAuthenticated()
+            this.onReset()
+          }
         });
-      }
     },
     onReset() {
-      this.user = '';
-      this.pass = '';
+      this.form.username = '';
+      this.form.password = '';
     },
   },
 };

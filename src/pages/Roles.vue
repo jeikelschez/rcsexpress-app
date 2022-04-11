@@ -3,7 +3,7 @@
     <q-dialog v-model="rolesForm">
       <q-card class="q-pa-md" bordered style="width: 999px">
         <q-card-section>
-          <q-form @submit="createDatoRoles()" class="q-gutter-md">
+          <q-form @submit="createDataRoles()" class="q-gutter-md">
             <div class="row">
               <div class="col-md-5 col-xs-12">
                 <q-input
@@ -72,7 +72,7 @@
     <q-dialog v-model="rolesFormEdit">
       <q-card class="q-pa-md" bordered style="width: 999px">
         <q-card-section>
-          <q-form @submit="putDatoRoles()">
+          <q-form @submit="putDataRoles()">
             <div class="row">
               <div class="col-md-5 col-xs-12">
                 <q-input
@@ -163,7 +163,7 @@
               outlined
               standout
               label="Escoge una Agencia"
-              @update:model-value="getDatosRolesSelect(selectedAgencia)"
+              @update:model-value="getData(`/agencias/${this.selectedAgencia.id}/roles`, 'setDataRoles', 'roles')"
             >
               <template v-slot:prepend>
                 <q-icon name="search" />
@@ -196,6 +196,7 @@
               label="Insertar"
               rounded
               color="primary"
+              :disabled="this.disabledCreate"
               @click="rolesForm = true"
               size="16px"
               class="q-px-xl q-py-xs insertarestadosmovil"
@@ -212,7 +213,6 @@
                 :columns="columnsRoles"
                 :separator="separator"
                 class="my-sticky-column-table"
-                :loading="loadingTable"
                 :filter="filterRoles"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -226,10 +226,10 @@
                       flat
                       color="primary"
                       icon="edit"
+                      :disabled="this.disabledEdit"
                       @click="
-                        selectedEdit = props.row.id;
-                        getDatosEditRoles(selectedEdit);
-                        rolesFormEdit = true;
+                      getData(`/roles/${props.row.id}`, 'setDataRolesEdit', 'formEditRoles');
+                      rolesFormEdit = true;
                       "
                     ></q-btn>
                     <q-btn
@@ -238,6 +238,7 @@
                       flat
                       color="primary"
                       icon="delete"
+                      :disabled="this.disabledDelete"
                       @click="selected = props.row.id"
                       @click.capture="rolesDelete = true"
                     ></q-btn>
@@ -277,9 +278,9 @@
                               flat
                               color="primary"
                               icon="edit"
+                              :disabled="this.disabledEdit"
                               @click="
-                                selectedEdit = props.row.id;
-                                getDatosEditRoles(selectedEdit);
+                                getData(`/roles/${props.row.id}`, 'setDataRolesEdit', 'formEditRoles');
                                 rolesFormEdit = true;
                               "
                             ></q-btn>
@@ -305,6 +306,7 @@
                               flat
                               color="primary"
                               icon="delete"
+                              :disabled="this.disabledDelete"
                               @click="selected = props.row.id"
                               @click.capture="rolesDelete = true"
                             ></q-btn>
@@ -342,23 +344,35 @@
             label="Aceptar"
             color="primary"
             v-close-popup
-            @click.capture="contactoEliminado"
-            @click="deleteDatoRoles(selected)"
+            @click="deleteData(selected)"
           />
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <user-logout
+      ref="component"
+      @get-Data="getData(`/agencias/${this.selectedAgencia.id}/roles`, 'setDataRoles', 'roles')"
+      @set-Data-Roles="setDataRoles"
+      @set-Data-Roles-Edit="setDataRolesEdit"
+      @set-Data="setData"
+      @desactivar-Crud-Roles="desactivarCrudRoles"
+    ></user-logout>
   </q-page>
 </template>
 
 <script>
 import { ref } from "vue";
 
+import userLogoutVue from "src/components/userLogout.vue";
+
 import { api } from "boot/axios";
 
 import { useQuasar } from "quasar";
 
+import { LocalStorage } from 'quasar';
+
 export default {
+  components: { "user-logout": userLogoutVue },
   name: "Bancos",
   data() {
     return {
@@ -401,6 +415,9 @@ export default {
       agenciaRef: "",
       agenciaRef2: "",
       error: "",
+      disabledCreate: true,
+      disabledEdit: true,
+      disabledDelete: true,
     };
   },
   setup() {
@@ -414,6 +431,11 @@ export default {
       // rowsNumber: xx if getting data from a server
     });
     return {
+      axiosConfig: {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem('token')}`,
+        }
+      },
       pagination: ref({
         rowsPerPage: 10,
       }),
@@ -454,8 +476,8 @@ export default {
     };
   },
   mounted() {
-    this.getDatosAgencias();
-    this.getDatosAgenciasIniciar();
+    this.getData('/agencias', 'setData', 'agencias');
+    this.$refs.component.desactivarCrud('c_roles', 'd_roles', 'u_roles', 'desactivarCrudRoles')
   },
   methods: {
     // Reglas
@@ -464,111 +486,45 @@ export default {
         return "Debes Seleccionar Algo";
       }
     },
-    // Metodos para Agencias
-    getDatosAgencias() {
-      api.get("/agencias").then((res) => {
-        this.agencias = res.data;
-      });
+    desactivarCrudRoles(createItem, deleteItem, updateItem) {
+      if (createItem == true) {
+        this.disabledCreate = false
+      }
+      if (deleteItem == true) {
+        this.disabledDelete = false
+      }
+      if (updateItem == true) {
+        this.disabledEdit = false
+      }
     },
-    // Metodos para usuarios
-    getDatosRolesSelect(selectedAgencia) {
-      api.get(`/agencias/${this.selectedAgencia.id}/roles`)
-        .then((res) => {
-          this.roles = res.data.roles;
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
+
+    getData(url, call, dataRes) {
+      this.$refs.component.getData(url, call, dataRes);
     },
-    getDatosEditRoles(selectedEdit) {
-      api.get(`/roles/${selectedEdit}`).then((res) => {
-        this.formEditRoles.id = res.data.id
-        this.formEditRoles.descripcion = res.data.descripcion;
-        this.formEditRoles.cod_agencia = this.selectedAgencia;
-      });
+    setData(res, dataRes) {
+      this[dataRes] = res
+      this.getDataIniciar();
     },
-    deleteDatoRoles(idpost) {
-      api.delete(`/roles/${idpost}`)
-        .then((res) => {
-          if ((res.status = 201)) {
-            this.eliminadoConExito();
-            api.get(`/agencias/${this.selectedAgencia.id}/roles`)
-              .then((res) => {
-                this.roles = res.data.roles;
-              });
-          }
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          if ((this.error = "500")) {
-            this.error =
-              "El Rol tiene uno o más Usuarios/Permisos asociados, deberás eliminarlos primero";
-          }
-          this.errorDelServidor();
-        });
+    setDataRoles(res, dataRes) {
+      this[dataRes] = res.roles
     },
-    createDatoRoles() {
+    setDataRolesEdit(res, dataRes) {
+      this[dataRes].id = res.id
+      this[dataRes].descripcion = res.descripcion
+      this[dataRes].cod_agencia = this.selectedAgencia
+    },
+    deleteData(idpost) {
+      this.$refs.component.deleteData(`/roles/${idpost}`, 'getData');
+    },
+    createDataRoles() {
       this.formRoles.cod_agencia = this.formRoles.cod_agencia.id
-      api.post(`/roles`, this.formRoles)
-        .then((res) => {
-          if ((res.status = 201)) {
-            api.get(`/agencias/${this.selectedAgencia.id}/roles`)
-              .then((res) => {
-                this.roles = res.data.roles;
-                this.resetFormRoles();
-              });
-            this.añadidoConExito();
-          }
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
+      this.$refs.component.createData(`/roles`, this.formRoles, 'getData');
       this.resetFormRoles();
     },
-    putDatoRoles() {
-      this.formEditRoles.cod_agencia = this.formEditRoles.cod_agencia.id;
-      api.put(`/roles/${this.formEditRoles.id}`, this.formEditRoles)
-        .then((res) => {
-          if ((res.status = 201)) {
-            this.editadoConExito();
-            api
-              .get(`/agencias/${this.selectedAgencia.id}/roles`)
-              .then((res) => {
-                this.roles = res.data.roles;
-                this.resetFormEditRoles();
-              });
-          }
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
+    putDataRoles() {
+      this.formEditRoles.cod_agencia = this.formEditRoles.cod_agencia.id
+      this.$refs.component.putData(`/roles/${this.formEditRoles.id}`, this.formEditRoles, 'getData');
+      this.resetFormEditRoles()
     },
     resetFormRoles() {
       (this.formRoles.descripcion = null),
@@ -581,41 +537,13 @@ export default {
       (this.rolesFormEdit = false)
     },
     // Metodos para colocar valores iniciales
-    getDatosAgenciasIniciar() {
-      api
-        .get(`/agencias`)
-        .then((res) => {
-          this.agenciaRef2 = res.data[0].id;
-          this.selectedAgencia = res.data[0];
-          this.getDatosRolesIniciar();
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
-    },
-    getDatosRolesIniciar() {
-      api
-        .get(`/agencias/${this.agenciaRef2}/roles`)
+    getDataIniciar() {
+        this.agenciaRef2 = this.agencias[0].id;
+        this.selectedAgencia = this.agencias[0];
+        api.get(`/agencias/${this.agenciaRef2}/roles`, this.axiosConfig)
         .then((res) => {
           this.roles = res.data.roles;
         })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
     },
   },
 };

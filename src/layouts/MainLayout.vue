@@ -27,42 +27,7 @@
           class="q-mr-sm"
         />
         <q-toolbar-title>SCEN - Sistema de Control de Encomiendas</q-toolbar-title>
-        <q-btn flat round dense icon="home" class="q-mr-xs" to="dashboard">
-        <q-tooltip
-          transition-show="flip-right"
-          transition-hide="flip-left"
-          class="bg-indigo"
-          color="primary"
-          max-height="30px"
-        >Inicio</q-tooltip>
-        </q-btn>
-        <q-btn flat round dense icon="account_balance" class="q-mr-xs" to="bancos">
-        <q-tooltip
-          transition-show="flip-right"
-          transition-hide="flip-left"
-          class="bg-indigo"
-          color="primary"
-          max-height="30px"
-        >Bancos</q-tooltip>
-        </q-btn>
-        <q-btn flat round dense icon="settings" class="q-mr-xs">
-        <q-tooltip
-          transition-show="flip-right"
-          transition-hide="flip-left"
-          class="bg-indigo"
-          color="primary"
-          max-height="30px"
-        >Configuracion</q-tooltip>
-        </q-btn>
-        <q-btn flat round dense icon="info" class="q-mr-xs">
-        <q-tooltip
-          transition-show="flip-right"
-          transition-hide="flip-left"
-          class="bg-indigo"
-          color="primary"
-          max-height="30px"
-        >Informacion</q-tooltip>
-        </q-btn>
+
          <q-space ></q-space>
         <q-btn flat dense>
           <q-avatar size="42px">
@@ -86,14 +51,15 @@
       show-if-above
       :breakpoint="500"
       bordered
+      :width="350"
       :mini="!drawer || miniState"
         @click="miniState = false;"
-      width="350"
       content-class="bg-grey-3"
     >
     <q-list>
 
 <div>
+  <user-logout></user-logout>
     <q-list class="rounded-borders">
       <q-item clickable tag="a" to="/dashboard" exact>
           <q-item-section avatar>
@@ -120,7 +86,7 @@
           expanded="desplegable2"
           v-model="desplegable2"
         >
-         <q-item clickable tag="a" to="/Operativa" exact>
+         <q-item clickable tag="a" to="/operativa" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="folder_open" />
             <q-tooltip
@@ -140,7 +106,7 @@
           </q-item-section>
         </q-item>
 
-        <q-item clickable tag="a" to="/Costos" exact>
+        <q-item clickable tag="a" to="/costos" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="payments" />
             <q-tooltip
@@ -171,7 +137,7 @@
           expanded=desplegable3
           v-model="desplegable3"
         >
-         <q-item clickable tag="a" to="/Registrodecostos" exact>
+         <q-item clickable tag="a" to="/registrodecostos" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="paid" />
             <q-tooltip
@@ -182,7 +148,7 @@
               transition-show="scale"
               transition-hide="scale"
             >
-              <div class="tool">{{ $t('Menu.Registrodecostos') }}</div>
+              <div class="tool">{{ $t('Menu.registrodecostos') }}</div>
             </q-tooltip>
           </q-item-section>
           <q-item-section>
@@ -191,7 +157,7 @@
           </q-item-section>
         </q-item>
 
-        <q-item clickable tag="a" to="/Reportedecostos" exact>
+        <q-item clickable tag="a" to="/reportedecostos" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="price_check" />
             <q-tooltip
@@ -213,7 +179,7 @@
 
         </q-expansion-item>
 <div class="q-pl-lg">
-      <q-item clickable tag="a" to="/Pruebasentrega" exact>
+      <q-item clickable tag="a" to="/pruebasentrega" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="auto_stories" />
             <q-tooltip
@@ -243,7 +209,7 @@
         v-model="cuarto"
       >
 <div class="q-pl-lg">
-      <q-item clickable tag="a" to="/Registroserviciocarga" exact>
+      <q-item clickable tag="a" to="/registroserviciocarga" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="local_shipping" />
             <q-tooltip
@@ -265,7 +231,7 @@
 </div>
 
 <div class="q-pl-lg">
-      <q-item clickable tag="a" to="/Facturacioncredito" exact>
+      <q-item clickable tag="a" to="/facturacioncredito" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="local_atm" />
             <q-tooltip
@@ -287,7 +253,7 @@
 </div>
 
 <div class="q-pl-lg">
-      <q-item clickable tag="a" to="/Anulacionguias" exact>
+      <q-item clickable tag="a" to="/anulacionguias" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="block" />
             <q-tooltip
@@ -309,7 +275,7 @@
 </div>
 
 <div class="q-pl-lg">
-      <q-item clickable tag="a" to="/Emitircarta" exact>
+      <q-item clickable tag="a" to="/emitircarta" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="forward_to_inbox" />
             <q-tooltip
@@ -348,7 +314,7 @@
           icon="menu_book"
           label="Notas Contables"
         >
-         <q-item clickable tag="a" to="/Notasdebito" exact>
+         <q-item clickable tag="a" to="/notasdebito" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="note_alt" />
             <q-tooltip
@@ -367,7 +333,7 @@
             <q-item-label caption></q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable tag="a" to="/Notascredito" exact>
+        <q-item clickable tag="a" to="/notascredito" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="note_alt" />
             <q-tooltip
@@ -386,7 +352,7 @@
             <q-item-label caption></q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable tag="a" to="/AnulacionNotasContables" exact>
+        <q-item clickable tag="a" to="/anulacionnotascontables" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="report" />
             <q-tooltip
@@ -409,7 +375,7 @@
         </q-expansion-item>
 
         <div class="q-pl-lg">
-      <q-item clickable tag="a" to="/Cuentasporcobrar" exact>
+      <q-item clickable tag="a" to="/cuentasporcobrar" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="request_quote" />
             <q-tooltip
@@ -439,7 +405,7 @@
           icon="price_check"
           label="Cuentas por Pagar"
         >
-         <q-item clickable tag="a" to="/Ingresocuentaspagar" exact>
+         <q-item clickable tag="a" to="/ingresocuentaspagar" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="keyboard_double_arrow_up" />
             <q-tooltip
@@ -458,7 +424,7 @@
             <q-item-label caption></q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable tag="a" to="/Controlpagosproveedores" exact>
+        <q-item clickable tag="a" to="/controlpagosproveedores" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="supervised_user_circle" />
             <q-tooltip
@@ -489,7 +455,7 @@
           icon="list"
           label="Control de Comisiones"
         >
-         <q-item clickable tag="a" to="/Generarcomisiones" exact>
+         <q-item clickable tag="a" to="/generarcomisiones" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="payment" />
             <q-tooltip
@@ -508,7 +474,7 @@
             <q-item-label caption></q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable tag="a" to="/Pagocomisiones" exact>
+        <q-item clickable tag="a" to="/pagocomisiones" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="credit_score" />
             <q-tooltip
@@ -531,7 +497,7 @@
         </q-expansion-item>
 
         <div class="q-pl-lg">
-      <q-item clickable tag="a" to="/Retencioncomprador" exact>
+      <q-item clickable tag="a" to="/retencioncomprador" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="pan_tool" />
             <q-tooltip
@@ -553,7 +519,7 @@
         </div>
 
         <div class="q-pl-lg">
-      <q-item clickable tag="a" to="/RelacionRetencionesComprador" exact>
+      <q-item clickable tag="a" to="/relacionretencionescomprador" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="swap_horiz" />
             <q-tooltip
@@ -583,7 +549,7 @@
           icon="paid"
           label="Movimientos Bancarios"
         >
-         <q-item clickable tag="a" to="/Ingresomovimientos" exact>
+         <q-item clickable tag="a" to="/ingresomovimientos" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="airplay" />
             <q-tooltip
@@ -602,7 +568,7 @@
             <q-item-label caption></q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable tag="a" to="/Relacionmovimientos" exact>
+        <q-item clickable tag="a" to="/relacionmovimientos" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="developer_board" />
             <q-tooltip
@@ -625,7 +591,7 @@
         </q-expansion-item>
 
         <div class="q-pl-lg">
-      <q-item clickable tag="a" to="/Estadogananciasperdidas" exact>
+      <q-item clickable tag="a" to="/estadogananciasperdidas" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="collections_bookmark" />
             <q-tooltip
@@ -656,7 +622,7 @@
         label="Consultas y Reportes"
       >
       <div class="q-pl-lg">
-      <q-item clickable tag="a" to="/Reporteventas" exact>
+      <q-item clickable tag="a" to="/reporteventas" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="receipt_long" />
             <q-tooltip
@@ -678,7 +644,7 @@
         </div>
 
       <div class="q-pl-lg">
-      <q-item clickable tag="a" to="/Librocompras" exact>
+      <q-item clickable tag="a" to="/librocompras" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="auto_stories" />
             <q-tooltip
@@ -700,7 +666,7 @@
         </div>
 
       <div class="q-pl-lg">
-      <q-item clickable tag="a" to="/Libroventas" exact>
+      <q-item clickable tag="a" to="/libroventas" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="style" />
             <q-tooltip
@@ -722,7 +688,7 @@
         </div>
 
       <div class="q-pl-lg">
-      <q-item clickable tag="a" to="/Pagospendientesproveedores" exact>
+      <q-item clickable tag="a" to="/pagospendientesproveedores" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="notifications_active" />
             <q-tooltip
@@ -744,7 +710,7 @@
         </div>
 
       <div class="q-pl-lg">
-      <q-item clickable tag="a" to="/Pagosrealizadosproveedores" exact>
+      <q-item clickable tag="a" to="/pagosrealizadosproveedores" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="how_to_reg" />
             <q-tooltip
@@ -766,7 +732,7 @@
         </div>
 
       <div class="q-pl-lg">
-      <q-item clickable tag="a" to="/Relacionretenciones" exact>
+      <q-item clickable tag="a" to="/relacionretenciones" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="app_blocking" />
             <q-tooltip
@@ -788,7 +754,7 @@
         </div>
 
       <div class="q-pl-lg">
-      <q-item clickable tag="a" to="/Controlretencionesislr" exact>
+      <q-item clickable tag="a" to="/controlretencionesislr" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="remove_circle_outline" />
             <q-tooltip
@@ -810,7 +776,7 @@
         </div>
 
       <div class="q-pl-lg">
-      <q-item clickable tag="a" to="/Controlretencionesiva" exact>
+      <q-item clickable tag="a" to="/controlretencionesiva" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="remove_circle" />
             <q-tooltip
@@ -871,7 +837,7 @@
           icon="table_rows"
           label="Datos Generales"
         >
-         <q-item clickable tag="a" to="/Agencias" exact>
+         <q-item tag="a" exact @click="$router.replace('/agencias')" :clickable="this.disabledAgencias" :disable="this.disabledAgenciasSet">
           <q-item-section avatar>
             <q-icon size="28px" name="corporate_fare" />
             <q-tooltip
@@ -890,7 +856,7 @@
             <q-item-label caption></q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable tag="a" to="/Agentes" exact>
+        <q-item clickable tag="a" to="/agentes" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="people" />
             <q-tooltip
@@ -909,7 +875,7 @@
             <q-item-label caption></q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable tag="a" to="/Paisestadociudad" exact>
+        <q-item tag="a" exact @click="$router.replace('/paisestadociudad')" :clickable="this.disabledCiudades" :disable="this.disabledCiudadesSet">
           <q-item-section avatar>
             <q-icon size="28px" name="place" />
             <q-tooltip
@@ -928,7 +894,7 @@
             <q-item-label caption></q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable tag="a" to="/ZonasAgencia" exact>
+        <q-item clickable tag="a" to="/zonasagencia" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="map" />
             <q-tooltip
@@ -947,7 +913,7 @@
             <q-item-label caption></q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable tag="a" to="/UnidadesTransporte" exact>
+        <q-item clickable tag="a" to="/unidadestransporte" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="local_shipping" />
             <q-tooltip
@@ -966,7 +932,7 @@
             <q-item-label caption></q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable tag="a" to="/Ayudantes" exact>
+        <q-item clickable tag="a" to="/ayudantes" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="account_circle" />
             <q-tooltip
@@ -985,7 +951,7 @@
             <q-item-label caption></q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable tag="a" to="/Receptores" exact>
+        <q-item clickable tag="a" to="/receptores" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="compare_arrows" />
             <q-tooltip
@@ -1004,7 +970,7 @@
             <q-item-label caption></q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable tag="a" to="/Tarifas" exact>
+        <q-item clickable tag="a" to="/tarifas" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="local_atm" />
             <q-tooltip
@@ -1023,7 +989,7 @@
             <q-item-label caption></q-item-label>
           </q-item-section>
         </q-item>
-         <q-item clickable tag="a" to="/Controlcorrelativo" exact>
+         <q-item clickable tag="a" to="/controlcorrelativo" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="point_of_sale" />
             <q-tooltip
@@ -1042,7 +1008,7 @@
             <q-item-label caption></q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable tag="a" to="/VariableControl" exact>
+        <q-item clickable tag="a" to="/variablecontrol" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="settings_suggest" />
             <q-tooltip
@@ -1073,7 +1039,7 @@
           icon="widgets"
           label="Registros Basicos"
         >
-         <q-item clickable tag="a" to="/Bancos" exact>
+         <q-item tag="a" @click="$router.replace('/bancos')" exact :clickable="this.disabledBancos" :disable="this.disabledBancosSet">
           <q-item-section avatar>
             <q-icon size="28px" name="account_balance" />
             <q-tooltip
@@ -1092,7 +1058,7 @@
             <q-item-label caption></q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable tag="a" to="/CuentasBancarias" exact>
+        <q-item clickable tag="a" to="/cuentasbancarias" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="account_balance_wallet" />
             <q-tooltip
@@ -1111,7 +1077,7 @@
             <q-item-label caption></q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable tag="a" to="/Clientes" exact>
+        <q-item clickable tag="a" to="/clientes" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="groups" />
             <q-tooltip
@@ -1130,7 +1096,7 @@
             <q-item-label caption></q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable tag="a" to="/Empleados" exact>
+        <q-item clickable tag="a" to="/empleados" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="badge" />
             <q-tooltip
@@ -1149,7 +1115,7 @@
             <q-item-label caption></q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable tag="a" to="/Proveedores" exact>
+        <q-item clickable tag="a" to="/proveedores" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="local_shipping" />
             <q-tooltip
@@ -1168,7 +1134,7 @@
             <q-item-label caption></q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable tag="a" to="/Retenciones" exact>
+        <q-item clickable tag="a" to="/retenciones" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="block" />
             <q-tooltip
@@ -1187,7 +1153,7 @@
             <q-item-label caption></q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable tag="a" to="/ConceptosOperacion" exact>
+        <q-item clickable tag="a" to="/conceptosoperacion" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="manage_search" />
             <q-tooltip
@@ -1206,7 +1172,7 @@
             <q-item-label caption></q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable tag="a" to="/ConceptosFacturacion" exact>
+        <q-item clickable tag="a" to="/conceptosfacturacion" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="sticky_note_2" />
             <q-tooltip
@@ -1225,7 +1191,7 @@
             <q-item-label caption></q-item-label>
           </q-item-section>
         </q-item>
-         <q-item clickable tag="a" to="/ConceptosFPO" exact>
+         <q-item clickable tag="a" to="/conceptosfpo" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="subject" />
             <q-tooltip
@@ -1244,7 +1210,7 @@
             <q-item-label caption></q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable tag="a" to="/Asignacionguias" exact>
+        <q-item clickable tag="a" to="/asignacionguias" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="menu_book" />
             <q-tooltip
@@ -1275,7 +1241,7 @@
           v-model="decimocuarto"
           label="Seguridad"
         >
-         <q-item clickable tag="a" to="/Roles" exact>
+         <q-item tag="a" exact @click="$router.replace('/roles')" :clickable="this.disabledRoles" :disable="this.disabledRolesSet">
           <q-item-section avatar>
             <q-icon size="28px" name="person_outline" />
             <q-tooltip
@@ -1294,7 +1260,7 @@
             <q-item-label caption></q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable tag="a" to="/Usuarios" exact>
+        <q-item tag="a" exact @click="$router.replace('/usuarios')" :clickable="this.disabledUsuarios" :disable="this.disabledUsuariosSet">
           <q-item-section avatar>
             <q-icon size="28px" name="person" />
             <q-tooltip
@@ -1313,7 +1279,7 @@
             <q-item-label caption></q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable tag="a" to="/Permisologia" exact>
+        <q-item tag="a" exact @click="$router.replace('/permisologia')" :clickable="this.disabledPermisos" :disable="this.disabledPermisosSet">
           <q-item-section avatar>
             <q-icon size="28px" name="manage_accounts" />
             <q-tooltip
@@ -1336,7 +1302,7 @@
         </q-expansion-item>
 
       <div class="q-pl-lg">
-      <q-item clickable tag="a" to="/Transferencia" exact>
+      <q-item clickable tag="a" to="/transferencia" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="open_in_new" />
             <q-tooltip
@@ -1358,7 +1324,7 @@
 </div>
 
 <div class="q-pl-lg">
-      <q-item clickable tag="a" to="/TransferenciaHidroca" exact>
+      <q-item clickable tag="a" to="/transferenciahidroca" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="upload_file" />
             <q-tooltip
@@ -1380,7 +1346,7 @@
 </div>
 
 <div class="q-pl-lg">
-      <q-item clickable tag="a" to="/CargaManualGuias" exact>
+      <q-item clickable tag="a" to="/cargamanualguias" exact>
           <q-item-section avatar>
             <q-icon size="28px" name="upload_file" />
             <q-tooltip
@@ -1418,17 +1384,35 @@
           :label="'© 2019. ' + this.$t('Menu.rights') + ' RCS Express.'"
         />
       </div>
+      <user-logout ref="component"
+    @desactivar-Opciones-Set="desactivarOpcionesSet"></user-logout>
     </q-footer>
   </q-layout>
 </template>
 
 <script>
 import { ref } from 'vue';
+import { LocalStorage } from 'quasar';
+import {defineComponent,defineAsyncComponent} from 'vue'
+import userLogoutVue from "src/components/userLogout.vue";
 
-export default {
-  name: 'MainLayout',
+export default defineComponent ({
+  name: 'PageIndex',
+  components: { "user-logout": userLogoutVue },
   data() {
     return {
+      disabledBancos: false,
+      disabledAgencias: false,
+      disabledPermisos: false,
+      disabledRoles: false,
+      disabledUsuarios: false,
+      disabledCiudades: false,
+      disabledBancosSet: true,
+      disabledAgenciasSet: true,
+      disabledPermisosSet: true,
+      disabledRolesSet: true,
+      disabledUsuariosSet: true,
+      disabledCiudadesSet: true,
       drawer: false,
       miniState: false,
       dashboard: this.$t('Menu.dashboard'),
@@ -1459,9 +1443,43 @@ export default {
   mounted() {
     this.miniState = true;
     this.drawer = true;
-
+    this.Authenticator()
+    this.$refs.component.desactivarOpciones('desactivarOpcionesSet','r_bancos','r_agencias','r_ciudades','r_permisos','r_usuarios','r_roles',)
   },
   methods: {
+    desactivarOpcionesSet(
+      readBancos,
+      readAgencias,
+      readCiudades,
+      readPermisos,
+      readUsuarios,
+      readRoles
+      ){
+      if (readBancos == true) {
+        this.disabledBancos = true
+        this.disabledBancosSet = false
+      }
+      if (readAgencias == true) {
+        this.disabledAgencias = true
+        this.disabledAgenciasSet = false
+      }
+      if (readCiudades == true) {
+        this.disabledCiudades = true
+        this.disabledCiudadesSet = false
+      }
+      if (readPermisos == true) {
+        this.disabledPermisos = true
+        this.disabledPermisosSet = false
+      }
+      if (readUsuarios == true) {
+        this.disabledUsuarios = true
+        this.disabledUsuariosSet = false
+      }
+      if (readRoles == true) {
+        this.disabledRoles = true
+        this.disabledRolesSet = false
+      }
+    },
     drawerClick() {
       if (this.miniState) {
         this.miniState = false;
@@ -1471,12 +1489,16 @@ export default {
         this.drawer = true;
       }
     },
+    Authenticator() {
+      if (LocalStorage.getItem('user') != true) {
+        this.$router.push('/login');
+      }
+    },
     logout() {
-      sessionStorage.removeItem('isAuthenticated');
-      this.$router.push('/login');
+      this.$refs.component.logoutUser()
     },
   },
-};
+});
 </script>
 
 <style>
