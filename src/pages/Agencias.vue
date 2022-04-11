@@ -938,6 +938,7 @@ export default {
       this[dataRes] = res.estados
       this.selectedEstado = ''
       this.selectedCiudad = ''
+      this.ciudades = ''
     },
     setDataCiudades(res, dataRes) {
       this.selectedCiudad = ''

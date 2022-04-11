@@ -167,9 +167,6 @@
                       formEditUsuarios.login.toUpperCase()
                   "
                   lazy-rules
-                  :rules="[
-                    (val) => (val && val.length > 0) || 'Debes escribir algo',
-                  ]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="south_america" />
@@ -181,12 +178,11 @@
                 <q-input
                   outlined
                   v-model="formEditUsuarios.password"
+                  readonly
                   label="Contraseña"
                   :type="isPwd ? 'password' : 'text'"
                   lazy-rules
-                  :rules="[
-                    (val) => (val && val.length > 0) || 'Debes escribir algo',
-                  ]"
+                  :rules="[reglasInputs]"
                 >
                   <template v-slot:prepend>
                     <q-icon
@@ -596,7 +592,6 @@ export default {
         activo: "",
         cod_rol: "",
         id: "",
-        password: "",
         cod_agencia: "",
       },
       vigente: [
@@ -725,7 +720,6 @@ export default {
       this[dataRes].nombre = res.nombre;
       this[dataRes].cod_rol = res.roles.descripcion;
       this[dataRes].id = res.id;
-      this[dataRes].password = res.password;
       this[dataRes].activo = res.activo_desc;
       this[dataRes].cod_agencia = this.selectedAgencia;
     },
