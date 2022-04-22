@@ -314,7 +314,7 @@ import { ref } from "vue";
       },
       setTimers() {
         clearTimeout(this.logoutTimer);
-        this.logoutTimer = setTimeout(this.logoutUser, 25 * 1000);
+        this.logoutTimer = setTimeout(this.logoutUser, 300 * 1000);
       },
       logoutUser: function() {
         LocalStorage.remove('user');
