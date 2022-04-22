@@ -88,7 +88,6 @@ export default {
       },
     };
   },
-  mounted() {},
   methods: {
     onSubmit() {
       api.post(`/usuarios/login`, this.form)

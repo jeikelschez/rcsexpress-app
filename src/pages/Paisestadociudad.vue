@@ -1509,16 +1509,12 @@ export default {
     resetFormEstados() {
       (this.formEstados.desc_estado = null),
         (this.formEstados.siglas = null),
-        (this.estadosForm = false),
-        desc_estado.value.resetValidation();
-      siglas.value.resetValidation();
+        (this.estadosForm = false)
     },
     resetFormEditEstados() {
       (this.formEditEstados.desc_estado = null),
         (this.formEditEstados.siglas = null),
-        (this.estadosFormEdit = false),
-        desc_estado.value.resetValidation();
-      siglas.value.resetValidation();
+        (this.estadosFormEdit = false)
     },
     // Metodos para ciudades
     getDataEstadosSelect(url, call, dataRes) {

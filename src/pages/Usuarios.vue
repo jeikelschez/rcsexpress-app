@@ -154,14 +154,13 @@
         <q-card-section>
           <q-form @submit="putDataUsuarios()">
             <div class="row">
-              <div class="col-md-5 col-xs-12">
+              <div class="col-md-12 col-xs-12">
                 <q-input
                   outlined
                   v-model="formEditUsuarios.login"
                   label="Login"
                   hint=""
                   readonly
-                  class="pcform"
                   @update:model-value="
                     formEditUsuarios.login =
                       formEditUsuarios.login.toUpperCase()
@@ -170,26 +169,6 @@
                 >
                   <template v-slot:prepend>
                     <q-icon name="south_america" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-7 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEditUsuarios.password"
-                  readonly
-                  label="Contraseña"
-                  :type="isPwd ? 'password' : 'text'"
-                  lazy-rules
-                  :rules="[reglasInputs]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon
-                    :name="isPwd ? 'visibility_off' : 'visibility'"
-                    class="cursor-pointer"
-                    @click="isPwd = !isPwd"
-                    />
                   </template>
                 </q-input>
               </div>
@@ -519,6 +498,7 @@
       @set-Data-Usuarios="setDataUsuarios"
       @set-Data-Usuarios-Edit="setDataUsuariosEdit"
       @set-Data-Roles="setDataRoles"
+      @set-Data-Roles-Iniciar="setDataRolesIniciar"
       @set-Data="setData"
       @desactivar-Crud-Usuarios="desactivarCrudUsuarios"
     ></user-logout>
@@ -664,17 +644,17 @@ export default {
       reglasLogin: [(val) =>
           (val !== null && val !== "") || "Por favor escribe algo",
         (val) => val.length < 12 || "Deben ser máximo 11 caracteres",
-        (val) => val.length > 3 || "Deben ser minimo 3 caracteres",
+        (val) => val.length >= 3 || "Deben ser minimo 3 caracteres",
       ],
       reglasPassword: [(val) =>
         (val !== null && val !== "") || "Por favor escribe algo",
-        (val) => val.length < 10 || "Deben ser máximo 10 caracteres",
-        (val) => val.length > 3 || "Deben ser minimo 3 caracteres",
+        (val) => val.length <= 10 || "Deben ser máximo 10 caracteres",
+        (val) => val.length >= 3 || "Deben ser minimo 3 caracteres",
       ],
       reglasNombre: [(val) =>
           (val !== null && val !== "") || "Por favor escribe algo",
-        (val) => val.length < 50 || "Deben ser máximo 50 caracteres",
-        (val) => val.length > 3 || "Deben ser minimo 3 caracteres",
+        (val) => val.length <= 50 || "Deben ser máximo 50 caracteres",
+        (val) => val.length >= 3 || "Deben ser minimo 3 caracteres",
       ],
     };
   },
@@ -715,13 +695,13 @@ export default {
       this.formEditUsuarios.cod_rol = ''
     },
     setDataUsuariosEdit(res, dataRes) {
-      console.log(res)
       this[dataRes].login = res.login;
       this[dataRes].nombre = res.nombre;
-      this[dataRes].cod_rol = res.roles.descripcion;
       this[dataRes].id = res.id;
+      this[dataRes].cod_rol = res.roles.descripcion;
       this[dataRes].activo = res.activo_desc;
       this[dataRes].cod_agencia = this.selectedAgencia;
+      this.getData(`/agencias/${this.formEditUsuarios.cod_agencia.id}/roles`, 'setDataRolesIniciar', 'roles')
     },
     deleteData(idpost) {
       this.$refs.component.deleteData(`/usuarios/${idpost}`, 'getDataUsuarios');
@@ -767,6 +747,9 @@ export default {
         .then((res) => {
           this.usuarios = res.data.usuarios;
         })
+    },
+    setDataRolesIniciar(res, dataRes) {
+      this[dataRes] = res.roles
     },
   },
 };

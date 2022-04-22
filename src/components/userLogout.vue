@@ -1,34 +1,4 @@
 <template>
-<q-dialog v-model="warning">
-      <q-card class="q-pa-md" bordered style="width: 999px">
-        <q-card-section>
-          <div
-            class="col-md-4 col-xs-12"
-            style="align-self: center; text-align: center; margin-right: 16px"
-          >
-            <h4>Su sesion esta a punto de expirar...</h4>
-          </div>
-            <div
-              class="full-width row justify-center items-center content-center"
-              style="margin-bottom: 10px"
-            >
-              <q-btn
-                label="Continuar"
-                type="submit"
-                color="primary"
-                class="col-md-5 col-sm-5 col-xs-12"
-              />
-              <q-btn
-                label="Cerrar Sesion"
-                color="primary"
-                flat
-                class="col-md-5 col-sm-5 col-xs-12 btnmovil"
-                icon="close"
-              />
-            </div>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
 </template>
     
 <script>
@@ -36,25 +6,27 @@ import { LocalStorage } from 'quasar';
 import jwt_decode from 'jwt-decode';
 import { api } from "boot/axios";
 import { useQuasar } from "quasar";
+import { ref } from "vue";
 
   export default {
     name: "userLogout",
     data: function() {
       return {
+        events: ['click','mousemove','mousedown','scroll','keypress','load'],
         axiosConfig: {
         headers: {
           Authorization: `Bearer ${LocalStorage.getItem('token')}`,
           }
       },
-      events: ['logout'],
       warningTimer: null,
       logoutTimer: null,
-      warning: null,
       error: "",
       }
     },
 
     mounted() {
+      this.events.forEach( function (event) {window.addEventListener(event, this.setTimers);
+      }, this);
       this.traducirToken();
     },
     setup() {
@@ -178,7 +150,6 @@ import { useQuasar } from "quasar";
           this.errorDelServidor();
         });
       },
-
       traducirToken: function() {
         var tokenTraducido = jwt_decode(LocalStorage.getItem('token'))
         LocalStorage.set('tokenTraducido', tokenTraducido)
@@ -341,22 +312,13 @@ import { useQuasar } from "quasar";
             }
 
       },
-      setTimers: function() {
-        this.warningTimer = setTimeout(this.warningMessage, 1160 * 1000);
-        this.logoutTimer = setTimeout(this.logoutUser, 1170 * 1000);
-      },
-      warningMessage: function() {
-        this.warning= true
+      setTimers() {
+        clearTimeout(this.logoutTimer);
+        this.logoutTimer = setTimeout(this.logoutUser, 25 * 1000);
       },
       logoutUser: function() {
         LocalStorage.remove('user');
         this.$router.push('/login');
-        this.$q.notify({
-          message: "Sesion expirada",
-          color: "red",
-        });
-        this.warningTimer = null,
-        this.logoutTimer = null
       },
   },
 };

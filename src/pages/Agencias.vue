@@ -828,21 +828,21 @@ export default {
       edit: ref(false),
       reglasInputs: [
         (val) => (val !== null && val !== "") || "Debes escribir algo",
-        (val) => val.length < 50 || "Deben ser máximo 50 caracteres",
+        (val) => val.length <= 50 || "Deben ser máximo 50 caracteres",
       ],
       reglaInputDireccion: [
         (val) => (val !== null && val !== "") || "Debes escribir algo",
-        (val) => val.length < 200 || "Deben ser máximo 200 caracteres",
-        (val) => val.length > 4 || "Deben ser minimo 4 caracteres",
+        (val) => val.length <= 200 || "Deben ser máximo 200 caracteres",
+        (val) => val.length >= 4 || "Deben ser minimo 4 caracteres",
       ],
       reglasInputRifInt: [
         (val) => (val !== null && val !== "") || "Debes escribir algo",
-        (val) => val.length < 20 || "Deben ser máximo 20 caracteres",
-        (val) => val.length > 4 || "Deben ser minimo 4 caracteres",
+        (val) => val.length <= 20 || "Deben ser máximo 20 caracteres",
+        (val) => val.length >= 4 || "Deben ser minimo 4 caracteres",
       ],
       reglasInputfaxInt: [
         (val) => (val !== null && val !== "") || "Debes escribir algo",
-        (val) => val.length > 4 || "Deben ser minimo 4 caracteres",
+        (val) => val.length >= 4 || "Deben ser minimo 4 caracteres",
       ],
       errorDelServidor() {
         $q.notify({
@@ -916,7 +916,7 @@ export default {
       this[dataRes].tlf_agencia = res.tlf_agencia
       this[dataRes].rif_agencia = res.rif_agencia
       this[dataRes].nit_agencia = res.nit_agencia
-      this[dataRes].estatus = res.estatus
+      this[dataRes].estatus = res.estatus_desc
       this.selectedCiudadEdit = res.ciudades.cod_estado,
       this.selectedCiudad = res.ciudades.desc_ciudad;
       this.ciudadEdit = res.ciudades.id
