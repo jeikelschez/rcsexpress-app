@@ -31,7 +31,7 @@
          <q-space ></q-space>
         <q-btn flat dense>
           <q-avatar size="42px">
-            <img :src="picture"/>
+            <img :src="url"/>
           </q-avatar>
           <q-menu transition-show="flip-right" transition-hide="flip-left">
             <q-list style="min-width: 100px">
@@ -1420,7 +1420,9 @@ export default defineComponent ({
     };
   },
   setup() {
+    const url = ref('https://joshuaproject.net/assets/img/chatbot/default.jpg')
     return {
+      url,
       desplegable: ref(false),
       desplegable:ref(false),
       desplegable2:ref(false),
