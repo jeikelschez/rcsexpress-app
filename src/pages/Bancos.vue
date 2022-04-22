@@ -1,11 +1,11 @@
 <template>
   <q-page class="q-pa-md">
     <q-dialog v-model="create">
-      <q-card class="q-pa-md" bordered style="width: 999px">
+      <q-card class="q-pa-md" bordered style="width: 999px, max-width: 80vw">
         <q-card-section>
           <q-form @submit="createData" class="q-gutter-md">
             <div class="row">
-              <div class="col-md-5 col-xs-12">
+              <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.nb_banco"
@@ -13,9 +13,7 @@
                   hint=""
                   class="pcform"
                   lazy-rules
-                  :rules="[
-                    (val) => (val && val.length > 0) || 'Escribe un Nombre',
-                  ]"
+                  :rules="[reglaInputBancos]"
                   @update:model-value="
                     form.nb_banco = form.nb_banco.toUpperCase()
                   "
@@ -26,12 +24,13 @@
                 </q-input>
               </div>
 
-              <div class="col-md-7 col-xs-12">
+              <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.direccion_banco"
                   label="Direccion"
                   hint=""
+                  :rules="[reglaInput]"
                   lazy-rules
                   @update:model-value="
                     form.direccion_banco = form.direccion_banco.toUpperCase()
@@ -49,6 +48,7 @@
                   v-model="form.fax_banco"
                   label="Fax"
                   class="pcform"
+                  :rules="[reglaInput]"
                   hint=""
                   lazy-rules
                   mask="####-#####"
@@ -64,6 +64,7 @@
                   outlined
                   v-model="form.tlf_banco"
                   label="Teléfono"
+                  :rules="[reglaInput]"
                   hint=""
                   lazy-rules
                   mask="(###) ### - ####"
@@ -135,7 +136,7 @@
     </q-dialog>
 
     <q-dialog v-model="edit">
-      <q-card class="q-pa-md" bordered style="width: 999px">
+      <q-card class="q-pa-md" bordered style="width: 999px, max-width: 80vw">
         <q-card-section>
           <q-form @submit="putData">
             <div class="row">
@@ -150,9 +151,7 @@
                   "
                   class="pcform"
                   lazy-rules
-                  :rules="[
-                    (val) => (val && val.length > 0) || 'Escribe un Nombre',
-                  ]"
+                  :rules="[reglaInputBancos]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="person" />
@@ -166,6 +165,7 @@
                   v-model="formEdit.direccion_banco"
                   label="Direccion"
                   hint=""
+                  :rules="[reglaInput]"
                   @update:model-value="
                     formEdit.direccion_banco =
                       formEdit.direccion_banco.toUpperCase()
@@ -184,6 +184,7 @@
                   v-model="formEdit.fax_banco"
                   label="Fax"
                   hint=""
+                  :rules="[reglaInput]"
                   class="pcform"
                   lazy-rules
                   mask="####-#######################"
@@ -199,6 +200,7 @@
                   outlined
                   v-model="formEdit.tlf_banco"
                   label="Teléfono"
+                  :rules="[reglaInput]"
                   hint=""
                   lazy-rules
                   mask="(###) ### - ####"
@@ -615,6 +617,26 @@ export default {
     this.$refs.component.desactivarCrud('c_bancos', 'd_bancos', 'u_bancos', 'desactivarCrudBancos')
   },
   methods: {
+    reglaInputBancos(val) {
+      if (val === null) {
+        return "Debes Escribir Algo";
+      }
+      if (val === "") {
+        return "Debes Escribir Algo";
+      }
+      if (val.length > 0) {
+        if (val.length < 3) {
+        return "Deben ser minimo 3 caracteres";
+        }
+      }
+    },
+    reglaInput(val) {
+      if (val.length > 0) {
+        if (val.length < 3) {
+        return "Deben ser minimo 3 caracteres";
+        }
+      }
+    },
     desactivarCrudBancos(createItem, deleteItem, updateItem) {
       if (createItem == true) {
         this.disabledCreate = false

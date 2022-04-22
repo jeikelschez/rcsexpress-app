@@ -75,7 +75,7 @@
                   class="pcform"
                   hint=""
                   lazy-rules
-                  :rules="reglasInputs"
+                  :rules="[reglaInputNombre]"
                   @update:model-value="
                     form.nb_agencia = form.nb_agencia.toUpperCase()
                   "
@@ -91,6 +91,7 @@
                   outlined
                   v-model="form.persona_contacto"
                   label="Nombre"
+                  :rules="[reglaInputDireccion]"
                   hint=""
                   lazy-rules
                   @update:model-value="
@@ -111,7 +112,7 @@
                   class="pcform"
                   hint=""
                   lazy-rules
-                  :rules="reglaInputDireccion"
+                  :rules="[reglaInputDireccion]"
                   @update:model-value="
                     form.dir_agencia = form.dir_agencia.toUpperCase()
                   "
@@ -128,8 +129,8 @@
                   v-model="form.rif_agencia"
                   label="Rif"
                   hint=""
+                  :rules="[reglaInputDireccion]"
                   lazy-rules
-                  :rules="reglasInputRifInt"
                   @update:model-value="
                     form.rif_agencia = form.rif_agencia.toUpperCase()
                   "
@@ -145,10 +146,10 @@
                   outlined
                   v-model="form.nit_agencia"
                   label="NIT Agencia"
+                  :rules="[reglaInputDireccion]"
                   hint=""
                   class="pcform"
                   lazy-rules
-                  :rules="reglasInputRifInt"
                   @update:model-value="
                     form.nit_agencia = form.nit_agencia.toUpperCase()
                   "
@@ -167,6 +168,7 @@
                   class="pcform"
                   hint=""
                   lazy-rules
+                  :rules="[reglaInputDireccion]"
                   mask="####-#####"
                 >
                   <template v-slot:prepend>
@@ -182,6 +184,7 @@
                   label="Teléfono"
                   hint=""
                   lazy-rules
+                  :rules="[reglaInputDireccion]"
                   mask="(###) ### - ####"
                 >
                   <template v-slot:prepend>
@@ -197,9 +200,9 @@
                   label="Estatus"
                   hint=""
                   class="pcform"
+                  :rules="[reglasSelect]"
                   :options="estatus"
                   lazy-rules
-                  :rules="[reglasSelect]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="dialpad" />
@@ -323,7 +326,7 @@
                   label="Agencia"
                   hint=""
                   lazy-rules
-                  :rules="[reglasInputs]"
+                  :rules="[reglaInputNombre]"
                   @update:model-value="
                     formEdit.nb_agencia = formEdit.nb_agencia.toUpperCase()
                   "
@@ -342,6 +345,7 @@
                   class="pcform"
                   hint=""
                   lazy-rules
+                  :rules="[reglaInputDireccion]"
                   @update:model-value="
                     formEdit.persona_contacto =
                       formEdit.persona_contacto.toUpperCase()
@@ -360,7 +364,7 @@
                   label="Dirección"
                   hint=""
                   lazy-rules
-                  :rules="reglaInputDireccion"
+                  :rules="[reglaInputDireccion]"
                   @update:model-value="
                     formEdit.dir_agencia = formEdit.dir_agencia.toUpperCase()
                   "
@@ -379,7 +383,7 @@
                   hint=""
                   class="pcform"
                   lazy-rules
-                  :rules="reglasInputRifInt"
+                  :rules="[reglaInputDireccion]"
                   @update:model-value="
                     formEdit.rif_agencia = formEdit.rif_agencia.toUpperCase()
                   "
@@ -397,7 +401,7 @@
                   label="NIT Agencia"
                   hint=""
                   lazy-rules
-                  :rules="reglasInputRifInt"
+                  :rules="[reglaInputDireccion]"
                   @update:model-value="
                     formEdit.nit_agencia = formEdit.nit_agencia.toUpperCase()
                   "
@@ -416,7 +420,7 @@
                   class="pcform"
                   hint=""
                   lazy-rules
-                  :rules="reglasInputfaxInt"
+                  :rules="[reglaInputDireccion]"
                   mask="####-#####"
                 >
                   <template v-slot:prepend>
@@ -432,6 +436,7 @@
                   label="Teléfono"
                   hint=""
                   lazy-rules
+                  :rules="[reglaInputDireccion]"
                   mask="(###) ### - ######"
                 >
                   <template v-slot:prepend>
@@ -447,10 +452,10 @@
                   input
                   label="Estatus"
                   hint=""
+                  :rules="[reglasSelect]"
                   :options="estatus"
                   class="pcform"
                   lazy-rules
-                  :rules="[reglasSelect]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="dialpad" />
@@ -789,7 +794,7 @@ export default {
         estatus: "",
       },
       estatus: [
-        { label: "ACTIVA", value: "A" },
+        { label: "ACTIVO", value: "A" },
         { label: "INACTIVA", value: "I" },
       ],
       paises: [],
@@ -830,20 +835,6 @@ export default {
         (val) => (val !== null && val !== "") || "Debes escribir algo",
         (val) => val.length <= 50 || "Deben ser máximo 50 caracteres",
       ],
-      reglaInputDireccion: [
-        (val) => (val !== null && val !== "") || "Debes escribir algo",
-        (val) => val.length <= 200 || "Deben ser máximo 200 caracteres",
-        (val) => val.length >= 4 || "Deben ser minimo 4 caracteres",
-      ],
-      reglasInputRifInt: [
-        (val) => (val !== null && val !== "") || "Debes escribir algo",
-        (val) => val.length <= 20 || "Deben ser máximo 20 caracteres",
-        (val) => val.length >= 4 || "Deben ser minimo 4 caracteres",
-      ],
-      reglasInputfaxInt: [
-        (val) => (val !== null && val !== "") || "Debes escribir algo",
-        (val) => val.length >= 4 || "Deben ser minimo 4 caracteres",
-      ],
       errorDelServidor() {
         $q.notify({
           message: this.error,
@@ -882,6 +873,36 @@ export default {
     reglasSelect(val) {
       if (val === null) {
         return "Debes Seleccionar Algo";
+      }
+      if (val === "") {
+        return "Debes Seleccionar Algo";
+      }
+    },
+    reglaInputDireccion(val) {
+      if(val !== null) {
+      if (val.length > 200) {
+        return "Deben ser máximo 200 caracteres";
+        }
+      if (val.length > 0) {
+        if (val.length < 3) {
+        return "Deben ser minimo 3 caracteres";
+        }
+      }
+      }
+    },
+    reglaInputNombre(val) {
+      if(val !== null) {
+        if (val === null) {
+        return "Debes Seleccionar Algo";
+      }
+      if (val === "") {
+        return "Debes Seleccionar Algo";
+      }
+      if (val.length > 0) {
+        if (val.length < 3) {
+        return "Deben ser minimo 3 caracteres";
+        }
+      }
       }
     },
     desactivarCrudAgencias(createItem, deleteItem, updateItem) {
@@ -965,30 +986,30 @@ export default {
         (this.selectedPais = null),
         (this.selectedEstado = null),
         (this.selectedCiudad = null),
-        (this.form.persona_contacto = null),
-        (this.form.nb_agencia = null),
-        (this.form.persona_contacto = null),
+        (this.form.persona_contacto = ""),
+        (this.form.nb_agencia = ""),
+        (this.form.persona_contacto = ""),
         (this.form.dir_agencia = ""),
         (this.form.fax_agencia = ""),
-        (this.form.email_agencia = null),
-        (this.form.tlf_agencia = null),
+        (this.form.email_agencia = ""),
+        (this.form.tlf_agencia = ""),
         (this.form.rif_agencia = ""),
         (this.form.nit_agencia = ""),
-        (this.form.estatus = null),
+        (this.form.estatus = ""),
         (this.create = null)
     },
     resetFormEdit() {
       (this.selectedPais = null),
       (this.selectedEstado = null),
       (this.selectedCiudad = null),
-      (this.formEdit.persona_contacto = null),
+      (this.formEdit.persona_contacto = ""),
       (this.formEdit.dir_agencia = ""),
       (this.formEdit.fax_agencia = ""),
-      (this.formEdit.email_agencia = null),
-      (this.formEdit.tlf_agencia = null),
+      (this.formEdit.email_agencia = ""),
+      (this.formEdit.tlf_agencia = ""),
       (this.formEdit.rif_agencia = ""),
       (this.formEdit.nit_agencia = ""),
-      (this.formEdit.nb_agencia = null),
+      (this.formEdit.nb_agencia = ""),
       (this.formEdit.estatus = null)
     },
   },

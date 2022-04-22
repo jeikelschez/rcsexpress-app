@@ -293,6 +293,7 @@
                   outlined
                   v-model="formCiudades.desc_ciudad"
                   label="Ciudad"
+                  :rules="[reglaInputCiudad]"
                   @update:model-value="
                     formCiudades.desc_ciudad =
                       formCiudades.desc_ciudad.toUpperCase()
@@ -300,9 +301,6 @@
                   hint=""
                   class="pcform"
                   lazy-rules
-                  :rules="[
-                    (val) => (val && val.length > 0) || 'Escribe una Ciudad',
-                  ]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="south_america" />
@@ -398,6 +396,7 @@
                 <q-input
                   outlined
                   v-model="formEditCiudades.desc_ciudad"
+                  :rules="[reglaInputCiudad]"
                   @update:model-value="
                     formEditCiudades.desc_ciudad =
                       formEditCiudades.desc_ciudad.toUpperCase()
@@ -406,9 +405,6 @@
                   hint=""
                   class="pcform"
                   lazy-rules
-                  :rules="[
-                    (val) => (val && val.length > 0) || 'Escribe un Estado',
-                  ]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="south_america" />
@@ -524,6 +520,7 @@
         class="rounded-borders col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 justify-center"
       >
         <q-carousel-slide name="paises"
+          @click="this.getDataPaises('/paises', 'setData', 'paises');"
           class="flex-center col-md-11 col-xl-9 col-lg-9 col-xs-12 col-sm-12"
         >
           <div class="col-md-11 col-xl-9 col-lg-9 col-xs-12 col-sm-12">
@@ -1429,6 +1426,19 @@ export default {
   },
   methods: {
     // Reglas
+    reglaInputCiudad(val) {
+      if (val === null) {
+        return "Debes Escribir Algo";
+      }
+      if (val === "") {
+        return "Debes Escribir Algo";
+      }
+      if (val.length > 0) {
+        if (val.length < 3) {
+        return "Deben ser minimo 3 caracteres";
+        }
+      }
+    },
     reglasInputs(val) {
       if (val === null) {
         return "Debes Seleccionar Algo";
@@ -1508,8 +1518,8 @@ export default {
     },
     resetFormEstados() {
       (this.formEstados.desc_estado = null),
-        (this.formEstados.siglas = null),
-        (this.estadosForm = false)
+      (this.formEstados.siglas = null),
+      (this.estadosForm = false)
     },
     resetFormEditEstados() {
       (this.formEditEstados.desc_estado = null),
@@ -1572,7 +1582,7 @@ export default {
     // Metodos para colocar valores iniciales
     getDataIniciar() {
       this.paisRef2 = this.paises[0].id;
-      this.selectedPais = this.paises[0].desc_pais;
+      this.selectedPais = this.paises[0]
       this.selectedPais2 = this.paises[0];
       this.paisRef = this.paises[0].id;
       api.get(`/paises/${this.paisRef2}/estados`, this.axiosConfig)

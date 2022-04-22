@@ -471,7 +471,7 @@ export default {
       reglasDescripcion: [(val) =>
         (val !== null && val !== "") || "Por favor escribe algo",
         (val) => val.length < 30 || "Deben ser máximo 30 caracteres",
-        (val) => val.length > 3 || "Deben ser minimo 3 caracteres",
+        (val) => val.length > 2 || "Deben ser minimo 3 caracteres",
       ],
     };
   },
@@ -483,6 +483,9 @@ export default {
     // Reglas
     reglasInputs(val) {
       if (val === null) {
+        return "Debes Seleccionar Algo";
+      }
+      if (val === "") {
         return "Debes Seleccionar Algo";
       }
     },

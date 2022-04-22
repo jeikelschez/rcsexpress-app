@@ -668,6 +668,9 @@ export default {
       if (val === null) {
         return "Debes Seleccionar Algo";
       }
+      if (val === "") {
+        return "Debes Seleccionar Algo";
+      }
     },
     desactivarCrudUsuarios(createItem, deleteItem, updateItem) {
       if (createItem == true) {

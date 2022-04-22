@@ -18,7 +18,7 @@ import { ref } from "vue";
           Authorization: `Bearer ${LocalStorage.getItem('token')}`,
           }
       },
-      warningTimer: null,
+      logoutTimerGlobal: null,
       logoutTimer: null,
       error: "",
       }
@@ -108,6 +108,10 @@ import { ref } from "vue";
             this.error =
               "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
           }
+          if ((this.error = "500")) {
+            this.error =
+              "Este elemento tiene otros elementos asociados... Eliminalos primero";
+          }
           this.errorDelServidor();
         });
       },
@@ -128,6 +132,10 @@ import { ref } from "vue";
             this.error =
               "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
           }
+          if ((this.error = "409")) {
+            this.error =
+              "El elemento ya existe en la tabla. Por favor verificalo...";
+          }
           this.errorDelServidor();
         });
       },
@@ -146,6 +154,14 @@ import { ref } from "vue";
           if ((this.error = "400")) {
             this.error =
               "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
+          }
+          if ((this.error = "500")) {
+            this.error =
+              "Este elemento tiene otros elementos asociados... Eliminalos primero";
+          }
+          if ((this.error = "409")) {
+            this.error =
+              "El elemento ya existe en la tabla. Por favor verificalo...";
           }
           this.errorDelServidor();
         });
@@ -315,6 +331,7 @@ import { ref } from "vue";
       setTimers() {
         clearTimeout(this.logoutTimer);
         this.logoutTimer = setTimeout(this.logoutUser, 300 * 1000);
+        this.logoutTimerGlobal = setTimeout(this.logoutUser, 1140 * 1000);
       },
       logoutUser: function() {
         LocalStorage.remove('user');
