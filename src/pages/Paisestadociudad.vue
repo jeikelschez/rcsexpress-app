@@ -1555,17 +1555,17 @@ export default {
       this.resetFormEditCiudades()
     },
     resetFormCiudades() {
-      (this.formCiudades.desc_ciudad = null),
-      (this.formCiudades.siglas = null),
-      (this.formCiudades.check_urbano = null),
-      (this.formCiudades.cod_region = null),
+      (this.formCiudades.desc_ciudad = ""),
+      (this.formCiudades.siglas = ""),
+      (this.formCiudades.check_urbano = ""),
+      (this.formCiudades.cod_region = ""),
       (this.ciudadesForm = false)
     },
     resetFormEditCiudades() {
-      (this.formEditCiudades.desc_ciudad = null),
-      (this.formEditCiudades.siglas = null),
-      (this.formEditCiudades.check_urbano = null),
-      (this.formEditCiudades.cod_region = null),
+      (this.formEditCiudades.desc_ciudad = ""),
+      (this.formEditCiudades.siglas = ""),
+      (this.formEditCiudades.check_urbano = ""),
+      (this.formEditCiudades.cod_region = ""),
       (this.ciudadesformedit = false)
     },
     

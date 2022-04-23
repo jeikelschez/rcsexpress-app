@@ -82,8 +82,8 @@
                   hint=""
                   class="pcform"
                   @update:model-value="
-                    formRoles.descripcion =
-                      formRoles.descripcion.toUpperCase()
+                    formEditRoles.descripcion =
+                      formEditRoles.descripcion.toUpperCase()
                   "
                   lazy-rules
                   :rules="reglasDescripcion"
@@ -198,6 +198,7 @@
               color="primary"
               :disabled="this.disabledCreate"
               @click="rolesForm = true"
+              @click.capture="resetFormRoles()"
               size="16px"
               class="q-px-xl q-py-xs insertarestadosmovil"
             ></q-btn>
@@ -530,8 +531,8 @@ export default {
       this.resetFormEditRoles()
     },
     resetFormRoles() {
-      (this.formRoles.descripcion = null),
-      (this.formRoles.cod_agencia = null),
+      (this.formRoles.descripcion = ""),
+      (this.formRoles.cod_agencia = ""),
       (this.rolesForm = false)
     },
     resetFormEditRoles() {

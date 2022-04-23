@@ -185,9 +185,7 @@
                       formEditUsuarios.nombre.toUpperCase()
                   "
                   lazy-rules
-                  :rules="[
-                    (val) => (val && val.length > 0) || 'Debes escribir algo',
-                  ]"
+                  :rules="reglasNombre"
                 >
                   <template v-slot:prepend>
                     <q-icon name="text_fields" />
@@ -340,6 +338,7 @@
               color="primary"
               :disabled="this.disabledCreate"
               @click="usuariosForm = true"
+              @click.capture="resetFormUsuarios()"
               size="16px"
               class="q-px-xl q-py-xs insertarestadosmovil"
             ></q-btn>
@@ -714,7 +713,7 @@ export default {
       this.formUsuarios.cod_rol = this.formUsuarios.cod_rol.id;
       this.formUsuarios.cod_agencia = this.formUsuarios.cod_agencia.id;
       this.$refs.component.createData(`/usuarios`, this.formUsuarios, 'getDataUsuarios');
-      this.resetFormUsuarios();
+      this.usuariosForm = false;
     },
     putDataUsuarios() {
       this.formEditUsuarios.activo = this.formEditUsuarios.activo.value;

@@ -148,6 +148,9 @@ import { ref } from "vue";
           }
         })
         .catch((err) => {
+          if (err.response) {
+            this.error = err.response.data.statusCode;
+          }
           if ((this.error = "400")) {
             this.error =
               "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";

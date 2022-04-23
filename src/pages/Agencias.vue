@@ -896,7 +896,7 @@ export default {
         return "Debes escribir algo";
       }
       if (val === "") {
-        return "Debes Seleccionar Algo";
+        return "Debes escribir Algo";
       }
       if (val.length > 0) {
         if (val.length < 3) {
