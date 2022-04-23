@@ -1,9 +1,9 @@
 <template>
   <q-page class="q-pa-md">
     <q-dialog v-model="usuariosForm">
-      <q-card class="q-pa-md" bordered style="width: 999px">
+      <q-card class="q-pa-md" bordered style="max-width: 60vw">
         <q-card-section>
-          <q-form @submit="createDataUsuarios()" class="q-gutter-md">
+          <q-form @submit="createDataUsuarios()" class="q-gutter-md" autocomplete="off">
             <div class="row">
               <div class="col-md-5 col-xs-12">
                 <q-input
@@ -150,9 +150,9 @@
     </q-dialog>
 
     <q-dialog v-model="usuariosFormEdit">
-      <q-card class="q-pa-md" bordered style="width: 999px">
+      <q-card class="q-pa-md" bordered style="max-width: 60vw" >
         <q-card-section>
-          <q-form @submit="putDataUsuarios()">
+          <q-form @submit="putDataUsuarios()" autocomplete="off">
             <div class="row">
               <div class="col-md-12 col-xs-12">
                 <q-input

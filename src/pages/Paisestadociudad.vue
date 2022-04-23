@@ -1,7 +1,7 @@
 ﻿<template>
   <q-page class="q-pa-md">
     <q-dialog v-model="paisesForm">
-      <q-card class="q-pa-md" bordered style="width: 999px">
+      <q-card class="q-pa-md" bordered style="width: 999px; max-width: 60vw">
         <q-card-section>
           <q-form @submit="createDataPaises()" class="q-gutter-md">
             <div class="row">
@@ -16,9 +16,7 @@
                   @update:model-value="
                     formPaises.desc_pais = formPaises.desc_pais.toUpperCase()
                   "
-                  :rules="[
-                    (val) => (val && val.length > 0) || 'Escribe un Pais',
-                  ]"
+                  :rules="[reglaInputName]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="south_america" />
@@ -70,7 +68,7 @@
     </q-dialog>
 
     <q-dialog v-model="paisesFormEdit">
-      <q-card class="q-pa-md" bordered style="width: 999px">
+      <q-card class="q-pa-md" bordered style="width: 999px; max-width: 60vw">
         <q-card-section>
           <q-form @submit="putDataPaises()">
             <div class="row">
@@ -87,9 +85,7 @@
                     formEditPaises.desc_pais =
                       formEditPaises.desc_pais.toUpperCase()
                   "
-                  :rules="[
-                    (val) => (val && val.length > 0) || 'Escribe un Pais',
-                  ]"
+                  :rules="[reglaInputName]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="south_america" />
@@ -139,7 +135,7 @@
     </q-dialog>
 
     <q-dialog v-model="estadosForm">
-      <q-card class="q-pa-md" bordered style="width: 999px">
+      <q-card class="q-pa-md" bordered style="width: 999px; max-width: 60vw">
         <q-card-section>
           <q-form @submit="createDataEstados()" class="q-gutter-md">
             <div class="row">
@@ -155,9 +151,7 @@
                       formEstados.desc_estado.toUpperCase()
                   "
                   lazy-rules
-                  :rules="[
-                    (val) => (val && val.length > 0) || 'Escribe un Estado',
-                  ]"
+                  :rules="[reglaInputName]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="south_america" />
@@ -211,7 +205,7 @@
     </q-dialog>
 
     <q-dialog v-model="estadosFormEdit">
-      <q-card class="q-pa-md" bordered style="width: 999px">
+      <q-card class="q-pa-md" bordered style="width: 999px; max-width: 60vw">
         <q-card-section>
           <q-form @submit="putDataEstados()">
             <div class="row">
@@ -227,9 +221,7 @@
                       formEditEstados.desc_estado.toUpperCase()
                   "
                   lazy-rules
-                  :rules="[
-                    (val) => (val && val.length > 0) || 'Escribe un Estado',
-                  ]"
+                  :rules="[reglaInputName]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="south_america" />
@@ -284,7 +276,7 @@
     </q-dialog>
 
     <q-dialog v-model="ciudadesForm">
-      <q-card class="q-pa-md" bordered style="width: 999px">
+      <q-card class="q-pa-md" bordered style="max-width: 80vw">
         <q-card-section>
           <q-form @submit="createDataCiudades()" class="q-gutter-md">
             <div class="row">
@@ -293,7 +285,7 @@
                   outlined
                   v-model="formCiudades.desc_ciudad"
                   label="Ciudad"
-                  :rules="[reglaInputCiudad]"
+                  :rules="[reglaInputName]"
                   @update:model-value="
                     formCiudades.desc_ciudad =
                       formCiudades.desc_ciudad.toUpperCase()
@@ -388,7 +380,7 @@
     </q-dialog>
 
     <q-dialog v-model="ciudadesformedit">
-      <q-card class="q-pa-md" bordered style="width: 999px">
+      <q-card class="q-pa-md" bordered style="max-width: 80vw">
         <q-card-section>
           <q-form @submit="putDataCiudades()">
             <div class="row">
@@ -396,7 +388,7 @@
                 <q-input
                   outlined
                   v-model="formEditCiudades.desc_ciudad"
-                  :rules="[reglaInputCiudad]"
+                  :rules="[reglaInputName]"
                   @update:model-value="
                     formEditCiudades.desc_ciudad =
                       formEditCiudades.desc_ciudad.toUpperCase()
@@ -1378,8 +1370,6 @@ export default {
       }),
       separator: ref("vertical"),
       reglasSiglas: [
-        (val) =>
-          (val !== null && val !== "") || "Por favor escribe unas Siglas",
         (val) => val.length < 5 || "Deben ser máximo 4 caracteres",
       ],
       paisesForm: ref(false),
@@ -1426,7 +1416,7 @@ export default {
   },
   methods: {
     // Reglas
-    reglaInputCiudad(val) {
+    reglaInputName(val) {
       if (val === null) {
         return "Debes Escribir Algo";
       }

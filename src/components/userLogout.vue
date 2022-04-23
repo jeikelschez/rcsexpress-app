@@ -148,21 +148,18 @@ import { ref } from "vue";
           }
         })
         .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
           if ((this.error = "400")) {
             this.error =
               "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
+          };
           if ((this.error = "500")) {
             this.error =
               "Este elemento tiene otros elementos asociados... Eliminalos primero";
-          }
+          };
           if ((this.error = "409")) {
             this.error =
               "El elemento ya existe en la tabla. Por favor verificalo...";
-          }
+          };
           this.errorDelServidor();
         });
       },

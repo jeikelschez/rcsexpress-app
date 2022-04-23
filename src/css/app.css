@@ -19,7 +19,7 @@
 
     /* CSS de Bancos */
 
-@media screen and (min-width: 1023px) {.pcform {margin-right: 20px;}}
+@media screen and (min-width: 1023px) {.pcform {margin-right: 20px}}
 @media screen and (max-width: 600px) {.btnmovil {margin-top: 14px;margin-bottom: -14px;}}
 
 /* CSS de Paises Estados Ciudades */

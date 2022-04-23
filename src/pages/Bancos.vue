@@ -1,7 +1,7 @@
 <template>
   <q-page class="q-pa-md">
     <q-dialog v-model="create">
-      <q-card class="q-pa-md" bordered style="width: 999px, max-width: 80vw">
+      <q-card class="q-pa-md" bordered style="max-width: 60vw">
         <q-card-section>
           <q-form @submit="createData" class="q-gutter-md">
             <div class="row">
@@ -136,7 +136,7 @@
     </q-dialog>
 
     <q-dialog v-model="edit">
-      <q-card class="q-pa-md" bordered style="width: 999px, max-width: 80vw">
+      <q-card class="q-pa-md" bordered style="max-width: 60vw">
         <q-card-section>
           <q-form @submit="putData">
             <div class="row">

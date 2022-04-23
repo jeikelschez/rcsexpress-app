@@ -893,7 +893,7 @@ export default {
     reglaInputNombre(val) {
       if(val !== null) {
         if (val === null) {
-        return "Debes Seleccionar Algo";
+        return "Debes escribir algo";
       }
       if (val === "") {
         return "Debes Seleccionar Algo";
