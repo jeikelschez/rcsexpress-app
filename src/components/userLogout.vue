@@ -102,7 +102,7 @@ import { ref } from "vue";
       })
       .catch((err) => {
           if (err.response) {
-            this.error = err.response.data.statusCode;
+            this.error = err.response.status;
           }
           if ((this.error === 400)) {
             this.error =
