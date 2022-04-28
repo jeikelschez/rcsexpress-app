@@ -104,19 +104,18 @@ import { ref } from "vue";
           if (err.response) {
             this.error = err.response.data.statusCode;
           }
-          if ((this.error = "400")) {
+          if ((this.error === 400)) {
             this.error =
               "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          if ((this.error = "500")) {
+          };
+          if ((this.error === 500)) {
             this.error =
               "Este elemento tiene otros elementos asociados... Eliminalos primero";
-          }
+          };
           this.errorDelServidor();
         });
       },
       createData: function(url, form, llamada) {
-
       api.post(url, form, this.axiosConfig)
       .then((res) => {
         if ((res.status = 200)) {
@@ -128,14 +127,14 @@ import { ref } from "vue";
           if (err.response) {
             this.error = err.response.data.statusCode;
           }
-          if ((this.error = "400")) {
+          if ((this.error === 400)) {
             this.error =
               "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          if ((this.error = "409")) {
+          };
+          if ((this.error === 409)) {
             this.error =
               "El elemento ya existe en la tabla. Por favor verificalo...";
-          }
+          };
           this.errorDelServidor();
         });
       },
@@ -151,15 +150,15 @@ import { ref } from "vue";
           if (err.response) {
             this.error = err.response.data.statusCode;
           }
-          if ((this.error = "400")) {
+          if ((this.error === 400)) {
             this.error =
               "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
           };
-          if ((this.error = "500")) {
+          if ((this.error === 500)) {
             this.error =
               "Este elemento tiene otros elementos asociados... Eliminalos primero";
           };
-          if ((this.error = "409")) {
+          if ((this.error === 409)) {
             this.error =
               "El elemento ya existe en la tabla. Por favor verificalo...";
           };

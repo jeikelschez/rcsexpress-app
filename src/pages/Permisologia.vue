@@ -124,8 +124,7 @@
               label="Insertar"
               rounded
               color="primary"
-              @click="permisosForm = true"
-              @click.capture="eliminarDuplicados"
+              @click="eliminarDuplicados"
               size="16px"
               class="q-px-xl q-py-xs insertarestadosmovil"
             ></q-btn>
@@ -351,6 +350,7 @@ export default {
       agenciaRef: "",
       rolesRef: "",
       error: "",
+      items: 0,
       disabledCreate: true,
       disabledEdit: true,
       disabledDelete: true,
@@ -395,6 +395,12 @@ export default {
           color: "green",
         });
       },
+      sinPermisos() {
+        $q.notify({
+          message: "No hay más permisos que agregar...",
+          color: "red",
+        });
+      },
       editadoConExito() {
         $q.notify({
           message: "Editado exitosamente",
@@ -422,6 +428,15 @@ export default {
         return "Debes Seleccionar Algo";
       }
     },
+    verificatePermisos() {
+      if (this.items === this.objetos.length) {
+        this.sinPermisos()
+      };
+      if (this.items < this.objetos.length) {
+        this.permisosForm = true
+      };
+      this.items = 0
+    },
     desactivarCrudPermisologia(createItem, deleteItem, updateItem) {
       if (createItem == true) {
         this.disabledCreate = false
@@ -446,7 +461,6 @@ export default {
     },
     // Metodos para permisos
     setDataRoles(res, dataRes) {
-      console.log(res);
       this[dataRes] = res.roles;
       this.selectedRol = "";
     },
@@ -529,11 +543,13 @@ export default {
         for (var i = 0, len = this.objetos.length; i < len; i++) {
           if (this.objetos[i].codigo === this.permisos[e].codigo) {
             delete this.objetosNoDuplicados[i];
+            this.items = this.items + 1
           }
           if (i == this.objetos.length - 1) break;
         }
         if (e == this.permisos.length - 1) break;
-      }
+      };
+      this.verificatePermisos();
     },
   },
 };

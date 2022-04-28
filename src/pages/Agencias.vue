@@ -544,7 +544,7 @@
               color="primary"
               :disabled="this.disabledCreate"
               @click="create = true"
-              @click.capture="resetForm"
+              @click.capture="this.resetForm()"
             ></q-btn>
           </div>
         </div>
@@ -986,6 +986,8 @@ export default {
         (this.selectedPais = null),
         (this.selectedEstado = null),
         (this.selectedCiudad = null),
+        (this.estados = null),
+        (this.ciudades = null),
         (this.form.persona_contacto = ""),
         (this.form.nb_agencia = ""),
         (this.form.persona_contacto = ""),

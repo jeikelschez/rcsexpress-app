@@ -51,7 +51,7 @@
                   :rules="[reglaInput]"
                   hint=""
                   lazy-rules
-                  mask="####-#####"
+                  mask="#### - ##########"
                 >
                   <template v-slot:prepend>
                     <q-icon name="fax" />
@@ -67,7 +67,7 @@
                   :rules="[reglaInput]"
                   hint=""
                   lazy-rules
-                  mask="(###) ### - ####"
+                  mask="### - ### - ##########"
                 >
                   <template v-slot:prepend>
                     <q-icon name="phone" />
@@ -187,7 +187,7 @@
                   :rules="[reglaInput]"
                   class="pcform"
                   lazy-rules
-                  mask="####-#######################"
+                  mask="#### - #######################"
                 >
                   <template v-slot:prepend>
                     <q-icon name="fax" />
@@ -203,7 +203,7 @@
                   :rules="[reglaInput]"
                   hint=""
                   lazy-rules
-                  mask="(###) ### - ####"
+                  mask="### - ### - ##########"
                 >
                   <template v-slot:prepend>
                     <q-icon name="phone" />
@@ -506,13 +506,6 @@ export default {
           name: "fax_banco",
           label: "Fax",
           field: "fax_banco",
-          align: "left",
-          sortable: true,
-        },
-        {
-          name: "tlf_banco",
-          label: "Teléfono",
-          field: "tlf_banco",
           align: "left",
           sortable: true,
         },

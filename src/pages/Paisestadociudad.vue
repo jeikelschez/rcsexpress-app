@@ -78,7 +78,6 @@
                   v-model="formEditPaises.desc_pais"
                   label="País"
                   hint=""
-                  input-class="input"
                   class="pcform"
                   lazy-rules
                   @update:model-value="
@@ -736,7 +735,6 @@
                     color="primary"
                     :disabled="this.disabledCreate"
                     @click="estadosForm = true"
-                    @click.capture="resetFormCiudades"
                     size="16px"
                     class="q-px-xl q-py-xs insertarestadosmovil"
                   ></q-btn>
@@ -1265,16 +1263,16 @@ export default {
           sortable: true,
         },
         {
-          name: "check_urbano_desc",
-          label: "Zona Urbana",
-          field: "check_urbano_desc",
+          name: "cod_region_desc",
+          label: "Región",
+          field: "cod_region_desc",
           align: "left",
           sortable: true,
         },
         {
-          name: "cod_region_desc",
-          label: "Región",
-          field: "cod_region_desc",
+          name: "check_urbano_desc",
+          label: "Zona Urbana",
+          field: "check_urbano_desc",
           align: "left",
           sortable: true,
         },
@@ -1431,6 +1429,9 @@ export default {
     },
     reglasInputs(val) {
       if (val === null) {
+        return "Debes Seleccionar Algo";
+      }
+      if (val === "") {
         return "Debes Seleccionar Algo";
       }
     },
