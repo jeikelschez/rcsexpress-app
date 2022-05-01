@@ -236,15 +236,15 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <user-logout
-      ref="component"
-      @get-Data-Permisos="
-        getData(`/roles/${this.selectedRol.id}/permisos`, 'setDataPermisos','permisos')"
+    <user-logout ref="userlogout"
+      @desactivar-Crud-Permisologia="desactivarCrudPermisologia"
+    ></user-logout>
+    <methods ref="methods"
+      @get-Data-Permisos="getData(`/roles/${this.selectedRol.id}/permisos`, 'setDataPermisos','permisos')"
       @set-data-Roles="setDataRoles"
       @set-data-Permisos="setDataPermisos"
       @set-Data="setData"
-      @desactivar-Crud-Permisologia="desactivarCrudPermisologia"
-    ></user-logout>
+    ></methods>
   </q-page>
 </template>
 
@@ -257,12 +257,13 @@ import { useQuasar } from "quasar";
 
 import userLogoutVue from "src/components/userLogout.vue";
 
-import i18n from "src/i18n";
+import methodsVue from "src/components/methods.vue";
 
 import { LocalStorage } from 'quasar';
 
 export default {
-  components: { "user-logout": userLogoutVue },
+  components: { "user-logout": userLogoutVue,
+  "methods": methodsVue },
   name: "Permisologia",
   data() {
     return {
@@ -419,7 +420,7 @@ export default {
   },
   mounted() {
     this.getData("/agencias", "setData", "agencias");
-    this.$refs.component.desactivarCrud('c_permisos', 'd_permisos', 'u_permisos', 'desactivarCrudPermisologia')
+    this.$refs.userlogout.desactivarCrud('c_permisos', 'd_permisos', 'u_permisos', 'desactivarCrudPermisologia')
   },
   methods: {
     // Reglas
@@ -450,7 +451,7 @@ export default {
     },
 
     getData(url, call, dataRes) {
-      this.$refs.component.getData(url, call, dataRes);
+      this.$refs.methods.getData(url, call, dataRes);
     },
     setData(res, dataRes) {
       this[dataRes] = res;
@@ -470,7 +471,7 @@ export default {
     },
 
     deleteData(selected) {
-      this.$refs.component.deleteData(
+      this.$refs.methods.deleteData(
         `/permisos/${selected}`,
         "getDataPermisos"
       );
@@ -478,7 +479,7 @@ export default {
     createData() {
       this.formPermisos.cod_rol = this.selectedRol.id;
       this.formPermisos.codigo = this.formPermisos.codigo.codigo;
-      this.$refs.component.createData(
+      this.$refs.methods.createData(
         `/permisos`,
         this.formPermisos,
         "getDataPermisos"

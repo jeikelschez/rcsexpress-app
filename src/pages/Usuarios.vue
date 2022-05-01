@@ -490,8 +490,7 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <user-logout
-      ref="component"
+    <methods ref="methods"
       @get-Data="getData(`/agencias/${this.selectedAgencia.id}/usuarios`, 'setDataRoles', 'usuarios')"
       @get-Data-Usuarios="getData(`/agencias/${this.selectedAgencia.id}/usuarios`, 'setDataUsuarios', 'usuarios')"
       @set-Data-Usuarios="setDataUsuarios"
@@ -499,6 +498,8 @@
       @set-Data-Roles="setDataRoles"
       @set-Data-Roles-Iniciar="setDataRolesIniciar"
       @set-Data="setData"
+    ></methods>
+    <user-logout ref="userlogout"
       @desactivar-Crud-Usuarios="desactivarCrudUsuarios"
     ></user-logout>
   </q-page>
@@ -515,8 +516,11 @@ import { api } from "boot/axios";
 
 import { useQuasar } from "quasar";
 
+import methodsVue from 'src/components/methods.vue';
+
 export default {
-  components: { "user-logout": userLogoutVue },
+  components: { "user-logout": userLogoutVue,
+  "methods": methodsVue },
   name: "Bancos",
   data() {
     return {
@@ -659,7 +663,7 @@ export default {
   },
   mounted() {
     this.getData('/agencias', 'setData', 'agencias');
-    this.$refs.component.desactivarCrud('c_usuarios', 'd_usuarios', 'u_usuarios', 'desactivarCrudUsuarios')
+    this.$refs.userlogout.desactivarCrud('c_usuarios', 'd_usuarios', 'u_usuarios', 'desactivarCrudUsuarios')
   },
   methods: {
     // Reglas
@@ -683,7 +687,7 @@ export default {
       }
     },
     getData(url, call, dataRes) {
-    this.$refs.component.getData(url, call, dataRes);
+    this.$refs.methods.getData(url, call, dataRes);
     },
     setData(res, dataRes) {
       this[dataRes] = res
@@ -706,20 +710,20 @@ export default {
       this.getData(`/agencias/${this.formEditUsuarios.cod_agencia.id}/roles`, 'setDataRolesIniciar', 'roles')
     },
     deleteData(idpost) {
-      this.$refs.component.deleteData(`/usuarios/${idpost}`, 'getDataUsuarios');
+      this.$refs.methods.deleteData(`/usuarios/${idpost}`, 'getDataUsuarios');
     },
     createDataUsuarios() {
       this.formUsuarios.activo = this.formUsuarios.activo.value;
       this.formUsuarios.cod_rol = this.formUsuarios.cod_rol.id;
       this.formUsuarios.cod_agencia = this.formUsuarios.cod_agencia.id;
-      this.$refs.component.createData(`/usuarios`, this.formUsuarios, 'getDataUsuarios');
+      this.$refs.methods.createData(`/usuarios`, this.formUsuarios, 'getDataUsuarios');
       this.usuariosForm = false;
     },
     putDataUsuarios() {
       this.formEditUsuarios.activo = this.formEditUsuarios.activo.value;
       this.formEditUsuarios.cod_rol = this.formEditUsuarios.cod_rol.id;
       this.formEditUsuarios.cod_agencia = this.formEditUsuarios.cod_agencia.id;
-      this.$refs.component.putData(`/usuarios/${this.formEditUsuarios.login}`, this.formEditUsuarios, 'getDataUsuarios');
+      this.$refs.methods.putData(`/usuarios/${this.formEditUsuarios.login}`, this.formEditUsuarios, 'getDataUsuarios');
       this.resetFormEditUsuarios()
     }, 
     resetFormUsuarios() {

@@ -696,14 +696,15 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <user-logout ref="component"
+    <methods ref="methods"
     @get-Data="getData('/agencias','setData','datos')"
     @set-Data="setData"
     @set-Data-Edit="setDataEdit"
     @set-Data-Edit-Ciudades="setDataEditCiudades"
     @set-Data-Edit-Estados="setDataEditEstados"
     @set-Data-Estados="setDataEstados"
-    @set-Data-Ciudades="setDataCiudades"
+    @set-Data-Ciudades="setDataCiudades"></methods>
+    <user-logout ref="userLogout"
     @desactivar-Crud-Agencias="desactivarCrudAgencias"></user-logout>
   </q-page>
 </template>
@@ -711,16 +712,15 @@
 <script>
 import { ref } from "vue";
 
-import { api } from "boot/axios";
-
 import { useQuasar } from "quasar";
 
 import userLogoutVue from 'src/components/userLogout.vue';
 
-import { LocalStorage } from 'quasar';
+import methodsVue from 'src/components/methods.vue';
 
 export default {
-  components: { 'user-logout': userLogoutVue },
+  components: { 'user-logout': userLogoutVue,
+  "methods": methodsVue },
   name: "Bancos",
   data() {
     return {
@@ -866,7 +866,7 @@ export default {
   mounted() {
     this.getData('/agencias','setData','datos')
     this.getData('/paises','setData','paises')
-    this.$refs.component.desactivarCrud('c_agencias', 'd_agencias', 'u_agencias', 'desactivarCrudAgencias')
+    this.$refs.userLogout.desactivarCrud('c_agencias', 'd_agencias', 'u_agencias', 'desactivarCrudAgencias')
   },
   methods: {
     // Reglas
@@ -918,14 +918,14 @@ export default {
     },
 
     getData(url, call, dataRes) {
-      this.$refs.component.getData(url, call, dataRes);
+      this.$refs.methods.getData(url, call, dataRes);
     },
     setData(res, dataRes) {
       this[dataRes] = res
     },
 
     getDataEdit(id) {
-      this.$refs.component.getDataEdit(`/agencias/${id}`, 'setDataEdit', 'formEdit');
+      this.$refs.methods.getDataEdit(`/agencias/${id}`, 'setDataEdit', 'formEdit');
     },
     setDataEdit(res, dataRes) {
       this[dataRes].id = res.id
@@ -941,13 +941,13 @@ export default {
       this.selectedCiudadEdit = res.ciudades.cod_estado,
       this.selectedCiudad = res.ciudades.desc_ciudad;
       this.ciudadEdit = res.ciudades.id
-      this.$refs.component.getDataEdit(`/estados/${this.selectedCiudadEdit}/ciudades`, 'setDataEditCiudades', 'ciudades');
+      this.$refs.methods.getDataEdit(`/estados/${this.selectedCiudadEdit}/ciudades`, 'setDataEditCiudades', 'ciudades');
     },
     setDataEditCiudades(res, dataRes) {
       this[dataRes] = res.ciudades
       this.selectedEstadoEdit = res.cod_pais;
       this.selectedEstado = res.desc_estado;
-      this.$refs.component.getDataEdit(
+      this.$refs.methods.getDataEdit(
         `/paises/${this.selectedEstadoEdit}/estados`, 'setDataEditEstados', 'estados');
     },
     setDataEditEstados(res, dataRes) {
@@ -967,18 +967,18 @@ export default {
     },
     
     deleteDato(idpost) {
-      this.$refs.component.deleteData(`/agencias/${idpost}`, 'getData');
+      this.$refs.methods.deleteData(`/agencias/${idpost}`, 'getData');
     },
     createDato() {
       this.form.cod_ciudad = this.selectedCiudad.id;
       this.form.estatus = this.form.estatus.value;
-      this.$refs.component.createData('/agencias', this.form, 'getData');
+      this.$refs.methods.createData('/agencias', this.form, 'getData');
       this.resetForm();
     },
     putDato() {
       this.formEdit.cod_ciudad = this.selectedCiudad.id;
       this.formEdit.estatus = this.formEdit.estatus.value;
-      this.$refs.component.putData(`/agencias/${this.formEdit.id}`, this.formEdit, 'getData');
+      this.$refs.methods.putData(`/agencias/${this.formEdit.id}`, this.formEdit, 'getData');
       this.edit = false;
     },
     

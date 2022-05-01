@@ -350,14 +350,15 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <user-logout
-      ref="component"
+    <user-logout ref="userlogout"
+      @desactivar-Crud-Roles="desactivarCrudRoles"
+    ></user-logout>
+    <methods ref="methods"
       @get-Data="getData(`/agencias/${this.selectedAgencia.id}/roles`, 'setDataRoles', 'roles')"
       @set-Data-Roles="setDataRoles"
       @set-Data-Roles-Edit="setDataRolesEdit"
       @set-Data="setData"
-      @desactivar-Crud-Roles="desactivarCrudRoles"
-    ></user-logout>
+    ></methods>
   </q-page>
 </template>
 
@@ -372,8 +373,11 @@ import { useQuasar } from "quasar";
 
 import { LocalStorage } from 'quasar';
 
+import methodsVue from 'src/components/methods.vue';
+
 export default {
-  components: { "user-logout": userLogoutVue },
+  components: { "user-logout": userLogoutVue,
+  "methods": methodsVue},
   name: "Bancos",
   data() {
     return {
@@ -478,7 +482,7 @@ export default {
   },
   mounted() {
     this.getData('/agencias', 'setData', 'agencias');
-    this.$refs.component.desactivarCrud('c_roles', 'd_roles', 'u_roles', 'desactivarCrudRoles')
+    this.$refs.userlogout.desactivarCrud('c_roles', 'd_roles', 'u_roles', 'desactivarCrudRoles')
   },
   methods: {
     // Reglas
@@ -503,7 +507,7 @@ export default {
     },
 
     getData(url, call, dataRes) {
-      this.$refs.component.getData(url, call, dataRes);
+      this.$refs.methods.getData(url, call, dataRes);
     },
     setData(res, dataRes) {
       this[dataRes] = res
@@ -518,16 +522,16 @@ export default {
       this[dataRes].cod_agencia = this.selectedAgencia
     },
     deleteData(idpost) {
-      this.$refs.component.deleteData(`/roles/${idpost}`, 'getData');
+      this.$refs.methods.deleteData(`/roles/${idpost}`, 'getData');
     },
     createDataRoles() {
       this.formRoles.cod_agencia = this.formRoles.cod_agencia.id
-      this.$refs.component.createData(`/roles`, this.formRoles, 'getData');
+      this.$refs.methods.createData(`/roles`, this.formRoles, 'getData');
       this.resetFormRoles();
     },
     putDataRoles() {
       this.formEditRoles.cod_agencia = this.formEditRoles.cod_agencia.id
-      this.$refs.component.putData(`/roles/${this.formEditRoles.id}`, this.formEditRoles, 'getData');
+      this.$refs.methods.putData(`/roles/${this.formEditRoles.id}`, this.formEditRoles, 'getData');
       this.resetFormEditRoles()
     },
     resetFormRoles() {

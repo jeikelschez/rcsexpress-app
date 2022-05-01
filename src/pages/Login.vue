@@ -90,6 +90,7 @@ export default {
   },
   methods: {
     onSubmit() {
+      LocalStorage.set('usuario', this.form.username)
       api.post(`/usuarios/login`, this.form)
         .then((res) => {
           if ((res.status = 201)) {
@@ -97,7 +98,7 @@ export default {
             LocalStorage.set('user', true),
             LocalStorage.set('refreshToken', `${res.data.data.refreshToken}`),
             this.$router.push('/dashboard');
-            this.$refs.component.setTimers()
+            this.$refs.component.login()
           }
         })
         .catch((err) => {

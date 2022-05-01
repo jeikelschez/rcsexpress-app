@@ -457,10 +457,13 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <user-logout ref="component"
+    <methods ref="methods"
     @get-Data="getData('/bancos','setData','datos')"
-    @set-data="setData" @set-Data-Edit="setData"
-    @desactivar-Crud-Bancos="desactivarCrudBancos"></user-logout>
+    @set-data="setData" @set-Data-Edit="setData">
+    </methods>
+    <user-logout ref="userlogout"
+    @desactivar-Crud-Bancos="desactivarCrudBancos">
+    </user-logout>
   </q-page>
 </template>
 
@@ -474,9 +477,12 @@ import { useQuasar } from "quasar";
 import { LocalStorage } from "quasar";
 
 import userLogoutVue from "src/components/userLogout.vue";
+import methodsVue from 'src/components/methods.vue';
 
 export default {
-  components: { "user-logout": userLogoutVue },
+  components: {
+  "user-logout": userLogoutVue,
+  "methods": methodsVue },
   name: "Bancos",
   data() {
     return {
@@ -607,7 +613,7 @@ export default {
   },
   mounted() {
     this.getData('/bancos','setData','datos')
-    this.$refs.component.desactivarCrud('c_bancos', 'd_bancos', 'u_bancos', 'desactivarCrudBancos')
+    this.$refs.userlogout.desactivarCrud('c_bancos', 'd_bancos', 'u_bancos', 'desactivarCrudBancos')
   },
   methods: {
     reglaInputBancos(val) {
@@ -642,20 +648,20 @@ export default {
       }
     },
     getData(url, call, dataRes) {
-      this.$refs.component.getData(url, call, dataRes);
+      this.$refs.methods.getData(url, call, dataRes);
     },
     setData(res, dataRes) {
       this[dataRes] = res
     },    
     deleteData(idpost) {
-      this.$refs.component.deleteData(`/bancos/${idpost}`, 'getData');
+      this.$refs.methods.deleteData(`/bancos/${idpost}`, 'getData');
     },
     createData() {
-      this.$refs.component.createData('/bancos', this.form, 'getData');
+      this.$refs.methods.createData('/bancos', this.form, 'getData');
       this.resetForm();
     },
     putData() {
-      this.$refs.component.putData(`/bancos/${this.formEdit.id}`, this.formEdit, 'getData');
+      this.$refs.methods.putData(`/bancos/${this.formEdit.id}`, this.formEdit, 'getData');
       this.edit = false;
     },
     

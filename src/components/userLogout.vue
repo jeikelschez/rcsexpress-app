@@ -6,7 +6,6 @@ import { LocalStorage } from 'quasar';
 import jwt_decode from 'jwt-decode';
 import { api } from "boot/axios";
 import { useQuasar } from "quasar";
-import { ref } from "vue";
 
   export default {
     name: "userLogout",
@@ -20,15 +19,15 @@ import { ref } from "vue";
       },
       logoutTimerGlobal: null,
       logoutTimer: null,
+      refreshTimer: null,
       error: "",
+      form: {
+        username: "",
+        token: "",
+      },
       }
     },
 
-    mounted() {
-      this.events.forEach( function (event) {window.addEventListener(event, this.setTimers);
-      }, this);
-      this.traducirToken();
-    },
     setup() {
     const $q = useQuasar();
     return {
@@ -38,132 +37,15 @@ import { ref } from "vue";
           color: "red",
         });
       },
-      añadidoConExito() {
-        $q.notify({
-          message: "Agregado exitosamente",
-          color: "green",
-        });
-      },
-      editadoConExito() {
-        $q.notify({
-          message: "Editado exitosamente",
-          color: "green",
-        });
-      },
-      eliminadoConExito() {
-        $q.notify({
-          message: "Eliminado exitosamente",
-          color: "green",
-        });
-      },
     };
   },
 
     methods: {
-      getData: function(url, llamada, dataRes) {
-      api.get(url, this.axiosConfig)
-      .then((res) => {
-        this.$emit(llamada, res.data, dataRes)
-      })
-      .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-      });
-      },
-      getDataEdit: function(url, llamada, dataRes) {
-      api.get(url, this.axiosConfig)
-      .then((res) => {
-        this.$emit(llamada, res.data, dataRes)
-      })
-      .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "400")) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          }
-          this.errorDelServidor();
-        });
-      },
-      deleteData: function(url, llamada) {
-      api.delete(url, this.axiosConfig)
-      .then((res) => {
-        if ((res.status = 200)) {
-            this.$emit(llamada)
-            this.eliminadoConExito();
-          }
-      })
-      .catch((err) => {
-          if (err.response) {
-            this.error = err.response.status;
-          }
-          if ((this.error === 400)) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          };
-          if ((this.error === 500)) {
-            this.error =
-              "Este elemento tiene otros elementos asociados... Eliminalos primero";
-          };
-          this.errorDelServidor();
-        });
-      },
-      createData: function(url, form, llamada) {
-      api.post(url, form, this.axiosConfig)
-      .then((res) => {
-        if ((res.status = 200)) {
-            this.$emit(llamada)
-            this.añadidoConExito();
-          }
-      })
-      .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error === 400)) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          };
-          if ((this.error === 409)) {
-            this.error =
-              "El elemento ya existe en la tabla. Por favor verificalo...";
-          };
-          this.errorDelServidor();
-        });
-      },
-      putData: function(url, form, llamada) {
-      api.put(url, form, this.axiosConfig)
-      .then((res) => {
-          if ((res.status = 200)) {
-            this.$emit(llamada)
-            this.editadoConExito();
-          }
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error === 400)) {
-            this.error =
-              "Hubo un Error en la Carga de los Datos, Contacta con el Administrador del Sistema";
-          };
-          if ((this.error === 500)) {
-            this.error =
-              "Este elemento tiene otros elementos asociados... Eliminalos primero";
-          };
-          if ((this.error === 409)) {
-            this.error =
-              "El elemento ya existe en la tabla. Por favor verificalo...";
-          };
-          this.errorDelServidor();
-        });
+      login: function() {
+      this.events.forEach( function (event) {window.addEventListener(event, this.setTimers);
+      }, this);
+      this.traducirToken();
+      this.setRefreshTimer();
       },
       traducirToken: function() {
         var tokenTraducido = jwt_decode(LocalStorage.getItem('token'))
@@ -213,20 +95,6 @@ import { ref } from "vue";
             {
               updateItem = true
               this.$emit(llamada, createItem, deleteItem, updateItem)
-            }
-
-        var foundRead
-        for (var e = 0, len = tokenTraducido.usuario.roles.permisos.length; e<len; e++) {
-          if (tokenTraducido.usuario.roles.permisos[e].codigo === 'readItem') {
-            foundRead = true
-          }
-          if (foundRead == true) break
-          if (e == tokenTraducido.usuario.roles.permisos.length.length - 1) break
-          }
-
-        if (foundRead === true) 
-            {
-              console.log('agregar permiso de mostrar')
             }
 
       },
@@ -328,9 +196,41 @@ import { ref } from "vue";
 
       },
       setTimers() {
+        if (LocalStorage.getItem('user') === true) {
+          console.log('logout activado')
         clearTimeout(this.logoutTimer);
+        this.logoutTimer = null
         this.logoutTimer = setTimeout(this.logoutUser, 300 * 1000);
-        this.logoutTimerGlobal = setTimeout(this.logoutUser, 1140 * 1000);
+        }
+      },
+      setRefreshTimer() {
+        console.log('refresh activado')
+        clearTimeout(this.refreshTimer);
+        this.refreshTimer = null
+        this.refreshTimer = setTimeout(this.refreshToken, 1100 * 1000);
+      },
+      refreshToken() {
+        if (LocalStorage.getItem('user') === true) {
+        this.form.username = LocalStorage.getItem('usuario')
+        this.form.token = LocalStorage.getItem('refreshToken')
+        api.post(`/usuarios/refresh`, this.form)
+         .then((res) => {
+            if ((res.status = 201)) {
+            LocalStorage.set('token', `${res.data.data.accessToken}`),
+            LocalStorage.set('user', true),
+            this.traducirToken();
+            this.setRefreshTimer();
+          }
+        })
+          .catch((err) => {
+          if (err.response) {
+            this.error = err.response.data.statusCode;
+          }
+          if ((this.error = "404")) {
+            this.errorDelServidor()
+          }
+        });
+        }
       },
       logoutUser: function() {
         LocalStorage.remove('user');
