@@ -53,10 +53,10 @@
       <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
         <div class="row">
           <div
-            class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12"
+            class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 text-secondary"
             style="align-self: center; text-align: center"
           >
-            <h4 style="font-size: 30px">Seguridad - Permisología</h4>
+            <h4 style="font-size: 30px"><strong>SEGURIDAD - PERMISOLOGÍA</strong></h4>
           </div>
 
           <div

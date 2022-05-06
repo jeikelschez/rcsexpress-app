@@ -484,10 +484,10 @@
 
     <div class="row q-pa-sm">
       <div
-        class="col-md-6 col-xl-6 col-lg-6 col-xs-12 col-sm-12"
+        class="col-md-6 col-xl-6 col-lg-6 col-xs-12 col-sm-12 text-secondary"
         style="align-self: center; text-align: center; margin-right: 16px"
       >
-        <h4>Mantenimiento - País, Estado, Ciudad</h4>
+        <h4><strong>MANTENIMIENTO - PAÍS, ESTADO, CIUDAD</strong></h4>
       </div>
       <div
         class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-12"
@@ -1145,7 +1145,7 @@
     @desactivar-Crud-Pais-Estado-Ciudad="desactivarCrudPaisEstadoCiudad"
     ></user-logout>
 
-    <user-logout ref="methods"
+    <methods ref="methods"
     @get-Data-Paises="getDataPaises('/paises', 'setData', 'paises')"
     @get-Data-Estados="getDataEstados(`/paises/${this.selectedPais.id}/estados`, 'setDataEstados', 'estados')"
     @get-Data-Ciudades="getDataCiudades(`/estados/${this.selectedEstado.id}/ciudades`, 'setDataCiudades', 'ciudades')"
@@ -1156,7 +1156,7 @@
     @set-Data-Estados-Select="setDataEstadosSelect"
     @set-Data-Ciudades="setDataCiudades"
     @set-Data-Ciudades-Edit="setDataCiudadesEdit"
-    ></user-logout>
+    ></methods>
   </q-page>
 </template>
 
@@ -1168,6 +1168,8 @@ import { api } from "boot/axios";
 import { useQuasar } from "quasar";
 
 import userLogoutVue from "src/components/userLogout.vue";
+
+import methodsVue from "src/components/methods.vue";
 
 import { LocalStorage } from 'quasar';
 
@@ -1414,7 +1416,7 @@ export default {
   },
   mounted() {
     this.getDataPaises('/paises', 'setData', 'paises');
-    this.$refs.userLogout.desactivarCrud('c_ciudades', 'd_ciudades', 'u_ciudades', 'desactivarCrudPaisEstadoCiudad')
+    this.$refs.userlogout.desactivarCrud('c_ciudades', 'd_ciudades', 'u_ciudades', 'desactivarCrudPaisEstadoCiudad')
   },
   methods: {
     // Reglas

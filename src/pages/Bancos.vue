@@ -272,13 +272,13 @@
     </q-dialog>
 
     <div class="row q-pa-sm justify-center">
-      <div class="col-md-12 col-xl-9 col-lg-9 col-xs-12 col-sm-12">
+      <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
         <div class="row">
           <div
-            class="col-md-4 col-xs-12"
+            class="col-md-4 col-xs-12 text-secondary"
             style="align-self: center; text-align: center; margin-right: 16px"
           >
-            <h4>Mantenimiento - Bancos</h4>
+            <h4><strong>MANTENIMIENTO - BANCOS</strong></h4>
           </div>
           <div
             class="col-md-5 col-sm-7 col-xs-6"
@@ -470,13 +470,13 @@
 <script>
 import { ref } from "vue";
 
-import { api } from "boot/axios";
 
 import { useQuasar } from "quasar";
 
 import { LocalStorage } from "quasar";
 
 import userLogoutVue from "src/components/userLogout.vue";
+
 import methodsVue from 'src/components/methods.vue';
 
 export default {
