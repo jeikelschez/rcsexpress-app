@@ -1384,8 +1384,9 @@
           :label="'© 2019. ' + this.$t('Menu.rights') + ' RCS Express.'"
         />
       </div>
-      <user-logout ref="component"
-    @desactivar-Opciones-Set="desactivarOpcionesSet"></user-logout>
+      <desactivate-crud ref="desactivateCrud"
+    @desactivar-Opciones-Set="desactivarOpcionesSet"></desactivate-crud>
+    <user-logout ref="component"></user-logout>
     </q-footer>
   </q-layout>
 </template>
@@ -1394,11 +1395,13 @@
 import { ref } from 'vue';
 import { LocalStorage } from 'quasar';
 import {defineComponent,defineAsyncComponent} from 'vue'
-import userLogoutVue from "src/components/userLogout.vue";
+import desactivateCrudVue from 'src/components/desactivateCrud.vue';
+import userLogoutVue from 'src/components/userLogout.vue';
 
 export default defineComponent ({
   name: 'PageIndex',
-  components: { "user-logout": userLogoutVue },
+  components: { "desactivate-crud": desactivateCrudVue,
+  "user-logout": userLogoutVue },
   data() {
     return {
       disabledBancos: false,
@@ -1446,7 +1449,7 @@ export default defineComponent ({
     this.miniState = true;
     this.drawer = true;
     this.Authenticator()
-    this.$refs.component.desactivarOpciones('desactivarOpcionesSet','r_bancos','r_agencias','r_ciudades','r_permisos','r_usuarios','r_roles',)
+    this.$refs.desactivateCrud.desactivarOpciones('desactivarOpcionesSet','r_bancos','r_agencias','r_ciudades','r_permisos','r_usuarios','r_roles',)
   },
   methods: {
     desactivarOpcionesSet(
