@@ -350,9 +350,9 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <user-logout ref="userlogout"
+    <desactivate-crud ref="desactiveCrud"
       @desactivar-Crud-Roles="desactivarCrudRoles"
-    ></user-logout>
+    ></desactivate-crud>
     <methods ref="methods"
       @get-Data="getData(`/agencias/${this.selectedAgencia.id}/roles`, 'setDataRoles', 'roles')"
       @set-Data-Roles="setDataRoles"
@@ -365,8 +365,6 @@
 <script>
 import { ref } from "vue";
 
-import userLogoutVue from "src/components/userLogout.vue";
-
 import { api } from "boot/axios";
 
 import { useQuasar } from "quasar";
@@ -375,8 +373,10 @@ import { LocalStorage } from 'quasar';
 
 import methodsVue from 'src/components/methods.vue';
 
+import desactivateCrudVue from 'src/components/desactivateCrud.vue';
+
 export default {
-  components: { "user-logout": userLogoutVue,
+  components: { "desactivate-crud": desactivateCrudVue,
   "methods": methodsVue},
   name: "Bancos",
   data() {
@@ -482,7 +482,7 @@ export default {
   },
   mounted() {
     this.getData('/agencias', 'setData', 'agencias');
-    this.$refs.userlogout.desactivarCrud('c_roles', 'd_roles', 'u_roles', 'desactivarCrudRoles')
+    this.$refs.desactiveCrud.desactivarCrud('c_roles', 'd_roles', 'u_roles', 'desactivarCrudRoles')
   },
   methods: {
     // Reglas

@@ -704,8 +704,8 @@
     @set-Data-Edit-Estados="setDataEditEstados"
     @set-Data-Estados="setDataEstados"
     @set-Data-Ciudades="setDataCiudades"></methods>
-    <user-logout ref="userLogout"
-    @desactivar-Crud-Agencias="desactivarCrudAgencias"></user-logout>
+    <desactive-crud ref="desactiveCrud"
+    @desactivar-Crud-Agencias="desactivarCrudAgencias"></desactive-crud>
   </q-page>
 </template>
 
@@ -714,12 +714,12 @@ import { ref } from "vue";
 
 import { useQuasar } from "quasar";
 
-import userLogoutVue from 'src/components/userLogout.vue';
-
 import methodsVue from 'src/components/methods.vue';
 
+import desactivateCrudVue from 'src/components/desactivateCrud.vue';
+
 export default {
-  components: { 'user-logout': userLogoutVue,
+  components: { 'desactive-crud': desactivateCrudVue,
   "methods": methodsVue },
   name: "Bancos",
   data() {
@@ -866,7 +866,7 @@ export default {
   mounted() {
     this.getData('/agencias','setData','datos')
     this.getData('/paises','setData','paises')
-    this.$refs.userLogout.desactivarCrud('c_agencias', 'd_agencias', 'u_agencias', 'desactivarCrudAgencias')
+    this.$refs.desactiveCrud.desactivarCrud('c_agencias', 'd_agencias', 'u_agencias', 'desactivarCrudAgencias')
   },
   methods: {
     // Reglas

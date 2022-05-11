@@ -1141,9 +1141,9 @@
       </q-card>
     </q-dialog>
 
-    <user-logout ref="userlogout"
+    <desactive-crud ref="desactiveCrud"
     @desactivar-Crud-Pais-Estado-Ciudad="desactivarCrudPaisEstadoCiudad"
-    ></user-logout>
+    ></desactive-crud>
 
     <methods ref="methods"
     @get-Data-Paises="getDataPaises('/paises', 'setData', 'paises')"
@@ -1167,14 +1167,14 @@ import { api } from "boot/axios";
 
 import { useQuasar } from "quasar";
 
-import userLogoutVue from "src/components/userLogout.vue";
-
 import methodsVue from "src/components/methods.vue";
 
 import { LocalStorage } from 'quasar';
 
+import desactivateCrudVue from 'src/components/desactivateCrud.vue';
+
 export default {
-  components: { "user-logout": userLogoutVue,
+  components: { "desactive-crud": desactivateCrudVue,
   "methods": methodsVue },
   name: "Bancos",
   data() {
@@ -1416,7 +1416,7 @@ export default {
   },
   mounted() {
     this.getDataPaises('/paises', 'setData', 'paises');
-    this.$refs.userlogout.desactivarCrud('c_ciudades', 'd_ciudades', 'u_ciudades', 'desactivarCrudPaisEstadoCiudad')
+    this.$refs.desactiveCrud.desactivarCrud('c_ciudades', 'd_ciudades', 'u_ciudades', 'desactivarCrudPaisEstadoCiudad')
   },
   methods: {
     // Reglas

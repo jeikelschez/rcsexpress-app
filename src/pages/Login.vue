@@ -98,6 +98,7 @@ export default {
             LocalStorage.set('user', true),
             LocalStorage.set('refreshToken', `${res.data.data.refreshToken}`),
             this.$router.push('/dashboard');
+            this.$refs.component.login()
           }
         })
         .catch((err) => {

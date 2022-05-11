@@ -499,16 +499,14 @@
       @set-Data-Roles-Iniciar="setDataRolesIniciar"
       @set-Data="setData"
     ></methods>
-    <user-logout ref="userlogout"
+    <desactivate-crud ref="desactiveCrud"
       @desactivar-Crud-Usuarios="desactivarCrudUsuarios"
-    ></user-logout>
+    ></desactivate-crud>
   </q-page>
 </template>
 
 <script>
 import { ref } from "vue";
-
-import userLogoutVue from "src/components/userLogout.vue";
 
 import { LocalStorage } from 'quasar';
 
@@ -518,8 +516,10 @@ import { useQuasar } from "quasar";
 
 import methodsVue from 'src/components/methods.vue';
 
+import desactivateCrudVue from 'src/components/desactivateCrud.vue';
+
 export default {
-  components: { "user-logout": userLogoutVue,
+  components: { "desactivate-crud": desactivateCrudVue,
   "methods": methodsVue },
   name: "Bancos",
   data() {
@@ -663,7 +663,7 @@ export default {
   },
   mounted() {
     this.getData('/agencias', 'setData', 'agencias');
-    this.$refs.userlogout.desactivarCrud('c_usuarios', 'd_usuarios', 'u_usuarios', 'desactivarCrudUsuarios')
+    this.$refs.desactiveCrud.desactivarCrud('c_usuarios', 'd_usuarios', 'u_usuarios', 'desactivarCrudUsuarios')
   },
   methods: {
     // Reglas

@@ -30,7 +30,6 @@ import { useQuasar } from "quasar";
 
     mounted() {
       this.login()
-      console.log('soy un mounted')
     },
 
     setup() {
@@ -61,14 +60,15 @@ import { useQuasar } from "quasar";
           console.log('logout activado')
         clearTimeout(this.logoutTimer);
         this.logoutTimer = null
-        this.logoutTimer = setTimeout(this.logoutUser, 5 * 1000);
+        this.logoutTimer = setTimeout(this.logoutUser, 300 * 1000);
         }
       },
       setRefreshTimer() {
+        if (LocalStorage.getItem('user') === true) {
         console.log('refresh activado')
         clearTimeout(this.refreshTimer);
         this.refreshTimer = null
-        this.refreshTimer = setTimeout(this.refreshToken, 5 * 1000);
+        this.refreshTimer = setTimeout(this.refreshToken, 1100 * 1000);}
       },
       refreshToken() {
         if (LocalStorage.getItem('user') === true) {

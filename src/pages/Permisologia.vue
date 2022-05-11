@@ -236,9 +236,9 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <user-logout ref="userlogout"
+    <desactivate-crud ref="desactiveCrud"
       @desactivar-Crud-Permisologia="desactivarCrudPermisologia"
-    ></user-logout>
+    ></desactivate-crud>
     <methods ref="methods"
       @get-Data-Permisos="getData(`/roles/${this.selectedRol.id}/permisos`, 'setDataPermisos','permisos')"
       @set-data-Roles="setDataRoles"
@@ -255,14 +255,14 @@ import { api } from "boot/axios";
 
 import { useQuasar } from "quasar";
 
-import userLogoutVue from "src/components/userLogout.vue";
-
 import methodsVue from "src/components/methods.vue";
 
 import { LocalStorage } from 'quasar';
 
+import desactivateCrudVue from 'src/components/desactivateCrud.vue';
+
 export default {
-  components: { "user-logout": userLogoutVue,
+  components: { "desactivate-crud": desactivateCrudVue,
   "methods": methodsVue },
   name: "Permisologia",
   data() {
@@ -420,7 +420,7 @@ export default {
   },
   mounted() {
     this.getData("/agencias", "setData", "agencias");
-    this.$refs.userlogout.desactivarCrud('c_permisos', 'd_permisos', 'u_permisos', 'desactivarCrudPermisologia')
+    this.$refs.desactiveCrud.desactivarCrud('c_permisos', 'd_permisos', 'u_permisos', 'desactivarCrudPermisologia')
   },
   methods: {
     // Reglas

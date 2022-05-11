@@ -3,20 +3,20 @@
     <q-dialog v-model="form">
       <q-card class="q-pa-md" bordered style="width: 999px">
         <q-card-section>
-          <q-form @submit="createDataRoles()" class="q-gutter-md">
+          <q-form @submit="createDataCuentas()" class="q-gutter-md">
             <div class="row">
               <div class="col-md-12 col-xs-12">
                 <q-input
                   outlined
-                  v-model="formRoles.descripcion"
+                  v-model="formCuentas.nro_cuenta"
                   label="Numero de Cuenta"
                   hint=""
                   @update:model-value="
-                    formRoles.descripcion =
-                      formRoles.descripcion.toUpperCase()
+                    formCuentas.nro_cuenta =
+                      formCuentas.nro_cuenta.toUpperCase()
                   "
                   lazy-rules
-                  :rules="reglasDescripcion"
+                  :rules="[reglaInputCuenta]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="south_america" />
@@ -27,14 +27,12 @@
               <div class="col-md-5 col-xs-12">
                 <q-select
                   outlined
-                  v-model="formRoles.cod_agencia"
+                  v-model="formCuentas.flag_activa"
                   label="Estatus"
                   hint=""
                   class="pcform"
-                  :rules="[reglasInputs]"
-                  :options="agencias"
-                  option-label="nb_agencia"
-                  option-value="id"
+                  :options="estatus"
+                  :rules="[reglasSelect]"
                   lazy-rules
                 >
                   <template v-slot:prepend>
@@ -46,13 +44,11 @@
               <div class="col-md-7 col-xs-12">
                 <q-select
                   outlined
-                  v-model="formRoles.cod_agencia"
+                  v-model="formCuentas.tipo_cuenta"
                   label="Tipo de Cuenta"
                   hint=""
-                  :rules="[reglasInputs]"
-                  :options="agencias"
-                  option-label="nb_agencia"
-                  option-value="id"
+                  :rules="[reglasSelect]"
+                  :options="tipoDeCuenta"
                   lazy-rules
                 >
                   <template v-slot:prepend>
@@ -64,15 +60,15 @@
               <div class="col-md-12 col-xs-12">
                 <q-input
                   outlined
-                  v-model="formRoles.descripcion"
+                  v-model="formCuentas.firma_autorizada"
                   label="Firma Autorizada"
                   hint=""
                   @update:model-value="
-                    formRoles.descripcion =
-                      formRoles.descripcion.toUpperCase()
+                    formCuentas.firma_autorizada =
+                      formCuentas.firma_autorizada.toUpperCase()
                   "
                   lazy-rules
-                  :rules="reglasDescripcion"
+                  :rules="[reglaInputFirma]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="south_america" />
@@ -109,20 +105,20 @@
     <q-dialog v-model="formEdit">
       <q-card class="q-pa-md" bordered style="width: 999px">
         <q-card-section>
-          <q-form @submit="putDataRoles()">
+          <q-form @submit="putDataCuentas()">
             <div class="row">
               <div class="col-md-12 col-xs-12">
                 <q-input
                   outlined
-                  v-model="formEditRoles.descripcion"
+                  v-model="formEditCuentas.nro_cuenta"
                   label="Numero de Cuenta"
                   hint=""
                   @update:model-value="
-                    formEditRoles.descripcion =
-                      formEditRoles.descripcion.toUpperCase()
+                    formEditCuentas.nro_cuenta =
+                      formEditCuentas.nro_cuenta.toUpperCase()
                   "
                   lazy-rules
-                  :rules="reglasDescripcion"
+                  :rules="[reglaInputCuenta]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="south_america" />
@@ -133,14 +129,12 @@
               <div class="col-md-5 col-xs-12">
                 <q-select
                   outlined
-                  v-model="formEditRoles.cod_agencia"
+                  v-model="formEditCuentas.flag_activa"
                   label="Estatus"
                   hint=""
-                  :rules="[reglasInputs]"
-                  :options="agencias"
+                  :rules="[reglasSelect]"
+                  :options="estatus"
                   class="pcform"
-                  option-label="nb_agencia"
-                  option-value="id"
                   lazy-rules
                 >
                   <template v-slot:prepend>
@@ -152,13 +146,11 @@
               <div class="col-md-7 col-xs-12">
                 <q-select
                   outlined
-                  v-model="formEditRoles.cod_agencia"
+                  v-model="formEditCuentas.tipo_cuenta"
                   label="Tipo de Cuenta"
                   hint=""
-                  :rules="[reglasInputs]"
-                  :options="agencias"
-                  option-label="nb_agencia"
-                  option-value="id"
+                  :rules="[reglasSelect]"
+                  :options="tipoDeCuenta"
                   lazy-rules
                 >
                   <template v-slot:prepend>
@@ -170,15 +162,15 @@
               <div class="col-md-12 col-xs-12">
                 <q-input
                   outlined
-                  v-model="formEditRoles.descripcion"
+                  v-model="formEditCuentas.firma_autorizada"
                   label="Firma Autorizada"
                   hint=""
                   @update:model-value="
-                    formEditRoles.descripcion =
-                      formEditRoles.descripcion.toUpperCase()
+                    formEditCuentas.firma_autorizada =
+                      formEditCuentas.firma_autorizada.toUpperCase()
                   "
                   lazy-rules
-                  :rules="reglasDescripcion"
+                  :rules="[reglaInputFirma]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="south_america" />
@@ -230,14 +222,14 @@
               rounded
               transition-show="flip-up"
               transition-hide="flip-down"
-              :options="agencias"
-              option-label="nb_agencia"
+              :options="bancos"
+              option-label="nb_banco"
               option-value="id"
-              v-model="selectedAgencia"
+              v-model="selectedBanco"
               outlined
               standout
               label="Escoge un Banco"
-              @update:model-value="getData(`/agencias/${this.selectedAgencia.id}/roles`, 'setDataRoles', 'roles')"
+              @update:model-value="getData(`/bancos/${this.selectedBanco.id}/cuentas`, 'setDataCuentas', 'cuentas')"
             >
               <template v-slot:prepend>
                 <q-icon name="search" />
@@ -253,7 +245,7 @@
               rounded
               outlined
               standout
-              v-model="filterRoles"
+              v-model="filter"
               type="search"
               label="Búsqueda avanzada"
             >
@@ -283,12 +275,12 @@
           <div class="q-gutter-y-md">
             <div bordered flat class="my-card row">
               <q-table
-                :rows="roles"
+                :rows="cuentas"
                 row-key="id"
-                :columns="columnsRoles"
+                :columns="columnsCuentas"
                 :separator="separator"
                 class="my-sticky-column-table"
-                :filter="filterRoles"
+                :filter="filter"
                 style="width: 100%"
                 :grid="$q.screen.xs"
                 v-model:pagination="pagination"
@@ -303,7 +295,7 @@
                       icon="edit"
                       :disabled="this.disabledEdit"
                       @click="
-                      getData(`/roles/${props.row.id}`, 'setDataRolesEdit', 'formEditRoles');
+                      getData(`/cuentas/${props.row.id}`, 'setDataCuentasEdit', 'formEditCuentas');
                       formEdit = true;
                       "
                     ></q-btn>
@@ -315,7 +307,7 @@
                       icon="delete"
                       :disabled="this.disabledDelete"
                       @click="selected = props.row.id"
-                      @click.capture="rolesDelete = true"
+                      @click.capture="cuentasDelete = true"
                     ></q-btn>
                   </q-td>
                 </template>
@@ -355,7 +347,7 @@
                               icon="edit"
                               :disabled="this.disabledEdit"
                               @click="
-                                getData(`/roles/${props.row.id}`, 'setDataRolesEdit', 'formEditRoles');
+                                getData(`/cuentas/${props.row.id}`, 'setDataCuentasEdit', 'formEditCuentas');
                                 formEdit = true;
                               "
                             ></q-btn>
@@ -383,7 +375,7 @@
                               icon="delete"
                               :disabled="this.disabledDelete"
                               @click="selected = props.row.id"
-                              @click.capture="rolesDelete = true"
+                              @click.capture="cuentasDelete = true"
                             ></q-btn>
                             <q-item-label
                               v-else
@@ -404,7 +396,7 @@
       </div>
     </div>
 
-    <q-dialog v-model="rolesDelete">
+    <q-dialog v-model="cuentasDelete">
       <q-card style="width: 700px">
         <q-card-section>
           <div class="text-h5" style="font-size: 18px">
@@ -424,13 +416,13 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <user-logout ref="userlogout"
+    <desactivate-crud ref="desactivateCrud"
       @desactivar-Crud-Roles="desactivarCrudRoles"
-    ></user-logout>
+    ></desactivate-crud>
     <methods ref="methods"
-      @get-Data="getData(`/agencias/${this.selectedAgencia.id}/roles`, 'setDataRoles', 'roles')"
-      @set-Data-Roles="setDataRoles"
-      @set-Data-Roles-Edit="setDataRolesEdit"
+      @get-Data="getData(`/bancos/${this.selectedBanco.id}/cuentas`, 'setDataCuentas', 'cuentas')"
+      @set-Data-Cuentas="setDataCuentas"
+      @set-Data-Cuentas-Edit="setDataRolesEdit"
       @set-Data="setData"
     ></methods>
   </q-page>
@@ -438,8 +430,6 @@
 
 <script>
 import { ref } from "vue";
-
-import userLogoutVue from "src/components/userLogout.vue";
 
 import { api } from "boot/axios";
 
@@ -449,13 +439,15 @@ import { LocalStorage } from 'quasar';
 
 import methodsVue from 'src/components/methods.vue';
 
+import desactivateCrudVue from 'src/components/desactivateCrud.vue';
+
 export default {
-  components: { "user-logout": userLogoutVue,
+  components: { "desactivate-crud": desactivateCrudVue,
   "methods": methodsVue},
-  name: "Bancos",
+  name: "Cuentas",
   data() {
     return {
-      columnsRoles: [
+      columnsCuentas: [
         {
           name: "id",
           label: "Codigo",
@@ -464,30 +456,30 @@ export default {
           sortable: true,
         },
         {
-          name: "descripcion",
+          name: "nro_cuenta",
           label: "Numero de Cuenta",
-          field: "descripcion",
+          field: "nro_cuenta",
           align: "left",
           sortable: true,
         },
         {
-          name: "descripcion",
+          name: "tipo_desc",
           label: "Tipo de Cuenta",
-          field: "descripcion",
+          field: "tipo_desc",
           align: "left",
           sortable: true,
         },
         {
-          name: "descripcion",
+          name: "activa_desc",
           label: "Estatus",
-          field: "descripcion",
+          field: "activa_desc",
           align: "left",
           sortable: true,
         },
         {
-          name: "descripcion",
+          name: "firma_autorizada",
           label: "Firma Autorizada",
-          field: "descripcion",
+          field: "firma_autorizada",
           align: "left",
           sortable: true,
         },
@@ -499,21 +491,34 @@ export default {
           required: true,
         },
       ],
-      formRoles: {
-        descripcion: "",
-        cod_agencia: [],
+      formCuentas: {
+        nro_cuenta: "",
+        flag_activa: "",
+        tipo_cuenta: "",
+        firma_autorizada: "",
+        cod_banco: [],
       },
-      formEditRoles: {
-        descripcion: "",
+      formEditCuentas: {
+        nro_cuenta: "",
+        flag_activa: "",
+        tipo_cuenta: "",
+        firma_autorizada: "",
         id: "",
-        cod_agencia: [],
+        cod_banco: [],
       },
-      agencias: [],
-      roles: [],
+      estatus: [
+        { label: "ACTIVA", value: "A" },
+        { label: "INACTIVA", value: "I" },
+      ],
+      tipoDeCuenta: [
+        { label: "AHORRO", value: "A" },
+        { label: "CORRIENTE", value: "C" },
+      ],
+      bancos: [],
+      cuentas: [],
       selected: [],
-      selectedAgencia: [],
-      agenciaRef: "",
-      agenciaRef2: "",
+      selectedBanco: [],
+      bancoRef: "",
       error: "",
       disabledCreate: true,
       disabledEdit: true,
@@ -542,27 +547,51 @@ export default {
       separator: ref("vertical"),
       form: ref(false),
       formEdit: ref(false),
-      rolesDelete: ref(false),
-      filterRoles: ref(""),
-      reglasDescripcion: [(val) =>
-        (val !== null && val !== "") || "Por favor escribe algo",
-        (val) => val.length < 30 || "Deben ser máximo 30 caracteres",
-        (val) => val.length > 2 || "Deben ser minimo 3 caracteres",
-      ],
+      cuentasDelete: ref(false),
+      filter: ref("")
     };
   },
   mounted() {
-    this.getData('/agencias', 'setData', 'agencias');
-    this.$refs.userlogout.desactivarCrud('c_roles', 'd_roles', 'u_roles', 'desactivarCrudRoles')
+    this.getData('/bancos', 'setData', 'bancos');
+    this.$refs.desactivateCrud.desactivarCrud('c_roles', 'd_roles', 'u_roles', 'desactivarCrudRoles')
   },
   methods: {
-    // Reglas
-    reglasInputs(val) {
+    reglasSelect(val) {
       if (val === null) {
         return "Debes Seleccionar Algo";
       }
       if (val === "") {
         return "Debes Seleccionar Algo";
+      }
+    },
+    reglaInputCuenta(val) {
+      if (val === "") {
+        return "Debes Escribir Algo";
+      }
+      if (val === null) {
+        return "Debes Escribir Algo";
+      }
+      if(val !== null) {
+      if (val.length > 25) {
+        return "Deben ser máximo 25 caracteres";
+        }
+      if (val.length > 0) {
+        if (val.length < 3) {
+        return "Deben ser minimo 3 caracteres";
+        }
+      }
+      }
+    },
+    reglaInputFirma(val) {
+      if(val !== null) {
+      if (val.length > 50) {
+        return "Deben ser máximo 50 caracteres";
+        }
+      if (val.length > 0) {
+        if (val.length < 3) {
+        return "Deben ser minimo 3 caracteres";
+        }
+      }
       }
     },
     desactivarCrudRoles(createItem, deleteItem, updateItem) {
@@ -584,44 +613,55 @@ export default {
       this[dataRes] = res
       this.getDataIniciar();
     },
-    setDataRoles(res, dataRes) {
-      this[dataRes] = res.roles
+    setDataCuentas(res, dataRes) {
+      this[dataRes] = res.cuentas
     },
     setDataRolesEdit(res, dataRes) {
       this[dataRes].id = res.id
-      this[dataRes].descripcion = res.descripcion
-      this[dataRes].cod_agencia = this.selectedAgencia
+      this[dataRes].nro_cuenta = res.nro_cuenta
+      this[dataRes].flag_activa = res.activa_desc
+      this[dataRes].tipo_cuenta = res.tipo_desc
+      this[dataRes].firma_autorizada = res.firma_autorizada
+      this[dataRes].cod_banco = res.cod_banco
     },
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/roles/${idpost}`, 'getData');
+      this.$refs.methods.deleteData(`/cuentas/${idpost}`, 'getData');
     },
-    createDataRoles() {
-      this.formRoles.cod_agencia = this.formRoles.cod_agencia.id
-      this.$refs.methods.createData(`/roles`, this.formRoles, 'getData');
+    createDataCuentas() {
+      this.formCuentas.cod_banco = this.selectedBanco.id
+      this.formCuentas.flag_activa = this.formCuentas.flag_activa.value
+      this.formCuentas.tipo_cuenta = this.formCuentas.tipo_cuenta.value
+      this.$refs.methods.createData(`/cuentas`, this.formCuentas, 'getData');
       this.resetForm();
     },
-    putDataRoles() {
-      this.formEditRoles.cod_agencia = this.formEditRoles.cod_agencia.id
-      this.$refs.methods.putData(`/roles/${this.formEditRoles.id}`, this.formEditRoles, 'getData');
+    putDataCuentas() {
+      this.formEditCuentas.flag_activa = this.formEditCuentas.flag_activa.value
+      this.formEditCuentas.tipo_cuenta = this.formEditCuentas.tipo_cuenta.value
+      this.$refs.methods.putData(`/cuentas/${this.formEditCuentas.id}`, this.formEditCuentas, 'getData');
       this.resetFormEdit()
     },
-    resetFormRoles() {
-      (this.formRoles.descripcion = ""),
-      (this.formRoles.cod_agencia = ""),
+    resetForm() {
+      (this.formCuentas.nro_cuenta = ""),
+      (this.formCuentas.flag_activa = ""),
+      (this.formCuentas.tipo_cuenta = ""),
+      (this.formCuentas.firma_autorizada = ""),
       (this.form = false)
     },
     resetFormEdit() {
-      (this.formEditRoles.descripcion = null),
-      (this.formEditRoles.cod_agencia = null),
+      (this.formEditCuentas.nro_cuenta = ""),
+      (this.formEditCuentas.flag_activa = ""),
+      (this.formEditCuentas.tipo_cuenta = ""),
+      (this.formEditCuentas.firma_autorizada = ""),
+      (this.formEditCuentas.cod_banco = null),
       (this.formEdit = false)
     },
     // Metodos para colocar valores iniciales
     getDataIniciar() {
-        this.agenciaRef2 = this.agencias[0].id;
-        this.selectedAgencia = this.agencias[0];
-        api.get(`/agencias/${this.agenciaRef2}/roles`, this.axiosConfig)
+        this.bancoRef = this.bancos[0].id;
+        this.selectedBanco = this.bancos[0];
+        api.get(`/bancos/${this.bancoRef}/cuentas`, this.axiosConfig)
         .then((res) => {
-          this.roles = res.data.roles;
+          this.cuentas = res.data.cuentas;
         })
     },
   },

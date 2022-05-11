@@ -427,7 +427,7 @@
               rounded
               outlined
               standout
-              v-model="filterRoles"
+              v-model="filter"
               type="search"
               label="Búsqueda avanzada"
             >
@@ -447,7 +447,7 @@
                 :columns="columnsRoles"
                 :separator="separator"
                 class="my-sticky-column-table"
-                :filter="filterRoles"
+                :filter="filter"
                 style="width: 100%"
                 :grid="$q.screen.xs"
                 v-model:pagination="pagination"
@@ -555,10 +555,10 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <user-logout
-      ref="userlogout"
+    <desactive-crud
+      ref="desactivateCrud"
       @desactivar-Crud-Roles="desactivarCrudRoles"
-    ></user-logout>
+    ></desactive-crud>
     <methods
       ref="methods"
       @get-Data="
@@ -578,8 +578,6 @@
 <script>
 import { ref } from "vue";
 
-import userLogoutVue from "src/components/userLogout.vue";
-
 import { api } from "boot/axios";
 
 import { useQuasar } from "quasar";
@@ -588,8 +586,10 @@ import { LocalStorage } from "quasar";
 
 import methodsVue from "src/components/methods.vue";
 
+import desactivateCrudVue from 'src/components/desactivateCrud.vue';
+
 export default {
-  components: { "user-logout": userLogoutVue, methods: methodsVue },
+  components: { "desactive-crud": desactivateCrudVue, methods: methodsVue },
   name: "Bancos",
   data() {
     return {
@@ -674,7 +674,7 @@ export default {
       form: ref(false),
       formEdit: ref(false),
       rolesDelete: ref(false),
-      filterRoles: ref(""),
+      filter: ref(""),
       reglasDescripcion: [
         (val) => (val !== null && val !== "") || "Por favor escribe algo",
         (val) => val.length < 30 || "Deben ser máximo 30 caracteres",
@@ -684,7 +684,7 @@ export default {
   },
   mounted() {
     this.getData("/agencias", "setData", "agencias");
-    this.$refs.userlogout.desactivarCrud(
+    this.$refs.desactivateCrud.desactivarCrud(
       "c_roles",
       "d_roles",
       "u_roles",

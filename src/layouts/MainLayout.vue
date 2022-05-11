@@ -59,7 +59,6 @@
     <q-list>
 
 <div>
-  <user-logout></user-logout>
     <q-list class="rounded-borders">
       <q-item clickable tag="a" to="/dashboard" exact>
           <q-item-section avatar>

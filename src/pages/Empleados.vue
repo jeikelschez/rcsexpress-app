@@ -392,9 +392,9 @@
     @get-Data="getData('/bancos','setData','datos')"
     @set-data="setData" @set-Data-Edit="setData">
     </methods>
-    <user-logout ref="userlogout"
+    <desactivate-crud ref="desactivateCrud"
     @desactivar-Crud-Bancos="desactivarCrudBancos">
-    </user-logout>
+    </desactivate-crud>
   </q-page>
 </template>
 
@@ -407,12 +407,13 @@ import { useQuasar } from "quasar";
 
 import { LocalStorage } from "quasar";
 
-import userLogoutVue from "src/components/userLogout.vue";
 import methodsVue from 'src/components/methods.vue';
+
+import desactivateCrudVue from 'src/components/desactivateCrud.vue';
 
 export default {
   components: {
-  "user-logout": userLogoutVue,
+  "desactivate-crud": desactivateCrudVue,
   "methods": methodsVue },
   name: "Bancos",
   data() {
@@ -492,7 +493,7 @@ export default {
   },
   mounted() {
     this.getData('/bancos','setData','datos')
-    this.$refs.userlogout.desactivarCrud('c_bancos', 'd_bancos', 'u_bancos', 'desactivarCrudBancos')
+    this.$refs.desactivateCrud.desactivarCrud('c_bancos', 'd_bancos', 'u_bancos', 'desactivarCrudBancos')
   },
   methods: {
     reglaInputBancos(val) {
