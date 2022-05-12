@@ -1,5 +1,5 @@
 <template>
-  <q-page class="q-pa-md">
+  <q-page class="pagina q-pa-md">
     <q-dialog v-model="form">
       <q-card class="q-pa-md" bordered style="width: 900px; max-width: 90vw">
         <q-card-section>
@@ -68,7 +68,7 @@
               <div class="col-md-6 col-xs-12">
                       <q-select
                         outlined
-                        v-model="formAgentes.flag_situacion"
+                        v-model="formAgentes.flag_activo"
                         label="Activo"
                         hint=""
                         :rules="[reglasSelect]"
@@ -509,15 +509,13 @@
     <div class="row q-pa-sm justify-center">
       <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
         <div class="row">
-          <div
-            class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 text-secondary"
+          <div class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 text-secondary"
             style="align-self: center; text-align: center"
           >
             <h4 style="font-size: 26px"><strong>MANTENIMIENTO - AGENTES</strong></h4>
           </div>
 
-          <div
-            class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-5 inputestadospc"
+          <div class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-5 inputestadospc"
             style="align-self: center; text-align: center; margin-right: 16px"
           >
             <q-select
@@ -539,8 +537,7 @@
             </q-select>
           </div>
 
-          <div
-            class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-6 inputestadospc2"
+          <div class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-6 inputestadospc2"
             style="align-self: center; text-align: center; margin-right: 16px"
           >
             <q-input
@@ -556,8 +553,8 @@
               </template>
             </q-input>
           </div>
-          <div
-            class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
+          
+          <div class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
             style="text-align: center; align-self: center"
           >
             <q-btn
@@ -801,7 +798,7 @@ export default {
         fax_agente: "",
         email_web: "",
         tipo_agente: "",
-        flag_situacion: "",
+        flag_activo: "",
         rif_ci_agente: "",
         porc_comision_venta: "",
         porc_comision_entrega: "",
@@ -959,7 +956,7 @@ export default {
     },
     setDataAgentesEdit(res, dataRes) {
       this[dataRes].id = res.id
-      this[dataRes].flag_situacion = res.activo_desc
+      this[dataRes].flag_activo = res.activo_desc
       this[dataRes].nb_agente = res.nb_agente
       this[dataRes].persona_responsable = res.persona_responsable
       this[dataRes].dir_agente = res.dir_agente
@@ -979,12 +976,12 @@ export default {
     createDataCuentas() {
       this.formAgentes.cod_agencia = this.selectedAgencia.id
       this.formAgentes.tipo_agente = this.formAgentes.tipo_agente.value
-      this.formAgentes.flag_situacion = this.formAgentes.flag_situacion.value
+      this.formAgentes.flag_activo = this.formAgentes.flag_activo.value
       this.$refs.methods.createData(`/agentes`, this.formAgentes, 'getData');
       this.resetForm();
     },
     putDataCuentas() {
-      this.formEditAgentes.flag_situacion = this.formEditAgentes.flag_situacion.value
+      this.formEditAgentes.flag_activo = this.formEditAgentes.flag_activo.value
       this.formEditAgentes.tipo_agente = this.formEditAgentes.tipo_agente.value
       this.$refs.methods.putData(`/agentes/${this.formEditAgentes.id}`, this.formEditAgentes, 'getData');
       this.resetFormEdit()
@@ -998,7 +995,7 @@ export default {
       (this.formAgentes.tipo_agente = ""),
       (this.formAgentes.rif_ci_agente = ""),
       (this.formAgentes.porc_comision_venta = ""),
-      (this.formAgentes.flag_situacion = ""),
+      (this.formAgentes.flag_activo = ""),
       (this.formAgentes.porc_comision_entrega = ""),
       (this.formAgentes.porc_comision_seguro = ""),
       (this.formAgentes.cod_agencia = null),

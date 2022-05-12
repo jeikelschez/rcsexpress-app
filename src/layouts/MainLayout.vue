@@ -33,7 +33,7 @@
           <q-avatar size="42px">
             <img :src="url"/>
           </q-avatar>
-          <q-menu transition-show="flip-right" transition-hide="flip-left">
+          <q-menu transition-show="flip-right" transition-hide="flip-left" auto-close>
             <q-list style="min-width: 100px">
               <q-item clickable v-ripple @click="logout">
                 <q-item-section avatar>
@@ -52,6 +52,7 @@
       :breakpoint="500"
       bordered
       :width="350"
+      auto-close
       :mini="!drawer || miniState"
         @click="miniState = false;"
       content-class="bg-grey-3"
@@ -1372,8 +1373,11 @@
   </div>
       </q-list>
     </q-drawer>
+
+    <keep-alive>
+          <router-view />
+        </keep-alive>
     <q-page-container>
-      <router-view />
     </q-page-container>
     <q-footer reveal elevated bordered>
       <div class="text-caption float-right">

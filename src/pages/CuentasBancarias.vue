@@ -1,5 +1,5 @@
 <template>
-  <q-page class="q-pa-md">
+  <q-page class="pagina q-pa-md">
     <q-dialog v-model="form">
       <q-card class="q-pa-md" bordered style="width: 999px">
         <q-card-section>
