@@ -20,7 +20,7 @@
                   :rules="reglasDescripcion"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="south_america" />
+                    <q-icon name="badge" />
                   </template>
                 </q-input>
               </div>
@@ -39,7 +39,7 @@
                   :rules="reglasDescripcion"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="south_america" />
+                    <q-icon name="pin" />
                   </template>
                 </q-input>
               </div>
@@ -57,7 +57,7 @@
                   lazy-rules
                 >
                   <template v-slot:prepend>
-                    <q-icon name="south_america" />
+                    <q-icon name="group" />
                   </template>
                 </q-select>
               </div>
@@ -76,7 +76,7 @@
                   :rules="reglasDescripcion"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="south_america" />
+                    <q-icon name="phone" />
                   </template>
                 </q-input>
               </div>
@@ -95,7 +95,7 @@
                   :rules="reglasDescripcion"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="south_america" />
+                    <q-icon name="fax" />
                   </template>
                 </q-input>
               </div>
@@ -113,7 +113,7 @@
                   :rules="reglasDescripcion"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="south_america" />
+                    <q-icon name="person" />
                   </template>
                 </q-input>
               </div>
@@ -132,7 +132,7 @@
                   :rules="reglasDescripcion"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="south_america" />
+                    <q-icon name="pin_drop" />
                   </template>
                 </q-input>
               </div>
@@ -150,7 +150,7 @@
                   :rules="reglasDescripcion"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="south_america" />
+                    <q-icon name="email" />
                   </template>
                 </q-input>
               </div>
@@ -168,7 +168,7 @@
                   :rules="reglasDescripcion"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="south_america" />
+                    <q-icon name="visibility" />
                   </template>
                 </q-input>
               </div>
@@ -328,7 +328,7 @@
                         lazy-rules
                       >
                         <template v-slot:prepend>
-                          <q-icon name="south_america" />
+                          <q-icon name="face" />
                         </template>
                       </q-select>
                     </div>
@@ -346,7 +346,7 @@
                         lazy-rules
                       >
                         <template v-slot:prepend>
-                          <q-icon name="south_america" />
+                          <q-icon name="payments" />
                         </template>
                       </q-select>
                     </div>

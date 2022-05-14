@@ -21,7 +21,7 @@
                   lazy-rules
                 >
                   <template v-slot:prepend>
-                    <q-icon name="person" />
+                    <q-icon name="block" />
                   </template>
                 </q-select>
               </div>
@@ -37,7 +37,7 @@
                   mask="### - ### - ##########"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="phone" />
+                    <q-icon name="percent" />
                   </template>
                 </q-input>
               </div>
@@ -54,7 +54,7 @@
                   mask="### - ### - ##########"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="phone" />
+                    <q-icon name="calendar_today" />
                   </template>
                 </q-input>
               </div>
@@ -70,7 +70,7 @@
                   mask="### - ### - ##########"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="phone" />
+                    <q-icon name="paid" />
                   </template>
                 </q-input>
               </div>
@@ -122,7 +122,7 @@
                   lazy-rules
                 >
                   <template v-slot:prepend>
-                    <q-icon name="person" />
+                    <q-icon name="block" />
                   </template>
                 </q-select>
               </div>
@@ -138,7 +138,7 @@
                   mask="### - ### - ##########"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="phone" />
+                    <q-icon name="percent" />
                   </template>
                 </q-input>
               </div>
@@ -155,7 +155,7 @@
                   mask="### - ### - ##########"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="phone" />
+                    <q-icon name="calendar_today" />
                   </template>
                 </q-input>
               </div>
@@ -171,7 +171,7 @@
                   mask="### - ### - ##########"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="phone" />
+                    <q-icon name="paid" />
                   </template>
                 </q-input>
               </div>

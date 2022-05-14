@@ -53,12 +53,10 @@ import { useQuasar } from "quasar";
       },
       traducirToken: function() {
         var tokenTraducido = jwt_decode(LocalStorage.getItem('token'))
-        console.log(LocalStorage.getItem('token'))
         LocalStorage.set('tokenTraducido', tokenTraducido)
       },
       setTimers() {
         if (LocalStorage.getItem('user') === true) {
-          console.log('logout activado')
         clearTimeout(this.logoutTimer);
         this.logoutTimer = null
         this.logoutTimer = setTimeout(this.logoutUser, 300 * 1000);
@@ -68,12 +66,13 @@ import { useQuasar } from "quasar";
         if (LocalStorage.getItem('user') === true) {
         clearTimeout(this.refreshTimer);
         this.refreshTimer = null
-        this.refreshTimer = setTimeout(this.refreshToken, 1140 * 1000);}
+        this.refreshTimer = setTimeout(this.refreshToken, 1080 * 1000);}
       },
       refreshToken() {
         if (LocalStorage.getItem('user') === true) {
         this.form.username = LocalStorage.getItem('usuario')
         this.form.token = LocalStorage.getItem('refreshToken')
+        console.log('REFRESH ACTIVADO')
         api.post(`/usuarios/refresh`, this.form)
          .then((res) => {
             if ((res.status = 201)) {

@@ -20,7 +20,7 @@
                   :rules="reglasLogin"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="south_america" />
+                    <q-icon name="login" />
                   </template>
                 </q-input>
               </div>
@@ -59,7 +59,7 @@
                   :rules="reglasNombre"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="text_fields" />
+                    <q-icon name="face" />
                   </template>
                 </q-input>
               </div>
@@ -75,7 +75,7 @@
                   lazy-rules
                 >
                   <template v-slot:prepend>
-                    <q-icon name="text_fields" />
+                    <q-icon name="rule" />
                   </template>
                 </q-select>
               </div>
@@ -97,7 +97,7 @@
                   @update:model-value="getData(`/agencias/${this.formUsuarios.cod_agencia.id}/roles`, 'setDataRoles', 'roles')"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="south_america" />
+                    <q-icon name="apartment" />
                   </template>
                 </q-select>
               </div>
@@ -117,7 +117,7 @@
                   transition-hide="flip-down"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="south_america" />
+                    <q-icon name="badge" />
                   </template>
                 </q-select>
               </div>
@@ -168,7 +168,7 @@
                   lazy-rules
                 >
                   <template v-slot:prepend>
-                    <q-icon name="south_america" />
+                    <q-icon name="login" />
                   </template>
                 </q-input>
               </div>
@@ -188,7 +188,7 @@
                   :rules="reglasNombre"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="text_fields" />
+                    <q-icon name="face" />
                   </template>
                 </q-input>
               </div>
@@ -204,7 +204,7 @@
                   lazy-rules
                 >
                   <template v-slot:prepend>
-                    <q-icon name="text_fields" />
+                    <q-icon name="rule" />
                   </template>
                 </q-select>
               </div>
@@ -226,7 +226,7 @@
                   @update:model-value="getData(`/agencias/${this.formEditUsuarios.cod_agencia.id}/roles`, 'setDataRoles', 'roles')"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="south_america" />
+                    <q-icon name="apartment" />
                   </template>
                 </q-select>
               </div>
@@ -246,7 +246,7 @@
                   transition-hide="flip-down"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="south_america" />
+                    <q-icon name="badge" />
                   </template>
                 </q-select>
               </div>

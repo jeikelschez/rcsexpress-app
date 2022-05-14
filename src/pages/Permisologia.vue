@@ -18,7 +18,7 @@
                   lazy-rules
                 >
                   <template v-slot:prepend>
-                    <q-icon name="south_america" />
+                    <q-icon name="settings" />
                   </template>
                 </q-select>
               </div>

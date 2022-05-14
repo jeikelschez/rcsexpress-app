@@ -21,7 +21,7 @@
                   @update:model-value="getData(`/paises/${this.selectedPais.id}/estados`, 'setDataEstados', 'estados')"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="person" />
+                    <q-icon name="public" />
                   </template>
                 </q-select>
               </div>
@@ -42,7 +42,7 @@
                   @update:model-value="getData(`/estados/${this.selectedEstado.id}/ciudades`, 'setDataCiudades', 'ciudades')"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="person" />
+                    <q-icon name="public" />
                   </template>
                 </q-select>
               </div>
@@ -61,7 +61,7 @@
                   lazy-rules
                 >
                   <template v-slot:prepend>
-                    <q-icon name="person" />
+                    <q-icon name="public" />
                   </template>
                 </q-select>
               </div>
@@ -81,7 +81,7 @@
                   "
                 >
                   <template v-slot:prepend>
-                    <q-icon name="person" />
+                    <q-icon name="apartment" />
                   </template>
                 </q-input>
               </div>
@@ -99,7 +99,7 @@
                   "
                 >
                   <template v-slot:prepend>
-                    <q-icon name="location_on" />
+                    <q-icon name="account_circle"/>
                   </template>
                 </q-input>
               </div>
@@ -118,7 +118,7 @@
                   "
                 >
                   <template v-slot:prepend>
-                    <q-icon name="person" />
+                    <q-icon name="pin_drop" />
                   </template>
                 </q-input>
               </div>
@@ -136,7 +136,7 @@
                   "
                 >
                   <template v-slot:prepend>
-                    <q-icon name="person" />
+                    <q-icon name="badge"/>
                   </template>
                 </q-input>
               </div>
@@ -155,7 +155,7 @@
                   "
                 >
                   <template v-slot:prepend>
-                    <q-icon name="location_on" />
+                    <q-icon name="list" />
                   </template>
                 </q-input>
               </div>
@@ -205,7 +205,7 @@
                   lazy-rules
                 >
                   <template v-slot:prepend>
-                    <q-icon name="dialpad" />
+                    <q-icon name="done_all" />
                   </template>
                 </q-select>
               </div>
@@ -274,7 +274,7 @@
                   @update:model-value="getData(`/paises/${this.selectedPais.id}/estados`, 'setDataEstados', 'estados')"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="person" />
+                    <q-icon name="public" />
                   </template>
                 </q-select>
               </div>
@@ -294,7 +294,7 @@
                   @update:model-value="getData(`/estados/${this.selectedEstado.id}/ciudades`, 'setDataCiudades', 'ciudades')"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="person" />
+                    <q-icon name="public" />
                   </template>
                 </q-select>
               </div>
@@ -314,7 +314,7 @@
                   lazy-rules
                 >
                   <template v-slot:prepend>
-                    <q-icon name="person" />
+                    <q-icon name="public" />
                   </template>
                 </q-select>
               </div>
@@ -332,7 +332,7 @@
                   "
                 >
                   <template v-slot:prepend>
-                    <q-icon name="person" />
+                    <q-icon name="apartment" />
                   </template>
                 </q-input>
               </div>
@@ -352,7 +352,7 @@
                   "
                 >
                   <template v-slot:prepend>
-                    <q-icon name="location_on" />
+                    <q-icon name="account_circle" />
                   </template>
                 </q-input>
               </div>
@@ -370,7 +370,7 @@
                   "
                 >
                   <template v-slot:prepend>
-                    <q-icon name="person" />
+                    <q-icon name="pin_drop" />
                   </template>
                 </q-input>
               </div>
@@ -389,7 +389,7 @@
                   "
                 >
                   <template v-slot:prepend>
-                    <q-icon name="person" />
+                    <q-icon name="badge" />
                   </template>
                 </q-input>
               </div>
@@ -407,7 +407,7 @@
                   "
                 >
                   <template v-slot:prepend>
-                    <q-icon name="location_on" />
+                    <q-icon name="list" />
                   </template>
                 </q-input>
               </div>
@@ -458,7 +458,7 @@
                   lazy-rules
                 >
                   <template v-slot:prepend>
-                    <q-icon name="dialpad" />
+                    <q-icon name="done_all" />
                   </template>
                 </q-select>
               </div>

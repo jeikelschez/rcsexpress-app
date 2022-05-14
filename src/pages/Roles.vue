@@ -20,7 +20,7 @@
                   :rules="reglasDescripcion"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="south_america" />
+                    <q-icon name="description" />
                   </template>
                 </q-input>
               </div>
@@ -38,7 +38,7 @@
                   lazy-rules
                 >
                   <template v-slot:prepend>
-                    <q-icon name="south_america" />
+                    <q-icon name="apartment" />
                   </template>
                 </q-select>
               </div>
@@ -89,7 +89,7 @@
                   :rules="reglasDescripcion"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="south_america" />
+                    <q-icon name="description" />
                   </template>
                 </q-input>
               </div>
@@ -107,7 +107,7 @@
                   lazy-rules
                 >
                   <template v-slot:prepend>
-                    <q-icon name="south_america" />
+                    <q-icon name="apartment" />
                   </template>
                 </q-select>
               </div>

@@ -38,7 +38,7 @@
                   "
                 >
                   <template v-slot:prepend>
-                    <q-icon name="location_on" />
+                    <q-icon name="badge" />
                   </template>
                 </q-input>
               </div>
@@ -54,7 +54,7 @@
                   mask="#### - ##########"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="fax" />
+                    <q-icon name="123" />
                   </template>
                 </q-input>
               </div>
@@ -71,7 +71,7 @@
                   mask="### - ### - ##########"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="phone" />
+                    <q-icon name="pin_drop" />
                   </template>
                 </q-input>
               </div>
@@ -87,7 +87,7 @@
                   mask="### - ### - ##########"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="phone" />
+                    <q-icon name="drafts" />
                   </template>
                 </q-input>
               </div>
@@ -121,7 +121,7 @@
                   mask="### - ### - ##########"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="phone" />
+                    <q-icon name="fax" />
                   </template>
                 </q-input>
               </div>
@@ -137,7 +137,7 @@
                   mask="### - ### - ##########"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="phone" />
+                    <q-icon name="email" />
                   </template>
                 </q-input>
               </div>
@@ -157,7 +157,7 @@
                   lazy-rules
                 >
                   <template v-slot:prepend>
-                    <q-icon name="person" />
+                    <q-icon name="support_agent" />
                   </template>
                 </q-select>
               </div>
@@ -177,7 +177,7 @@
                   lazy-rules
                 >
                   <template v-slot:prepend>
-                    <q-icon name="person" />
+                    <q-icon name="group" />
                   </template>
                 </q-select>
               </div>
@@ -197,7 +197,7 @@
                   @update:model-value="getData(`/paises/${this.selectedPais.id}/estados`, 'setDataEstados', 'estados')"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="person" />
+                    <q-icon name="block" />
                   </template>
                 </q-select>
               </div>
@@ -215,7 +215,7 @@
                   "
                 >
                   <template v-slot:prepend>
-                    <q-icon name="person" />
+                    <q-icon name="visibility" />
                   </template>
                 </q-input>
               </div>
@@ -284,7 +284,7 @@
                   "
                 >
                   <template v-slot:prepend>
-                    <q-icon name="location_on" />
+                    <q-icon name="badge" />
                   </template>
                 </q-input>
               </div>
@@ -300,7 +300,7 @@
                   mask="#### - ##########"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="fax" />
+                    <q-icon name="123" />
                   </template>
                 </q-input>
               </div>
@@ -317,7 +317,7 @@
                   mask="### - ### - ##########"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="phone" />
+                    <q-icon name="pin_drop" />
                   </template>
                 </q-input>
               </div>
@@ -333,7 +333,7 @@
                   mask="### - ### - ##########"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="phone" />
+                    <q-icon name="drafts" />
                   </template>
                 </q-input>
               </div>
@@ -367,7 +367,7 @@
                   mask="### - ### - ##########"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="phone" />
+                    <q-icon name="fax" />
                   </template>
                 </q-input>
               </div>
@@ -383,7 +383,7 @@
                   mask="### - ### - ##########"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="phone" />
+                    <q-icon name="email" />
                   </template>
                 </q-input>
               </div>
@@ -403,7 +403,7 @@
                   lazy-rules
                 >
                   <template v-slot:prepend>
-                    <q-icon name="person" />
+                    <q-icon name="support_agent" />
                   </template>
                 </q-select>
               </div>
@@ -423,7 +423,7 @@
                   lazy-rules
                 >
                   <template v-slot:prepend>
-                    <q-icon name="person" />
+                    <q-icon name="group" />
                   </template>
                 </q-select>
               </div>
@@ -443,7 +443,7 @@
                   @update:model-value="getData(`/paises/${this.selectedPais.id}/estados`, 'setDataEstados', 'estados')"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="person" />
+                    <q-icon name="block" />
                   </template>
                 </q-select>
               </div>
@@ -461,7 +461,7 @@
                   "
                 >
                   <template v-slot:prepend>
-                    <q-icon name="person" />
+                    <q-icon name="visibility" />
                   </template>
                 </q-input>
               </div>

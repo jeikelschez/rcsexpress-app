@@ -19,7 +19,7 @@
                   :rules="[reglaInputCuenta]"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="south_america" />
+                    <q-icon name="pin" />
                   </template>
                 </q-input>
               </div>
@@ -36,7 +36,7 @@
                   lazy-rules
                 >
                   <template v-slot:prepend>
-                    <q-icon name="south_america" />
+                    <q-icon name="rule" />
                   </template>
                 </q-select>
               </div>
@@ -52,7 +52,7 @@
                   lazy-rules
                 >
                   <template v-slot:prepend>
-                    <q-icon name="south_america" />
+                    <q-icon name="ballot" />
                   </template>
                 </q-select>
               </div>
@@ -71,7 +71,7 @@
                   :rules="[reglaInputFirma]"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="south_america" />
+                    <q-icon name="border_color" />
                   </template>
                 </q-input>
               </div>
@@ -121,7 +121,7 @@
                   :rules="[reglaInputCuenta]"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="south_america" />
+                    <q-icon name="pin" />
                   </template>
                 </q-input>
               </div>
@@ -138,7 +138,7 @@
                   lazy-rules
                 >
                   <template v-slot:prepend>
-                    <q-icon name="south_america" />
+                    <q-icon name="rule" />
                   </template>
                 </q-select>
               </div>
@@ -154,7 +154,7 @@
                   lazy-rules
                 >
                   <template v-slot:prepend>
-                    <q-icon name="south_america" />
+                    <q-icon name="ballot" />
                   </template>
                 </q-select>
               </div>
@@ -173,7 +173,7 @@
                   :rules="[reglaInputFirma]"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="south_america" />
+                    <q-icon name="border_color" />
                   </template>
                 </q-input>
               </div>
