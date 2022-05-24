@@ -1206,7 +1206,7 @@
       ref="methods"
       @get-data="
         getData(
-          `/agencias/${this.agenciaRef}/clientes`,
+          `/agencias/${this.selectedAgencia.id}/clientes`,
           'setDataClientes',
           'clientes'
         )
@@ -1362,7 +1362,6 @@ export default {
       ],
       agenciaRef: "",
       error: "",
-      modalidad_pago: "",
       disabledCreate: true,
       disabledEdit: true,
       disabledDelete: true,
@@ -1579,7 +1578,7 @@ export default {
               });
           });
 
-          api.get(`/agentes/${cod_estado}`, this.axiosConfig).then((res) => {
+          api.get(`/agentes/${cod_agente}`, this.axiosConfig).then((res) => {
             this.formEditClientes.cod_agente = res.data.persona_responsable;
           });
 
@@ -1601,6 +1600,7 @@ export default {
       this.formClientes.cod_localidad = this.formClientes.cod_localidad.id;
       this.formClientes.cod_municipio = this.formClientes.cod_municipio.id;
       this.formClientes.cod_parroquia = this.formClientes.cod_parroquia.id;
+      this.formClientes.cod_ciudad = this.ciudad.id;
       this.formClientes.modalidad_pago = this.formClientes.modalidad_pago.value;
       if (this.formClientes.cte_decontado === "1") {
         for (var e = 0, len = this.clientes.length; e < len; e++) {
@@ -1623,6 +1623,7 @@ export default {
       this.formEditClientes.cod_localidad = this.formEditClientes.cod_localidad.id;
       this.formEditClientes.cod_municipio = this.formEditClientes.cod_municipio.id;
       this.formEditClientes.cod_parroquia = this.formEditClientes.cod_parroquia.id;
+      this.formEditClientes.cod_ciudad = this.ciudad.id;
       this.formEditClientes.modalidad_pago = this.formEditClientes.modalidad_pago.value;
       if (this.formEditClientes.cte_decontado === "1") {
         for (var e = 0, len = this.clientes.length; e < len; e++) {
@@ -1728,6 +1729,7 @@ export default {
     },
     setDataCiudades(res, dataRes) {
       this[dataRes] = res.ciudades;
+      this.ciudad = "";
     },
     setDataEstados(res, dataRes) {
       this[dataRes] = res.estados;

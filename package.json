@@ -10,20 +10,26 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
+    "@vue/composition-api": "^1.6.2",
     "Buffer": "0.0.0",
     "axios": "^0.21.1",
     "buffer": "^6.0.3",
     "core-js": "^3.6.5",
     "jwt-decode": "^3.1.2",
     "process": "^0.11.10",
+    "prop-types": "^15.8.1",
     "quasar": "^2.0.0",
+    "vee-validate": "^4.5.11",
+    "vue": "^3.2.36",
+    "vue-currency-input": "^2.4.0",
     "vue-i18n": "^9.0.0-beta.0",
+    "vue-router": "^4.0.15",
     "vuedraggable": "^4.0.1",
     "vuex": "^4.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.17.9",
-    "@quasar/app": "^3.0.0",
+    "@quasar/app": "^3.3.3",
     "@quasar/quasar-app-extension-qcalendar": "^4.0.0-beta.2",
     "quasar-app-extension-qhierarchy": "^1.0.0-alpha.1"
   },

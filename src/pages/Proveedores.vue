@@ -8,14 +8,14 @@
               <div class="col-md-4 col-xs-12">
                 <q-input
                   outlined
-                  v-model="form.nb_banco"
+                  v-model="form.nb_beneficiario"
                   label="Beneficiario"
                   hint=""
                   class="pcform"
                   lazy-rules
-                  :rules="[reglaInputBancos]"
+                  :rules="[reglasNotNull50]"
                   @update:model-value="
-                    form.nb_banco = form.nb_banco.toUpperCase()
+                    form.nb_beneficiario = form.nb_beneficiario.toUpperCase()
                   "
                 >
                   <template v-slot:prepend>
@@ -27,14 +27,14 @@
               <div class="col-md-4 col-xs-12">
                 <q-input
                   outlined
-                  v-model="form.direccion_banco"
+                  v-model="form.rif_proveedor"
                   label="RIF"
                   hint=""
                   class="pcform"
-                  :rules="[reglaInput]"
+                  :rules="[reglasNotNull20]"
                   lazy-rules
                   @update:model-value="
-                    form.direccion_banco = form.direccion_banco.toUpperCase()
+                    form.rif_proveedor = form.rif_proveedor.toUpperCase()
                   "
                 >
                   <template v-slot:prepend>
@@ -46,12 +46,14 @@
               <div class="col-md-4 col-xs-12">
                 <q-input
                   outlined
-                  v-model="form.fax_banco"
+                  v-model="form.nit_proveedor"
                   label="NIT"
-                  :rules="[reglaInput]"
+                  :rules="[reglasAllowNull20]"
                   hint=""
                   lazy-rules
-                  mask="#### - ##########"
+                  @update:model-value="
+                    form.nit_proveedor = form.nit_proveedor.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="123" />
@@ -62,13 +64,15 @@
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
-                  v-model="form.tlf_banco"
+                  v-model="form.direccion_fiscal"
                   label="Direccion Fiscal"
-                  :rules="[reglaInput]"
+                  :rules="[reglasAllowNull200]"
                   hint=""
                   lazy-rules
                   class="pcform"
-                  mask="### - ### - ##########"
+                  @update:model-value="
+                    form.direccion_fiscal = form.direccion_fiscal.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="pin_drop" />
@@ -79,12 +83,15 @@
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
-                  v-model="form.tlf_banco"
+                  v-model="form.direccion_correo"
                   label="Direccion de Correo"
-                  :rules="[reglaInput]"
+                  :rules="[reglasAllowNull200]"
                   hint=""
                   lazy-rules
-                  mask="### - ### - ##########"
+                  type="email"
+                  @update:model-value="
+                    form.direccion_correo = form.direccion_correo.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="drafts" />
@@ -95,9 +102,9 @@
               <div class="col-md-4 col-xs-12">
                 <q-input
                   outlined
-                  v-model="form.tlf_banco"
+                  v-model="form.tlf_proveedor"
                   label="Telefono"
-                  :rules="[reglaInput]"
+                  :rules="[reglasAllowNull100]"
                   hint=""
                   lazy-rules
                   class="pcform"
@@ -112,13 +119,15 @@
               <div class="col-md-4 col-xs-12">
                 <q-input
                   outlined
-                  v-model="form.tlf_banco"
+                  v-model="form.fax_proveedor"
                   label="Fax"
-                  :rules="[reglaInput]"
+                  :rules="[reglasAllowNull50]"
                   hint=""
                   lazy-rules
                   class="pcform"
-                  mask="### - ### - ##########"
+                  @update:model-value="
+                    form.fax_proveedor = form.fax_proveedor.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="fax" />
@@ -129,12 +138,15 @@
               <div class="col-md-4 col-xs-12">
                 <q-input
                   outlined
-                  v-model="form.tlf_banco"
+                  v-model="form.email_proveedor"
                   label="Email"
-                  :rules="[reglaInput]"
+                  :rules="[reglasAllowNull50]"
                   hint=""
                   lazy-rules
-                  mask="### - ### - ##########"
+                  type="email"
+                  @update:model-value="
+                    form.email_proveedor = form.email_proveedor.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="email" />
@@ -145,15 +157,13 @@
               <div class="col-md-4 col-xs-12">
                 <q-select
                   outlined
-                  v-model="selectedPais"
+                  v-model="form.tipo_servicio"
                   label="Servicio Prestado"
                   class="pcform"
                   input-class="input"
                   :rules="[reglasSelect]"
                   hint=""
-                  :options="paises"
-                  option-label="desc_pais"
-                  option-value="id"
+                  :options="servicio_prestado"
                   lazy-rules
                 >
                   <template v-slot:prepend>
@@ -165,15 +175,13 @@
               <div class="col-md-4 col-xs-12">
                 <q-select
                   outlined
-                  v-model="selectedPais"
+                  v-model="form.tipo_persona"
                   label="Tipo de Persona"
                   class="pcform"
                   input-class="input"
                   :rules="[reglasSelect]"
                   hint=""
-                  :options="paises"
-                  option-label="desc_pais"
-                  option-value="id"
+                  :options="tipo_persona"
                   lazy-rules
                 >
                   <template v-slot:prepend>
@@ -185,16 +193,33 @@
               <div class="col-md-4 col-xs-12">
                 <q-select
                   outlined
-                  v-model="selectedPais"
+                  v-model="form.cod_tipo_retencion"
                   label="Tipo Retención ISLR"
                   input-class="input"
                   :rules="[reglasSelect]"
                   hint=""
-                  :options="paises"
+                  :options="retenciones"
                   option-label="desc_pais"
                   option-value="id"
                   lazy-rules
-                  @update:model-value="getData(`/paises/${this.selectedPais.id}/estados`, 'setDataEstados', 'estados')"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="block" />
+                  </template>
+                </q-select>
+              </div>
+
+              <div class="col-md-6 col-xs-12">
+                <q-select
+                  outlined
+                  v-model="form.flag_activo"
+                  label="Estatus"
+                  input-class="input"
+                  :rules="[reglasSelect]"
+                  hint=""
+                  class="pcform"
+                  :options="estatus"
+                  lazy-rules
                 >
                   <template v-slot:prepend>
                     <q-icon name="block" />
@@ -205,13 +230,12 @@
               <div class="col-md-12 col-xs-12">
                 <q-input
                   outlined
-                  v-model="form.nb_banco"
+                  v-model="form.observacion"
                   label="Observaciones"
                   hint=""
                   lazy-rules
-                  :rules="[reglaInputBancos]"
                   @update:model-value="
-                    form.nb_banco = form.nb_banco.toUpperCase()
+                    form.observacion = form.observacion.toUpperCase()
                   "
                 >
                   <template v-slot:prepend>
@@ -254,14 +278,14 @@
               <div class="col-md-4 col-xs-12">
                 <q-input
                   outlined
-                  v-model="form.nb_banco"
+                  v-model="formEdit.nb_beneficiario"
                   label="Beneficiario"
                   hint=""
                   class="pcform"
                   lazy-rules
-                  :rules="[reglaInputBancos]"
+                  :rules="[reglasNotNull50]"
                   @update:model-value="
-                    form.nb_banco = form.nb_banco.toUpperCase()
+                    formEdit.nb_beneficiario = formEdit.nb_beneficiario.toUpperCase()
                   "
                 >
                   <template v-slot:prepend>
@@ -273,14 +297,14 @@
               <div class="col-md-4 col-xs-12">
                 <q-input
                   outlined
-                  v-model="form.direccion_banco"
+                  v-model="formEdit.rif_proveedor"
                   label="RIF"
                   hint=""
                   class="pcform"
-                  :rules="[reglaInput]"
+                  :rules="[reglasNotNull20]"
                   lazy-rules
                   @update:model-value="
-                    form.direccion_banco = form.direccion_banco.toUpperCase()
+                    formEdit.rif_proveedor = formEdit.rif_proveedor.toUpperCase()
                   "
                 >
                   <template v-slot:prepend>
@@ -292,12 +316,14 @@
               <div class="col-md-4 col-xs-12">
                 <q-input
                   outlined
-                  v-model="form.fax_banco"
+                  v-model="formEdit.nit_proveedor"
                   label="NIT"
-                  :rules="[reglaInput]"
+                  :rules="[reglasAllowNull20]"
                   hint=""
                   lazy-rules
-                  mask="#### - ##########"
+                  @update:model-value="
+                    formEdit.nit_proveedor = formEdit.nit_proveedor.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="123" />
@@ -308,13 +334,15 @@
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
-                  v-model="form.tlf_banco"
+                  v-model="formEdit.direccion_fiscal"
                   label="Direccion Fiscal"
-                  :rules="[reglaInput]"
+                  :rules="[reglasAllowNull200]"
                   hint=""
                   lazy-rules
                   class="pcform"
-                  mask="### - ### - ##########"
+                  @update:model-value="
+                    formEdit.direccion_fiscal = formEdit.direccion_fiscal.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="pin_drop" />
@@ -325,12 +353,15 @@
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
-                  v-model="form.tlf_banco"
+                  v-model="formEdit.direccion_correo"
                   label="Direccion de Correo"
-                  :rules="[reglaInput]"
+                  :rules="[reglasAllowNull200]"
                   hint=""
                   lazy-rules
-                  mask="### - ### - ##########"
+                  type="email"
+                  @update:model-value="
+                    formEdit.direccion_correo = formEdit.direccion_correo.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="drafts" />
@@ -341,9 +372,9 @@
               <div class="col-md-4 col-xs-12">
                 <q-input
                   outlined
-                  v-model="form.tlf_banco"
+                  v-model="formEdit.tlf_proveedor"
                   label="Telefono"
-                  :rules="[reglaInput]"
+                  :rules="[reglasAllowNull100]"
                   hint=""
                   lazy-rules
                   class="pcform"
@@ -358,13 +389,15 @@
               <div class="col-md-4 col-xs-12">
                 <q-input
                   outlined
-                  v-model="form.tlf_banco"
+                  v-model="formEdit.fax_proveedor"
                   label="Fax"
-                  :rules="[reglaInput]"
+                  :rules="[reglasAllowNull50]"
                   hint=""
                   lazy-rules
                   class="pcform"
-                  mask="### - ### - ##########"
+                  @update:model-value="
+                    formEdit.fax_proveedor = formEdit.fax_proveedor.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="fax" />
@@ -375,12 +408,15 @@
               <div class="col-md-4 col-xs-12">
                 <q-input
                   outlined
-                  v-model="form.tlf_banco"
+                  v-model="formEdit.email_proveedor"
                   label="Email"
-                  :rules="[reglaInput]"
+                  :rules="[reglasAllowNull50]"
                   hint=""
                   lazy-rules
-                  mask="### - ### - ##########"
+                  type="email"
+                  @update:model-value="
+                    formEdit.email_proveedor = formEdit.email_proveedor.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="email" />
@@ -391,15 +427,13 @@
               <div class="col-md-4 col-xs-12">
                 <q-select
                   outlined
-                  v-model="selectedPais"
+                  v-model="formEdit.tipo_servicio"
                   label="Servicio Prestado"
                   class="pcform"
                   input-class="input"
                   :rules="[reglasSelect]"
                   hint=""
-                  :options="paises"
-                  option-label="desc_pais"
-                  option-value="id"
+                  :options="servicio_prestado"
                   lazy-rules
                 >
                   <template v-slot:prepend>
@@ -411,15 +445,13 @@
               <div class="col-md-4 col-xs-12">
                 <q-select
                   outlined
-                  v-model="selectedPais"
+                  v-model="formEdit.tipo_persona"
                   label="Tipo de Persona"
                   class="pcform"
                   input-class="input"
                   :rules="[reglasSelect]"
                   hint=""
-                  :options="paises"
-                  option-label="desc_pais"
-                  option-value="id"
+                  :options="tipo_persona"
                   lazy-rules
                 >
                   <template v-slot:prepend>
@@ -431,16 +463,15 @@
               <div class="col-md-4 col-xs-12">
                 <q-select
                   outlined
-                  v-model="selectedPais"
+                  v-model="formEdit.cod_tipo_retencion"
                   label="Tipo Retención ISLR"
                   input-class="input"
                   :rules="[reglasSelect]"
                   hint=""
-                  :options="paises"
+                  :options="retenciones"
                   option-label="desc_pais"
                   option-value="id"
                   lazy-rules
-                  @update:model-value="getData(`/paises/${this.selectedPais.id}/estados`, 'setDataEstados', 'estados')"
                 >
                   <template v-slot:prepend>
                     <q-icon name="block" />
@@ -448,16 +479,33 @@
                 </q-select>
               </div>
 
-              <div class="col-md-12 col-xs-12">
+              <div class="col-md-6 col-xs-12">
+                <q-select
+                  outlined
+                  v-model="formEdit.flag_activo"
+                  label="Estatus"
+                  input-class="input"
+                  :rules="[reglasSelect]"
+                  hint=""
+                  class="pcform"
+                  :options="estatus"
+                  lazy-rules
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="block" />
+                  </template>
+                </q-select>
+              </div>
+
+              <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
-                  v-model="form.nb_banco"
+                  v-model="formEdit.observacion"
                   label="Observaciones"
                   hint=""
                   lazy-rules
-                  :rules="[reglaInputBancos]"
                   @update:model-value="
-                    form.nb_banco = form.nb_banco.toUpperCase()
+                    formEdit.observacion = formEdit.observacion.toUpperCase()
                   "
                 >
                   <template v-slot:prepend>
@@ -527,7 +575,7 @@
               rounded
               color="primary"
               @click="create = true"
-              @click.capture="getData('/bancos','setdata','datos')"
+              @click.capture="resetForm()"
               :disabled="this.disabledCreate"
             ></q-btn>
           </div>
@@ -557,7 +605,7 @@
                       icon="edit"
                       :disabled="this.disabledEdit"
                       @click="
-                        getData(`/bancos/${props.row.id}`, 'setData', 'formEdit');
+                        getData(`/proveedores/${props.row.id}`, 'setDataEdit', 'formEdit');
                         edit = true;
                       "
                     ></q-btn>
@@ -609,7 +657,7 @@
                               icon="edit"
                               :disabled="this.disabledEdit"
                               @click="
-                                getData(`/bancos/${props.row.id}`, 'setData', 'formEdit');
+                                getData(`/proveedores/${props.row.id}`, 'setDataEdit', 'formEdit');
                                 edit = true;
                               "
                             ></q-btn>
@@ -679,8 +727,9 @@
       </q-card>
     </q-dialog>
     <methods ref="methods"
-    @get-Data="getData('/bancos','setData','datos')"
-    @set-data="setData" @set-Data-Edit="setData">
+    @get-Data="getData('/proveedores','setData','datos')"
+    @set-data="setData"
+    @set-Data-Edit="setDataEdit">
     </methods>
     <desactivate-crud ref="desactivateCrud"
     @desactivar-Crud-Bancos="desactivarCrudBancos">
@@ -717,23 +766,23 @@ export default {
           sortable: true,
         },
         {
-          name: "nb_banco",
+          name: "nb_proveedor",
           label: "Nombre del Proveedor",
-          field: "nb_banco",
+          field: "nb_proveedor",
           align: "left",
           sortable: true,
         },
         {
-          name: "tlf_banco",
+          name: "condicion_pago",
           label: "Condicion de Pago",
-          field: "tlf_banco",
+          field: "condicion_pago",
           align: "left",
           sortable: true,
         },
         {
-          name: "fax_banco",
+          name: "activo_desc",
           label: "Estatus",
-          field: "fax_banco",
+          field: "activo_desc",
           align: "left",
           sortable: true,
         },
@@ -747,20 +796,56 @@ export default {
       ],
       form: {
         nb_banco: "",
-        direccion_banco: "",
-        tlf_banco: "",
-        fax_banco: "",
-        cod_postal: "",
-        email_banco: "",
+        nb_proveedor: "",
+        nb_beneficiario: "",
+        rif_proveedor: "",
+        nit_proveedor: "",
+        direccion_fiscal: "",
+        direccion_correo: "",
+        tlf_proveedor: "",
+        fax_proveedor: "",
+        email_proveedor: "",
+        condicion_pago: "0",
+        observacion: "",
+        tipo_servicio: [],
+        cod_tipo_retencion: [],
+        tipo_persona: [],
+        flag_activo: [],
       },
+      tipo_persona: [
+        { label: "JURÍDICA", value: "J" },
+        { label: "NATURAL", value: "N" },
+      ],
+      servicio_prestado: [
+        { label: "TRANSPORTE", value: "TP" },
+        { label: "PAPELERIA", value: "PP" },
+        { label: "SUMINISTROS DE COMPUTACIÓN", value: "SC" },
+        { label: "GENERALES", value: "GE" },
+      ],
+      estatus: [
+        { label: "ACTIVO", value: "A" },
+        { label: "INACTIVO", value: "I" },
+      ],
+      retenciones: [],
       datos: [],
       formEdit: {
+        id: "",
         nb_banco: "",
-        direccion_banco: "",
-        tlf_banco: "",
-        fax_banco: "",
-        cod_postal: "",
-        email_banco: "",
+        nb_proveedor: "",
+        nb_beneficiario: "",
+        rif_proveedor: "",
+        nit_proveedor: "",
+        direccion_fiscal: "",
+        direccion_correo: "",
+        tlf_proveedor: "",
+        fax_proveedor: "",
+        email_proveedor: "",
+        condicion_pago: "0",
+        observacion: "",
+        tipo_servicio: [],
+        cod_tipo_retencion: [],
+        tipo_persona: [],
+        flag_activo: [],
       },
       selected: [],
       error: "",
@@ -796,30 +881,110 @@ export default {
     };
   },
   mounted() {
-    this.getData('/bancos','setData','datos')
+    this.getData('/proveedores','setData','datos')
+    this.getData('/retenciones','setData','retenciones')
     this.$refs.desactivateCrud.desactivarCrud('c_bancos', 'd_bancos', 'u_bancos', 'desactivarCrudBancos')
   },
   methods: {
-    reglaInputBancos(val) {
+    // Reglas
+    reglasSelect(val) {
       if (val === null) {
-        return "Debes Escribir Algo";
+        return "Debes Seleccionar Algo";
       }
       if (val === "") {
-        return "Debes Escribir Algo";
+        return "Debes Seleccionar Algo";
       }
-      if (val.length > 0) {
-        if (val.length < 3) {
-        return "Deben ser minimo 3 caracteres";
+    },
+    reglasNotNull100(val) {
+        if (val !== null !== "") {
+          if (val.length < 3) {
+            return "Deben ser minimo 3 caracteres";
+          }
+          if (val.length > 99) {
+            return "Deben ser Maximo 100 caracteres";
+          }
+      }
+    },
+    reglasNotNull20(val) {
+        if (val !== null !== "") {
+          if (val.length < 3) {
+            return "Deben ser minimo 3 caracteres";
+          }
+          if (val.length > 19) {
+            return "Deben ser Maximo 19 caracteres";
+          }
+      }
+    },
+    reglasNotNull200(val) {
+        if (val !== null !== "") {
+          if (val.length < 3) {
+            return "Deben ser minimo 3 caracteres";
+          }
+          if (val.length > 199) {
+            return "Deben ser Maximo 200 caracteres";
+          }
+      }
+    },
+    reglasNotNull50(val) {
+        if (val !== null !== "") {
+          if (val.length < 3) {
+            return "Deben ser minimo 3 caracteres";
+          }
+          if (val.length > 49) {
+            return "Deben ser Maximo 50 caracteres";
+          }
+      }
+    },
+    reglasAllowNull20(val) {
+      if (val !== null) {
+        if (val.length > 0) {
+          if (val.length < 3) {
+            return "Deben ser minimo 3 caracteres";
+          }
+          if (val.length > 19) {
+            return "Deben ser Maximo 20 caracteres";
+          }
         }
       }
     },
-    reglaInput(val) {
-      if (val.length > 0) {
-        if (val.length < 3) {
-        return "Deben ser minimo 3 caracteres";
+    reglasAllowNull100(val) {
+      if (val !== null) {
+        if (val.length > 0) {
+          if (val.length < 3) {
+            return "Deben ser minimo 3 caracteres";
+          }
+          if (val.length > 99) {
+            return "Deben ser Maximo 100 caracteres";
+          }
         }
       }
     },
+    reglasAllowNull200(val) {
+      if (val !== null) {
+        if (val.length > 0) {
+          if (val.length < 3) {
+            return "Deben ser minimo 3 caracteres";
+          }
+          if (val.length > 199) {
+            return "Deben ser Maximo 200 caracteres";
+          }
+        }
+      }
+    },
+    reglasAllowNull50(val) {
+      if (val !== null) {
+        if (val.length > 0) {
+          if (val.length < 3) {
+            return "Deben ser minimo 3 caracteres";
+          }
+          if (val.length > 49) {
+            return "Deben ser Maximo 50 caracteres";
+          }
+        }
+      }
+    },
+
+    // Desactivar CRUD
     desactivarCrudBancos(createItem, deleteItem, updateItem) {
       if (createItem == true) {
         this.disabledCreate = false
@@ -831,31 +996,90 @@ export default {
         this.disabledEdit = false
       }
     },
+
+    // Metodos CRUD
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes);
     },
     setData(res, dataRes) {
       this[dataRes] = res
-    },    
+    },  
+    setDataEdit(res, dataRes) {
+      this.formEdit.id = res.id
+      this.formEdit.nb_proveedor = res.nb_proveedor
+      this.formEdit.nb_beneficiario = res.nb_beneficiario
+      this.formEdit.rif_proveedor = res.rif_proveedor
+      this.formEdit.nit_proveedor = res.nit_proveedor
+      this.formEdit.direccion_fiscal = res.direccion_fiscal
+      this.formEdit.direccion_correo = res.direccion_correo
+      this.formEdit.tlf_proveedor = res.tlf_proveedor
+      this.formEdit.fax_proveedor = res.fax_proveedor
+      this.formEdit.email_proveedor = res.email_proveedor
+      this.formEdit.observacion = res.observacion
+      this.formEdit.tipo_servicio = res.tipo_servicio
+      this.formEdit.cod_tipo_retencion = res.cod_tipo_retencion
+      this.formEdit.tipo_persona = res.tipo_desc
+      this.formEdit.flag_activo = res.activo_desc
+    },   
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/bancos/${idpost}`, 'getData');
+      this.$refs.methods.deleteData(`/proveedores/${idpost}`, 'getData');
     },
     createData() {
-      this.$refs.methods.createData('/bancos', this.form, 'getData');
+      this.form.tipo_servicio = this.form.tipo_servicio.value
+      this.form.cod_tipo_retencion = this.form.cod_tipo_retencion.id
+      this.form.tipo_persona = this.form.tipo_persona.value
+      this.form.flag_activo = this.form.flag_activo.value
+      this.$refs.methods.createData('/proveedores', this.form, 'getData');
       this.resetForm();
     },
     putData() {
-      this.$refs.methods.putData(`/bancos/${this.formEdit.id}`, this.formEdit, 'getData');
+      this.formEdit.tipo_servicio = this.formEdit.tipo_servicio.value
+      this.formEdit.cod_tipo_retencion = this.formEdit.cod_tipo_retencion.id
+      this.formEdit.tipo_persona = this.formEdit.tipo_persona.value
+      this.formEdit.flag_activo = this.formEdit.flag_activo.value
+      this.$refs.methods.putData(`/proveedores/${this.formEdit.id}`, this.formEdit, 'getData');
       this.edit = false;
+      this.resetFormEdit()
     },
     
     resetForm() {
       (this.form.nb_banco = null),
-      (this.form.direccion_banco = null),
-      (this.form.tlf_banco = null),
-      (this.form.fax_banco = null),
-      (this.form.cod_postal = null),
-      (this.form.email_banco = null),
+      (this.form.nb_banco = ""),
+      (this.form.nb_proveedor = ""),
+      (this.form.nb_beneficiario = ""),
+      (this.form.rif_proveedor = ""),
+      (this.form.nit_proveedor = ""),
+      (this.form.direccion_fiscal = ""),
+      (this.form.direccion_correo = ""),
+      (this.form.tlf_proveedor = ""),
+      (this.form.fax_proveedor = ""),
+      (this.form.email_proveedor = ""),
+      (this.form.condicion_pago = ""),
+      (this.form.observacion = ""),
+      (this.form.tipo_servicio = ""),
+      (this.form.cod_tipo_retencion = ""),
+      (this.form.tipo_persona = ""),
+      (this.form.flag_activo = ""),
+      (this.create = false);    
+    },
+    resetFormEdit() {
+      (this.formEdit.nb_banco = null),
+      (this.formEdit.nb_banco = ""),
+      (this.formEdit.nb_proveedor = ""),
+      (this.formEdit.nb_beneficiario = ""),
+      (this.formEdit.rif_proveedor = ""),
+      (this.formEdit.nit_proveedor = ""),
+      (this.formEdit.direccion_fiscal = ""),
+      (this.formEdit.direccion_correo = ""),
+      (this.formEdit.tlf_proveedor = ""),
+      (this.formEdit.fax_proveedor = ""),
+      (this.formEdit.email_proveedor = ""),
+      (this.formEdit.condicion_pago = ""),
+      (this.formEdit.observacion = ""),
+      (this.formEdit.tipo_servicio = ""),
+      (this.formEdit.cod_tipo_retencion = ""),
+      (this.formEdit.tipo_persona = ""),
+      (this.formEdit.flag_activo = ""),
       (this.create = false);    
     },
   },
