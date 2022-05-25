@@ -5,244 +5,178 @@
         <q-card-section>
           <q-form @submit="createData" class="q-gutter-md">
             <div class="row">
-              <div class="col-md-4 col-xs-12">
+              <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
-                  v-model="form.nb_beneficiario"
-                  label="Beneficiario"
+                  v-model="form.cod_fpo"
+                  label="Codigo"
                   hint=""
                   class="pcform"
                   lazy-rules
-                  :rules="[reglasNotNull50]"
+                  :rules="[reglasNotNull6]"
                   @update:model-value="
-                    form.nb_beneficiario = form.nb_beneficiario.toUpperCase()
+                    form.cod_fpo = form.cod_fpo.toUpperCase()
                   "
                 >
                   <template v-slot:prepend>
-                    <q-icon name="person" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="form.rif_proveedor"
-                  label="RIF"
-                  hint=""
-                  class="pcform"
-                  :rules="[reglasNotNull20]"
-                  lazy-rules
-                  @update:model-value="
-                    form.rif_proveedor = form.rif_proveedor.toUpperCase()
-                  "
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="form.nit_proveedor"
-                  label="NIT"
-                  :rules="[reglasAllowNull20]"
-                  hint=""
-                  lazy-rules
-                  @update:model-value="
-                    form.nit_proveedor = form.nit_proveedor.toUpperCase()
-                  "
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="123" />
+                    <q-icon name="qr_code_2" />
                   </template>
                 </q-input>
               </div>
 
               <div class="col-md-6 col-xs-12">
-                <q-input
+                <currency-input
+                  :options="{ currency: 'USD' }"
                   outlined
-                  v-model="form.direccion_fiscal"
-                  label="Direccion Fiscal"
-                  :rules="[reglasAllowNull200]"
-                  hint=""
-                  lazy-rules
-                  class="pcform"
-                  @update:model-value="
-                    form.direccion_fiscal = form.direccion_fiscal.toUpperCase()
-                  "
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="pin_drop" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="form.direccion_correo"
-                  label="Direccion de Correo"
-                  :rules="[reglasAllowNull200]"
-                  hint=""
-                  lazy-rules
-                  type="email"
-                  @update:model-value="
-                    form.direccion_correo = form.direccion_correo.toUpperCase()
-                  "
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="drafts" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="form.tlf_proveedor"
-                  label="Telefono"
-                  :rules="[reglasAllowNull100]"
-                  hint=""
-                  lazy-rules
-                  class="pcform"
-                  mask="### - ### - ##########"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="phone" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="form.fax_proveedor"
-                  label="Fax"
-                  :rules="[reglasAllowNull50]"
-                  hint=""
-                  lazy-rules
-                  class="pcform"
-                  @update:model-value="
-                    form.fax_proveedor = form.fax_proveedor.toUpperCase()
-                  "
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="fax" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="form.email_proveedor"
-                  label="Email"
-                  :rules="[reglasAllowNull50]"
-                  hint=""
-                  lazy-rules
-                  type="email"
-                  @update:model-value="
-                    form.email_proveedor = form.email_proveedor.toUpperCase()
-                  "
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="email" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="form.tipo_servicio"
-                  label="Servicio Prestado"
-                  class="pcform"
-                  input-class="input"
-                  :rules="[reglasSelect]"
-                  hint=""
-                  :options="servicio_prestado"
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="support_agent" />
-                  </template>
-                </q-select>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="form.tipo_persona"
-                  label="Tipo de Persona"
-                  class="pcform"
-                  input-class="input"
-                  :rules="[reglasSelect]"
-                  hint=""
-                  :options="tipo_persona"
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="group" />
-                  </template>
-                </q-select>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="form.cod_tipo_retencion"
-                  label="Tipo Retención ISLR"
-                  input-class="input"
-                  :rules="[reglasSelect]"
-                  hint=""
-                  :options="retenciones"
-                  option-label="desc_pais"
-                  option-value="id"
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="block" />
-                  </template>
-                </q-select>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="form.flag_activo"
-                  label="Estatus"
-                  input-class="input"
-                  :rules="[reglasSelect]"
+                  v-model="form.valor"
+                  label="Valor"
+                  step=".01"
                   hint=""
                   class="pcform"
-                  :options="estatus"
+                  :rules="[reglasValor]"
                   lazy-rules
                 >
                   <template v-slot:prepend>
-                    <q-icon name="block" />
+                    <q-icon name="sell" />
                   </template>
-                </q-select>
+                </currency-input>
               </div>
 
               <div class="col-md-12 col-xs-12">
                 <q-input
                   outlined
-                  v-model="form.observacion"
-                  label="Observaciones"
+                  v-model="form.desc_tipo"
+                  label="Descripción"
                   hint=""
+                  class="pcform"
+                  :rules="[reglasNotNull40]"
                   lazy-rules
                   @update:model-value="
-                    form.observacion = form.observacion.toUpperCase()
+                    form.desc_tipo = form.desc_tipo.toUpperCase()
                   "
                 >
                   <template v-slot:prepend>
-                    <q-icon name="visibility" />
+                    <q-icon name="description" />
                   </template>
                 </q-input>
               </div>
+
+              <q-card
+                class="q-pa-md"
+                bordered
+                style="width: 999px; max-width: 80vw; margin-bottom: 20px"
+              >
+                <q-card-section>
+                  <div class="row">
+                    <div
+                      class="col-md-12 col-xs-12"
+                      style="align-self: center; text-align: left; margin-top: -30px"
+                    >
+                      <h4 style="font-size: 20px" class="text-secondary"><strong>FECHAS DE VALIDEZ</strong></h4>
+                    </div>
+                    <div class="col-md-6 col-xs-12">
+                      <q-input
+                      outlined
+                      label="Inicial"
+                      hint=""
+                      v-model="form.f_val"
+                      mask="date"
+                      :rules="['date']"
+                      class="pcform"
+                      lazy-rules
+                >
+                  <template v-slot:append>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                        <q-date v-model="form.f_val">
+                          <div class="row items-center justify-end">
+                             <q-btn v-close-popup label="Close" color="primary" flat />
+                          </div>
+                        </q-date>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
+                </div>
+
+                <div class="col-md-6 col-xs-12">
+                      <q-input
+                      outlined
+                      label="Final"
+                      hint=""
+                      mask="date"
+                      :rules="['date']"
+                      v-model="form.f_anul"
+                      class="pcform"
+                      lazy-rules
+                >
+                  <template v-slot:append>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                        <q-date v-model="form.f_anul">
+                          <div class="row items-center justify-end">
+                             <q-btn v-close-popup label="Close" color="primary" flat />
+                          </div>
+                        </q-date>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
+                </div>
+                  </div>
+                </q-card-section>
+              </q-card>
+
+              <q-card
+                class="q-pa-md"
+                bordered
+                style="width: 999px; max-width: 80vw; margin-bottom: 20px"
+              >
+                <q-card-section>
+                  <div class="row">
+                    <div
+                      class="col-md-12 col-xs-12"
+                      style="align-self: center; text-align: left; margin-top: -30px"
+                    >
+                      <h4 style="font-size: 20px" class="text-secondary"><strong>RANGOS DE PESO</strong></h4>
+                    </div>
+                    <div class="col-md-6 col-xs-12">
+                      <q-input
+                      outlined
+                      v-model="form.peso_inicio"
+                      label="Inicial"
+                      hint=""
+                      class="pcform"
+                      type="number"
+                      step=".01"
+                      lazy-rules
+                      :rules="[reglasNotNull4]"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="scale" />
+                  </template>
+                </q-input>
+                </div>
+
+                <div class="col-md-6 col-xs-12">
+                      <q-input
+                      outlined
+                      v-model="form.peso_fin"
+                      label="Final"
+                      hint=""
+                      type="number"
+                      step=".01"
+                      lazy-rules
+                      :rules="[reglasNotNull4]"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="scale" />
+                  </template>
+                </q-input>
+                </div>
+                  </div>
+                </q-card-section>
+              </q-card>
             </div>
 
             <div
@@ -250,7 +184,7 @@
               style="margin-bottom: 10px"
             >
               <q-btn
-                label="Agregar Proveedor"
+                label="Agregar Concepto FPO"
                 type="submit"
                 color="primary"
                 class="col-md-5 col-sm-5 col-xs-12"
@@ -263,6 +197,7 @@
                 class="col-md-5 col-sm-5 col-xs-12 btnmovil"
                 icon="close"
                 v-close-popup
+                @click="setData()"
               />
             </div>
           </q-form>
@@ -275,244 +210,178 @@
         <q-card-section>
           <q-form @submit="putData">
             <div class="row">
-              <div class="col-md-4 col-xs-12">
+              <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
-                  v-model="formEdit.nb_beneficiario"
-                  label="Beneficiario"
+                  v-model="formEdit.cod_fpo"
+                  label="Codigo"
                   hint=""
                   class="pcform"
                   lazy-rules
-                  :rules="[reglasNotNull50]"
+                  :rules="[reglasNotNull6]"
                   @update:model-value="
-                    formEdit.nb_beneficiario = formEdit.nb_beneficiario.toUpperCase()
+                    formEdit.cod_fpo = formEdit.cod_fpo.toUpperCase()
                   "
                 >
                   <template v-slot:prepend>
-                    <q-icon name="person" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.rif_proveedor"
-                  label="RIF"
-                  hint=""
-                  class="pcform"
-                  :rules="[reglasNotNull20]"
-                  lazy-rules
-                  @update:model-value="
-                    formEdit.rif_proveedor = formEdit.rif_proveedor.toUpperCase()
-                  "
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.nit_proveedor"
-                  label="NIT"
-                  :rules="[reglasAllowNull20]"
-                  hint=""
-                  lazy-rules
-                  @update:model-value="
-                    formEdit.nit_proveedor = formEdit.nit_proveedor.toUpperCase()
-                  "
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="123" />
+                    <q-icon name="qr_code_2" />
                   </template>
                 </q-input>
               </div>
 
               <div class="col-md-6 col-xs-12">
+                <currency-input
+                  :options="{ currency: 'USD' }"
+                  outlined
+                  v-model="formEdit.valor"
+                  label="Valor"
+                  step=".01"
+                  hint=""
+                  class="pcform"
+                  :rules="[reglasValorEdit]"
+                  lazy-rules
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="sell" />
+                  </template>
+                </currency-input>
+              </div>
+
+              <div class="col-md-12 col-xs-12">
                 <q-input
                   outlined
-                  v-model="formEdit.direccion_fiscal"
-                  label="Direccion Fiscal"
-                  :rules="[reglasAllowNull200]"
+                  v-model="formEdit.desc_tipo"
+                  label="Descripción"
                   hint=""
-                  lazy-rules
                   class="pcform"
+                  :rules="[reglasNotNull40]"
+                  lazy-rules
                   @update:model-value="
-                    formEdit.direccion_fiscal = formEdit.direccion_fiscal.toUpperCase()
+                    formEdit.desc_tipo = formEdit.desc_tipo.toUpperCase()
                   "
                 >
                   <template v-slot:prepend>
-                    <q-icon name="pin_drop" />
+                    <q-icon name="description" />
                   </template>
                 </q-input>
               </div>
 
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.direccion_correo"
-                  label="Direccion de Correo"
-                  :rules="[reglasAllowNull200]"
-                  hint=""
-                  lazy-rules
-                  type="email"
-                  @update:model-value="
-                    formEdit.direccion_correo = formEdit.direccion_correo.toUpperCase()
-                  "
+              <q-card
+                class="q-pa-md"
+                bordered
+                style="width: 999px; max-width: 80vw; margin-bottom: 20px"
+              >
+                <q-card-section>
+                  <div class="row">
+                    <div
+                      class="col-md-12 col-xs-12"
+                      style="align-self: center; text-align: left; margin-top: -30px"
+                    >
+                      <h4 style="font-size: 20px" class="text-secondary"><strong>FECHAS DE VALIDEZ</strong></h4>
+                    </div>
+                    <div class="col-md-6 col-xs-12">
+                      <q-input
+                      outlined
+                      label="Inicial"
+                      hint=""
+                      v-model="formEdit.f_val"
+                      mask="date"
+                      :rules="['date']"
+                      class="pcform"
+                      lazy-rules
                 >
-                  <template v-slot:prepend>
-                    <q-icon name="drafts" />
+                  <template v-slot:append>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                        <q-date v-model="formEdit.f_val">
+                          <div class="row items-center justify-end">
+                             <q-btn v-close-popup label="Close" color="primary" flat />
+                          </div>
+                        </q-date>
+                      </q-popup-proxy>
+                    </q-icon>
                   </template>
                 </q-input>
-              </div>
+                </div>
 
-              <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.tlf_proveedor"
-                  label="Telefono"
-                  :rules="[reglasAllowNull100]"
-                  hint=""
-                  lazy-rules
-                  class="pcform"
-                  mask="### - ### - ##########"
+                <div class="col-md-6 col-xs-12">
+                      <q-input
+                      outlined
+                      label="Final"
+                      hint=""
+                      mask="date"
+                      :rules="['date']"
+                      v-model="formEdit.f_anul"
+                      class="pcform"
+                      lazy-rules
                 >
-                  <template v-slot:prepend>
-                    <q-icon name="phone" />
+                  <template v-slot:append>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                        <q-date v-model="formEdit.f_anul">
+                          <div class="row items-center justify-end">
+                             <q-btn v-close-popup label="Close" color="primary" flat />
+                          </div>
+                        </q-date>
+                      </q-popup-proxy>
+                    </q-icon>
                   </template>
                 </q-input>
-              </div>
+                </div>
+                  </div>
+                </q-card-section>
+              </q-card>
 
-              <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.fax_proveedor"
-                  label="Fax"
-                  :rules="[reglasAllowNull50]"
-                  hint=""
-                  lazy-rules
-                  class="pcform"
-                  @update:model-value="
-                    formEdit.fax_proveedor = formEdit.fax_proveedor.toUpperCase()
-                  "
+              <q-card
+                class="q-pa-md"
+                bordered
+                style="width: 999px; max-width: 80vw; margin-bottom: 20px"
+              >
+                <q-card-section>
+                  <div class="row">
+                    <div
+                      class="col-md-12 col-xs-12"
+                      style="align-self: center; text-align: left; margin-top: -30px"
+                    >
+                      <h4 style="font-size: 20px" class="text-secondary"><strong>RANGOS DE PESO</strong></h4>
+                    </div>
+                    <div class="col-md-6 col-xs-12">
+                      <q-input
+                      outlined
+                      v-model="formEdit.peso_inicio"
+                      label="Inicial"
+                      hint=""
+                      class="pcform"
+                      type="number"
+                      step=".01"
+                      lazy-rules
+                      :rules="[reglasNotNull4]"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="fax" />
+                    <q-icon name="scale" />
                   </template>
                 </q-input>
-              </div>
+                </div>
 
-              <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.email_proveedor"
-                  label="Email"
-                  :rules="[reglasAllowNull50]"
-                  hint=""
-                  lazy-rules
-                  type="email"
-                  @update:model-value="
-                    formEdit.email_proveedor = formEdit.email_proveedor.toUpperCase()
-                  "
+                <div class="col-md-6 col-xs-12">
+                      <q-input
+                      outlined
+                      v-model="formEdit.peso_fin"
+                      label="Final"
+                      hint=""
+                      type="number"
+                      step=".01"
+                      lazy-rules
+                      :rules="[reglasNotNull4]"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="email" />
+                    <q-icon name="scale" />
                   </template>
                 </q-input>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="formEdit.tipo_servicio"
-                  label="Servicio Prestado"
-                  class="pcform"
-                  input-class="input"
-                  :rules="[reglasSelect]"
-                  hint=""
-                  :options="servicio_prestado"
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="support_agent" />
-                  </template>
-                </q-select>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="formEdit.tipo_persona"
-                  label="Tipo de Persona"
-                  class="pcform"
-                  input-class="input"
-                  :rules="[reglasSelect]"
-                  hint=""
-                  :options="tipo_persona"
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="group" />
-                  </template>
-                </q-select>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="formEdit.cod_tipo_retencion"
-                  label="Tipo Retención ISLR"
-                  input-class="input"
-                  :rules="[reglasSelect]"
-                  hint=""
-                  :options="retenciones"
-                  option-label="desc_pais"
-                  option-value="id"
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="block" />
-                  </template>
-                </q-select>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="formEdit.flag_activo"
-                  label="Estatus"
-                  input-class="input"
-                  :rules="[reglasSelect]"
-                  hint=""
-                  class="pcform"
-                  :options="estatus"
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="block" />
-                  </template>
-                </q-select>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.observacion"
-                  label="Observaciones"
-                  hint=""
-                  lazy-rules
-                  @update:model-value="
-                    formEdit.observacion = formEdit.observacion.toUpperCase()
-                  "
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="visibility" />
-                  </template>
-                </q-input>
-              </div>
+                </div>
+                  </div>
+                </q-card-section>
+              </q-card>
             </div>
 
             <div
@@ -520,7 +389,7 @@
               style="margin-bottom: 10px"
             >
               <q-btn
-                label="Editar Proveedor"
+                label="Editar Concepto FPO"
                 type="submit"
                 color="primary"
                 class="col-md-5 col-sm-5 col-xs-12"
@@ -571,7 +440,7 @@
             style="text-align: center; align-self: center"
           >
             <q-btn
-              label="Insertar Proveedor"
+              label="Insertar Concepto"
               rounded
               color="primary"
               @click="create = true"
@@ -605,7 +474,7 @@
                       icon="edit"
                       :disabled="this.disabledEdit"
                       @click="
-                        getData(`/proveedores/${props.row.id}`, 'setDataEdit', 'formEdit');
+                        getData(`/fpos/${props.row.id}`, 'setDataEdit', 'formEdit');
                         edit = true;
                       "
                     ></q-btn>
@@ -657,7 +526,7 @@
                               icon="edit"
                               :disabled="this.disabledEdit"
                               @click="
-                                getData(`/proveedores/${props.row.id}`, 'setDataEdit', 'formEdit');
+                                getData(`/fpos/${props.row.id}`, 'setDataEdit', 'formEdit');
                                 edit = true;
                               "
                             ></q-btn>
@@ -727,7 +596,7 @@
       </q-card>
     </q-dialog>
     <methods ref="methods"
-    @get-Data="getData('/proveedores','setData','datos')"
+    @get-Data="getData('/fpos','setData','datos')"
     @set-data="setData"
     @set-Data-Edit="setDataEdit">
     </methods>
@@ -750,39 +619,56 @@ import methodsVue from 'src/components/methods.vue';
 
 import desactivateCrudVue from 'src/components/desactivateCrud.vue';
 
+import currencyInputVue from 'src/components/currency-input.vue';
+
 export default {
   components: {
   "desactivate-crud": desactivateCrudVue,
-  "methods": methodsVue},
+  "methods": methodsVue,
+  "currency-input": currencyInputVue},
   name: "Bancos",
   data() {
     return {
       columns: [
         {
-          name: "id",
+          name: "cod_fpo",
           label: "Código",
-          field: "id",
+          field: "cod_fpo",
           align: "left",
           sortable: true,
         },
         {
-          name: "nb_proveedor",
-          label: "Nombre del Proveedor",
-          field: "nb_proveedor",
+          name: "desc_tipo",
+          label: "Descripción",
+          field: "desc_tipo",
           align: "left",
           sortable: true,
         },
         {
-          name: "condicion_pago",
-          label: "Condicion de Pago",
-          field: "condicion_pago",
+          name: "valor",
+          label: "Valor",
+          field: "valor",
           align: "left",
           sortable: true,
         },
         {
-          name: "activo_desc",
-          label: "Estatus",
-          field: "activo_desc",
+          name: "f_anul",
+          label: "Valido Hasta",
+          field: "f_anul",
+          align: "left",
+          sortable: true,
+        },
+        {
+          name: "peso_inicio",
+          label: "Rango de Peso Inicial",
+          field: "peso_inicio",
+          align: "left",
+          sortable: true,
+        },
+        {
+          name: "peso_fin",
+          label: "Rango de Peso Final",
+          field: "peso_fin",
           align: "left",
           sortable: true,
         },
@@ -795,42 +681,24 @@ export default {
         },
       ],
       form: {
-        nb_banco: "",
-        nb_proveedor: "",
-        nb_beneficiario: "",
-        rif_proveedor: "",
-        nit_proveedor: "",
-        direccion_fiscal: "",
-        direccion_correo: "",
-        tlf_proveedor: "",
-        fax_proveedor: "",
-        email_proveedor: "",
-        condicion_pago: "0",
-        observacion: "",
-        tipo_servicio: [],
-        cod_tipo_retencion: [],
-        tipo_persona: [],
-        flag_activo: [],
+        cod_fpo: "",
+        desc_tipo: "",
+        valor: 0,
+        f_val: "",
+        f_anul: "",
+        peso_inicio: 0,
+        peso_fin: 0,
       },
       datos: [],
       formEdit: {
         id: "",
-        nb_banco: "",
-        nb_proveedor: "",
-        nb_beneficiario: "",
-        rif_proveedor: "",
-        nit_proveedor: "",
-        direccion_fiscal: "",
-        direccion_correo: "",
-        tlf_proveedor: "",
-        fax_proveedor: "",
-        email_proveedor: "",
-        condicion_pago: "0",
-        observacion: "",
-        tipo_servicio: [],
-        cod_tipo_retencion: [],
-        tipo_persona: [],
-        flag_activo: [],
+        cod_fpo: "",
+        desc_tipo: "",
+        valor: 0,
+        f_anul: "",
+        f_val: "",
+        peso_inicio: 0,
+        peso_fin: 0,
       },
       selected: [],
       error: "",
@@ -866,8 +734,7 @@ export default {
     };
   },
   mounted() {
-    this.getData('/proveedores','setData','datos')
-    this.getData('/retenciones','setData','retenciones')
+    this.getData('/fpos','setData','datos')
     this.$refs.desactivateCrud.desactivarCrud('c_bancos', 'd_bancos', 'u_bancos', 'desactivarCrudBancos')
   },
   methods: {
@@ -880,92 +747,75 @@ export default {
         return "Debes Seleccionar Algo";
       }
     },
-    reglasNotNull100(val) {
+    reglasValor(val) {
+      if (this.form.valor === null) {
+        return "Debes Escribir Algo";
+      }
+      if (this.form.valor === "") {
+        return "Debes Escribir Algo";
+      }
+        if (this.form.valor !== null !== "") {
+          if (this.form.valor > 999) {
+            return "Monto Maximo";
+          }
+      }
+    },
+    reglasValorEdit(val) {
+      if (this.formEdit.valor === null) {
+        return "Debes Escribir Algo";
+      }
+      if (this.formEdit.valor === "") {
+        return "Debes Escribir Algo";
+      }
+        if (this.formEdit.valor !== null !== "") {
+          if (this.formEdit.valor > 999) {
+            return "Monto Maximo";
+          }
+      }
+    },
+    reglasNotNull4(val) {
+      if (val === null) {
+        return "Debes Escribir Algo";
+      }
+      if (val === "") {
+        return "Debes Escribir Algo";
+      }
+        if (val !== null !== "") {
+          if (val > 99.99) {
+            return "Monto Maximo";
+          }
+      }
+    },
+    reglasNotNull6(val) {
+      if (val === null) {
+        return "Debes Escribir Algo";
+      }
+      if (val === "") {
+        return "Debes Escribir Algo";
+      }
         if (val !== null !== "") {
           if (val.length < 3) {
             return "Deben ser minimo 3 caracteres";
           }
-          if (val.length > 99) {
-            return "Deben ser Maximo 100 caracteres";
+          if (val.length > 5) {
+            return "Deben ser Maximo 6 caracteres";
           }
       }
     },
-    reglasNotNull20(val) {
+    reglasNotNull40(val) {
+      if (val === null) {
+        return "Debes Escribir Algo";
+      }
+      if (val === "") {
+        return "Debes Escribir Algo";
+      }
         if (val !== null !== "") {
           if (val.length < 3) {
             return "Deben ser minimo 3 caracteres";
           }
-          if (val.length > 19) {
-            return "Deben ser Maximo 19 caracteres";
+          if (val.length > 39) {
+            return "Deben ser Maximo 40 caracteres";
           }
-      }
-    },
-    reglasNotNull200(val) {
-        if (val !== null !== "") {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-          if (val.length > 199) {
-            return "Deben ser Maximo 200 caracteres";
-          }
-      }
-    },
-    reglasNotNull50(val) {
-        if (val !== null !== "") {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-          if (val.length > 49) {
-            return "Deben ser Maximo 50 caracteres";
-          }
-      }
-    },
-    reglasAllowNull20(val) {
-      if (val !== null) {
-        if (val.length > 0) {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-          if (val.length > 19) {
-            return "Deben ser Maximo 20 caracteres";
-          }
-        }
-      }
-    },
-    reglasAllowNull100(val) {
-      if (val !== null) {
-        if (val.length > 0) {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-          if (val.length > 99) {
-            return "Deben ser Maximo 100 caracteres";
-          }
-        }
-      }
-    },
-    reglasAllowNull200(val) {
-      if (val !== null) {
-        if (val.length > 0) {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-          if (val.length > 199) {
-            return "Deben ser Maximo 200 caracteres";
-          }
-        }
-      }
-    },
-    reglasAllowNull50(val) {
-      if (val !== null) {
-        if (val.length > 0) {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-          if (val.length > 49) {
-            return "Deben ser Maximo 50 caracteres";
-          }
-        }
       }
     },
 
@@ -991,80 +841,45 @@ export default {
     },  
     setDataEdit(res, dataRes) {
       this.formEdit.id = res.id
-      this.formEdit.nb_proveedor = res.nb_proveedor
-      this.formEdit.nb_beneficiario = res.nb_beneficiario
-      this.formEdit.rif_proveedor = res.rif_proveedor
-      this.formEdit.nit_proveedor = res.nit_proveedor
-      this.formEdit.direccion_fiscal = res.direccion_fiscal
-      this.formEdit.direccion_correo = res.direccion_correo
-      this.formEdit.tlf_proveedor = res.tlf_proveedor
-      this.formEdit.fax_proveedor = res.fax_proveedor
-      this.formEdit.email_proveedor = res.email_proveedor
-      this.formEdit.observacion = res.observacion
-      this.formEdit.tipo_servicio = res.tipo_servicio
-      this.formEdit.cod_tipo_retencion = res.cod_tipo_retencion
-      this.formEdit.tipo_persona = res.tipo_desc
-      this.formEdit.flag_activo = res.activo_desc
+      this.formEdit.cod_fpo = res.cod_fpo
+      this.formEdit.desc_tipo = res.desc_tipo
+      this.formEdit.valor = res.valor
+      this.formEdit.f_anul = res.f_anul
+      this.formEdit.f_val = res.f_val
+      this.formEdit.peso_inicio = res.peso_inicio
+      this.formEdit.peso_fin = res.peso_fin
     },   
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/proveedores/${idpost}`, 'getData');
+      this.$refs.methods.deleteData(`/fpos/${idpost}`, 'getData');
     },
     createData() {
-      this.form.tipo_servicio = this.form.tipo_servicio.value
-      this.form.cod_tipo_retencion = this.form.cod_tipo_retencion.id
-      this.form.tipo_persona = this.form.tipo_persona.value
-      this.form.flag_activo = this.form.flag_activo.value
-      this.$refs.methods.createData('/proveedores', this.form, 'getData');
+      this.$refs.methods.createData('/fpos', this.form, 'getData');
       this.resetForm();
     },
     putData() {
-      this.formEdit.tipo_servicio = this.formEdit.tipo_servicio.value
-      this.formEdit.cod_tipo_retencion = this.formEdit.cod_tipo_retencion.id
-      this.formEdit.tipo_persona = this.formEdit.tipo_persona.value
-      this.formEdit.flag_activo = this.formEdit.flag_activo.value
-      this.$refs.methods.putData(`/proveedores/${this.formEdit.id}`, this.formEdit, 'getData');
+      this.$refs.methods.putData(`/fpos/${this.formEdit.id}`, this.formEdit, 'getData');
       this.edit = false;
       this.resetFormEdit()
     },
     
     resetForm() {
-      (this.form.nb_banco = null),
-      (this.form.nb_banco = ""),
-      (this.form.nb_proveedor = ""),
-      (this.form.nb_beneficiario = ""),
-      (this.form.rif_proveedor = ""),
-      (this.form.nit_proveedor = ""),
-      (this.form.direccion_fiscal = ""),
-      (this.form.direccion_correo = ""),
-      (this.form.tlf_proveedor = ""),
-      (this.form.fax_proveedor = ""),
-      (this.form.email_proveedor = ""),
-      (this.form.condicion_pago = ""),
-      (this.form.observacion = ""),
-      (this.form.tipo_servicio = ""),
-      (this.form.cod_tipo_retencion = ""),
-      (this.form.tipo_persona = ""),
-      (this.form.flag_activo = ""),
+      (this.form.cod_fpo = ""),
+      (this.form.desc_tipo = ""),
+      (this.form.valor = ""),
+      (this.form.f_anul = ""),
+      (this.form.f_val = ""),
+      (this.form.peso_inicio = ""),
+      (this.form.peso_fin = ""),
       (this.create = false);    
     },
     resetFormEdit() {
-      (this.formEdit.nb_banco = null),
-      (this.formEdit.nb_banco = ""),
-      (this.formEdit.nb_proveedor = ""),
-      (this.formEdit.nb_beneficiario = ""),
-      (this.formEdit.rif_proveedor = ""),
-      (this.formEdit.nit_proveedor = ""),
-      (this.formEdit.direccion_fiscal = ""),
-      (this.formEdit.direccion_correo = ""),
-      (this.formEdit.tlf_proveedor = ""),
-      (this.formEdit.fax_proveedor = ""),
-      (this.formEdit.email_proveedor = ""),
-      (this.formEdit.condicion_pago = ""),
-      (this.formEdit.observacion = ""),
-      (this.formEdit.tipo_servicio = ""),
-      (this.formEdit.cod_tipo_retencion = ""),
-      (this.formEdit.tipo_persona = ""),
-      (this.formEdit.flag_activo = ""),
+      (this.formEdit.cod_fpo = ""),
+      (this.formEdit.desc_tipo = ""),
+      (this.formEdit.valor = ""),
+      (this.formEdit.f_anul = ""),
+      (this.formEdit.f_val = ""),
+      (this.formEdit.peso_inicio = ""),
+      (this.formEdit.peso_fin = ""),
       (this.create = false);    
     },
   },

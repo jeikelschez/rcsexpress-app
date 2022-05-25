@@ -771,7 +771,6 @@ export default {
       },
       selected: [],
       error: "",
-      value: 1234,
       disabledCreate: true,
       disabledEdit: true,
       disabledDelete: true,
