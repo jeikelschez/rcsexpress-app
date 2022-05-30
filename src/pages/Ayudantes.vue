@@ -64,7 +64,7 @@
                   v-model="form.flag_activo"
                   label="Vigente"
                   hint=""
-                  :rules="[reglasInputs]"
+                  :rules="[reglasSelect]"
                   :options="vigente"
                   lazy-rules
                 >
@@ -164,7 +164,7 @@
                   v-model="formEdit.flag_activo"
                   label="Vigente"
                   hint=""
-                  :rules="[reglasInputs]"
+                  :rules="[reglasSelect]"
                   :options="vigente"
                   lazy-rules
                 >
@@ -539,6 +539,14 @@ export default {
     this.$refs.desactiveCrud.desactivarCrud('c_bancos', 'd_bancos', 'u_bancos', 'desactivarCrudAyudantes')
   },
   methods: {
+    reglasSelect(val) {
+      if (val === null) {
+        return "Debes Seleccionar Algo";
+      }
+      if (val === "") {
+        return "Debes Seleccionar Algo";
+      }
+    },
     reglasInputs(val) {
       if (val === null) {
         return "Debes Seleccionar Algo";
@@ -554,17 +562,21 @@ export default {
       if (val === "") {
         return "Debes Escribir Algo";
       }
+      if(val !== null) {
       if (val.length > 0) {
         if (val.length < 3) {
         return "Deben ser minimo 3 caracteres";
         }
+       }
       }
     },
     reglaInput(val) {
+      if(val !== null) {
       if (val.length > 0) {
         if (val.length < 3) {
         return "Deben ser minimo 3 caracteres";
         }
+       }
       }
     },
     desactivarCrudAyudantes(createItem, deleteItem, updateItem) {
@@ -585,6 +597,7 @@ export default {
       this[dataRes] = res
     }, 
     setDataEdit(res, dataRes) {
+      this[dataRes].id = res.id
       this[dataRes].nb_ayudante = res.nb_ayudante
       this[dataRes].dir_ayudante = res.dir_ayudante
       this[dataRes].tlf_ayudante = res.tlf_ayudante

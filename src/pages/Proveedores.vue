@@ -227,7 +227,7 @@
                 </q-select>
               </div>
 
-              <div class="col-md-12 col-xs-12">
+              <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.observacion"
@@ -1003,6 +1003,10 @@ export default {
     },
     setData(res, dataRes) {
       this[dataRes] = res
+      for (var e = 0, len = this.datos.length; e < len; e++) {
+          this.datos[e].condicion_pago = this.datos[e].condicion_pago + " Dias"
+          if (e == this.datos.length - 1) break;
+        }
     },  
     setDataEdit(res, dataRes) {
       this.formEdit.id = res.id

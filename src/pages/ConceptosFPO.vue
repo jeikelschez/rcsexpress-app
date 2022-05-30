@@ -25,21 +25,21 @@
               </div>
 
               <div class="col-md-6 col-xs-12">
-                <currency-input
-                  :options="{ currency: 'USD' }"
+                <q-input
                   outlined
                   v-model="form.valor"
                   label="Valor"
                   step=".01"
                   hint=""
                   class="pcform"
+                  type="number"
                   :rules="[reglasValor]"
                   lazy-rules
                 >
                   <template v-slot:prepend>
                     <q-icon name="sell" />
                   </template>
-                </currency-input>
+                </q-input>
               </div>
 
               <div class="col-md-12 col-xs-12">
@@ -230,8 +230,8 @@
               </div>
 
               <div class="col-md-6 col-xs-12">
-                <currency-input
-                  :options="{ currency: 'USD' }"
+                <q-input
+                  type="number"
                   outlined
                   v-model="formEdit.valor"
                   label="Valor"
@@ -244,7 +244,7 @@
                   <template v-slot:prepend>
                     <q-icon name="sell" />
                   </template>
-                </currency-input>
+                </q-input>
               </div>
 
               <div class="col-md-12 col-xs-12">
@@ -755,8 +755,8 @@ export default {
         return "Debes Escribir Algo";
       }
         if (this.form.valor !== null !== "") {
-          if (this.form.valor > 999) {
-            return "Monto Maximo";
+          if (this.form.valor > 9.99) {
+            return "El valor maximo es 9,99";
           }
       }
     },
@@ -768,8 +768,8 @@ export default {
         return "Debes Escribir Algo";
       }
         if (this.formEdit.valor !== null !== "") {
-          if (this.formEdit.valor > 999) {
-            return "Monto Maximo";
+          if (this.formEdit.valor > 9.99) {
+            return "El valor maximo es 9,99";
           }
       }
     },
@@ -848,6 +848,7 @@ export default {
       this.formEdit.f_val = res.f_val
       this.formEdit.peso_inicio = res.peso_inicio
       this.formEdit.peso_fin = res.peso_fin
+      this.formEdit.valor = res.valor
     },   
     deleteData(idpost) {
       this.$refs.methods.deleteData(`/fpos/${idpost}`, 'getData');
@@ -879,8 +880,7 @@ export default {
       (this.formEdit.f_anul = ""),
       (this.formEdit.f_val = ""),
       (this.formEdit.peso_inicio = ""),
-      (this.formEdit.peso_fin = ""),
-      (this.create = false);    
+      (this.formEdit.peso_fin = "")
     },
   },
 };

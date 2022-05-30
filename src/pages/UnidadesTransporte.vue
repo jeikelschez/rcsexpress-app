@@ -477,6 +477,9 @@ export default {
     reglasAllowNull30(val) {
       if (val !== null !== "") {
         if (val.length > 0) {
+          if (val.length < 3) {
+            return "Deben ser minimo 3 caracteres";
+          }
           if (val.length > 29) {
             return "Deben ser Maximo 30 caracteres";
           }
@@ -501,10 +504,10 @@ export default {
     },
     reglasNotNull100(val) {
         if (val === null) {
-        return "Debes Seleccionar Algo";
+        return "Debes Escribir Algo";
       }
       if (val === "") {
-        return "Debes Seleccionar Algo";
+        return "Debes Escribir Algo";
       }
         if (val !== null !== "") {
           if (val.length < 3) {

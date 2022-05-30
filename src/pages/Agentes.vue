@@ -321,7 +321,7 @@
               <div class="col-md-6 col-xs-12">
                       <q-select
                         outlined
-                        v-model="formEditAgentes.tipo_agente"
+                        v-model="formEditAgentes.flag_activo"
                         label="Activo"
                         hint=""
                         :rules="[reglasSelect]"
@@ -812,6 +812,7 @@ export default {
         tlf_agente: "",
         fax_agente: "",
         email_web: "",
+        flag_activo: "",
         tipo_agente: "",
         rif_ci_agente: "",
         porc_comision_venta: "",
@@ -967,6 +968,7 @@ export default {
       this[dataRes].porc_comision_venta = res.porc_comision_venta
       this[dataRes].porc_comision_seguro = res.porc_comision_seguro
       this[dataRes].porc_comision_entrega = res.porc_comision_entrega
+      this[dataRes].flag_activo = res.activo_desc
       this[dataRes].tipo_agente = res.tipo_desc
       this[dataRes].cod_agencia = res.cod_agencia
     },

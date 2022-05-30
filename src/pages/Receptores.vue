@@ -29,7 +29,6 @@
                   outlined
                   v-model="form.flag_activo"
                   label="Estatus"
-                  input-class="input"
                   :rules="[reglasSelect]"
                   hint=""
                   :options="estatus"
@@ -129,6 +128,24 @@
                 >
                   <template v-slot:prepend>
                     <q-icon name="money" />
+                  </template>
+                </q-input>
+              </div>
+
+              <div class="col-md-12 col-xs-12">
+                <q-input
+                  outlined
+                  v-model="form.vehiculo"
+                  label="Descripcion de Vehiculo"
+                  :rules="[reglasAllowNull10]"
+                  hint=""
+                  lazy-rules
+                  @update:model-value="
+                    form.vehiculo = form.vehiculo.toUpperCase()
+                  "
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="directions_car" />
                   </template>
                 </q-input>
               </div>
@@ -288,6 +305,24 @@
                 >
                   <template v-slot:prepend>
                     <q-icon name="money" />
+                  </template>
+                </q-input>
+              </div>
+
+              <div class="col-md-12 col-xs-12">
+                <q-input
+                  outlined
+                  v-model="formEdit.vehiculo"
+                  label="Descripcion de Vehiculo"
+                  :rules="[reglasAllowNull10]"
+                  hint=""
+                  lazy-rules
+                  @update:model-value="
+                    formEdit.vehiculo = formEdit.vehiculo.toUpperCase()
+                  "
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="directions_car" />
                   </template>
                 </q-input>
               </div>
@@ -579,6 +614,7 @@ export default {
         cel_receptor: "",
         cedula_receptor: "",
         placa: "",
+        vehiculo: "",
         flag_activo: [],
       },
       estatus: [
@@ -594,6 +630,7 @@ export default {
         cel_receptor: "",
         cedula_receptor: "",
         placa: "",
+        vehiculo: "",
         flag_activo: [],
       },
       selected: [],
@@ -760,6 +797,7 @@ export default {
       this.formEdit.cel_receptor = res.cel_receptor
       this.formEdit.cedula_receptor = res.cedula_receptor
       this.formEdit.placa = res.placa
+      this.formEdit.vehiculo = res.vehiculo
       this.formEdit.flag_activo = res.activo_desc
     },   
     deleteData(idpost) {
@@ -783,17 +821,19 @@ export default {
       (this.form.tlf_receptor = ""),
       (this.form.cel_receptor = ""),
       (this.form.cedula_receptor = ""),
-      (this.form.placa = ""),
+      (this.form.cedula_receptor = ""),
+      (this.form.flag_activo = ""),
       (this.create = false);    
     },
     resetFormEdit() {
-      (this.form.nb_receptor = ""),
-      (this.form.dir_receptor = ""),
-      (this.form.tlf_receptor = ""),
-      (this.form.cel_receptor = ""),
-      (this.form.cedula_receptor = ""),
-      (this.form.placa = ""),
-      (this.create = false);    
+      (this.formEdit.nb_receptor = ""),
+      (this.formEdit.dir_receptor = ""),
+      (this.formEdit.tlf_receptor = ""),
+      (this.formEdit.cel_receptor = ""),
+      (this.formEdit.cedula_receptor = ""),
+      (this.formEdit.flag_activo = ""),
+      (this.formEdit.placa = ""),
+      (this.edit = false);    
     },
   },
 };

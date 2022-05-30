@@ -59,16 +59,17 @@
               </div> 
 
               <div class="col-md-4 col-xs-12">
-                <currency-input
-                  :options="{ currency: 'USD' }"
+                <q-input
                   outlined
                   v-model="form.monto_tarifa"
                   label="Monto de Tarifa"
                   hint=""
+                  type="number"
+                  step=".01"
                   class="pcform"
                   lazy-rules
                 >
-                </currency-input>
+                </q-input>
               </div>
 
               <div class="col-md-4 col-xs-12">
@@ -277,16 +278,17 @@
               </div> 
 
               <div class="col-md-4 col-xs-12">
-                <currency-input
-                  :options="{ currency: 'USD' }"
+                <q-input
+                  type="number"
                   outlined
+                  step=".01"
                   v-model="formEdit.monto_tarifa"
                   label="Monto de Tarifa"
                   hint=""
                   class="pcform"
                   lazy-rules
                 >
-                </currency-input>
+                </q-input>
               </div>
 
               <div class="col-md-4 col-xs-12">
@@ -665,37 +667,37 @@ export default {
           sortable: true,
         },
         {
-          name: "tipo_urgencia",
+          name: "urgencia_desc",
           label: "Tipo de Urgencia",
-          field: "tipo_urgencia",
+          field: "urgencia_desc",
           align: "left",
           sortable: true,
         },
         {
-          name: "tipo_tarifa",
+          name: "tarifa_desc",
           label: "Tipo de Tarifa",
-          field: "tipo_tarifa",
+          field: "tarifa_desc",
           align: "left",
           sortable: true,
         },
         {
-          name: "tipo_ubicacion",
+          name: "ubicacion_desc",
           label: "Tipo de Ubicación",
-          field: "tipo_ubicacion",
+          field: "ubicacion_desc",
           align: "left",
           sortable: true,
         },
         {
-          name: "region_origen",
+          name: "origen_desc",
           label: "Region Origen",
-          field: "region_origen",
+          field: "origen_desc",
           align: "left",
           sortable: true,
         },
         {
-          name: "region_destino",
+          name: "destino_desc",
           label: "Region Destino",
-          field: "region_destino",
+          field: "destino_desc",
           align: "left",
           sortable: true,
         },
@@ -851,14 +853,14 @@ export default {
       this.formEdit.monto_tarifa = res.monto_tarifa
       this.formEdit.kgr_hasta = res.kgr_hasta
       this.formEdit.tiempo_servicio = res.tiempo_servicio
-      this.formEdit.tipo_urgencia = res.tipo_urgencia
-      this.formEdit.tipo_tarifa = res.tipo_tarifa
-      this.formEdit.tipo_ubicacion = res.tipo_ubicacion
-      this.formEdit.tipo_carga = res.tipo_carga
-      this.formEdit.modalidad_pago = res.modalidad_pago
-      this.formEdit.pagado_en = res.pagado_en
-      this.formEdit.region_origen = res.region_origen
-      this.formEdit.region_destino = res.region_destino
+      this.formEdit.tipo_urgencia = res.urgencia_desc
+      this.formEdit.tipo_tarifa = res.tarifa_desc
+      this.formEdit.tipo_ubicacion = res.ubicacion_desc
+      this.formEdit.tipo_carga = res.carga_desc
+      this.formEdit.modalidad_pago = res.modalidad_desc
+      this.formEdit.pagado_en = res.pagado_desc
+      this.formEdit.region_origen = res.origen_desc
+      this.formEdit.region_destino = res.destino_desc
       this.formEdit.tiempo_servicio = res.tiempo_servicio
     },   
     deleteData(idpost) {
@@ -878,15 +880,15 @@ export default {
       this.resetForm();
     },
     putData() {
-      this.form.tipo_urgencia = this.form.tipo_urgencia.value
-      this.form.tipo_tarifa = this.form.tipo_tarifa.value
-      this.form.tipo_ubicacion = this.form.tipo_ubicacion.value
-      this.form.tipo_carga = this.form.tipo_carga.value
-      this.form.modalidad_pago = this.form.modalidad_pago.value
-      this.form.pagado_en = this.form.pagado_en.value
-      this.form.region_origen = this.form.region_origen.value
-      this.form.region_destino = this.form.region_destino.value
-      this.form.tiempo_servicio = this.form.tiempo_servicio.value
+      this.formEdit.tipo_urgencia = this.formEdit.tipo_urgencia.value
+      this.formEdit.tipo_tarifa = this.formEdit.tipo_tarifa.value
+      this.formEdit.tipo_ubicacion = this.formEdit.tipo_ubicacion.value
+      this.formEdit.tipo_carga = this.formEdit.tipo_carga.value
+      this.formEdit.modalidad_pago = this.formEdit.modalidad_pago.value
+      this.formEdit.pagado_en = this.formEdit.pagado_en.value
+      this.formEdit.region_origen = this.formEdit.region_origen.value
+      this.formEdit.region_destino = this.formEdit.region_destino.value
+      this.formEdit.tiempo_servicio = this.formEdit.tiempo_servicio.value
       this.$refs.methods.putData(`/tarifas/${this.formEdit.id}`, this.formEdit, 'getData');
       this.edit = false;
       this.resetFormEdit()

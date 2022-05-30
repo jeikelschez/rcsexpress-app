@@ -169,7 +169,7 @@
                   mask="AAAA"
                   hint=""
                   lazy-rules
-                  :rules="reglasSiglas"
+                  :rules="[reglasSiglas]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="text_fields" />
@@ -235,7 +235,7 @@
                   label="Siglas"
                   mask="AAAA"
                   hint=""
-                  :rules="reglasSiglas"
+                  :rules="[reglasSiglas]"
                   @update:model-value="
                     formEditEstados.siglas =
                       formEditEstados.siglas.toUpperCase()
@@ -310,7 +310,7 @@
                   "
                   hint=""
                   lazy-rules
-                  :rules="reglasSiglas"
+                  :rules="[reglasSiglas]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="text_fields" />
@@ -413,7 +413,7 @@
                     formEditCiudades.siglas =
                       formEditCiudades.siglas.toUpperCase()
                   "
-                  :rules="reglasSiglas"
+                  :rules="[reglasSiglas]"
                   hint=""
                   lazy-rules
                 >
@@ -735,6 +735,7 @@
                     color="primary"
                     :disabled="this.disabledCreate"
                     @click="estadosForm = true"
+                    @click.capture="resetFormEstados"
                     size="16px"
                     class="q-px-xl q-py-xs insertarestadosmovil"
                   ></q-btn>
@@ -942,6 +943,7 @@
                     color="primary"
                     :disabled="this.disabledCreate"
                     @click="ciudadesForm = true"
+                    @click.capture="resetFormCiudades"
                     size="16px"
                     class="q-px-xl q-py-xs"
                   ></q-btn>
@@ -1373,9 +1375,6 @@ export default {
         rowsPerPage: 10,
       }),
       separator: ref("vertical"),
-      reglasSiglas: [
-        (val) => val.length < 5 || "Deben ser máximo 4 caracteres",
-      ],
       paisesForm: ref(false),
       paisesFormEdit: ref(false),
       estadosForm: ref(false),
@@ -1439,6 +1438,13 @@ export default {
       }
       if (val === "") {
         return "Debes Seleccionar Algo";
+      }
+    },
+    reglasSiglas(val) {
+      if(val !== null) {
+      if (val.length < 5) {
+        return "Deben ser máximo 4 caracteres";
+        }
       }
     },
     desactivarCrudPaisEstadoCiudad(createItem, deleteItem, updateItem) {

@@ -630,10 +630,12 @@ export default {
       }
     },
     reglaInput(val) {
+      if(val !== null) {
       if (val.length > 0) {
         if (val.length < 3) {
         return "Deben ser minimo 3 caracteres";
         }
+       }
       }
     },
     desactivarCrudBancos(createItem, deleteItem, updateItem) {

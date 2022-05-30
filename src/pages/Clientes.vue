@@ -168,7 +168,7 @@
                 />
               </div>
 
-              <div class="col-md-4 col-xs-12">
+              <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
                   v-model="formClientes.razon_social"
@@ -188,20 +188,19 @@
                 </q-input>
               </div>
 
-              <div class="col-md-4 col-xs-12">
+              <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
                   v-model="formClientes.dir_correo"
                   label="Direccion Correo"
                   type="email"
                   hint=""
-                  class="pcform"
                   @update:model-value="
                     formClientes.dir_correo =
                       formClientes.dir_correo.toUpperCase()
                   "
                   lazy-rules
-                  :rules="[reglasNotNull100]"
+                  :rules="[reglasAllowNull100]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="email" />
@@ -210,6 +209,23 @@
               </div>
 
               <div class="col-md-4 col-xs-12">
+                <q-select
+                  outlined
+                  v-model="formClientes.flag_activo"
+                  label="Estatus"
+                  hint=""
+                  class="pcform"
+                  :rules="[reglasSelect]"
+                  :options="estatus"
+                  lazy-rules
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="group" />
+                  </template>
+                </q-select>
+              </div>
+
+              <div class="col-md-8 col-xs-12">
                 <q-input
                   outlined
                   v-model="formClientes.observacion"
@@ -650,7 +666,7 @@
                 />
               </div>
 
-              <div class="col-md-4 col-xs-12">
+              <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
                   v-model="formEditClientes.razon_social"
@@ -670,20 +686,19 @@
                 </q-input>
               </div>
 
-              <div class="col-md-4 col-xs-12">
+              <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
                   v-model="formEditClientes.dir_correo"
                   label="Direccion Correo"
                   type="email"
-                  class="pcform"
                   hint=""
                   @update:model-value="
                     formEditClientes.dir_correo =
                       formEditClientes.dir_correo.toUpperCase()
                   "
                   lazy-rules
-                  :rules="[reglasNotNull100]"
+                  :rules="[reglasAllowNull100]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="email" />
@@ -692,6 +707,23 @@
               </div>
 
               <div class="col-md-4 col-xs-12">
+                <q-select
+                  outlined
+                  v-model="formEditClientes.flag_activo"
+                  label="Estatus"
+                  hint=""
+                  class="pcform"
+                  :rules="[reglasSelect]"
+                  :options="estatus"
+                  lazy-rules
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="group" />
+                  </template>
+                </q-select>
+              </div>
+
+              <div class="col-md-8 col-xs-12">
                 <q-input
                   outlined
                   v-model="formEditClientes.observacion"
@@ -1360,6 +1392,10 @@ export default {
         { label: "CONTADO", value: "CO" },
         { label: "CREDITO", value: "CR" },
       ],
+      estatus: [
+        { label: "ACTIVO", value: "A" },
+        { label: "INACTIVO", value: "I" },
+      ],
       agenciaRef: "",
       error: "",
       disabledCreate: true,
@@ -1410,6 +1446,14 @@ export default {
   },
   methods: {
     // Reglas
+    reglasSelect(val) {
+      if (val === null) {
+        return "Debes Seleccionar Algo";
+      }
+      if (val === "") {
+        return "Debes Seleccionar Algo";
+      }
+    },
     reglasInputs(val) {
       if (val === null) {
         return "Debes Seleccionar Algo";
@@ -1602,6 +1646,7 @@ export default {
       this.formClientes.cod_parroquia = this.formClientes.cod_parroquia.id;
       this.formClientes.cod_ciudad = this.ciudad.id;
       this.formClientes.modalidad_pago = this.formClientes.modalidad_pago.value;
+      this.formClientes.flag_activo = this.formClientes.flag_activo.value;
       if (this.formClientes.cte_decontado === "1") {
         for (var e = 0, len = this.clientes.length; e < len; e++) {
           if (this.clientes[e].cte_decontado === "1") {
@@ -1625,13 +1670,16 @@ export default {
       this.formEditClientes.cod_parroquia = this.formEditClientes.cod_parroquia.id;
       this.formEditClientes.cod_ciudad = this.ciudad.id;
       this.formEditClientes.modalidad_pago = this.formEditClientes.modalidad_pago.value;
+      this.formEditClientes.flag_activo = this.formEditClientes.flag_activo.value;
       if (this.formEditClientes.cte_decontado === "1") {
         for (var e = 0, len = this.clientes.length; e < len; e++) {
-          if (this.clientes[e].cte_decontado === "1") {
+          if (this.clientes[e].cte_decontado === "🏴") {
+            if (this.formEditClientes.id !== this.clientes[e].id) {
             this.clienteParticularExistente();
             this.formEdit = false;
             this.resetFormEdit();
             return;
+            }
           }
           if (e == this.clientes.length - 1) break;
         }

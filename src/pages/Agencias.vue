@@ -754,9 +754,9 @@ export default {
           sortable: true,
         },
         {
-          name: "estatus_desc",
+          name: "activo_desc",
           label: "Estatus",
-          field: "estatus_desc",
+          field: "activo_desc",
           align: "left",
           type: "string",
         },
@@ -794,7 +794,7 @@ export default {
         estatus: "",
       },
       estatus: [
-        { label: "ACTIVO", value: "A" },
+        { label: "ACTIVA", value: "A" },
         { label: "INACTIVA", value: "I" },
       ],
       paises: [],
@@ -937,7 +937,7 @@ export default {
       this[dataRes].tlf_agencia = res.tlf_agencia
       this[dataRes].rif_agencia = res.rif_agencia
       this[dataRes].nit_agencia = res.nit_agencia
-      this[dataRes].estatus = res.estatus_desc
+      this[dataRes].estatus = res.activo_desc
       this.selectedCiudadEdit = res.ciudades.cod_estado,
       this.selectedCiudad = res.ciudades.desc_ciudad;
       this.ciudadEdit = res.ciudades.id
