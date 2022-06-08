@@ -784,7 +784,7 @@ export default {
 
     // Metodos CRUD
     getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes);
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
     },
     setData(res, dataRes) {
       this[dataRes] = res
@@ -801,16 +801,16 @@ export default {
       this.formEdit.flag_activo = res.activo_desc
     },   
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/receptores/${idpost}`, 'getData');
+      this.$refs.methods.deleteData(`/receptores/${idpost}`, 'getData', this.axiosConfig);
     },
     createData() {
       this.form.flag_activo = this.form.flag_activo.value
-      this.$refs.methods.createData('/receptores', this.form, 'getData');
+      this.$refs.methods.createData('/receptores', this.form, 'getData', this.axiosConfig);
       this.resetForm();
     },
     putData() {
       this.formEdit.flag_activo = this.formEdit.flag_activo.value
-      this.$refs.methods.putData(`/receptores/${this.formEdit.id}`, this.formEdit, 'getData');
+      this.$refs.methods.putData(`/receptores/${this.formEdit.id}`, this.formEdit, 'getData', this.axiosConfig);
       this.edit = false;
       this.resetFormEdit()
     },

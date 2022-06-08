@@ -49,8 +49,8 @@ import { useQuasar } from "quasar";
   },
 
     methods: {
-      getData: function(url, llamada, dataRes) {
-      api.get(url, this.axiosConfig)
+      getData: function(url, llamada, dataRes, header) {
+      api.get(url, header)
       .then((res) => {
         this.$emit(llamada, res.data, dataRes)
       })
@@ -65,8 +65,8 @@ import { useQuasar } from "quasar";
           this.errorDelServidor();
       });
       },
-      getDataEdit: function(url, llamada, dataRes) {
-      api.get(url, this.axiosConfig)
+      getDataEdit: function(url, llamada, dataRes, header) {
+      api.get(url, header)
       .then((res) => {
         this.$emit(llamada, res.data, dataRes)
       })
@@ -81,8 +81,8 @@ import { useQuasar } from "quasar";
           this.errorDelServidor();
         });
       },
-      deleteData: function(url, llamada) {
-      api.delete(url, this.axiosConfig)
+      deleteData: function(url, llamada, header) {
+      api.delete(url, header)
       .then((res) => {
         if ((res.status = 200)) {
             this.$emit(llamada)
@@ -104,8 +104,8 @@ import { useQuasar } from "quasar";
           this.errorDelServidor();
         });
       },
-      createData: function(url, form, llamada) {
-      api.post(url, form, this.axiosConfig)
+      createData: function(url, form, llamada, header) {
+      api.post(url, form, header)
       .then((res) => {
         if ((res.status = 200)) {
             this.$emit(llamada)
@@ -127,8 +127,8 @@ import { useQuasar } from "quasar";
           this.errorDelServidor();
         });
       },
-      putData: function(url, form, llamada) {
-      api.put(url, form, this.axiosConfig)
+      putData: function(url, form, llamada, header) {
+      api.put(url, form, header)
       .then((res) => {
           if ((res.status = 200)) {
             this.$emit(llamada)

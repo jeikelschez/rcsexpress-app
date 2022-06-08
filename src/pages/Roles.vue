@@ -507,7 +507,7 @@ export default {
     },
 
     getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes);
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
     },
     setData(res, dataRes) {
       this[dataRes] = res
@@ -522,16 +522,16 @@ export default {
       this[dataRes].cod_agencia = this.selectedAgencia
     },
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/roles/${idpost}`, 'getData');
+      this.$refs.methods.deleteData(`/roles/${idpost}`, 'getData', this.axiosConfig);
     },
     createDataRoles() {
       this.formRoles.cod_agencia = this.formRoles.cod_agencia.id
-      this.$refs.methods.createData(`/roles`, this.formRoles, 'getData');
+      this.$refs.methods.createData(`/roles`, this.formRoles, 'getData', this.axiosConfig);
       this.resetFormRoles();
     },
     putDataRoles() {
       this.formEditRoles.cod_agencia = this.formEditRoles.cod_agencia.id
-      this.$refs.methods.putData(`/roles/${this.formEditRoles.id}`, this.formEditRoles, 'getData');
+      this.$refs.methods.putData(`/roles/${this.formEditRoles.id}`, this.formEditRoles, 'getData', this.axiosConfig);
       this.resetFormEditRoles()
     },
     resetFormRoles() {

@@ -591,7 +591,7 @@ export default {
       }
     },
     getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes);
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
     },
     setData(res, dataRes) {
       this[dataRes] = res
@@ -604,16 +604,16 @@ export default {
       this[dataRes].flag_activo = res.activo_desc
     },   
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/ayudantes/${idpost}`, 'getData');
+      this.$refs.methods.deleteData(`/ayudantes/${idpost}`, 'getData', this.axiosConfig);
     },
     createData() {
       this.form.flag_activo = this.form.flag_activo.value
-      this.$refs.methods.createData('/ayudantes', this.form, 'getData');
+      this.$refs.methods.createData('/ayudantes', this.form, 'getData', this.axiosConfig);
       this.resetForm();
     },
     putData() {
       this.formEdit.flag_activo = this.formEdit.flag_activo.value
-      this.$refs.methods.putData(`/ayudantes/${this.formEdit.id}`, this.formEdit, 'getData');
+      this.$refs.methods.putData(`/ayudantes/${this.formEdit.id}`, this.formEdit, 'getData', this.axiosConfig);
       this.edit = false;
     },
     

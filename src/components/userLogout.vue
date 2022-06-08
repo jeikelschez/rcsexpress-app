@@ -53,6 +53,7 @@ import { useQuasar } from "quasar";
       },
       traducirToken: function() {
         var tokenTraducido = jwt_decode(LocalStorage.getItem('token'))
+        console.log(LocalStorage.getItem('token'))
         LocalStorage.set('tokenTraducido', tokenTraducido)
       },
       setTimers() {

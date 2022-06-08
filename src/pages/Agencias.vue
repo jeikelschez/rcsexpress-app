@@ -718,6 +718,8 @@ import methodsVue from 'src/components/methods.vue';
 
 import desactivateCrudVue from 'src/components/desactivateCrud.vue';
 
+import { LocalStorage } from "quasar";
+
 export default {
   components: { 'desactive-crud': desactivateCrudVue,
   "methods": methodsVue },
@@ -813,6 +815,11 @@ export default {
       disabledCreate: true,
       disabledEdit: true,
       disabledDelete: true,
+      axiosConfig: {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        },
+      },
     };
   },
   setup() {
@@ -918,14 +925,14 @@ export default {
     },
 
     getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes);
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
     },
     setData(res, dataRes) {
       this[dataRes] = res
     },
 
     getDataEdit(id) {
-      this.$refs.methods.getDataEdit(`/agencias/${id}`, 'setDataEdit', 'formEdit');
+      this.$refs.methods.getDataEdit(`/agencias/${id}`, 'setDataEdit', 'formEdit', this.axiosConfig);
     },
     setDataEdit(res, dataRes) {
       this[dataRes].id = res.id
@@ -941,14 +948,14 @@ export default {
       this.selectedCiudadEdit = res.ciudades.cod_estado,
       this.selectedCiudad = res.ciudades.desc_ciudad;
       this.ciudadEdit = res.ciudades.id
-      this.$refs.methods.getDataEdit(`/estados/${this.selectedCiudadEdit}/ciudades`, 'setDataEditCiudades', 'ciudades');
+      this.$refs.methods.getDataEdit(`/estados/${this.selectedCiudadEdit}/ciudades`, 'setDataEditCiudades', 'ciudades', this.axiosConfig);
     },
     setDataEditCiudades(res, dataRes) {
       this[dataRes] = res.ciudades
       this.selectedEstadoEdit = res.cod_pais;
       this.selectedEstado = res.desc_estado;
       this.$refs.methods.getDataEdit(
-        `/paises/${this.selectedEstadoEdit}/estados`, 'setDataEditEstados', 'estados');
+        `/paises/${this.selectedEstadoEdit}/estados`, 'setDataEditEstados', 'estados', this.axiosConfig);
     },
     setDataEditEstados(res, dataRes) {
       this[dataRes] = res.estados
@@ -967,18 +974,18 @@ export default {
     },
     
     deleteDato(idpost) {
-      this.$refs.methods.deleteData(`/agencias/${idpost}`, 'getData');
+      this.$refs.methods.deleteData(`/agencias/${idpost}`, 'getData', this.axiosConfig);
     },
     createDato() {
       this.form.cod_ciudad = this.selectedCiudad.id;
       this.form.estatus = this.form.estatus.value;
-      this.$refs.methods.createData('/agencias', this.form, 'getData');
+      this.$refs.methods.createData('/agencias', this.form, 'getData', this.axiosConfig);
       this.resetForm();
     },
     putDato() {
       this.formEdit.cod_ciudad = this.selectedCiudad.id;
       this.formEdit.estatus = this.formEdit.estatus.value;
-      this.$refs.methods.putData(`/agencias/${this.formEdit.id}`, this.formEdit, 'getData');
+      this.$refs.methods.putData(`/agencias/${this.formEdit.id}`, this.formEdit, 'getData', this.axiosConfig);
       this.edit = false;
     },
     

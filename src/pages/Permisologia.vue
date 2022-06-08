@@ -451,7 +451,7 @@ export default {
     },
 
     getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes);
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
     },
     setData(res, dataRes) {
       this[dataRes] = res;
@@ -473,7 +473,7 @@ export default {
     deleteData(selected) {
       this.$refs.methods.deleteData(
         `/permisos/${selected}`,
-        "getDataPermisos"
+        "getDataPermisos", this.axiosConfig
       );
     },
     createData() {
@@ -482,7 +482,7 @@ export default {
       this.$refs.methods.createData(
         `/permisos`,
         this.formPermisos,
-        "getDataPermisos"
+        "getDataPermisos", this.axiosConfig
       );
       this.resetFormPermisos();
     },

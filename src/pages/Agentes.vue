@@ -946,7 +946,7 @@ export default {
     },
 
     getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes);
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
     },
     setData(res, dataRes) {
       this[dataRes] = res
@@ -973,19 +973,19 @@ export default {
       this[dataRes].cod_agencia = res.cod_agencia
     },
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/agentes/${idpost}`, 'getData');
+      this.$refs.methods.deleteData(`/agentes/${idpost}`, 'getData', this.axiosConfig);
     },
     createDataCuentas() {
       this.formAgentes.cod_agencia = this.selectedAgencia.id
       this.formAgentes.tipo_agente = this.formAgentes.tipo_agente.value
       this.formAgentes.flag_activo = this.formAgentes.flag_activo.value
-      this.$refs.methods.createData(`/agentes`, this.formAgentes, 'getData');
+      this.$refs.methods.createData(`/agentes`, this.formAgentes, 'getData', this.axiosConfig);
       this.resetForm();
     },
     putDataCuentas() {
       this.formEditAgentes.flag_activo = this.formEditAgentes.flag_activo.value
       this.formEditAgentes.tipo_agente = this.formEditAgentes.tipo_agente.value
-      this.$refs.methods.putData(`/agentes/${this.formEditAgentes.id}`, this.formEditAgentes, 'getData');
+      this.$refs.methods.putData(`/agentes/${this.formEditAgentes.id}`, this.formEditAgentes, 'getData', this.axiosConfig);
       this.resetFormEdit()
     },
     resetForm() {

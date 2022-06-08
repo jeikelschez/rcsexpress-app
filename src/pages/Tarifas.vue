@@ -843,7 +843,7 @@ export default {
 
     // Metodos CRUD
     getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes);
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
     },
     setData(res, dataRes) {
       this[dataRes] = res
@@ -864,7 +864,7 @@ export default {
       this.formEdit.tiempo_servicio = res.tiempo_servicio
     },   
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/tarifas/${idpost}`, 'getData');
+      this.$refs.methods.deleteData(`/tarifas/${idpost}`, 'getData', this.axiosConfig);
     },
     createData() {
       this.form.tipo_urgencia = this.form.tipo_urgencia.value
@@ -876,7 +876,7 @@ export default {
       this.form.region_origen = this.form.region_origen.value
       this.form.region_destino = this.form.region_destino.value
       this.form.tiempo_servicio = this.form.tiempo_servicio.value
-      this.$refs.methods.createData('/tarifas', this.form, 'getData');
+      this.$refs.methods.createData('/tarifas', this.form, 'getData', this.axiosConfig);
       this.resetForm();
     },
     putData() {
@@ -889,7 +889,7 @@ export default {
       this.formEdit.region_origen = this.formEdit.region_origen.value
       this.formEdit.region_destino = this.formEdit.region_destino.value
       this.formEdit.tiempo_servicio = this.formEdit.tiempo_servicio.value
-      this.$refs.methods.putData(`/tarifas/${this.formEdit.id}`, this.formEdit, 'getData');
+      this.$refs.methods.putData(`/tarifas/${this.formEdit.id}`, this.formEdit, 'getData', this.axiosConfig);
       this.edit = false;
       this.resetFormEdit()
     },

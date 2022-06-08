@@ -834,7 +834,7 @@ export default {
 
     // Metodos CRUD
     getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes);
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
     },
     setData(res, dataRes) {
       this[dataRes] = res
@@ -851,14 +851,14 @@ export default {
       this.formEdit.valor = res.valor
     },   
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/fpos/${idpost}`, 'getData');
+      this.$refs.methods.deleteData(`/fpos/${idpost}`, 'getData', this.axiosConfig);
     },
     createData() {
-      this.$refs.methods.createData('/fpos', this.form, 'getData');
+      this.$refs.methods.createData('/fpos', this.form, 'getData', this.axiosConfig);
       this.resetForm();
     },
     putData() {
-      this.$refs.methods.putData(`/fpos/${this.formEdit.id}`, this.formEdit, 'getData');
+      this.$refs.methods.putData(`/fpos/${this.formEdit.id}`, this.formEdit, 'getData', this.axiosConfig);
       this.edit = false;
       this.resetFormEdit()
     },

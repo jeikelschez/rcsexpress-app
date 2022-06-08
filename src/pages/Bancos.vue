@@ -650,20 +650,20 @@ export default {
       }
     },
     getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes);
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
     },
     setData(res, dataRes) {
       this[dataRes] = res
     },    
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/bancos/${idpost}`, 'getData');
+      this.$refs.methods.deleteData(`/bancos/${idpost}`, 'getData', this.axiosConfig);
     },
     createData() {
-      this.$refs.methods.createData('/bancos', this.form, 'getData');
+      this.$refs.methods.createData('/bancos', this.form, 'getData', this.axiosConfig);
       this.resetForm();
     },
     putData() {
-      this.$refs.methods.putData(`/bancos/${this.formEdit.id}`, this.formEdit, 'getData');
+      this.$refs.methods.putData(`/bancos/${this.formEdit.id}`, this.formEdit, 'getData', this.axiosConfig);
       this.edit = false;
     },
     

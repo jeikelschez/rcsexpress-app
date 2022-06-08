@@ -7,34 +7,17 @@
             <div class="row">
 
               <div class="col-md-6 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="selectedPais"
-                  label="Aplica Retención"
-                  class="pcform"
-                  input-class="input"
-                  :rules="[reglasSelect]"
-                  hint=""
-                  :options="paises"
-                  option-label="desc_pais"
-                  option-value="id"
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="block" />
-                  </template>
-                </q-select>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
-                  v-model="form.tlf_banco"
-                  label="Porcentaje Retención"
-                  :rules="[reglaInput]"
+                  v-model="form.nombre"
+                  label="Nombre de Empleado"
+                  :rules="[reglasNotNull30]"
                   hint=""
+                  class="pcform"
                   lazy-rules
-                  mask="### - ### - ##########"
+                  @update:model-value="
+                    form.nombre = form.nombre.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="percent" />
@@ -45,13 +28,59 @@
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
-                  v-model="form.tlf_banco"
+                  v-model="form.rif_empleado"
+                  label="RIF de Empleado"
+                  :rules="[reglasNotNull10]"
+                  hint=""
+                  lazy-rules
+                  mask="##########"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="fact_check" />
+                  </template>
+                </q-input>
+              </div>
+
+              <div class="col-md-3 col-xs-12" style="margin-bottom: 15px">
+                <q-checkbox
+                  size="lg"
+                  v-model="form.aplica_retencion"
+                  true-value="1"
+                  false-value="0"
+                  style="font-size: 13px"
+                  label="¿APLICA RETENCIÓN?"
+                />
+              </div>
+
+              <div class="col-md-9 col-xs-12">
+                <q-input
+                  outlined
+                  v-model="form.porcentaje_retencion"
+                  label="Porcentaje Retención"
+                  :rules="[reglasNotNullPercent]"
+                  hint=""
+                  step=".01"
+                  lazy-rules
+                  type="number"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="percent" />
+                  </template>
+                </q-input>
+              </div>
+
+              <div class="col-md-6 col-xs-12">
+                <q-input
+                  outlined
+                  v-model="form.periodo"
                   label="Período"
-                  :rules="[reglaInput]"
+                  :rules="[reglasNotNull6]"
                   hint=""
                   class="pcform"
                   lazy-rules
-                  mask="### - ### - ##########"
+                  @update:model-value="
+                    form.periodo = form.periodo.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="calendar_today" />
@@ -62,12 +91,13 @@
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
-                  v-model="form.tlf_banco"
+                  v-model="form.sueldo"
                   label="Sueldo"
-                  :rules="[reglaInput]"
+                  :rules="[reglasAllowNullSueldo]"
                   hint=""
+                  step=".01"
                   lazy-rules
-                  mask="### - ### - ##########"
+                  type="number"
                 >
                   <template v-slot:prepend>
                     <q-icon name="paid" />
@@ -82,7 +112,7 @@
               style="margin-bottom: 10px"
             >
               <q-btn
-                label="Agregar Proveedor"
+                label="Agregar Empleado"
                 type="submit"
                 color="primary"
                 class="col-md-5 col-sm-5 col-xs-12"
@@ -107,35 +137,19 @@
         <q-card-section>
           <q-form @submit="putData">
             <div class="row">
-              <div class="col-md-6 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="selectedPais"
-                  label="Aplica Retención"
-                  class="pcform"
-                  input-class="input"
-                  :rules="[reglasSelect]"
-                  hint=""
-                  :options="paises"
-                  option-label="desc_pais"
-                  option-value="id"
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="block" />
-                  </template>
-                </q-select>
-              </div>
 
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
-                  v-model="form.tlf_banco"
-                  label="Porcentaje Retención"
-                  :rules="[reglaInput]"
+                  v-model="formEdit.nombre"
+                  label="Nombre de Empleado"
+                  :rules="[reglasNotNull30]"
                   hint=""
+                  class="pcform"
                   lazy-rules
-                  mask="### - ### - ##########"
+                  @update:model-value="
+                    formEdit.nombre = formEdit.nombre.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="percent" />
@@ -146,13 +160,59 @@
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
-                  v-model="form.tlf_banco"
+                  v-model="formEdit.rif_empleado"
+                  label="RIF de Empleado"
+                  :rules="[reglasNotNull10]"
+                  hint=""
+                  lazy-rules
+                  mask="##########"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="fact_check" />
+                  </template>
+                </q-input>
+              </div>
+
+              <div class="col-md-3 col-xs-12" style="margin-bottom: 15px">
+                <q-checkbox
+                  size="lg"
+                  v-model="formEdit.aplica_retencion"
+                  true-value="1"
+                  false-value="0"
+                  style="font-size: 13px"
+                  label="¿APLICA RETENCIÓN?"
+                />
+              </div>
+
+              <div class="col-md-9 col-xs-12">
+                <q-input
+                  outlined
+                  v-model="formEdit.porcentaje_retencion"
+                  label="Porcentaje Retención"
+                  :rules="[reglasNotNullPercent]"
+                  hint=""
+                  step=".01"
+                  lazy-rules
+                  type="number"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="percent" />
+                  </template>
+                </q-input>
+              </div>
+
+              <div class="col-md-6 col-xs-12">
+                <q-input
+                  outlined
+                  v-model="formEdit.periodo"
                   label="Período"
-                  :rules="[reglaInput]"
+                  :rules="[reglasNotNull6]"
                   hint=""
                   class="pcform"
                   lazy-rules
-                  mask="### - ### - ##########"
+                  @update:model-value="
+                    formEdit.periodo = formEdit.periodo.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="calendar_today" />
@@ -163,18 +223,20 @@
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
-                  v-model="form.tlf_banco"
+                  v-model="formEdit.sueldo"
                   label="Sueldo"
-                  :rules="[reglaInput]"
+                  :rules="[reglasAllowNullSueldo]"
                   hint=""
+                  step=".01"
                   lazy-rules
-                  mask="### - ### - ##########"
+                  type="number"
                 >
                   <template v-slot:prepend>
                     <q-icon name="paid" />
                   </template>
                 </q-input>
               </div>
+
             </div>
 
             <div
@@ -237,7 +299,7 @@
               rounded
               color="primary"
               @click="create = true"
-              @click.capture="getData('/bancos','setdata','datos')"
+              @click.capture="getData('/empleados','setdata','datos')"
               :disabled="this.disabledCreate"
             ></q-btn>
           </div>
@@ -267,7 +329,7 @@
                       icon="edit"
                       :disabled="this.disabledEdit"
                       @click="
-                        getData(`/bancos/${props.row.id}`, 'setData', 'formEdit');
+                        getData(`/empleados/${props.row.id}`, 'setDataEdit', 'formEdit');
                         edit = true;
                       "
                     ></q-btn>
@@ -319,7 +381,7 @@
                               icon="edit"
                               :disabled="this.disabledEdit"
                               @click="
-                                getData(`/bancos/${props.row.id}`, 'setData', 'formEdit');
+                                getData(`/empleados/${props.row.id}`, 'setDataEdit', 'formEdit');
                                 edit = true;
                               "
                             ></q-btn>
@@ -389,7 +451,7 @@
       </q-card>
     </q-dialog>
     <methods ref="methods"
-    @get-Data="getData('/bancos','setData','datos')"
+    @get-Data="getData('/empleados','setData','datos')"
     @set-data="setData" @set-Data-Edit="setData">
     </methods>
     <desactivate-crud ref="desactivateCrud"
@@ -415,21 +477,35 @@ export default {
   components: {
   "desactivate-crud": desactivateCrudVue,
   "methods": methodsVue },
-  name: "Bancos",
+  name: "Empleados",
   data() {
     return {
       columns: [
         {
           name: "id",
-          label: "Rif",
+          label: "Codigo",
           field: "id",
           align: "left",
           sortable: true,
         },
         {
-          name: "nb_banco",
+          name: "nombre",
           label: "Nombre del Empleado",
-          field: "nb_banco",
+          field: "nombre",
+          align: "left",
+          sortable: true,
+        },
+        {
+          name: "sueldo",
+          label: "Sueldo",
+          field: "sueldo",
+          align: "left",
+          sortable: true,
+        },
+        {
+          name: "porcentaje_retencion",
+          label: "Porcentaje Retención",
+          field: "porcentaje_retencion",
           align: "left",
           sortable: true,
         },
@@ -442,21 +518,22 @@ export default {
         },
       ],
       form: {
-        nb_banco: "",
-        direccion_banco: "",
-        tlf_banco: "",
-        fax_banco: "",
-        cod_postal: "",
-        email_banco: "",
+        rif_empleado: "",
+        nombre: "",
+        aplica_retencion: "0",
+        porcentaje_retencion: "",
+        periodo: "",
+        sueldo: ""
       },
       datos: [],
       formEdit: {
-        nb_banco: "",
-        direccion_banco: "",
-        tlf_banco: "",
-        fax_banco: "",
-        cod_postal: "",
-        email_banco: "",
+        id: "", 
+        rif_empleado: "",
+        nombre: "",
+        aplica_retencion: "0",
+        porcentaje_retencion: "",
+        periodo: "",
+        sueldo: ""
       },
       selected: [],
       error: "",
@@ -492,30 +569,79 @@ export default {
     };
   },
   mounted() {
-    this.getData('/bancos','setData','datos')
+    this.getData('/empleados','setData','datos')
     this.$refs.desactivateCrud.desactivarCrud('c_bancos', 'd_bancos', 'u_bancos', 'desactivarCrudBancos')
   },
   methods: {
-    reglaInputBancos(val) {
+    // Reglas
+    reglasNotNull10(val) {
       if (val === null) {
         return "Debes Escribir Algo";
       }
       if (val === "") {
         return "Debes Escribir Algo";
       }
-      if (val.length > 0) {
-        if (val.length < 3) {
-        return "Deben ser minimo 3 caracteres";
+        if (val !== null !== "") {
+          if (val.length < 3) {
+            return "Deben ser minimo 3 caracteres";
+          }
+          if (val.length > 10) {
+            return "Deben ser Maximo 10 caracteres";
+          }
+      }
+    },
+    reglasNotNull30(val) {
+      if (val === null) {
+        return "Debes Escribir Algo";
+      }
+      if (val === "") {
+        return "Debes Escribir Algo";
+      }
+        if (val !== null !== "") {
+          if (val.length < 3) {
+            return "Deben ser minimo 3 caracteres";
+          }
+          if (val.length > 30) {
+            return "Deben ser Maximo 30 caracteres";
+          }
+      }
+    },
+    reglasNotNullPercent(val) {
+      if (val === null) {
+        return "Debes Escribir Algo";
+      }
+      if (val === "") {
+        return "Debes Escribir Algo";
+      }
+      if (val !== null !== "") {
+          if (val > 999.99) {
+            return "Deben ser Maximo 5 caracteres";
+          }
+      }
+    },
+    reglasNotNull6(val) {
+      if (val === null) {
+        return "Debes Escribir Algo";
+      }
+      if (val === "") {
+        return "Debes Escribir Algo";
+      }
+      if (val !== null !== "") {
+          if (val.length > 6) {
+            return "Deben ser Maximo 6 caracteres";
+          }
+      }
+    },
+    reglasAllowNullSueldo(val) {
+      if (val !== null) {
+        if (val.length > 0) {
+          if (val > 99999999.99) {
+            return "Deben ser Maximo 10 caracteres";
+          }
         }
       }
     },
-    reglaInput(val) {
-      if (val.length > 0) {
-        if (val.length < 3) {
-        return "Deben ser minimo 3 caracteres";
-        }
-      }
-    },
+
     desactivarCrudBancos(createItem, deleteItem, updateItem) {
       if (createItem == true) {
         this.disabledCreate = false
@@ -527,32 +653,51 @@ export default {
         this.disabledEdit = false
       }
     },
+
     getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes);
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
     },
     setData(res, dataRes) {
       this[dataRes] = res
-    },    
+    },  
+    setDataEdit(res, dataRes) {
+      this.formEdit.id = res.id
+      this.formEdit.rif_empleado = res.rif_empleado
+      this.formEdit.aplica_retencion = res.aplica_retencion
+      this.formEdit.porcentaje_retencion = res.porcentaje_retencion
+      this.formEdit.porcentaje_retencion = res.porcentaje_retencion
+      this.formEdit.sueldo = res.sueldo
+    },   
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/bancos/${idpost}`, 'getData');
+      this.$refs.methods.deleteData(`/empleados/${idpost}`, 'getData', this.axiosConfig);
     },
     createData() {
-      this.$refs.methods.createData('/bancos', this.form, 'getData');
+      this.$refs.methods.createData('/empleados', this.form, 'getData', this.axiosConfig);
       this.resetForm();
     },
     putData() {
-      this.$refs.methods.putData(`/bancos/${this.formEdit.id}`, this.formEdit, 'getData');
+      this.$refs.methods.putData(`/empleados/${this.formEdit.id}`, this.formEdit, 'getData', this.axiosConfig);
       this.edit = false;
+      this.resetFormEdit()
     },
     
     resetForm() {
-      (this.form.nb_banco = null),
-      (this.form.direccion_banco = null),
-      (this.form.tlf_banco = null),
-      (this.form.fax_banco = null),
-      (this.form.cod_postal = null),
-      (this.form.email_banco = null),
+      (this.form.rif_empleado = ""),
+      (this.form.nombre = ""),
+      (this.form.aplica_retencion = "0"),
+      (this.form.porcentaje_retencion = ""),
+      (this.form.periodo = ""),
+      (this.form.sueldo = ""),
       (this.create = false);    
+    },
+    resetFormEdit() {
+      (this.formEdit.rif_empleado = ""),
+      (this.formEdit.nombre = ""),
+      (this.formEdit.aplica_retencion = "0"),
+      (this.formEdit.porcentaje_retencion = ""),
+      (this.formEdit.periodo = ""),
+      (this.formEdit.sueldo = ""),
+      (this.edit = false);    
     },
   },
 };

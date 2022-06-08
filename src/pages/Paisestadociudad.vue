@@ -1460,7 +1460,7 @@ export default {
     },
     // Metodos para estados
     getDataPaises(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes);
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
     },
     setData(res, dataRes) {
       this[dataRes] = res
@@ -1472,16 +1472,16 @@ export default {
       this[dataRes].id = res.id;
     },    
     deleteDataPaises(idpost) {
-      this.$refs.methods.deleteData(`/paises/${idpost}`, 'getDataPaises');
+      this.$refs.methods.deleteData(`/paises/${idpost}`, 'getDataPaises', this.axiosConfig);
     },
     createDataPaises() {
       this.formPaises.tipo_pais = this.formPaises.tipo_pais.value;
-      this.$refs.methods.createData('/paises', this.formPaises, 'getDataPaises');
+      this.$refs.methods.createData('/paises', this.formPaises, 'getDataPaises', this.axiosConfig);
       this.resetFormPaises();
     },
     putDataPaises() {
       this.formEditPaises.tipo_pais = this.formEditPaises.tipo_pais.value;
-      this.$refs.methods.putData(`/paises/${this.formEditPaises.id}`, this.formEditPaises, 'getDataPaises');
+      this.$refs.methods.putData(`/paises/${this.formEditPaises.id}`, this.formEditPaises, 'getDataPaises', this.axiosConfig);
       this.edit = false;
       this.resetFormEditPaises()
     },
@@ -1497,7 +1497,7 @@ export default {
     },
     // Metodos para estados
     getDataEstados(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes);
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
     },
     setDataEstados(res, dataRes) {
       this[dataRes] = res.estados
@@ -1508,15 +1508,15 @@ export default {
       this[dataRes].id = res.id;
     },
     deleteDataEstados(idpost) {
-      this.$refs.methods.deleteData(`/estados/${idpost}`, 'getDataEstados');
+      this.$refs.methods.deleteData(`/estados/${idpost}`, 'getDataEstados', this.axiosConfig);
     },
     createDataEstados() {
       this.formEstados.cod_pais = this.selectedPais.id;
-      this.$refs.methods.createData('/estados', this.formEstados, 'getDataEstados');
+      this.$refs.methods.createData('/estados', this.formEstados, 'getDataEstados', this.axiosConfig);
       this.resetFormEstados();
     },
     putDataEstados() {
-      this.$refs.methods.putData(`/estados/${this.formEditEstados.id}`, this.formEditEstados, 'getDataEstados');
+      this.$refs.methods.putData(`/estados/${this.formEditEstados.id}`, this.formEditEstados, 'getDataEstados', this.axiosConfig);
       this.resetFormEditEstados()
     },
     resetFormEstados() {
@@ -1531,14 +1531,14 @@ export default {
     },
     // Metodos para ciudades
     getDataEstadosSelect(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes);
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
     },
     setDataEstadosSelect(res, dataRes) {
       this[dataRes] = res.estados
       this.selectedEstado = "";
     },
     getDataCiudades(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes);
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
     },
     setDataCiudades(res, dataRes) {
       this[dataRes] = res.ciudades;
@@ -1551,20 +1551,20 @@ export default {
       this[dataRes].id = res.id;
     },
     deleteDataCiudades(idpost) {
-      this.$refs.methods.deleteData(`/ciudades/${idpost}`, 'getDataCiudades');
+      this.$refs.methods.deleteData(`/ciudades/${idpost}`, 'getDataCiudades', this.axiosConfig);
     },
     createDataCiudades() {
       this.formCiudades.cod_estado = this.selectedEstado.id,
       this.formCiudades.check_urbano = this.formCiudades.check_urbano.value;
       this.formCiudades.cod_region = this.formCiudades.cod_region.value;
-      this.$refs.methods.createData(`/ciudades`, this.formCiudades, 'getDataCiudades');
+      this.$refs.methods.createData(`/ciudades`, this.formCiudades, 'getDataCiudades', this.axiosConfig);
       this.resetFormCiudades();
     },
     putDataCiudades() {
       this.formEditCiudades.check_urbano =
       this.formEditCiudades.check_urbano.value;
       this.formEditCiudades.cod_region = this.formEditCiudades.cod_region.value;
-      this.$refs.methods.putData(`/ciudades/${this.formEditCiudades.id}`, this.formEditCiudades, 'getDataCiudades');
+      this.$refs.methods.putData(`/ciudades/${this.formEditCiudades.id}`, this.formEditCiudades, 'getDataCiudades', this.axiosConfig);
       this.resetFormEditCiudades()
     },
     resetFormCiudades() {

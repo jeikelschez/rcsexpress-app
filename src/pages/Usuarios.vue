@@ -687,7 +687,7 @@ export default {
       }
     },
     getData(url, call, dataRes) {
-    this.$refs.methods.getData(url, call, dataRes);
+    this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
     },
     setData(res, dataRes) {
       this[dataRes] = res
@@ -710,20 +710,20 @@ export default {
       this.getData(`/agencias/${this.formEditUsuarios.cod_agencia.id}/roles`, 'setDataRolesIniciar', 'roles')
     },
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/usuarios/${idpost}`, 'getDataUsuarios');
+      this.$refs.methods.deleteData(`/usuarios/${idpost}`, 'getDataUsuarios', this.axiosConfig);
     },
     createDataUsuarios() {
       this.formUsuarios.activo = this.formUsuarios.activo.value;
       this.formUsuarios.cod_rol = this.formUsuarios.cod_rol.id;
       this.formUsuarios.cod_agencia = this.formUsuarios.cod_agencia.id;
-      this.$refs.methods.createData(`/usuarios`, this.formUsuarios, 'getDataUsuarios');
+      this.$refs.methods.createData(`/usuarios`, this.formUsuarios, 'getDataUsuarios', this.axiosConfig);
       this.usuariosForm = false;
     },
     putDataUsuarios() {
       this.formEditUsuarios.activo = this.formEditUsuarios.activo.value;
       this.formEditUsuarios.cod_rol = this.formEditUsuarios.cod_rol.id;
       this.formEditUsuarios.cod_agencia = this.formEditUsuarios.cod_agencia.id;
-      this.$refs.methods.putData(`/usuarios/${this.formEditUsuarios.login}`, this.formEditUsuarios, 'getDataUsuarios');
+      this.$refs.methods.putData(`/usuarios/${this.formEditUsuarios.login}`, this.formEditUsuarios, 'getDataUsuarios', this.axiosConfig);
       this.resetFormEditUsuarios()
     }, 
     resetFormUsuarios() {

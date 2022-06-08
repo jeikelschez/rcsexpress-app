@@ -607,7 +607,7 @@ export default {
     },
 
     getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes);
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
     },
     setData(res, dataRes) {
       this[dataRes] = res
@@ -625,19 +625,19 @@ export default {
       this[dataRes].cod_banco = res.cod_banco
     },
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/cuentas/${idpost}`, 'getData');
+      this.$refs.methods.deleteData(`/cuentas/${idpost}`, 'getData', this.axiosConfig);
     },
     createDataCuentas() {
       this.formCuentas.cod_banco = this.selectedBanco.id
       this.formCuentas.flag_activa = this.formCuentas.flag_activa.value
       this.formCuentas.tipo_cuenta = this.formCuentas.tipo_cuenta.value
-      this.$refs.methods.createData(`/cuentas`, this.formCuentas, 'getData');
+      this.$refs.methods.createData(`/cuentas`, this.formCuentas, 'getData', this.axiosConfig);
       this.resetForm();
     },
     putDataCuentas() {
       this.formEditCuentas.flag_activa = this.formEditCuentas.flag_activa.value
       this.formEditCuentas.tipo_cuenta = this.formEditCuentas.tipo_cuenta.value
-      this.$refs.methods.putData(`/cuentas/${this.formEditCuentas.id}`, this.formEditCuentas, 'getData');
+      this.$refs.methods.putData(`/cuentas/${this.formEditCuentas.id}`, this.formEditCuentas, 'getData', this.axiosConfig);
       this.resetFormEdit()
     },
     resetForm() {

@@ -1375,10 +1375,26 @@
     </q-drawer>
 
     <keep-alive>
-          <router-view />
+          <router-view @mouseover="miniState = true; desplegable=hide;
+          desplegable2=hide ;
+          desplegable3=hide ;
+          segundo=hide ;
+          tercero=hide ;
+          cuarto=hide;
+          quinto=hide;
+          sexto=hide;
+          septimo=hide;
+          octavo=hide;
+          noveno=hide;
+          decimo=hide;
+          decimoprimero=hide;
+          decimosegundo=hide;
+          decimotercero=hide;
+          decimocuarto=hide"/>
         </keep-alive>
     <q-page-container>
     </q-page-container>
+
     <q-footer reveal elevated bordered>
       <div class="text-caption float-right">
         <q-btn
@@ -1504,6 +1520,8 @@ export default defineComponent ({
     },
     logout() {
       this.$refs.component.logoutUser()
+    },
+    close() {console.log('asdasd')
     },
   },
 });

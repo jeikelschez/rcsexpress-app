@@ -27,10 +27,28 @@
               <div class="col-md-4 col-xs-12">
                 <q-input
                   outlined
+                  v-model="form.nb_proveedor"
+                  label="Proveedor"
+                  hint=""
+                  class="pcform"
+                  lazy-rules
+                  :rules="[reglasNotNull100]"
+                  @update:model-value="
+                    form.nb_proveedor = form.nb_proveedor.toUpperCase()
+                  "
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="person" />
+                  </template>
+                </q-input>
+              </div>
+
+              <div class="col-md-4 col-xs-12">
+                <q-input
+                  outlined
                   v-model="form.rif_proveedor"
                   label="RIF"
                   hint=""
-                  class="pcform"
                   :rules="[reglasNotNull20]"
                   lazy-rules
                   @update:model-value="
@@ -43,11 +61,12 @@
                 </q-input>
               </div>
 
-              <div class="col-md-4 col-xs-12">
+              <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.nit_proveedor"
                   label="NIT"
+                  class="pcform"
                   :rules="[reglasAllowNull20]"
                   hint=""
                   lazy-rules
@@ -64,18 +83,15 @@
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
-                  v-model="form.direccion_fiscal"
-                  label="Direccion Fiscal"
-                  :rules="[reglasAllowNull200]"
+                  v-model="form.condicion_pago"
+                  label="Condición de Pago (Días)"
+                  :rules="[reglasAllowNullDias]"
+                  type="number"
                   hint=""
                   lazy-rules
-                  class="pcform"
-                  @update:model-value="
-                    form.direccion_fiscal = form.direccion_fiscal.toUpperCase()
-                  "
                 >
                   <template v-slot:prepend>
-                    <q-icon name="pin_drop" />
+                    <q-icon name="free_cancellation" />
                   </template>
                 </q-input>
               </div>
@@ -87,14 +103,32 @@
                   label="Direccion de Correo"
                   :rules="[reglasAllowNull200]"
                   hint=""
+                  class="pcform"
                   lazy-rules
-                  type="email"
                   @update:model-value="
                     form.direccion_correo = form.direccion_correo.toUpperCase()
                   "
                 >
                   <template v-slot:prepend>
                     <q-icon name="drafts" />
+                  </template>
+                </q-input>
+              </div>
+
+              <div class="col-md-6 col-xs-12">
+                <q-input
+                  outlined
+                  v-model="form.direccion_fiscal"
+                  label="Direccion Fiscal"
+                  :rules="[reglasAllowNull200]"
+                  hint=""
+                  lazy-rules
+                  @update:model-value="
+                    form.direccion_fiscal = form.direccion_fiscal.toUpperCase()
+                  "
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="pin_drop" />
                   </template>
                 </q-input>
               </div>
@@ -183,6 +217,10 @@
                   hint=""
                   :options="tipo_persona"
                   lazy-rules
+                  @update:model-value="
+                  this.axiosConfig.headers.tipo_persona = form.tipo_persona.value;
+                  this.getData(`/mretenciones`,'setDataRetenciones','retenciones');
+                  this.form.cod_tipo_retencion = []"
                 >
                   <template v-slot:prepend>
                     <q-icon name="group" />
@@ -195,12 +233,11 @@
                   outlined
                   v-model="form.cod_tipo_retencion"
                   label="Tipo Retención ISLR"
-                  input-class="input"
-                  :rules="[reglasSelect]"
                   hint=""
+                  :rules="[reglasSelectRetenciones]"
                   :options="retenciones"
-                  option-label="desc_pais"
-                  option-value="id"
+                  option-label="nb_tipo_retencion"
+                  option-value="cod_tipo_retencion"
                   lazy-rules
                 >
                   <template v-slot:prepend>
@@ -234,6 +271,7 @@
                   label="Observaciones"
                   hint=""
                   lazy-rules
+                  :rules="[reglasAllowNull]"
                   @update:model-value="
                     form.observacion = form.observacion.toUpperCase()
                   "
@@ -297,10 +335,28 @@
               <div class="col-md-4 col-xs-12">
                 <q-input
                   outlined
+                  v-model="formEdit.nb_proveedor"
+                  label="Proveedor"
+                  hint=""
+                  class="pcform"
+                  lazy-rules
+                  :rules="[reglasNotNull100]"
+                  @update:model-value="
+                    formEdit.nb_proveedor = formEdit.nb_proveedor.toUpperCase()
+                  "
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="person" />
+                  </template>
+                </q-input>
+              </div>
+
+              <div class="col-md-4 col-xs-12">
+                <q-input
+                  outlined
                   v-model="formEdit.rif_proveedor"
                   label="RIF"
                   hint=""
-                  class="pcform"
                   :rules="[reglasNotNull20]"
                   lazy-rules
                   @update:model-value="
@@ -313,11 +369,12 @@
                 </q-input>
               </div>
 
-              <div class="col-md-4 col-xs-12">
+              <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
                   v-model="formEdit.nit_proveedor"
                   label="NIT"
+                  class="pcform"
                   :rules="[reglasAllowNull20]"
                   hint=""
                   lazy-rules
@@ -334,18 +391,15 @@
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
-                  v-model="formEdit.direccion_fiscal"
-                  label="Direccion Fiscal"
-                  :rules="[reglasAllowNull200]"
+                  v-model="formEdit.condicion_pago"
+                  label="Condición de Pago (Días)"
+                  :rules="[reglasAllowNullDias]"
+                  type="number"
                   hint=""
                   lazy-rules
-                  class="pcform"
-                  @update:model-value="
-                    formEdit.direccion_fiscal = formEdit.direccion_fiscal.toUpperCase()
-                  "
                 >
                   <template v-slot:prepend>
-                    <q-icon name="pin_drop" />
+                    <q-icon name="free_cancellation" />
                   </template>
                 </q-input>
               </div>
@@ -355,16 +409,34 @@
                   outlined
                   v-model="formEdit.direccion_correo"
                   label="Direccion de Correo"
+                  class="pcform"
                   :rules="[reglasAllowNull200]"
                   hint=""
                   lazy-rules
-                  type="email"
                   @update:model-value="
                     formEdit.direccion_correo = formEdit.direccion_correo.toUpperCase()
                   "
                 >
                   <template v-slot:prepend>
                     <q-icon name="drafts" />
+                  </template>
+                </q-input>
+              </div>
+
+              <div class="col-md-6 col-xs-12">
+                <q-input
+                  outlined
+                  v-model="formEdit.direccion_fiscal"
+                  label="Direccion Fiscal"
+                  :rules="[reglasAllowNull200]"
+                  hint=""
+                  lazy-rules
+                  @update:model-value="
+                    formEdit.direccion_fiscal = formEdit.direccion_fiscal.toUpperCase()
+                  "
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="pin_drop" />
                   </template>
                 </q-input>
               </div>
@@ -396,7 +468,7 @@
                   lazy-rules
                   class="pcform"
                   @update:model-value="
-                    formEdit.fax_proveedor = formEdit.fax_proveedor.toUpperCase()
+                    formEdit.fax_proveedor = forformEditm.fax_proveedor.toUpperCase()
                   "
                 >
                   <template v-slot:prepend>
@@ -453,6 +525,10 @@
                   hint=""
                   :options="tipo_persona"
                   lazy-rules
+                  @update:model-value="
+                  this.axiosConfig.headers.tipo_persona = formEdit.tipo_persona.value;
+                  this.getData(`/mretenciones`,'setDataRetenciones','retenciones');
+                  this.formEdit.cod_tipo_retencion = []"
                 >
                   <template v-slot:prepend>
                     <q-icon name="group" />
@@ -465,12 +541,12 @@
                   outlined
                   v-model="formEdit.cod_tipo_retencion"
                   label="Tipo Retención ISLR"
+                  :rules="[reglasSelectRetencionesEdit]"
                   input-class="input"
-                  :rules="[reglasSelect]"
                   hint=""
                   :options="retenciones"
-                  option-label="desc_pais"
-                  option-value="id"
+                  option-label="nb_tipo_retencion"
+                  option-value="cod_tipo_retencion"
                   lazy-rules
                 >
                   <template v-slot:prepend>
@@ -504,6 +580,7 @@
                   label="Observaciones"
                   hint=""
                   lazy-rules
+                  :rules="[reglasAllowNull]"
                   @update:model-value="
                     formEdit.observacion = formEdit.observacion.toUpperCase()
                   "
@@ -530,6 +607,7 @@
                 label="Cerrar"
                 color="primary"
                 flat
+                @click="resetForm()"
                 class="col-md-5 col-sm-5 col-xs-12 btnmovil"
                 icon="close"
                 v-close-popup
@@ -729,6 +807,7 @@
     <methods ref="methods"
     @get-Data="getData('/proveedores','setData','datos')"
     @set-data="setData"
+    @set-data-retenciones="setDataRetenciones"
     @set-Data-Edit="setDataEdit">
     </methods>
     <desactivate-crud ref="desactivateCrud"
@@ -795,7 +874,6 @@ export default {
         },
       ],
       form: {
-        nb_banco: "",
         nb_proveedor: "",
         nb_beneficiario: "",
         rif_proveedor: "",
@@ -805,7 +883,7 @@ export default {
         tlf_proveedor: "",
         fax_proveedor: "",
         email_proveedor: "",
-        condicion_pago: "0",
+        condicion_pago: "",
         observacion: "",
         tipo_servicio: [],
         cod_tipo_retencion: [],
@@ -830,7 +908,6 @@ export default {
       datos: [],
       formEdit: {
         id: "",
-        nb_banco: "",
         nb_proveedor: "",
         nb_beneficiario: "",
         rif_proveedor: "",
@@ -840,7 +917,7 @@ export default {
         tlf_proveedor: "",
         fax_proveedor: "",
         email_proveedor: "",
-        condicion_pago: "0",
+        condicion_pago: "",
         observacion: "",
         tipo_servicio: [],
         cod_tipo_retencion: [],
@@ -855,6 +932,8 @@ export default {
       axiosConfig: {
         headers: {
           Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          tipo_persona: '',
+          vigente: 's'
         },
       },
     };
@@ -874,6 +953,7 @@ export default {
       }),
       separator: ref("vertical"),
       create: ref(false),
+      tablaDeRetenciones: ref(false),
       edit: ref(false),
       medium: ref(false),
       deletePopup: ref(false),
@@ -882,7 +962,6 @@ export default {
   },
   mounted() {
     this.getData('/proveedores','setData','datos')
-    this.getData('/retenciones','setData','retenciones')
     this.$refs.desactivateCrud.desactivarCrud('c_bancos', 'd_bancos', 'u_bancos', 'desactivarCrudBancos')
   },
   methods: {
@@ -892,6 +971,28 @@ export default {
         return "Debes Seleccionar Algo";
       }
       if (val === "") {
+        return "Debes Seleccionar Algo";
+      }
+    },
+    reglasSelectRetenciones() {
+      if (this.form.cod_tipo_retencion == null) {
+        return "Debes Seleccionar Algo";
+      }
+      if (this.form.cod_tipo_retencion == "") {
+        return "Debes Seleccionar Algo";
+      }
+      if (this.form.cod_tipo_retencion == []) {
+        return "Debes Seleccionar Algo";
+      }
+    },
+    reglasSelectRetencionesEdit() {
+      if (this.formEdit.cod_tipo_retencion == null) {
+        return "Debes Seleccionar Algo";
+      }
+      if (this.formEdit.cod_tipo_retencion == "") {
+        return "Debes Seleccionar Algo";
+      }
+      if (this.formEdit.cod_tipo_retencion == []) {
         return "Debes Seleccionar Algo";
       }
     },
@@ -915,16 +1016,6 @@ export default {
           }
       }
     },
-    reglasNotNull200(val) {
-        if (val !== null !== "") {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-          if (val.length > 199) {
-            return "Deben ser Maximo 200 caracteres";
-          }
-      }
-    },
     reglasNotNull50(val) {
         if (val !== null !== "") {
           if (val.length < 3) {
@@ -933,6 +1024,15 @@ export default {
           if (val.length > 49) {
             return "Deben ser Maximo 50 caracteres";
           }
+      }
+    },
+    reglasAllowNull(val) {
+      if (val !== null) {
+        if (val.length > 0) {
+          if (val.length < 3) {
+            return "Deben ser minimo 3 caracteres";
+          }
+        }
       }
     },
     reglasAllowNull20(val) {
@@ -983,6 +1083,15 @@ export default {
         }
       }
     },
+    reglasAllowNullDias(val) {
+      if (val !== null) {
+        if (val.length > 0) {
+          if (val > 99) {
+            return "Deben ser Maximo 2 caracteres";
+          }
+        }
+      }
+    },
 
     // Desactivar CRUD
     desactivarCrudBancos(createItem, deleteItem, updateItem) {
@@ -999,7 +1108,7 @@ export default {
 
     // Metodos CRUD
     getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes);
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
     },
     setData(res, dataRes) {
       this[dataRes] = res
@@ -1007,9 +1116,21 @@ export default {
           this.datos[e].condicion_pago = this.datos[e].condicion_pago + " Dias"
           if (e == this.datos.length - 1) break;
         }
-    },  
+    },
+    setDataRetenciones(res, dataRes) {
+      this[dataRes] = res
+    },
     setDataEdit(res, dataRes) {
+      if (res.tipo_persona === 'J') {
+        this.axiosConfig.headers.tipo_persona = 'J',
+        this.getData(`/mretenciones`,'setDataRetenciones','retenciones')
+      }
+      if (res.tipo_persona === 'N') {
+        this.axiosConfig.headers.tipo_persona = 'N',
+        this.getData(`/mretenciones`,'setDataRetenciones','retenciones')
+      }
       this.formEdit.id = res.id
+      this.formEdit.condicion_pago = res.condicion_pago
       this.formEdit.nb_proveedor = res.nb_proveedor
       this.formEdit.nb_beneficiario = res.nb_beneficiario
       this.formEdit.rif_proveedor = res.rif_proveedor
@@ -1020,35 +1141,40 @@ export default {
       this.formEdit.fax_proveedor = res.fax_proveedor
       this.formEdit.email_proveedor = res.email_proveedor
       this.formEdit.observacion = res.observacion
-      this.formEdit.tipo_servicio = res.tipo_servicio
-      this.formEdit.cod_tipo_retencion = res.cod_tipo_retencion
+      this.formEdit.tipo_servicio = res.tipo_svc
       this.formEdit.tipo_persona = res.tipo_desc
       this.formEdit.flag_activo = res.activo_desc
-    },   
+      this.formEdit.cod_tipo_retencion = res.retenciones.nb_tipo_retencion
+    },
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/proveedores/${idpost}`, 'getData');
+      this.$refs.methods.deleteData(`/proveedores/${idpost}`, 'getData', this.axiosConfig);
     },
     createData() {
       this.form.tipo_servicio = this.form.tipo_servicio.value
-      this.form.cod_tipo_retencion = this.form.cod_tipo_retencion.id
       this.form.tipo_persona = this.form.tipo_persona.value
       this.form.flag_activo = this.form.flag_activo.value
-      this.$refs.methods.createData('/proveedores', this.form, 'getData');
-      this.resetForm();
+      if (`${this.form.cod_tipo_retencion.id}` !== "undefined") {
+      this.form.cod_tipo_retencion = `${this.form.cod_tipo_retencion.id}`
+      }
+      this.$refs.methods.createData('/proveedores', this.form, 'getData', this.axiosConfig);
+      this.resetForm()
     },
     putData() {
       this.formEdit.tipo_servicio = this.formEdit.tipo_servicio.value
-      this.formEdit.cod_tipo_retencion = this.formEdit.cod_tipo_retencion.id
+      if (`${this.formEdit.cod_tipo_retencion.id}` !== "undefined") {
+      this.formEdit.cod_tipo_retencion = `${this.formEdit.cod_tipo_retencion.id}`
+      }
+      if (`${this.formEdit.cod_tipo_retencion.id}` === "undefined") {
+      delete this.formEdit.cod_tipo_retencion
+      }
       this.formEdit.tipo_persona = this.formEdit.tipo_persona.value
       this.formEdit.flag_activo = this.formEdit.flag_activo.value
-      this.$refs.methods.putData(`/proveedores/${this.formEdit.id}`, this.formEdit, 'getData');
+      this.$refs.methods.putData(`/proveedores/${this.formEdit.id}`, this.formEdit, 'getData', this.axiosConfig);
       this.edit = false;
       this.resetFormEdit()
     },
     
     resetForm() {
-      (this.form.nb_banco = null),
-      (this.form.nb_banco = ""),
       (this.form.nb_proveedor = ""),
       (this.form.nb_beneficiario = ""),
       (this.form.rif_proveedor = ""),
@@ -1062,13 +1188,12 @@ export default {
       (this.form.observacion = ""),
       (this.form.tipo_servicio = ""),
       (this.form.cod_tipo_retencion = ""),
+      (this.retenciones = []),
       (this.form.tipo_persona = ""),
       (this.form.flag_activo = ""),
       (this.create = false);    
     },
     resetFormEdit() {
-      (this.formEdit.nb_banco = null),
-      (this.formEdit.nb_banco = ""),
       (this.formEdit.nb_proveedor = ""),
       (this.formEdit.nb_beneficiario = ""),
       (this.formEdit.rif_proveedor = ""),
@@ -1079,12 +1204,12 @@ export default {
       (this.formEdit.fax_proveedor = ""),
       (this.formEdit.email_proveedor = ""),
       (this.formEdit.condicion_pago = ""),
+      (this.retenciones = []),
       (this.formEdit.observacion = ""),
       (this.formEdit.tipo_servicio = ""),
       (this.formEdit.cod_tipo_retencion = ""),
       (this.formEdit.tipo_persona = ""),
-      (this.formEdit.flag_activo = ""),
-      (this.create = false);    
+      (this.formEdit.flag_activo = "")
     },
   },
 };

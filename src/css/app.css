@@ -42,3 +42,5 @@
 @media screen and (min-width: 500px) {.pagina {margin-left: 60px;margin-top:55px}}
 
 .input {color: black;}
+.displayHide {display: none;}
+.displayShow {display: block;}

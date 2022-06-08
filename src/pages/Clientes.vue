@@ -1401,6 +1401,11 @@ export default {
       disabledCreate: true,
       disabledEdit: true,
       disabledDelete: true,
+      axiosConfig: {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        },
+      },
     };
   },
   setup() {
@@ -1414,11 +1419,6 @@ export default {
       // rowsNumber: xx if getting data from a server
     });
     return {
-      axiosConfig: {
-        headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-        },
-      },
       pagination: ref({
         rowsPerPage: 10,
       }),
@@ -1436,7 +1436,7 @@ export default {
     };
   },
   mounted() {
-    this.$refs.methods.getData("/agencias", "setDataIniciar", "agencias");
+    this.$refs.methods.getData("/agencias", "setDataIniciar", "agencias", this.axiosConfig);
     this.$refs.desactivateCrud.desactivarCrud(
       "c_roles",
       "d_roles",
@@ -1541,7 +1541,7 @@ export default {
     },
 
     getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes);
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
     },
     setDataIniciar(res, dataRes) {
       this[dataRes] = res;
@@ -1636,7 +1636,7 @@ export default {
         });
     },
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/clientes/${idpost}`, "getData");
+      this.$refs.methods.deleteData(`/clientes/${idpost}`, "getData", this.axiosConfig);
     },
     createDataClientes() {
       this.formClientes.cod_agencia = this.selectedAgencia.id;
@@ -1659,7 +1659,7 @@ export default {
         }
       }
       this.formClientes.tipo_persona = this.formClientes.tipo_persona.value;
-      this.$refs.methods.createData(`/clientes`, this.formClientes, "getData");
+      this.$refs.methods.createData(`/clientes`, this.formClientes, "getData", this.axiosConfig);
       this.form = false;
     },
     putDataClientes() {
@@ -1688,7 +1688,8 @@ export default {
       this.$refs.methods.putData(
         `/clientes/${this.formEditClientes.id}`,
         this.formEditClientes,
-        "getData"
+        "getData",
+        this.axiosConfig
       );
       this.formEdit = false;
     },
@@ -1749,16 +1750,16 @@ export default {
     getDataIniciar() {
       this.agenciaRef = this.agencias[0].id;
       this.selectedAgencia = this.agencias[0];
-      this.$refs.methods.getData(`/paises`, `setDataPaises`, `paises`);
+      this.$refs.methods.getData(`/paises`, `setDataPaises`, `paises`, this.axiosConfig);
       this.$refs.methods.getData(
         `/agencias/${this.agenciaRef}/clientes`,
         "setDataClientes",
-        `clientes`
+        `clientes`, this.axiosConfig
       );
       this.$refs.methods.getData(
         `/agencias/${this.agenciaRef}/agentes`,
         `setDataAgentes`,
-        `agentes`
+        `agentes`, this.axiosConfig
       );
     },
 
@@ -1766,7 +1767,7 @@ export default {
       this.$refs.methods.getData(
         `/${location}/${this.location_input}/${sub_location}`,
         `${update}`,
-        `${sub_location}`
+        `${sub_location}`, this.axiosConfig
       );
     },
     setDataAgentes(res, dataRes) {
