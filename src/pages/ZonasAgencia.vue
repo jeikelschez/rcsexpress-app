@@ -515,7 +515,7 @@ export default {
     },
 
     getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes);
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
     },
     setData(res, dataRes) {
       this[dataRes] = res
@@ -531,18 +531,18 @@ export default {
       this[dataRes].cod_agencia = this.selectedAgencia
     },
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/zonas/${idpost}`, 'getData');
+      this.$refs.methods.deleteData(`/zonas/${idpost}`, 'getData', this.axiosConfig);
     },
     createDataZonas() {
       this.formZonas.cod_agencia = this.selectedAgencia.id
       this.formZonas.tipo_zona = this.formZonas.tipo_zona.value
-      this.$refs.methods.createData(`/zonas`, this.formZonas, 'getData');
+      this.$refs.methods.createData(`/zonas`, this.formZonas, 'getData', this.axiosConfig);
       this.resetFormZonas();
     },
     putDataZonas() {
       this.formEditZonas.cod_agencia = this.selectedAgencia.id
       this.formEditZonas.tipo_zona = this.formEditZonas.tipo_zona.value
-      this.$refs.methods.putData(`/zonas/${this.formEditZonas.id}`, this.formEditZonas, 'getData');
+      this.$refs.methods.putData(`/zonas/${this.formEditZonas.id}`, this.formEditZonas, 'getData', this.axiosConfig);
       this.resetFormEditZonas()
     },
     resetFormZonas() {
