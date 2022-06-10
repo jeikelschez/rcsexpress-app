@@ -1393,8 +1393,8 @@ export default {
         { label: "CREDITO", value: "CR" },
       ],
       estatus: [
-        { label: "ACTIVO", value: "A" },
-        { label: "INACTIVO", value: "I" },
+        { label: "ACTIVO", value: "1" },
+        { label: "INACTIVO", value: "0" },
       ],
       agenciaRef: "",
       error: "",
@@ -1649,7 +1649,7 @@ export default {
       this.formClientes.flag_activo = this.formClientes.flag_activo.value;
       if (this.formClientes.cte_decontado === "1") {
         for (var e = 0, len = this.clientes.length; e < len; e++) {
-          if (this.clientes[e].cte_decontado === "1") {
+          if (this.clientes[e].cte_decontado === "🏴") {
             this.clienteParticularExistente();
             this.form = false;
             this.resetForm();

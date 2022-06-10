@@ -469,7 +469,7 @@
             style="text-align: center; align-self: center"
           >
             <q-btn
-              label="Insertar Proveedor"
+              label="Insertar Tarifa"
               rounded
               color="primary"
               @click="create = true"
@@ -667,6 +667,13 @@ export default {
           sortable: true,
         },
         {
+          name: "monto_tarifa",
+          label: "Monto de Tarifa",
+          field: "monto_tarifa",
+          align: "left",
+          sortable: true,
+        },
+        {
           name: "urgencia_desc",
           label: "Tipo de Urgencia",
           field: "urgencia_desc",
@@ -710,7 +717,7 @@ export default {
         },
       ],
       form: {
-        monto_tarifa: "",
+        monto_tarifa: "0",
         tipo_urgencia: [],
         tipo_tarifa: [],
         tipo_ubicacion: [],
@@ -759,7 +766,7 @@ export default {
       datos: [],
       formEdit: {
         id: "",
-        monto_tarifa: "",
+        monto_tarifa: "0",
         tipo_urgencia: [],
         tipo_tarifa: [],
         tipo_ubicacion: [],
@@ -862,6 +869,9 @@ export default {
       this.formEdit.region_origen = res.origen_desc
       this.formEdit.region_destino = res.destino_desc
       this.formEdit.tiempo_servicio = res.tiempo_servicio
+      if (this.formEdit.tiempo_servicio == null) {
+        this.formEdit.tiempo_servicio = ""
+      }
     },   
     deleteData(idpost) {
       this.$refs.methods.deleteData(`/tarifas/${idpost}`, 'getData', this.axiosConfig);
@@ -875,7 +885,6 @@ export default {
       this.form.pagado_en = this.form.pagado_en.value
       this.form.region_origen = this.form.region_origen.value
       this.form.region_destino = this.form.region_destino.value
-      this.form.tiempo_servicio = this.form.tiempo_servicio.value
       this.$refs.methods.createData('/tarifas', this.form, 'getData', this.axiosConfig);
       this.resetForm();
     },
@@ -888,14 +897,13 @@ export default {
       this.formEdit.pagado_en = this.formEdit.pagado_en.value
       this.formEdit.region_origen = this.formEdit.region_origen.value
       this.formEdit.region_destino = this.formEdit.region_destino.value
-      this.formEdit.tiempo_servicio = this.formEdit.tiempo_servicio.value
       this.$refs.methods.putData(`/tarifas/${this.formEdit.id}`, this.formEdit, 'getData', this.axiosConfig);
       this.edit = false;
       this.resetFormEdit()
     },
     
     resetForm() {
-      (this.form.monto_tarifa = ""),
+      (this.form.monto_tarifa = "0"),
       (this.form.kgr_hasta = ""),
       (this.form.tiempo_servicio = ""),
       (this.form.tipo_urgencia = ""),
@@ -910,7 +918,7 @@ export default {
       (this.create = false);    
     },
     resetFormEdit() {
-      (this.formEdit.monto_tarifa = ""),
+      (this.formEdit.monto_tarifa = "0"),
       (this.formEdit.kgr_hasta = ""),
       (this.formEdit.tiempo_servicio = ""),
       (this.formEdit.tipo_urgencia = ""),

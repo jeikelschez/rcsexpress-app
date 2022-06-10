@@ -40,7 +40,10 @@
 @media screen and (max-width: 600px) {.inputciudadespc2 {margin-top: 20px;}}
 @media screen and (max-width: 600px) {.inputpc {margin-top: 20px}}
 @media screen and (min-width: 500px) {.pagina {margin-left: 60px;margin-top:55px}}
-
+@media screen and (min-width: 500px) {.paginaManual {margin-left: 360px;margin-top:25px}}
+@media screen and (max-width: 500px) {.paginaManual {margin-top:15px}}
+@media screen and (min-width: 1130px) {.inputManual {margin-left: 37px; text-align: center}}
+@media screen and (max-width: 1130px) {.hideSeparatorManual {display: none;}}
 .input {color: black;}
 .displayHide {display: none;}
 .displayShow {display: block;}

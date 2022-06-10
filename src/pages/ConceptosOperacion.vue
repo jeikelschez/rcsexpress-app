@@ -451,13 +451,13 @@ export default {
       form: {
         desc_concepto: "",
         tipo: "",
-        afecta_estado: ""
+        afecta_estado: "N"
       },
       formEdit: {
         id: "",
         desc_concepto: "",
         tipo: "",
-        afecta_estado: ""
+        afecta_estado: "N"
       },
       tipoDeOperacion: [
         { label: "Facturación", value: "FA" },
@@ -638,6 +638,7 @@ export default {
       this[dataRes].tipo = res.tipos.descripcion
       this[dataRes].id = res.id
       this[dataRes].desc_concepto = res.desc_concepto
+      this[dataRes].afecta_estado = res.afecta_estado
       var codigo = res.tipos.codigo
       if (codigo == "DCO") {
           var element = document.getElementById("selectEdit");
@@ -673,14 +674,14 @@ export default {
     },
     resetForm() {
       (this.form.desc_concepto = ""),
-      (this.form.afecta_estado = null),
+      (this.form.afecta_estado = "N"),
       (this.form.tipo = ""),
       (this.disable = true)
       (this.create = false)
     },
     resetFormEdit() {
       (this.formEdit.desc_concepto = ""),
-      (this.formEdit.afecta_estado = null),
+      (this.formEdit.afecta_estado = "N"),
       (this.formEdit.tipo = ""),
       (this.disableEdit = true)
       (this.edit = false)

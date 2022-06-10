@@ -137,7 +137,7 @@
                   outlined
                   v-model="form.vehiculo"
                   label="Descripcion de Vehiculo"
-                  :rules="[reglasAllowNull10]"
+                  :rules="[reglasAllowNull100]"
                   hint=""
                   lazy-rules
                   @update:model-value="
@@ -314,7 +314,7 @@
                   outlined
                   v-model="formEdit.vehiculo"
                   label="Descripcion de Vehiculo"
-                  :rules="[reglasAllowNull10]"
+                  :rules="[reglasAllowNull100]"
                   hint=""
                   lazy-rules
                   @update:model-value="
@@ -751,7 +751,7 @@ export default {
             return "Deben ser minimo 3 caracteres";
           }
           if (val.length > 9) {
-            return "Deben ser Maximo 200 caracteres";
+            return "Deben ser Maximo 10 caracteres";
           }
         }
       }

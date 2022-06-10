@@ -2,7 +2,7 @@
   <router-view />
 </template>
 <script>
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
 import userLogout from './components/userLogout.vue'
 
 export default defineComponent({

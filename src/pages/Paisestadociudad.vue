@@ -235,12 +235,12 @@
                   label="Siglas"
                   mask="AAAA"
                   hint=""
-                  :rules="[reglasSiglas]"
                   @update:model-value="
                     formEditEstados.siglas =
                       formEditEstados.siglas.toUpperCase()
                   "
                   lazy-rules
+                  :rules="[reglasSiglas]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="text_fields" />
@@ -1441,8 +1441,8 @@ export default {
       }
     },
     reglasSiglas(val) {
-      if(val !== null) {
-      if (val.length < 5) {
+      if(val !== null !== "") {
+      if (val.length > 4) {
         return "Deben ser máximo 4 caracteres";
         }
       }
@@ -1520,14 +1520,14 @@ export default {
       this.resetFormEditEstados()
     },
     resetFormEstados() {
-      (this.formEstados.desc_estado = null),
-      (this.formEstados.siglas = null),
+      (this.formEstados.desc_estado = ""),
+      (this.formEstados.siglas = ""),
       (this.estadosForm = false)
     },
     resetFormEditEstados() {
-      (this.formEditEstados.desc_estado = null),
-        (this.formEditEstados.siglas = null),
-        (this.estadosFormEdit = false)
+      (this.formEditEstados.desc_estado = ""),
+      (this.formEditEstados.siglas = ""),
+      (this.estadosFormEdit = false)
     },
     // Metodos para ciudades
     getDataEstadosSelect(url, call, dataRes) {

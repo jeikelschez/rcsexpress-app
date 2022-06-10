@@ -13,7 +13,7 @@
                   hint=""
                   class="pcform"
                   lazy-rules
-                  :rules="[reglaInput]"
+                  :rules="[reglaInputName]"
                   @update:model-value="
                     form.nb_ayudante = form.nb_ayudante.toUpperCase()
                   "
@@ -29,7 +29,7 @@
                   outlined
                   v-model="form.tlf_ayudante"
                   label="Teléfono"
-                  :rules="[reglaInput]"
+                  :rules="[reglaInputPhone]"
                   hint=""
                   lazy-rules
                   mask="### - ### - ##########"
@@ -46,7 +46,7 @@
                   v-model="form.dir_ayudante"
                   label="Direccion"
                   hint=""
-                  :rules="[reglaInput]"
+                  :rules="[reglaDireccion]"
                   lazy-rules
                   @update:model-value="
                     form.dir_ayudante = form.dir_ayudante.toUpperCase()
@@ -113,7 +113,7 @@
                   hint=""
                   class="pcform"
                   lazy-rules
-                  :rules="[reglaInput]"
+                  :rules="[reglaInputName]"
                   @update:model-value="
                     formEdit.nb_ayudante = formEdit.nb_ayudante.toUpperCase()
                   "
@@ -129,7 +129,7 @@
                   outlined
                   v-model="formEdit.tlf_ayudante"
                   label="Teléfono"
-                  :rules="[reglaInput]"
+                  :rules="[reglaInputPhone]"
                   hint=""
                   lazy-rules
                   mask="### - ### - ##########"
@@ -146,7 +146,7 @@
                   v-model="formEdit.dir_ayudante"
                   label="Direccion"
                   hint=""
-                  :rules="[reglaInput]"
+                  :rules="[reglaDireccion]"
                   lazy-rules
                   @update:model-value="
                     formEdit.dir_ayudante = formEdit.dir_ayudante.toUpperCase()
@@ -555,26 +555,44 @@ export default {
         return "Debes Seleccionar Algo";
       }
     },
-    reglaInputAyudantes(val) {
+    reglaDireccion(val) {
+      if(val !== null) {
+      if (val.length > 0) {
+        if (val.length < 3) {
+        return "Deben ser minimo 3 caracteres";
+        }
+        if (val.length > 100) {
+        return "Deben ser maximo 100 caracteres";
+        }
+       }
+      }
+    },
+    reglaInputName(val) {
       if (val === null) {
         return "Debes Escribir Algo";
       }
       if (val === "") {
         return "Debes Escribir Algo";
       }
-      if(val !== null) {
+      if(val !== null !== "") {
       if (val.length > 0) {
         if (val.length < 3) {
         return "Deben ser minimo 3 caracteres";
         }
+        if (val.length > 50) {
+        return "Deben ser maximo 50 caracteres";
+        }
        }
       }
     },
-    reglaInput(val) {
-      if(val !== null) {
+    reglaInputPhone(val) {
+      if(val !== null !== "") {
       if (val.length > 0) {
         if (val.length < 3) {
         return "Deben ser minimo 3 caracteres";
+        }
+        if (val.length > 50) {
+        return "Deben ser maximo 50 caracteres";
         }
        }
       }

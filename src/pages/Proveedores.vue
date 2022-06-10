@@ -13,7 +13,7 @@
                   hint=""
                   class="pcform"
                   lazy-rules
-                  :rules="[reglasNotNull50]"
+                  :rules="[reglasAllowNull50]"
                   @update:model-value="
                     form.nb_beneficiario = form.nb_beneficiario.toUpperCase()
                   "
@@ -195,7 +195,6 @@
                   label="Servicio Prestado"
                   class="pcform"
                   input-class="input"
-                  :rules="[reglasSelect]"
                   hint=""
                   :options="servicio_prestado"
                   lazy-rules
@@ -213,9 +212,9 @@
                   label="Tipo de Persona"
                   class="pcform"
                   input-class="input"
-                  :rules="[reglasSelect]"
                   hint=""
                   :options="tipo_persona"
+                  :rules="[reglasSelect]"
                   lazy-rules
                   @update:model-value="
                   this.axiosConfig.headers.tipo_persona = form.tipo_persona.value;
@@ -234,10 +233,10 @@
                   v-model="form.cod_tipo_retencion"
                   label="Tipo Retención ISLR"
                   hint=""
-                  :rules="[reglasSelectRetenciones]"
                   :options="retenciones"
+                  :rules="[reglasSelectRetenciones]"
                   option-label="nb_tipo_retencion"
-                  option-value="cod_tipo_retencion"
+                  option-value="id"
                   lazy-rules
                 >
                   <template v-slot:prepend>
@@ -321,7 +320,7 @@
                   hint=""
                   class="pcform"
                   lazy-rules
-                  :rules="[reglasNotNull50]"
+                  :rules="[reglasAllowNull50]"
                   @update:model-value="
                     formEdit.nb_beneficiario = formEdit.nb_beneficiario.toUpperCase()
                   "
@@ -468,7 +467,7 @@
                   lazy-rules
                   class="pcform"
                   @update:model-value="
-                    formEdit.fax_proveedor = forformEditm.fax_proveedor.toUpperCase()
+                    formEdit.fax_proveedor = formEdit.fax_proveedor.toUpperCase()
                   "
                 >
                   <template v-slot:prepend>
@@ -503,7 +502,6 @@
                   label="Servicio Prestado"
                   class="pcform"
                   input-class="input"
-                  :rules="[reglasSelect]"
                   hint=""
                   :options="servicio_prestado"
                   lazy-rules
@@ -521,7 +519,6 @@
                   label="Tipo de Persona"
                   class="pcform"
                   input-class="input"
-                  :rules="[reglasSelect]"
                   hint=""
                   :options="tipo_persona"
                   lazy-rules
@@ -541,12 +538,11 @@
                   outlined
                   v-model="formEdit.cod_tipo_retencion"
                   label="Tipo Retención ISLR"
-                  :rules="[reglasSelectRetencionesEdit]"
                   input-class="input"
                   hint=""
                   :options="retenciones"
                   option-label="nb_tipo_retencion"
-                  option-value="cod_tipo_retencion"
+                  option-value="id"
                   lazy-rules
                 >
                   <template v-slot:prepend>
@@ -685,6 +681,7 @@
                       @click="
                         getData(`/proveedores/${props.row.id}`, 'setDataEdit', 'formEdit');
                         edit = true;
+                        this.resetFormEdit()
                       "
                     ></q-btn>
                     <q-btn
@@ -736,6 +733,7 @@
                               :disabled="this.disabledEdit"
                               @click="
                                 getData(`/proveedores/${props.row.id}`, 'setDataEdit', 'formEdit');
+                                this.resetFormEdit()
                                 edit = true;
                               "
                             ></q-btn>
@@ -1113,7 +1111,9 @@ export default {
     setData(res, dataRes) {
       this[dataRes] = res
       for (var e = 0, len = this.datos.length; e < len; e++) {
+        if (this.datos[e].condicion_pago !== null) {
           this.datos[e].condicion_pago = this.datos[e].condicion_pago + " Dias"
+        }
           if (e == this.datos.length - 1) break;
         }
     },
@@ -1144,7 +1144,9 @@ export default {
       this.formEdit.tipo_servicio = res.tipo_svc
       this.formEdit.tipo_persona = res.tipo_desc
       this.formEdit.flag_activo = res.activo_desc
-      this.formEdit.cod_tipo_retencion = res.retenciones.nb_tipo_retencion
+      if (res.cod_tipo_retencion !== null) {
+        this.formEdit.cod_tipo_retencion = res.retenciones.nb_tipo_retencion
+      }
     },
     deleteData(idpost) {
       this.$refs.methods.deleteData(`/proveedores/${idpost}`, 'getData', this.axiosConfig);
@@ -1156,6 +1158,9 @@ export default {
       if (`${this.form.cod_tipo_retencion.id}` !== "undefined") {
       this.form.cod_tipo_retencion = `${this.form.cod_tipo_retencion.id}`
       }
+      if (this.form.cod_tipo_retencion === "") {
+      delete this.form.cod_tipo_retencion
+      }
       this.$refs.methods.createData('/proveedores', this.form, 'getData', this.axiosConfig);
       this.resetForm()
     },
@@ -1164,7 +1169,7 @@ export default {
       if (`${this.formEdit.cod_tipo_retencion.id}` !== "undefined") {
       this.formEdit.cod_tipo_retencion = `${this.formEdit.cod_tipo_retencion.id}`
       }
-      if (`${this.formEdit.cod_tipo_retencion.id}` === "undefined") {
+      if (this.formEdit.cod_tipo_retencion.id === undefined) {
       delete this.formEdit.cod_tipo_retencion
       }
       this.formEdit.tipo_persona = this.formEdit.tipo_persona.value

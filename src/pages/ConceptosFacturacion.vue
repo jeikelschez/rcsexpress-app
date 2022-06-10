@@ -507,14 +507,14 @@ export default {
       ],
       form: {
         desc_concepto: "",
-        check_comision: "",
-        check_impuesto: "",
+        check_comision: "0",
+        check_impuesto: "0",
         cod_concepto: "",
       },
       formEdit: {
         desc_concepto: "",
-        check_comision: "",
-        check_impuesto: "",
+        check_comision: "0",
+        check_impuesto: "0",
         cod_concepto: "",
         id: "",
       },
@@ -542,6 +542,7 @@ export default {
       axiosConfig: {
         headers: {
           Authorization: `Bearer ${LocalStorage.getItem('token')}`,
+          cod_concepto: "1",
           tipo: "FA"
         }
       },
@@ -556,7 +557,8 @@ export default {
     };
   },
   mounted() {
-    this.getData('/coperacion', 'setData', 'conceptos');
+    this.getData('/coperacion', 'setDataIniciar', 'conceptos');
+    this.getData('/cfacturacion', 'setData', 'datos');
     this.$refs.desactivateCrud.desactivarCrud('c_roles', 'd_roles', 'u_roles', 'desactivarCrudRoles')
   },
   methods: {
@@ -601,7 +603,7 @@ export default {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
     },
     getDataSelect(url, call, dataRes) {
-      this.axiosConfig.headers.tipo = this.selectedConcepto.value
+      this.axiosConfig.headers.cod_concepto = this.selectedConcepto.id
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
     },
     setDataIniciar(res, dataRes) {
@@ -622,7 +624,7 @@ export default {
           if (e == this.datos.length - 1) break;
         }
       this.selectedConcepto = this.conceptos[0].desc_concepto;
-      this.getData('/cfactuaracion', 'setData', 'datos')
+      this.getData('/cfacturacion', 'setData', 'datos')
     },
     setData(res, dataRes) {
       this[dataRes] = res
@@ -653,27 +655,27 @@ export default {
       this.$refs.methods.deleteData(`/cfacturacion/${idpost}`, 'getData', this.axiosConfig);
     },
     createData() {
-      this.form.cod_concepto = this.form.cod_concepto.value
+      this.form.cod_concepto = this.form.cod_concepto.id
       this.$refs.methods.createData(`/cfacturacion`, this.form, 'getData', this.axiosConfig);
       this.resetForm();
     },
     putData() {
-      this.formEdit.cod_concepto = this.formEdit.cod_concepto.value
+      this.formEdit.cod_concepto = this.formEdit.cod_concepto.id
       this.$refs.methods.putData(`/cfacturacion/${this.formEdit.id}`, this.formEdit, 'getData', this.axiosConfig);
       this.resetFormEdit()
     },
 
     resetForm() {
       (this.form.desc_concepto = ""),
-      (this.form.check_comision = ""),
-      (this.form.check_impuesto = ""),
+      (this.form.check_comision = "0"),
+      (this.form.check_impuesto = "0"),
       (this.form.cod_concepto = ""),
       (this.create = false)
     },
     resetFormEdit() {
       (this.formEdit.desc_concepto = ""),
-      (this.formEdit.check_comision = ""),
-      (this.formEdit.check_impuesto = ""),
+      (this.formEdit.check_comision = "0"),
+      (this.formEdit.check_impuesto = "0"),
       (this.formEdit.cod_concepto = ""),
       (this.edit = false)
     },

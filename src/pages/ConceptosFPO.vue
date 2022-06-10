@@ -150,7 +150,7 @@
                       type="number"
                       step=".01"
                       lazy-rules
-                      :rules="[reglasNotNull4]"
+                      :rules="[reglasAllowNull4]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="scale" />
@@ -167,7 +167,7 @@
                       type="number"
                       step=".01"
                       lazy-rules
-                      :rules="[reglasNotNull4]"
+                      :rules="[reglasAllowNull4]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="scale" />
@@ -355,7 +355,7 @@
                       type="number"
                       step=".01"
                       lazy-rules
-                      :rules="[reglasNotNull4]"
+                      :rules="[reglasAllowNull4]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="scale" />
@@ -372,7 +372,7 @@
                       type="number"
                       step=".01"
                       lazy-rules
-                      :rules="[reglasNotNull4]"
+                      :rules="[reglasAllowNull4]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="scale" />
@@ -780,6 +780,13 @@ export default {
       if (val === "") {
         return "Debes Escribir Algo";
       }
+        if (val !== null !== "") {
+          if (val > 99.99) {
+            return "Monto Maximo";
+          }
+      }
+    },
+    reglasAllowNull4(val) {
         if (val !== null !== "") {
           if (val > 99.99) {
             return "Monto Maximo";

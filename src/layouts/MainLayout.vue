@@ -29,6 +29,10 @@
         <q-toolbar-title>SCEN - Sistema de Control de Encomiendas</q-toolbar-title>
 
          <q-space ></q-space>
+         <q-btn dense color="white" round style="margin-right:10px" clickable to="/m_manual" padding="xs">
+          <q-icon size="20px" name="question_mark" color="primary">
+          </q-icon>
+        </q-btn>
         <q-btn flat dense>
           <q-avatar size="42px">
             <img :src="url"/>
@@ -1520,8 +1524,6 @@ export default defineComponent ({
     },
     logout() {
       this.$refs.component.logoutUser()
-    },
-    close() {console.log('asdasd')
     },
   },
 });

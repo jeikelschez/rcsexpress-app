@@ -770,7 +770,7 @@ export default {
         },
         {
           name: "tipo_desc",
-          label: "Tipo de Cliente",
+          label: "Tipo de Agente",
           field: "tipo_desc",
           align: "left",
           sortable: true,
@@ -1024,6 +1024,8 @@ export default {
         api.get(`/agencias/${this.agenciaRef}/agentes`, this.axiosConfig)
         .then((res) => {
           this.agentes = res.data.agentes;
+          console.log(res)
+          console.log(this.agentes)
         })
     },
   },

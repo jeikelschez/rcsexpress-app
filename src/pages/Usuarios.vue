@@ -749,6 +749,11 @@ export default {
     getDatosIniciar() {
         this.agenciaRef2 = this.agencias[0].id;
         this.selectedAgencia = this.agencias[0];
+        api.get(`/agencias/${this.agenciaRef2}/roles`, this.axiosConfig)
+        .then((res) => {
+          this.roles = res.data.roles;
+          console.log(this.roles)
+        })
         api.get(`/agencias/${this.agenciaRef2}/usuarios`, this.axiosConfig)
         .then((res) => {
           this.usuarios = res.data.usuarios;
