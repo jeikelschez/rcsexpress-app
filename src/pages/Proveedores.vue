@@ -217,9 +217,15 @@
                   :rules="[reglasSelect]"
                   lazy-rules
                   @update:model-value="
-                  this.axiosConfig.headers.tipo_persona = form.tipo_persona.value;
-                  this.getData(`/mretenciones`,'setDataRetenciones','retenciones');
-                  this.form.cod_tipo_retencion = []"
+                    this.axiosConfig.headers.tipo_persona =
+                      form.tipo_persona.value;
+                    this.getData(
+                      `/mretenciones`,
+                      'setDataRetenciones',
+                      'retenciones'
+                    );
+                    this.form.cod_tipo_retencion = [];
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="group" />
@@ -322,7 +328,8 @@
                   lazy-rules
                   :rules="[reglasAllowNull50]"
                   @update:model-value="
-                    formEdit.nb_beneficiario = formEdit.nb_beneficiario.toUpperCase()
+                    formEdit.nb_beneficiario =
+                      formEdit.nb_beneficiario.toUpperCase()
                   "
                 >
                   <template v-slot:prepend>
@@ -359,7 +366,8 @@
                   :rules="[reglasNotNull20]"
                   lazy-rules
                   @update:model-value="
-                    formEdit.rif_proveedor = formEdit.rif_proveedor.toUpperCase()
+                    formEdit.rif_proveedor =
+                      formEdit.rif_proveedor.toUpperCase()
                   "
                 >
                   <template v-slot:prepend>
@@ -378,7 +386,8 @@
                   hint=""
                   lazy-rules
                   @update:model-value="
-                    formEdit.nit_proveedor = formEdit.nit_proveedor.toUpperCase()
+                    formEdit.nit_proveedor =
+                      formEdit.nit_proveedor.toUpperCase()
                   "
                 >
                   <template v-slot:prepend>
@@ -413,7 +422,8 @@
                   hint=""
                   lazy-rules
                   @update:model-value="
-                    formEdit.direccion_correo = formEdit.direccion_correo.toUpperCase()
+                    formEdit.direccion_correo =
+                      formEdit.direccion_correo.toUpperCase()
                   "
                 >
                   <template v-slot:prepend>
@@ -431,7 +441,8 @@
                   hint=""
                   lazy-rules
                   @update:model-value="
-                    formEdit.direccion_fiscal = formEdit.direccion_fiscal.toUpperCase()
+                    formEdit.direccion_fiscal =
+                      formEdit.direccion_fiscal.toUpperCase()
                   "
                 >
                   <template v-slot:prepend>
@@ -467,7 +478,8 @@
                   lazy-rules
                   class="pcform"
                   @update:model-value="
-                    formEdit.fax_proveedor = formEdit.fax_proveedor.toUpperCase()
+                    formEdit.fax_proveedor =
+                      formEdit.fax_proveedor.toUpperCase()
                   "
                 >
                   <template v-slot:prepend>
@@ -486,7 +498,8 @@
                   lazy-rules
                   type="email"
                   @update:model-value="
-                    formEdit.email_proveedor = formEdit.email_proveedor.toUpperCase()
+                    formEdit.email_proveedor =
+                      formEdit.email_proveedor.toUpperCase()
                   "
                 >
                   <template v-slot:prepend>
@@ -523,9 +536,15 @@
                   :options="tipo_persona"
                   lazy-rules
                   @update:model-value="
-                  this.axiosConfig.headers.tipo_persona = formEdit.tipo_persona.value;
-                  this.getData(`/mretenciones`,'setDataRetenciones','retenciones');
-                  this.formEdit.cod_tipo_retencion = []"
+                    this.axiosConfig.headers.tipo_persona =
+                      formEdit.tipo_persona.value;
+                    this.getData(
+                      `/mretenciones`,
+                      'setDataRetenciones',
+                      'retenciones'
+                    );
+                    this.formEdit.cod_tipo_retencion = [];
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="group" />
@@ -679,9 +698,13 @@
                       icon="edit"
                       :disabled="this.disabledEdit"
                       @click="
-                        getData(`/proveedores/${props.row.id}`, 'setDataEdit', 'formEdit');
+                        getData(
+                          `/proveedores/${props.row.id}`,
+                          'setDataEdit',
+                          'formEdit'
+                        );
                         edit = true;
-                        this.resetFormEdit()
+                        this.resetFormEdit();
                       "
                     ></q-btn>
                     <q-btn
@@ -732,8 +755,12 @@
                               icon="edit"
                               :disabled="this.disabledEdit"
                               @click="
-                                getData(`/proveedores/${props.row.id}`, 'setDataEdit', 'formEdit');
-                                this.resetFormEdit()
+                                getData(
+                                  `/proveedores/${props.row.id}`,
+                                  'setDataEdit',
+                                  'formEdit'
+                                );
+                                this.resetFormEdit();
                                 edit = true;
                               "
                             ></q-btn>
@@ -802,14 +829,18 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <methods ref="methods"
-    @get-Data="getData('/proveedores','setData','datos')"
-    @set-data="setData"
-    @set-data-retenciones="setDataRetenciones"
-    @set-Data-Edit="setDataEdit">
+    <methods
+      ref="methods"
+      @get-Data="getData('/proveedores', 'setData', 'datos')"
+      @set-data="setData"
+      @set-data-retenciones="setDataRetenciones"
+      @set-Data-Edit="setDataEdit"
+    >
     </methods>
-    <desactivate-crud ref="desactivateCrud"
-    @desactivar-Crud-Bancos="desactivarCrudBancos">
+    <desactivate-crud
+      ref="desactivateCrud"
+      @desactivar-Crud-Bancos="desactivarCrudBancos"
+    >
     </desactivate-crud>
   </q-page>
 </template>
@@ -823,14 +854,15 @@ import { useQuasar } from "quasar";
 
 import { LocalStorage } from "quasar";
 
-import methodsVue from 'src/components/methods.vue';
+import methodsVue from "src/components/methods.vue";
 
-import desactivateCrudVue from 'src/components/desactivateCrud.vue';
+import desactivateCrudVue from "src/components/desactivateCrud.vue";
 
 export default {
   components: {
-  "desactivate-crud": desactivateCrudVue,
-  "methods": methodsVue},
+    "desactivate-crud": desactivateCrudVue,
+    methods: methodsVue,
+  },
   name: "Bancos",
   data() {
     return {
@@ -930,8 +962,8 @@ export default {
       axiosConfig: {
         headers: {
           Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-          tipo_persona: '',
-          vigente: 's'
+          tipo_persona: "",
+          vigente: "s",
         },
       },
     };
@@ -959,8 +991,13 @@ export default {
     };
   },
   mounted() {
-    this.getData('/proveedores','setData','datos')
-    this.$refs.desactivateCrud.desactivarCrud('c_bancos', 'd_bancos', 'u_bancos', 'desactivarCrudBancos')
+    this.getData("/proveedores", "setData", "datos");
+    this.$refs.desactivateCrud.desactivarCrud(
+      "c_bancos",
+      "d_bancos",
+      "u_bancos",
+      "desactivarCrudBancos"
+    );
   },
   methods: {
     // Reglas
@@ -995,33 +1032,33 @@ export default {
       }
     },
     reglasNotNull100(val) {
-        if (val !== null !== "") {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-          if (val.length > 99) {
-            return "Deben ser Maximo 100 caracteres";
-          }
+      if ((val !== null) !== "") {
+        if (val.length < 3) {
+          return "Deben ser minimo 3 caracteres";
+        }
+        if (val.length > 99) {
+          return "Deben ser Maximo 100 caracteres";
+        }
       }
     },
     reglasNotNull20(val) {
-        if (val !== null !== "") {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-          if (val.length > 19) {
-            return "Deben ser Maximo 19 caracteres";
-          }
+      if ((val !== null) !== "") {
+        if (val.length < 3) {
+          return "Deben ser minimo 3 caracteres";
+        }
+        if (val.length > 19) {
+          return "Deben ser Maximo 19 caracteres";
+        }
       }
     },
     reglasNotNull50(val) {
-        if (val !== null !== "") {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-          if (val.length > 49) {
-            return "Deben ser Maximo 50 caracteres";
-          }
+      if ((val !== null) !== "") {
+        if (val.length < 3) {
+          return "Deben ser minimo 3 caracteres";
+        }
+        if (val.length > 49) {
+          return "Deben ser Maximo 50 caracteres";
+        }
       }
     },
     reglasAllowNull(val) {
@@ -1094,13 +1131,13 @@ export default {
     // Desactivar CRUD
     desactivarCrudBancos(createItem, deleteItem, updateItem) {
       if (createItem == true) {
-        this.disabledCreate = false
+        this.disabledCreate = false;
       }
       if (deleteItem == true) {
-        this.disabledDelete = false
+        this.disabledDelete = false;
       }
       if (updateItem == true) {
-        this.disabledEdit = false
+        this.disabledEdit = false;
       }
     },
 
@@ -1109,112 +1146,123 @@ export default {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
     },
     setData(res, dataRes) {
-      this[dataRes] = res
+      this[dataRes] = res;
       for (var e = 0, len = this.datos.length; e < len; e++) {
         if (this.datos[e].condicion_pago !== null) {
-          this.datos[e].condicion_pago = this.datos[e].condicion_pago + " Dias"
+          this.datos[e].condicion_pago = this.datos[e].condicion_pago + " Dias";
         }
-          if (e == this.datos.length - 1) break;
-        }
+        if (e == this.datos.length - 1) break;
+      }
     },
     setDataRetenciones(res, dataRes) {
-      this[dataRes] = res
+      this[dataRes] = res;
     },
     setDataEdit(res, dataRes) {
-      if (res.tipo_persona === 'J') {
-        this.axiosConfig.headers.tipo_persona = 'J',
-        this.getData(`/mretenciones`,'setDataRetenciones','retenciones')
+      if (res.tipo_persona === "J") {
+        (this.axiosConfig.headers.tipo_persona = "J");
+      } else if (res.tipo_persona === "N") {
+        (this.axiosConfig.headers.tipo_persona = "N");
       }
-      if (res.tipo_persona === 'N') {
-        this.axiosConfig.headers.tipo_persona = 'N',
-        this.getData(`/mretenciones`,'setDataRetenciones','retenciones')
-      }
-      this.formEdit.id = res.id
-      this.formEdit.condicion_pago = res.condicion_pago
-      this.formEdit.nb_proveedor = res.nb_proveedor
-      this.formEdit.nb_beneficiario = res.nb_beneficiario
-      this.formEdit.rif_proveedor = res.rif_proveedor
-      this.formEdit.nit_proveedor = res.nit_proveedor
-      this.formEdit.direccion_fiscal = res.direccion_fiscal
-      this.formEdit.direccion_correo = res.direccion_correo
-      this.formEdit.tlf_proveedor = res.tlf_proveedor
-      this.formEdit.fax_proveedor = res.fax_proveedor
-      this.formEdit.email_proveedor = res.email_proveedor
-      this.formEdit.observacion = res.observacion
-      this.formEdit.tipo_servicio = res.tipo_svc
-      this.formEdit.tipo_persona = res.tipo_desc
-      this.formEdit.flag_activo = res.activo_desc
+      this.getData(`/mretenciones`, "setDataRetenciones", "retenciones");
+      this.formEdit.id = res.id;
+      this.formEdit.condicion_pago = res.condicion_pago;
+      this.formEdit.nb_proveedor = res.nb_proveedor;
+      this.formEdit.nb_beneficiario = res.nb_beneficiario;
+      this.formEdit.rif_proveedor = res.rif_proveedor;
+      this.formEdit.nit_proveedor = res.nit_proveedor;
+      this.formEdit.direccion_fiscal = res.direccion_fiscal;
+      this.formEdit.direccion_correo = res.direccion_correo;
+      this.formEdit.tlf_proveedor = res.tlf_proveedor;
+      this.formEdit.fax_proveedor = res.fax_proveedor;
+      this.formEdit.email_proveedor = res.email_proveedor;
+      this.formEdit.observacion = res.observacion;
+      this.formEdit.tipo_servicio = res.tipo_svc;
+      this.formEdit.tipo_persona = res.tipo_desc;
+      this.formEdit.flag_activo = res.activo_desc;
       if (res.cod_tipo_retencion !== null) {
-        this.formEdit.cod_tipo_retencion = res.retenciones.nb_tipo_retencion
+        this.formEdit.cod_tipo_retencion = res.retenciones.nb_tipo_retencion;
       }
     },
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/proveedores/${idpost}`, 'getData', this.axiosConfig);
+      this.$refs.methods.deleteData(
+        `/proveedores/${idpost}`,
+        "getData",
+        this.axiosConfig
+      );
     },
     createData() {
-      this.form.tipo_servicio = this.form.tipo_servicio.value
-      this.form.tipo_persona = this.form.tipo_persona.value
-      this.form.flag_activo = this.form.flag_activo.value
+      this.form.tipo_servicio = this.form.tipo_servicio.value;
+      this.form.tipo_persona = this.form.tipo_persona.value;
+      this.form.flag_activo = this.form.flag_activo.value;
       if (`${this.form.cod_tipo_retencion.id}` !== "undefined") {
-      this.form.cod_tipo_retencion = `${this.form.cod_tipo_retencion.id}`
+        this.form.cod_tipo_retencion = `${this.form.cod_tipo_retencion.id}`;
       }
       if (this.form.cod_tipo_retencion === "") {
-      delete this.form.cod_tipo_retencion
+        delete this.form.cod_tipo_retencion;
       }
-      this.$refs.methods.createData('/proveedores', this.form, 'getData', this.axiosConfig);
-      this.resetForm()
+      this.$refs.methods.createData(
+        "/proveedores",
+        this.form,
+        "getData",
+        this.axiosConfig
+      );
+      this.resetForm();
     },
     putData() {
-      this.formEdit.tipo_servicio = this.formEdit.tipo_servicio.value
-      if (`${this.formEdit.cod_tipo_retencion.id}` !== "undefined") {
-      this.formEdit.cod_tipo_retencion = `${this.formEdit.cod_tipo_retencion.id}`
+      this.formEdit.tipo_servicio = this.formEdit.tipo_servicio.value;
+      if (!this.formEdit.cod_tipo_retencion.id) {
+        delete this.formEdit.cod_tipo_retencion;
+      } else {
+        this.formEdit.cod_tipo_retencion = this.formEdit.cod_tipo_retencion.id;
       }
-      if (this.formEdit.cod_tipo_retencion.id === undefined) {
-      delete this.formEdit.cod_tipo_retencion
-      }
-      this.formEdit.tipo_persona = this.formEdit.tipo_persona.value
-      this.formEdit.flag_activo = this.formEdit.flag_activo.value
-      this.$refs.methods.putData(`/proveedores/${this.formEdit.id}`, this.formEdit, 'getData', this.axiosConfig);
+      this.formEdit.tipo_persona = this.formEdit.tipo_persona.value;
+      this.formEdit.flag_activo = this.formEdit.flag_activo.value;
+      this.$refs.methods.putData(
+        `/proveedores/${this.formEdit.id}`,
+        this.formEdit,
+        "getData",
+        this.axiosConfig
+      );
       this.edit = false;
-      this.resetFormEdit()
+      this.resetFormEdit();
     },
-    
+
     resetForm() {
       (this.form.nb_proveedor = ""),
-      (this.form.nb_beneficiario = ""),
-      (this.form.rif_proveedor = ""),
-      (this.form.nit_proveedor = ""),
-      (this.form.direccion_fiscal = ""),
-      (this.form.direccion_correo = ""),
-      (this.form.tlf_proveedor = ""),
-      (this.form.fax_proveedor = ""),
-      (this.form.email_proveedor = ""),
-      (this.form.condicion_pago = ""),
-      (this.form.observacion = ""),
-      (this.form.tipo_servicio = ""),
-      (this.form.cod_tipo_retencion = ""),
-      (this.retenciones = []),
-      (this.form.tipo_persona = ""),
-      (this.form.flag_activo = ""),
-      (this.create = false);    
+        (this.form.nb_beneficiario = ""),
+        (this.form.rif_proveedor = ""),
+        (this.form.nit_proveedor = ""),
+        (this.form.direccion_fiscal = ""),
+        (this.form.direccion_correo = ""),
+        (this.form.tlf_proveedor = ""),
+        (this.form.fax_proveedor = ""),
+        (this.form.email_proveedor = ""),
+        (this.form.condicion_pago = ""),
+        (this.form.observacion = ""),
+        (this.form.tipo_servicio = ""),
+        (this.form.cod_tipo_retencion = ""),
+        (this.retenciones = []),
+        (this.form.tipo_persona = ""),
+        (this.form.flag_activo = ""),
+        (this.create = false);
     },
     resetFormEdit() {
       (this.formEdit.nb_proveedor = ""),
-      (this.formEdit.nb_beneficiario = ""),
-      (this.formEdit.rif_proveedor = ""),
-      (this.formEdit.nit_proveedor = ""),
-      (this.formEdit.direccion_fiscal = ""),
-      (this.formEdit.direccion_correo = ""),
-      (this.formEdit.tlf_proveedor = ""),
-      (this.formEdit.fax_proveedor = ""),
-      (this.formEdit.email_proveedor = ""),
-      (this.formEdit.condicion_pago = ""),
-      (this.retenciones = []),
-      (this.formEdit.observacion = ""),
-      (this.formEdit.tipo_servicio = ""),
-      (this.formEdit.cod_tipo_retencion = ""),
-      (this.formEdit.tipo_persona = ""),
-      (this.formEdit.flag_activo = "")
+        (this.formEdit.nb_beneficiario = ""),
+        (this.formEdit.rif_proveedor = ""),
+        (this.formEdit.nit_proveedor = ""),
+        (this.formEdit.direccion_fiscal = ""),
+        (this.formEdit.direccion_correo = ""),
+        (this.formEdit.tlf_proveedor = ""),
+        (this.formEdit.fax_proveedor = ""),
+        (this.formEdit.email_proveedor = ""),
+        (this.formEdit.condicion_pago = ""),
+        (this.retenciones = []),
+        (this.formEdit.observacion = ""),
+        (this.formEdit.tipo_servicio = ""),
+        (this.formEdit.cod_tipo_retencion = ""),
+        (this.formEdit.tipo_persona = ""),
+        (this.formEdit.flag_activo = "");
     },
   },
 };

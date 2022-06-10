@@ -11,7 +11,6 @@
                   v-model="form.placas"
                   label="Placa Vehículo"
                   class="pcform"
-                  input-class="input"
                   :rules="[reglasNotNull10]"
                   hint=""
                   lazy-rules
@@ -28,7 +27,6 @@
                   outlined
                   v-model="form.chofer"
                   label="Chofer"
-                  input-class="input"
                   :rules="[reglasAllowNull30]"
                   hint=""
                   lazy-rules
@@ -45,7 +43,6 @@
                   outlined
                   v-model="form.descripcion"
                   label="Descripción"
-                  input-class="input"
                   :rules="[reglasNotNull100]"
                   hint=""
                   lazy-rules
@@ -94,7 +91,6 @@
                   v-model="formEdit.placas"
                   label="Placa Vehículo"
                   class="pcform"
-                  input-class="input"
                   :rules="[reglasNotNull10]"
                   hint=""
                   lazy-rules
@@ -111,7 +107,6 @@
                   outlined
                   v-model="formEdit.chofer"
                   label="Chofer"
-                  input-class="input"
                   :rules="[reglasAllowNull30]"
                   hint=""
                   lazy-rules
@@ -128,7 +123,6 @@
                   outlined
                   v-model="formEdit.descripcion"
                   label="Descripción"
-                  input-class="input"
                   :rules="[reglasNotNull100]"
                   hint=""
                   lazy-rules
