@@ -67,7 +67,7 @@ import { useQuasar } from "quasar";
         if (LocalStorage.getItem('user') === true) {
         clearTimeout(this.refreshTimer);
         this.refreshTimer = null
-        this.refreshTimer = setTimeout(this.refreshToken, 1080 * 1000);}
+        this.refreshTimer = setTimeout(this.refreshToken, 1140 * 1000);}
       },
       refreshToken() {
         if (LocalStorage.getItem('user') === true) {
@@ -78,7 +78,10 @@ import { useQuasar } from "quasar";
          .then((res) => {
             if ((res.status = 201)) {
             LocalStorage.set('token', `${res.data.data.accessToken}`),
+            console.log(res)
             LocalStorage.set('user', true),
+            console.log(LocalStorage.getItem('token'))
+            window.location.reload()
             this.traducirToken();
             this.setRefreshTimer();
           }

@@ -3,9 +3,6 @@
     <q-card class="my-card">
       <q-img
         src="~assets/principal.jpg"
-        srcset="~assets/principal.jpg,
-             ~assets/principal.jpg 1.5x,
-             ~assets/principal.jpg 2x"
         basic
       >
       </q-img>

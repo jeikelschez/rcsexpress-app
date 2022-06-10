@@ -44,6 +44,9 @@
 @media screen and (max-width: 500px) {.paginaManual {margin-top:15px}}
 @media screen and (min-width: 1130px) {.inputManual {margin-left: 37px; text-align: center}}
 @media screen and (max-width: 1130px) {.hideSeparatorManual {display: none;}}
+@media screen and (max-width: 1080px) {.imageManualMovil {display: none;}}
+@media screen and (min-width: 1080px) {.imageManualPc {display: none;}}
+@media screen and (max-width: 1080px) {.textMovil {margin-top: 20px;}}
 .input {color: black;}
 .displayHide {display: none;}
 .displayShow {display: block;}

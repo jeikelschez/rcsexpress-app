@@ -29,7 +29,7 @@
         <q-toolbar-title>SCEN - Sistema de Control de Encomiendas</q-toolbar-title>
 
          <q-space ></q-space>
-         <q-btn dense color="white" round style="margin-right:10px" clickable to="/m_manual" padding="xs">
+        <q-btn dense color="white" round style="margin-right:10px" clickable to="/m_bancos" padding="xs">
           <q-icon size="20px" name="question_mark" color="primary">
           </q-icon>
         </q-btn>

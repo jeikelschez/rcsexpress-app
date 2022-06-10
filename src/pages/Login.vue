@@ -96,6 +96,7 @@ export default {
           if ((res.status = 201)) {
             LocalStorage.set('token', `${res.data.data.accessToken}`),
             LocalStorage.set('user', true),
+            LocalStorage.set('username', `${res.username}`),
             LocalStorage.set('refreshToken', `${res.data.data.refreshToken}`),
             this.$router.push('/dashboard');
             this.$refs.component.login()
