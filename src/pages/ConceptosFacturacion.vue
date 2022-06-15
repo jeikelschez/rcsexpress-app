@@ -543,7 +543,7 @@ export default {
         headers: {
           Authorization: `Bearer ${LocalStorage.getItem('token')}`,
           cod_concepto: "1",
-          tipo: "FA"
+          tipo: "8"
         }
       },
       pagination: ref({

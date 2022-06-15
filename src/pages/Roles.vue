@@ -163,7 +163,8 @@
               outlined
               standout
               label="Escoge una Agencia"
-              @update:model-value="getData(`/agencias/${this.selectedAgencia.id}/roles`, 'setDataRoles', 'roles')"
+              @update:model-value="this.axiosConfig.headers.agencia = this.selectedAgencia.id;
+              getData(`/roles`, 'setDataRoles', 'roles')"
             >
               <template v-slot:prepend>
                 <q-icon name="search" />
@@ -354,7 +355,8 @@
       @desactivar-Crud-Roles="desactivarCrudRoles"
     ></desactivate-crud>
     <methods ref="methods"
-      @get-Data="getData(`/agencias/${this.selectedAgencia.id}/roles`, 'setDataRoles', 'roles')"
+      @get-Data="this.axiosConfig.headers.agencia = this.selectedAgencia.id;
+      getData(`/roles`, 'setDataRoles', 'roles')"
       @set-Data-Roles="setDataRoles"
       @set-Data-Roles-Edit="setDataRolesEdit"
       @set-Data="setData"
@@ -439,6 +441,7 @@ export default {
       axiosConfig: {
         headers: {
           Authorization: `Bearer ${LocalStorage.getItem('token')}`,
+          agencia: ""
         }
       },
       pagination: ref({
@@ -514,7 +517,7 @@ export default {
       this.getDataIniciar();
     },
     setDataRoles(res, dataRes) {
-      this[dataRes] = res.roles
+      this[dataRes] = res
     },
     setDataRolesEdit(res, dataRes) {
       this[dataRes].id = res.id
@@ -548,9 +551,10 @@ export default {
     getDataIniciar() {
         this.agenciaRef2 = this.agencias[0].id;
         this.selectedAgencia = this.agencias[0];
-        api.get(`/agencias/${this.agenciaRef2}/roles`, this.axiosConfig)
+        this.axiosConfig.headers.agencia = this.agenciaRef2;
+        api.get(`/roles`, this.axiosConfig)
         .then((res) => {
-          this.roles = res.data.roles;
+          this.roles = res.data;
         })
     },
   },

@@ -276,9 +276,8 @@
                         option-label="desc_pais"
                         option-value="id"
                         @update:model-value="
-                          this.location_input = this.pais.id;
+                          this.axiosConfig.headers.pais = this.pais.id;
                           getDataLocalidades(
-                            `paises`,
                             'estados',
                             'setDataEstados'
                           );
@@ -303,19 +302,16 @@
                         option-label="desc_estado"
                         option-value="id"
                         @update:model-value="
-                          this.location_input = this.estado.id;
+                          this.axiosConfig.headers.estado = this.estado.id;
                           getDataLocalidades(
-                            'estados',
                             'municipios',
                             'setDataMunicipios'
                           );
                           getDataLocalidades(
-                            'estados',
                             'localidades',
                             'setDataLocalidades'
                           );
                           getDataLocalidades(
-                            'estados',
                             'ciudades',
                             'setDataCiudades'
                           );
@@ -358,10 +354,8 @@
                         option-value="id"
                         lazy-rules
                         @update:model-value="
-                          this.location_input =
-                            this.formClientes.cod_municipio.id;
+                          this.axiosConfig.headers.municipio = this.formClientes.cod_municipio.id;
                           getDataLocalidades(
-                            'municipios',
                             'parroquias',
                             'setDataParroquias'
                           );
@@ -774,9 +768,8 @@
                         option-label="desc_pais"
                         option-value="id"
                         @update:model-value="
-                          this.location_input = this.pais.id;
+                          this.axiosConfig.headers.pais = this.pais.id;
                           getDataLocalidades(
-                            `paises`,
                             'estados',
                             'setDataEstados'
                           );
@@ -801,19 +794,16 @@
                         option-label="desc_estado"
                         option-value="id"
                         @update:model-value="
-                          this.location_input = this.estado.id;
+                          this.axiosConfig.headers.estado = this.estado.id;
                           getDataLocalidades(
-                            'estados',
                             'municipios',
                             'setDataMunicipios'
                           );
                           getDataLocalidades(
-                            'estados',
                             'localidades',
                             'setDataLocalidades'
                           );
                           getDataLocalidades(
-                            'estados',
                             'ciudades',
                             'setDataCiudades'
                           );
@@ -856,10 +846,8 @@
                         option-value="id"
                         lazy-rules
                         @update:model-value="
-                          this.location_input =
-                            this.formEditClientes.cod_municipio.id;
+                          this.axiosConfig.headers.municipio = this.formEditClientes.cod_municipio.id;
                           getDataLocalidades(
-                            'municipios',
                             'parroquias',
                             'setDataParroquias'
                           );
@@ -1025,13 +1013,14 @@
               standout
               label="Escoge una Agencia"
               @update:model-value="
+                this.axiosConfig.headers.agencia = this.selectedAgencia.id;
                 getData(
-                  `/agencias/${this.selectedAgencia.id}/clientes`,
+                  `/clientes`,
                   'setDataClientes',
                   'clientes'
                 );
                 getData(
-                  `/agencias/${this.selectedAgencia.id}/agentes`,
+                  `/agentes`,
                   'setDataAgentes',
                   'agentes'
                 );
@@ -1237,8 +1226,9 @@
     <methods
       ref="methods"
       @get-data="
+      this.axiosConfig.headers.agencia = this.selectedAgencia.id;
         getData(
-          `/agencias/${this.selectedAgencia.id}/clientes`,
+          `/clientes`,
           'setDataClientes',
           'clientes'
         )
@@ -1404,6 +1394,10 @@ export default {
       axiosConfig: {
         headers: {
           Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          agencia: "",
+          pais: "",
+          estado: "",
+          municipio: ""
         },
       },
     };
@@ -1548,7 +1542,7 @@ export default {
       this.getDataIniciar();
     },
     setDataClientes(res, dataRes) {
-      this[dataRes] = res.clientes;
+      this[dataRes] = res;
         for (var e = 0, len = this.clientes.length; e < len; e++) {
           if (this.clientes[e].cte_decontado === "1") {
             this.clientes[e].cte_decontado = "🏴"
@@ -1588,24 +1582,26 @@ export default {
           var cod_estado = res.data.cod_estado;
           var cod_ciudad = this[dataRes].cod_ciudad;
 
-          api.get(`/estados/${cod_estado}/municipios`, this.axiosConfig)
+          this.axiosConfig.headers.estado = cod_estado
+          api.get(`/municipios`, this.axiosConfig)
             .then((res) => {
-              this.municipios = res.data.municipios;
+              this.municipios = res.data;
             });
 
-          api.get(`/municipios/${cod_municipio}/parroquias`, this.axiosConfig)
+          this.axiosConfig.headers.municipio = cod_municipio
+          api.get(`/parroquias`, this.axiosConfig)
             .then((res) => {
-              this.parroquias = res.data.parroquias;
+              this.parroquias = res.data;
+            });
+          
+          api.get(`/localidades`, this.axiosConfig)
+            .then((res) => {
+              this.localidades = res.data;
             });
 
-          api.get(`/estados/${cod_estado}/localidades`, this.axiosConfig)
+          api.get(`/ciudades`, this.axiosConfig)
             .then((res) => {
-              this.localidades = res.data.localidades;
-            });
-
-          api.get(`/estados/${cod_estado}/ciudades`, this.axiosConfig)
-            .then((res) => {
-              this.ciudades = res.data.ciudades;
+              this.ciudades = res.data;
             });
 
           api.get(`/ciudades/${cod_ciudad}`, this.axiosConfig).then((res) => {
@@ -1614,11 +1610,11 @@ export default {
 
           api.get(`/estados/${cod_estado}`, this.axiosConfig).then((res) => {
             this.estado = res.data.desc_estado;
-
-            api.get(`/paises/${res.data.cod_pais}/estados`, this.axiosConfig)
+            this.axiosConfig.headers.pais = res.data.cod_pais
+            api.get(`/estados`, this.axiosConfig)
               .then((res) => {
-                this.estados = res.data.estados;
-                this.pais = res.data.desc_pais;
+                this.estados = res.data;
+                this.pais = res.data[0].paises.desc_pais;
               });
           });
 
@@ -1751,37 +1747,40 @@ export default {
       this.agenciaRef = this.agencias[0].id;
       this.selectedAgencia = this.agencias[0];
       this.$refs.methods.getData(`/paises`, `setDataPaises`, `paises`, this.axiosConfig);
+      this.axiosConfig.headers.agencia = this.agenciaRef
       this.$refs.methods.getData(
-        `/agencias/${this.agenciaRef}/clientes`,
+        `/clientes`,
         "setDataClientes",
         `clientes`, this.axiosConfig
       );
       this.$refs.methods.getData(
-        `/agencias/${this.agenciaRef}/agentes`,
+        `/agentes`,
         `setDataAgentes`,
         `agentes`, this.axiosConfig
       );
     },
 
-    getDataLocalidades(location, sub_location, update) {
+    getDataLocalidades(sub_location, update) {
       this.$refs.methods.getData(
-        `/${location}/${this.location_input}/${sub_location}`,
+        `/${sub_location}`,
         `${update}`,
         `${sub_location}`, this.axiosConfig
       );
     },
     setDataAgentes(res, dataRes) {
-      this[dataRes] = res.agentes;
+      this[dataRes] = res;
     },
     setDataPaises(res, dataRes) {
       this[dataRes] = res;
     },
     setDataCiudades(res, dataRes) {
-      this[dataRes] = res.ciudades;
+      this[dataRes] = res;
       this.ciudad = "";
+      this.formEditClientes.cod_localidad = "";
+      this.formClientes.cod_localidad = "";
     },
     setDataEstados(res, dataRes) {
-      this[dataRes] = res.estados;
+      this[dataRes] = res;
       this.estado = "";
       this.ciudad = "";
       this.localidades = [];
@@ -1796,19 +1795,19 @@ export default {
       this.formClientes.cod_parroquia = "";
     },
     setDataMunicipios(res, dataRes) {
-      this[dataRes] = res.municipios;
+      this[dataRes] = res;
       this.formEditClientes.cod_parroquia = "";
       this.formEditClientes.cod_municipio = "";
       this.formClientes.cod_parroquia = "";
       this.formClientes.cod_municipio = "";
     },
     setDataParroquias(res, dataRes) {
-      this[dataRes] = res.parroquias;
+      this[dataRes] = res;
       this.formEditClientes.cod_parroquia = "";
       this.formClientes.cod_parroquia = "";
     },
     setDataLocalidades(res, dataRes) {
-      this[dataRes] = res.localidades;
+      this[dataRes] = res;
     },
   },
 };

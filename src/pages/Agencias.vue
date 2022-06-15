@@ -18,7 +18,8 @@
                   option-label="desc_pais"
                   option-value="id"
                   lazy-rules
-                  @update:model-value="getData(`/paises/${this.selectedPais.id}/estados`, 'setDataEstados', 'estados')"
+                  @update:model-value="this.axiosConfig.headers.pais = this.selectedPais.id;
+                  getData(`/estados`, 'setDataEstados', 'estados')"
                 >
                   <template v-slot:prepend>
                     <q-icon name="public" />
@@ -39,7 +40,8 @@
                   option-label="desc_estado"
                   option-value="id"
                   lazy-rules
-                  @update:model-value="getData(`/estados/${this.selectedEstado.id}/ciudades`, 'setDataCiudades', 'ciudades')"
+                  @update:model-value="this.axiosConfig.headers.estado = this.selectedEstado.id;
+                  getData(`/ciudades`, 'setDataCiudades', 'ciudades')"
                 >
                   <template v-slot:prepend>
                     <q-icon name="public" />
@@ -271,7 +273,8 @@
                   option-label="desc_pais"
                   option-value="id"
                   lazy-rules
-                  @update:model-value="getData(`/paises/${this.selectedPais.id}/estados`, 'setDataEstados', 'estados')"
+                  @update:model-value="this.axiosConfig.headers.pais = this.selectedPais.id;
+                  getData(`/estados`, 'setDataEstados', 'estados')"
                 >
                   <template v-slot:prepend>
                     <q-icon name="public" />
@@ -291,7 +294,8 @@
                   option-label="desc_estado"
                   option-value="id"
                   lazy-rules
-                  @update:model-value="getData(`/estados/${this.selectedEstado.id}/ciudades`, 'setDataCiudades', 'ciudades')"
+                  @update:model-value="this.axiosConfig.headers.estado = this.selectedEstado.id;
+                  getData(`/ciudades`, 'setDataCiudades', 'ciudades')"
                 >
                   <template v-slot:prepend>
                     <q-icon name="public" />
@@ -818,6 +822,8 @@ export default {
       axiosConfig: {
         headers: {
           Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          pais: "",
+          estado: ""
         },
       },
     };
@@ -948,29 +954,31 @@ export default {
       this.selectedCiudadEdit = res.ciudades.cod_estado,
       this.selectedCiudad = res.ciudades.desc_ciudad;
       this.ciudadEdit = res.ciudades.id
-      this.$refs.methods.getDataEdit(`/estados/${this.selectedCiudadEdit}/ciudades`, 'setDataEditCiudades', 'ciudades', this.axiosConfig);
+      this.axiosConfig.headers.estado = this.selectedCiudadEdit;
+      this.$refs.methods.getDataEdit(`/ciudades`, 'setDataEditCiudades', 'ciudades', this.axiosConfig);
     },
     setDataEditCiudades(res, dataRes) {
-      this[dataRes] = res.ciudades
-      this.selectedEstadoEdit = res.cod_pais;
-      this.selectedEstado = res.desc_estado;
+      this[dataRes] = res
+      this.selectedEstadoEdit = res[0].estados.cod_pais;
+      this.selectedEstado = res[0].estados.desc_estado;
+      this.axiosConfig.headers.pais = this.selectedEstadoEdit;
       this.$refs.methods.getDataEdit(
-        `/paises/${this.selectedEstadoEdit}/estados`, 'setDataEditEstados', 'estados', this.axiosConfig);
+        `/estados`, 'setDataEditEstados', 'estados', this.axiosConfig);
     },
     setDataEditEstados(res, dataRes) {
-      this[dataRes] = res.estados
-      this.selectedPais = res.desc_pais;
+      this[dataRes] = res
+      this.selectedPais = res[0].paises.desc_pais;
     },
 
     setDataEstados(res, dataRes) {
-      this[dataRes] = res.estados
+      this[dataRes] = res
       this.selectedEstado = ''
       this.selectedCiudad = ''
       this.ciudades = ''
     },
     setDataCiudades(res, dataRes) {
       this.selectedCiudad = ''
-      this[dataRes] = res.ciudades
+      this[dataRes] = res
     },
     
     deleteDato(idpost) {

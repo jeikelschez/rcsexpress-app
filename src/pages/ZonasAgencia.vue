@@ -159,7 +159,8 @@
               outlined
               standout
               label="Escoge una Agencia"
-              @update:model-value="getData(`/agencias/${this.selectedAgencia.id}/zonas`, 'setDataZonas', 'zonas')"
+              @update:model-value="this.axiosConfig.headers.agencia = this.selectedAgencia.id;
+              getData(`/zonas`, 'setDataZonas', 'zonas')"
             >
               <template v-slot:prepend>
                 <q-icon name="search" />
@@ -350,7 +351,8 @@
       @desactivar-Crud-Zonas="desactivarCrudZonas"
     ></desactivate-crud>
     <methods ref="methods"
-      @get-Data="getData(`/agencias/${this.selectedAgencia.id}/zonas`, 'setDataZonas', 'zonas')"
+      @get-Data="this.axiosConfig.headers.agencia = this.selectedAgencia.id;
+      getData(`/zonas`, 'setDataZonas', 'zonas')"
       @set-Data-Zonas="setDataZonas"
       @set-Data-Zonas-Edit="setDataZonasEdit"
       @set-Data="setData"
@@ -447,6 +449,7 @@ export default {
       axiosConfig: {
         headers: {
           Authorization: `Bearer ${LocalStorage.getItem('token')}`,
+          agencia: ""
         }
       },
       pagination: ref({
@@ -522,7 +525,7 @@ export default {
       this.getDataIniciar();
     },
     setDataZonas(res, dataRes) {
-      this[dataRes] = res.zonas
+      this[dataRes] = res
     },
     setDataZonasEdit(res, dataRes) {
       this[dataRes].id = res.id
@@ -561,9 +564,10 @@ export default {
     getDataIniciar() {
         this.agenciaRef = this.agencias[0].id;
         this.selectedAgencia = this.agencias[0];
-        api.get(`/agencias/${this.agenciaRef}/zonas`, this.axiosConfig)
+        this.axiosConfig.headers.agencia = this.agenciaRef
+        api.get(`/zonas`, this.axiosConfig)
         .then((res) => {
-          this.zonas = res.data.zonas;
+          this.zonas = res.data;
         })
     },
   },

@@ -30,6 +30,8 @@
                 transition-show="flip-up"
                 transition-hide="flip-down"
                 :options="tipoDeOperacion"
+                option-label="descripcion"
+                option-value="id"
                 v-model="form.tipo"
                 outlined
                 standout
@@ -122,6 +124,8 @@
                 transition-show="flip-up"
                 transition-hide="flip-down"
                 :options="tipoDeOperacion"
+                option-label="descripcion"
+                option-value="id"
                 v-model="formEdit.tipo"
                 outlined
                 standout
@@ -203,11 +207,14 @@
               transition-show="flip-up"
               transition-hide="flip-down"
               :options="tipoDeOperacion"
+              option-label="descripcion"
+              option-value="id"
               v-model="selectedTipo"
               outlined
               standout
               label="Tipo de Operación"
-              @update:model-value="getDataSelect(`/coperacion`, 'setDataConceptos', 'datos')"
+              @update:model-value="this.axiosConfig.headers.tipo = this.selectedTipo.id;
+              getDataSelect(`/coperacion`, 'setDataConceptos', 'datos')"
             >
               <template v-slot:prepend>
                 <q-icon name="search" />
@@ -402,6 +409,7 @@
       @set-Data-Conceptos="setDataConceptos"
       @set-Data-Iniciar="setDataIniciar"
       @set-Data-Edit="setDataEdit"
+      @set-Data-Tipos="setDataTipos"
     ></methods>
   </q-page>
 </template>
@@ -459,20 +467,7 @@ export default {
         tipo: "",
         afecta_estado: "N"
       },
-      tipoDeOperacion: [
-        { label: "Facturación", value: "FA" },
-        { label: "Notas De Crédito", value: "NC" },
-        { label: "Notas De Débito", value: "ND" },
-        { label: "Gastos De Ventas", value: "DCO" },
-        { label: "Gastos De Administración", value: "DGA" },
-        { label: "Anulación de Cheques", value: "ACH" },
-        { label: "Anulación de Guías y Facturas", value: "AGF" },
-        { label: "Anulación Guías Por Inutilización", value: "AGI" },
-        { label: "Anulación Notas Contables", value: "AGI" },
-        { label: "Anulación De Guías Y Facturas", value: "ANC" },
-        { label: "Motivo De Retraso En Entrega", value: "MRE" },
-        { label: "Costos", value: "CO" },
-      ],
+      tipoDeOperacion: [],
       datos: [],
       selected: [],
       selectedTipo: [],
@@ -497,7 +492,8 @@ export default {
       axiosConfig: {
         headers: {
           Authorization: `Bearer ${LocalStorage.getItem('token')}`,
-          tipo: "FA"
+          tipo: "1",
+          fuente: "OP"
         }
       },
       pagination: ref({
@@ -584,19 +580,19 @@ export default {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
     },
     validationSelect() {
-      if (this.form.tipo.value == "DGA") {
+      if (this.form.tipo.codigo == "DGA") {
           var element = document.getElementById("select");
           element.classList.remove("displayHide");
           element.classList.add("displayShow");
           this.disable = false
       }
-      if (this.form.tipo.value == "DCO") {
+      if (this.form.tipo.codigo == "DCO") {
           var element = document.getElementById("select");
           element.classList.remove("displayHide");
           element.classList.add("displayShow");
           this.disable = false
       };
-      if (this.form.tipo.value !== "DGA" && this.form.tipo.value !== "DCO") {
+      if (this.form.tipo.codigo !== "DGA" && this.form.tipo.codigo !== "DCO") {
         var element = document.getElementById("select");
         element.classList.remove("displayShow");
         element.classList.add("displayHide");
@@ -604,19 +600,19 @@ export default {
       }
     },
     validationSelectEdit() {
-      if (this.formEdit.tipo.value == "DGA") {
+      if (this.formEdit.tipo.codigo == "DGA") {
           var element = document.getElementById("selectEdit");
           element.classList.remove("displayHide");
           element.classList.add("displayShow");
           this.disableEdit = false
       }
-      if (this.formEdit.tipo.value == "DCO") {
+      if (this.formEdit.tipo.codigo == "DCO") {
           var element = document.getElementById("selectEdit");
           element.classList.remove("displayHide");
           element.classList.add("displayShow");
           this.disableEdit = false
       };
-      if (this.formEdit.tipo.value !== "DGA" && this.formEdit.tipo.value !== "DCO") {
+      if (this.formEdit.tipo.codigo !== "DGA" && this.formEdit.tipo.codigo !== "DCO") {
         var element = document.getElementById("selectEdit");
         element.classList.remove("displayShow");
         element.classList.add("displayHide");
@@ -624,12 +620,16 @@ export default {
       }
     },
     getDataSelect(url, call, dataRes) {
-      this.axiosConfig.headers.tipo = this.selectedTipo.value
+      this.axiosConfig.headers.tipo = this.selectedTipo.id
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
     },
     setDataIniciar(res, dataRes) {
       this[dataRes] = res
-      this.selectedTipo = res[0].tipos.descripcion
+      this.getData('/tipos', 'setDataTipos', 'tipoDeOperacion')
+    },
+    setDataTipos(res, dataRes) {
+      this[dataRes] = res
+      this.selectedTipo = res[0].descripcion
     },
     setDataConceptos(res, dataRes) {
       this[dataRes] = res
@@ -663,12 +663,12 @@ export default {
       this.$refs.methods.deleteData(`/coperacion/${idpost}`, 'getData', this.axiosConfig);
     },
     createData() {
-      this.form.tipo = this.form.tipo.value
+      this.form.tipo = this.form.tipo.id
       this.$refs.methods.createData(`/coperacion`, this.form, 'getData', this.axiosConfig);
       this.resetForm();
     },
     putData() {
-      this.formEdit.tipo = this.formEdit.tipo.value
+      this.formEdit.tipo = this.formEdit.tipo.id
       this.$refs.methods.putData(`/coperacion/${this.formEdit.id}`, this.formEdit, 'getData', this.axiosConfig);
       this.resetFormEdit()
     },

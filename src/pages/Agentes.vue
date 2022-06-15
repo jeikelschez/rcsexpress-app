@@ -528,8 +528,9 @@
               v-model="selectedAgencia"
               outlined
               standout
-              label="Escoge un Banco"
-              @update:model-value="getData(`/agencias/${this.selectedAgencia.id}/agentes`, 'setDataAgentes', 'agentes')"
+              label="Escoge una Agencia"
+              @update:model-value="this.axiosConfig.headers.agencia = this.selectedAgencia.id;
+              getData(`/agentes`, 'setDataAgentes', 'agentes')"
             >
               <template v-slot:prepend>
                 <q-icon name="search" />
@@ -719,7 +720,9 @@
       @desactivar-Crud-Roles="desactivarCrudRoles"
     ></desactivate-crud>
     <methods ref="methods"
-      @get-Data="getData(`/agencias/${this.selectedAgencia.id}/agentes`, 'setDataAgentes', 'agentes')"
+      @get-Data="
+      this.axiosConfig.headers.agencia = this.selectedAgencia.id;
+      getData(`/agentes`, 'setDataAgentes', 'agentes')"
       @set-Data-Agentes="setDataAgentes"
       @set-Data-Agentes-Edit="setDataAgentesEdit"
       @set-Data="setData"
@@ -953,7 +956,7 @@ export default {
       this.getDataIniciar();
     },
     setDataAgentes(res, dataRes) {
-      this[dataRes] = res.agentes
+      this[dataRes] = res
     },
     setDataAgentesEdit(res, dataRes) {
       this[dataRes].id = res.id
@@ -1021,11 +1024,10 @@ export default {
     getDataIniciar() {
         this.agenciaRef = this.agencias[0].id;
         this.selectedAgencia = this.agencias[0];
-        api.get(`/agencias/${this.agenciaRef}/agentes`, this.axiosConfig)
+        this.axiosConfig.headers.agencia = this.agenciaRef
+        api.get(`/agentes`, this.axiosConfig)
         .then((res) => {
-          this.agentes = res.data.agentes;
-          console.log(res)
-          console.log(this.agentes)
+          this.agentes = res.data;
         })
     },
   },

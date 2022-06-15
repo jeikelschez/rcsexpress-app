@@ -229,7 +229,8 @@
               outlined
               standout
               label="Escoge un Banco"
-              @update:model-value="getData(`/bancos/${this.selectedBanco.id}/cuentas`, 'setDataCuentas', 'cuentas')"
+              @update:model-value="this.axiosConfig.headers.banco = this.selectedBanco.id;
+              getData(`/cuentas`, 'setDataCuentas', 'cuentas')"
             >
               <template v-slot:prepend>
                 <q-icon name="search" />
@@ -420,7 +421,8 @@
       @desactivar-Crud-Roles="desactivarCrudRoles"
     ></desactivate-crud>
     <methods ref="methods"
-      @get-Data="getData(`/bancos/${this.selectedBanco.id}/cuentas`, 'setDataCuentas', 'cuentas')"
+      @get-Data="this.axiosConfig.headers.banco = this.selectedBanco.id;
+      getData(`/cuentas`, 'setDataCuentas', 'cuentas')"
       @set-Data-Cuentas="setDataCuentas"
       @set-Data-Cuentas-Edit="setDataRolesEdit"
       @set-Data="setData"
@@ -539,6 +541,7 @@ export default {
       axiosConfig: {
         headers: {
           Authorization: `Bearer ${LocalStorage.getItem('token')}`,
+          banco: ""
         }
       },
       pagination: ref({
@@ -614,7 +617,7 @@ export default {
       this.getDataIniciar();
     },
     setDataCuentas(res, dataRes) {
-      this[dataRes] = res.cuentas
+      this[dataRes] = res
     },
     setDataRolesEdit(res, dataRes) {
       this[dataRes].id = res.id
@@ -659,9 +662,10 @@ export default {
     getDataIniciar() {
         this.bancoRef = this.bancos[0].id;
         this.selectedBanco = this.bancos[0];
-        api.get(`/bancos/${this.bancoRef}/cuentas`, this.axiosConfig)
+        this.axiosConfig.headers.banco = this.bancoRef;
+        api.get(`/cuentas`, this.axiosConfig)
         .then((res) => {
-          this.cuentas = res.data.cuentas;
+          this.cuentas = res.data;
         })
     },
   },

@@ -702,7 +702,8 @@
                     outlined
                     standout
                     label="Escoge un país"
-                    @update:model-value="getDataEstados(`/paises/${this.selectedPais.id}/estados`, 'setDataEstados', 'estados')"
+                    @update:model-value="this.axiosConfig.headers.pais = this.selectedPais.id;
+                    getDataEstados(`/estados`, 'setDataEstados', 'estados')"
                   >
                     <template v-slot:prepend>
                       <q-icon name="search" />
@@ -889,7 +890,8 @@
                     outlined
                     standout
                     label="Escoge un país"
-                    @update:model-value="getDataEstadosSelect(`/paises/${this.selectedPais2.id}/estados`, 'setDataEstadosSelect', 'estadosCiudades')"
+                    @update:model-value="this.axiosConfig.headers.pais = this.selectedPais2.id;
+                    getDataEstadosSelect(`/estados`, 'setDataEstadosSelect', 'estadosCiudades')"
                   >
                     <template v-slot:prepend>
                       <q-icon name="search" />
@@ -910,7 +912,8 @@
                     outlined
                     standout
                     label="Escoge un estado"
-                    @update:model-value="getDataCiudades(`/estados/${this.selectedEstado.id}/ciudades`, 'setDataCiudades', 'ciudades')"
+                    @update:model-value="this.axiosConfig.headers.estado = this.selectedEstado.id;
+                    getDataCiudades(`/ciudades`, 'setDataCiudades', 'ciudades')"
                   >
                     <template v-slot:prepend>
                       <q-icon name="search" />
@@ -1149,8 +1152,10 @@
 
     <methods ref="methods"
     @get-Data-Paises="getDataPaises('/paises', 'setData', 'paises')"
-    @get-Data-Estados="getDataEstados(`/paises/${this.selectedPais.id}/estados`, 'setDataEstados', 'estados')"
-    @get-Data-Ciudades="getDataCiudades(`/estados/${this.selectedEstado.id}/ciudades`, 'setDataCiudades', 'ciudades')"
+    @get-Data-Estados="this.axiosConfig.headers.pais = this.selectedPais.id;
+    getDataEstados(`/estados`, 'setDataEstados', 'estados')"
+    @get-Data-Ciudades="this.axiosConfig.headers.estado = this.selectedEstado.id;
+    getDataCiudades(`/ciudades`, 'setDataCiudades', 'ciudades')"
     @set-Data="setData"
     @set-Data-Estados="setDataEstados"
     @set-Data-Paises-Edit="setDataPaisesEdit"
@@ -1369,6 +1374,8 @@ export default {
       axiosConfig: {
         headers: {
           Authorization: `Bearer ${LocalStorage.getItem('token')}`,
+          pais: "",
+          estado: ""
         }
       },
       pagination: ref({
@@ -1464,7 +1471,7 @@ export default {
     },
     setData(res, dataRes) {
       this[dataRes] = res
-      this.getDataIniciar('/paises', 'setData', 'paises');
+      this.getDataIniciar();
     }, 
     setDataPaisesEdit(res, dataRes) {
       this[dataRes].desc_pais = res.desc_pais;
@@ -1500,7 +1507,7 @@ export default {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
     },
     setDataEstados(res, dataRes) {
-      this[dataRes] = res.estados
+      this[dataRes] = res
     },
     setDataEstadosEdit(res, dataRes) {
       this[dataRes].desc_estado = res.desc_estado;
@@ -1534,14 +1541,14 @@ export default {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
     },
     setDataEstadosSelect(res, dataRes) {
-      this[dataRes] = res.estados
+      this[dataRes] = res
       this.selectedEstado = "";
     },
     getDataCiudades(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
     },
     setDataCiudades(res, dataRes) {
-      this[dataRes] = res.ciudades;
+      this[dataRes] = res;
     },
     setDataCiudadesEdit(res, dataRes) {
       this[dataRes].desc_ciudad = res.desc_ciudad;
@@ -1588,15 +1595,17 @@ export default {
       this.selectedPais = this.paises[0]
       this.selectedPais2 = this.paises[0];
       this.paisRef = this.paises[0].id;
-      api.get(`/paises/${this.paisRef2}/estados`, this.axiosConfig)
+      this.axiosConfig.headers.pais = this.paisRef2
+      api.get(`/estados`, this.axiosConfig)
       .then((res) => {
-        this.estados = res.data.estados;
-        this.selectedEstado = res.data.estados[0];
-        this.estadosCiudades = res.data.estados;
-        this.estadoRef = res.data.estados[0].id;
-        api.get(`/estados/${this.estadoRef}/ciudades`, this.axiosConfig)
+        this.estados = res.data;
+        this.selectedEstado = res.data[0];
+        this.estadosCiudades = res.data;
+        this.estadoRef = res.data[0].id;
+        this.axiosConfig.headers.estado = this.estadoRef
+        api.get(`/ciudades`, this.axiosConfig)
         .then((res) => {
-        this.ciudades = res.data.ciudades;
+        this.ciudades = res.data;
         })
       })
     },

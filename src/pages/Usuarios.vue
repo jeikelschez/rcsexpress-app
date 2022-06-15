@@ -94,7 +94,8 @@
                   lazy-rules
                   transition-show="flip-up"
                   transition-hide="flip-down"
-                  @update:model-value="getData(`/agencias/${this.formUsuarios.cod_agencia.id}/roles`, 'setDataRoles', 'roles')"
+                  @update:model-value="this.axiosConfig.headers.agencia = this.formUsuarios.cod_agencia.id;
+                  getData(`/roles`, 'setDataRoles', 'roles')"
                 >
                   <template v-slot:prepend>
                     <q-icon name="apartment" />
@@ -223,7 +224,8 @@
                   lazy-rules
                   transition-show="flip-up"
                   transition-hide="flip-down"
-                  @update:model-value="getData(`/agencias/${this.formEditUsuarios.cod_agencia.id}/roles`, 'setDataRoles', 'roles')"
+                  @update:model-value="this.axiosConfig.headers.agencia = this.formEditUsuarios.cod_agencia.id;
+                  getData(`/roles`, 'setDataRoles', 'roles')"
                 >
                   <template v-slot:prepend>
                     <q-icon name="apartment" />
@@ -303,7 +305,8 @@
               outlined
               standout
               label="Escoge una Agencia"
-              @update:model-value="getData(`/agencias/${this.selectedAgencia.id}/usuarios`, 'setDataUsuarios', 'usuarios')"
+              @update:model-value="this.axiosConfig.headers.agencia = this.selectedAgencia.id;
+              getData(`/usuarios`, 'setDataUsuarios', 'usuarios')"
             >
               <template v-slot:prepend>
                 <q-icon name="search" />
@@ -491,8 +494,10 @@
       </q-card>
     </q-dialog>
     <methods ref="methods"
-      @get-Data="getData(`/agencias/${this.selectedAgencia.id}/usuarios`, 'setDataRoles', 'usuarios')"
-      @get-Data-Usuarios="getData(`/agencias/${this.selectedAgencia.id}/usuarios`, 'setDataUsuarios', 'usuarios')"
+      @get-Data="this.axiosConfig.headers.agencia = this.selectedAgencia.id;
+      getData(`/usuarios`, 'setDataRoles', 'usuarios')"
+      @get-Data-Usuarios="this.axiosConfig.headers.agencia = this.selectedAgencia.id;
+      getData(`/usuarios`, 'setDataUsuarios', 'usuarios')"
       @set-Data-Usuarios="setDataUsuarios"
       @set-Data-Usuarios-Edit="setDataUsuariosEdit"
       @set-Data-Roles="setDataRoles"
@@ -608,6 +613,7 @@ export default {
       axiosConfig: {
         headers: {
           Authorization: `Bearer ${LocalStorage.getItem('token')}`,
+          agencia: ""
         }
       },
       pagination: ref({
@@ -694,10 +700,10 @@ export default {
       this.getDatosIniciar()
     },
     setDataUsuarios(res, dataRes) {
-      this[dataRes] = res.usuarios
+      this[dataRes] = res
     },
     setDataRoles(res, dataRes) {
-      this[dataRes] = res.roles
+      this[dataRes] = res
       this.formEditUsuarios.cod_rol = ''
     },
     setDataUsuariosEdit(res, dataRes) {
@@ -707,7 +713,8 @@ export default {
       this[dataRes].cod_rol = res.roles.descripcion;
       this[dataRes].activo = res.activo_desc;
       this[dataRes].cod_agencia = this.selectedAgencia;
-      this.getData(`/agencias/${this.formEditUsuarios.cod_agencia.id}/roles`, 'setDataRolesIniciar', 'roles')
+      this.axiosConfig.headers.agencia = this.formEditUsuarios.cod_agencia.id;
+      this.getData(`/roles`, 'setDataRolesIniciar', 'roles')
     },
     deleteData(idpost) {
       this.$refs.methods.deleteData(`/usuarios/${idpost}`, 'getDataUsuarios', this.axiosConfig);
@@ -749,18 +756,18 @@ export default {
     getDatosIniciar() {
         this.agenciaRef2 = this.agencias[0].id;
         this.selectedAgencia = this.agencias[0];
-        api.get(`/agencias/${this.agenciaRef2}/roles`, this.axiosConfig)
+        this.axiosConfig.headers.agencia = this.agenciaRef2
+        api.get(`/roles`, this.axiosConfig)
         .then((res) => {
-          this.roles = res.data.roles;
-          console.log(this.roles)
+          this.roles = res.data;
         })
-        api.get(`/agencias/${this.agenciaRef2}/usuarios`, this.axiosConfig)
+        api.get(`/usuarios`, this.axiosConfig)
         .then((res) => {
-          this.usuarios = res.data.usuarios;
+          this.usuarios = res.data;
         })
     },
     setDataRolesIniciar(res, dataRes) {
-      this[dataRes] = res.roles
+      this[dataRes] = res
     },
   },
 };

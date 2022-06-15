@@ -75,8 +75,9 @@
               standout
               label="Escoge una Agencia"
               @update:model-value="
+                this.axiosConfig.headers.agencia = this.selectedAgencia.id;
                 getData(
-                  `/agencias/${this.selectedAgencia.id}/roles`,
+                  `/roles`,
                   'setDataRoles',
                   'rolesPermisos'
                 )
@@ -104,8 +105,9 @@
               standout
               label="Escoge un Rol"
               @update:model-value="
+                this.axiosConfig.headers.rol = this.selectedRol.id;
                 getData(
-                  `/roles/${this.selectedRol.id}/permisos`,
+                  `/permisos`,
                   'setDataPermisos',
                   'permisos'
                 )
@@ -240,7 +242,8 @@
       @desactivar-Crud-Permisologia="desactivarCrudPermisologia"
     ></desactivate-crud>
     <methods ref="methods"
-      @get-Data-Permisos="getData(`/roles/${this.selectedRol.id}/permisos`, 'setDataPermisos','permisos')"
+      @get-Data-Permisos="this.axiosConfig.headers.rol = this.selectedRol.id;
+      getData(`/permisos`, 'setDataPermisos','permisos')"
       @set-data-Roles="setDataRoles"
       @set-data-Permisos="setDataPermisos"
       @set-Data="setData"
@@ -371,6 +374,8 @@ export default {
       axiosConfig: {
         headers: {
           Authorization: `Bearer ${LocalStorage.getItem('token')}`,
+          agencia: "",
+          rol: ""
         }
       },
       pagination: ref({
@@ -462,12 +467,12 @@ export default {
     },
     // Metodos para permisos
     setDataRoles(res, dataRes) {
-      this[dataRes] = res.roles;
+      this[dataRes] = res;
       this.selectedRol = "";
     },
     setDataPermisos(res, dataRes) {
-      this[dataRes] = res.permisos;
-      this.permisosDuplicados = res.permisos;
+      this[dataRes] = res;
+      this.permisosDuplicados = res;
     },
 
     deleteData(selected) {
@@ -525,16 +530,17 @@ export default {
     getDataIniciar() {
       this.selectedAgencia = this.agencias[0];
       this.agenciaRef = this.agencias[0].id;
-      api.get(`/agencias/${this.agenciaRef}/roles`, this.axiosConfig)
+      this.axiosConfig.headers.agencia = this.agenciaRef;
+      api.get(`/roles`, this.axiosConfig)
       .then((res) => {
-        this.selectedRol = res.data.roles[0];
-        this.rolesPermisos = res.data.roles;
-        this.rolesRef = res.data.roles[0].id;
-
-        api.get(`/roles/${this.rolesRef}/permisos`, this.axiosConfig)
+        this.selectedRol = res.data[0];
+        this.rolesPermisos = res.data;
+        this.rolesRef = res.data[0].id;
+        this.axiosConfig.headers.rol = this.rolesRef;
+        api.get(`/permisos`, this.axiosConfig)
         .then((res) => {
-          this.permisos = res.data.permisos;
-          this.permisosDuplicados = res.data.permisos;
+          this.permisos = res.data;
+          this.permisosDuplicados = res.data;
         });
       });
     },
