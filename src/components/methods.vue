@@ -50,6 +50,7 @@ import { useQuasar } from "quasar";
 
     methods: {
       getData: function(url, llamada, dataRes, header) {
+      header.headers.Authorization = `Bearer ${LocalStorage.getItem("token")}`
       api.get(url, header)
       .then((res) => {
         this.$emit(llamada, res.data, dataRes)
@@ -66,6 +67,7 @@ import { useQuasar } from "quasar";
       });
       },
       getDataEdit: function(url, llamada, dataRes, header) {
+      header.headers.Authorization = `Bearer ${LocalStorage.getItem("token")}`
       api.get(url, header)
       .then((res) => {
         this.$emit(llamada, res.data, dataRes)
@@ -82,6 +84,7 @@ import { useQuasar } from "quasar";
         });
       },
       deleteData: function(url, llamada, header) {
+      header.headers.Authorization = `Bearer ${LocalStorage.getItem("token")}`
       api.delete(url, header)
       .then((res) => {
         if ((res.status = 200)) {
@@ -105,6 +108,7 @@ import { useQuasar } from "quasar";
         });
       },
       createData: function(url, form, llamada, header) {
+      header.headers.Authorization = `Bearer ${LocalStorage.getItem("token")}`
       api.post(url, form, header)
       .then((res) => {
         if ((res.status = 200)) {
@@ -128,6 +132,7 @@ import { useQuasar } from "quasar";
         });
       },
       putData: function(url, form, llamada, header) {
+      header.headers.Authorization = `Bearer ${LocalStorage.getItem("token")}`
       api.put(url, form, header)
       .then((res) => {
           if ((res.status = 200)) {
@@ -135,7 +140,7 @@ import { useQuasar } from "quasar";
             this.editadoConExito();
           }
         })
-        .catch((err) => {
+      .catch((err) => {
           if (err.response) {
             this.error = err.response.data.statusCode;
           }
