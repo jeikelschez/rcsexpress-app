@@ -4,24 +4,7 @@
       <q-toolbar class="bg-indigo-9">
         <q-btn flat dense round
           @click.capture="drawerClick"
-          @click="
-          desplegable=hide ;
-          desplegable2=hide ;
-          desplegable3=hide ;
-          segundo=hide ;
-          tercero=hide ;
-          cuarto=hide;
-          quinto=hide;
-          sexto=hide;
-          septimo=hide;
-          octavo=hide;
-          noveno=hide;
-          decimo=hide;
-          decimoprimero=hide;
-          decimosegundo=hide;
-          decimotercero=hide;
-          decimocuarto=hide;
-          "
+          @click="this.close()"
           icon="menu"
           aria-label="Menu"
           class="q-mr-sm"
@@ -77,9 +60,11 @@
       <q-expansion-item
         expand-separator
         icon="dashboard"
+        group="somegroup"
+        default-opened
         label="Operaciones"
         expanded=desplegable
-        v-model="desplegable"
+        v-model="this.paginas.desplegable"
       >
         <q-expansion-item
           :header-inset-level="0.40"
@@ -88,7 +73,7 @@
           icon="assignment"
           label="Relacion de despacho"
           expanded="desplegable2"
-          v-model="desplegable2"
+          v-model="this.paginas.desplegable2"
         >
          <q-item clickable tag="a" to="/operativa" exact>
           <q-item-section avatar>
@@ -139,7 +124,7 @@
           icon="directions_bus_filled"
           label="Costos de Transporte"
           expanded=desplegable3
-          v-model="desplegable3"
+          v-model="this.paginas.desplegable3"
         >
          <q-item clickable tag="a" to="/registrodecostos" exact>
           <q-item-section avatar>
@@ -210,7 +195,9 @@
         icon="sell"
         label="Ventas"
         expanded=cuarto
-        v-model="cuarto"
+        v-model="this.paginas.cuarto"
+        group="somegroup"
+        default-opened
       >
 <div class="q-pl-lg">
       <q-item clickable tag="a" to="/registroserviciocarga" exact>
@@ -306,7 +293,9 @@
         expand-separator
         icon="topic"
         expanded=quinto
-        v-model="quinto"
+        group="somegroup"
+        default-opened
+        v-model="this.paginas.quinto"
         label="Administracion"
       >
         <q-expansion-item
@@ -314,7 +303,7 @@
           :content-inset-level="0.90"
           expand-separator
           expanded=sexto
-        v-model="sexto"
+        v-model="this.paginas.sexto"
           icon="menu_book"
           label="Notas Contables"
         >
@@ -405,7 +394,7 @@
           :content-inset-level="0.90"
           expand-separator
           expanded=septimo
-          v-model="septimo"
+          v-model="this.paginas.septimo"
           icon="price_check"
           label="Cuentas por Pagar"
         >
@@ -455,7 +444,7 @@
           :content-inset-level="0.90"
           expand-separator
           expanded=octavo
-          v-model="octavo"
+          v-model="this.paginas.octavo"
           icon="list"
           label="Control de Comisiones"
         >
@@ -549,7 +538,7 @@
           :content-inset-level="0.90"
           expand-separator
           expanded=noveno
-          v-model="noveno"
+          v-model="this.paginas.noveno"
           icon="paid"
           label="Movimientos Bancarios"
         >
@@ -621,8 +610,10 @@
       <q-expansion-item
         expand-separator
         expanded=decimo
-        v-model="decimo"
+        v-model="this.paginas.decimo"
         icon="summarize"
+        group="somegroup"
+        default-opened
         label="Consultas y Reportes"
       >
       <div class="q-pl-lg">
@@ -829,7 +820,9 @@
         expand-separator
         icon="settings_applications"
         expanded=decimoprimero
-        v-model="decimoprimero"
+        group="somegroup"
+        default-opened
+        v-model="this.paginas.decimoprimero"
         label="Mantenimiento"
       >
         <q-expansion-item
@@ -1039,7 +1032,7 @@
           :content-inset-level="0.90"
           expand-separator
           expanded=decimotercero
-          v-model="decimotercero"
+          v-model="this.paginas.decimotercero"
           icon="widgets"
           label="Registros Basicos"
         >
@@ -1242,7 +1235,7 @@
           expand-separator
           icon="security"
           expanded=decimocuarto
-          v-model="decimocuarto"
+          v-model="this.paginas.decimocuarto"
           label="Seguridad"
         >
          <q-item tag="a" exact @click="$router.replace('/roles')" :clickable="this.disabledRoles" :disable="this.disabledRolesSet">
@@ -1379,22 +1372,7 @@
     </q-drawer>
 
     <keep-alive>
-          <router-view @mouseover="miniState = true; desplegable=hide;
-          desplegable2=hide ;
-          desplegable3=hide ;
-          segundo=hide ;
-          tercero=hide ;
-          cuarto=hide;
-          quinto=hide;
-          sexto=hide;
-          septimo=hide;
-          octavo=hide;
-          noveno=hide;
-          decimo=hide;
-          decimoprimero=hide;
-          decimosegundo=hide;
-          decimotercero=hide;
-          decimocuarto=hide"/>
+          <router-view @mouseover="miniState = true; this.close()"/>
         </keep-alive>
     <q-page-container>
     </q-page-container>
@@ -1427,6 +1405,24 @@ export default defineComponent ({
   "user-logout": userLogoutVue },
   data() {
     return {
+      paginas: {
+      desplegable: false,
+      desplegable2: false,
+      desplegable3: false,
+      segundo: false,
+      tercero: false,
+      cuarto: false,
+      quinto: false,
+      sexto: false,
+      septimo: false,
+      octavo: false,
+      noveno: false,
+      decimo: false,
+      decimoprimero: false,
+      decimosegundo: false,
+      decimotercero: false,
+      decimocuarto: false,
+      },
       disabledBancos: false,
       disabledAgencias: false,
       disabledPermisos: false,
@@ -1449,23 +1445,6 @@ export default defineComponent ({
     const url = ref('https://joshuaproject.net/assets/img/chatbot/default.jpg')
     return {
       url,
-      desplegable: ref(false),
-      desplegable:ref(false),
-      desplegable2:ref(false),
-      desplegable3:ref(false),
-      segundo:ref(false),
-      tercero:ref(false),
-      cuarto:ref(false),
-      quinto:ref(false),
-      sexto:ref(false),
-      septimo:ref(false),
-      octavo:ref(false),
-      noveno:ref(false),
-      decimo:ref(false),
-      decimoprimero:ref(false),
-      decimosegundo:ref(false),
-      decimotercero:ref(false),
-      decimocuarto:ref(false),
     };
   },
   mounted() {
@@ -1475,6 +1454,74 @@ export default defineComponent ({
     this.$refs.desactivateCrud.desactivarOpciones('desactivarOpcionesSet','r_bancos','r_agencias','r_ciudades','r_permisos','r_usuarios','r_roles',)
   },
   methods: {
+    closeAllExcept(open) {
+      if (open !== "desplegable") {
+        this.paginas.desplegable = hide;
+      } 
+      if (open !== "desplegable2") {
+        this.paginas.desplegable2 = hide;
+      }
+      if (open !== "desplegable3") {
+        this.paginas.desplegable3 = hide;
+      }
+      if (open !== "segundo") {
+        this.paginas.segundo = hide;
+      }
+      if (open !== "tercero") {
+        this.paginas.tercero = hide;
+      }
+      if (open !== "cuarto") {
+        this.paginas.cuarto = hide;
+      }
+      if (open !== "quinto") {
+        this.paginas.quinto = hide;
+      }
+      if (open !== "sexto") {
+        this.paginas.sexto = hide;
+      }
+      if (open !== "septimo") {
+        this.paginas.septimo = hide;
+      }
+      if (open !== "octavo") {
+        this.paginas.octavo = hide;
+      }
+      if (open !== "noveno") {
+        this.paginas.noveno = hide;
+      }
+      if (open !== "decimo") {
+        this.paginas.decimo = hide;
+      }
+      if (open !== "decimoprimero") {
+        this.paginas.decimoprimero = hide;
+      }
+      if (open !== "decimosegundo") {
+        this.paginas.decimosegundo = hide;
+      }
+      if (open !== "decimotercero") {
+        this.paginas.decimotercero = hide;
+      }
+      if (open !== "decimocuarto") {
+        this.paginas.decimocuarto = hide;
+      }
+    },
+    close() {
+      this.paginas.desplegable = hide;
+      this.paginas.desplegable2 = hide;
+      this.paginas.desplegable3 = hide;
+      this.paginas.segundo = hide;
+      this.paginas.tercero = hide;
+      this.paginas.cuarto = hide;
+      this.paginas.quinto = hide;
+      this.paginas.sexto = hide;
+      this.paginas.septimo = hide;
+      this.paginas.octavo = hide;
+      this.paginas.noveno = hide;
+      this.paginas.decimo = hide;
+      this.paginas.decimoprimero = hide;
+      this.paginas.decimosegundo = hide;
+      this.paginas.decimotercero = hide;
+      this.paginas.decimocuarto = hide;
+    },
     desactivarOpcionesSet(
       readBancos,
       readAgencias,

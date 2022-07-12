@@ -28,10 +28,6 @@ import { useQuasar } from "quasar";
       }
     },
 
-    mounted() {
-      this.login()
-    },
-
     setup() {
     const $q = useQuasar();
     return {
@@ -52,6 +48,7 @@ import { useQuasar } from "quasar";
       this.setRefreshTimer();
       },
       traducirToken: function() {
+        console.log('traducir token')
         var tokenTraducido = jwt_decode(LocalStorage.getItem('token'))
         console.log(LocalStorage.getItem('token'))
         LocalStorage.set('tokenTraducido', tokenTraducido)

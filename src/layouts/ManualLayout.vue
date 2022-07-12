@@ -7,24 +7,7 @@
           dense
           round
           @click.capture="drawerClick"
-          @click="
-            desplegable = hide;
-            desplegable2 = hide;
-            desplegable3 = hide;
-            segundo = hide;
-            tercero = hide;
-            cuarto = hide;
-            quinto = hide;
-            sexto = hide;
-            septimo = hide;
-            octavo = hide;
-            noveno = hide;
-            decimo = hide;
-            decimoprimero = hide;
-            decimosegundo = hide;
-            decimotercero = hide;
-            decimocuarto = hide;
-          "
+          @click="this.close()"
           icon="menu"
           aria-label="Menu"
           class="q-mr-sm"
@@ -100,7 +83,7 @@
               icon="dashboard"
               label="Operaciones"
               expanded="desplegable"
-              v-model="desplegable"
+              v-model="this.paginas.desplegable"
             >
               <q-expansion-item
                 :header-inset-level="0.4"
@@ -109,7 +92,7 @@
                 icon="assignment"
                 label="Relacion de despacho"
                 expanded="desplegable2"
-                v-model="desplegable2"
+                v-model="this.paginas.desplegable2"
               >
                 <q-item clickable tag="a" to="/m_operativa" exact>
                   <q-item-section avatar>
@@ -159,7 +142,7 @@
                 icon="directions_bus_filled"
                 label="Costos de Transporte"
                 expanded="desplegable3"
-                v-model="desplegable3"
+                v-model="this.paginas.desplegable3"
               >
                 <q-item clickable tag="a" to="/m_registrodecostos" exact>
                   <q-item-section avatar>
@@ -235,7 +218,7 @@
               icon="sell"
               label="Ventas"
               expanded="cuarto"
-              v-model="cuarto"
+              v-model="this.paginas.cuarto"
             >
               <div class="q-pl-lg">
                 <q-item clickable tag="a" to="/m_registroserviciocarga" exact>
@@ -338,7 +321,7 @@
               expand-separator
               icon="topic"
               expanded="quinto"
-              v-model="quinto"
+              v-model="this.paginas.quinto"
               label="Administracion"
             >
               <q-expansion-item
@@ -346,7 +329,7 @@
                 :content-inset-level="0.9"
                 expand-separator
                 expanded="sexto"
-                v-model="sexto"
+                v-model="this.paginas.sexto"
                 icon="menu_book"
                 label="Notas Contables"
               >
@@ -442,7 +425,7 @@
                 :content-inset-level="0.9"
                 expand-separator
                 expanded="septimo"
-                v-model="septimo"
+                v-model="this.paginas.septimo"
                 icon="price_check"
                 label="Cuentas por Pagar"
               >
@@ -499,7 +482,7 @@
                 :content-inset-level="0.9"
                 expand-separator
                 expanded="octavo"
-                v-model="octavo"
+                v-model="this.paginas.octavo"
                 icon="list"
                 label="Control de Comisiones"
               >
@@ -607,7 +590,7 @@
                 :content-inset-level="0.9"
                 expand-separator
                 expanded="noveno"
-                v-model="noveno"
+                v-model="this.paginas.noveno"
                 icon="paid"
                 label="Movimientos Bancarios"
               >
@@ -689,7 +672,7 @@
             <q-expansion-item
               expand-separator
               expanded="decimo"
-              v-model="decimo"
+              v-model="this.paginas.decimo"
               icon="summarize"
               label="Consultas y Reportes"
             >
@@ -926,7 +909,7 @@
               expand-separator
               icon="settings_applications"
               expanded="decimoprimero"
-              v-model="decimoprimero"
+              v-model="this.paginas.decimoprimero"
               label="Mantenimiento"
             >
               <q-expansion-item
@@ -934,7 +917,7 @@
                 :content-inset-level="0.9"
                 expand-separator
                 expanded="decimosegundo"
-                v-model="decimosegundo"
+                v-model="this.paginas.decimosegundo"
                 icon="table_rows"
                 label="Datos Generales"
               >
@@ -1155,7 +1138,7 @@
                 :content-inset-level="0.9"
                 expand-separator
                 expanded="decimotercero"
-                v-model="decimotercero"
+                v-model="this.paginas.decimotercero"
                 icon="widgets"
                 label="Registros Basicos"
               >
@@ -1374,7 +1357,7 @@
                 expand-separator
                 icon="security"
                 expanded="decimocuarto"
-                v-model="decimocuarto"
+                v-model="this.paginas.decimocuarto"
                 label="Seguridad"
               >
                 <q-item
@@ -1551,22 +1534,7 @@
     </q-drawer>
 
     <keep-alive>
-    <router-view @mouseover="desplegable=hide;
-          desplegable2=hide ;
-          desplegable3=hide ;
-          segundo=hide ;
-          tercero=hide ;
-          cuarto=hide;
-          quinto=hide;
-          sexto=hide;
-          septimo=hide;
-          octavo=hide;
-          noveno=hide;
-          decimo=hide;
-          decimoprimero=hide;
-          decimosegundo=hide;
-          decimotercero=hide;
-          decimocuarto=hide"></router-view>
+    <router-view @mouseover="this.close()"></router-view>
           </keep-alive>
     <q-page-container>
     </q-page-container>
@@ -1589,6 +1557,24 @@ export default defineComponent({
   },
   data() {
     return {
+      paginas: {
+      desplegable,
+      desplegable2,
+      desplegable3,
+      segundo,
+      tercero,
+      cuarto,
+      quinto,
+      sexto,
+      septimo,
+      octavo,
+      noveno,
+      decimo,
+      decimoprimero,
+      decimosegundo,
+      decimotercero,
+      decimocuarto,
+      },
       drawer: false,
       miniState: false,
       dashboard: this.$t("Menu.dashboard"),
@@ -1633,6 +1619,25 @@ export default defineComponent({
         this.miniState = true;
         this.drawer = true;
       }
+    },
+    
+    close() {
+      this.paginas.desplegable = hide;
+      this.paginas.desplegable2 = hide;
+      this.paginas.desplegable3 = hide;
+      this.paginas.segundo = hide;
+      this.paginas.tercero = hide;
+      this.paginas.cuarto = hide;
+      this.paginas.quinto = hide;
+      this.paginas.sexto = hide;
+      this.paginas.septimo = hide;
+      this.paginas.octavo = hide;
+      this.paginas.noveno = hide;
+      this.paginas.decimo = hide;
+      this.paginas.decimoprimero = hide;
+      this.paginas.decimosegundo = hide;
+      this.paginas.decimotercero = hide;
+      this.paginas.decimocuarto = hide;
     },
     logout() {
       this.$refs.component.logoutUser();

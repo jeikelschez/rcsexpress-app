@@ -106,7 +106,7 @@
                     getData('/clientes', 'setData', 'clientesForm');
                     getData('/agentes', 'setData', 'agentesForm');
                     this.form.cod_cliente = '';
-                    this.form.cod_agente = ''
+                    this.form.cod_agente = '';
                   "
                 >
                   <template v-slot:prepend>
@@ -121,8 +121,8 @@
                   v-model="form.cod_agente"
                   label="Agente"
                   class="pcform"
-                  hint=""
                   :rules="[reglasSelect]"
+                  hint=""
                   :options="agentesForm"
                   lazy-rules
                   option-label="persona_responsable"
@@ -140,8 +140,8 @@
                   v-model="form.cod_cliente"
                   label="Cliente"
                   hint=""
-                  :rules="[reglasSelect]"
                   :options="clientesForm"
+                  :rules="[reglasSelect]"
                   lazy-rules
                   option-label="nb_cliente"
                   option-value="id"
@@ -190,6 +190,7 @@
                   v-model="formEdit.control_inicio"
                   label="Primer Correlativo"
                   class="pcform"
+                  :readonly="this.disabledInputsEdit"
                   hint=""
                   lazy-rules
                   :rules="[reglasNotNull10]"
@@ -206,8 +207,9 @@
                   outlined
                   v-model="formEdit.control_final"
                   label="Ultimo Correlativo"
-                  :rules="[reglasSegundoCorrelativo]"
+                  :rules="[reglasSegundoCorrelativoEdit]"
                   hint=""
+                  :readonly="this.disabledInputsEdit"
                   lazy-rules
                   type="number"
                 >
@@ -223,6 +225,7 @@
                   v-model="formEdit.tipo"
                   label="Tipo de Carga"
                   hint=""
+                  :readonly="this.disabledInputsEdit"
                   class="pcform"
                   :rules="[reglasSelect]"
                   :options="tipoGuia"
@@ -239,6 +242,7 @@
                   outlined
                   label="Fecha de Asignación"
                   hint=""
+                  :readonly="this.disabledInputsEdit"
                   v-model="formEdit.fecha_asignacion"
                   mask="date"
                   :rules="['date']"
@@ -272,6 +276,7 @@
                   outlined
                   v-model="formEdit.cod_agencia"
                   label="Agencia"
+                  :readonly="this.disabledInputsEdit"
                   hint=""
                   class="pcform"
                   :rules="[reglasSelect]"
@@ -281,11 +286,11 @@
                   option-value="id"
                   @update:model-value="
                     this.axiosConfig.headers.agencia =
-                    this.formEdit.cod_agencia.id;
+                      this.formEdit.cod_agencia.id;
                     getData('/clientes', 'setData', 'clientesForm');
                     getData('/agentes', 'setData', 'agentesForm');
                     this.formEdit.cod_cliente = '';
-                    this.formEdit.cod_agente = ''
+                    this.formEdit.cod_agente = '';
                   "
                 >
                   <template v-slot:prepend>
@@ -300,8 +305,9 @@
                   v-model="formEdit.cod_agente"
                   label="Agente"
                   class="pcform"
-                  hint=""
                   :rules="[reglasSelect]"
+                  :readonly="this.disabledInputsEdit"
+                  hint=""
                   :options="agentesForm"
                   lazy-rules
                   option-label="persona_responsable"
@@ -319,8 +325,9 @@
                   v-model="formEdit.cod_cliente"
                   label="Cliente"
                   hint=""
-                  :rules="[reglasSelect]"
+                  :readonly="this.disabledInputsEdit"
                   :options="clientesForm"
+                  :rules="[reglasSelect]"
                   lazy-rules
                   option-label="nb_cliente"
                   option-value="id"
@@ -451,7 +458,11 @@
 
         <q-card
           bordered
-          class="row col-md-5 col-xs-12 col-xl-5 col-lg-5 col-sm-12 espaciadoGuias"
+          class="
+            row
+            col-md-5 col-xs-12 col-xl-5 col-lg-5 col-sm-12
+            espaciadoGuias
+          "
         >
           <q-card-section class="row col-md-12 col-xs-12" style="padding: 2px">
             <div
@@ -484,11 +495,6 @@
               <q-field
                 hide-bottom-space
                 borderless
-                @update:model-value="
-                  this.axiosConfig.headers.tipo_guia_carga =
-                    this.selectedGuiaCarga.value;
-                  getData(`/cguias`, 'setData', 'datos');
-                "
                 dense
                 class="pcform"
                 v-model="selectedGuiaCarga"
@@ -497,10 +503,15 @@
                   <q-checkbox
                     size="md"
                     v-model="selectedGuiaCarga"
-                    true-value="1"
-                    false-value="0"
+                    true-value="20"
+                    false-value=""
                     style="font-size: 13px"
                     label="Guia de Carga"
+                    @update:model-value="
+                    this.axiosConfig.headers.tipo = this.selectedGuiaCarga;
+                    this.selectedGuiaFactura = '',
+                    getData(`/cguias`, 'setData', 'datos');
+                "
                   />
                 </template>
               </q-field>
@@ -520,21 +531,21 @@
                 hide-bottom-space
                 borderless
                 dense
-                @update:model-value="
-                  this.axiosConfig.headers.tipo_guia_factura =
-                    this.selectedGuiaFactura.value;
-                  getData(`/cguias`, 'setData', 'datos');
-                "
                 v-model="selectedGuiaFactura"
               >
                 <template v-slot:control>
                   <q-checkbox
                     size="md"
                     v-model="selectedGuiaFactura"
-                    true-value="1"
-                    false-value="0"
+                    true-value="21"
+                    false-value=""
                     style="font-size: 13px"
                     label="Guia de Factura"
+                    @update:model-value="
+                      this.axiosConfig.headers.tipo = this.selectedGuiaFactura;
+                      this.selectedGuiaCarga = '',
+                      getData(`/cguias`, 'setData', 'datos');
+                    "
                   />
                 </template>
               </q-field>
@@ -559,7 +570,7 @@
             <div class="col-md-4 col-xs-12">
               <q-input
                 outlined
-                v-model="form.desc_ciudad"
+                v-model="guia_desde"
                 label="Guia Desde:"
                 type="number"
                 class="inputMenuGuias"
@@ -576,7 +587,7 @@
             <div class="col-md-4 col-xs-12">
               <q-input
                 outlined
-                v-model="form.desc_ciudad"
+                v-model="guia_hasta"
                 label="Guia Hasta:"
                 type="number"
                 class="inputMenuGuias"
@@ -597,6 +608,10 @@
                 round
                 padding="sm"
                 style="margin-top: 3px"
+                @click="
+                  this.axiosConfig.headers.desde = this.guia_desde;
+                  this.axiosConfig.headers.hasta = this.guia_hasta;
+                  getData(`/cguias`, 'setData', 'datos');"
               >
                 <q-icon size="30px" name="search" color="white"> </q-icon>
                 <q-tooltip
@@ -616,20 +631,19 @@
                 borderless
                 dense
                 v-model="selectedCulminado"
-                @update:model-value="
-                  this.axiosConfig.headers.selectedCulminado =
-                    this.selectedCulminado.value;
-                  getData(`/cguias`, 'setData', 'datos');
-                "
               >
                 <template v-slot:control>
                   <q-checkbox
                     size="md"
                     v-model="selectedCulminado"
-                    true-value="1"
-                    false-value="0"
+                    true-value="0"
+                    false-value=""
                     style="font-size: 13px"
                     label="Culminado"
+                    @update:model-value="
+                      this.axiosConfig.headers.disp = this.selectedCulminado;
+                      getData(`/cguias`, 'setData', 'datos');
+                    "
                   />
                 </template>
               </q-field>
@@ -670,12 +684,18 @@
               selectedAgencia = null;
               selectedCliente = null;
               selectedAgente = null;
-              selectedGuiaCarga = '0';
-              selectedGuiaFactura = '0';
-              selectedCulminado = '0';
+              selectedGuiaCarga = '';
+              selectedGuiaFactura = '';
+              selectedCulminado = '';
               this.axiosConfig.headers.agencia = '';
-              this.axiosConfig.headers.clientes = '';
-              this.axiosConfig.headers.agentes = '';
+              this.axiosConfig.headers.cliente = '';
+              this.axiosConfig.headers.agente = '';
+              this.axiosConfig.headers.disp = '';
+              this.axiosConfig.headers.desde = '';
+              this.axiosConfig.headers.hasta = '';
+              this.axiosConfig.headers.tipo = '';
+              this.guia_desde =  '';
+              this.guia_hasta =  '';
               getData(`/cguias`, 'setData', 'datos');
             "
           >
@@ -729,8 +749,10 @@
                   icon="edit"
                   :disabled="this.disabledEdit"
                   @click="
+                    this.resetFormEdit()
                     getDataEdit(`${props.row.id}`);
                     edit = true;
+                    
                   "
                 ></q-btn>
                 <q-btn
@@ -747,7 +769,11 @@
             </template>
             <template v-slot:item="props">
               <div
-                class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+                class="
+                  q-pa-xs
+                  col-xs-12 col-sm-6 col-md-4 col-lg-3
+                  grid-style-transition
+                "
                 :style="props.selected ? 'transform: scale(0.95);' : ''"
               >
                 <q-card :class="props.selected ? 'bg-grey-2' : ''">
@@ -781,6 +807,7 @@
                           icon="edit"
                           :disabled="this.disabledEdit"
                           @click="
+                            this.resetFormEdit()
                             getDataEdit(`${props.row.id}`);
                             edit = true;
                           "
@@ -973,23 +1000,23 @@ export default {
       agencias: [],
       clientes: [],
       agentes: [],
-      agenciasForm: [],
+      agentes: [],
       clientesForm: [],
       agentesForm: [],
       selected: [],
-      refAgencia: "",
-      refCliente: "",
-      refAgente: "",
       selectedAgencia: [],
-      selectedGuiaCarga: "0",
-      selectedGuiaFactura: "0",
-      selectedCulminado: "0",
+      selectedGuiaCarga: "",
+      selectedGuiaFactura: "",
+      selectedCulminado: "",
+      guia_desde: "",
+      guia_hasta: "",
       selectedCliente: [],
       selectedAgente: [],
       error: "",
       disabledCreate: true,
       disabledEdit: true,
       disabledDelete: true,
+      disabledInputsEdit: false,
     };
   },
   setup() {
@@ -1009,6 +1036,10 @@ export default {
           agencia: "",
           agente: "",
           cliente: "",
+          disp: "",
+          tipo: "",
+          desde: "",
+          hasta: "",
         },
       },
       pagination: ref({
@@ -1053,7 +1084,7 @@ export default {
         return "Debes Escribir Algo";
       }
       if ((val !== null) !== "") {
-        if (val.length < this.form.control_inicio.length) {
+        if (val < this.form.control_inicio) {
           return "El Ultimo Correlativo debe ser Mayor al Primero";
         }
         if (val.length > 10) {
@@ -1069,7 +1100,7 @@ export default {
         return "Debes Escribir Algo";
       }
       if ((val !== null) !== "") {
-        if (val.length < this.formEdit.control_inicio.length) {
+        if (val < this.formEdit.control_inicio) {
           return "El Ultimo Correlativo debe ser Mayor al Primero";
         }
         if (val.length > 10) {
@@ -1103,9 +1134,9 @@ export default {
       this.selectedAgente = [];
     },
     getDataGuias(url, call, dataRes) {
-      this.axiosConfig.headers.agencia = this.selectedAgencia.id
-      this.axiosConfig.headers.cliente = this.selectedCliente.id
-      this.axiosConfig.headers.agente = this.selectedAgente.id
+      this.axiosConfig.headers.agencia = this.selectedAgencia.id;
+      this.axiosConfig.headers.cliente = this.selectedCliente.id;
+      this.axiosConfig.headers.agente = this.selectedAgente.id;
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
     },
     getData(url, call, dataRes) {
@@ -1127,65 +1158,70 @@ export default {
       this.getDataIniciar();
     },
     setDataEdit(res, dataRes) {
+      this[dataRes].cant_disponible = res.cant_disponible;
+      if (this.formEdit.cant_disponible == "0") {
+        this.disabledInputsEdit = true
+      };
       this[dataRes].control_inicio = res.control_inicio;
       this[dataRes].control_final = res.control_final;
       this[dataRes].cant_asignada = res.cant_asignada;
-      this[dataRes].cant_disponible = res.cant_disponible;
       this[dataRes].fecha_asignacion = res.fecha_asignacion;
       var cod_agencia = res.cod_agencia;
       var cod_agente = res.cod_agente;
       var cod_cliente = res.cod_cliente;
       api.get(`/agencias/${cod_agencia}`, this.axiosConfig).then((res) => {
         this.formEdit.cod_agencia = res.data;
-        this.axiosConfig.headers.agencia = cod_agencia
+        this.axiosConfig.headers.agencia = cod_agencia;
+        this.getData("/clientes", "setData", "clientesForm");
+        this.getData("/agentes", "setData", "agentesForm");
         if (cod_cliente) {
           api.get(`/clientes/${cod_cliente}`, this.axiosConfig).then((res) => {
-          this.formEdit.cod_cliente = res.data;
-        });
-        this.getData("/clientes", "setData", "clientesForm");
+            this.formEdit.cod_cliente = res.data;
+          });
         }
         if (cod_agente) {
-              api.get(`/agentes/${cod_agente}`, this.axiosConfig)
-                .then((res) => {
-                  this.formEdit.cod_agente = res.data;});
-              this.getData("/agentes", "setData", "agentesForm");
+          api.get(`/agentes/${cod_agente}`, this.axiosConfig).then((res) => {
+            this.formEdit.cod_agente = res.data;
+          });
         }
       });
-      this[dataRes].tipo = res.tipo_desc;
+      this[dataRes].tipo = res.tipos.descripcion;
       this[dataRes].id = res.id;
     },
     deleteData(idpost) {
       this.$refs.methods.deleteData(
         `/cguias/${idpost}`,
-        "getDataGuias",
+        "getData",
         this.axiosConfig
       );
     },
     createData() {
-      this.form.cod_cliente = this.form.cod_cliente.id
-      this.form.cod_agente = this.form.cod_agente.id
+      this.form.cod_cliente = this.form.cod_cliente.id;
+      this.form.cod_agente = this.form.cod_agente.id;
       this.form.tipo = this.form.tipo.value,
       this.form.cod_agencia = this.form.cod_agencia.id,
         this.$refs.methods.createData(
           `/cguias`,
           this.form,
-          "getDataGuias",
+          "getData",
           this.axiosConfig
         );
       this.resetForm();
     },
     putData() {
-      this.formEdit.cod_cliente = this.formEdit.cod_cliente.id
-      this.formEdit.cod_agente = this.formEdit.cod_agente.id
       this.formEdit.cod_agencia = this.formEdit.cod_agencia.id,
-      this.formEdit.tipo = this.formEdit.tipo.value,
-      this.$refs.methods.putData(
-        `/cguias/${this.formEdit.id}`,
-        this.formEdit,
-        "getDataGuias",
-        this.axiosConfig
-      );
-      this.resetFormEdit()
+      this.formEdit.cod_cliente = this.formEdit.cod_cliente.id;
+      this.formEdit.cod_agente = this.formEdit.cod_agente.id;
+      if (this.formEdit.tipo) {
+        this.formEdit.tipo = this.formEdit.tipo.value
+      }
+        this.$refs.methods.putData(
+          `/cguias/${this.formEdit.id}`,
+          this.formEdit,
+          "getData",
+          this.axiosConfig
+        );
+      this.resetFormEdit();
     },
     resetForm() {
       (this.form.control_inicio = ""),
@@ -1202,6 +1238,7 @@ export default {
         (this.create = false);
     },
     resetFormEdit() {
+      (this.disabledInputsEdit = false),
       (this.formEdit.control_inicio = ""),
       (this.formEdit.control_final = ""),
       (this.formEdit.cant_asignada = ""),
