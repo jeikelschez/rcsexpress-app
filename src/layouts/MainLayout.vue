@@ -1871,7 +1871,7 @@ export default ({
     refreshTimer() {
       let _this = this
       var interval;
-      let minutes = 19.5;
+      let minutes = 19;
       let currentTime = localStorage.getItem("currentTime");
       let targetTime = localStorage.getItem("targetTime");
       if (targetTime == null && currentTime == null) {
@@ -1888,8 +1888,10 @@ export default ({
       }
       function checkComplete() {
         if (LocalStorage.getItem("user") === true) {
-          currentTime = localStorage.getItem("currentTime");       
+          currentTime = localStorage.getItem("currentTime");   
+          targetTime = localStorage.getItem("targetTime");    
           if (currentTime > targetTime) {
+            console.log('se acabo el tiempo')
             clearInterval(interval);
             LocalStorage.remove("currentTime");
             LocalStorage.remove("targetTime");
@@ -1897,6 +1899,8 @@ export default ({
             _this.refreshTimer()
           } else {
             currentTime = new Date();
+            console.log(currentTime)
+            console.log(targetTime)
             localStorage.setItem("currentTime", currentTime);
           }
         } else {
