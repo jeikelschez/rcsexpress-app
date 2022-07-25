@@ -356,12 +356,16 @@
                 row-key="id"
                 :columns="columnsUsuarios"
                 :separator="separator"
+                :loading="loading"
                 class="my-sticky-column-table"
                 :filter="filterUsuarios"
                 style="width: 100%"
                 :grid="$q.screen.xs"
                 v-model:pagination="pagination"
               >
+                <template v-slot:loading>
+                  <q-inner-loading showing color="primary" />
+                </template>
                 <template v-slot:body-cell-action="props">
                   <q-td :props="props">
                     <q-btn
@@ -499,6 +503,7 @@
       @get-Data-Usuarios="this.axiosConfig.headers.agencia = this.selectedAgencia.id;
       getData(`/usuarios`, 'setDataUsuarios', 'usuarios')"
       @set-Data-Usuarios="setDataUsuarios"
+      @reset-Loading="resetLoading"
       @set-Data-Usuarios-Edit="setDataUsuariosEdit"
       @set-Data-Roles="setDataRoles"
       @set-Data-Roles-Iniciar="setDataRolesIniciar"
@@ -612,7 +617,7 @@ export default {
     return {
       axiosConfig: {
         headers: {
-          Authorization: `Bearer ${LocalStorage.getItem('token')}`,
+          Authorization: ``,
           agencia: ""
         }
       },
@@ -621,6 +626,7 @@ export default {
       }),
       separator: ref("vertical"),
       password: ref(''),
+      loading: ref(false),
       isPwd: ref(true),
       usuariosForm: ref(false),
       usuariosFormEdit: ref(false),
@@ -672,6 +678,9 @@ export default {
     this.$refs.desactiveCrud.desactivarCrud('c_usuarios', 'd_usuarios', 'u_usuarios', 'desactivarCrudUsuarios')
   },
   methods: {
+    resetLoading() {
+      this.loading = false;
+    },
     // Reglas
     reglasInputs(val) {
       if (val === null) {
@@ -694,13 +703,16 @@ export default {
     },
     getData(url, call, dataRes) {
     this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+    this.loading = true;
     },
     setData(res, dataRes) {
       this[dataRes] = res
-      this.getDatosIniciar()
+      this.getDatosIniciar();
+      this.loading = false
     },
     setDataUsuarios(res, dataRes) {
-      this[dataRes] = res
+      this[dataRes] = res;
+      this.loading = false
     },
     setDataRoles(res, dataRes) {
       this[dataRes] = res
@@ -718,6 +730,7 @@ export default {
     },
     deleteData(idpost) {
       this.$refs.methods.deleteData(`/usuarios/${idpost}`, 'getDataUsuarios', this.axiosConfig);
+      this.loading = true;
     },
     createDataUsuarios() {
       this.formUsuarios.activo = this.formUsuarios.activo.value;
@@ -725,13 +738,15 @@ export default {
       this.formUsuarios.cod_agencia = this.formUsuarios.cod_agencia.id;
       this.$refs.methods.createData(`/usuarios`, this.formUsuarios, 'getDataUsuarios', this.axiosConfig);
       this.usuariosForm = false;
+      this.loading = true;
     },
     putDataUsuarios() {
       this.formEditUsuarios.activo = this.formEditUsuarios.activo.value;
       this.formEditUsuarios.cod_rol = this.formEditUsuarios.cod_rol.id;
       this.formEditUsuarios.cod_agencia = this.formEditUsuarios.cod_agencia.id;
       this.$refs.methods.putData(`/usuarios/${this.formEditUsuarios.login}`, this.formEditUsuarios, 'getDataUsuarios', this.axiosConfig);
-      this.resetFormEditUsuarios()
+      this.resetFormEditUsuarios();
+      this.loading = true;
     }, 
     resetFormUsuarios() {
       (this.formUsuarios.nombre = null),

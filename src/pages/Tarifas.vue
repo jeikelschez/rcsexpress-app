@@ -484,6 +484,7 @@
             <div bordered flat class="row">
               <q-table
                 :rows="datos"
+                :loading="loading"
                 row-key="id"
                 :columns="columns"
                 :separator="separator"
@@ -493,6 +494,9 @@
                 :grid="$q.screen.xs"
                 v-model:pagination="pagination"
               >
+                <template v-slot:loading>
+                  <q-inner-loading showing color="primary" />
+                </template>
                 <template v-slot:body-cell-action="props">
                   <q-td :props="props">
                     <q-btn
@@ -627,6 +631,7 @@
     <methods ref="methods"
     @get-Data="getData('/tarifas','setData','datos')"
     @set-data="setData"
+    @reset-Loading="resetLoading"
     @set-Data-Edit="setDataEdit">
     </methods>
     <desactivate-crud ref="desactivateCrud"
@@ -659,13 +664,6 @@ export default {
   data() {
     return {
       columns: [
-        {
-          name: "id",
-          label: "Código",
-          field: "id",
-          align: "left",
-          sortable: true,
-        },
         {
           name: "monto_tarifa",
           label: "Monto de Tarifa",
@@ -785,7 +783,7 @@ export default {
       disabledDelete: true,
       axiosConfig: {
         headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          Authorization: ``,
         },
       },   
     };
@@ -805,6 +803,7 @@ export default {
       }),
       separator: ref("vertical"),
       create: ref(false),
+      loading: ref(false),
       edit: ref(false),
       medium: ref(false),
       deletePopup: ref(false),
@@ -816,6 +815,9 @@ export default {
     this.$refs.desactivateCrud.desactivarCrud('c_bancos', 'd_bancos', 'u_bancos', 'desactivarCrudBancos')
   },
   methods: {
+    resetLoading() {
+      this.loading = false;
+    },
     // Reglas
     reglasSelect(val) {
       if (val === null) {
@@ -851,9 +853,11 @@ export default {
     // Metodos CRUD
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.loading = true;
     },
     setData(res, dataRes) {
-      this[dataRes] = res
+      this[dataRes] = res;
+      this.loading = false
     },  
     setDataEdit(res, dataRes) {
       this.formEdit.id = res.id
@@ -875,6 +879,7 @@ export default {
     },   
     deleteData(idpost) {
       this.$refs.methods.deleteData(`/tarifas/${idpost}`, 'getData', this.axiosConfig);
+      this.loading = true;
     },
     createData() {
       this.form.tipo_urgencia = this.form.tipo_urgencia.value
@@ -887,6 +892,7 @@ export default {
       this.form.region_destino = this.form.region_destino.value
       this.$refs.methods.createData('/tarifas', this.form, 'getData', this.axiosConfig);
       this.resetForm();
+      this.loading = true;
     },
     putData() {
       this.formEdit.tipo_urgencia = this.formEdit.tipo_urgencia.value
@@ -899,7 +905,8 @@ export default {
       this.formEdit.region_destino = this.formEdit.region_destino.value
       this.$refs.methods.putData(`/tarifas/${this.formEdit.id}`, this.formEdit, 'getData', this.axiosConfig);
       this.edit = false;
-      this.resetFormEdit()
+      this.resetFormEdit();
+      this.loading = true;
     },
     
     resetForm() {

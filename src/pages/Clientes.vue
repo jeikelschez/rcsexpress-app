@@ -1073,6 +1073,7 @@
                 :rows="clientes"
                 row-key="id"
                 :columns="columnsClientes"
+                :loading="loading"
                 :separator="separator"
                 class="my-sticky-column-table"
                 :filter="filter"
@@ -1080,6 +1081,9 @@
                 :grid="$q.screen.xs"
                 v-model:pagination="pagination"
               >
+                <template v-slot:loading>
+                  <q-inner-loading showing color="primary" />
+                </template>
                 <template v-slot:body-cell-action="props">
                   <q-td :props="props">
                     <q-btn
@@ -1233,6 +1237,7 @@
           'clientes'
         )
       "
+      @reset-Loading="resetLoading"
       @set-Data-Clientes="setDataClientes"
       @set-Data-Edit="setDataEdit"
       @set-Data-Iniciar="setDataIniciar"
@@ -1266,13 +1271,6 @@ export default {
   data() {
     return {
       columnsClientes: [
-        {
-          name: "id",
-          label: "Codigo",
-          field: "id",
-          align: "left",
-          sortable: true,
-        },
         {
           name: "nb_cliente",
           label: "Nombre",
@@ -1393,7 +1391,7 @@ export default {
       disabledDelete: true,
       axiosConfig: {
         headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          Authorization: ``,
           agencia: "",
           pais: "",
           estado: "",
@@ -1418,6 +1416,7 @@ export default {
       }),
       separator: ref("vertical"),
       form: ref(false),
+      loading: ref(false),
       formEdit: ref(false),
       clientesDelete: ref(false),
       filter: ref(""),
@@ -1439,6 +1438,9 @@ export default {
     );
   },
   methods: {
+    resetLoading() {
+      this.loading = false;
+    },
     // Reglas
     reglasSelect(val) {
       if (val === null) {
@@ -1536,12 +1538,15 @@ export default {
 
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.loading = true;
     },
     setDataIniciar(res, dataRes) {
       this[dataRes] = res;
       this.getDataIniciar();
+      this.loading = false
     },
     setDataClientes(res, dataRes) {
+      this.loading = false
       this[dataRes] = res;
         for (var e = 0, len = this.clientes.length; e < len; e++) {
           if (this.clientes[e].cte_decontado === "1") {
@@ -1633,6 +1638,7 @@ export default {
     },
     deleteData(idpost) {
       this.$refs.methods.deleteData(`/clientes/${idpost}`, "getData", this.axiosConfig);
+      this.loading = true;
     },
     createDataClientes() {
       this.formClientes.cod_agencia = this.selectedAgencia.id;
@@ -1657,6 +1663,7 @@ export default {
       this.formClientes.tipo_persona = this.formClientes.tipo_persona.value;
       this.$refs.methods.createData(`/clientes`, this.formClientes, "getData", this.axiosConfig);
       this.form = false;
+      this.loading = true;
     },
     putDataClientes() {
       this.formEditClientes.cod_agencia = this.selectedAgencia.id;
@@ -1688,6 +1695,7 @@ export default {
         this.axiosConfig
       );
       this.formEdit = false;
+      this.loading = true;
     },
     resetFormEdit() {
       (this.formEditClientes.nb_cliente = ""),

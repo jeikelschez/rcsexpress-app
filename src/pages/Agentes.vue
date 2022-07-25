@@ -582,9 +582,13 @@
                 class="my-sticky-column-table"
                 :filter="filter"
                 style="width: 100%"
+                :loading="loading"
                 :grid="$q.screen.xs"
                 v-model:pagination="pagination"
               >
+                <template v-slot:loading>
+                  <q-inner-loading showing color="primary" />
+                </template>
                 <template v-slot:body-cell-action="props">
                   <q-td :props="props">
                     <q-btn
@@ -724,6 +728,7 @@
       this.axiosConfig.headers.agencia = this.selectedAgencia.id;
       getData(`/agentes`, 'setDataAgentes', 'agentes')"
       @set-Data-Agentes="setDataAgentes"
+      @reset-Loading="resetLoading"
       @set-Data-Agentes-Edit="setDataAgentesEdit"
       @set-Data="setData"
     ></methods>
@@ -750,13 +755,6 @@ export default {
   data() {
     return {
       columnsAgentes: [
-        {
-          name: "id",
-          label: "Codigo",
-          field: "id",
-          align: "left",
-          sortable: true,
-        },
         {
           name: "nb_agente",
           label: "Nombre",
@@ -856,12 +854,13 @@ export default {
     return {
       axiosConfig: {
         headers: {
-          Authorization: `Bearer ${LocalStorage.getItem('token')}`,
+          Authorization: ``,
         }
       },
       pagination: ref({
         rowsPerPage: 10,
       }),
+      loading: ref(false),
       separator: ref("vertical"),
       form: ref(false),
       formEdit: ref(false),
@@ -948,15 +947,22 @@ export default {
       }
     },
 
+    
+    resetLoading() {
+      this.loading = false;
+    },
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.loading = true;
     },
     setData(res, dataRes) {
       this[dataRes] = res
       this.getDataIniciar();
+      this.loading = false
     },
     setDataAgentes(res, dataRes) {
       this[dataRes] = res
+      this.loading = false
     },
     setDataAgentesEdit(res, dataRes) {
       this[dataRes].id = res.id
@@ -977,18 +983,21 @@ export default {
     },
     deleteData(idpost) {
       this.$refs.methods.deleteData(`/agentes/${idpost}`, 'getData', this.axiosConfig);
+      this.loading = true;
     },
     createDataCuentas() {
       this.formAgentes.cod_agencia = this.selectedAgencia.id
       this.formAgentes.tipo_agente = this.formAgentes.tipo_agente.value
       this.formAgentes.flag_activo = this.formAgentes.flag_activo.value
       this.$refs.methods.createData(`/agentes`, this.formAgentes, 'getData', this.axiosConfig);
+      this.loading = true;
       this.resetForm();
     },
     putDataCuentas() {
       this.formEditAgentes.flag_activo = this.formEditAgentes.flag_activo.value
       this.formEditAgentes.tipo_agente = this.formEditAgentes.tipo_agente.value
       this.$refs.methods.putData(`/agentes/${this.formEditAgentes.id}`, this.formEditAgentes, 'getData', this.axiosConfig);
+      this.loading = true;
       this.resetFormEdit()
     },
     resetForm() {

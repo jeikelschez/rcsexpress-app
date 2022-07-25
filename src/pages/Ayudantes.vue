@@ -247,6 +247,7 @@
               <q-table
                 :rows="datos"
                 row-key="id"
+                :loading="loading"
                 :columns="columns"
                 :separator="separator"
                 class="my-sticky-column-table"
@@ -255,6 +256,9 @@
                 :grid="$q.screen.xs"
                 v-model:pagination="pagination"
               >
+                <template v-slot:loading>
+                  <q-inner-loading showing color="primary" />
+                </template>
                 <template v-slot:body-cell-action="props">
                   <q-td :props="props">
                     <q-btn
@@ -389,6 +393,7 @@
     <methods ref="methods"
     @get-Data="getData('/ayudantes','setData','datos')"
     @set-data="setData"
+    @reset-Loading="resetLoading"
     @set-data-Edit="setDataEdit">
     </methods>
     <desactive-crud ref="desactiveCrud"
@@ -417,13 +422,6 @@ export default {
   data() {
     return {
       columns: [
-        {
-          name: "id",
-          label: "Código",
-          field: "id",
-          align: "left",
-          sortable: true,
-        },
         {
           name: "nb_ayudante",
           label: "Nombre",
@@ -484,7 +482,7 @@ export default {
       disabledDelete: true,
       axiosConfig: {
         headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          Authorization: ``,
         },
       },
     };
@@ -504,6 +502,7 @@ export default {
       }),
       separator: ref("vertical"),
       create: ref(false),
+      loading: ref(false),
       edit: ref(false),
       errorDelServidor() {
         $q.notify({
@@ -539,6 +538,9 @@ export default {
     this.$refs.desactiveCrud.desactivarCrud('c_bancos', 'd_bancos', 'u_bancos', 'desactivarCrudAyudantes')
   },
   methods: {
+    resetLoading() {
+      this.loading = false;
+    },
     reglasSelect(val) {
       if (val === null) {
         return "Debes Seleccionar Algo";
@@ -610,9 +612,11 @@ export default {
     },
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.loading = true;
     },
     setData(res, dataRes) {
-      this[dataRes] = res
+      this[dataRes] = res;
+      this.loading = false
     }, 
     setDataEdit(res, dataRes) {
       this[dataRes].id = res.id
@@ -623,16 +627,19 @@ export default {
     },   
     deleteData(idpost) {
       this.$refs.methods.deleteData(`/ayudantes/${idpost}`, 'getData', this.axiosConfig);
+      this.loading = true;
     },
     createData() {
       this.form.flag_activo = this.form.flag_activo.value
       this.$refs.methods.createData('/ayudantes', this.form, 'getData', this.axiosConfig);
       this.resetForm();
+      this.loading = true;
     },
     putData() {
       this.formEdit.flag_activo = this.formEdit.flag_activo.value
       this.$refs.methods.putData(`/ayudantes/${this.formEdit.id}`, this.formEdit, 'getData', this.axiosConfig);
       this.edit = false;
+      this.loading = true;
     },
     
     resetForm() {

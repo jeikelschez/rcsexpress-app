@@ -306,7 +306,6 @@
               rounded
               color="primary"
               @click="create = true"
-              @click.capture="getData('/bancos','setdata','datos')"
               :disabled="this.disabledCreate"
             ></q-btn>
           </div>
@@ -317,6 +316,7 @@
             <div bordered flat class="row">
               <q-table
                 :rows="datos"
+                :loading="loading"
                 row-key="id"
                 :columns="columns"
                 :separator="separator"
@@ -326,6 +326,9 @@
                 :grid="$q.screen.xs"
                 v-model:pagination="pagination"
               >
+                <template v-slot:loading>
+                  <q-inner-loading showing color="primary" />
+                </template>
                 <template v-slot:body-cell-action="props">
                   <q-td :props="props">
                     <q-btn
@@ -459,6 +462,7 @@
     </q-dialog>
     <methods ref="methods"
     @get-Data="getData('/bancos','setData','datos')"
+    @reset-Loading="resetLoading"
     @set-data="setData" @set-Data-Edit="setData">
     </methods>
     <desactive-crud ref="desactiveCrud"
@@ -487,13 +491,6 @@ export default {
   data() {
     return {
       columns: [
-        {
-          name: "id",
-          label: "Código",
-          field: "id",
-          align: "left",
-          sortable: true,
-        },
         {
           name: "nb_banco",
           label: "Nombre",
@@ -561,7 +558,7 @@ export default {
       disabledDelete: true,
       axiosConfig: {
         headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          Authorization: ``,
         },
       },
     };
@@ -581,6 +578,7 @@ export default {
       }),
       separator: ref("vertical"),
       create: ref(false),
+      loading: ref(false),
       edit: ref(false),
       errorDelServidor() {
         $q.notify({
@@ -616,6 +614,9 @@ export default {
     this.$refs.desactiveCrud.desactivarCrud('c_bancos', 'd_bancos', 'u_bancos', 'desactivarCrudBancos')
   },
   methods: {
+    resetLoading() {
+      this.loading = false;
+    },
     reglaInputBancos(val) {
       if (val === null) {
         return "Debes Escribir Algo";
@@ -651,20 +652,25 @@ export default {
     },
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.loading = true;
     },
     setData(res, dataRes) {
       this[dataRes] = res
+      this.loading = false
     },    
     deleteData(idpost) {
       this.$refs.methods.deleteData(`/bancos/${idpost}`, 'getData', this.axiosConfig);
+      this.loading = true;
     },
     createData() {
       this.$refs.methods.createData('/bancos', this.form, 'getData', this.axiosConfig);
       this.resetForm();
+      this.loading = true;
     },
     putData() {
       this.$refs.methods.putData(`/bancos/${this.formEdit.id}`, this.formEdit, 'getData', this.axiosConfig);
       this.edit = false;
+      this.loading = true;
     },
     
     resetForm() {

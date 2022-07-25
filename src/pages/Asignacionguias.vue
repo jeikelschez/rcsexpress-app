@@ -121,7 +121,6 @@
                   v-model="form.cod_agente"
                   label="Agente"
                   class="pcform"
-                  :rules="[reglasSelect]"
                   hint=""
                   :options="agentesForm"
                   lazy-rules
@@ -141,7 +140,6 @@
                   label="Cliente"
                   hint=""
                   :options="clientesForm"
-                  :rules="[reglasSelect]"
                   lazy-rules
                   option-label="nb_cliente"
                   option-value="id"
@@ -305,7 +303,6 @@
                   v-model="formEdit.cod_agente"
                   label="Agente"
                   class="pcform"
-                  :rules="[reglasSelect]"
                   :readonly="this.disabledInputsEdit"
                   hint=""
                   :options="agentesForm"
@@ -327,7 +324,6 @@
                   hint=""
                   :readonly="this.disabledInputsEdit"
                   :options="clientesForm"
-                  :rules="[reglasSelect]"
                   lazy-rules
                   option-label="nb_cliente"
                   option-value="id"
@@ -364,7 +360,7 @@
       </q-card>
     </q-dialog>
 
-    <div class="row q-pa-sm">
+    <div class="row q-pa-sm justify-center">
       <div
         class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 text-secondary"
         style="align-self: center; text-align: center"
@@ -405,7 +401,7 @@
         </div>
 
         <div
-          class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-4 selectmovil"
+          class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-3 selectmovil"
           style="align-self: center; text-align: center; margin-right: 20px"
         >
           <q-select
@@ -431,7 +427,7 @@
         </div>
 
         <div
-          class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-3"
+          class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-4"
           style="align-self: center; text-align: center; margin-right: 30px"
         >
           <q-select
@@ -560,20 +556,37 @@
       >
         <q-card
           bordered
-          class="row col-md-8 col-xl-7 col-lg-7 col-xs-12 col-sm-12 inputGuias"
+          class="row col-md-7 col-xl-7 col-lg-7 col-xs-12 col-sm-12"
           style="align-self: center; text-align: center; margin-right: 26px"
         >
           <q-card-section
-            class="row col-md-12 col-xs-12"
+            class="row col-md-12 col-xs-12 menuFilter"
             style="align-self: center; text-align: center"
           >
-            <div class="col-md-4 col-xs-12">
+            <div class="col-md-5 col-xs-12">
               <q-input
                 outlined
                 v-model="guia_desde"
                 label="Guia Desde:"
                 type="number"
-                class="inputMenuGuias"
+                class="pcform"
+                @keydown.enter="
+                  this.axiosConfig.headers.desde = this.guia_desde;
+                  getData(`/cguias`, 'setData', 'datos');
+                  if (this.guia_hasta !== '') {
+                  this.reglasCorrelativoFilter()
+                  };"
+                @keydown.tab="
+                  this.axiosConfig.headers.desde = this.guia_desde;
+                  getData(`/cguias`, 'setData', 'datos');
+                  if (this.guia_hasta !== '') {
+                  this.reglasCorrelativoFilter()
+                  };"
+                @blur="this.axiosConfig.headers.desde = this.guia_desde;
+                  getData(`/cguias`, 'setData', 'datos');
+                  if (this.guia_hasta !== '') {
+                  this.reglasCorrelativoFilter()
+                  };"
                 hide-bottom-space
                 hint=""
                 lazy-rules
@@ -584,10 +597,22 @@
               </q-input>
             </div>
 
-            <div class="col-md-4 col-xs-12">
+            <div class="col-md-5 col-xs-7">
               <q-input
                 outlined
                 v-model="guia_hasta"
+                @keydown.enter="
+                  this.axiosConfig.headers.hasta = this.guia_hasta;
+                  getData(`/cguias`, 'setData', 'datos');
+                  this.reglasCorrelativoFilter()"
+                @keydown.tab="
+                  this.axiosConfig.headers.hasta = this.guia_hasta;
+                  getData(`/cguias`, 'setData', 'datos');
+                  this.reglasCorrelativoFilter()"
+                @blur="
+                  this.axiosConfig.headers.hasta = this.guia_hasta;
+                  getData(`/cguias`, 'setData', 'datos');
+                  this.reglasCorrelativoFilter()"
                 label="Guia Hasta:"
                 type="number"
                 class="inputMenuGuias"
@@ -601,31 +626,7 @@
               </q-input>
             </div>
 
-            <div class="col-md-2 col-xs-6 button-filter">
-              <q-btn
-                dense
-                color="primary"
-                round
-                padding="sm"
-                style="margin-top: 3px"
-                @click="
-                  this.axiosConfig.headers.desde = this.guia_desde;
-                  this.axiosConfig.headers.hasta = this.guia_hasta;
-                  getData(`/cguias`, 'setData', 'datos');"
-              >
-                <q-icon size="30px" name="search" color="white"> </q-icon>
-                <q-tooltip
-                  class="bg-primary"
-                  style="max-height: 30px"
-                  transition-show="scale"
-                  transition-hide="scale"
-                  color="primary"
-                  >Filtrar</q-tooltip
-                >
-              </q-btn>
-            </div>
-
-            <div class="col-md-2 col-xs-6 checkboxGuias">
+            <div class="col-md-2 col-xs-4 checkboxGuias">
               <q-field
                 hide-bottom-space
                 borderless
@@ -696,10 +697,12 @@
               this.axiosConfig.headers.tipo = '';
               this.guia_desde =  '';
               this.guia_hasta =  '';
+              this.clientes = [];
+              this.agentes = [];
               getData(`/cguias`, 'setData', 'datos');
             "
           >
-            <q-icon size="40px" name="delete" color="white"> </q-icon>
+            <q-icon size="40px" name="filter_alt_off" color="white"> </q-icon>
             <q-tooltip
               class="bg-primary"
               style="max-height: 30px"
@@ -732,6 +735,7 @@
             :rows="datos"
             row-key="id"
             :columns="columns"
+            :loading="loading"
             :separator="separator"
             class="my-sticky-column-table"
             :filter="filter"
@@ -739,6 +743,9 @@
             :grid="$q.screen.xs"
             v-model:pagination="pagination"
           >
+            <template v-slot:loading>
+                  <q-inner-loading showing color="primary" />
+            </template>
             <template v-slot:body-cell-action="props">
               <q-td :props="props">
                 <q-btn
@@ -886,6 +893,7 @@
       @get-Data="getData('/cguias', 'setData', 'datos')"
       @get-Data-Guias="getDataGuias('/cguias', 'setData', 'datos')"
       @set-Data="setData"
+      @reset-Loading="resetLoading"
       @set-Data-Iniciar="setDataIniciar"
       @set-Data-Edit="setDataEdit"
       @set-Data-Select="setDataSelect"
@@ -897,6 +905,8 @@
 import { ref } from "vue";
 
 import { api } from "boot/axios";
+
+import { Notify } from 'quasar'
 
 import { useQuasar } from "quasar";
 
@@ -1005,7 +1015,7 @@ export default {
       agentesForm: [],
       selected: [],
       selectedAgencia: [],
-      selectedGuiaCarga: "",
+      selectedGuiaCarga: "20",
       selectedGuiaFactura: "",
       selectedCulminado: "",
       guia_desde: "",
@@ -1032,12 +1042,12 @@ export default {
     return {
       axiosConfig: {
         headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          Authorization: ``,
           agencia: "",
           agente: "",
           cliente: "",
           disp: "",
-          tipo: "",
+          tipo: "20",
           desde: "",
           hasta: "",
         },
@@ -1048,8 +1058,15 @@ export default {
       separator: ref("vertical"),
       create: ref(false),
       edit: ref(false),
+      loading: ref(false),
       deletePopup: ref(false),
       filter: ref(""),
+      correlativoMayor() {
+        $q.notify({
+          message: "El Ultimo Correlativo debe ser Mayor al Primero",
+          color: "red",
+        });
+      },
     };
   },
   mounted() {
@@ -1062,6 +1079,9 @@ export default {
     );
   },
   methods: {
+    resetLoading() {
+      this.loading = false;
+    },
     // Reglas
     reglasNotNull10(val) {
       if (val === null) {
@@ -1069,11 +1089,6 @@ export default {
       }
       if (val === "") {
         return "Debes Escribir Algo";
-      }
-      if ((val !== null) !== "") {
-        if (val.length > 10) {
-          return "Deben ser Maximo 10 caracteres";
-        }
       }
     },
     reglasSegundoCorrelativo(val) {
@@ -1107,6 +1122,11 @@ export default {
           return "Deben ser Maximo 10 caracteres";
         }
       }
+    }, 
+    reglasCorrelativoFilter() {
+        if ((this.guia_hasta) - (this.guia_desde) < 0) {
+        this.correlativoMayor()
+      }
     },
     reglasSelect(val) {
       if (val === null) {
@@ -1132,6 +1152,7 @@ export default {
       this[dataRes] = res;
       this.selectedCliente = [];
       this.selectedAgente = [];
+      this.loading = false;
     },
     getDataGuias(url, call, dataRes) {
       this.axiosConfig.headers.agencia = this.selectedAgencia.id;
@@ -1141,6 +1162,7 @@ export default {
     },
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.loading = true;
     },
     getDataEdit(id) {
       this.$refs.methods.getDataEdit(
@@ -1152,10 +1174,12 @@ export default {
     },
     setData(res, dataRes) {
       this[dataRes] = res;
+      this.loading = false
     },
     setDataIniciar(res, dataRes) {
       this[dataRes] = res;
       this.getDataIniciar();
+      this.loading = false
     },
     setDataEdit(res, dataRes) {
       this[dataRes].cant_disponible = res.cant_disponible;
@@ -1194,6 +1218,7 @@ export default {
         "getData",
         this.axiosConfig
       );
+      this.loading = true;
     },
     createData() {
       this.form.cod_cliente = this.form.cod_cliente.id;
@@ -1207,6 +1232,7 @@ export default {
           this.axiosConfig
         );
       this.resetForm();
+      this.loading = true;
     },
     putData() {
       this.formEdit.cod_agencia = this.formEdit.cod_agencia.id,
@@ -1222,6 +1248,7 @@ export default {
           this.axiosConfig
         );
       this.resetFormEdit();
+      this.loading = true;
     },
     resetForm() {
       (this.form.control_inicio = ""),
@@ -1286,6 +1313,9 @@ export default {
     margin-top: 13px;
   }
 }
+.menuFilter {
+    padding-bottom: 1px;
+}
 @media screen and (max-width: 1024px) {
   .inputMenuGuias {
     margin-top: 14px;
@@ -1296,6 +1326,11 @@ export default {
     margin-bottom: 20px;
   }
 }
+@media screen and (min-width: 600px) and (max-width: 1024px) {
+  .titleMenu {
+    padding-bottom: 1px;
+  }
+}
 @media screen and (max-width: 600px) {
   .titleMenu {
     margin-top: 15px;
@@ -1303,7 +1338,12 @@ export default {
 }
 @media screen and (max-width: 1024px) {
   .checkboxGuias {
-    margin-top: 10px;
+    margin-top: 14px;
+  }
+}
+@media screen and (max-width: 1024px) {
+  .checkboxGuias {
+    margin-left: 10px;
   }
 }
 @media screen and (max-width: 1024px) {

@@ -207,6 +207,7 @@
             <div bordered flat class="my-card row">
               <q-table
                 :rows="zonas"
+                :loading="loading"
                 row-key="id"
                 :columns="columnsZonas"
                 :separator="separator"
@@ -216,6 +217,9 @@
                 :grid="$q.screen.xs"
                 v-model:pagination="pagination"
               >
+                <template v-slot:loading>
+                  <q-inner-loading showing color="primary" />
+                </template>
                 <template v-slot:body-cell-action="props">
                   <q-td :props="props">
                     <q-btn
@@ -354,6 +358,7 @@
       @get-Data="this.axiosConfig.headers.agencia = this.selectedAgencia.id;
       getData(`/zonas`, 'setDataZonas', 'zonas')"
       @set-Data-Zonas="setDataZonas"
+      @reset-Loading="resetLoading"
       @set-Data-Zonas-Edit="setDataZonasEdit"
       @set-Data="setData"
     ></methods>
@@ -380,13 +385,6 @@ export default {
   data() {
     return {
       columnsZonas: [
-        {
-          name: "id",
-          label: "ID",
-          field: "id",
-          align: "left",
-          sortable: true,
-        },
         {
           name: "nb_zona",
           label: "Nombre de la Zona",
@@ -448,13 +446,14 @@ export default {
     return {
       axiosConfig: {
         headers: {
-          Authorization: `Bearer ${LocalStorage.getItem('token')}`,
+          Authorization: ``,
           agencia: ""
         }
       },
       pagination: ref({
         rowsPerPage: 10,
       }),
+      loading: ref(false),
       separator: ref("vertical"),
       zonasForm: ref(false),
       zonasFormEdit: ref(false),
@@ -496,6 +495,9 @@ export default {
     this.$refs.desactiveCrud.desactivarCrud('c_roles', 'd_roles', 'u_roles', 'desactivarCrudZonas')
   },
   methods: {
+    resetLoading() {
+      this.loading = false;
+    },
     // Reglas
     reglasInputs(val) {
       if (val === null) {
@@ -519,13 +521,16 @@ export default {
 
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.loading = true;
     },
     setData(res, dataRes) {
       this[dataRes] = res
       this.getDataIniciar();
+      this.loading = false
     },
     setDataZonas(res, dataRes) {
       this[dataRes] = res
+      this.loading = false;
     },
     setDataZonasEdit(res, dataRes) {
       this[dataRes].id = res.id
@@ -535,18 +540,21 @@ export default {
     },
     deleteData(idpost) {
       this.$refs.methods.deleteData(`/zonas/${idpost}`, 'getData', this.axiosConfig);
+      this.loading = true;
     },
     createDataZonas() {
       this.formZonas.cod_agencia = this.selectedAgencia.id
       this.formZonas.tipo_zona = this.formZonas.tipo_zona.value
       this.$refs.methods.createData(`/zonas`, this.formZonas, 'getData', this.axiosConfig);
       this.resetFormZonas();
+      this.loading = true;
     },
     putDataZonas() {
       this.formEditZonas.cod_agencia = this.selectedAgencia.id
       this.formEditZonas.tipo_zona = this.formEditZonas.tipo_zona.value
       this.$refs.methods.putData(`/zonas/${this.formEditZonas.id}`, this.formEditZonas, 'getData', this.axiosConfig);
-      this.resetFormEditZonas()
+      this.resetFormEditZonas();
+      this.loading = true;
     },
     resetFormZonas() {
       (this.formZonas.nb_zona = ""),

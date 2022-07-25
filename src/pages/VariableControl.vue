@@ -222,12 +222,16 @@
                 row-key="id"
                 :columns="columns"
                 :separator="separator"
+                :loading="loading"
                 class="my-sticky-column-table"
                 :filter="filter"
                 style="width: 100%"
                 :grid="$q.screen.xs"
                 v-model:pagination="pagination"
               >
+                <template v-slot:loading>
+                  <q-inner-loading showing color="primary" />
+                </template>
                 <template v-slot:body-cell-tipo="props">
                   <q-td :props="props">
                     <q-select
@@ -417,6 +421,7 @@
       ref="methods"
       @get-Data="getData('/vcontrol', 'setData', 'datos')"
       @set-Data="setData"
+      @reset-Loading="resetLoading"
       @set-Data-Edit="setDataEdit"
       @put-Dato-Select="putDatoSelect"
     ></methods>
@@ -444,13 +449,6 @@ export default {
   data() {
     return {
       columns: [
-        {
-          name: "id",
-          label: "ID de Control",
-          field: "id",
-          align: "left",
-          sortable: true,
-        },
         {
           name: "nombre",
           label: "Descripción de la Variable",
@@ -505,7 +503,7 @@ export default {
       disabledDelete: true,
       axiosConfig: {
         headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          Authorization: ``,
           agencia: "1",
           tipo: "16",
           fuente: "CR",
@@ -528,6 +526,7 @@ export default {
       }),
       separator: ref("vertical"),
       create: ref(false),
+      loading: ref(false),
       edit: ref(false),
       activoExistente() {
         $q.notify({
@@ -549,6 +548,9 @@ export default {
     );
   },
   methods: {
+    resetLoading() {
+      this.loading = false;
+    },
     // Reglas
     reglasAllowNull1(val) {
       if ((val !== null) !== "") {
@@ -605,9 +607,11 @@ export default {
 
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.loading = true;
     },
     setData(res, dataRes) {
       this[dataRes] = res;
+      this.loading = false
     },
 
     getDataEdit(id, call) {
@@ -635,6 +639,7 @@ export default {
         "getData",
         this.axiosConfig
       );
+      this.loading = true;
     },
     createDato() {
       this.form.tipo = this.form.tipo.value;
@@ -645,6 +650,7 @@ export default {
         this.axiosConfig
       );
       this.resetForm();
+      this.loading = true;
     },
     putDato() {
       this.formEdit.tipo = this.formEdit.tipo.value;
@@ -655,6 +661,7 @@ export default {
         this.axiosConfig
       );
       this.edit = false;
+      this.loading = true;
     },
     putDatoSelect(res, dataRes) {
       this[dataRes].id = res.id;
@@ -667,6 +674,7 @@ export default {
         "getData",
         this.axiosConfig
       );
+      this.loading = true;
     },
 
     resetForm() {

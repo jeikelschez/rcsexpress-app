@@ -311,6 +311,7 @@
               <q-table
                 :rows="datos"
                 row-key="id"
+                :loading="loading"
                 :columns="columns"
                 :separator="separator"
                 class="my-sticky-column-table"
@@ -319,6 +320,9 @@
                 :grid="$q.screen.xs"
                 v-model:pagination="pagination"
               >
+                <template v-slot:loading>
+                  <q-inner-loading showing color="primary" />
+                </template>
                 <template v-slot:body-cell-action="props">
                   <q-td :props="props">
                     <q-btn
@@ -452,7 +456,8 @@
     </q-dialog>
     <methods ref="methods"
     @get-Data="getData('/empleados','setData','datos')"
-    @set-data="setData" @set-Data-Edit="setData">
+    @set-data="setData" @set-Data-Edit="setData"
+    @reset-Loading="resetLoading">
     </methods>
     <desactivate-crud ref="desactivateCrud"
     @desactivar-Crud-Bancos="desactivarCrudBancos">
@@ -481,13 +486,6 @@ export default {
   data() {
     return {
       columns: [
-        {
-          name: "id",
-          label: "Codigo",
-          field: "id",
-          align: "left",
-          sortable: true,
-        },
         {
           name: "nombre",
           label: "Nombre del Empleado",
@@ -542,7 +540,7 @@ export default {
       disabledDelete: true,
       axiosConfig: {
         headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          Authorization: ``,
         },
       },
     };
@@ -563,6 +561,7 @@ export default {
       separator: ref("vertical"),
       create: ref(false),
       edit: ref(false),
+      loading: ref(false),
       medium: ref(false),
       deletePopup: ref(false),
       filter: ref(""),
@@ -573,6 +572,9 @@ export default {
     this.$refs.desactivateCrud.desactivarCrud('c_bancos', 'd_bancos', 'u_bancos', 'desactivarCrudBancos')
   },
   methods: {
+    resetLoading() {
+      this.loading = false;
+    },
     // Reglas
     reglasNotNull10(val) {
       if (val === null) {
@@ -656,9 +658,11 @@ export default {
 
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.loading = true;
     },
     setData(res, dataRes) {
       this[dataRes] = res
+      this.loading = false
     },  
     setDataEdit(res, dataRes) {
       this.formEdit.id = res.id
@@ -670,15 +674,18 @@ export default {
     },   
     deleteData(idpost) {
       this.$refs.methods.deleteData(`/empleados/${idpost}`, 'getData', this.axiosConfig);
+      this.loading = true;
     },
     createData() {
       this.$refs.methods.createData('/empleados', this.form, 'getData', this.axiosConfig);
       this.resetForm();
+      this.loading = true;
     },
     putData() {
       this.$refs.methods.putData(`/empleados/${this.formEdit.id}`, this.formEdit, 'getData', this.axiosConfig);
       this.edit = false;
-      this.resetFormEdit()
+      this.resetFormEdit();
+      this.loading = true;
     },
     
     resetForm() {

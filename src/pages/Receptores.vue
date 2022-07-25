@@ -401,6 +401,7 @@
                 :rows="datos"
                 row-key="id"
                 :columns="columns"
+                :loading="loading"
                 :separator="separator"
                 class="my-sticky-column-table"
                 :filter="filter"
@@ -408,6 +409,9 @@
                 :grid="$q.screen.xs"
                 v-model:pagination="pagination"
               >
+                <template v-slot:loading>
+                  <q-inner-loading showing color="primary" />
+                </template>
                 <template v-slot:body-cell-action="props">
                   <q-td :props="props">
                     <q-btn
@@ -542,6 +546,7 @@
     <methods ref="methods"
     @get-Data="getData('/receptores','setData','datos')"
     @set-data="setData"
+    @reset-Loading="resetLoading"
     @set-Data-Edit="setDataEdit">
     </methods>
     <desactivate-crud ref="desactivateCrud"
@@ -571,13 +576,6 @@ export default {
   data() {
     return {
       columns: [
-        {
-          name: "id",
-          label: "Código",
-          field: "id",
-          align: "left",
-          sortable: true,
-        },
         {
           name: "nb_receptor",
           label: "Nombre",
@@ -640,7 +638,7 @@ export default {
       disabledDelete: true,
       axiosConfig: {
         headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          Authorization: ``,
         },
       },
     };
@@ -661,6 +659,7 @@ export default {
       separator: ref("vertical"),
       create: ref(false),
       edit: ref(false),
+      loading: ref(false),
       medium: ref(false),
       deletePopup: ref(false),
       filter: ref(""),
@@ -671,6 +670,9 @@ export default {
     this.$refs.desactivateCrud.desactivarCrud('c_bancos', 'd_bancos', 'u_bancos', 'desactivarCrudBancos')
   },
   methods: {
+    resetLoading() {
+      this.loading = false;
+    },
     // Reglas
     reglasSelect(val) {
       if (val === null) {
@@ -785,9 +787,11 @@ export default {
     // Metodos CRUD
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.loading = true;
     },
     setData(res, dataRes) {
-      this[dataRes] = res
+      this[dataRes] = res;
+      this.loading = false
     },  
     setDataEdit(res, dataRes) {
       this.formEdit.id = res.id
@@ -802,17 +806,20 @@ export default {
     },   
     deleteData(idpost) {
       this.$refs.methods.deleteData(`/receptores/${idpost}`, 'getData', this.axiosConfig);
+      this.loading = true;
     },
     createData() {
       this.form.flag_activo = this.form.flag_activo.value
       this.$refs.methods.createData('/receptores', this.form, 'getData', this.axiosConfig);
       this.resetForm();
+      this.loading = true;
     },
     putData() {
       this.formEdit.flag_activo = this.formEdit.flag_activo.value
       this.$refs.methods.putData(`/receptores/${this.formEdit.id}`, this.formEdit, 'getData', this.axiosConfig);
       this.edit = false;
-      this.resetFormEdit()
+      this.resetFormEdit();
+      this.loading = true;
     },
     
     resetForm() {

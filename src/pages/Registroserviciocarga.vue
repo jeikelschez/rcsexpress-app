@@ -1902,7 +1902,7 @@
             class="row col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
             style="align-self: center; text-align: center; margin-bottom: 20px"
           >
-            <div class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-4 selectmovil"
+            <div class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-5 selectmovil"
               style="align-self: center; text-align: center"
             >
               <q-input
@@ -1912,12 +1912,18 @@
                 hide-bottom-space
                 standout
                 label="Número de Guia"
-                @update:model-value="
-                  this.axiosConfig.headers.agencia = this.selectedAgencia.id;
-                  getData(`/cguias`, 'setDataSelect', 'datos');
-                  getData(`/agentes`, 'setDataSelect', 'agentes');
-                  getData(`/clientes`, 'setDataSelect', 'clientes');
-                "
+                @keydown.enter="
+                  this.axiosConfig.headers.hasta = this.guia_hasta;
+                  getData(`/cguias`, 'setData', 'datos');
+                  this.reglasCorrelativoFilter()"
+                @keydown.tab="
+                  this.axiosConfig.headers.hasta = this.guia_hasta;
+                  getData(`/cguias`, 'setData', 'datos');
+                  this.reglasCorrelativoFilter()"
+                @blur="
+                  this.axiosConfig.headers.hasta = this.guia_hasta;
+                  getData(`/cguias`, 'setData', 'datos');
+                  this.reglasCorrelativoFilter()"
               >
                 <template v-slot:prepend>
                   <q-icon name="search" />
@@ -1925,7 +1931,7 @@
               </q-input>
             </div>
 
-            <div class="col-md-3 col-xl-3 col-lg-3 col-xs-9 col-sm-4 selectmovil"
+            <div class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-5 selectmovil2"
               style="align-self: center; text-align: center"
             >
               <q-input
@@ -1935,10 +1941,18 @@
                 standout
                 label="Número de Factura"
                 hide-bottom-space
-                @update:model-value="
-                  this.axiosConfig.headers.agente = this.selectedAgente.id;
+                @keydown.enter="
+                  this.axiosConfig.headers.hasta = this.guia_hasta;
                   getData(`/cguias`, 'setData', 'datos');
-                "
+                  this.reglasCorrelativoFilter()"
+                @keydown.tab="
+                  this.axiosConfig.headers.hasta = this.guia_hasta;
+                  getData(`/cguias`, 'setData', 'datos');
+                  this.reglasCorrelativoFilter()"
+                @blur="
+                  this.axiosConfig.headers.hasta = this.guia_hasta;
+                  getData(`/cguias`, 'setData', 'datos');
+                  this.reglasCorrelativoFilter()"
               >
                 <template v-slot:prepend>
                   <q-icon name="search" />
@@ -1946,32 +1960,11 @@
               </q-input>
             </div>
 
-            <div class="col-md-1 col-xl-1 col-lg-1 col-xs-1 col-sm-2 btnCard"
-            >
-            <q-btn
-              dense
-              color="primary"
-              round
-              @click="this.form = true"
-              padding="sm"
-            >
-              <q-icon size="40px" name="search" color="white"> </q-icon>
-              <q-tooltip
-                class="bg-primary"
-                style="max-height: 30px"
-                transition-show="scale"
-                transition-hide="scale"
-                color="primary"
-                >Filtrar</q-tooltip
-              >
-            </q-btn>
-            </div>
-
             <q-card
               bordered
               class="
                 row
-                col-md-4 col-xs-12 col-xl-4 col-lg-4 col-sm-12
+                col-md-5 col-xs-12 col-xl-5 col-lg-5 col-sm-12
                 espaciadoGuias
               "
             >
@@ -2151,6 +2144,7 @@
                 :rows="clientes"
                 row-key="id"
                 :columns="columnsClientes"
+                :loading="loading"
                 :separator="separator"
                 class="my-sticky-column-table"
                 :filter="filter"
@@ -2158,6 +2152,9 @@
                 :grid="$q.screen.xs"
                 v-model:pagination="pagination"
               >
+                <template v-slot:loading>
+                  <q-inner-loading showing color="primary" />
+                </template>
                 <template v-slot:body-cell-action="props">
                   <q-td :props="props">
                     <q-btn
@@ -2347,6 +2344,7 @@
         this.axiosConfig.headers.agencia = this.selectedAgencia.id;
         getData(`/clientes`, 'setDataClientes', 'clientes');
       "
+      @reset-Loading="resetLoading"
       @set-Data-Clientes="setDataClientes"
       @set-Data-Edit="setDataEdit"
       @set-Data-Iniciar="setDataIniciar"
@@ -2380,13 +2378,6 @@ export default {
   data() {
     return {
       columnsClientes: [
-        {
-          name: "id",
-          label: "Codigo",
-          field: "id",
-          align: "left",
-          sortable: true,
-        },
         {
           name: "nb_cliente",
           label: "Nombre",
@@ -2543,7 +2534,7 @@ export default {
       disabledDelete: true,
       axiosConfig: {
         headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          Authorization: ``,
           agencia: "",
           pais: "",
           estado: "",
@@ -2572,6 +2563,7 @@ export default {
       separator: ref("vertical"),
       form: ref(false),
       formEdit: ref(false),
+      loading: ref(false),
       clientesDelete: ref(false),
       conceptosBox: ref(false),
       filter: ref(""),
@@ -2598,6 +2590,9 @@ export default {
     );
   },
   methods: {
+    resetLoading() {
+      this.loading = false;
+    },
     // Reglas
     reglasSelect(val) {
       if (val === null) {
@@ -2695,10 +2690,12 @@ export default {
 
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.loading = true;
     },
     setDataIniciar(res, dataRes) {
       this[dataRes] = res;
       this.getDataIniciar();
+      this.loading = false
     },
     setDataClientes(res, dataRes) {
       this[dataRes] = res;
@@ -2711,6 +2708,7 @@ export default {
         }
         if (e == this.clientes.length - 1) break;
       }
+      this.loading = false
     },
     setDataEdit(res, dataRes) {
       this.resetFormEdit();
@@ -2796,6 +2794,7 @@ export default {
         "getData",
         this.axiosConfig
       );
+      this.loading = true;
     },
     createDataClientes() {
       this.formClientes.cod_agencia = this.selectedAgencia.id;
@@ -2825,6 +2824,7 @@ export default {
         this.axiosConfig
       );
       this.form = false;
+      this.loading = true;
     },
     putDataClientes() {
       this.formEditClientes.cod_agencia = this.selectedAgencia.id;
@@ -2862,6 +2862,7 @@ export default {
         this.axiosConfig
       );
       this.formEdit = false;
+      this.loading = true;
     },
     resetFormEdit() {
       (this.formEditClientes.nb_cliente = ""),
@@ -3016,9 +3017,9 @@ export default {
     margin-bottom: 20px;
   }
 }
-@media screen and (min-width: 1024px) {
+@media screen and (max-width: 600px) {
   .selectmovil2 {
-    margin-right: 35px;
+    margin-bottom: 20px;
   }
 }
 @media screen and (min-width: 600px) {
@@ -3041,6 +3042,11 @@ export default {
 @media screen and (min-width: 600px) {
   .selectmovil {
     margin-right: 20px;
+  }
+}
+@media screen and (min-width: 600px) {
+  .selectmovil2 {
+    margin-right: 35px;
   }
 }
 @media screen and (max-width: 1024px) {

@@ -299,6 +299,7 @@
                 :rows="datos"
                 row-key="id"
                 :columns="columns"
+                :loading="loading"
                 :separator="separator"
                 class="my-sticky-column-table"
                 :filter="filter"
@@ -306,6 +307,9 @@
                 :grid="$q.screen.xs"
                 v-model:pagination="pagination"
               >
+                <template v-slot:loading>
+                  <q-inner-loading showing color="primary" />
+                </template>
                 <template v-slot:body-cell-action="props">
                   <q-td :props="props">
                     <q-btn
@@ -443,6 +447,7 @@
     <methods ref="methods"
       @get-Data="getData(`/cfacturacion`, 'setData', 'datos')"
       @set-Data-Iniciar="setDataIniciar"
+      @reset-Loading="resetLoading"
       @set-Data-Edit="setDataEdit"
       @set-Data="setData"
     ></methods>
@@ -469,13 +474,6 @@ export default {
   data() {
     return {
       columns: [
-        {
-          name: "id",
-          label: "Codigo",
-          field: "id",
-          align: "left",
-          sortable: true,
-        },
         {
           name: "desc_concepto",
           label: "Nombre",
@@ -541,7 +539,7 @@ export default {
     return {
       axiosConfig: {
         headers: {
-          Authorization: `Bearer ${LocalStorage.getItem('token')}`,
+          Authorization: ``,
           cod_concepto: "1",
           tipo: "8"
         }
@@ -551,6 +549,7 @@ export default {
       }),
       separator: ref("vertical"),
       create: ref(false),
+      loading: ref(false),
       edit: ref(false),
       deleteForm: ref(false),
       filter: ref("")
@@ -562,6 +561,9 @@ export default {
     this.$refs.desactivateCrud.desactivarCrud('c_roles', 'd_roles', 'u_roles', 'desactivarCrudRoles')
   },
   methods: {
+    resetLoading() {
+      this.loading = false;
+    },
     reglasSelect(val) {
       if (val === null) {
         return "Debes Seleccionar Algo";
@@ -601,10 +603,12 @@ export default {
 
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.loading = true;
     },
     getDataSelect(url, call, dataRes) {
       this.axiosConfig.headers.cod_concepto = this.selectedConcepto.id
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.loading = true;
     },
     setDataIniciar(res, dataRes) {
       this[dataRes] = res
@@ -625,9 +629,11 @@ export default {
         }
       this.selectedConcepto = this.conceptos[0].desc_concepto;
       this.getData('/cfacturacion', 'setData', 'datos')
+      this.loading = false
     },
     setData(res, dataRes) {
       this[dataRes] = res
+      this.loading = false
       for (var e = 0, len = this.datos.length; e < len; e++) {
           if (this.datos[e].check_comision === "1") {
             this.datos[e].check_comision = "✓"
@@ -653,16 +659,19 @@ export default {
     },
     deleteData(idpost) {
       this.$refs.methods.deleteData(`/cfacturacion/${idpost}`, 'getData', this.axiosConfig);
+      this.loading = true;
     },
     createData() {
       this.form.cod_concepto = this.form.cod_concepto.id
       this.$refs.methods.createData(`/cfacturacion`, this.form, 'getData', this.axiosConfig);
       this.resetForm();
+      this.loading = true;
     },
     putData() {
       this.formEdit.cod_concepto = this.formEdit.cod_concepto.id
       this.$refs.methods.putData(`/cfacturacion/${this.formEdit.id}`, this.formEdit, 'getData', this.axiosConfig);
-      this.resetFormEdit()
+      this.resetFormEdit();
+      this.loading = true;
     },
 
     resetForm() {

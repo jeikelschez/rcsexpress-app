@@ -973,7 +973,7 @@
             <q-card class="q-pa-md col-md-5 col-xs-12 col-sm-12 cardMenu"
                   bordered style="margin-bottom: 20px"
                 >
-                  <q-card-section>
+                  <q-card-section class="menuFilter">
                     <div class="row">
                       <div
                         class="col-md-12 col-xs-12"
@@ -1044,7 +1044,7 @@
             <q-card class="q-pa-md col-md-6 col-xs-12 col-sm-12"
                   bordered style="margin-bottom: 20px"
                 >
-                  <q-card-section>
+                  <q-card-section class="menuFilter">
                     <div class="row">
                       <div
                         class="col-md-12 col-xs-12"
@@ -1109,7 +1109,7 @@
                 cardMenu
               "
             >
-              <q-card-section class="row col-md-12 col-xs-12"
+              <q-card-section class="row col-md-12 col-xs-12 menuFilter2"
               >
                 <div
                   class="col-md-4 col-xs-12 col-sm-4 titleMenu"
@@ -1286,14 +1286,14 @@
 
             <q-card
               bordered
-              style="margin-bottom: 25px"
+              style="margin-bottom: 32px"
               class="
                 q-pa-md
                 row
                 col-md-6 col-xs-12 col-xl-6 col-lg-6 col-sm-12
               "
             >
-              <q-card-section class="row col-md-12 col-xs-12"
+              <q-card-section class="row col-md-12 col-xs-12 menuFilter2"
               >
                 <div
                   class="col-md-2 col-xs-12 col-sm-2 SelectAgenciaCliente pcform"
@@ -1516,7 +1516,7 @@
             </q-btn>
 
             <q-btn dense color="primary" round padding="sm">
-              <q-icon size="40px" name="delete" color="white"> </q-icon>
+              <q-icon size="40px" name="filter_alt_off" color="white"> </q-icon>
               <q-tooltip
                 class="bg-primary"
                 transition-show="scale"
@@ -1529,7 +1529,7 @@
           </div>
         </div>
 
-        <div class="q-pa-md" style="margin-top: 20px">
+        <div class="q-pa-md" style="margin-top: 6px">
           <div class="q-gutter-y-md">
             <div bordered flat class="my-card row">
               <q-table
@@ -1537,12 +1537,16 @@
                 row-key="id"
                 :columns="columnsClientes"
                 :separator="separator"
+                :loading="loading"
                 class="my-sticky-column-table"
                 :filter="filter"
                 style="width: 100%"
                 :grid="$q.screen.xs"
                 v-model:pagination="pagination"
               >
+                <template v-slot:loading>
+                  <q-inner-loading showing color="primary" />
+                </template>
                 <template v-slot:body-cell-action="props">
                   <q-td :props="props">
                     <q-btn
@@ -1732,6 +1736,7 @@
         this.axiosConfig.headers.agencia = this.selectedAgencia.id;
         getData(`/clientes`, 'setDataClientes', 'clientes');
       "
+      @reset-Loading="resetLoading"
       @set-Data-Clientes="setDataClientes"
       @set-Data-Edit="setDataEdit"
       @set-Data-Iniciar="setDataIniciar"
@@ -1765,13 +1770,6 @@ export default {
   data() {
     return {
       columnsClientes: [
-        {
-          name: "id",
-          label: "Codigo",
-          field: "id",
-          align: "left",
-          sortable: true,
-        },
         {
           name: "nb_cliente",
           label: "Nombre",
@@ -1928,7 +1926,8 @@ export default {
       disabledDelete: true,
       axiosConfig: {
         headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          Authorization: `
+          `,
           agencia: "",
           pais: "",
           estado: "",
@@ -1956,6 +1955,7 @@ export default {
       }),
       separator: ref("vertical"),
       form: ref(false),
+      loading: ref(false),
       formEdit: ref(false),
       clientesDelete: ref(false),
       conceptosBox: ref(false),
@@ -1983,6 +1983,9 @@ export default {
     );
   },
   methods: {
+    resetLoading() {
+      this.loading = false;
+    },
     // Reglas
     reglasSelect(val) {
       if (val === null) {
@@ -2080,10 +2083,12 @@ export default {
 
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.loading = true;
     },
     setDataIniciar(res, dataRes) {
       this[dataRes] = res;
       this.getDataIniciar();
+      this.loading = false
     },
     setDataClientes(res, dataRes) {
       this[dataRes] = res;
@@ -2096,6 +2101,7 @@ export default {
         }
         if (e == this.clientes.length - 1) break;
       }
+      this.loading = false
     },
     setDataEdit(res, dataRes) {
       this.resetFormEdit();
@@ -2181,6 +2187,7 @@ export default {
         "getData",
         this.axiosConfig
       );
+      this.loading = true;
     },
     createDataClientes() {
       this.formClientes.cod_agencia = this.selectedAgencia.id;
@@ -2210,6 +2217,7 @@ export default {
         this.axiosConfig
       );
       this.form = false;
+      this.loading = true;
     },
     putDataClientes() {
       this.formEditClientes.cod_agencia = this.selectedAgencia.id;
@@ -2247,6 +2255,7 @@ export default {
         this.axiosConfig
       );
       this.formEdit = false;
+      this.loading = true;
     },
     resetFormEdit() {
       (this.formEditClientes.nb_cliente = ""),
@@ -2381,6 +2390,13 @@ export default {
 </script>
 
 <style>
+.menuFilter {
+    padding-bottom: 1px;
+}
+.menuFilter2 {
+    padding-bottom: 3px;
+    padding-top: 1px;
+}
 @media screen and (min-width: 1024px) {
   .cardMenu {
     margin-right: 40px; margin-bottom: 20px 

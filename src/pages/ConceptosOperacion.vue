@@ -263,6 +263,7 @@
                 :rows="datos"
                 row-key="id"
                 :columns="columns"
+                :loading="loading"
                 :separator="separator"
                 class="my-sticky-column-table"
                 :filter="filter"
@@ -270,6 +271,9 @@
                 :grid="$q.screen.xs"
                 v-model:pagination="pagination"
               >
+                <template v-slot:loading>
+                  <q-inner-loading showing color="primary" />
+                </template>
                 <template v-slot:body-cell-action="props">
                   <q-td :props="props">
                     <q-btn
@@ -407,6 +411,7 @@
     <methods ref="methods"
       @get-Data="getData(`/coperacion`, 'setDataConceptos', 'datos')"
       @set-Data-Conceptos="setDataConceptos"
+      @reset-Loading="resetLoading"
       @set-Data-Iniciar="setDataIniciar"
       @set-Data-Edit="setDataEdit"
       @set-Data-Tipos="setDataTipos"
@@ -434,13 +439,6 @@ export default {
   data() {
     return {
       columns: [
-        {
-          name: "id",
-          label: "Codigo",
-          field: "id",
-          align: "left",
-          sortable: true,
-        },
         {
           name: "desc_concepto",
           label: "Concepto",
@@ -491,7 +489,7 @@ export default {
     return {
       axiosConfig: {
         headers: {
-          Authorization: `Bearer ${LocalStorage.getItem('token')}`,
+          Authorization: ``,
           tipo: "1",
           fuente: "OP"
         }
@@ -502,6 +500,7 @@ export default {
       separator: ref("vertical"),
       create: ref(false),
       edit: ref(false),
+      loading: ref(false),
       disable: ref(true),
       disableEdit: ref(true),
       errorDelServidor() {
@@ -537,6 +536,9 @@ export default {
     this.$refs.desactiveCrud.desactivarCrud('c_roles', 'd_roles', 'u_roles', 'desactivarCrudRoles')
   },
   methods: {
+    resetLoading() {
+      this.loading = false;
+    },
     // Reglas
     reglasSelect(val) {
       if (val === null) {
@@ -622,8 +624,10 @@ export default {
     getDataSelect(url, call, dataRes) {
       this.axiosConfig.headers.tipo = this.selectedTipo.id
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.loading = true;
     },
     setDataIniciar(res, dataRes) {
+      this.loading = false
       this[dataRes] = res
       this.getData('/tipos', 'setDataTipos', 'tipoDeOperacion')
     },
@@ -633,6 +637,7 @@ export default {
     },
     setDataConceptos(res, dataRes) {
       this[dataRes] = res
+      this.loading = false
     },
     setDataEdit(res, dataRes) {
       this[dataRes].tipo = res.tipos.descripcion
@@ -661,16 +666,19 @@ export default {
     },
     deleteData(idpost) {
       this.$refs.methods.deleteData(`/coperacion/${idpost}`, 'getData', this.axiosConfig);
+      this.loading = true;
     },
     createData() {
       this.form.tipo = this.form.tipo.id
       this.$refs.methods.createData(`/coperacion`, this.form, 'getData', this.axiosConfig);
       this.resetForm();
+      this.loading = true;
     },
     putData() {
       this.formEdit.tipo = this.formEdit.tipo.id
       this.$refs.methods.putData(`/coperacion/${this.formEdit.id}`, this.formEdit, 'getData', this.axiosConfig);
-      this.resetFormEdit()
+      this.resetFormEdit();
+      this.loading = true;
     },
     resetForm() {
       (this.form.desc_concepto = ""),

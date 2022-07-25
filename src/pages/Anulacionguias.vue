@@ -1,21 +1,111 @@
 <template>
   <q-page class="pagina q-pa-md">
 
-    <div class="row q-pa-sm">
-      <div
-        class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 text-secondary"
-        style="align-self: center; text-align: center"
-      >
-        <h4><strong>VENTAS - ANULACIÓN DE GUIAS</strong></h4>
-      </div>
+    <q-dialog v-model="create">
+      <q-card class="q-pa-md" bordered style="max-width: 60vw">
+        <q-card-section>
+          <q-form @submit="createData" class="q-gutter-md">
+            <div class="row">
+              <div class="col-md-6 col-xs-12">
+                <q-input
+                      outlined
+                      label="Fecha"
+                      hint=""
+                      v-model="form.f_val"
+                      mask="date"
+                      :rules="['date']"
+                      class="pcform"
+                      lazy-rules
+                >
+                  <template v-slot:append>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                        <q-date v-model="form.f_val">
+                          <div class="row items-center justify-end">
+                             <q-btn v-close-popup label="Close" color="primary" flat />
+                          </div>
+                        </q-date>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
+              </div>
+
+              <div class="col-md-6 col-xs-12">
+                <q-select
+                  outlined
+                  v-model="form.direccion_banco"
+                  label="Motivo"
+                  hint=""
+                  :rules="[reglaInput]"
+                  lazy-rules
+                  @update:model-value="
+                    form.direccion_banco = form.direccion_banco.toUpperCase()
+                  "
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="location_on" />
+                  </template>
+                </q-select>
+              </div>
+
+              <div class="col-md-12 col-xs-12">
+                <q-input
+                  outlined
+                  v-model="form.fax_banco"
+                  label="Observación"
+                  :rules="[reglaInput]"
+                  hint=""
+                  lazy-rules
+                  mask="#### - ##########"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="fax" />
+                  </template>
+                </q-input>
+              </div>
+
+            </div>
+
+            <div
+              class="full-width row justify-center items-center content-center"
+              style="margin-bottom: 10px"
+            >
+              <q-btn
+                label="Anular Guia"
+                type="submit"
+                color="primary"
+                class="col-md-5 col-sm-5 col-xs-12"
+                icon="person_add"
+              />
+              <q-btn
+                label="Cerrar"
+                color="primary"
+                flat
+                class="col-md-5 col-sm-5 col-xs-12 btnmovil"
+                icon="close"
+                v-close-popup
+              />
+            </div>
+          </q-form>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+
+    <div class="row q-pa-sm justify-center">
 
       <div
-        class="row col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
-        style="align-self: center; text-align: center; margin-bottom: 20px"
+        class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 text-secondary justify-center"
+        style="align-self: center; text-align: center"
       >
-        <div
-          class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 selectmovil"
-          style="align-self: center; text-align: center; margin-right: 45px"
+        <h4><strong>MANTENIMIENTO - ANULACIÓN DE GUIAS</strong></h4>
+      </div>
+
+      <div class="row col-md-6 col-xl-6 col-lg-6 col-xs-12 col-sm-6 filterTop"
+        style="align-self: center; text-align: center; margin-top: 10px;"
+      >
+        <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 selectmovil"
+          style="align-self: center; text-align: center; margin-bottom: 20px"
         >
           <q-select
             rounded
@@ -39,21 +129,104 @@
           </q-select>
         </div>
 
-        <q-card
-          bordered
-          class="row col-md-7 col-xs-12 col-xl-7 col-lg-7 col-sm-12 espaciadoGuias"
+        <q-card bordered class="row col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 inputGuias"
+          style="align-self: center; text-align: center; margin-right: 26px"
         >
-          <q-card-section class="row col-md-12 col-xs-12" style="padding: 2px">
+          <q-card-section
+            class="row col-md-12 col-xs-12 menuFilter"
+            style="align-self: center; text-align: center"
+          >
+            <div class="col-md-6 col-xs-12">
+              <q-input
+                      outlined
+                      label="Guia Hasta:"
+                      hint=""
+                      v-model="form.f_val"
+                      mask="date"
+                      :rules="['date']"
+                      class="pcform"
+                      lazy-rules
+                >
+                  <template v-slot:append>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                        <q-date v-model="form.f_val"
+                        @keydown.enter="
+                  this.axiosConfig.headers.hasta = this.guia_hasta;
+                  getData(`/cguias`, 'setData', 'datos');
+                  this.reglasCorrelativoFilter()"
+                @keydown.tab="
+                  this.axiosConfig.headers.hasta = this.guia_hasta;
+                  getData(`/cguias`, 'setData', 'datos');
+                  this.reglasCorrelativoFilter()"
+                @blur="
+                  this.axiosConfig.headers.hasta = this.guia_hasta;
+                  getData(`/cguias`, 'setData', 'datos');
+                  this.reglasCorrelativoFilter()">
+                          <div class="row items-center justify-end">
+                             <q-btn v-close-popup label="Close" color="primary" flat />
+                          </div>
+                        </q-date>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+              </q-input>
+            </div>
 
-            <div class="col-md-3 col-xs-3 col-sm-12 titleMenu"
-              style="align-self: center; text-align: center"
+            <div class="col-md-6 col-xs-12">
+              <q-input
+                      outlined
+                      label="Guia Hasta:"
+                      hint=""
+                      v-model="form.f_val"
+                      mask="date"
+                      :rules="['date']"
+                      lazy-rules
+                >
+                  <template v-slot:append>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                        <q-date v-model="form.f_val" @keydown.enter="
+                  this.axiosConfig.headers.hasta = this.guia_hasta;
+                  getData(`/cguias`, 'setData', 'datos');
+                  this.reglasCorrelativoFilter()"
+                @keydown.tab="
+                  this.axiosConfig.headers.hasta = this.guia_hasta;
+                  getData(`/cguias`, 'setData', 'datos');
+                  this.reglasCorrelativoFilter()"
+                @blur="
+                  this.axiosConfig.headers.hasta = this.guia_hasta;
+                  getData(`/cguias`, 'setData', 'datos');
+                  this.reglasCorrelativoFilter()">
+                          <div class="row items-center justify-end">
+                             <q-btn v-close-popup label="Close" color="primary" flat />
+                          </div>
+                        </q-date>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+              </q-input>
+            </div>
+          </q-card-section>
+        </q-card>
+      </div>
+
+      <div class="row col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-5"
+        style="align-self: center; text-align: center; margin-top: 10px"
+      >
+        <q-card bordered class="row col-md-12 col-xs-12 col-xl-12 col-lg-12 col-sm-12 espaciadoGuias"
+        >
+          <q-card-section class="row col-md-12 col-xs-12">
+
+            <div class="col-md-12 col-xs-12 col-sm-12"
+              style="align-self: center; text-align: center; margin-top: 15px" 
             >
               <p
                 style="
-                  font-size: 16px;
+                  font-size: 20px;
                   align-self: center;
                   text-align: center;
-                  margin-bottom: 0px;
+                  margin-bottom: 20px;
                 "
                 class="text-secondary"
               >
@@ -61,13 +234,11 @@
               </p>
             </div>
 
-            <div class="row col-md-9 col-xl-9 col-lg-9 col-xs-12 col-sm-9"
+            <div class="row col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 justify-center"
             style="align-self: center; text-align: center"
             >
-            <div class="col-md-4 col-xs-12 col-sm-3 buttonMenu"
+            <div class="col-md-3 col-xs-12 col-sm-12 buttonMenuInitial"
               style="
-                margin-bottom: 7px;
-                margin-top: 7px;
                 align-self: center;
                 text-align: center;
               "
@@ -82,7 +253,6 @@
                   getData(`/cguias`, 'setData', 'datos');
                 "
                 dense
-                class="pcform"
                 v-model="selectedGuiaCarga"
               >
                 <template v-slot:control>
@@ -98,16 +268,14 @@
               </q-field>
             </div>
 
-            <div class="col-md-4 col-xs-12 col-sm-3 buttonMenu"
+            <div class="col-md-3 col-xs-12 col-sm-12 buttonMenu"
               style="
-                margin-bottom: 7px;
-                margin-top: 7px;
                 align-self: center;
                 text-align: center;
               "
               id="select"
             >
-              <q-field
+              <q-field class="check"
                 hide-bottom-space
                 borderless
                 dense
@@ -131,16 +299,14 @@
               </q-field>
             </div>
 
-            <div class="col-md-4 col-xs-12 col-sm-3 buttonMenu"
+            <div class="col-md-3 col-xs-12 col-sm-12 buttonMenu"
               style="
-                margin-bottom: 7px;
-                margin-top: 7px;
                 align-self: center;
                 text-align: center;
               "
               id="select"
-            >
-              <q-field
+            > 
+              <q-field class="check"
                 hide-bottom-space
                 borderless
                 dense
@@ -167,130 +333,6 @@
           </q-card-section>
         </q-card>
       </div>
-
-      <div
-        class="row col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
-        style="align-self: center; text-align: center"
-      >
-        <q-card
-          bordered
-          class="row col-md-8 col-xl-7 col-lg-7 col-xs-12 col-sm-12 inputGuias"
-          style="align-self: center; text-align: center; margin-right: 26px"
-        >
-          <q-card-section
-            class="row col-md-12 col-xs-12"
-            style="align-self: center; text-align: center"
-          >
-            <div class="col-md-5 col-xs-12">
-              <q-input
-                outlined
-                v-model="form.desc_ciudad"
-                label="Guia Desde:"
-                type="number"
-                class="inputMenuGuias"
-                hide-bottom-space
-                hint=""
-                lazy-rules
-              >
-                <template v-slot:prepend>
-                  <q-icon name="south_america" />
-                </template>
-              </q-input>
-            </div>
-
-            <div class="col-md-5 col-xs-12">
-              <q-input
-                outlined
-                v-model="form.desc_ciudad"
-                label="Guia Hasta:"
-                type="number"
-                class="inputMenuGuias"
-                hide-bottom-space
-                lazy-rules
-                hint=""
-              >
-                <template v-slot:prepend>
-                  <q-icon name="south_america" />
-                </template>
-              </q-input>
-            </div>
-
-            <div class="col-md-2 col-xs-12 button-filter">
-              <q-btn
-                dense
-                color="primary"
-                round
-                padding="sm"
-                style="margin-top: 3px"
-              >
-                <q-icon size="30px" name="search" color="white"> </q-icon>
-                <q-tooltip
-                  class="bg-primary"
-                  style="max-height: 30px"
-                  transition-show="scale"
-                  transition-hide="scale"
-                  color="primary"
-                  >Filtrar</q-tooltip
-                >
-              </q-btn>
-            </div>
-          </q-card-section>
-        </q-card>
-
-        <div
-          class="col-md-3 col-xl-4 col-lg-4 col-xs-12 col-sm-12 botonesGuias"
-          style="text-align: center; align-self: center"
-        >
-          <q-btn
-            dense
-            color="primary"
-            round
-            @click="this.create = true"
-            padding="sm"
-            style="margin-right: 35px"
-          >
-            <q-icon size="40px" name="add" color="white"> </q-icon>
-            <q-tooltip
-              class="bg-primary"
-              style="max-height: 30px"
-              transition-show="scale"
-              transition-hide="scale"
-              color="primary"
-              >Agregar Control</q-tooltip
-            >
-          </q-btn>
-
-          <q-btn
-            dense
-            color="primary"
-            round
-            padding="sm"
-            style="margin-right: 25px"
-            @click="
-              selectedAgencia = null;
-              selectedCliente = null;
-              selectedAgente = null;
-              selectedGuiaCarga = '0';
-              selectedGuiaFactura = '0';
-              selectedCulminado = '0';
-              this.axiosConfig.headers.agencia = '';
-              this.axiosConfig.headers.clientes = '';
-              this.axiosConfig.headers.agentes = '';
-              getData(`/cguias`, 'setData', 'datos');
-            "
-          >
-            <q-icon size="40px" name="delete" color="white"> </q-icon>
-            <q-tooltip
-              class="bg-primary"
-              style="max-height: 30px"
-              transition-show="scale"
-              transition-hide="scale"
-              color="primary"
-              >Eliminar Filtros</q-tooltip
-            >
-          </q-btn>
-        </div>
-      </div>
     </div>
 
     <div class="q-pa-md" style="margin-top: 20px">
@@ -299,8 +341,8 @@
           <q-table
             :rows="datos"
             row-key="id"
+            :loading="loading"
             :columns="columns"
-            selection="single"
             :separator="separator"
             class="my-sticky-column-table"
             :filter="filter"
@@ -308,6 +350,9 @@
             :grid="$q.screen.xs"
             v-model:pagination="pagination"
           >
+            <template v-slot:loading>
+              <q-inner-loading showing color="primary" />
+            </template>
             <template v-slot:body-cell-action="props">
               <q-td :props="props">
                 <q-btn
@@ -315,22 +360,9 @@
                   round
                   flat
                   color="primary"
-                  icon="edit"
-                  :disabled="this.disabledEdit"
-                  @click="
-                    getDataEdit(`${props.row.id}`);
-                    edit = true;
-                  "
-                ></q-btn>
-                <q-btn
-                  dense
-                  round
-                  flat
-                  color="primary"
                   icon="delete"
                   :disabled="this.disabledDelete"
-                  @click="selected = props.row.id"
-                  @click.capture="deletePopup = true"
+                  @click.capture="create = true"
                 ></q-btn>
               </q-td>
             </template>
@@ -367,38 +399,9 @@
                           round
                           flat
                           color="primary"
-                          icon="edit"
-                          :disabled="this.disabledEdit"
-                          @click="
-                            getDataEdit(`${props.row.id}`);
-                            edit = true;
-                          "
-                        ></q-btn>
-                        <q-chip
-                          v-if="col.name === 'status'"
-                          :color="
-                            props.row.status == 'Active'
-                              ? 'green'
-                              : props.row.status == 'Disable'
-                              ? 'red'
-                              : 'grey'
-                          "
-                          text-color="white"
-                          dense
-                          class="text-weight-bolder"
-                          square
-                          >{{ col.value }}</q-chip
-                        >
-                        <q-btn
-                          v-else-if="col.name === 'action'"
-                          dense
-                          round
-                          flat
-                          color="primary"
                           icon="delete"
                           :disabled="this.disabledDelete"
-                          @click="selected = props.row.id"
-                          @click.capture="deletePopup = true"
+                          @click.capture="create = true"
                         ></q-btn>
                         <q-item-label
                           v-else
@@ -413,134 +416,6 @@
               </div>
             </template>
           </q-table>
-        </div>
-      </div>
-    </div>
-
-    <div class="row q-pa-sm" style="margin-top: 20px">
-
-      <div
-        class="row col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
-        style="align-self: center; text-align: center"
-      >
-        <q-card
-          bordered
-          class="row col-md-8 col-xl-7 col-lg-7 col-xs-12 col-sm-12 inputGuias"
-          style="align-self: center; text-align: center; margin-right: 40px"
-        >
-          <q-card-section
-            class="row col-md-12 col-xs-12"
-            style="align-self: center; text-align: center"
-          >
-            <div
-              class="col-md-12 col-xs-12 col-sm-4 titleMenu"
-            >
-              <p
-                style="
-                  font-size: 16px;
-                  margin-bottom: 15px;"
-                  class="text-secondary"
-              >
-                <strong>DATOS DE LA ANULACIÓN</strong>
-              </p>
-            </div>
-            <div class="col-md-3 col-xs-12">
-              <q-input
-                outlined
-                v-model="form.desc_ciudad"
-                label="Fecha"
-                type="number"
-                class="inputMenuGuias"
-                hide-bottom-space
-                hint=""
-                lazy-rules
-              >
-                <template v-slot:prepend>
-                  <q-icon name="south_america" />
-                </template>
-              </q-input>
-            </div>
-
-            <div class="col-md-4 col-xs-12">
-              <q-select
-                outlined
-                v-model="form.desc_ciudad"
-                label="Motivo"
-                class="inputMenuGuias"
-                hide-bottom-space
-                lazy-rules
-                hint=""
-              >
-                <template v-slot:prepend>
-                  <q-icon name="south_america" />
-                </template>
-              </q-select>
-            </div> 
-
-            <div class="col-md-5 col-xs-12">
-              <q-input
-                outlined
-                v-model="form.desc_ciudad"
-                label="Observacion"
-                type="number"
-                class="inputMenuGuias"
-                hide-bottom-space
-                hint=""
-                lazy-rules
-              >
-                <template v-slot:prepend>
-                  <q-icon name="south_america" />
-                </template>
-              </q-input>
-            </div>
-
-          </q-card-section>
-        </q-card>
-
-        <div
-          class="col-md-3 col-xl-4 col-lg-4 col-xs-12 col-sm-12 botonesGuias"
-          style="text-align: center; align-self: center"
-        >
-          <q-btn
-              label="Insertar"
-              rounded
-              color="primary"
-              style="margin-right: 25px"
-              :disabled="this.disabledCreate"
-              @click="form = true"
-              @click.capture="resetForm()"
-              size="16px"
-              class="q-px-xl q-py-xs insertarMovil"
-            ></q-btn>
-
-          <q-btn
-            dense
-            color="primary"
-            round
-            padding="sm"
-            @click="
-              selectedAgencia = null;
-              selectedCliente = null;
-              selectedAgente = null;
-              selectedGuiaCarga = '0';
-              selectedGuiaFactura = '0';
-              selectedCulminado = '0';
-              this.axiosConfig.headers.agencia = '';
-              this.axiosConfig.headers.clientes = '';
-              this.axiosConfig.headers.agentes = '';
-              getData(`/cguias`, 'setData', 'datos');
-            "
-          >
-            <q-icon size="40px" name="delete" color="white"> </q-icon>
-            <q-tooltip
-              class="bg-primary"
-              style="max-height: 30px"
-              transition-show="scale"
-              transition-hide="scale"
-              color="primary"
-              >Eliminar Filtros</q-tooltip
-            >
-          </q-btn>
         </div>
       </div>
     </div>
@@ -576,6 +451,7 @@
       @get-Data="getData('/cguias', 'setData', 'datos')"
       @get-Data-Guias="getDataGuias('/cguias', 'setData', 'datos')"
       @set-Data="setData"
+      @reset-Loading="resetLoading"
       @set-Data-Iniciar="setDataIniciar"
       @set-Data-Edit="setDataEdit"
       @set-Data-Select="setDataSelect"
@@ -729,16 +605,17 @@ export default {
     return {
       axiosConfig: {
         headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          Authorization: ``,
           agencia: "",
           tipo: "",
         },
       },
       pagination: ref({
-        rowsPerPage: 5,
+        rowsPerPage: 10,
       }),
       separator: ref("vertical"),
       create: ref(false),
+      loading: ref(false),
       edit: ref(false),
       deletePopup: ref(false),
       filter: ref(""),
@@ -754,6 +631,9 @@ export default {
     );
   },
   methods: {
+    resetLoading() {
+      this.loading = false;
+    },
     // Reglas
     reglasNotNull10(val) {
       if (val === null) {
@@ -824,6 +704,7 @@ export default {
       this[dataRes] = res;
       this.selectedCliente = [];
       this.selectedAgente = [];
+      this.loading = false
     },
     getDataGuias(url, call, dataRes) {
       this.axiosConfig.headers.agencia = this.selectedAgencia.id
@@ -833,6 +714,7 @@ export default {
     },
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.loading = true;
     },
     getDataEdit(id) {
       this.$refs.methods.getDataEdit(
@@ -844,10 +726,12 @@ export default {
     },
     setData(res, dataRes) {
       this[dataRes] = res;
+      this.loading = false
     },
     setDataIniciar(res, dataRes) {
       this[dataRes] = res;
       this.getDataIniciar();
+      this.loading = false
     },
     setDataEdit(res, dataRes) {
       this[dataRes].control_inicio = res.control_inicio;
@@ -883,6 +767,7 @@ export default {
         "getDataGuias",
         this.axiosConfig
       );
+      this.loading = true;
     },
     createData() {
       this.form.cod_cliente = this.form.cod_cliente.id
@@ -896,6 +781,7 @@ export default {
           this.axiosConfig
         );
       this.resetForm();
+      this.loading = true;
     },
     putData() {
       this.formEdit.cod_cliente = this.formEdit.cod_cliente.id
@@ -908,7 +794,8 @@ export default {
         "getDataGuias",
         this.axiosConfig
       );
-      this.resetFormEdit()
+      this.resetFormEdit();
+      this.loading = true;
     },
     resetForm() {
       (this.form.control_inicio = ""),
@@ -957,10 +844,11 @@ export default {
     margin-top: 20px;
   }
 }
-@media screen and (max-width: 1024px) {
-  .buttonMenu {
+.menuFilter {
+    padding-bottom: 1px;
+}
+.buttonMenu {
     margin-left: 20px;
-  }
 }
 @media screen and (min-width: 1024px) {
   .inputMenuGuias {
@@ -970,6 +858,16 @@ export default {
 @media screen and (min-width: 1024px) {
   .inputMenuGuias2 {
     margin-right: 10px;
+  }
+}
+@media screen and (max-width: 1024px) {
+  .buttonMenuInitial {
+    margin-left: 20px;
+  }
+}
+@media screen and (max-width: 1024px) {
+  .check {
+    padding-top: 0px; padding-bottom: 0px;
   }
 }
 @media screen and (max-width: 1024px) {
@@ -988,11 +886,6 @@ export default {
   }
 }
 @media screen and (max-width: 1024px) {
-  .titleMenu {
-    margin-top: 15px;
-  }
-}
-@media screen and (max-width: 1024px) {
   .checkboxGuias {
     margin-top: 10px;
   }
@@ -1005,6 +898,11 @@ export default {
 @media screen and (max-width: 1024px) {
   .botonesGuias {
     margin-top: 30px;
+  }
+}
+@media screen and (min-width: 600px) {
+  .filterTop {
+    margin-right: 45px;
   }
 }
 </style>

@@ -333,6 +333,7 @@
                 <q-table
                   :rows="datos"
                   row-key="id"
+                  :loading="loading"
                   :columns="columns"
                   :separator="separator"
                   class="my-sticky-column-table"
@@ -341,6 +342,9 @@
                   :grid="$q.screen.xs"
                   v-model:pagination="pagination"
                 >
+                  <template v-slot:loading>
+                  <q-inner-loading showing color="primary" />
+                  </template>
                   <template v-slot:body-cell-estatus="props">
                     <q-td :props="props">
                       <q-select
@@ -524,6 +528,7 @@
       ref="methods"
       @get-Data="getData('/correlativo', 'setData', 'datos')"
       @set-Data="setData"
+      @reset-Loading="resetLoading"
       @set-Data-Edit="setDataEdit"
       @put-Dato-Select="putDatoSelect"
     ></methods>
@@ -551,13 +556,6 @@ export default {
   data() {
     return {
       columns: [
-        {
-          name: "id",
-          label: "ID de Control",
-          field: "id",
-          align: "left",
-          sortable: true,
-        },
         {
           name: "control_inicio",
           label: "Primer Correlativo",
@@ -642,7 +640,7 @@ export default {
       disabledDelete: true,
       axiosConfig: {
         headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          Authorization: ``,
           agencia: "1",
           tipo: "16",
           fuente: "CR",
@@ -666,6 +664,7 @@ export default {
       separator: ref("vertical"),
       create: ref(false),
       edit: ref(false),
+      loading: ref(false),
       activoExistente() {
         $q.notify({
           message: "Solo puede haber un Activo por Agencia",
@@ -688,6 +687,9 @@ export default {
     );
   },
   methods: {
+    resetLoading() {
+      this.loading = false;
+    },
     // Reglas
     reglasAllowNull1(val) {
         if (val !== null !== "") {
@@ -770,9 +772,11 @@ export default {
 
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.loading = true;
     },
     setData(res, dataRes) {
       this[dataRes] = res;
+      this.loading = false
     },
 
     getDataEdit(id, call) {
@@ -796,6 +800,7 @@ export default {
 
     getDataSelect(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.loading = true;
     },
 
     deleteDato(idpost) {
@@ -804,6 +809,7 @@ export default {
         "getData",
         this.axiosConfig
       );
+      this.loading = true;
     },
     createDato() {
       if (this.form.estatus_lote.value === "A") {
@@ -816,6 +822,7 @@ export default {
           }
           if (e == this.datos.length - 1) break;
         }
+        
       }
       this.form.cod_agencia = this.selectedAgencia.id
       this.form.tipo = this.selectedTipo.id
@@ -827,6 +834,7 @@ export default {
         this.axiosConfig
       );
       this.resetForm();
+      this.loading = true;
     },
     putDato() {
       if (this.formEdit.estatus_lote.value === "A") {
@@ -848,6 +856,7 @@ export default {
         this.axiosConfig
       );
       this.edit = false;
+      this.loading = true;
     },
     putDatoSelect(res, dataRes) {
       this[dataRes].id = res.id;
@@ -872,6 +881,7 @@ export default {
       }
 
       this.$refs.methods.putData(`/correlativo/${this.formEdit.id}`,this.formEdit,"getData",this.axiosConfig);
+      this.loading = true;
     },
 
     resetForm() {

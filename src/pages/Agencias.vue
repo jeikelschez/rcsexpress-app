@@ -558,6 +558,7 @@
             <div bordered flat class="row">
               <q-table
                 :rows="datos"
+                :loading="loading"
                 row-key="id"
                 :columns="columns"
                 :separator="separator"
@@ -567,6 +568,9 @@
                 :grid="$q.screen.xs"
                 v-model:pagination="pagination"
               >
+                <template v-slot:loading>
+                  <q-inner-loading showing color="primary" />
+                </template>
                 <template v-slot:body-cell-action="props">
                   <q-td :props="props">
                     <q-btn
@@ -703,6 +707,7 @@
     <methods ref="methods"
     @get-Data="getData('/agencias','setData','datos')"
     @set-Data="setData"
+    @reset-Loading="resetLoading"
     @set-Data-Edit="setDataEdit"
     @set-Data-Edit-Ciudades="setDataEditCiudades"
     @set-Data-Edit-Estados="setDataEditEstados"
@@ -731,13 +736,6 @@ export default {
   data() {
     return {
       columns: [
-        {
-          name: "id",
-          label: "Código",
-          field: "id",
-          align: "left",
-          sortable: true,
-        },
         {
           name: "Ciudades",
           label: "Ciudad",
@@ -821,7 +819,7 @@ export default {
       disabledDelete: true,
       axiosConfig: {
         headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          Authorization: ``,
           pais: "",
           estado: ""
         },
@@ -841,6 +839,7 @@ export default {
       pagination: ref({
         rowsPerPage: 10,
       }),
+      loading: ref(false),
       separator: ref("vertical"),
       create: ref(false),
       edit: ref(false),
@@ -932,9 +931,11 @@ export default {
 
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.loading = true;
     },
     setData(res, dataRes) {
       this[dataRes] = res
+      this.loading = false;
     },
 
     getDataEdit(id) {
@@ -983,17 +984,23 @@ export default {
     
     deleteDato(idpost) {
       this.$refs.methods.deleteData(`/agencias/${idpost}`, 'getData', this.axiosConfig);
+      this.loading = true;
+    },
+    resetLoading() {
+      this.loading = false;
     },
     createDato() {
       this.form.cod_ciudad = this.selectedCiudad.id;
       this.form.estatus = this.form.estatus.value;
       this.$refs.methods.createData('/agencias', this.form, 'getData', this.axiosConfig);
+      this.loading = true;
       this.resetForm();
     },
     putDato() {
       this.formEdit.cod_ciudad = this.selectedCiudad.id;
       this.formEdit.estatus = this.formEdit.estatus.value;
       this.$refs.methods.putData(`/agencias/${this.formEdit.id}`, this.formEdit, 'getData', this.axiosConfig);
+      this.loading = true;
       this.edit = false;
     },
     

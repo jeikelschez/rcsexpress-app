@@ -10,11 +10,6 @@ import { useQuasar } from "quasar";
     name: "userLogout",
     data: function() {
       return {
-        axiosConfig: {
-        headers: {
-          Authorization: `Bearer ${LocalStorage.getItem('token')}`,
-          }
-      },
     }
   },
 
@@ -22,6 +17,7 @@ import { useQuasar } from "quasar";
     const $q = useQuasar();
     return {
       errorDelServidor() {
+        this.$emit('resetLoading')
         $q.notify({
           message: this.error,
           color: "red",

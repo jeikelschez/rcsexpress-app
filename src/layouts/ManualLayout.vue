@@ -2,16 +2,6 @@
   <q-layout view="hHh Lpr fFf">
     <q-header elevated>
       <q-toolbar class="bg-indigo-9" style="margin-left: 10px">
-        <q-btn
-          flat
-          dense
-          round
-          @click.capture="drawerClick"
-          @click="this.close()"
-          icon="menu"
-          aria-label="Menu"
-          class="q-mr-sm"
-        />
         <q-toolbar-title
           >SCEN - Sistema de Control de Encomiendas</q-toolbar-title
         >
@@ -57,46 +47,35 @@
       :width="350"
       content-class="bg-grey-3"
     >
-      <q-list style="margin-top: 166px; margin-bottom: 40px">
+      <q-list style="margin-top: 176px; margin-bottom: 40px">
         <div>
           <q-list class="rounded-borders">
             <q-item clickable tag="a" to="/m_manual" exact>
-              <q-item-section avatar>
-                <q-icon size="28px" name="menu_book" />
-              </q-item-section>
-              <q-item-section>
                 <q-item-label>{{ $t("Guia de Uso de Manual") }}</q-item-label>
                 <q-item-label caption></q-item-label>
-              </q-item-section>
             </q-item>
             <q-item clickable tag="a" to="/m_dashboard" exact>
-              <q-item-section avatar>
-                <q-icon size="28px" name="home" />
-              </q-item-section>
-              <q-item-section>
                 <q-item-label>{{ $t("Inicio") }}</q-item-label>
                 <q-item-label caption></q-item-label>
-              </q-item-section>
             </q-item>
             <q-expansion-item
               expand-separator
-              icon="dashboard"
               label="Operaciones"
               expanded="desplegable"
-              v-model="this.paginas.desplegable"
+              group="somegroup"
+              default-opened
+              v-model="desplegable"
             >
               <q-expansion-item
                 :header-inset-level="0.4"
                 :content-inset-level="0.9"
                 expand-separator
-                icon="assignment"
                 label="Relacion de despacho"
                 expanded="desplegable2"
-                v-model="this.paginas.desplegable2"
+                v-model="desplegable2"
               >
                 <q-item clickable tag="a" to="/m_operativa" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="folder_open" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -116,7 +95,6 @@
 
                 <q-item clickable tag="a" to="/m_costos" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="payments" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -139,14 +117,12 @@
                 :header-inset-level="0.4"
                 :content-inset-level="0.9"
                 expand-separator
-                icon="directions_bus_filled"
                 label="Costos de Transporte"
                 expanded="desplegable3"
-                v-model="this.paginas.desplegable3"
+                v-model="desplegable3"
               >
                 <q-item clickable tag="a" to="/m_registrodecostos" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="paid" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -168,7 +144,6 @@
 
                 <q-item clickable tag="a" to="/m_reportedecostos" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="price_check" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -191,7 +166,6 @@
               <div class="q-pl-lg">
                 <q-item clickable tag="a" to="/m_pruebasentrega" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="auto_stories" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -215,15 +189,15 @@
 
             <q-expansion-item
               expand-separator
-              icon="sell"
               label="Ventas"
+              group="somegroup"
+              default-opened
               expanded="cuarto"
-              v-model="this.paginas.cuarto"
+              v-model="cuarto"
             >
               <div class="q-pl-lg">
                 <q-item clickable tag="a" to="/m_registroserviciocarga" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="local_shipping" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -249,7 +223,6 @@
               <div class="q-pl-lg">
                 <q-item clickable tag="a" to="/m_facturacioncredito" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="local_atm" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -275,7 +248,6 @@
               <div class="q-pl-lg">
                 <q-item clickable tag="a" to="/m_anulacionguias" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="block" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -297,7 +269,6 @@
               <div class="q-pl-lg">
                 <q-item clickable tag="a" to="/m_emitircarta" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="forward_to_inbox" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -319,9 +290,10 @@
 
             <q-expansion-item
               expand-separator
-              icon="topic"
               expanded="quinto"
-              v-model="this.paginas.quinto"
+              v-model="quinto"
+              group="somegroup"
+              default-opened 
               label="Administracion"
             >
               <q-expansion-item
@@ -329,13 +301,11 @@
                 :content-inset-level="0.9"
                 expand-separator
                 expanded="sexto"
-                v-model="this.paginas.sexto"
-                icon="menu_book"
+                v-model="sexto"
                 label="Notas Contables"
               >
                 <q-item clickable tag="a" to="/m_notasdebito" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="note_alt" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -354,7 +324,6 @@
                 </q-item>
                 <q-item clickable tag="a" to="/m_notascredito" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="note_alt" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -373,7 +342,6 @@
                 </q-item>
                 <q-item clickable tag="a" to="/m_anulacionnotascontables" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="report" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -399,7 +367,6 @@
               <div class="q-pl-lg">
                 <q-item clickable tag="a" to="/m_cuentasporcobrar" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="request_quote" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -425,13 +392,11 @@
                 :content-inset-level="0.9"
                 expand-separator
                 expanded="septimo"
-                v-model="this.paginas.septimo"
-                icon="price_check"
+                v-model="septimo"
                 label="Cuentas por Pagar"
               >
                 <q-item clickable tag="a" to="/m_ingresocuentaspagar" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="keyboard_double_arrow_up" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -454,7 +419,6 @@
                 </q-item>
                 <q-item clickable tag="a" to="/m_controlpagosproveedores" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="supervised_user_circle" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -482,13 +446,11 @@
                 :content-inset-level="0.9"
                 expand-separator
                 expanded="octavo"
-                v-model="this.paginas.octavo"
-                icon="list"
+                v-model="octavo"
                 label="Control de Comisiones"
               >
                 <q-item clickable tag="a" to="/m_generarcomisiones" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="payment" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -509,7 +471,6 @@
                 </q-item>
                 <q-item clickable tag="a" to="/m_pagocomisiones" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="credit_score" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -531,7 +492,6 @@
               <div class="q-pl-lg">
                 <q-item clickable tag="a" to="/m_retencioncomprador" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="pan_tool" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -562,7 +522,6 @@
                   exact
                 >
                   <q-item-section avatar>
-                    <q-icon size="28px" name="swap_horiz" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -590,13 +549,11 @@
                 :content-inset-level="0.9"
                 expand-separator
                 expanded="noveno"
-                v-model="this.paginas.noveno"
-                icon="paid"
+                v-model="noveno"
                 label="Movimientos Bancarios"
               >
                 <q-item clickable tag="a" to="/m_ingresomovimientos" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="airplay" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -619,7 +576,6 @@
                 </q-item>
                 <q-item clickable tag="a" to="/m_relacionmovimientos" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="developer_board" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -645,7 +601,6 @@
               <div class="q-pl-lg">
                 <q-item clickable tag="a" to="/m_estadogananciasperdidas" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="collections_bookmark" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -672,14 +627,14 @@
             <q-expansion-item
               expand-separator
               expanded="decimo"
-              v-model="this.paginas.decimo"
-              icon="summarize"
+              v-model="decimo"
               label="Consultas y Reportes"
+              group="somegroup"
+              default-opened
             >
               <div class="q-pl-lg">
                 <q-item clickable tag="a" to="/m_reporteventas" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="receipt_long" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -701,7 +656,6 @@
               <div class="q-pl-lg">
                 <q-item clickable tag="a" to="/m_librocompras" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="auto_stories" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -723,7 +677,6 @@
               <div class="q-pl-lg">
                 <q-item clickable tag="a" to="/m_libroventas" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="style" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -750,7 +703,6 @@
                   exact
                 >
                   <q-item-section avatar>
-                    <q-icon size="28px" name="notifications_active" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -781,7 +733,6 @@
                   exact
                 >
                   <q-item-section avatar>
-                    <q-icon size="28px" name="how_to_reg" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -807,7 +758,6 @@
               <div class="q-pl-lg">
                 <q-item clickable tag="a" to="/m_relacionretenciones" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="app_blocking" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -833,7 +783,6 @@
               <div class="q-pl-lg">
                 <q-item clickable tag="a" to="/m_controlretencionesislr" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="remove_circle_outline" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -859,7 +808,6 @@
               <div class="q-pl-lg">
                 <q-item clickable tag="a" to="/m_controlretencionesiva" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="remove_circle" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -885,7 +833,6 @@
               <div class="q-pl-lg">
                 <q-item clickable tag="a" to="/m_franqueopostal" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="tag" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -907,18 +854,18 @@
 
             <q-expansion-item
               expand-separator
-              icon="settings_applications"
               expanded="decimoprimero"
-              v-model="this.paginas.decimoprimero"
+              v-model="decimoprimero"
               label="Mantenimiento"
+              group="somegroup"
+              default-opened
             >
               <q-expansion-item
                 :header-inset-level="0.4"
                 :content-inset-level="0.9"
                 expand-separator
                 expanded="decimosegundo"
-                v-model="this.paginas.decimosegundo"
-                icon="table_rows"
+                v-model="decimosegundo"
                 label="Datos Generales"
               >
                 <q-item
@@ -927,7 +874,6 @@
                   to="/m_agencias"
                 >
                   <q-item-section avatar>
-                    <q-icon size="28px" name="corporate_fare" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -946,7 +892,6 @@
                 </q-item>
                 <q-item clickable tag="a" to="/m_agentes" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="people" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -969,7 +914,6 @@
                   to="/m_paisestadociudad"
                 >
                   <q-item-section avatar>
-                    <q-icon size="28px" name="place" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -990,7 +934,6 @@
                 </q-item>
                 <q-item clickable tag="a" to="/m_zonasagencia" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="map" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -1009,7 +952,6 @@
                 </q-item>
                 <q-item clickable tag="a" to="/m_unidadestransporte" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="local_shipping" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -1032,7 +974,6 @@
                 </q-item>
                 <q-item clickable tag="a" to="/m_ayudantes" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="account_circle" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -1051,7 +992,6 @@
                 </q-item>
                 <q-item clickable tag="a" to="/m_receptores" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="compare_arrows" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -1070,7 +1010,6 @@
                 </q-item>
                 <q-item clickable tag="a" to="/m_tarifas" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="local_atm" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -1089,7 +1028,6 @@
                 </q-item>
                 <q-item clickable tag="a" to="/m_controlcorrelativo" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="point_of_sale" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -1112,7 +1050,6 @@
                 </q-item>
                 <q-item clickable tag="a" to="/m_variablecontrol" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="settings_suggest" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -1138,8 +1075,7 @@
                 :content-inset-level="0.9"
                 expand-separator
                 expanded="decimotercero"
-                v-model="this.paginas.decimotercero"
-                icon="widgets"
+                v-model="decimotercero"
                 label="Registros Basicos"
               >
                 <q-item
@@ -1149,7 +1085,6 @@
                   exact
                 >
                   <q-item-section avatar>
-                    <q-icon size="28px" name="account_balance" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -1168,7 +1103,6 @@
                 </q-item>
                 <q-item clickable tag="a" to="/m_cuentasbancarias" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="account_balance_wallet" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -1189,7 +1123,6 @@
                 </q-item>
                 <q-item clickable tag="a" to="/m_clientes" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="groups" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -1208,7 +1141,6 @@
                 </q-item>
                 <q-item clickable tag="a" to="/m_empleados" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="badge" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -1227,7 +1159,6 @@
                 </q-item>
                 <q-item clickable tag="a" to="/m_proveedores" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="local_shipping" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -1246,7 +1177,6 @@
                 </q-item>
                 <q-item clickable tag="a" to="/m_retenciones" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="block" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -1265,7 +1195,6 @@
                 </q-item>
                 <q-item clickable tag="a" to="/m_conceptosoperacion" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="manage_search" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -1288,7 +1217,6 @@
                 </q-item>
                 <q-item clickable tag="a" to="/m_conceptosfacturacion" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="sticky_note_2" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -1311,7 +1239,6 @@
                 </q-item>
                 <q-item clickable tag="a" to="/m_conceptosfpo" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="subject" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -1330,7 +1257,6 @@
                 </q-item>
                 <q-item clickable tag="a" to="/m_asignacionguias" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="menu_book" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -1355,9 +1281,8 @@
                 :header-inset-level="0.4"
                 :content-inset-level="0.9"
                 expand-separator
-                icon="security"
                 expanded="decimocuarto"
-                v-model="this.paginas.decimocuarto"
+                v-model="decimocuarto"
                 label="Seguridad"
               >
                 <q-item
@@ -1367,7 +1292,6 @@
                   to="/m_roles"
                 >
                   <q-item-section avatar>
-                    <q-icon size="28px" name="person_outline" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -1391,7 +1315,6 @@
                   to="/m_usuarios"
                 >
                   <q-item-section avatar>
-                    <q-icon size="28px" name="person" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -1415,7 +1338,6 @@
                   to="/m_permisologia"
                 >
                   <q-item-section avatar>
-                    <q-icon size="28px" name="manage_accounts" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -1437,7 +1359,6 @@
               <div class="q-pl-lg">
                 <q-item clickable tag="a" to="/m_transferencia" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="open_in_new" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -1459,7 +1380,6 @@
               <div class="q-pl-lg">
                 <q-item clickable tag="a" to="/m_transferenciahidroca" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="upload_file" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -1485,7 +1405,6 @@
               <div class="q-pl-lg">
                 <q-item clickable tag="a" to="/m_cargamanualguias" exact>
                   <q-item-section avatar>
-                    <q-icon size="28px" name="upload_file" />
                     <q-tooltip
                       v-if="miniState"
                       anchor="center right"
@@ -1534,7 +1453,22 @@
     </q-drawer>
 
     <keep-alive>
-    <router-view @mouseover="this.close()"></router-view>
+    <router-view @mouseover="miniState = true; desplegable = hide;
+      desplegable2 = hide;
+      desplegable3 = hide;
+      segundo = hide;
+      tercero = hide;
+      cuarto = hide;
+      quinto = hide;
+      sexto = hide;
+      septimo = hide;
+      octavo = hide;
+      noveno = hide;
+      decimo = hide;
+      decimoprimero = hide;
+      decimosegundo = hide;
+      decimotercero = hide;
+      decimocuarto = hide"></router-view>
           </keep-alive>
     <q-page-container>
     </q-page-container>
@@ -1557,24 +1491,22 @@ export default defineComponent({
   },
   data() {
     return {
-      paginas: {
-      desplegable,
-      desplegable2,
-      desplegable3,
-      segundo,
-      tercero,
-      cuarto,
-      quinto,
-      sexto,
-      septimo,
-      octavo,
-      noveno,
-      decimo,
-      decimoprimero,
-      decimosegundo,
-      decimotercero,
-      decimocuarto,
-      },
+      desplegable: false,
+      desplegable2: false,
+      desplegable3: false,
+      segundo: false,
+      tercero: false,
+      cuarto: false,
+      quinto: false,
+      sexto: false,
+      septimo: false,
+      octavo: false,
+      noveno: false,
+      decimo: false,
+      decimoprimero: false,
+      decimosegundo: false,
+      decimotercero: false,
+      decimocuarto: false,
       drawer: false,
       miniState: false,
       dashboard: this.$t("Menu.dashboard"),
@@ -1619,25 +1551,6 @@ export default defineComponent({
         this.miniState = true;
         this.drawer = true;
       }
-    },
-    
-    close() {
-      this.paginas.desplegable = hide;
-      this.paginas.desplegable2 = hide;
-      this.paginas.desplegable3 = hide;
-      this.paginas.segundo = hide;
-      this.paginas.tercero = hide;
-      this.paginas.cuarto = hide;
-      this.paginas.quinto = hide;
-      this.paginas.sexto = hide;
-      this.paginas.septimo = hide;
-      this.paginas.octavo = hide;
-      this.paginas.noveno = hide;
-      this.paginas.decimo = hide;
-      this.paginas.decimoprimero = hide;
-      this.paginas.decimosegundo = hide;
-      this.paginas.decimotercero = hide;
-      this.paginas.decimocuarto = hide;
     },
     logout() {
       this.$refs.component.logoutUser();

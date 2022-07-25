@@ -81,6 +81,7 @@
                   'setDataRoles',
                   'rolesPermisos'
                 )
+                this.permisos = []
               "
             >
               <template v-slot:prepend>
@@ -140,6 +141,7 @@
                 :rows="permisos"
                 row-key="id"
                 :columns="columnsPermisos"
+                :loading="loading"
                 :separator="separator"
                 class="my-sticky-column-table"
                 :filter="filterPermisos"
@@ -147,6 +149,9 @@
                 :grid="$q.screen.xs"
                 v-model:pagination="pagination"
               >
+                <template v-slot:loading>
+                  <q-inner-loading showing color="primary" />
+                </template>
                 <template v-slot:body-cell-action="props">
                   <q-td :props="props">
                     <q-btn
@@ -245,6 +250,7 @@
       @get-Data-Permisos="this.axiosConfig.headers.rol = this.selectedRol.id;
       getData(`/permisos`, 'setDataPermisos','permisos')"
       @set-data-Roles="setDataRoles"
+      @reset-Loading="resetLoading"
       @set-data-Permisos="setDataPermisos"
       @set-Data="setData"
     ></methods>
@@ -271,13 +277,6 @@ export default {
   data() {
     return {
       columnsPermisos: [
-        {
-          name: "id",
-          label: "Código",
-          field: "id",
-          align: "left",
-          sortable: true,
-        },
         {
           name: "codigo",
           label: "Permisos",
@@ -373,7 +372,7 @@ export default {
     return {
       axiosConfig: {
         headers: {
-          Authorization: `Bearer ${LocalStorage.getItem('token')}`,
+          Authorization: ``,
           agencia: "",
           rol: ""
         }
@@ -388,6 +387,7 @@ export default {
         (val) => val.length > 3 || "Deben ser minimo 3 caracteres",
       ],
       permisosForm: ref(false),
+      loading: ref(false),
       permisosFormEdit: ref(false),
       errorDelServidor() {
         $q.notify({
@@ -428,6 +428,9 @@ export default {
     this.$refs.desactiveCrud.desactivarCrud('c_permisos', 'd_permisos', 'u_permisos', 'desactivarCrudPermisologia')
   },
   methods: {
+    resetLoading() {
+      this.loading = false;
+    },
     // Reglas
     reglasInputs(val) {
       if (val === null) {
@@ -464,6 +467,7 @@ export default {
         this.getData("/objetos", "setData", "objetos");
         this.getDataIniciar();
       }
+      this.loading = false
     },
     // Metodos para permisos
     setDataRoles(res, dataRes) {
@@ -473,6 +477,7 @@ export default {
     setDataPermisos(res, dataRes) {
       this[dataRes] = res;
       this.permisosDuplicados = res;
+      this.loading = false
     },
 
     deleteData(selected) {
@@ -480,6 +485,7 @@ export default {
         `/permisos/${selected}`,
         "getDataPermisos", this.axiosConfig
       );
+      this.loading = true;
     },
     createData() {
       this.formPermisos.cod_rol = this.selectedRol.id;
@@ -490,6 +496,7 @@ export default {
         "getDataPermisos", this.axiosConfig
       );
       this.resetFormPermisos();
+      this.loading = true;
     },
     createDatoPermisos() {
       this.formPermisos.cod_rol = this.selectedRol.id;
@@ -520,6 +527,7 @@ export default {
           }
         });
       this.resetFormPermisos();
+      this.loading = true;
     },
     resetFormPermisos() {
       (this.formPermisos.codigo = null),
@@ -543,6 +551,7 @@ export default {
           this.permisosDuplicados = res.data;
         });
       });
+      this.loading = true;
     },
     eliminarDuplicados() {
       this.objetosNoDuplicados = JSON.parse(JSON.stringify(this.objetos));

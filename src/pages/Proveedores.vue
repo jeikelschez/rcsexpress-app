@@ -679,6 +679,7 @@
             <div bordered flat class="row">
               <q-table
                 :rows="datos"
+                :loading="loading"
                 row-key="id"
                 :columns="columns"
                 :separator="separator"
@@ -688,6 +689,9 @@
                 :grid="$q.screen.xs"
                 v-model:pagination="pagination"
               >
+                <template v-slot:loading>
+                  <q-inner-loading showing color="primary" />
+                </template>
                 <template v-slot:body-cell-action="props">
                   <q-td :props="props">
                     <q-btn
@@ -833,6 +837,7 @@
       ref="methods"
       @get-Data="getData('/proveedores', 'setData', 'datos')"
       @set-data="setData"
+      @reset-Loading="resetLoading"
       @set-data-retenciones="setDataRetenciones"
       @set-Data-Edit="setDataEdit"
     >
@@ -867,13 +872,6 @@ export default {
   data() {
     return {
       columns: [
-        {
-          name: "id",
-          label: "Código",
-          field: "id",
-          align: "left",
-          sortable: true,
-        },
         {
           name: "nb_proveedor",
           label: "Nombre del Proveedor",
@@ -961,7 +959,7 @@ export default {
       disabledDelete: true,
       axiosConfig: {
         headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          Authorization: ``,
           tipo_persona: "",
           vigente: "s",
         },
@@ -983,6 +981,7 @@ export default {
       }),
       separator: ref("vertical"),
       create: ref(false),
+      loading: ref(false),
       tablaDeRetenciones: ref(false),
       edit: ref(false),
       medium: ref(false),
@@ -1000,6 +999,9 @@ export default {
     );
   },
   methods: {
+    resetLoading() {
+      this.loading = false;
+    },
     // Reglas
     reglasSelect(val) {
       if (val === null) {
@@ -1144,8 +1146,10 @@ export default {
     // Metodos CRUD
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.loading = true;
     },
     setData(res, dataRes) {
+      this.loading = false
       this[dataRes] = res;
       for (var e = 0, len = this.datos.length; e < len; e++) {
         if (this.datos[e].condicion_pago !== null) {
@@ -1189,6 +1193,7 @@ export default {
         "getData",
         this.axiosConfig
       );
+      this.loading = true;
     },
     createData() {
       this.form.tipo_servicio = this.form.tipo_servicio.value;
@@ -1207,6 +1212,7 @@ export default {
         this.axiosConfig
       );
       this.resetForm();
+      this.loading = true;
     },
     putData() {
       this.formEdit.tipo_servicio = this.formEdit.tipo_servicio.value;
@@ -1225,6 +1231,7 @@ export default {
       );
       this.edit = false;
       this.resetFormEdit();
+      this.loading = true;
     },
 
     resetForm() {

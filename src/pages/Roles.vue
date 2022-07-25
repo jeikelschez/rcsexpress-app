@@ -213,6 +213,7 @@
                 :rows="roles"
                 row-key="id"
                 :columns="columnsRoles"
+                :loading="loading"
                 :separator="separator"
                 class="my-sticky-column-table"
                 :filter="filterRoles"
@@ -220,6 +221,9 @@
                 :grid="$q.screen.xs"
                 v-model:pagination="pagination"
               >
+                <template v-slot:loading>
+                  <q-inner-loading showing color="primary" />
+                </template>
                 <template v-slot:body-cell-action="props">
                   <q-td :props="props">
                     <q-btn
@@ -358,6 +362,7 @@
       @get-Data="this.axiosConfig.headers.agencia = this.selectedAgencia.id;
       getData(`/roles`, 'setDataRoles', 'roles')"
       @set-Data-Roles="setDataRoles"
+      @reset-Loading="resetLoading"
       @set-Data-Roles-Edit="setDataRolesEdit"
       @set-Data="setData"
     ></methods>
@@ -384,13 +389,6 @@ export default {
   data() {
     return {
       columnsRoles: [
-        {
-          name: "id",
-          label: "ID",
-          field: "id",
-          align: "left",
-          sortable: true,
-        },
         {
           name: "descripcion",
           label: "Roles",
@@ -440,7 +438,7 @@ export default {
     return {
       axiosConfig: {
         headers: {
-          Authorization: `Bearer ${LocalStorage.getItem('token')}`,
+          Authorization: ``,
           agencia: ""
         }
       },
@@ -449,6 +447,7 @@ export default {
       }),
       separator: ref("vertical"),
       rolesForm: ref(false),
+      loading: ref(false),
       rolesFormEdit: ref(false),
       errorDelServidor() {
         $q.notify({
@@ -488,6 +487,9 @@ export default {
     this.$refs.desactiveCrud.desactivarCrud('c_roles', 'd_roles', 'u_roles', 'desactivarCrudRoles')
   },
   methods: {
+    resetLoading() {
+      this.loading = false;
+    },
     // Reglas
     reglasInputs(val) {
       if (val === null) {
@@ -511,13 +513,16 @@ export default {
 
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.loading = true;
     },
     setData(res, dataRes) {
       this[dataRes] = res
       this.getDataIniciar();
+      this.loading = false
     },
     setDataRoles(res, dataRes) {
       this[dataRes] = res
+      this.loading = false
     },
     setDataRolesEdit(res, dataRes) {
       this[dataRes].id = res.id
@@ -526,16 +531,19 @@ export default {
     },
     deleteData(idpost) {
       this.$refs.methods.deleteData(`/roles/${idpost}`, 'getData', this.axiosConfig);
+      this.loading = true;
     },
     createDataRoles() {
       this.formRoles.cod_agencia = this.formRoles.cod_agencia.id
       this.$refs.methods.createData(`/roles`, this.formRoles, 'getData', this.axiosConfig);
       this.resetFormRoles();
+      this.loading = true;
     },
     putDataRoles() {
       this.formEditRoles.cod_agencia = this.formEditRoles.cod_agencia.id
       this.$refs.methods.putData(`/roles/${this.formEditRoles.id}`, this.formEditRoles, 'getData', this.axiosConfig);
-      this.resetFormEditRoles()
+      this.resetFormEditRoles();
+      this.loading = true;
     },
     resetFormRoles() {
       (this.formRoles.descripcion = ""),

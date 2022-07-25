@@ -53,5 +53,5 @@
 .displayHide {display: none;}
 .displayShow {display: block;}
 .q-field__bottom {
-  display: none;
+  padding-top: 7px;
 }

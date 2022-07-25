@@ -282,10 +282,14 @@
                 :separator="separator"
                 class="my-sticky-column-table"
                 :filter="filter"
+                :loading="loading"
                 style="width: 100%"
                 :grid="$q.screen.xs"
                 v-model:pagination="pagination"
               >
+                <template v-slot:loading>
+                  <q-inner-loading showing color="primary" />
+                </template>
                 <template v-slot:body-cell-action="props">
                   <q-td :props="props">
                     <q-btn
@@ -424,6 +428,7 @@
       @get-Data="this.axiosConfig.headers.banco = this.selectedBanco.id;
       getData(`/cuentas`, 'setDataCuentas', 'cuentas')"
       @set-Data-Cuentas="setDataCuentas"
+      @reset-Loading="resetLoading"
       @set-Data-Cuentas-Edit="setDataRolesEdit"
       @set-Data="setData"
     ></methods>
@@ -450,13 +455,6 @@ export default {
   data() {
     return {
       columnsCuentas: [
-        {
-          name: "id",
-          label: "Codigo",
-          field: "id",
-          align: "left",
-          sortable: true,
-        },
         {
           name: "nro_cuenta",
           label: "Numero de Cuenta",
@@ -540,7 +538,7 @@ export default {
     return {
       axiosConfig: {
         headers: {
-          Authorization: `Bearer ${LocalStorage.getItem('token')}`,
+          Authorization: ``,
           banco: ""
         }
       },
@@ -549,6 +547,7 @@ export default {
       }),
       separator: ref("vertical"),
       form: ref(false),
+      loading: ref(false),
       formEdit: ref(false),
       cuentasDelete: ref(false),
       filter: ref("")
@@ -559,6 +558,9 @@ export default {
     this.$refs.desactivateCrud.desactivarCrud('c_roles', 'd_roles', 'u_roles', 'desactivarCrudRoles')
   },
   methods: {
+    resetLoading() {
+      this.loading = false;
+    },
     reglasSelect(val) {
       if (val === null) {
         return "Debes Seleccionar Algo";
@@ -611,13 +613,16 @@ export default {
 
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.loading = true;
     },
     setData(res, dataRes) {
       this[dataRes] = res
       this.getDataIniciar();
+      this.loading = false
     },
     setDataCuentas(res, dataRes) {
       this[dataRes] = res
+      this.loading = false
     },
     setDataRolesEdit(res, dataRes) {
       this[dataRes].id = res.id
@@ -629,6 +634,7 @@ export default {
     },
     deleteData(idpost) {
       this.$refs.methods.deleteData(`/cuentas/${idpost}`, 'getData', this.axiosConfig);
+      this.loading = true;
     },
     createDataCuentas() {
       this.formCuentas.cod_banco = this.selectedBanco.id
@@ -636,12 +642,14 @@ export default {
       this.formCuentas.tipo_cuenta = this.formCuentas.tipo_cuenta.value
       this.$refs.methods.createData(`/cuentas`, this.formCuentas, 'getData', this.axiosConfig);
       this.resetForm();
+      this.loading = true;
     },
     putDataCuentas() {
       this.formEditCuentas.flag_activa = this.formEditCuentas.flag_activa.value
       this.formEditCuentas.tipo_cuenta = this.formEditCuentas.tipo_cuenta.value
       this.$refs.methods.putData(`/cuentas/${this.formEditCuentas.id}`, this.formEditCuentas, 'getData', this.axiosConfig);
-      this.resetFormEdit()
+      this.resetFormEdit();
+      this.loading = true;
     },
     resetForm() {
       (this.formCuentas.nro_cuenta = ""),
