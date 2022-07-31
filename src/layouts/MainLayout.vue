@@ -1763,7 +1763,7 @@
           round
           style="margin-right: 15px"
           clickable
-          to="/facturacion"
+          to="/facturacioncredito"
           padding="xs"
         >
           <q-icon size="25px" name="request_quote" color="primary">
@@ -1912,7 +1912,7 @@
           round
           style="margin-right: 10px"
           clickable
-          to="/controlpagoproveedores"
+          to="/controlpagosproveedores"
           padding="xs"
         >
           <q-icon size="25px" name="insert_chart" color="primary">
