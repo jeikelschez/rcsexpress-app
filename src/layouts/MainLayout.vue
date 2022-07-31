@@ -1589,12 +1589,13 @@
           dense
           color="white"
           round
+          class="button"
           style="margin-right: 15px"
           clickable
-          to="/m_bancos"
+          to="/empleados"
           padding="xs"
         >
-          <q-icon size="25px" name="public" color="primary">
+          <q-icon size="25px" name="groups" color="primary">
             <q-tooltip
             transition-show="flip-right"
             transition-hide="flip-left"
@@ -1602,7 +1603,221 @@
             style="max-height: 30px"
             color="primary"
             max-height="40px"
-            >Inicio</q-tooltip>
+            >Empleados</q-tooltip>
+          </q-icon>
+        </q-btn>
+        <q-btn
+          dense
+          class="button1"
+          color="white"
+          round
+          style="margin-right: 15px"
+          clickable
+          to="/retenciones"
+          padding="xs"
+        >
+          <q-icon size="25px" name="block" color="primary">
+            <q-tooltip
+            transition-show="flip-right"
+            transition-hide="flip-left"
+            class="bg-primary"
+            style="max-height: 30px"
+            color="primary"
+            max-height="40px"
+            >Retenciones</q-tooltip>
+          </q-icon>
+        </q-btn>
+        <q-btn
+          dense
+          color="white"
+          round
+          class="button2"
+          style="margin-right: 10px"
+          clickable
+          to="/asignacionguias"
+          padding="xs"
+        >
+          <q-icon size="25px" name="auto_stories" color="primary">
+            <q-tooltip
+            transition-show="flip-right"
+            transition-hide="flip-left"
+            class="bg-primary"
+            style="max-height: 30px"
+            color="primary"
+            max-height="40px"
+            >Asignación Guias</q-tooltip>
+          </q-icon>
+        </q-btn>
+        <strong style="margin-right: 10px" class="button3">|</strong>
+        <q-btn
+          dense
+          color="white"
+          round
+          style="margin-right: 15px"
+          clickable
+          class="button4"
+          to="/clientes"
+          padding="xs"
+        >
+          <q-icon size="25px" name="face" color="primary">
+            <q-tooltip
+            transition-show="flip-right"
+            transition-hide="flip-left"
+            class="bg-primary"
+            style="max-height: 30px"
+            color="primary"
+            max-height="40px"
+            >Clientes</q-tooltip>
+          </q-icon>
+        </q-btn>
+        <q-btn
+          dense
+          color="white"
+          round
+          style="margin-right: 10px"
+          clickable
+          class="button5"
+          to="/proveedores"
+          padding="xs"
+        >
+          <q-icon size="25px" name="support_agent" color="primary">
+            <q-tooltip
+            transition-show="flip-right"
+            transition-hide="flip-left"
+            class="bg-primary"
+            style="max-height: 30px"
+            color="primary"
+            max-height="40px"
+            >Proveedores</q-tooltip>
+          </q-icon>
+        </q-btn>
+        <strong style="margin-right: 10px" class="button6">|</strong>
+        <q-btn
+          dense
+          color="white"
+          round
+          style="margin-right: 15px"
+          clickable
+          class="button7"
+          to="/registrodecostos"
+          padding="xs"
+        >
+          <q-icon size="25px" name="local_shipping" color="primary">
+            <q-tooltip
+            transition-show="flip-right"
+            transition-hide="flip-left"
+            class="bg-primary"
+            style="max-height: 30px"
+            color="primary"
+            max-height="40px"
+            >Costos Transporte</q-tooltip>
+          </q-icon>
+        </q-btn>
+        <q-btn
+          dense
+          color="white"
+          round
+          style="margin-right: 10px"
+          clickable
+          class="button8"
+          to="/pruebasentrega"
+          padding="xs"
+        >
+          <q-icon size="25px" name="assignment_turned_in" color="primary">
+            <q-tooltip
+            transition-show="flip-right"
+            transition-hide="flip-left"
+            class="bg-primary"
+            style="max-height: 30px"
+            color="primary"
+            max-height="40px"
+            >Pruebas de Entrega</q-tooltip>
+          </q-icon>
+        </q-btn>
+        <strong style="margin-right: 10px" class="button9">|</strong>
+        <q-btn
+          dense
+          color="white"
+          class="button10"
+          round
+          style="margin-right: 15px"
+          clickable
+          to="/registroserviciocarga"
+          padding="xs"
+        >
+          <q-icon size="25px" name="menu_book" color="primary">
+            <q-tooltip
+            transition-show="flip-right"
+            transition-hide="flip-left"
+            class="bg-primary"
+            style="max-height: 30px"
+            color="primary"
+            max-height="40px"
+            >Registro Servicio de Carga</q-tooltip>
+          </q-icon>
+        </q-btn>
+        <q-btn
+          dense
+          color="white"
+          class="button11"
+          round
+          style="margin-right: 15px"
+          clickable
+          to="/facturacion"
+          padding="xs"
+        >
+          <q-icon size="25px" name="request_quote" color="primary">
+            <q-tooltip
+            transition-show="flip-right"
+            transition-hide="flip-left"
+            class="bg-primary"
+            style="max-height: 30px"
+            color="primary"
+            max-height="40px"
+            >Facturación</q-tooltip>
+          </q-icon>
+        </q-btn>
+        <q-btn
+          dense
+          color="white"
+          round
+          class="button12"
+          style="margin-right: 10px"
+          clickable
+          to="/anulacionguias"
+          padding="xs"
+        >
+          <q-icon size="25px" name="close" color="primary">
+            <q-tooltip
+            transition-show="flip-right"
+            transition-hide="flip-left"
+            class="bg-primary"
+            style="max-height: 30px"
+            color="primary"
+            max-height="40px"
+            >Anulación Guias/Facturas</q-tooltip>
+          </q-icon>
+        </q-btn>
+        <strong style="margin-right: 10px" class="button13">|</strong>
+        <q-btn
+          dense
+          color="white"
+          class="button14"
+          round
+          style="margin-right: 15px"
+          clickable
+          to="/notasdebito"
+          padding="xs"
+        >
+          <q-icon size="25px" name="send_and_archive" color="primary">
+            <q-tooltip
+            transition-show="flip-right"
+            transition-hide="flip-left"
+            class="bg-primary"
+            style="max-height: 30px"
+            color="primary"
+            max-height="40px"
+            >Emision Notas Debito</q-tooltip>
           </q-icon>
         </q-btn>
         <q-btn
@@ -1611,10 +1826,11 @@
           round
           style="margin-right: 15px"
           clickable
-          to="/m_bancos"
+          class="button15"
+          to="/notascredito"
           padding="xs"
         >
-          <q-icon size="25px" name="person" color="primary">
+          <q-icon size="25px" name="send" color="primary">
             <q-tooltip
             transition-show="flip-right"
             transition-hide="flip-left"
@@ -1622,19 +1838,20 @@
             style="max-height: 30px"
             color="primary"
             max-height="40px"
-            >Inicio</q-tooltip>
+            >Emision Notas Credito</q-tooltip>
           </q-icon>
         </q-btn>
         <q-btn
           dense
           color="white"
           round
-          style="margin-right: 15px"
+          style="margin-right: 10px"
           clickable
-          to="/m_bancos"
+          class="button16"
+          to="/notascredito"
           padding="xs"
         >
-          <q-icon size="25px" name="front_hand" color="primary">
+          <q-icon size="25px" name="close" color="primary">
             <q-tooltip
             transition-show="flip-right"
             transition-hide="flip-left"
@@ -1642,19 +1859,42 @@
             style="max-height: 30px"
             color="primary"
             max-height="40px"
-            >Inicio</q-tooltip>
+            >Anulación de Notas</q-tooltip>
+          </q-icon>
+        </q-btn>
+        <strong style="margin-right: 10px" class="button17">|</strong>
+        <q-btn
+          dense
+          color="white"
+          class="button18"
+          round
+          style="margin-right: 15px"
+          clickable
+          to="/cuentasporcobrar"
+          padding="xs"
+        >
+          <q-icon size="25px" name="price_check" color="primary">
+            <q-tooltip
+            transition-show="flip-right"
+            transition-hide="flip-left"
+            class="bg-primary"
+            style="max-height: 30px"
+            color="primary"
+            max-height="40px"
+            >Generar Cobranza</q-tooltip>
           </q-icon>
         </q-btn>
         <q-btn
           dense
           color="white"
           round
+          class="button19"
           style="margin-right: 15px"
           clickable
-          to="/m_bancos"
+          to="/cuentasporpagar"
           padding="xs"
         >
-          <q-icon size="25px" name="import_contacts" color="primary">
+          <q-icon size="25px" name="attach_money" color="primary">
             <q-tooltip
             transition-show="flip-right"
             transition-hide="flip-left"
@@ -1662,19 +1902,20 @@
             style="max-height: 30px"
             color="primary"
             max-height="40px"
-            >Inicio</q-tooltip>
+            >Ingreso de CXP</q-tooltip>
           </q-icon>
         </q-btn>
         <q-btn
           dense
           color="white"
+          class="button20"
           round
-          style="margin-right: 15px"
+          style="margin-right: 10px"
           clickable
-          to="/m_bancos"
+          to="/controlpagoproveedores"
           padding="xs"
         >
-          <q-icon size="25px" name="notifications" color="primary">
+          <q-icon size="25px" name="insert_chart" color="primary">
             <q-tooltip
             transition-show="flip-right"
             transition-hide="flip-left"
@@ -1682,19 +1923,42 @@
             style="max-height: 30px"
             color="primary"
             max-height="40px"
-            >Inicio</q-tooltip>
+            >Control Pago Proveedores</q-tooltip>
+          </q-icon>
+        </q-btn>
+        <strong style="margin-right: 10px" class="button21">|</strong>
+        <q-btn
+          dense
+          color="white"
+          round
+          class="button22"
+          style="margin-right: 15px"
+          clickable
+          to="/generarcomisiones"
+          padding="xs"
+        >
+          <q-icon size="25px" name="receipt_long" color="primary">
+            <q-tooltip
+            transition-show="flip-right"
+            transition-hide="flip-left"
+            class="bg-primary"
+            style="max-height: 30px"
+            color="primary"
+            max-height="40px"
+            >Comisiones Entrega</q-tooltip>
           </q-icon>
         </q-btn>
         <q-btn
           dense
           color="white"
+          class="button23"
           round
           style="margin-right: 15px"
           clickable
-          to="/m_bancos"
+          to="/pagocomisiones"
           padding="xs"
         >
-          <q-icon size="25px" name="lock" color="primary">
+          <q-icon size="25px" name="paid" color="primary">
             <q-tooltip
             transition-show="flip-right"
             transition-hide="flip-left"
@@ -1702,27 +1966,7 @@
             style="max-height: 30px"
             color="primary"
             max-height="40px"
-            >Inicio</q-tooltip>
-          </q-icon>
-        </q-btn>
-        <q-btn
-          dense
-          color="white"
-          round
-          style="margin-right: 15px"
-          clickable
-          to="/m_bancos"
-          padding="xs"
-        >
-          <q-icon size="25px" name="settings" color="primary">
-            <q-tooltip
-            transition-show="flip-right"
-            transition-hide="flip-left"
-            class="bg-primary"
-            style="max-height: 30px"
-            color="primary"
-            max-height="40px"
-            >Inicio</q-tooltip>
+            >Pago de Comisiones</q-tooltip>
           </q-icon>
         </q-btn>
       </div>
@@ -1891,7 +2135,6 @@ export default ({
           currentTime = localStorage.getItem("currentTime");   
           targetTime = localStorage.getItem("targetTime");    
           if (currentTime > targetTime) {
-            console.log('se acabo el tiempo')
             clearInterval(interval);
             LocalStorage.remove("currentTime");
             LocalStorage.remove("targetTime");
@@ -1899,8 +2142,6 @@ export default ({
             _this.refreshTimer()
           } else {
             currentTime = new Date();
-            console.log(currentTime)
-            console.log(targetTime)
             localStorage.setItem("currentTime", currentTime);
           }
         } else {
@@ -2001,6 +2242,96 @@ export default ({
 @media screen and (max-width: 680px) {
   .float-left {
     float: inherit
+  }
+}
+@media screen and (max-width: 1265px) {
+  .button23 {
+    display: none
+  }
+}
+@media screen and (max-width: 1215px) {
+  .button22 {
+    display: none
+  }
+  .button21 {
+    display: none
+  }
+}
+@media screen and (max-width: 1156px) {
+  .button20 {
+    display: none
+  }
+}
+@media screen and (max-width: 1110px) {
+  .button19 {
+    display: none
+  }
+}
+@media screen and (max-width: 1065px) {
+  .button18 {
+    display: none
+  }
+  .button17 {
+    display: none
+  }
+}
+@media screen and (max-width: 1000px) {
+  .button16 {
+    display: none
+  }
+}
+@media screen and (max-width: 956px) {
+  .button15 {
+    display: none
+  }
+}
+@media screen and (max-width: 913px) {
+  .button14 {
+    display: none
+  }
+  .button13 {
+    display: none
+  }
+}
+@media screen and (max-width: 852px) {
+  .button12 {
+    display: none
+  }
+}
+@media screen and (max-width: 805px) {
+  .button11 {
+    display: none
+  }
+}
+@media screen and (max-width: 803px) {
+  .button12 {
+    display: none
+  }
+}
+@media screen and (max-width: 757px) {
+  .button10 {
+    display: none
+  }
+  .button9 {
+    display: none
+  }
+}
+@media screen and (max-width: 697px) {
+  .button8 {
+    display: none
+  }
+}
+@media screen and (max-width: 321px) {
+  .button6 {
+    display: none
+  }
+  .button3 {
+    display: none
+  }
+}
+@media screen and (max-width: 298px) {
+  .button7 {
+    display: none
   }
 }
 </style>

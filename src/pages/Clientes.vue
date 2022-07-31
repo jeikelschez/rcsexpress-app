@@ -271,7 +271,13 @@
                         hint=""
                         class="pcform"
                         :rules="[reglasInputs]"
-                        :options="paises"
+                        :options="paisesSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'paisesSelected', 'paises', 'desc_pais')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
                         lazy-rules
                         option-label="desc_pais"
                         option-value="id"
@@ -297,7 +303,13 @@
                         class="pcform"
                         hint=""
                         :rules="[reglasInputs]"
-                        :options="estados"
+                        :options="estadosSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'estadosSelected', 'estados', 'desc_estado')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
                         lazy-rules
                         option-label="desc_estado"
                         option-value="id"
@@ -330,7 +342,13 @@
                         label="Ciudad"
                         hint=""
                         :rules="[reglasInputs]"
-                        :options="ciudades"
+                        :options="ciudadesSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'ciudadesSelected', 'ciudades', 'desc_ciudad')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
                         lazy-rules
                         option-label="desc_ciudad"
                         option-value="id"
@@ -349,7 +367,13 @@
                         hint=""
                         class="pcform"
                         :rules="[reglasInputs]"
-                        :options="municipios"
+                        :options="municipiosSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'municipiosSelected', 'municipios', 'desc_municipio')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
                         option-label="desc_municipio"
                         option-value="id"
                         lazy-rules
@@ -375,7 +399,13 @@
                         hint=""
                         class="pcform"
                         :rules="[reglasInputs]"
-                        :options="parroquias"
+                        :options="parroquiasSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'parroquiasSelected', 'parroquias', 'desc_parroquia')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
                         option-label="desc_parroquia"
                         option-value="id"
                         lazy-rules
@@ -393,7 +423,13 @@
                         label="Localidad"
                         hint=""
                         :rules="[reglasInputs]"
-                        :options="localidades"
+                        :options="localidadesSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'localidadesSelected', 'localidades', 'desc_localidad')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
                         option-label="desc_localidad"
                         option-value="id"
                         lazy-rules
@@ -437,7 +473,13 @@
                         hint=""
                         class="pcform"
                         :rules="[reglasInputs]"
-                        :options="agentes"
+                        :options="agentesSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'agentesSelected', 'agentes', 'persona_responsable')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
                         option-label="persona_responsable"
                         option-value="id"
                         lazy-rules
@@ -763,7 +805,13 @@
                         hint=""
                         class="pcform"
                         :rules="[reglasInputs]"
-                        :options="paises"
+                        :options="paisesSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'paisesSelected', 'paises', 'desc_pais')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
                         lazy-rules
                         option-label="desc_pais"
                         option-value="id"
@@ -789,7 +837,13 @@
                         hint=""
                         :rules="[reglasInputs]"
                         class="pcform"
-                        :options="estados"
+                        :options="estadosSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'estadosSelected', 'estados', 'desc_estado')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
                         lazy-rules
                         option-label="desc_estado"
                         option-value="id"
@@ -822,7 +876,13 @@
                         label="Ciudad"
                         hint=""
                         :rules="[reglasInputs]"
-                        :options="ciudades"
+                        :options="ciudadesSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'ciudadesSelected', 'ciudades', 'desc_ciudad')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
                         lazy-rules
                         option-label="desc_ciudad"
                         option-value="id"
@@ -841,7 +901,13 @@
                         hint=""
                         class="pcform"
                         :rules="[reglasInputs]"
-                        :options="municipios"
+                        :options="municipiosSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'municipiosSelected', 'municipios', 'desc_municipio')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
                         option-label="desc_municipio"
                         option-value="id"
                         lazy-rules
@@ -867,7 +933,13 @@
                         hint=""
                         class="pcform"
                         :rules="[reglasInputs]"
-                        :options="parroquias"
+                        :options="parroquiasSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'parroquiasSelected', 'parroquias', 'desc_parroquia')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
                         option-label="desc_parroquia"
                         option-value="id"
                         lazy-rules
@@ -885,7 +957,13 @@
                         label="Localidad"
                         hint=""
                         :rules="[reglasInputs]"
-                        :options="localidades"
+                        :options="localidadesSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'localidadesSelected', 'localidades', 'desc_localidad')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
                         option-label="desc_localidad"
                         option-value="id"
                         lazy-rules
@@ -1005,7 +1083,13 @@
               rounded
               transition-show="flip-up"
               transition-hide="flip-down"
-              :options="agencias"
+              :options="agenciasSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'agenciasSelected', 'agencias', 'nb_agencia')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
               option-label="nb_agencia"
               option-value="id"
               v-model="selectedAgencia"
@@ -1363,6 +1447,14 @@ export default {
       location_input: "",
       agencias: [],
       paises: [],
+      agenciasSelected: [],
+      paisesSelected: [],
+      estadosSelected: [],
+      ciudadesSelected: [],
+      municipiosSelected: [],
+      parroquiasSelected: [],
+      localidadesSelected: [],
+      agentesSelected: [],
       estados: [],
       ciudades: [],
       municipios: [],
@@ -1438,6 +1530,27 @@ export default {
     );
   },
   methods: {
+    filterArray (val, update, abort, pagina, array, element) {
+        if (val === '') {
+        update(() => {
+          this[pagina] = this[array]
+        })
+        return
+    }
+    update(() => {
+        const needle = val.toUpperCase();
+        var notEqual = JSON.parse(JSON.stringify(this[array]));
+        for (var i = 0, len = this[array].length; i < len; i++) {
+          if (!(this[array][i][element].indexOf(needle) > -1)) {
+            delete notEqual[i];
+          }
+          if (i == this[array].length - 1) {
+            this[pagina] = notEqual
+            break
+          };
+        }
+      })
+    },
     resetLoading() {
       this.loading = false;
     },
@@ -1559,6 +1672,7 @@ export default {
         }
     },
     setDataEdit(res, dataRes) {
+      this.loading = false
       this.resetFormEdit();
       this[dataRes].id = res.id;
       this[dataRes].descripcion = res.descripcion;

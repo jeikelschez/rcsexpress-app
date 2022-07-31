@@ -299,7 +299,6 @@
               rounded
               color="primary"
               @click="create = true"
-              @click.capture="getData('/empleados','setdata','datos')"
               :disabled="this.disabledCreate"
             ></q-btn>
           </div>

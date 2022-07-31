@@ -222,7 +222,13 @@
               rounded
               transition-show="flip-up"
               transition-hide="flip-down"
-              :options="bancos"
+              :options="bancosSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'bancosSelected', 'bancos', 'nb_banco')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
               option-label="nb_banco"
               option-value="id"
               v-model="selectedBanco"
@@ -516,6 +522,7 @@ export default {
       ],
       bancos: [],
       cuentas: [],
+      bancosSelected: [],
       selected: [],
       selectedBanco: [],
       bancoRef: "",
@@ -558,6 +565,27 @@ export default {
     this.$refs.desactivateCrud.desactivarCrud('c_roles', 'd_roles', 'u_roles', 'desactivarCrudRoles')
   },
   methods: {
+    filterArray (val, update, abort, pagina, array, element) {
+        if (val === '') {
+        update(() => {
+          this[pagina] = this[array]
+        })
+        return
+    }
+    update(() => {
+        const needle = val.toUpperCase();
+        var notEqual = JSON.parse(JSON.stringify(this[array]));
+        for (var i = 0, len = this[array].length; i < len; i++) {
+          if (!(this[array][i][element].indexOf(needle) > -1)) {
+            delete notEqual[i];
+          }
+          if (i == this[array].length - 1) {
+            this[pagina] = notEqual
+            break
+          };
+        }
+      })
+    },
     resetLoading() {
       this.loading = false;
     },
@@ -631,6 +659,7 @@ export default {
       this[dataRes].tipo_cuenta = res.tipo_desc
       this[dataRes].firma_autorizada = res.firma_autorizada
       this[dataRes].cod_banco = res.cod_banco
+      this.loading = false;
     },
     deleteData(idpost) {
       this.$refs.methods.deleteData(`/cuentas/${idpost}`, 'getData', this.axiosConfig);

@@ -235,7 +235,6 @@
               rounded
               color="primary"
               @click="create = true"
-              @click.capture="getData('/ayudantes','setdata','datos')"
               :disabled="this.disabledCreate"
             ></q-btn>
           </div>
@@ -624,6 +623,7 @@ export default {
       this[dataRes].dir_ayudante = res.dir_ayudante
       this[dataRes].tlf_ayudante = res.tlf_ayudante
       this[dataRes].flag_activo = res.activo_desc
+      this.loading = false
     },   
     deleteData(idpost) {
       this.$refs.methods.deleteData(`/ayudantes/${idpost}`, 'getData', this.axiosConfig);

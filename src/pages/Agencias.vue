@@ -14,7 +14,13 @@
                   input-class="input"
                   :rules="[reglasSelect]"
                   hint=""
-                  :options="paises"
+                  :options="paisesSelected"
+                  @filter="(val,update,abort) => 
+                  filterArray(val,update,abort,'paisesSelected', 'paises', 'desc_pais')"
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
                   option-label="desc_pais"
                   option-value="id"
                   lazy-rules
@@ -36,7 +42,13 @@
                   :rules="[reglasSelect]"
                   hint=""
                   class="pcform"
-                  :options="estados"
+                  :options="estadosSelected"
+                  @filter="(val,update,abort) => 
+                  filterArray(val,update,abort,'estadosSelected', 'estados', 'desc_estado')"
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
                   option-label="desc_estado"
                   option-value="id"
                   lazy-rules
@@ -57,7 +69,13 @@
                   input-class="input"
                   :rules="[reglasSelect]"
                   hint=""
-                  :options="ciudades"
+                  :options="ciudadesSelected"
+                  @filter="(val,update,abort) => 
+                  filterArray(val,update,abort,'ciudadesSelected', 'ciudades', 'desc_ciudad')"
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
                   option-label="desc_ciudad"
                   option-value="id"
                   lazy-rules
@@ -269,7 +287,13 @@
                   input-class="input"
                   :rules="[reglasSelect]"
                   hint=""
-                  :options="paises"
+                  :options="paisesSelected"
+                  @filter="(val,update,abort) => 
+                  filterArray(val,update,abort,'paisesSelected', 'paises', 'desc_pais')"
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
                   option-label="desc_pais"
                   option-value="id"
                   lazy-rules
@@ -290,7 +314,13 @@
                   input-class="input"
                   :rules="[reglasSelect]"
                   hint=""
-                  :options="estados"
+                  :options="estadosSelected"
+                  @filter="(val,update,abort) => 
+                  filterArray(val,update,abort,'estadosSelected', 'estados', 'desc_estado')"
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
                   option-label="desc_estado"
                   option-value="id"
                   lazy-rules
@@ -312,7 +342,13 @@
                   input-class="input"
                   :rules="[reglasSelect]"
                   hint=""
-                  :options="ciudades"
+                  :options="ciudadesSelected"
+                  @filter="(val,update,abort) => 
+                  filterArray(val,update,abort,'ciudadesSelected', 'ciudades', 'desc_ciudad')"
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
                   option-label="desc_ciudad"
                   option-value="id"
                   lazy-rules
@@ -805,6 +841,9 @@ export default {
       estados: [],
       ciudades: [],
       datos: [],
+      paisesSelected: [],
+      estadosSelected: [],
+      ciudadesSelected: [],
       selectedPais: [],
       selectedEstado: [],
       selectedCiudad: [],
@@ -881,6 +920,27 @@ export default {
     this.$refs.desactiveCrud.desactivarCrud('c_agencias', 'd_agencias', 'u_agencias', 'desactivarCrudAgencias')
   },
   methods: {
+    filterArray (val, update, abort, pagina, array, element) {
+        if (val === '') {
+        update(() => {
+          this[pagina] = this[array]
+        })
+        return
+    }
+    update(() => {
+        const needle = val.toUpperCase();
+        var notEqual = JSON.parse(JSON.stringify(this[array]));
+        for (var i = 0, len = this[array].length; i < len; i++) {
+          if (!(this[array][i][element].indexOf(needle) > -1)) {
+            delete notEqual[i];
+          }
+          if (i == this[array].length - 1) {
+            this[pagina] = notEqual
+            break
+          };
+        }
+      })
+    },
     // Reglas
     reglasSelect(val) {
       if (val === null) {

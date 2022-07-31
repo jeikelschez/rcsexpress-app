@@ -699,7 +699,13 @@
                     rounded
                     transition-show="flip-up"
                     transition-hide="flip-down"
-                    :options="paises"
+                    :options="paisesSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'paisesSelected', 'paises', 'desc_pais')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
                     option-label="desc_pais"
                     option-value="id"
                     v-model="selectedPais"
@@ -891,7 +897,13 @@
                     rounded
                     transition-show="flip-up"
                     transition-hide="flip-down"
-                    :options="paises"
+                    :options="paisesSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'paisesSelected', 'paises', 'desc_pais')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
                     option-label="desc_pais"
                     option-value="id"
                     v-model="selectedPais2"
@@ -913,7 +925,13 @@
                     rounded
                     transition-show="flip-up"
                     transition-hide="flip-down"
-                    :options="estadosCiudades"
+                    :options="estadosCiudadesSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'estadosCiudadesSelected', 'estadosCiudades', 'desc_estado')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
                     option-label="desc_estado"
                     option-value="id"
                     v-model="selectedEstado"
@@ -1343,6 +1361,8 @@ export default {
       selectedPais: [],
       selectedPais2: [],
       selectedEstado: [],
+      paisesSelected: [],
+      estadosCiudadesSelected: [],
       paisRef: "",
       paisRef2: "",
       estadoRef: "",
@@ -1418,6 +1438,28 @@ export default {
     this.$refs.desactiveCrud.desactivarCrud('c_ciudades', 'd_ciudades', 'u_ciudades', 'desactivarCrudPaisEstadoCiudad')
   },
   methods: {
+
+    filterArray (val, update, abort, pagina, array, element) {
+        if (val === '') {
+        update(() => {
+          this[pagina] = this[array]
+        })
+        return
+    }
+    update(() => {
+        const needle = val.toUpperCase();
+        var notEqual = JSON.parse(JSON.stringify(this[array]));
+        for (var i = 0, len = this[array].length; i < len; i++) {
+          if (!(this[array][i][element].indexOf(needle) > -1)) {
+            delete notEqual[i];
+          }
+          if (i == this[array].length - 1) {
+            this[pagina] = notEqual
+            break
+          };
+        }
+      })
+    },
     
 resetLoading() {
       this.loading = false;
@@ -1476,6 +1518,7 @@ resetLoading() {
       this[dataRes].desc_pais = res.desc_pais;
       this[dataRes].tipo_pais = res.tipo_pais_desc;
       this[dataRes].id = res.id;
+      this.loading = false
     },    
     deleteDataPaises(idpost) {
       this.$refs.methods.deleteData(`/paises/${idpost}`, 'getDataPaises', this.axiosConfig);
@@ -1517,6 +1560,7 @@ resetLoading() {
       this[dataRes].desc_estado = res.desc_estado;
       this[dataRes].siglas = res.siglas;
       this[dataRes].id = res.id;
+      this.loading = false
     },
     deleteDataEstados(idpost) {
       this.$refs.methods.deleteData(`/estados/${idpost}`, 'getDataEstados', this.axiosConfig);
@@ -1565,6 +1609,7 @@ resetLoading() {
       this[dataRes].check_urbano = res.check_urbano_desc;
       this[dataRes].cod_region = res.cod_region_desc;
       this[dataRes].id = res.id;
+      this.loading = false
     },
     deleteDataCiudades(idpost) {
       this.$refs.methods.deleteData(`/ciudades/${idpost}`, 'getDataCiudades', this.axiosConfig);

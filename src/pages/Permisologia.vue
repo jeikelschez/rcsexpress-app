@@ -12,7 +12,13 @@
                   label="Permisos"
                   hint=""
                   :rules="[reglasInputs]"
-                  :options="objetosNoDuplicados"
+                  :options="objetosNoDuplicadosSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'objetosNoDuplicadosSelected', 'objetosNoDuplicados', 'codigo')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
                   option-label="codigo"
                   option-value="codigo"
                   lazy-rules
@@ -67,7 +73,13 @@
               rounded
               transition-show="flip-up"
               transition-hide="flip-down"
-              :options="agencias"
+              :options="agenciasSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'agenciasSelected', 'agencias', 'nb_agencia')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
               option-label="nb_agencia"
               option-value="id"
               v-model="selectedAgencia"
@@ -98,7 +110,13 @@
               rounded
               transition-show="flip-up"
               transition-hide="flip-down"
-              :options="rolesPermisos"
+              :options="rolesPermisosSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'rolesPermisosSelected', 'rolesPermisos', 'descripcion')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
               option-label="descripcion"
               option-value="id"
               v-model="selectedRol"
@@ -306,6 +324,7 @@ export default {
       ],
       permisos: [],
       agencias: [],
+      agenciasSelected: [],
       permisosDuplicados: [],
       roles: [],
       rolesPermisos: [],
@@ -347,6 +366,9 @@ export default {
       ],
       objetos: [],
       objetosNoDuplicados: [],
+      agenciasSelected: [],
+      rolesPermisosSelected: [],
+      objetosNoDuplicadosSelected: [],
       selected: [],
       selectedAgencia: [],
       selectedRol: [],
@@ -428,6 +450,27 @@ export default {
     this.$refs.desactiveCrud.desactivarCrud('c_permisos', 'd_permisos', 'u_permisos', 'desactivarCrudPermisologia')
   },
   methods: {
+    filterArray (val, update, abort, pagina, array, element) {
+        if (val === '') {
+        update(() => {
+          this[pagina] = this[array]
+        })
+        return
+    }
+    update(() => {
+        const needle = val.toUpperCase();
+        var notEqual = JSON.parse(JSON.stringify(this[array]));
+        for (var i = 0, len = this[array].length; i < len; i++) {
+          if (!(this[array][i][element].indexOf(needle) > -1)) {
+            delete notEqual[i];
+          }
+          if (i == this[array].length - 1) {
+            this[pagina] = notEqual
+            break
+          };
+        }
+      })
+    },
     resetLoading() {
       this.loading = false;
     },

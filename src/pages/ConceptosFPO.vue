@@ -858,6 +858,7 @@ export default {
       this.loading = false
     },  
     setDataEdit(res, dataRes) {
+      this.loading = false
       this.formEdit.id = res.id
       this.formEdit.cod_fpo = res.cod_fpo
       this.formEdit.desc_tipo = res.desc_tipo

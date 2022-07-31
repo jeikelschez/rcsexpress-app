@@ -803,6 +803,7 @@ export default {
       this.formEdit.placa = res.placa
       this.formEdit.vehiculo = res.vehiculo
       this.formEdit.flag_activo = res.activo_desc
+      this.loading = false
     },   
     deleteData(idpost) {
       this.$refs.methods.deleteData(`/receptores/${idpost}`, 'getData', this.axiosConfig);

@@ -542,6 +542,7 @@ export default {
       this.formEdit.descripcion = res.descripcion
       this.formEdit.placas = res.placas
       this.formEdit.chofer = res.chofer
+      this.loading = false
     },   
     deleteData(idpost) {
       this.$refs.methods.deleteData(`/unidades/${idpost}`, 'getData', this.axiosConfig);

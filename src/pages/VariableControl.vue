@@ -583,6 +583,9 @@ export default {
         if (val > 999) {
           return "Deben ser Maximo 3 caracteres";
         }
+        if (val.length < 3) {
+          return "Deben ser Minimo 3 caracteres";
+        }
       }
     },
     reglasSelect(val) {

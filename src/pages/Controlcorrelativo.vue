@@ -253,9 +253,15 @@
                 rounded
                 transition-show="flip-up"
                 transition-hide="flip-down"
-                :options="agencias"
                 option-label="nb_agencia"
                 option-value="id"
+                :options="agenciasSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'agenciasSelected', 'agencias', 'nb_agencia')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
                 v-model="selectedAgencia"
                 outlined
                 standout
@@ -277,7 +283,13 @@
                 rounded
                 transition-show="flip-up"
                 transition-hide="flip-down"
-                :options="tipos"
+                :options="tiposSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'tiposSelected', 'tipos', 'descripcion')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
                 option-label="descripcion"
                 option-value="id"
                 v-model="selectedTipo"
@@ -300,7 +312,7 @@
               <q-input
                 rounded
                 outlined
-                v-model="filterCiudades"
+                v-model="filter"
                 standout
                 type="search"
                 label="Búsqueda avanzada"
@@ -625,6 +637,8 @@ export default {
       ],
       agencias: [],
       tipos: [],
+      agenciasSelected: [],
+      tiposSelected: [],
       datos: [],
       selectedTipo: {
         "id": 16,
@@ -687,21 +701,44 @@ export default {
     );
   },
   methods: {
+    filterArray (val, update, abort, pagina, array, element) {
+        if (val === '') {
+        update(() => {
+          this[pagina] = this[array]
+        })
+        return
+    }
+    update(() => {
+        const needle = val.toUpperCase();
+        var notEqual = JSON.parse(JSON.stringify(this[array]));
+        for (var i = 0, len = this[array].length; i < len; i++) {
+          if (!(this[array][i][element].indexOf(needle) > -1)) {
+            delete notEqual[i];
+          }
+          if (i == this[array].length - 1) {
+            this[pagina] = notEqual
+            break
+          };
+        }
+      })
+    },
     resetLoading() {
       this.loading = false;
     },
     // Reglas
     reglasAllowNull1(val) {
-        if (val !== null !== "") {
+      console.log(val)
+        if (val) {
           if (val.length > 1) {
             return "Deben ser Maximo 1 caracter";
           }
       }
     },
     reglasAllowNull10(val) {
-        if (val !== null !== "") {
+      console.log(val)
+        if (val) {
           if (val.length > 10) {
-            return "Deben ser Maximo 1 caracter";
+            return "Deben ser Maximo 10 caracteres";
           }
       }
     },
@@ -726,7 +763,7 @@ export default {
         return "Debes Escribir Algo";
       }
         if (val !== null !== "") {
-          if (val.length < this.form.control_inicio.length) {
+          if (val < this.form.control_inicio) {
             return "El Ultimo Correlativo debe ser Mayor al Primero"
           }
           if (val.length > 10) {
@@ -742,7 +779,7 @@ export default {
         return "Debes Escribir Algo";
       }
         if (val !== null !== "") {
-          if (val.length < this.formEdit.control_inicio.length) {
+          if (val < this.formEdit.control_inicio) {
             return "El Ultimo Correlativo debe ser Mayor al Primero"
           }
           if (val.length > 10) {

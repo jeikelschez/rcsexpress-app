@@ -239,7 +239,13 @@
                   v-model="form.cod_tipo_retencion"
                   label="Tipo Retención ISLR"
                   hint=""
-                  :options="retenciones"
+                  :options="retencionesSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'retencionesSelected', 'retenciones', 'nb_tipo_retencion')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
                   :rules="[reglasSelectRetenciones]"
                   option-label="nb_tipo_retencion"
                   option-value="id"
@@ -559,7 +565,13 @@
                   label="Tipo Retención ISLR"
                   input-class="input"
                   hint=""
-                  :options="retenciones"
+                  :options="retencionesSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'retencionesSelected', 'retenciones', 'nb_tipo_retencion')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
                   option-label="nb_tipo_retencion"
                   option-value="id"
                   lazy-rules
@@ -953,6 +965,7 @@ export default {
         flag_activo: [],
       },
       selected: [],
+      retencionesSelected: [],
       error: "",
       disabledCreate: true,
       disabledEdit: true,
@@ -999,6 +1012,27 @@ export default {
     );
   },
   methods: {
+    filterArray (val, update, abort, pagina, array, element) {
+        if (val === '') {
+        update(() => {
+          this[pagina] = this[array]
+        })
+        return
+    }
+    update(() => {
+        const needle = val.toUpperCase();
+        var notEqual = JSON.parse(JSON.stringify(this[array]));
+        for (var i = 0, len = this[array].length; i < len; i++) {
+          if (!(this[array][i][element].indexOf(needle) > -1)) {
+            delete notEqual[i];
+          }
+          if (i == this[array].length - 1) {
+            this[pagina] = notEqual
+            break
+          };
+        }
+      })
+    },
     resetLoading() {
       this.loading = false;
     },
@@ -1160,6 +1194,7 @@ export default {
     },
     setDataRetenciones(res, dataRes) {
       this[dataRes] = res;
+      this.loading = false;
     },
     setDataEdit(res, dataRes) {
       if (res.tipo_persona === "J") {
@@ -1167,6 +1202,7 @@ export default {
       } else if (res.tipo_persona === "N") {
         (this.axiosConfig.headers.tipo_persona = "N");
       }
+      this.loading = false;
       this.getData(`/mretenciones`, "setDataRetenciones", "retenciones");
       this.formEdit.id = res.id;
       this.formEdit.condicion_pago = res.condicion_pago;
@@ -1183,6 +1219,7 @@ export default {
       this.formEdit.tipo_servicio = res.tipo_svc;
       this.formEdit.tipo_persona = res.tipo_desc;
       this.formEdit.flag_activo = res.activo_desc;
+      
       if (res.cod_tipo_retencion !== null) {
         this.formEdit.cod_tipo_retencion = res.retenciones.nb_tipo_retencion;
       }

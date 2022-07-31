@@ -873,6 +873,7 @@ export default {
       this.formEdit.region_origen = res.origen_desc
       this.formEdit.region_destino = res.destino_desc
       this.formEdit.tiempo_servicio = res.tiempo_servicio
+      this.loading = false
       if (this.formEdit.tiempo_servicio == null) {
         this.formEdit.tiempo_servicio = ""
       }

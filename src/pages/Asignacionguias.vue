@@ -97,7 +97,13 @@
                   hint=""
                   class="pcform"
                   :rules="[reglasSelect]"
-                  :options="agencias"
+                  :options="agenciasSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'agenciasSelected', 'agencias', 'nb_agencia')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
                   lazy-rules
                   option-label="nb_agencia"
                   option-value="id"
@@ -122,7 +128,13 @@
                   label="Agente"
                   class="pcform"
                   hint=""
-                  :options="agentesForm"
+                  :options="agentesFormSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'agentesFormSelected', 'agentesForm', 'persona_responsable')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
                   lazy-rules
                   option-label="persona_responsable"
                   option-value="id"
@@ -139,7 +151,13 @@
                   v-model="form.cod_cliente"
                   label="Cliente"
                   hint=""
-                  :options="clientesForm"
+                  :options="clientesFormSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'clientesFormSelected', 'clientesForm', 'nb_cliente')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
                   lazy-rules
                   option-label="nb_cliente"
                   option-value="id"
@@ -278,7 +296,13 @@
                   hint=""
                   class="pcform"
                   :rules="[reglasSelect]"
-                  :options="agencias"
+                  :options="agenciasSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'agenciasSelected', 'agencias', 'nb_agencia')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
                   lazy-rules
                   option-label="nb_agencia"
                   option-value="id"
@@ -305,7 +329,13 @@
                   class="pcform"
                   :readonly="this.disabledInputsEdit"
                   hint=""
-                  :options="agentesForm"
+                  :options="agentesFormSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'agentesFormSelected', 'agentesForm', 'persona_responsable')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
                   lazy-rules
                   option-label="persona_responsable"
                   option-value="id"
@@ -323,7 +353,13 @@
                   label="Cliente"
                   hint=""
                   :readonly="this.disabledInputsEdit"
-                  :options="clientesForm"
+                  :options="clientesFormSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'clientesFormSelected', 'clientesForm', 'nb_cliente')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
                   lazy-rules
                   option-label="nb_cliente"
                   option-value="id"
@@ -380,7 +416,13 @@
             rounded
             transition-show="flip-up"
             transition-hide="flip-down"
-            :options="agencias"
+            :options="agenciasSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'agenciasSelected', 'agencias', 'nb_agencia')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
             option-label="nb_agencia"
             option-value="id"
             v-model="selectedAgencia"
@@ -389,7 +431,7 @@
             label="Agencia"
             @update:model-value="
               this.axiosConfig.headers.agencia = this.selectedAgencia.id;
-              getData(`/cguias`, 'setDataSelect', 'datos');
+              getData(`/cguias`, 'setDataGuias', 'datos');
               getData(`/agentes`, 'setDataSelect', 'agentes');
               getData(`/clientes`, 'setDataSelect', 'clientes');
             "
@@ -408,7 +450,13 @@
             rounded
             transition-show="flip-up"
             transition-hide="flip-down"
-            :options="agentes"
+            :options="agentesSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'agentesSelected', 'agentes', 'persona_responsable')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
             option-label="persona_responsable"
             option-value="id"
             v-model="selectedAgente"
@@ -417,7 +465,7 @@
             label="Agente"
             @update:model-value="
               this.axiosConfig.headers.agente = this.selectedAgente.id;
-              getData(`/cguias`, 'setData', 'datos');
+              getData(`/cguias`, 'setDataGuias', 'datos');
             "
           >
             <template v-slot:prepend>
@@ -434,7 +482,13 @@
             rounded
             transition-show="flip-up"
             transition-hide="flip-down"
-            :options="clientes"
+            :options="clientesSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'clientesSelected', 'clientes', 'nb_cliente')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
             option-label="nb_cliente"
             option-value="id"
             v-model="selectedCliente"
@@ -443,7 +497,7 @@
             label="Cliente"
             @update:model-value="
               this.axiosConfig.headers.cliente = this.selectedCliente.id;
-              getData(`/cguias`, 'setData', 'datos');
+              getData(`/cguias`, 'setDataGuias', 'datos');
             "
           >
             <template v-slot:prepend>
@@ -506,7 +560,7 @@
                     @update:model-value="
                     this.axiosConfig.headers.tipo = this.selectedGuiaCarga;
                     this.selectedGuiaFactura = '',
-                    getData(`/cguias`, 'setData', 'datos');
+                    getData(`/cguias`, 'setDataGuias', 'datos');
                 "
                   />
                 </template>
@@ -540,7 +594,7 @@
                     @update:model-value="
                       this.axiosConfig.headers.tipo = this.selectedGuiaFactura;
                       this.selectedGuiaCarga = '',
-                      getData(`/cguias`, 'setData', 'datos');
+                      getData(`/cguias`, 'setDataGuias', 'datos');
                     "
                   />
                 </template>
@@ -572,18 +626,18 @@
                 class="pcform"
                 @keydown.enter="
                   this.axiosConfig.headers.desde = this.guia_desde;
-                  getData(`/cguias`, 'setData', 'datos');
+                  getData(`/cguias`, 'setDataGuias', 'datos');
                   if (this.guia_hasta !== '') {
                   this.reglasCorrelativoFilter()
                   };"
                 @keydown.tab="
                   this.axiosConfig.headers.desde = this.guia_desde;
-                  getData(`/cguias`, 'setData', 'datos');
+                  getData(`/cguias`, 'setDataGuias', 'datos');
                   if (this.guia_hasta !== '') {
                   this.reglasCorrelativoFilter()
                   };"
                 @blur="this.axiosConfig.headers.desde = this.guia_desde;
-                  getData(`/cguias`, 'setData', 'datos');
+                  getData(`/cguias`, 'setDataGuias', 'datos');
                   if (this.guia_hasta !== '') {
                   this.reglasCorrelativoFilter()
                   };"
@@ -603,15 +657,15 @@
                 v-model="guia_hasta"
                 @keydown.enter="
                   this.axiosConfig.headers.hasta = this.guia_hasta;
-                  getData(`/cguias`, 'setData', 'datos');
+                  getData(`/cguias`, 'setDataGuias', 'datos');
                   this.reglasCorrelativoFilter()"
                 @keydown.tab="
                   this.axiosConfig.headers.hasta = this.guia_hasta;
-                  getData(`/cguias`, 'setData', 'datos');
+                  getData(`/cguias`, 'setDataGuias', 'datos');
                   this.reglasCorrelativoFilter()"
                 @blur="
                   this.axiosConfig.headers.hasta = this.guia_hasta;
-                  getData(`/cguias`, 'setData', 'datos');
+                  getData(`/cguias`, 'setDataGuias', 'datos');
                   this.reglasCorrelativoFilter()"
                 label="Guia Hasta:"
                 type="number"
@@ -643,7 +697,7 @@
                     label="Culminado"
                     @update:model-value="
                       this.axiosConfig.headers.disp = this.selectedCulminado;
-                      getData(`/cguias`, 'setData', 'datos');
+                      getData(`/cguias`, 'setDataGuias', 'datos');
                     "
                   />
                 </template>
@@ -699,7 +753,7 @@
               this.guia_hasta =  '';
               this.clientes = [];
               this.agentes = [];
-              getData(`/cguias`, 'setData', 'datos');
+              getData(`/cguias`, 'setDataGuias', 'datos');
             "
           >
             <q-icon size="40px" name="filter_alt_off" color="white"> </q-icon>
@@ -890,9 +944,10 @@
 
     <methods
       ref="methods"
-      @get-Data="getData('/cguias', 'setData', 'datos')"
-      @get-Data-Guias="getDataGuias('/cguias', 'setData', 'datos')"
+      @get-Data="getData('/cguias', 'setDataGuias', 'datos')"
+      @get-Data-Guias="getDataGuias('/cguias', 'setDataGuias', 'datos')"
       @set-Data="setData"
+      @set-Data-Guias="setDataGuias"
       @reset-Loading="resetLoading"
       @set-Data-Iniciar="setDataIniciar"
       @set-Data-Edit="setDataEdit"
@@ -1010,7 +1065,11 @@ export default {
       agencias: [],
       clientes: [],
       agentes: [],
-      agentes: [],
+      agenciasSelected: [],
+      agentesSelected: [],
+      agentesFormSelected: [],
+      clientesSelected: [],
+      clientesFormSelected: [],
       clientesForm: [],
       agentesForm: [],
       selected: [],
@@ -1079,6 +1138,27 @@ export default {
     );
   },
   methods: {
+    filterArray (val, update, abort, pagina, array, element) {
+        if (val === '') {
+        update(() => {
+          this[pagina] = this[array]
+        })
+        return
+    }
+    update(() => {
+        const needle = val.toUpperCase();
+        var notEqual = JSON.parse(JSON.stringify(this[array]));
+        for (var i = 0, len = this[array].length; i < len; i++) {
+          if (!(this[array][i][element].indexOf(needle) > -1)) {
+            delete notEqual[i];
+          }
+          if (i == this[array].length - 1) {
+            this[pagina] = notEqual
+            break
+          };
+        }
+      })
+    },
     resetLoading() {
       this.loading = false;
     },
@@ -1152,7 +1232,6 @@ export default {
       this[dataRes] = res;
       this.selectedCliente = [];
       this.selectedAgente = [];
-      this.loading = false;
     },
     getDataGuias(url, call, dataRes) {
       this.axiosConfig.headers.agencia = this.selectedAgencia.id;
@@ -1162,7 +1241,9 @@ export default {
     },
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
-      this.loading = true;
+      console.log(url)
+      if (url == "/cguias") {
+      this.loading = true;}
     },
     getDataEdit(id) {
       this.$refs.methods.getDataEdit(
@@ -1174,14 +1255,17 @@ export default {
     },
     setData(res, dataRes) {
       this[dataRes] = res;
+    },
+    setDataGuias(res, dataRes) {
+      this[dataRes] = res;
       this.loading = false
     },
     setDataIniciar(res, dataRes) {
       this[dataRes] = res;
       this.getDataIniciar();
-      this.loading = false
     },
     setDataEdit(res, dataRes) {
+      this.loading = false;
       this[dataRes].cant_disponible = res.cant_disponible;
       if (this.formEdit.cant_disponible == "0") {
         this.disabledInputsEdit = true
@@ -1225,6 +1309,13 @@ export default {
       this.form.cod_agente = this.form.cod_agente.id;
       this.form.tipo = this.form.tipo.value,
       this.form.cod_agencia = this.form.cod_agencia.id,
+      this.axiosConfig.headers.agencia = this.selectedAgencia.id;
+      if (this.selectedAgente.id) {
+        this.axiosConfig.headers.agente = this.selectedAgente.id;
+      }
+      if (this.selectedCliente.id) {
+        this.axiosConfig.headers.cliente = this.selectedCliente.id;
+      }
         this.$refs.methods.createData(
           `/cguias`,
           this.form,
@@ -1238,6 +1329,13 @@ export default {
       this.formEdit.cod_agencia = this.formEdit.cod_agencia.id,
       this.formEdit.cod_cliente = this.formEdit.cod_cliente.id;
       this.formEdit.cod_agente = this.formEdit.cod_agente.id;
+      this.axiosConfig.headers.agencia = this.selectedAgencia.id;
+      if (this.selectedAgente.id) {
+        this.axiosConfig.headers.agente = this.selectedAgente.id;
+      }
+      if (this.selectedCliente.id) {
+        this.axiosConfig.headers.cliente = this.selectedCliente.id;
+      }
       if (this.formEdit.tipo) {
         this.formEdit.tipo = this.formEdit.tipo.value
       }
@@ -1286,7 +1384,7 @@ export default {
       this.selectedAgencia = this.agencias[0];
       this.getData("/clientes", "setData", "clientes");
       this.getData("/agentes", "setData", "agentes");
-      this.getData("/cguias", "setData", "datos");
+      this.getData("/cguias", "setDataGuias", "datos");
     },
   },
 };

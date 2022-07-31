@@ -2,7 +2,7 @@
   <q-page class="pagina q-pa-md">
 
     <q-dialog v-model="create">
-      <q-card class="q-pa-md" bordered style="max-width: 60vw">
+      <q-card class="q-pa-md" bordered style="width: 999px; max-width: 70vw">
         <q-card-section>
           <q-form @submit="createData" class="q-gutter-md">
             <div class="row">
@@ -68,7 +68,7 @@
             </div>
 
             <div
-              class="full-width row justify-center items-center content-center"
+              class="row justify-center items-center content-center"
               style="margin-bottom: 10px"
             >
               <q-btn

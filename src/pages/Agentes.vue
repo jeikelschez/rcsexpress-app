@@ -522,7 +522,13 @@
               rounded
               transition-show="flip-up"
               transition-hide="flip-down"
-              :options="agencias"
+              :options="agenciasSelected"
+              @filter="(val,update,abort) => 
+              filterArray(val,update,abort,'agenciasSelected', 'agencias', 'nb_agencia')"
+              use-input
+              hide-selected
+              fill-input
+              input-debounce="0"
               option-label="nb_agencia"
               option-value="id"
               v-model="selectedAgencia"
@@ -831,6 +837,7 @@ export default {
         { label: "COURIERS", value: "CR" },
       ],
       agencias: [],
+      agenciasSelected: [],
       agentes: [],
       selected: [],
       selectedAgencia: [],
@@ -865,7 +872,7 @@ export default {
       form: ref(false),
       formEdit: ref(false),
       agentesDelete: ref(false),
-      filter: ref("")
+      filter: ref(""),
     };
   },
   mounted() {
@@ -873,6 +880,27 @@ export default {
     this.$refs.desactivateCrud.desactivarCrud('c_roles', 'd_roles', 'u_roles', 'desactivarCrudRoles')
   },
   methods: {
+    filterArray (val, update, abort, pagina, array, element) {
+        if (val === '') {
+        update(() => {
+          this[pagina] = this[array]
+        })
+        return
+    }
+    update(() => {
+        const needle = val.toUpperCase();
+        var notEqual = JSON.parse(JSON.stringify(this[array]));
+        for (var i = 0, len = this[array].length; i < len; i++) {
+          if (!(this[array][i][element].indexOf(needle) > -1)) {
+            delete notEqual[i];
+          }
+          if (i == this[array].length - 1) {
+            this[pagina] = notEqual
+            break
+          };
+        }
+      })
+    },
     reglasSelect(val) {
       if (val === null) {
         return "Debes Seleccionar Algo";
@@ -957,7 +985,7 @@ export default {
     },
     setData(res, dataRes) {
       this[dataRes] = res
-      this.getDataIniciar();
+      this.getDataIniciar()
       this.loading = false
     },
     setDataAgentes(res, dataRes) {
@@ -980,6 +1008,7 @@ export default {
       this[dataRes].flag_activo = res.activo_desc
       this[dataRes].tipo_agente = res.tipo_desc
       this[dataRes].cod_agencia = res.cod_agencia
+      this.loading = false
     },
     deleteData(idpost) {
       this.$refs.methods.deleteData(`/agentes/${idpost}`, 'getData', this.axiosConfig);

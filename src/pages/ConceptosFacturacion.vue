@@ -29,7 +29,13 @@
                 <q-select
                 transition-show="flip-up"
                 transition-hide="flip-down"
-                :options="conceptos"
+                :options="conceptosSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'conceptosSelected', 'conceptos', 'desc_concepto')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
                 option-label="desc_concepto"
                 option-value="id"
                 class="pcform"
@@ -143,7 +149,13 @@
                 <q-select
                 transition-show="flip-up"
                 transition-hide="flip-down"
-                :options="conceptos"
+                :options="conceptosSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'conceptosSelected', 'conceptos', 'desc_concepto')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
                 option-label="desc_concepto"
                 option-value="id"
                 class="pcform"
@@ -244,7 +256,13 @@
               rounded
               transition-show="flip-up"
               transition-hide="flip-down"
-              :options="conceptos"
+              :options="conceptosSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'conceptosSelected', 'conceptos', 'desc_concepto')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
               option-label="desc_concepto"
               option-value="id"
               v-model="selectedConcepto"
@@ -519,6 +537,7 @@ export default {
       conceptos: [],
       datos: [],
       selected: [],
+      conceptosSelected: [],
       selectedConcepto: [],
       error: "",
       disabledCreate: true,
@@ -561,6 +580,27 @@ export default {
     this.$refs.desactivateCrud.desactivarCrud('c_roles', 'd_roles', 'u_roles', 'desactivarCrudRoles')
   },
   methods: {
+    filterArray (val, update, abort, pagina, array, element) {
+        if (val === '') {
+        update(() => {
+          this[pagina] = this[array]
+        })
+        return
+    }
+    update(() => {
+        const needle = val.toUpperCase();
+        var notEqual = JSON.parse(JSON.stringify(this[array]));
+        for (var i = 0, len = this[array].length; i < len; i++) {
+          if (!(this[array][i][element].indexOf(needle) > -1)) {
+            delete notEqual[i];
+          }
+          if (i == this[array].length - 1) {
+            this[pagina] = notEqual
+            break
+          };
+        }
+      })
+    },
     resetLoading() {
       this.loading = false;
     },
@@ -651,6 +691,7 @@ export default {
         }
     },
     setDataEdit(res, dataRes) {
+      this.loading = false
       this[dataRes].id = res.id
       this[dataRes].desc_concepto = res.desc_concepto
       this[dataRes].check_comision = res.check_comision

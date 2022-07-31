@@ -29,7 +29,13 @@
                 <q-select
                 transition-show="flip-up"
                 transition-hide="flip-down"
-                :options="tipoDeOperacion"
+                :options="tipoDeOperacionSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'tipoDeOperacionSelected', 'tipoDeOperacion', 'descripcion')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
                 option-label="descripcion"
                 option-value="id"
                 v-model="form.tipo"
@@ -123,7 +129,13 @@
                 <q-select
                 transition-show="flip-up"
                 transition-hide="flip-down"
-                :options="tipoDeOperacion"
+                :options="tipoDeOperacionSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'tipoDeOperacionSelected', 'tipoDeOperacion', 'descripcion')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
                 option-label="descripcion"
                 option-value="id"
                 v-model="formEdit.tipo"
@@ -206,7 +218,13 @@
               rounded
               transition-show="flip-up"
               transition-hide="flip-down"
-              :options="tipoDeOperacion"
+              :options="tipoDeOperacionSelected"
+                @filter="(val,update,abort) => 
+                filterArray(val,update,abort,'tipoDeOperacionSelected', 'tipoDeOperacion', 'descripcion')"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
               option-label="descripcion"
               option-value="id"
               v-model="selectedTipo"
@@ -468,6 +486,7 @@ export default {
       tipoDeOperacion: [],
       datos: [],
       selected: [],
+      tipoDeOperacionSelected: [],
       selectedTipo: [],
       tipoRef: "",
       error: "",
@@ -536,6 +555,27 @@ export default {
     this.$refs.desactiveCrud.desactivarCrud('c_roles', 'd_roles', 'u_roles', 'desactivarCrudRoles')
   },
   methods: {
+    filterArray (val, update, abort, pagina, array, element) {
+        if (val === '') {
+        update(() => {
+          this[pagina] = this[array]
+        })
+        return
+    }
+    update(() => {
+        const needle = val.toUpperCase();
+        var notEqual = JSON.parse(JSON.stringify(this[array]));
+        for (var i = 0, len = this[array].length; i < len; i++) {
+          if (!(this[array][i][element].indexOf(needle) > -1)) {
+            delete notEqual[i];
+          }
+          if (i == this[array].length - 1) {
+            this[pagina] = notEqual
+            break
+          };
+        }
+      })
+    },
     resetLoading() {
       this.loading = false;
     },

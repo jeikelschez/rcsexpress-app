@@ -1,7 +1,7 @@
 <template>
   <q-page class="pagina q-pa-md">
     <q-dialog v-model="create">
-      <q-card class="q-pa-md" bordered style="max-width: 60vw">
+      <q-card class="q-pa-md" bordered style="width: 999px; max-width: 70vw">
         <q-card-section>
           <q-form @submit="createData" class="q-gutter-md">
             <div class="row">
@@ -111,7 +111,7 @@
             </div>
 
             <div
-              class="full-width row justify-center items-center content-center"
+              class="row justify-center items-center content-center"
               style="margin-bottom: 10px"
             >
               <q-btn
@@ -136,7 +136,7 @@
     </q-dialog>
 
     <q-dialog v-model="edit">
-      <q-card class="q-pa-md" bordered style="max-width: 60vw">
+      <q-card class="q-pa-md" bordered style="width: 999px; max-width: 70vw">
         <q-card-section>
           <q-form @submit="putData">
             <div class="row">
@@ -247,7 +247,7 @@
             </div>
 
             <div
-              class="full-width row justify-center items-center content-center"
+              class="row justify-center items-center content-center"
               style="margin-bottom: 10px"
             >
               <q-btn
@@ -281,7 +281,7 @@
             <h4><strong>MANTENIMIENTO - BANCOS</strong></h4>
           </div>
           <div
-            class="col-md-5 col-sm-7 col-xs-6"
+            class="col-md-5 col-sm-9 col-xs-12"
             style="align-self: center; margin-right: 20px"
           >
             <q-input
@@ -298,7 +298,7 @@
             </q-input>
           </div>
           <div
-            class="col-md-2 col-sm-4 col-xs-5"
+            class="col-md-2 col-sm-2 col-xs-12"
             style="text-align: center; align-self: center"
           >
             <q-btn
