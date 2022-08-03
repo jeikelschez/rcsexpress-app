@@ -954,26 +954,18 @@
       </q-card>
     </q-dialog>
 
-    <div class="row q-pa-sm justify-center">
+    <div class="row justify-center">
       <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
-        <div class="row q-pa-md">
-          <div
-            class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
-            style="align-self: center; text-align: center"
-          >
-            <h4 style="font-size: 27px" class="text-secondary">
-              <strong>OPERACIONES - PRUEBAS DE ENTREGA</strong>
-            </h4>
-          </div>
+        <div class="row q-pa-md" style="margin-top: 10px; padding-bottom: 0px">
 
           <div
-            class="row col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
+            class="row col-md-6 col-xl-12 col-lg-12 col-xs-12 col-sm-12 justify-center"
             style="align-self: center; text-align: center"
           >
-            <q-card class="q-pa-md col-md-5 col-xs-12 col-sm-12 cardMenu"
-                  bordered style="margin-bottom: 20px"
+            <q-card class="q-pa-md col-md-12 col-xs-12 col-sm-12 cardMenu"
+                  bordered style="margin-bottom: 20px; padding: 5px"
                 >
-                  <q-card-section class="menuFilter">
+                  <q-card-section class="menuFilter" style="padding-bottom: 0px">
                     <div class="row">
                       <div
                         class="col-md-12 col-xs-12"
@@ -983,7 +975,7 @@
                           margin-top: -30px;
                         "
                       >
-                        <h4 style="font-size: 16px" class="text-secondary">
+                        <h4 style="font-size: 16px; margin-bottom: 5px" class="text-secondary">
                           <strong>Fecha de Envio</strong>
                         </h4>
                       </div>
@@ -1040,11 +1032,16 @@
                     </div>
                   </q-card-section>
             </q-card>
+          </div>
 
-            <q-card class="q-pa-md col-md-6 col-xs-12 col-sm-12"
-                  bordered style="margin-bottom: 20px"
+          <div
+            class="row col-md-6 col-xl-12 col-lg-12 col-xs-12 col-sm-12 justify-center"
+            style="align-self: center; text-align: center"
+          >
+            <q-card class="q-pa-md col-md-12 col-xs-12 col-sm-12"
+                  bordered style="margin-bottom: 20px; padding: 5px"
                 >
-                  <q-card-section class="menuFilter">
+                  <q-card-section class="menuFilter" style="padding-bottom: 0px">
                     <div class="row">
                       <div
                         class="col-md-12 col-xs-12"
@@ -1054,7 +1051,7 @@
                           margin-top: -30px;
                         "
                       >
-                        <h4 style="font-size: 16px" class="text-secondary">
+                        <h4 style="font-size: 16px; margin-bottom: 5px" class="text-secondary">
                           <strong>Datos de Guia</strong>
                         </h4>
                       </div>
@@ -1096,20 +1093,20 @@
           </div>
 
           <div
-            class="row col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
+            class="row col-md-6 col-xl-12 col-lg-12 col-xs-12 col-sm-12 menuHeader justify-center"
             style="align-self: center; text-align: center"
           >
             <q-card
               bordered
-              style="margin-bottom: 30px"
+              style="padding: 5px; margin-bottom: 20px"
               class="
                 q-pa-md
                 row
-                col-md-5 col-xs-12 col-xl-5 col-lg-5 col-sm-12
+                col-md-12 col-xs-12 col-xl-5 col-lg-5 col-sm-12
                 cardMenu
               "
             >
-              <q-card-section class="row col-md-12 col-xs-12 menuFilter2"
+              <q-card-section class="row col-md-12 col-xs-12 menuFilter2" style="padding-bottom: 0px"
               >
                 <div
                   class="col-md-4 col-xs-12 col-sm-4 titleMenu"
@@ -1121,6 +1118,7 @@
                       align-self: center;
                       text-align: center;
                       margin-bottom: 0px;
+                      margin-top: 4px;
                     "
                     class="text-secondary"
                   >
@@ -1205,6 +1203,7 @@
                       align-self: center;
                       text-align: center;
                       margin-bottom: 0px;
+                      margin-top: 4px;
                     "
                     class="text-secondary checkboxTitle"
                   >
@@ -1283,39 +1282,45 @@
               </q-card-section>
 
             </q-card>
+          </div>
 
+          <div
+            class="row col-md-6 col-xl-12 col-lg-12 col-xs-12 col-sm-12 menuHeader justify-center"
+            style="align-self: center; text-align: center"
+          >
             <q-card
               bordered
-              style="margin-bottom: 32px"
+              style="padding: 5px; margin-bottom: 20px"
               class="
                 q-pa-md
                 row
-                col-md-6 col-xs-12 col-xl-6 col-lg-6 col-sm-12
+                col-md-12 col-xs-12 col-xl-6 col-lg-6 col-sm-12
               "
             >
-              <q-card-section class="row col-md-12 col-xs-12 menuFilter2"
+              <q-card-section class="row col-md-12 col-xs-12 menuFilter2" style="padding-bottom: 10px; padding-top: 10px"
               >
                 <div
-                  class="col-md-2 col-xs-12 col-sm-2 SelectAgenciaCliente pcform"
+                  class="col-md-3 col-xs-12 SelectAgenciaCliente pcform"
                   style="align-self: center; text-align: center"
                 >
                   <p
                     style="
                       font-size: 16px;
                       align-self: center;
-                      text-align: left;
+                      text-align: center;
                       margin-bottom: 0px;
                     "
                     class="text-secondary"
                   >
-                    <strong>Agencias</strong>
+                    <strong>AGENCIAS</strong>
                   </p>
                 </div>
 
                 <div
-                  class="col-md-4 col-xs-12 col-sm-4"
+                  class="col-md-4 col-xs-12 col-sm-6"
                   style="
                     margin-top: 7px;
+                    margin-bottom: 10px;
                     align-self: center;
                     text-align: center;
                   "
@@ -1344,9 +1349,10 @@
                 </div>
 
                 <div
-                  class="col-md-5 col-xs-12 col-sm-5 SelectAgenciaCliente"
+                  class="col-md-4 col-xs-12 col-sm-6 SelectAgenciaCliente"
                   style="
                     margin-top: 7px;
+                    margin-bottom: 10px;
                     align-self: center;
                     text-align: center;
                   "
@@ -1374,26 +1380,28 @@
                 </div>
 
                 <div
-                  class="col-md-2 col-xs-12 col-sm-2 SelectAgenciaCliente pcform"
+                  class="col-md-3 col-xs-12 SelectAgenciaCliente pcform"
                   style="align-self: center; text-align: center"
                 >
                   <p
                     style="
                       font-size: 16px;
                       align-self: center;
-                      text-align: left;
+                      text-align: center;
                       margin-bottom: 0px;
+                      padding-right: 3px
                     "
                     class="text-secondary"
                   >
-                    <strong>Cliente</strong>
+                    <strong>CLIENTES</strong>
                   </p>
                 </div>
 
                 <div
-                  class="col-md-4 col-xs-12 col-sm-4"
+                  class="col-md-4 col-xs-12 col-sm-6"
                   style="
                     margin-top: 7px;
+                    margin-bottom: 10px;
                     align-self: center;
                     text-align: center;
                   "
@@ -1422,9 +1430,10 @@
                 </div>
 
                 <div
-                  class="col-md-5 col-xs-12 col-sm-5"
+                  class="col-md-4 col-xs-12 col-sm-6"
                   style="
                     margin-top: 7px;
+                    margin-bottom: 10px;
                     align-self: center;
                     text-align: center;
                   "
@@ -1455,81 +1464,9 @@
             </q-card>
           </div>
 
-          <div
-            class="
-              col-md-8 col-xl-8 col-lg-8 col-xs-12 col-sm-12"
-            style="align-self: center; text-align: center; margin-right: 27px"
-          >
-            <q-input
-              rounded
-              outlined
-              standout
-              v-model="filter"
-              type="search"
-              label="Búsqueda avanzada"
-            >
-              <template v-slot:prepend>
-                <q-icon name="search" />
-              </template>
-            </q-input>
-          </div>
-
-          <div
-            class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 botonesGuias"
-            style="text-align: center; align-self: center"
-          >
-            <q-btn
-              dense
-              color="primary"
-              round
-              @click="this.form = true"
-              padding="sm"
-              style="margin-right: 25px"
-            >
-              <q-icon size="40px" name="add" color="white"> </q-icon>
-              <q-tooltip
-                class="bg-primary"
-                style="max-height: 30px"
-                transition-show="scale"
-                transition-hide="scale"
-                color="primary"
-                >Agregar Registro</q-tooltip
-              >
-            </q-btn>
-
-            <q-btn
-              dense
-              color="primary"
-              round
-              padding="sm"
-              style="margin-right: 25px"
-            >
-              <q-icon size="40px" name="print" color="white"> </q-icon>
-              <q-tooltip
-                class="bg-primary"
-                style="max-height: 30px"
-                transition-show="scale"
-                transition-hide="scale"
-                color="primary"
-                >Imprimir</q-tooltip
-              >
-            </q-btn>
-
-            <q-btn dense color="primary" round padding="sm">
-              <q-icon size="40px" name="filter_alt_off" color="white"> </q-icon>
-              <q-tooltip
-                class="bg-primary"
-                transition-show="scale"
-                style="max-height: 30px"
-                transition-hide="scale"
-                color="primary"
-                >Eliminar Filtros</q-tooltip
-              >
-            </q-btn>
-          </div>
         </div>
 
-        <div class="q-pa-md" style="margin-top: 6px">
+        <div style="margin-top: 20px">
           <div class="q-gutter-y-md">
             <div bordered flat class="my-card row">
               <q-table
@@ -2399,12 +2336,22 @@ export default {
 }
 @media screen and (min-width: 1024px) {
   .cardMenu {
-    margin-right: 40px; margin-bottom: 20px 
+    margin-right: 20px; margin-bottom: 20px 
+  }
+}
+@media screen and (min-width: 600px) {
+  .filterHeader {
+    margin-left: 30px;
   }
 }
 @media screen and (max-width: 1024px) {
   .botonesGuias {
     margin-top: 30px;
+  }
+}
+@media screen and (max-width: 600px) {
+  .botonesGuias {
+    padding-right: 10px;
   }
 }
 @media screen and (min-width: 600px) {
@@ -2439,9 +2386,9 @@ export default {
     margin-top: 20px
   }
 }
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 1024px) {
   .SelectAgenciaCliente {
-    margin-bottom: 20px
+    margin-bottom: 10px; margin-top: 10px
   }
 }
 @media screen {

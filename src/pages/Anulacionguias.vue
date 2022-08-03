@@ -94,15 +94,8 @@
 
     <div class="row q-pa-sm justify-center">
 
-      <div
-        class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 text-secondary justify-center"
-        style="align-self: center; text-align: center"
-      >
-        <h4><strong>MANTENIMIENTO - ANULACIÓN DE GUIAS</strong></h4>
-      </div>
-
       <div class="row col-md-6 col-xl-6 col-lg-6 col-xs-12 col-sm-6 filterTop"
-        style="align-self: center; text-align: center; margin-top: 10px;"
+        style="align-self: center; text-align: center; margin-top: 30px;"
       >
         <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 selectmovil"
           style="align-self: center; text-align: center; margin-bottom: 20px"
@@ -360,7 +353,7 @@
                   round
                   flat
                   color="primary"
-                  icon="delete"
+                  icon="disabled_by_default"
                   :disabled="this.disabledDelete"
                   @click.capture="create = true"
                 ></q-btn>
@@ -399,7 +392,7 @@
                           round
                           flat
                           color="primary"
-                          icon="delete"
+                          icon="disabled_by_default"
                           :disabled="this.disabledDelete"
                           @click.capture="create = true"
                         ></q-btn>

@@ -1,1721 +1,16 @@
 <template>
-  <q-page class="pagina q-pa-md">
-    <q-dialog v-model="form">
-      <q-card class="q-pa-md" bordered style="width: 1400px; max-width: 200vw">
-        <q-card-section>
-          <q-form @submit="createDataClientes()">
-            <div class="row justify-center items-center">
-              <div class="col-md-6 col-xs-12"
-                style="margin-bottom: 20px"
-              >
-                <q-card
-                  class="q-pa-md col-md-4 col-xs-12 cardMenu"
-                  bordered
-                >
-                  <q-card-section>
-                    <div class="row">
-                      <div
-                        class="col-md-12 col-xs-12"
-                        style="
-                          align-self: center;
-                          text-align: left;
-                          margin-top: -30px;
-                        "
-                      >
-                        <h4 style="font-size: 16px" class="text-secondary">
-                          <strong>Fechas</strong>
-                        </h4>
-                      </div>
-                      <div class="col-md-6 col-xs-12">
-                        <q-input
-                          outlined
-                          v-model="formClientes.cod_agente"
-                          label="Emision"
-                          hint=""
-                          dense
-                          class="pcform"
-                          :rules="[reglasInputs]"
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="face" />
-                          </template>
-                        </q-input>
-                      </div>
+  <q-page class="pagina q-pa-md" style="padding-buttom: 10px">
 
-                      <div class="col-md-6 col-xs-12">
-                        <q-input
-                          outlined
-                          v-model="formClientes.cod_agente"
-                          label="Envio"
-                          hint=""
-                          dense
-                          :rules="[reglasInputs]"
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="face" />
-                          </template>
-                        </q-input>
-                      </div>
-
-                      <div class="col-md-12 col-xs-12">
-                        <q-input
-                          outlined
-                          v-model="formClientes.cod_agente"
-                          label="Aplicación"
-                          hint=""
-                          dense
-                          :rules="[reglasInputs]"
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="face" />
-                          </template>
-                        </q-input>
-                      </div>
-                    </div>
-                  </q-card-section>
-                </q-card>
-              </div>
-
-              <div class="col-md-6 col-xs-12"
-                style="margin-bottom: 20px; margin-top: 5px"
-              >
-                <q-card
-                  class="q-pa-md col-md-4 col-xs-12"
-                  bordered
-                  style="width: 100%"
-                >
-                  <q-card-section>
-                    <div class="row">
-                      <div
-                        class="col-md-12 col-xs-12"
-                        style="
-                          align-self: center;
-                          text-align: left;
-                          margin-top: -30px;
-                        "
-                      >
-                        <h4 style="font-size: 16px" class="text-secondary">
-                          <strong>Información de Carga</strong>
-                        </h4>
-                      </div>
-                      <div class="col-md-6 col-xs-12">
-                        <q-input
-                          outlined
-                          dense
-                          v-model="formClientes.cod_agente"
-                          label="NRO. Piezas"
-                          hint=""
-                          hide-buttom-space
-                          class="pcform"
-                          :rules="[reglasInputs]"
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="face" />
-                          </template>
-                        </q-input>
-                      </div>
-
-                      <div class="col-md-6 col-xs-12">
-                        <q-input
-                          outlined
-                          v-model="formClientes.cod_agente"
-                          label="Peso KGS"
-                          hint=""
-                          dense
-                          hide-buttom-space
-                          :rules="[reglasInputs]"
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="face" />
-                          </template>
-                        </q-input>
-                      </div>
-
-                      <div class="col-md-6 col-xs-6">
-                        <q-checkbox
-                          size="lg"
-                          v-model="formClientes.cte_decontado"
-                          true-value="1"
-                          false-value="0"
-                          style="font-size: 13px"
-                          label="Paquetes"
-                        />
-                      </div>
-                      <div class="col-md-6 col-xs-6">
-                        <q-checkbox
-                          size="lg"
-                          v-model="formClientes.cte_decontado"
-                          true-value="1"
-                          false-value="0"
-                          style="font-size: 13px"
-                          label="Sobres"
-                        />
-                      </div>
-                    </div>
-                  </q-card-section>
-                </q-card>
-              </div>
-
-              <div class="col-md-6 col-xs-12"
-                style="margin-bottom: 25px"
-              >
-                <q-card
-                  class="q-pa-md col-md-4 col-xs-12 cardMenu"
-                  bordered
-                >
-                  <q-card-section>
-                    <div class="row">
-                      <div
-                        class="col-md-12 col-xs-12"
-                        style="
-                          align-self: center;
-                          text-align: left;
-                          margin-top: -30px;
-                        "
-                      >
-                        <h4 style="font-size: 16px" class="text-secondary">
-                          <strong>Información de Carga</strong>
-                        </h4>
-                      </div>
-                      <div class="col-md-12 col-xs-12">
-                        <q-select
-                          outlined
-                          v-model="formClientes.tipo_persona"
-                          label="Modalidad Pago"
-                          hint=""
-                          :rules="[reglasInputs]"
-                          :options="tipo_persona"
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="group" />
-                          </template>
-                        </q-select>
-                      </div>
-                      <div class="col-md-12 col-xs-12">
-                        <q-select
-                          outlined
-                          v-model="formClientes.tipo_persona"
-                          label="Pagado En"
-                          hint=""
-                          :rules="[reglasInputs]"
-                          :options="tipo_persona"
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="group" />
-                          </template>
-                        </q-select>
-                      </div>
-                    </div>
-                  </q-card-section>
-                </q-card>
-              </div>
-
-              <div class="col-md-6 col-xs-12"
-              style="margin-bottom: 25px">
-                <q-card
-                  class="q-pa-md col-md-4 col-xs-12"
-                  bordered
-                  style="width: 100%"
-                >
-                  <q-card-section>
-                    <div class="row">
-                      <div
-                        class="col-md-12 col-xs-12"
-                        style="
-                          align-self: center;
-                          text-align: left;
-                          margin-top: -30px;
-                        "
-                      >
-                        <h4 style="font-size: 16px" class="text-secondary">
-                          <strong>Origen</strong>
-                        </h4>
-                      </div>
-                      <div class="col-md-12 col-xs-12">
-                        <q-select
-                          outlined
-                          v-model="formClientes.tipo_persona"
-                          label="Agencia"
-                          hint=""
-                          :rules="[reglasInputs]"
-                          :options="tipo_persona"
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="group" />
-                          </template>
-                        </q-select>
-                      </div>
-                      <div class="col-md-12 col-xs-12">
-                        <q-select
-                          outlined
-                          v-model="formClientes.tipo_persona"
-                          label="Cliente"
-                          hint=""
-                          :rules="[reglasInputs]"
-                          :options="tipo_persona"
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="group" />
-                          </template>
-                        </q-select>
-                      </div>
-                    </div>
-                  </q-card-section>
-                </q-card>
-              </div>
-
-              <div class="col-md-6 col-xs-12"
-              style="margin-bottom: 25px">
-                <q-card
-                  class="q-pa-md col-md-4 col-xs-12 cardMenu"
-                  bordered 
-                >
-                  <q-card-section>
-                    <div class="row">
-                      <div
-                        class="col-md-12 col-xs-12"
-                        style="
-                          align-self: center;
-                          text-align: left;
-                          margin-top: -30px;
-                        "
-                      >
-                        <h4 style="font-size: 16px" class="text-secondary">
-                          <strong>Destino</strong>
-                        </h4>
-                      </div>
-                      <div class="col-md-12 col-xs-12">
-                        <q-select
-                          outlined
-                          v-model="formClientes.tipo_persona"
-                          label="Agencia"
-                          hint=""
-                          :rules="[reglasInputs]"
-                          :options="tipo_persona"
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="group" />
-                          </template>
-                        </q-select>
-                      </div>
-                      <div class="col-md-12 col-xs-12">
-                        <q-select
-                          outlined
-                          v-model="formClientes.tipo_persona"
-                          label="Cliente"
-                          hint=""
-                          :rules="[reglasInputs]"
-                          :options="tipo_persona"
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="group" />
-                          </template>
-                        </q-select>
-                      </div>
-                      <div class="col-md-10 col-xs-10">
-                        <q-select
-                          outlined
-                          v-model="formClientes.tipo_persona"
-                          label="Zona"
-                          hint=""
-                          :rules="[reglasInputs]"
-                          :options="tipo_persona"
-                          lazy-rules
-                          hide-bottom-space
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="group" />
-                          </template>
-                        </q-select>
-                      </div>
-                      <div
-                        class="col-md-2 col-xs-2"
-                        style="
-                          text-align: center;
-                          align-self: center;
-                        "
-                      >
-                        <q-btn
-                          dense
-                          color="primary"
-                          round
-                          @click="this.form = true"
-                          padding="sm"
-                          style="margin-left: 15px"
-                        >
-                          <q-icon size="25px" name="settings" color="white">
-                          </q-icon>
-                          <q-tooltip
-                            class="bg-primary"
-                            style="max-height: 30px"
-                            transition-show="scale"
-                            transition-hide="scale"
-                            color="primary"
-                            >Modificar Zonas</q-tooltip
-                          >
-                        </q-btn>
-                      </div>
-                    </div>
-                  </q-card-section>
-                </q-card>
-              </div>
-
-              <div class="col-md-6 col-xs-12"
-                style="margin-bottom: 20px"
-              >
-                <q-card
-                  class="q-pa-md col-md-12 col-xs-12"
-                  bordered
-                  style="width: 100%; padding-top: 30px; padding-bottom: 30px"
-                >
-                  <q-card-section class="row col-md-12 col-xs-12">
-                      <div class="col-md-4 col-xs-12"
-                        style="
-                          align-self: center;
-                          text-align: left;
-                          margin-bottom: 36px;
-                        "
-                      >
-                        <h4 style="font-size: 16px; margin-top: 0px; margin-bottom: 0px" class="text-secondary">
-                          <strong>Servicio</strong>
-                        </h4>
-                      </div>
-
-                      <div class="col-md-4 col-xs-6" style="margin-bottom: 36px">
-                        <q-checkbox
-                          size="lg"
-                          v-model="formClientes.cte_decontado"
-                          true-value="1"
-                          false-value="0"
-                          style="font-size: 13px"
-                          label="Nacional"
-                        />
-                      </div>
-
-                      <div class="col-md-4 col-xs-6" style="margin-bottom: 36px">
-                        <q-checkbox
-                          size="lg"
-                          v-model="formClientes.cte_decontado"
-                          true-value="1"
-                          false-value="0"
-                          style="font-size: 13px"
-                          label="Internacional"
-                        />
-                      </div>
-
-                      <div class="col-md-4 col-xs-12"
-                        style="
-                          align-self: center;
-                          text-align: left;
-                          margin-bottom: 36px
-                        "
-                      >
-                        <h4 style="font-size: 16px; margin-top: 0px; margin-bottom: 0px" class="text-secondary">
-                          <strong>Ubicación</strong>
-                        </h4>
-                      </div>
-
-                      <div class="col-md-4 col-xs-6" style="margin-bottom: 36px">
-                        <q-checkbox
-                          size="lg"
-                          v-model="formClientes.cte_decontado"
-                          true-value="1"
-                          false-value="0"
-                          style="font-size: 13px"
-                          label="Urbano"
-                        />
-                      </div>
-
-                      <div class="col-md-4 col-xs-6" style="margin-bottom: 36px">
-                        <q-checkbox
-                          size="lg"
-                          v-model="formClientes.cte_decontado"
-                          true-value="1"
-                          false-value="0"
-                          style="font-size: 13px"
-                          label="Extra-Urbano"
-                        />
-                      </div>
-
-                      <div class="col-md-4 col-xs-12"
-                        style="
-                          align-self: center;
-                          text-align: left;
-                        "
-                      >
-                        <h4 style="font-size: 16px; margin-top: 0px; margin-bottom: 0px" class="text-secondary">
-                          <strong>Urgencia</strong>
-                        </h4>
-                      </div>
-
-                      <div class="col-md-4 col-xs-6">
-                        <q-checkbox
-                          size="lg"
-                          v-model="formClientes.cte_decontado"
-                          true-value="1"
-                          false-value="0"
-                          style="font-size: 13px"
-                          label="Normal"
-                        />
-                      </div>
-                      
-                      <div class="col-md-4 col-xs-6" >
-                        <q-checkbox
-                          size="lg"
-                          v-model="formClientes.cte_decontado"
-                          true-value="1"
-                          false-value="0"
-                          style="font-size: 13px"
-                          label="Emergencia"
-                        />
-                      </div>
-                  </q-card-section>
-                </q-card>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  label="Recolectado Por:"
-                  hint=""
-                  class="pcform"
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  label="Proveedor del Transporte"
-                  hint=""
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  label="Dimensiones"
-                  hint=""
-                  class="pcform"
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-3 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  label="Contenido"
-                  hint=""
-                  class="pcform"
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-3 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  label="Carga Neta"
-                  hint=""
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  label="COD Valor Declarado"
-                  hint=""
-                  class="pcform"
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  label="Seguro"
-                  hint=""
-                  class="pcform"
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-2 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  hint=""
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="percent" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-5 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  label="Agencia Transito"
-                  hint=""
-                  class="pcform"
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-5 col-xs-12">
-                <q-input
-                      outlined
-                      label="Fecha Llegada Transito"
-                      hint=""
-                      v-model="form.f_val"
-                      mask="date"
-                      :rules="['date']"
-                      class="pcform"
-                      lazy-rules
-                >
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                        <q-date v-model="form.f_val">
-                          <div class="row items-center justify-end">
-                             <q-btn v-close-popup label="Close" color="primary" flat />
-                          </div>
-                        </q-date>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-2 col-xs-12" style="margin-bottom: 20px">
-                <q-checkbox
-                  size="lg"
-                  v-model="formClientes.cte_decontado"
-                  true-value="1"
-                  false-value="0"
-                  style="font-size: 13px"
-                  label="PASEO POR TRANSITO"
-                />
-              </div>
-
-              <div class="col-md-12 col-xs-12"
-                style="margin-bottom: 20px"
-              >
-                <q-card
-                  class="q-pa-md col-md-12 col-xs-12"
-                  bordered
-                >
-                  <q-card-section>
-                    <div class="row">
-                      <div
-                        class="col-md-12 col-xs-12"
-                        style="
-                          align-self: center;
-                          text-align: left;
-                          margin-top: -30px;
-                        "
-                      >
-                        <h4 style="font-size: 16px" class="text-secondary">
-                          <strong>Totales</strong>
-                        </h4>
-                      </div>
-                      <div class="col-md-6 col-xs-12">
-                        <q-input
-                          outlined
-                          v-model="formClientes.cod_agente"
-                          label="Monto Subtotal"
-                          hint=""
-                          dense
-                          class="pcform"
-                          :rules="[reglasInputs]"
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="face" />
-                          </template>
-                        </q-input>
-                      </div>
-
-                      <div class="col-md-6 col-xs-12">
-                        <q-input
-                          outlined
-                          v-model="formClientes.cod_agente"
-                          label="Monto Impuesto"
-                          hint=""
-                          dense
-                          :rules="[reglasInputs]"
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="face" />
-                          </template>
-                        </q-input>
-                      </div>
-
-                      <div class="col-md-6 col-xs-12">
-                        <q-input
-                          outlined
-                          v-model="formClientes.cod_agente"
-                          label="Monto Base"
-                          hint=""
-                          dense
-                          class="pcform"
-                          :rules="[reglasInputs]"
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="face" />
-                          </template>
-                        </q-input>
-                      </div>
-
-                      <div class="col-md-6 col-xs-12">
-                        <q-input
-                          outlined
-                          v-model="formClientes.cod_agente"
-                          label="Monto Total"
-                          hint=""
-                          dense
-                          :rules="[reglasInputs]"
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="face" />
-                          </template>
-                        </q-input>
-                      </div>
-                    </div>
-                  </q-card-section>
-                </q-card>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  label="Estatus Operacional"
-                  hint=""
-                  class="pcform"
-                  hide-bottom-space
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-4 col-xs-12 inputMovil">
-                <q-input
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  label="Estatus Administrativo"
-                  hint=""
-                  hide-bottom-space
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-4 col-xs-12 inputMovil"
-              style="text-align: center; align-self: center"
-              >
-            <q-btn
-              label="Detalle del Documento"
-              rounded
+    <q-page-sticky position="bottom-right" class="z-top" style="margin-right:20px; margin-bottom: 20px">
+            <q-fab
+              icon="add"
+              direction="up"
               color="primary"
-              @click="conceptosBox = true"
-            ></q-btn>
-          </div>
-            </div>
-
-            <div
-              class="full-width row justify-center items-center content-center"
-              style="margin-bottom: 6px; margin-top: 35px"
             >
-              <q-btn
-                label="Añadir Registro"
-                type="submit"
-                color="primary"
-                class="col-md-5 col-sm-5 col-xs-12"
-                icon="person_add"
-              />
-              <q-btn
-                label="Cerrar"
-                color="primary"
-                flat
-                class="col-md-5 col-sm-5 col-xs-12 btnmovil"
-                icon="close"
-                v-close-popup
-              />
-            </div>
-          </q-form>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
-
-    <q-dialog v-model="formEdit">
-      <q-card class="q-pa-md" bordered style="width: 999px; max-width: 80vw">
-        <q-card-section>
-          <q-form @submit="putDataClientes()">
-            <div class="row">
-              <div class="col-md-6 col-xs-12"
-                style="margin-bottom: 20px"
-              >
-                <q-card
-                  class="q-pa-md col-md-4 col-xs-12 cardMenu"
-                  bordered
-                >
-                  <q-card-section>
-                    <div class="row">
-                      <div
-                        class="col-md-12 col-xs-12"
-                        style="
-                          align-self: center;
-                          text-align: left;
-                          margin-top: -30px;
-                        "
-                      >
-                        <h4 style="font-size: 16px" class="text-secondary">
-                          <strong>Fechas</strong>
-                        </h4>
-                      </div>
-                      <div class="col-md-6 col-xs-12">
-                        <q-input
-                          outlined
-                          v-model="formClientes.cod_agente"
-                          label="Emision"
-                          hint=""
-                          dense
-                          class="pcform"
-                          :rules="[reglasInputs]"
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="face" />
-                          </template>
-                        </q-input>
-                      </div>
-
-                      <div class="col-md-6 col-xs-12">
-                        <q-input
-                          outlined
-                          v-model="formClientes.cod_agente"
-                          label="Envio"
-                          hint=""
-                          dense
-                          :rules="[reglasInputs]"
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="face" />
-                          </template>
-                        </q-input>
-                      </div>
-
-                      <div class="col-md-12 col-xs-12">
-                        <q-input
-                          outlined
-                          v-model="formClientes.cod_agente"
-                          label="Aplicación"
-                          hint=""
-                          dense
-                          :rules="[reglasInputs]"
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="face" />
-                          </template>
-                        </q-input>
-                      </div>
-                    </div>
-                  </q-card-section>
-                </q-card>
-              </div>
-
-              <div class="col-md-6 col-xs-12"
-                style="margin-bottom: 20px; margin-top: 5px"
-              >
-                <q-card
-                  class="q-pa-md col-md-4 col-xs-12"
-                  bordered
-                  style="width: 100%"
-                >
-                  <q-card-section>
-                    <div class="row">
-                      <div
-                        class="col-md-12 col-xs-12"
-                        style="
-                          align-self: center;
-                          text-align: left;
-                          margin-top: -30px;
-                        "
-                      >
-                        <h4 style="font-size: 16px" class="text-secondary">
-                          <strong>Información de Carga</strong>
-                        </h4>
-                      </div>
-                      <div class="col-md-6 col-xs-12">
-                        <q-input
-                          outlined
-                          dense
-                          v-model="formClientes.cod_agente"
-                          label="NRO. Piezas"
-                          hint=""
-                          hide-buttom-space
-                          class="pcform"
-                          :rules="[reglasInputs]"
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="face" />
-                          </template>
-                        </q-input>
-                      </div>
-
-                      <div class="col-md-6 col-xs-12">
-                        <q-input
-                          outlined
-                          v-model="formClientes.cod_agente"
-                          label="Peso KGS"
-                          hint=""
-                          dense
-                          hide-buttom-space
-                          :rules="[reglasInputs]"
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="face" />
-                          </template>
-                        </q-input>
-                      </div>
-
-                      <div class="col-md-6 col-xs-6">
-                        <q-checkbox
-                          size="lg"
-                          v-model="formClientes.cte_decontado"
-                          true-value="1"
-                          false-value="0"
-                          style="font-size: 13px"
-                          label="Paquetes"
-                        />
-                      </div>
-                      <div class="col-md-6 col-xs-6">
-                        <q-checkbox
-                          size="lg"
-                          v-model="formClientes.cte_decontado"
-                          true-value="1"
-                          false-value="0"
-                          style="font-size: 13px"
-                          label="Sobres"
-                        />
-                      </div>
-                    </div>
-                  </q-card-section>
-                </q-card>
-              </div>
-
-              <div class="col-md-6 col-xs-12"
-                style="margin-bottom: 25px"
-              >
-                <q-card
-                  class="q-pa-md col-md-4 col-xs-12 cardMenu"
-                  bordered
-                >
-                  <q-card-section>
-                    <div class="row">
-                      <div
-                        class="col-md-12 col-xs-12"
-                        style="
-                          align-self: center;
-                          text-align: left;
-                          margin-top: -30px;
-                        "
-                      >
-                        <h4 style="font-size: 16px" class="text-secondary">
-                          <strong>Información de Carga</strong>
-                        </h4>
-                      </div>
-                      <div class="col-md-12 col-xs-12">
-                        <q-select
-                          outlined
-                          v-model="formClientes.tipo_persona"
-                          label="Modalidad Pago"
-                          hint=""
-                          :rules="[reglasInputs]"
-                          :options="tipo_persona"
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="group" />
-                          </template>
-                        </q-select>
-                      </div>
-                      <div class="col-md-12 col-xs-12">
-                        <q-select
-                          outlined
-                          v-model="formClientes.tipo_persona"
-                          label="Pagado En"
-                          hint=""
-                          :rules="[reglasInputs]"
-                          :options="tipo_persona"
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="group" />
-                          </template>
-                        </q-select>
-                      </div>
-                    </div>
-                  </q-card-section>
-                </q-card>
-              </div>
-
-              <div class="col-md-6 col-xs-12"
-              style="margin-bottom: 25px">
-                <q-card
-                  class="q-pa-md col-md-4 col-xs-12"
-                  bordered
-                  style="width: 100%"
-                >
-                  <q-card-section>
-                    <div class="row">
-                      <div
-                        class="col-md-12 col-xs-12"
-                        style="
-                          align-self: center;
-                          text-align: left;
-                          margin-top: -30px;
-                        "
-                      >
-                        <h4 style="font-size: 16px" class="text-secondary">
-                          <strong>Origen</strong>
-                        </h4>
-                      </div>
-                      <div class="col-md-12 col-xs-12">
-                        <q-select
-                          outlined
-                          v-model="formClientes.tipo_persona"
-                          label="Agencia"
-                          hint=""
-                          :rules="[reglasInputs]"
-                          :options="tipo_persona"
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="group" />
-                          </template>
-                        </q-select>
-                      </div>
-                      <div class="col-md-12 col-xs-12">
-                        <q-select
-                          outlined
-                          v-model="formClientes.tipo_persona"
-                          label="Cliente"
-                          hint=""
-                          :rules="[reglasInputs]"
-                          :options="tipo_persona"
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="group" />
-                          </template>
-                        </q-select>
-                      </div>
-                    </div>
-                  </q-card-section>
-                </q-card>
-              </div>
-
-              <div class="col-md-6 col-xs-12"
-              style="margin-bottom: 25px">
-                <q-card
-                  class="q-pa-md col-md-4 col-xs-12 cardMenu"
-                  bordered 
-                >
-                  <q-card-section>
-                    <div class="row">
-                      <div
-                        class="col-md-12 col-xs-12"
-                        style="
-                          align-self: center;
-                          text-align: left;
-                          margin-top: -30px;
-                        "
-                      >
-                        <h4 style="font-size: 16px" class="text-secondary">
-                          <strong>Destino</strong>
-                        </h4>
-                      </div>
-                      <div class="col-md-12 col-xs-12">
-                        <q-select
-                          outlined
-                          v-model="formClientes.tipo_persona"
-                          label="Agencia"
-                          hint=""
-                          :rules="[reglasInputs]"
-                          :options="tipo_persona"
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="group" />
-                          </template>
-                        </q-select>
-                      </div>
-                      <div class="col-md-12 col-xs-12">
-                        <q-select
-                          outlined
-                          v-model="formClientes.tipo_persona"
-                          label="Cliente"
-                          hint=""
-                          :rules="[reglasInputs]"
-                          :options="tipo_persona"
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="group" />
-                          </template>
-                        </q-select>
-                      </div>
-                      <div class="col-md-10 col-xs-10">
-                        <q-select
-                          outlined
-                          v-model="formClientes.tipo_persona"
-                          label="Zona"
-                          hint=""
-                          :rules="[reglasInputs]"
-                          :options="tipo_persona"
-                          lazy-rules
-                          hide-bottom-space
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="group" />
-                          </template>
-                        </q-select>
-                      </div>
-                      <div
-                        class="col-md-2 col-xs-2"
-                        style="
-                          text-align: center;
-                          align-self: center;
-                        "
-                      >
-                        <q-btn
-                          dense
-                          color="primary"
-                          round
-                          @click="this.form = true"
-                          padding="sm"
-                          style="margin-left: 15px"
-                        >
-                          <q-icon size="25px" name="settings" color="white">
-                          </q-icon>
-                          <q-tooltip
-                            class="bg-primary"
-                            style="max-height: 30px"
-                            transition-show="scale"
-                            transition-hide="scale"
-                            color="primary"
-                            >Modificar Zonas</q-tooltip
-                          >
-                        </q-btn>
-                      </div>
-                    </div>
-                  </q-card-section>
-                </q-card>
-              </div>
-
-              <div class="col-md-6 col-xs-12"
-                style="margin-bottom: 20px"
-              >
-                <q-card
-                  class="q-pa-md col-md-12 col-xs-12"
-                  bordered
-                  style="width: 100%; padding-top: 30px; padding-bottom: 30px"
-                >
-                  <q-card-section class="row col-md-12 col-xs-12">
-                      <div class="col-md-4 col-xs-12"
-                        style="
-                          align-self: center;
-                          text-align: left;
-                          margin-bottom: 36px;
-                        "
-                      >
-                        <h4 style="font-size: 16px; margin-top: 0px; margin-bottom: 0px" class="text-secondary">
-                          <strong>Servicio</strong>
-                        </h4>
-                      </div>
-
-                      <div class="col-md-4 col-xs-6" style="margin-bottom: 36px">
-                        <q-checkbox
-                          size="lg"
-                          v-model="formClientes.cte_decontado"
-                          true-value="1"
-                          false-value="0"
-                          style="font-size: 13px"
-                          label="Nacional"
-                        />
-                      </div>
-
-                      <div class="col-md-4 col-xs-6" style="margin-bottom: 36px">
-                        <q-checkbox
-                          size="lg"
-                          v-model="formClientes.cte_decontado"
-                          true-value="1"
-                          false-value="0"
-                          style="font-size: 13px"
-                          label="Internacional"
-                        />
-                      </div>
-
-                      <div class="col-md-4 col-xs-12"
-                        style="
-                          align-self: center;
-                          text-align: left;
-                          margin-bottom: 36px
-                        "
-                      >
-                        <h4 style="font-size: 16px; margin-top: 0px; margin-bottom: 0px" class="text-secondary">
-                          <strong>Ubicación</strong>
-                        </h4>
-                      </div>
-
-                      <div class="col-md-4 col-xs-6" style="margin-bottom: 36px">
-                        <q-checkbox
-                          size="lg"
-                          v-model="formClientes.cte_decontado"
-                          true-value="1"
-                          false-value="0"
-                          style="font-size: 13px"
-                          label="Urbano"
-                        />
-                      </div>
-
-                      <div class="col-md-4 col-xs-6" style="margin-bottom: 36px">
-                        <q-checkbox
-                          size="lg"
-                          v-model="formClientes.cte_decontado"
-                          true-value="1"
-                          false-value="0"
-                          style="font-size: 13px"
-                          label="Extra-Urbano"
-                        />
-                      </div>
-
-                      <div class="col-md-4 col-xs-12"
-                        style="
-                          align-self: center;
-                          text-align: left;
-                        "
-                      >
-                        <h4 style="font-size: 16px; margin-top: 0px; margin-bottom: 0px" class="text-secondary">
-                          <strong>Urgencia</strong>
-                        </h4>
-                      </div>
-
-                      <div class="col-md-4 col-xs-6">
-                        <q-checkbox
-                          size="lg"
-                          v-model="formClientes.cte_decontado"
-                          true-value="1"
-                          false-value="0"
-                          style="font-size: 13px"
-                          label="Normal"
-                        />
-                      </div>
-                      
-                      <div class="col-md-4 col-xs-6" >
-                        <q-checkbox
-                          size="lg"
-                          v-model="formClientes.cte_decontado"
-                          true-value="1"
-                          false-value="0"
-                          style="font-size: 13px"
-                          label="Emergencia"
-                        />
-                      </div>
-                  </q-card-section>
-                </q-card>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  label="Recolectado Por:"
-                  hint=""
-                  class="pcform"
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  label="Proveedor del Transporte"
-                  hint=""
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  label="Dimensiones"
-                  hint=""
-                  class="pcform"
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-3 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  label="Contenido"
-                  hint=""
-                  class="pcform"
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-3 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  label="Carga Neta"
-                  hint=""
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  label="COD Valor Declarado"
-                  hint=""
-                  class="pcform"
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  label="Seguro"
-                  hint=""
-                  class="pcform"
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-2 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  hint=""
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="percent" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-5 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  label="Agencia Transito"
-                  hint=""
-                  class="pcform"
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-5 col-xs-12">
-                <q-input
-                      outlined
-                      label="Fecha Llegada Transito"
-                      hint=""
-                      v-model="form.f_val"
-                      mask="date"
-                      :rules="['date']"
-                      class="pcform"
-                      lazy-rules
-                >
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                        <q-date v-model="form.f_val">
-                          <div class="row items-center justify-end">
-                             <q-btn v-close-popup label="Close" color="primary" flat />
-                          </div>
-                        </q-date>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-2 col-xs-12" style="margin-bottom: 20px">
-                <q-checkbox
-                  size="lg"
-                  v-model="formClientes.cte_decontado"
-                  true-value="1"
-                  false-value="0"
-                  style="font-size: 13px"
-                  label="PASEO POR TRANSITO"
-                />
-              </div>
-
-              <div class="col-md-12 col-xs-12"
-                style="margin-bottom: 20px"
-              >
-                <q-card
-                  class="q-pa-md col-md-12 col-xs-12"
-                  bordered
-                >
-                  <q-card-section>
-                    <div class="row">
-                      <div
-                        class="col-md-12 col-xs-12"
-                        style="
-                          align-self: center;
-                          text-align: left;
-                          margin-top: -30px;
-                        "
-                      >
-                        <h4 style="font-size: 16px" class="text-secondary">
-                          <strong>Totales</strong>
-                        </h4>
-                      </div>
-                      <div class="col-md-6 col-xs-12">
-                        <q-input
-                          outlined
-                          v-model="formClientes.cod_agente"
-                          label="Monto Subtotal"
-                          hint=""
-                          dense
-                          class="pcform"
-                          :rules="[reglasInputs]"
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="face" />
-                          </template>
-                        </q-input>
-                      </div>
-
-                      <div class="col-md-6 col-xs-12">
-                        <q-input
-                          outlined
-                          v-model="formClientes.cod_agente"
-                          label="Monto Impuesto"
-                          hint=""
-                          dense
-                          :rules="[reglasInputs]"
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="face" />
-                          </template>
-                        </q-input>
-                      </div>
-
-                      <div class="col-md-6 col-xs-12">
-                        <q-input
-                          outlined
-                          v-model="formClientes.cod_agente"
-                          label="Monto Base"
-                          hint=""
-                          dense
-                          class="pcform"
-                          :rules="[reglasInputs]"
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="face" />
-                          </template>
-                        </q-input>
-                      </div>
-
-                      <div class="col-md-6 col-xs-12">
-                        <q-input
-                          outlined
-                          v-model="formClientes.cod_agente"
-                          label="Monto Total"
-                          hint=""
-                          dense
-                          :rules="[reglasInputs]"
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="face" />
-                          </template>
-                        </q-input>
-                      </div>
-                    </div>
-                  </q-card-section>
-                </q-card>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  label="Estatus Operacional"
-                  hint=""
-                  class="pcform"
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  label="Estatus Administrativo"
-                  hint=""
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-            </div>
-
-            <div
-              class="full-width row justify-center items-center content-center"
-              style="margin-bottom: 6px"
-            >
-              <q-btn
-                label="Editar Cliente"
-                type="submit"
-                color="primary"
-                class="col-md-5 col-sm-5 col-xs-12"
-                icon="person_add"
-              />
-              <q-btn
-                label="Cerrar"
-                color="primary"
-                flat
-                class="col-md-5 col-sm-5 col-xs-12 btnmovil"
-                icon="close"
-                v-close-popup
-              />
-            </div>
-          </q-form>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
+              <q-fab-action color="primary" icon="person_add" class="z-top"/>
+              <q-fab-action color="primary" icon="mail" class="z-top"/>
+            </q-fab>
+    </q-page-sticky>
 
     <q-dialog v-model="conceptosBox">
       <div class="row col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
@@ -1889,427 +184,931 @@
     <div class="row q-pa-sm justify-center">
       <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
         <div class="row">
-          <div
-            class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
-            style="align-self: center; text-align: center"
-          >
-            <h4 style="font-size: 27px" class="text-secondary">
-              <strong>VENTAS - REGISTRO DEL SERVICIO DE CARGA</strong>
-            </h4>
-          </div>
+          <q-form @submit="createDataClientes()">
+            <div class="row justify-center items-center" style="margin-top:20px">
 
-          <div
-            class="row col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
-            style="align-self: center; text-align: center; margin-bottom: 20px"
-          >
-            <div class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-5 selectmovil"
-              style="align-self: center; text-align: center"
-            >
-              <q-input
-                rounded
-                v-model="form.nb_cliente"
-                outlined
-                hide-bottom-space
-                standout
-                label="Número de Guia"
-                @keydown.enter="
-                  this.axiosConfig.headers.hasta = this.guia_hasta;
-                  getData(`/cguias`, 'setData', 'datos');
-                  this.reglasCorrelativoFilter()"
-                @keydown.tab="
-                  this.axiosConfig.headers.hasta = this.guia_hasta;
-                  getData(`/cguias`, 'setData', 'datos');
-                  this.reglasCorrelativoFilter()"
-                @blur="
-                  this.axiosConfig.headers.hasta = this.guia_hasta;
-                  getData(`/cguias`, 'setData', 'datos');
-                  this.reglasCorrelativoFilter()"
-              >
-                <template v-slot:prepend>
-                  <q-icon name="search" />
-                </template>
-              </q-input>
-            </div>
-
-            <div class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-5 selectmovil2"
-              style="align-self: center; text-align: center"
-            >
-              <q-input
-                rounded
-                v-model="selectedAgente"
-                outlined
-                standout
-                label="Número de Factura"
-                hide-bottom-space
-                @keydown.enter="
-                  this.axiosConfig.headers.hasta = this.guia_hasta;
-                  getData(`/cguias`, 'setData', 'datos');
-                  this.reglasCorrelativoFilter()"
-                @keydown.tab="
-                  this.axiosConfig.headers.hasta = this.guia_hasta;
-                  getData(`/cguias`, 'setData', 'datos');
-                  this.reglasCorrelativoFilter()"
-                @blur="
-                  this.axiosConfig.headers.hasta = this.guia_hasta;
-                  getData(`/cguias`, 'setData', 'datos');
-                  this.reglasCorrelativoFilter()"
-              >
-                <template v-slot:prepend>
-                  <q-icon name="search" />
-                </template>
-              </q-input>
-            </div>
-
-            <q-card
-              bordered
-              class="
-                row
-                col-md-5 col-xs-12 col-xl-5 col-lg-5 col-sm-12
-                espaciadoGuias
-              "
-            >
-              <q-card-section
-                class="row col-md-12 col-xs-12"
-                style="padding: 2px"
-              >
-                <div
-                  class="col-md-4 col-xs-12 col-sm-4 titleMenu"
-                  style="align-self: center; text-align: center"
-                >
-                  <p
-                    style="
-                      font-size: 16px;
-                      align-self: center;
-                      text-align: center;
-                      margin-bottom: 0px;
-                    "
-                    class="text-secondary"
-                  >
-                    <strong>TIPO DE GUIA</strong>
-                  </p>
-                </div>
-
-                <div
-                  class="col-md-4 col-xs-6 col-sm-4"
-                  style="
-                    margin-bottom: 7px;
-                    margin-top: 7px;
-                    align-self: center;
-                    text-align: center;
+              <div class="col-md-3 col-xs-6">
+                <q-input
+                  outlined
+                  v-model="formClientes.nb_cliente"
+                  label="NRO. Guía"
+                  hint=""
+                  class="pcform pcmovil"
+                  dense
+                  hide-bottom-space
+                  @update:model-value="
+                    formClientes.nb_cliente =
+                      formClientes.nb_cliente.toUpperCase()
                   "
-                  id="select"
+                  lazy-rules
+                  :rules="[reglasNotNull100]"
                 >
-                  <q-field
-                    hide-bottom-space
-                    borderless
-                    @update:model-value="
-                      this.axiosConfig.headers.tipo_guia_carga =
-                        this.selectedGuiaCarga.value;
-                      getData(`/cguias`, 'setData', 'datos');
-                    "
-                    dense
-                    class="pcform"
-                    v-model="selectedGuiaCarga"
-                  >
-                    <template v-slot:control>
-                      <q-checkbox
-                        size="md"
-                        v-model="selectedGuiaCarga"
-                        true-value="1"
-                        false-value="0"
-                        style="font-size: 13px"
-                        label="Guia de Carga"
-                      />
-                    </template>
-                  </q-field>
-                </div>
+                </q-input>
+              </div>
 
-                <div
-                  class="col-md-4 col-xs-6 col-sm-4"
-                  style="
-                    margin-bottom: 7px;
-                    margin-top: 7px;
-                    align-self: center;
-                    text-align: center;
+              <div class="col-md-3 col-xs-6">
+                <q-input
+                  outlined
+                  v-model="formClientes.nb_cliente"
+                  label="NRO. Factura"
+                  hint=""
+                  class="pcform"
+                  hide-bottom-space
+                  dense
+                  @update:model-value="
+                    formClientes.nb_cliente =
+                      formClientes.nb_cliente.toUpperCase()
                   "
-                  id="select"
+                  lazy-rules
+                  :rules="[reglasNotNull100]"
                 >
-                  <q-field
-                    hide-bottom-space
-                    borderless
-                    dense
-                    @update:model-value="
-                      this.axiosConfig.headers.tipo_guia_factura =
-                        this.selectedGuiaFactura.value;
-                      getData(`/cguias`, 'setData', 'datos');
-                    "
-                    v-model="selectedGuiaFactura"
-                  >
-                    <template v-slot:control>
-                      <q-checkbox
-                        size="md"
-                        v-model="selectedGuiaFactura"
-                        true-value="1"
-                        false-value="0"
-                        style="font-size: 13px"
-                        label="Guia de Factura"
-                      />
-                    </template>
-                  </q-field>
-                </div>
-              </q-card-section>
-            </q-card>
-          </div>
+                </q-input>
+              </div>
 
-          <div
-            class="
-              col-md-8 col-xl-8 col-lg-8 col-xs-12 col-sm-12
-              inputestadospc2
-            "
-            style="align-self: center; text-align: center; margin-right: 27px"
-          >
-            <q-input
-              rounded
-              outlined
-              standout
-              v-model="filter"
-              type="search"
-              label="Búsqueda avanzada"
-            >
-              <template v-slot:prepend>
-                <q-icon name="search" />
-              </template>
-            </q-input>
-          </div>
+              <div class="col-md-1 col-xs-6">
+                <q-input
+                  outlined
+                  v-model="formClientes.nb_cliente"
+                  label="NRO. Doc"
+                  hint=""
+                  class="pcform pcmovil"
+                  hide-bottom-space
+                  dense
+                  @update:model-value="
+                    formClientes.nb_cliente =
+                      formClientes.nb_cliente.toUpperCase()
+                  "
+                  lazy-rules
+                  :rules="[reglasNotNull100]"
+                >
+                </q-input>
+              </div>
 
-          <div
-            class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 botonesGuias"
-            style="text-align: center; align-self: center"
-          >
-            <q-btn
-              dense
-              color="primary"
-              round
-              @click="this.form = true"
-              padding="sm"
-              style="margin-right: 25px"
-            >
-              <q-icon size="40px" name="add" color="white"> </q-icon>
-              <q-tooltip
-                class="bg-primary"
-                style="max-height: 30px"
-                transition-show="scale"
-                transition-hide="scale"
-                color="primary"
-                >Agregar Registro</q-tooltip
+              <div class="col-md-1 col-xs-6">
+                <q-input
+                  outlined
+                  v-model="formClientes.nb_cliente"
+                  label="Ref."
+                  hint=""
+                  class="pcform"
+                  hide-bottom-space
+                  dense
+                  @update:model-value="
+                    formClientes.nb_cliente =
+                      formClientes.nb_cliente.toUpperCase()
+                  "
+                  lazy-rules
+                  :rules="[reglasNotNull100]"
+                >
+                </q-input>
+              </div>
+
+              <div class="col-md-2 col-xs-6" style="margin-bottom: 20px">
+                <q-checkbox
+                  size="lg"
+                  v-model="formClientes.cte_decontado"
+                  true-value="1"
+                  false-value="0"
+                  style="font-size: 13px"
+                  label="Guía Factura"
+                />
+              </div>
+
+              <div class="col-md-2 col-xs-6" style="margin-bottom: 20px">
+                <q-checkbox
+                  size="lg"
+                  v-model="formClientes.cte_decontado"
+                  true-value="1"
+                  false-value="0"
+                  style="font-size: 13px"
+                  label="Guía Carga"
+                />
+              </div>
+
+              <div class="col-md-4 col-xs-12"
+                style="margin-bottom: 20px"
               >
-            </q-btn>
+                <q-card class="q-pa-md col-md-4 col-xs-12 cardMenu"
+                  bordered style="padding: 5px"
+                >
+                  <q-card-section style="padding-bottom: 0px">
+                    <div class="row">
+                      <div
+                        class="col-md-12 col-xs-12"
+                        style="
+                          align-self: center;
+                          text-align: left;
+                          margin-top: -30px;
+                        "
+                      >
+                        <h4 style="font-size: 16px; margin-bottom: 5px" class="text-secondary">
+                          <strong>Fechas</strong>
+                        </h4>
+                      </div>
+                      <div class="col-md-6 col-xs-6">
+                        <q-input
+                          outlined
+                          v-model="formClientes.cod_agente"
+                          label="Emision"
+                          hint=""
+                          dense
+                          class="pcform pcmovil"
+                          :rules="[reglasInputs]"
+                          lazy-rules
+                        >
+                        </q-input>
+                      </div>
 
-            <q-btn
-              dense
-              color="primary"
-              round
-              padding="sm"
-              style="margin-right: 25px"
-            >
-              <q-icon size="40px" name="print" color="white"> </q-icon>
-              <q-tooltip
-                class="bg-primary"
-                style="max-height: 30px"
-                transition-show="scale"
-                transition-hide="scale"
-                color="primary"
-                >Imprimir</q-tooltip
-              >
-            </q-btn>
+                      <div class="col-md-6 col-xs-6">
+                        <q-input
+                          outlined
+                          v-model="formClientes.cod_agente"
+                          label="Envio"
+                          hint=""
+                          dense
+                          :rules="[reglasInputs]"
+                          lazy-rules
+                        >
+                        </q-input>
+                      </div>
 
-            <q-btn dense color="primary" round padding="sm">
-              <q-icon size="40px" name="123" color="white"> </q-icon>
-              <q-tooltip
-                class="bg-primary"
-                transition-show="scale"
-                style="max-height: 30px"
-                transition-hide="scale"
-                color="primary"
-                >Tarifear</q-tooltip
-              >
-            </q-btn>
-          </div>
-        </div>
+                      <div class="col-md-12 col-xs-12">
+                        <q-input
+                          outlined
+                          v-model="formClientes.cod_agente"
+                          label="Aplicación"
+                          hint=""
+                          dense
+                          :rules="[reglasInputs]"
+                          lazy-rules
+                        >
+                        </q-input>
+                      </div>
+                    </div>
+                  </q-card-section>
+                </q-card>
+              </div>
 
-        <div class="q-pa-md" style="margin-top: 20px">
-          <div class="q-gutter-y-md">
-            <div bordered flat class="my-card row">
-              <q-table
-                :rows="clientes"
-                row-key="id"
-                :columns="columnsClientes"
-                :loading="loading"
-                :separator="separator"
-                class="my-sticky-column-table"
-                :filter="filter"
-                style="width: 100%"
-                :grid="$q.screen.xs"
-                v-model:pagination="pagination"
+              <div class="col-md-4 col-xs-12"
+                style="margin-bottom: 20px"
               >
-                <template v-slot:loading>
-                  <q-inner-loading showing color="primary" />
+                <q-card
+                  class="q-pa-md col-md-4 col-xs-12 cardMenu"
+                  bordered style="padding: 5px"
+                >
+                  <q-card-section style="padding-bottom: 7px">
+                    <div class="row">
+                      <div
+                        class="col-md-12 col-xs-12"
+                        style="
+                          align-self: center;
+                          text-align: left;
+                          margin-top: -30px;
+                        "
+                      >
+                        <h4 style="font-size: 16px; margin-bottom: 5px" class="text-secondary">
+                          <strong>Información de Carga</strong>
+                        </h4>
+                      </div>
+                      <div class="col-md-6 col-xs-6">
+                        <q-input
+                          outlined
+                          dense
+                          v-model="formClientes.cod_agente"
+                          label="NRO. Piezas"
+                          hint=""
+                          hide-buttom-space
+                          class="pcform pcmovil"
+                          :rules="[reglasInputs]"
+                          lazy-rules
+                        >
+                        </q-input>
+                      </div>
+
+                      <div class="col-md-6 col-xs-6">
+                        <q-input
+                          outlined
+                          v-model="formClientes.cod_agente"
+                          label="Peso KGS"
+                          hint=""
+                          dense
+                          hide-buttom-space
+                          :rules="[reglasInputs]"
+                          lazy-rules
+                        >
+                        </q-input>
+                      </div>
+
+                      <div class="col-md-6 col-xs-6">
+                        <q-checkbox
+                          size="lg"
+                          v-model="formClientes.cte_decontado"
+                          true-value="1"
+                          false-value="0"
+                          style="font-size: 13px"
+                          label="Paquetes"
+                        />
+                      </div>
+                      <div class="col-md-6 col-xs-6">
+                        <q-checkbox
+                          size="lg"
+                          v-model="formClientes.cte_decontado"
+                          true-value="1"
+                          false-value="0"
+                          style="font-size: 13px"
+                          label="Sobres"
+                        />
+                      </div>
+                    </div>
+                  </q-card-section>
+                </q-card>
+              </div>
+
+              <div class="col-md-4 col-xs-12"
+                style="margin-bottom: 25px"
+              >
+                <q-card
+                  class="q-pa-md col-md-4 col-xs-12"
+                  bordered style="padding: 5px"
+                >
+                  <q-card-section style="padding-bottom: 0px">
+                    <div class="row">
+                      <div
+                        class="col-md-12 col-xs-12"
+                        style="
+                          align-self: center;
+                          text-align: left;
+                          margin-top: -30px;
+                        "
+                      >
+                        <h4 style="font-size: 16px; margin-bottom: 5px" class="text-secondary">
+                          <strong>Información de Carga</strong>
+                        </h4>
+                      </div>
+                      <div class="col-md-12 col-xs-12">
+                        <q-select
+                          outlined
+                          v-model="formClientes.tipo_persona"
+                          label="Modalidad Pago"
+                          hint=""
+                          dense
+                          :rules="[reglasInputs]"
+                          :options="tipo_persona"
+                          lazy-rules
+                        >
+                        </q-select>
+                      </div>
+                      <div class="col-md-12 col-xs-12">
+                        <q-select
+                          outlined
+                          v-model="formClientes.tipo_persona"
+                          label="Pagado En"
+                          hint=""
+                          dense
+                          :rules="[reglasInputs]"
+                          :options="tipo_persona"
+                          lazy-rules
+                        >
+                        </q-select>
+                      </div>
+                    </div>
+                  </q-card-section>
+                </q-card>
+              </div>
+
+              <div class="col-md-3 col-xs-12"
+              style="margin-bottom: 25px; padding: 5px">
+                <q-card
+                  class="q-pa-md col-md-4 col-xs-12 cardMenu"
+                  bordered style="padding: 5px"
+                >
+                  <q-card-section style="padding-bottom: 0px">
+                    <div class="row">
+                      <div
+                        class="col-md-12 col-xs-12"
+                        style="
+                          align-self: center;
+                          text-align: left;
+                          margin-top: -30px;
+                        "
+                      >
+                        <h4 style="font-size: 16px; margin-bottom: 5px" class="text-secondary">
+                          <strong>Origen</strong>
+                        </h4>
+                      </div>
+                      <div class="col-md-12 col-xs-6">
+                        <q-select
+                          outlined
+                          v-model="formClientes.tipo_persona"
+                          label="Agencia"
+                          dense
+                          class="pcmovil"
+                          hint=""
+                          :rules="[reglasInputs]"
+                          :options="tipo_persona"
+                          lazy-rules
+                        >
+                        </q-select>
+                      </div>
+                      <div class="col-md-12 col-xs-6">
+                        <q-select
+                          outlined
+                          v-model="formClientes.tipo_persona"
+                          label="Cliente"
+                          hint=""
+                          dense
+                          :rules="[reglasInputs]"
+                          :options="tipo_persona"
+                          lazy-rules
+                        >
+                        </q-select>
+                      </div>
+                    </div>
+                  </q-card-section>
+                </q-card>
+              </div>
+
+              <div class="col-md-4 col-xs-12"
+              style="margin-bottom: 25px">
+                <q-card
+                  class="q-pa-md col-md-4 col-xs-12 cardMenu"
+                  bordered style="padding: 5px"
+                >
+                  <q-card-section style="padding-bottom: 0px">
+                    <div class="row">
+                      <div
+                        class="col-md-12 col-xs-12"
+                        style="
+                          align-self: center;
+                          text-align: left;
+                          margin-top: -30px;
+                        "
+                      >
+                        <h4 style="font-size: 16px; margin-bottom: 5px" class="text-secondary">
+                          <strong>Destino</strong>
+                        </h4>
+                      </div>
+                      <div class="col-md-6 col-xs-6">
+                        <q-select
+                          outlined
+                          v-model="formClientes.tipo_persona"
+                          label="Agencia"
+                          hint=""
+                          dense
+                          class="pcform pcmovil"
+                          :rules="[reglasInputs]"
+                          :options="tipo_persona"
+                          lazy-rules
+                        >
+                        </q-select>
+                      </div>
+                      <div class="col-md-6 col-xs-6">
+                        <q-select
+                          outlined
+                          v-model="formClientes.tipo_persona"
+                          label="Cliente"
+                          dense
+                          hint=""
+                          :rules="[reglasInputs]"
+                          :options="tipo_persona"
+                          lazy-rules
+                        >
+                        </q-select>
+                      </div>
+                      <div class="col-md-10 col-xs-10">
+                        <q-select
+                          outlined
+                          v-model="formClientes.tipo_persona"
+                          label="Zona"
+                          dense
+                          hint=""
+                          :rules="[reglasInputs]"
+                          :options="tipo_persona"
+                          lazy-rules
+                          hide-bottom-space
+                        >
+                        </q-select>
+                      </div>
+                      <div
+                        class="col-md-2 col-xs-2 items-start"
+                      >
+                        <q-btn
+                          dense
+                          color="primary"
+                          round
+                          @click="this.form = true"
+                          padding="sm"
+                          style="margin-left: 15px"
+                        >
+                          <q-icon size="25px" name="settings" color="white">
+                          </q-icon>
+                          <q-tooltip
+                            class="bg-primary"
+                            style="max-height: 30px"
+                            transition-show="scale"
+                            transition-hide="scale"
+                            color="primary"
+                            >Modificar Zonas</q-tooltip
+                          >
+                        </q-btn>
+                      </div>
+                    </div>
+                  </q-card-section>
+                </q-card>
+              </div>
+
+              <div class="col-md-5 col-xs-12"
+                style="margin-bottom: 20px"
+              >
+                <q-card
+                  class="q-pa-md col-md-12 col-xs-12"
+                  bordered
+                  style="padding-top: 15px; padding-bottom: 10px"
+                >
+                  <q-card-section class="row col-md-12 col-xs-12" style="padding-bottom: 0px; padding-top: 0px">
+                      <div class="col-md-4 col-xs-12 items-center"
+                        style="
+                          align-self: center;
+                          text-align: left;
+                        "
+                      >
+                        <h4 style="font-size: 16px; margin-top: 0px; margin-bottom: 0px" class="text-secondary">
+                          <strong>Servicio</strong>
+                        </h4>
+                      </div>
+
+                      <div class="col-md-4 col-xs-6" style="margin-bottom: 6px">
+                        <q-checkbox
+                          size="lg"
+                          v-model="formClientes.cte_decontado"
+                          true-value="1"
+                          false-value="0"
+                          style="font-size: 13px"
+                          label="Nacional"
+                        />
+                      </div>
+
+                      <div class="col-md-4 col-xs-6" style="margin-bottom: 6px">
+                        <q-checkbox
+                          size="lg"
+                          v-model="formClientes.cte_decontado"
+                          true-value="1"
+                          false-value="0"
+                          style="font-size: 13px"
+                          label="Internacional"
+                        />
+                      </div>
+
+                      <div class="col-md-4 col-xs-12 items-center"
+                        style="
+                          align-self: center;
+                          text-align: left;
+                        "
+                      >
+                        <h4 style="font-size: 16px; margin-top: 0px; margin-bottom: 0px" class="text-secondary">
+                          <strong>Ubicación</strong>
+                        </h4>
+                      </div>
+
+                      <div class="col-md-4 col-xs-6" style="margin-bottom: 6px">
+                        <q-checkbox
+                          size="lg"
+                          v-model="formClientes.cte_decontado"
+                          true-value="1"
+                          false-value="0"
+                          style="font-size: 13px"
+                          label="Urbano"
+                        />
+                      </div>
+
+                      <div class="col-md-4 col-xs-6" style="margin-bottom: 6px">
+                        <q-checkbox
+                          size="lg"
+                          v-model="formClientes.cte_decontado"
+                          true-value="1"
+                          false-value="0"
+                          style="font-size: 13px"
+                          label="Extra-Urbano"
+                        />
+                      </div>
+
+                      <div class="col-md-4 col-xs-12 items-center"
+                        style="
+                          align-self: center;
+                          text-align: left;
+                        "
+                      >
+                        <h4 style="font-size: 16px; margin-top: 0px; margin-bottom: 0px" class="text-secondary">
+                          <strong>Urgencia</strong>
+                        </h4>
+                      </div>
+
+                      <div class="col-md-4 col-xs-6">
+                        <q-checkbox
+                          size="lg"
+                          v-model="formClientes.cte_decontado"
+                          true-value="1"
+                          false-value="0"
+                          style="font-size: 13px"
+                          label="Normal"
+                        />
+                      </div>
+                      
+                      <div class="col-md-4 col-xs-6" >
+                        <q-checkbox
+                          size="lg"
+                          v-model="formClientes.cte_decontado"
+                          true-value="1"
+                          false-value="0"
+                          style="font-size: 13px"
+                          label="Emergencia"
+                        />
+                      </div>
+                  </q-card-section>
+                </q-card>
+              </div>
+
+              <div class="col-md-3 col-xs-12">
+                <q-input
+                  outlined
+                  v-model="formClientes.nb_cliente"
+                  label="Recolectado Por:"
+                  hint=""
+                  class="pcform"
+                  dense
+                  @update:model-value="
+                    formClientes.nb_cliente =
+                      formClientes.nb_cliente.toUpperCase()
+                  "
+                  lazy-rules
+                  :rules="[reglasNotNull100]"
+                >
+                </q-input>
+              </div>
+
+              <div class="col-md-3 col-xs-12">
+                <q-input
+                  outlined
+                  v-model="formClientes.nb_cliente"
+                  label="Proveedor del Transporte"
+                  hint=""
+                  dense
+                  class="pcform"
+                  @update:model-value="
+                    formClientes.nb_cliente =
+                      formClientes.nb_cliente.toUpperCase()
+                  "
+                  lazy-rules
+                  :rules="[reglasNotNull100]"
+                >
+                </q-input>
+              </div>
+
+              <div class="col-md-3 col-xs-6">
+                <q-input
+                  outlined
+                  v-model="formClientes.nb_cliente"
+                  label="Dimensiones"
+                  dense
+                  hint=""
+                  class="pcform pcmovil"
+                  @update:model-value="
+                    formClientes.nb_cliente =
+                      formClientes.nb_cliente.toUpperCase()
+                  "
+                  lazy-rules
+                  :rules="[reglasNotNull100]"
+                >
+                </q-input>
+              </div>
+
+              <div class="col-md-3 col-xs-6">
+                <q-input
+                  outlined
+                  v-model="formClientes.nb_cliente"
+                  label="Contenido"
+                  dense
+                  hint=""
+                  @update:model-value="
+                    formClientes.nb_cliente =
+                      formClientes.nb_cliente.toUpperCase()
+                  "
+                  lazy-rules
+                  :rules="[reglasNotNull100]"
+                >
+                </q-input>
+              </div>
+
+              <div class="col-md-3 col-xs-12">
+                <q-input
+                  outlined
+                  v-model="formClientes.nb_cliente"
+                  label="Carga Neta"
+                  hint=""
+                  dense
+                  class="pcform"
+                  @update:model-value="
+                    formClientes.nb_cliente =
+                      formClientes.nb_cliente.toUpperCase()
+                  "
+                  lazy-rules
+                  :rules="[reglasNotNull100]"
+                >
+                </q-input>
+              </div>
+
+              <div class="col-md-3 col-xs-12">
+                <q-input
+                  outlined
+                  v-model="formClientes.nb_cliente"
+                  label="COD - Valor Declarado"
+                  hint=""
+                  dense
+                  class="pcform"
+                  @update:model-value="
+                    formClientes.nb_cliente =
+                      formClientes.nb_cliente.toUpperCase()
+                  "
+                  lazy-rules
+                  :rules="[reglasNotNull100]"
+                >
+                </q-input>
+              </div>
+
+              <div class="col-md-2 col-xs-7">
+                <q-input
+                  outlined
+                  v-model="formClientes.nb_cliente"
+                  label="Seguro"
+                  hint=""
+                  dense
+                  class="pcform pcmovil"
+                  @update:model-value="
+                    formClientes.nb_cliente =
+                      formClientes.nb_cliente.toUpperCase()
+                  "
+                  lazy-rules
+                  :rules="[reglasNotNull100]"
+                >
+                </q-input>
+              </div>
+
+              <div class="col-md-1 col-xs-3">
+                <q-input
+                  outlined
+                  v-model="formClientes.nb_cliente"
+                  hint=""
+                  dense
+                  class="pcform pcmovil"
+                  @update:model-value="
+                    formClientes.nb_cliente =
+                      formClientes.nb_cliente.toUpperCase()
+                  "
+                  lazy-rules
+                  :rules="[reglasNotNull100]"
+                >
+                <template v-slot:prepend>
+                  <q-icon name="percent" />
                 </template>
-                <template v-slot:body-cell-action="props">
-                  <q-td :props="props">
-                    <q-btn
+                </q-input>
+              </div>
+
+              <div class="col-md-3 col-xs-6">
+                <q-input
+                  outlined
+                  v-model="formClientes.nb_cliente"
+                  label="Agencia Transito"
+                  hint=""
+                  dense
+                  @update:model-value="
+                    formClientes.nb_cliente =
+                      formClientes.nb_cliente.toUpperCase()
+                  "
+                  lazy-rules
+                  :rules="[reglasNotNull100]"
+                >
+                </q-input>
+              </div>
+
+              <div class="col-md-12 col-xs-12"
+                style="margin-bottom: 20px"
+              >
+                <q-card
+                  class="q-pa-md col-md-12 col-xs-12"
+                  bordered style="padding: 5px"
+                >
+                  <q-card-section style="padding-bottom: 0px">
+                    <div class="row">
+                      <div
+                        class="col-md-12 col-xs-12"
+                        style="
+                          align-self: center;
+                          text-align: left;
+                          margin-top: -30px;
+                        "
+                      >
+                        <h4 style="font-size: 16px; margin-bottom: 5px" class="text-secondary">
+                          <strong>Totales</strong>
+                        </h4>
+                      </div>
+                      <div class="col-md-6 col-xs-12">
+                        <q-input
+                          outlined
+                          v-model="formClientes.cod_agente"
+                          label="Monto Subtotal"
+                          hint=""
+                          dense
+                          class="pcform"
+                          :rules="[reglasInputs]"
+                          lazy-rules
+                        >
+                          <template v-slot:prepend>
+                            <q-icon name="face" />
+                          </template>
+                        </q-input>
+                      </div>
+
+                      <div class="col-md-6 col-xs-12">
+                        <q-input
+                          outlined
+                          v-model="formClientes.cod_agente"
+                          label="Monto Impuesto"
+                          hint=""
+                          dense
+                          :rules="[reglasInputs]"
+                          lazy-rules
+                        >
+                          <template v-slot:prepend>
+                            <q-icon name="face" />
+                          </template>
+                        </q-input>
+                      </div>
+
+                      <div class="col-md-6 col-xs-12">
+                        <q-input
+                          outlined
+                          v-model="formClientes.cod_agente"
+                          label="Monto Base"
+                          hint=""
+                          dense
+                          class="pcform"
+                          :rules="[reglasInputs]"
+                          lazy-rules
+                        >
+                          <template v-slot:prepend>
+                            <q-icon name="face" />
+                          </template>
+                        </q-input>
+                      </div>
+
+                      <div class="col-md-6 col-xs-12">
+                        <q-input
+                          outlined
+                          v-model="formClientes.cod_agente"
+                          label="Monto Total"
+                          hint=""
+                          dense
+                          :rules="[reglasInputs]"
+                          lazy-rules
+                        >
+                          <template v-slot:prepend>
+                            <q-icon name="face" />
+                          </template>
+                        </q-input>
+                      </div>
+                    </div>
+                  </q-card-section>
+                </q-card>
+              </div>
+
+              <div class="col-md-4 col-xs-12">
+                <q-input
+                      outlined
+                      label="Fecha Llegada Transito"
+                      hint=""
+                      v-model="form.f_val"
+                      mask="date"
                       dense
-                      round
-                      flat
-                      color="primary"
-                      icon="edit"
-                      :disabled="this.disabledEdit"
-                      @click="
-                        getData(
-                          `/clientes/${props.row.id}`,
-                          'setDataEdit',
-                          'formEditClientes'
-                        );
-                        formEdit = true;
-                      "
-                    ></q-btn>
-                    <q-btn
-                      dense
-                      round
-                      flat
-                      color="primary"
-                      icon="delete"
-                      :disabled="this.disabledDelete"
-                      @click="selected = props.row.id"
-                      @click.capture="clientesDelete = true"
-                    ></q-btn>
-                    <q-btn
-                      dense
-                      round
-                      flat
-                      color="primary"
-                      icon="book"
-                      :disabled="this.disabledEdit"
-                      @click="selected = props.row.id"
-                      @click.capture="conceptosBox = true"
-                    ></q-btn>
-                  </q-td>
-                </template>
-                <template v-slot:item="props">
-                  <div
-                    class="
-                      q-pa-xs
-                      col-xs-12 col-sm-6 col-md-4 col-lg-3
-                      grid-style-transition
-                    "
-                    :style="props.selected ? 'transform: scale(0.95);' : ''"
-                  >
-                    <q-card :class="props.selected ? 'bg-grey-2' : ''">
-                      <q-list dense>
-                        <q-item v-for="col in props.cols" :key="col.name">
-                          <q-item-section>
-                            <q-item-label>{{ col.label }}</q-item-label>
-                          </q-item-section>
-                          <q-item-section side>
-                            <q-chip
-                              v-if="col.name === 'status'"
-                              :color="
-                                props.row.status == 'Active'
-                                  ? 'green'
-                                  : props.row.status == 'Disable'
-                                  ? 'red'
-                                  : 'grey'
-                              "
-                              text-color="white"
-                              dense
-                              class="text-weight-bolder"
-                              square
-                              >{{ col.value }}</q-chip
-                            >
-                            <q-btn
-                              v-else-if="col.name === 'action'"
-                              dense
-                              round
-                              flat
-                              color="primary"
-                              icon="edit"
-                              :disabled="this.disabledEdit"
-                              @click="
-                                getData(
-                                  `/clientes/${props.row.id}`,
-                                  'setDataEdit',
-                                  'formEditClientes'
-                                );
-                                formEdit = true;
-                              "
-                            ></q-btn>
-                            <q-chip
-                              v-if="col.name === 'status'"
-                              :color="
-                                props.row.status == 'Active'
-                                  ? 'green'
-                                  : props.row.status == 'Disable'
-                                  ? 'red'
-                                  : 'grey'
-                              "
-                              text-color="white"
-                              dense
-                              class="text-weight-bolder"
-                              square
-                              >{{ col.value }}</q-chip
-                            >
-                            <q-btn
-                              v-else-if="col.name === 'action'"
-                              dense
-                              round
-                              flat
-                              color="primary"
-                              icon="delete"
-                              :disabled="this.disabledDelete"
-                              @click="selected = props.row.id"
-                              @click.capture="clientesDelete = true"
-                            ></q-btn>
-                            <q-chip
-                              v-if="col.name === 'status'"
-                              :color="
-                                props.row.status == 'Active'
-                                  ? 'green'
-                                  : props.row.status == 'Disable'
-                                  ? 'red'
-                                  : 'grey'
-                              "
-                              text-color="white"
-                              dense
-                              class="text-weight-bolder"
-                              square
-                              >{{ col.value }}</q-chip
-                            >
-                            <q-btn
-                              v-else-if="col.name === 'action'"
-                              dense
-                              round
-                              flat
-                              color="primary"
-                              icon="book"
-                              :disabled="this.disabledEdit"
-                              @click="selected = props.row.id"
-                              @click.capture="conceptosBox = true"
-                            ></q-btn>
-                            <q-item-label
-                              v-else
-                              caption
-                              :class="col.classes ? col.classes : ''"
-                              >{{ col.value }}</q-item-label
-                            >
-                          </q-item-section>
-                        </q-item>
-                      </q-list>
-                    </q-card>
-                  </div>
-                </template>
-              </q-table>
-            </div>
+                      :rules="['date']"
+                      class="pcform"
+                      lazy-rules
+                >
+                  <template v-slot:append>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                        <q-date v-model="form.f_val">
+                          <div class="row items-center justify-end">
+                             <q-btn v-close-popup label="Close" color="primary" flat />
+                          </div>
+                        </q-date>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
+              </div>
+
+              <div class="col-md-2 col-xs-12" style="margin-bottom: 20px; padding-right: 10px">
+                <q-checkbox
+                  size="lg"
+                  v-model="formClientes.cte_decontado"
+                  true-value="1"
+                  false-value="0"
+                  style="font-size: 13px"
+                  label="PASEO POR TRANSITO"
+                />
+              </div>
+
+              <div class="col-md-3 col-xs-12">
+                <q-select
+                  outlined
+                  v-model="formClientes.nb_cliente"
+                  label="Estatus Operacional"
+                  hint=""
+                  class="pcform"
+                  dense
+                  hide-bottom-space
+                  @update:model-value="
+                    formClientes.nb_cliente =
+                      formClientes.nb_cliente.toUpperCase()
+                  "
+                  lazy-rules
+                  :rules="[reglasNotNull100]"
+                >
+                </q-select>
+              </div>
+
+              <div class="col-md-3 col-xs-12">
+                <q-select
+                  outlined
+                  v-model="formClientes.nb_cliente"
+                  label="Estatus Administrativo"
+                  hint=""
+                  hide-bottom-space
+                  dense
+                  @update:model-value="
+                    formClientes.nb_cliente =
+                      formClientes.nb_cliente.toUpperCase()
+                  "
+                  lazy-rules
+                  :rules="[reglasNotNull100]"
+                >
+                </q-select>
+              </div>
+
+              <div class="col-md-6 col-xs-12">
+                <q-input
+                  outlined
+                  v-model="formClientes.nb_cliente"
+                  label="Monto Referencia Cliente"
+                  dense
+                  hint=""
+                  class="pcform"
+                  @update:model-value="
+                    formClientes.nb_cliente =
+                      formClientes.nb_cliente.toUpperCase()
+                  "
+                  lazy-rules
+                  :rules="[reglasNotNull100]"
+                >
+                </q-input>
+              </div>
+
+              <div class="col-md-3 col-xs-6">
+                <q-input
+                  outlined
+                  v-model="formClientes.nb_cliente"
+                  label="% X Zona"
+                  hint=""
+                  dense
+                  class="pcform pcmovil"
+                  @update:model-value="
+                    formClientes.nb_cliente =
+                      formClientes.nb_cliente.toUpperCase()
+                  "
+                  lazy-rules
+                  :rules="[reglasNotNull100]"
+                >
+                </q-input>
+              </div>
+
+              <div class="col-md-3 col-xs-6">
+                <q-input
+                  outlined
+                  v-model="formClientes.nb_cliente"
+                  label="% Desc"
+                  hint=""
+                  dense
+                  @update:model-value="
+                    formClientes.nb_cliente =
+                      formClientes.nb_cliente.toUpperCase()
+                  "
+                  lazy-rules
+                  :rules="[reglasNotNull100]"
+                >
+                </q-input>
+              </div>
           </div>
+          </q-form>
         </div>
       </div>
     </div>
@@ -2377,43 +1176,6 @@ export default {
   name: "Clientes",
   data() {
     return {
-      columnsClientes: [
-        {
-          name: "nb_cliente",
-          label: "Nombre",
-          field: "nb_cliente",
-          align: "left",
-          sortable: true,
-        },
-        {
-          name: "rif_cedula",
-          label: "RIF",
-          field: "rif_cedula",
-          align: "left",
-          sortable: true,
-        },
-        {
-          name: "activo_desc",
-          label: "Estatus",
-          field: "activo_desc",
-          align: "left",
-          sortable: true,
-        },
-        {
-          name: "cte_decontado",
-          label: "Cliente Particular",
-          field: "cte_decontado",
-          align: "center",
-          sortable: true,
-        },
-        {
-          name: "action",
-          label: "Acciones",
-          align: "center",
-          sortable: true,
-          required: true,
-        },
-      ],
       columnsConceptos: [
         {
           name: "id",
@@ -2452,28 +1214,46 @@ export default {
         },
       ],
       formClientes: {
-        nb_cliente: "",
-        rif_cedula: "",
-        nit: "",
-        dir_correo: "",
-        dir_fiscal: "",
-        email: "",
-        tlf_cliente: "",
-        fax: "",
-        razon_social: "",
-        tipo_persona: "",
-        modalidad_pago: "",
-        persona_contacto: "",
-        observacion: "",
-        cte_decontado: "",
-        tipo_persona_new: "",
-        flag_activo: "",
-        cod_agencia: [],
-        cod_ciudad: [],
-        cod_agente: [],
-        cod_municipio: [],
-        cod_parroquia: [],
-        cod_localidad: [],
+        nb_cliente: 0,
+        nro_documento: 0,
+        t_de_documento: "string",
+        serie_documento: 0,
+        fecha_emision: "string",
+        fecha_envio: "string",
+        fecha_aplicacion: "string",
+        nro_piezas: 0,
+        peso_kgs: 0,
+        tipo_carga: "string",
+        modalidad_pago: "string",
+        pagado_en: "string",
+        cod_agencia: 0,
+        cod_cliente_org: 0,
+        cod_agencia_dest: 0,
+        cod_cliente_dest: 0,
+        cod_zona_dest: 0,
+        tipo_servicio: "string",
+        tipo_ubicacion: "string",
+        tipo_urgencia: "string",
+        cod_agente_venta: 0,
+        cod_proveedor: 0,
+        dimensiones: "string",
+        desc_contenido: "string",
+        carga_neta: 0,
+        valor_declarado_cod: 0,
+        valor_declarado_seg: 0,
+        porc_apl_seguro: 0,
+        cod_agencia_transito: 0,
+        monto_subtotal: 0,
+        monto_impuesto: 0,
+        monto_base: 0,
+        monto_total: 0,
+        fecha_llega_transito: "string",
+        check_transito: 0,
+        estatus_operativo: "string",
+        estatus_administra: "string",
+        monto_ref_cte_sin_imp: 0,
+        porc_comision: 0,
+        porc_descuento: 0,
       },
       formEditClientes: {
         descripcion: "",
@@ -3047,6 +1827,11 @@ export default {
 @media screen and (min-width: 600px) {
   .selectmovil2 {
     margin-right: 35px;
+  }
+}
+@media screen and (min-width: 1200px) {
+  .separationMobile {
+    margin-left: 10px;
   }
 }
 @media screen and (max-width: 1024px) {

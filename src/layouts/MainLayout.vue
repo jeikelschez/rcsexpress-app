@@ -29,7 +29,7 @@
           aria-label="Menu"
           class="q-mr-sm"
         />
-        <q-toolbar-title
+        <q-toolbar-title class="titleMainLayout"
           >SCEN - Sistema de Control de Encomiendas</q-toolbar-title
         >
 
@@ -1581,7 +1581,7 @@
         "
       />
     </keep-alive>
-    <q-page-container> </q-page-container>
+    <q-page-container style="padding-bottom: 0px; padding-top: 37px"> </q-page-container>
 
     <q-footer elevated bordered>
       <div class="float-left buttons" style="margin-top: 10px;margin-bottom:10px; margin-left: 15px">
@@ -2048,7 +2048,6 @@ export default ({
     }, this);
     this.resetLogoutTimer()
     this.miniState = true;
-    this.drawer = true;
     this.Authenticator();
     this.refreshTimer();
     this.$refs.desactivateCrud.desactivarOpciones(
@@ -2331,6 +2330,11 @@ export default ({
 }
 @media screen and (max-width: 298px) {
   .button7 {
+    display: none
+  }
+}
+@media screen and (max-width: 1012px) {
+  .titleMainLayout {
     display: none
   }
 }
