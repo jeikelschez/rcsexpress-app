@@ -2191,7 +2191,6 @@ export default {
     },
     desactivarOpcionesSet(permisos) {
       var permisos = permisos
-      console.log(permisos)
       for (var e = 0, len = permisos.length; e<len; e++) {
           if (permisos[e].permiso == true) {
             this[permisos[e].pagina] = true;

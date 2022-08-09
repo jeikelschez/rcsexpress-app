@@ -62,7 +62,6 @@ export default {
             if ((res.status = 201)) {
               LocalStorage.set("token", `${res.data.data.accessToken}`),
               LocalStorage.set("user", true),
-              console.log(LocalStorage.getItem("token"));
               this.traducirToken();
               this.setRefreshTimer();
             }
