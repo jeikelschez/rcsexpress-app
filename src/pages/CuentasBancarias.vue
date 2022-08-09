@@ -428,7 +428,7 @@
       </q-card>
     </q-dialog>
     <desactivate-crud ref="desactivateCrud"
-      @desactivar-Crud-Roles="desactivarCrudRoles"
+      @desactivar-Crud="desactivarCrud"
     ></desactivate-crud>
     <methods ref="methods"
       @get-Data="this.axiosConfig.headers.banco = this.selectedBanco.id;
@@ -562,7 +562,7 @@ export default {
   },
   mounted() {
     this.getData('/bancos', 'setData', 'bancos');
-    this.$refs.desactivateCrud.desactivarCrud('c_roles', 'd_roles', 'u_roles', 'desactivarCrudRoles')
+    this.$refs.desactivateCrud.desactivarCrud('c_cuentas', 'r_cuentas', 'u_cuentas', 'd_cuentas', 'desactivarCrud')
   },
   methods: {
     filterArray (val, update, abort, pagina, array, element) {
@@ -627,16 +627,18 @@ export default {
       }
       }
     },
-    desactivarCrudRoles(createItem, deleteItem, updateItem) {
-      if (createItem == true) {
+    desactivarCrud(createItem, readItem, deleteItem, updateItem) {
+      if (readItem == true) {
+        if (createItem == true) {
         this.disabledCreate = false
       }
-      if (deleteItem == true) {
+        if (deleteItem == true) {
         this.disabledDelete = false
       }
-      if (updateItem == true) {
+        if (updateItem == true) {
         this.disabledEdit = false
       }
+      } else this.$router.push("/error403");
     },
 
     getData(url, call, dataRes) {

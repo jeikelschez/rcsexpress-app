@@ -204,8 +204,8 @@
         </q-card>
       </div>
 
-      <div class="row col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-5"
-        style="align-self: center; text-align: center; margin-top: 10px"
+      <div class="row col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-5 marginCards"
+        style="align-self: center; text-align: center"
       >
         <q-card bordered class="row col-md-12 col-xs-12 col-xl-12 col-lg-12 col-sm-12 espaciadoGuias"
         >
@@ -328,7 +328,7 @@
       </div>
     </div>
 
-    <div class="q-pa-md" style="margin-top: 20px">
+    <div class="q-pa-md">
       <div class="q-gutter-y-md">
         <div bordered flat class="my-card row">
           <q-table
@@ -835,6 +835,16 @@ export default {
 @media screen and (max-width: 1024px) {
   .espaciadoGuias {
     margin-top: 20px;
+  }
+}
+@media screen and (min-width: 1024px) {
+  .marginCards {
+    margin-top: 30px;
+  }
+}
+@media screen and (max-width: 600px) {
+  .marginCards {
+    margin-top: 10px;
   }
 }
 .menuFilter {

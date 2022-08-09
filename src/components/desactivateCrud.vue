@@ -15,6 +15,146 @@ import { useQuasar } from "quasar";
           }
       },
       error: "",
+      permisos: [
+      {
+        permisoName: 'r_bancos',
+        permiso: false,
+        pagina: "disabledBancos",
+        paginaSet: "disabledBancosSet"
+      },
+      {
+        permisoName: 'r_agencias',
+        permiso: false,
+        pagina: "disabledAgencias",
+        paginaSet: "disabledAgenciasSet"
+      },
+      {
+        permisoName: 'r_ciudades',
+        permiso: false,
+        pagina: "disabledCiudades",
+        paginaSet: "disabledCiudadesSet"
+      },
+      {
+        permisoName: 'r_permisos',
+        permiso: false,
+        pagina: "disabledPermisos",
+        paginaSet: "disabledPermisosSet"
+      },
+      {
+        permisoName: 'r_usuarios',
+        permiso: false,
+        pagina: "disabledUsuarios",
+        paginaSet: "disabledUsuariosSet"
+      },
+      {
+        permisoName: 'r_roles',
+        permiso: false,
+        pagina: "disabledRoles",
+        paginaSet: "disabledRolesSet"
+      },
+      {
+        permisoName: 'r_agentes',
+        permiso: false,
+        pagina: "disabledAgentes",
+        paginaSet: "disabledAgentesSet"
+      },
+      {
+        permisoName: 'r_zonas',
+        permiso: false,
+        pagina: "disabledZonas",
+        paginaSet: "disabledZonasSet"
+      },
+      {
+        permisoName: 'r_unidades',
+        permiso: false,
+        pagina: "disabledUnidades",
+        paginaSet: "disabledUnidadesSet"
+      },
+      {
+        permisoName: 'r_ayudantes',
+        permiso: false,
+        pagina: "disabledAyudantes",
+        paginaSet: "disabledAyudantesSet"
+      },
+      {
+        permisoName: 'r_receptores',
+        permiso: false,
+        pagina: "disabledReceptores",
+        paginaSet: "disabledReceptoresSet"
+      },
+      {
+        permisoName: 'r_tarifas',
+        permiso: false,
+        pagina: "disabledTarifas",
+        paginaSet: "disabledTarifasSet"
+      },
+      {
+        permisoName: 'r_ccorrelativo',
+        permiso: false,
+        pagina: "disabledCcorrelativo",
+        paginaSet: "disabledCcorrelativoSet"
+      },
+      {
+        permisoName: 'r_vcontrol',
+        permiso: false,
+        pagina: "disabledVcontrol",
+        paginaSet: "disabledVcontrolSet"
+      },
+      {
+        permisoName: 'r_cuentas',
+        permiso: false,
+        pagina: "disabledCuentas",
+        paginaSet: "disabledCuentasSet"
+      },
+      {
+        permisoName: 'r_clientes',
+        permiso: false,
+        pagina: "disabledClientes",
+        paginaSet: "disabledClientesSet"
+      },
+      {
+        permisoName: 'r_empleados',
+        permiso: false,
+        pagina: "disabledEmpleados",
+        paginaSet: "disabledEmpleadosSet"
+      },
+      {
+        permisoName: 'r_proveedores',
+        permiso: false,
+        pagina: "disabledProveedores",
+        paginaSet: "disabledProveedoresSet"
+      },
+      {
+        permisoName: 'r_retenciones',
+        permiso: false,
+        pagina: "disabledRetenciones",
+        paginaSet: "disabledRetencionesSet"
+      },
+      {
+        permisoName: 'r_concepto_operacion',
+        permiso: false,
+        pagina: "disabledConceptoOperacion",
+        paginaSet: "disabledConceptoOperacionSet"
+      },
+      {
+        permisoName: 'r_concepto_facturacion',
+        permiso: false,
+        pagina: "disabledConceptoFacturacion",
+        paginaSet: "disabledConceptoFacturacionSet"
+      },
+      {
+        permisoName: 'r_concepto_fpo',
+        permiso: false,
+        pagina: "disabledConceptoFpo",
+        paginaSet: "disabledConceptoFpoSet"
+      },
+      {
+        permisoName: 'r_asignacionguias',
+        permiso: false,
+        pagina: "disabledAsignacionGuias",
+        paginaSet: "disabledAsignacionGuiasSet"
+      },
+      ],
       }
     },
 
@@ -31,149 +171,66 @@ import { useQuasar } from "quasar";
   },
 
     methods: {
-      desactivarCrud(createItem, deleteItem, updateItem, llamada) {
+      desactivarCrud(createItem, readItem, updateItem, deleteItem, llamada) {
         var tokenTraducido = LocalStorage.getItem('tokenTraducido')
 
         var foundCreate
+        var foundRead
+        var foundDelete
+        var foundUpdate
+        
         for (var e = 0, len = tokenTraducido.usuario.roles.permisos.length; e<len; e++) {
           if (tokenTraducido.usuario.roles.permisos[e].codigo === createItem) {
             foundCreate = true
           }
-          if (foundCreate == true) break
+          if (tokenTraducido.usuario.roles.permisos[e].codigo === deleteItem) {
+            foundDelete = true
+          }
+          if (tokenTraducido.usuario.roles.permisos[e].codigo === updateItem) {
+            foundUpdate = true
+          }
+          if (tokenTraducido.usuario.roles.permisos[e].codigo === readItem) {
+            foundRead = true
+          }
           if (e == tokenTraducido.usuario.roles.permisos.length.length - 1) break
           }
 
         if (foundCreate === true) 
-            {
-              createItem = true
-            }
-
-        var foundDelete
-        for (var e = 0, len = tokenTraducido.usuario.roles.permisos.length; e<len; e++) {
-          if (tokenTraducido.usuario.roles.permisos[e].codigo === deleteItem) {
-            foundDelete = true
-          }
-          if (foundDelete == true) break
-          if (e == tokenTraducido.usuario.roles.permisos.length.length - 1) break
-          }
-
+        {
+            createItem = true
+        } else createItem = false
         if (foundDelete === true) 
-            {
-              deleteItem = true
-            }
-
-        var foundEdit
-        for (var e = 0, len = tokenTraducido.usuario.roles.permisos.length; e<len; e++) {
-          if (tokenTraducido.usuario.roles.permisos[e].codigo === updateItem) {
-            foundEdit = true
-          }
-          if (foundEdit == true) break
-          if (e == tokenTraducido.usuario.roles.permisos.length.length - 1) break
-          }
-
-        if (foundEdit === true) 
-            {
-              updateItem = true
-              this.$emit(llamada, createItem, deleteItem, updateItem)
-            }
-
+        {
+            deleteItem = true
+        } else deleteItem = false
+        if (foundUpdate === true) 
+        {
+            updateItem = true
+        } else updateItem = false
+        if (foundRead === true) 
+        {
+            readItem = true
+        } else readItem = false
+        this.$emit(llamada, createItem, readItem, deleteItem, updateItem)
       },
-      desactivarOpciones(
-      llamada,
-      readBancos,
-      readAgencias,
-      readCiudades,
-      readPermisos,
-      readUsuarios,
-      readRoles
-      ) 
-      {var tokenTraducido = LocalStorage.getItem('tokenTraducido')
+      desactivarOpciones(llamada) 
+      {
+        var tokenTraducido = LocalStorage.getItem('tokenTraducido')
 
-        var foundBancos
+      for (var i = 0, len = this.permisos.length; i < len; i++) {
+
         for (var e = 0, len = tokenTraducido.usuario.roles.permisos.length; e<len; e++) {
-          if (tokenTraducido.usuario.roles.permisos[e].codigo == readBancos) {
-            foundBancos = true
+          if (tokenTraducido.usuario.roles.permisos[e].codigo == this.permisos[i].permisoName) {
+            this.permisos[i].permiso = true
           }
-          if (foundBancos == true) break
           if (e == tokenTraducido.usuario.roles.permisos.length.length - 1) break
-          };
-
-        if (foundBancos === true) 
-            {
-              readBancos = true
-            };
-
-        var foundAgencias
-        for (var e = 0, len = tokenTraducido.usuario.roles.permisos.length; e<len; e++) {
-          if (tokenTraducido.usuario.roles.permisos[e].codigo == readAgencias) {
-            foundAgencias = true
-          }
-          if (foundAgencias == true) break
-          if (e == tokenTraducido.usuario.roles.permisos.length.length - 1) break
-          };
-
-        if (foundAgencias === true) 
-            {
-              readAgencias = true
-            }
-
-        var foundCiudades
-        for (var e = 0, len = tokenTraducido.usuario.roles.permisos.length; e<len; e++) {
-          if (tokenTraducido.usuario.roles.permisos[e].codigo === readCiudades) {
-            foundCiudades = true
-          }
-          if (foundCiudades == true) break
-          if (e == tokenTraducido.usuario.roles.permisos.length.length - 1) break
-          }
-
-        if (foundCiudades === true) 
-            {
-              readCiudades = true
-            }
-
-        var foundPermisos
-        for (var e = 0, len = tokenTraducido.usuario.roles.permisos.length; e<len; e++) {
-          if (tokenTraducido.usuario.roles.permisos[e].codigo === readPermisos) {
-            foundPermisos = true
-          }
-          if (foundPermisos == true) break
-          if (e == tokenTraducido.usuario.roles.permisos.length.length - 1) break
-          }
-
-        if (foundPermisos === true) 
-            {
-              readPermisos = true
-            }
+        };
         
-        var foundUsuarios
-        for (var e = 0, len = tokenTraducido.usuario.roles.permisos.length; e<len; e++) {
-          if (tokenTraducido.usuario.roles.permisos[e].codigo === readUsuarios) {
-            foundUsuarios = true
-          }
-          if (foundUsuarios == true) break
-          if (e == tokenTraducido.usuario.roles.permisos.length.length - 1) break
-          }
-
-        if (foundUsuarios === true) 
-            {
-              readUsuarios = true
-            }
-
-        var foundRoles
-        for (var e = 0, len = tokenTraducido.usuario.roles.permisos.length; e<len; e++) {
-          if (tokenTraducido.usuario.roles.permisos[e].codigo === readRoles) {
-            foundRoles = true
-          }
-          if (foundRoles == true) break
-          if (e == tokenTraducido.usuario.roles.permisos.length.length - 1) break
-          }
-
-        if (foundRoles === true) 
-            {
-              readRoles = true
-              this.$emit(llamada, readBancos, readAgencias, readCiudades, readPermisos, readUsuarios, readRoles)
-            }
-
+        if (i == this.permisos.length - 1) {
+          this.$emit(llamada, this.permisos)
+          break
+        };
+      };
       },
   },
 };

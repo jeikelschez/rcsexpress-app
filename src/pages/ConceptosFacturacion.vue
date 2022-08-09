@@ -460,7 +460,7 @@
       </q-card>
     </q-dialog>
     <desactivate-crud ref="desactivateCrud"
-      @desactivar-Crud-Roles="desactivarCrudRoles"
+      @desactivar-Crud="desactivarCrud"
     ></desactivate-crud>
     <methods ref="methods"
       @get-Data="getData(`/cfacturacion`, 'setData', 'datos')"
@@ -577,8 +577,9 @@ export default {
   mounted() {
     this.getData('/coperacion', 'setDataIniciar', 'conceptos');
     this.getData('/cfacturacion', 'setData', 'datos');
-    this.$refs.desactivateCrud.desactivarCrud('c_roles', 'd_roles', 'u_roles', 'desactivarCrudRoles')
+    this.$refs.desactivateCrud.desactivarCrud('c_concepto_facturacion', 'r_concepto_facturacion', 'u_concepto_facturacion', 'd_concepto_facturacion', 'desactivarCrud');
   },
+  
   methods: {
     filterArray (val, update, abort, pagina, array, element) {
         if (val === '') {
@@ -629,16 +630,18 @@ export default {
       }
     },
 
-    desactivarCrudRoles(createItem, deleteItem, updateItem) {
-      if (createItem == true) {
+    desactivarCrud(createItem, readItem, deleteItem, updateItem) {
+      if (readItem == true) {
+        if (createItem == true) {
         this.disabledCreate = false
       }
-      if (deleteItem == true) {
+        if (deleteItem == true) {
         this.disabledDelete = false
       }
-      if (updateItem == true) {
+        if (updateItem == true) {
         this.disabledEdit = false
       }
+      } else this.$router.push("/error403");
     },
 
     getData(url, call, dataRes) {

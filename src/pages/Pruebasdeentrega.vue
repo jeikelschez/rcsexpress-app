@@ -1472,6 +1472,7 @@
               <q-table
                 :rows="clientes"
                 row-key="id"
+                dense
                 :columns="columnsClientes"
                 :separator="separator"
                 :loading="loading"
@@ -1484,46 +1485,198 @@
                 <template v-slot:loading>
                   <q-inner-loading showing color="primary" />
                 </template>
-                <template v-slot:body-cell-action="props">
+
+                <template v-slot:body-cell-check="props">
+                    <q-td :props="props">
+                      <q-checkbox
+                                size="lg"
+                                v-model="props.row.cte_decontado"
+                                true-value="1"
+                                false-value="0"
+                                style="font-size: 13px"
+                      />
+                    </q-td>
+                </template>
+
+                <template v-slot:body-cell-estatus_select="props">
                   <q-td :props="props">
-                    <q-btn
-                      dense
-                      round
-                      flat
-                      color="primary"
-                      icon="edit"
-                      :disabled="this.disabledEdit"
-                      @click="
-                        getData(
-                          `/clientes/${props.row.id}`,
-                          'setDataEdit',
-                          'formEditClientes'
-                        );
-                        formEdit = true;
-                      "
-                    ></q-btn>
-                    <q-btn
-                      dense
-                      round
-                      flat
-                      color="primary"
-                      icon="delete"
-                      :disabled="this.disabledDelete"
-                      @click="selected = props.row.id"
-                      @click.capture="clientesDelete = true"
-                    ></q-btn>
-                    <q-btn
-                      dense
-                      round
-                      flat
-                      color="primary"
-                      icon="book"
-                      :disabled="this.disabledEdit"
-                      @click="selected = props.row.id"
-                      @click.capture="conceptosBox = true"
-                    ></q-btn>
+                  <q-select
+                                outlined
+                                v-model="props.row.rif_cedula"
+                                :options="estatus"
+                              >
+                  </q-select>
                   </q-td>
                 </template>
+
+                <template v-slot:body-cell-persona_recibio_input="props">
+                  <q-td :props="props">
+                  <q-input
+                                outlined
+                                v-model="props.row.nb_cliente"
+                                :input-style="{width: `${props.row.nb_cliente.length/2 + 2}em`, minWidth: '30px'}"
+                              >
+                              </q-input>
+                  </q-td>
+                </template>
+
+                <template v-slot:body-cell-ci_input="props">
+                  <q-td :props="props">
+                  <q-input
+                                outlined
+                                v-model="props.row.rif_cedula"
+                                :input-style="{ width: `${props.row.rif_cedula.length/2 + 2}em`, minWidth: '30px'}"
+                                @update:model-value="
+                                  getDataEdit(props.row.id, 'putDatoSelect');
+                                  this.formEdit.estatus_lote = props.row.rif_cedula.value;
+                                "
+                              >
+                  </q-input>
+                  </q-td>
+                </template>
+
+                <template v-slot:body-cell-fecha_entrega_input="props">
+                  <q-td :props="props">
+                  <q-input
+                      outlined
+                      hint=""
+                      style="padding-bottom: 0px"
+                      :input-style="{ minWidth: '100px'}"
+                      v-model="formClientes.nit"
+                      mask="date"
+                      hide-bottom-space
+                      :rules="['date']"
+                      lazy-rules
+                >
+                  <template v-slot:append>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                        <q-date v-model="formClientes.nit">
+                          <div class="row items-center justify-end">
+                             <q-btn v-close-popup label="Close" color="primary" flat />
+                          </div>
+                        </q-date>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
+                  </q-td>
+                </template>
+
+                <template v-slot:body-cell-agente_select="props">
+                  <q-td :props="props">
+                  <q-select
+                                outlined
+                                v-model="props.row.persona_contacto"
+                                :options="estatus"
+                              >
+                  </q-select>
+                  </q-td>
+                </template>
+
+                <template v-slot:body-cell-dias_entrega_input="props">
+                  <q-td :props="props">
+                  <q-input
+                                outlined
+                                :input-style="{width: `${props.row.id.length/2 + 2}em`, minWidth: '10px'}"
+                                v-model="props.row.id"
+                                :options="estatus"
+                              >
+                  </q-input>
+                  </q-td>
+                </template>
+
+                <template v-slot:body-cell-motivo_retraso_select="props">
+                  <q-td :props="props">
+                  <q-select
+                                outlined
+                                v-model="props.row.dir_fiscal"
+                                :options="estatus"
+                              >
+                  </q-select>
+                  </q-td>
+                </template>
+
+                <template v-slot:body-cell-agencia_trafico_select="props">
+                  <q-td :props="props">
+                  <q-select
+                                outlined
+                                v-model="props.row.dir_correo"
+                                :options="estatus"
+                              >
+                  </q-select>
+                  </q-td>
+                </template>
+
+                <template v-slot:body-cell-fecha_llega_transito_input="props">
+                  <q-td :props="props">
+                  <q-input
+                      outlined
+                      hint=""
+                      style="padding-bottom: 0px"
+                      :input-style="{ minWidth: '100px'}"
+                      hide-bottom-space
+                      v-model="formClientes.nit"
+                      mask="date"
+                      :rules="['date']"
+                      lazy-rules
+                >
+                  <template v-slot:append>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                        <q-date v-model="formClientes.nit">
+                          <div class="row items-center justify-end">
+                             <q-btn v-close-popup label="Close" color="primary" flat />
+                          </div>
+                        </q-date>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
+                  </q-td>
+                </template>
+
+                <template v-slot:body-cell-fecha_sale_transito_input="props">
+                  <q-td :props="props">
+                  <q-input
+                      outlined
+                      hide-bottom-space
+                      hint=""
+                      style="padding-bottom: 0px"
+                      :input-style="{ minWidth: '100px'}"
+                      v-model="formClientes.nit"
+                      mask="date"
+                      :rules="['date']"
+                      lazy-rules
+                >
+                  <template v-slot:append>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                        <q-date v-model="formClientes.nit">
+                          <div class="row items-center justify-end">
+                             <q-btn v-close-popup label="Close" color="primary" flat />
+                          </div>
+                        </q-date>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
+                  </q-td>
+                </template>
+
+                <template v-slot:body-cell-observacion_input="props">
+                  <q-td :props="props">
+                  <q-input
+                                outlined
+                                :input-style="{width: `${props.row.razon_social.length/2 + 2}em`, minWidth: '100px'}"
+                                v-model="props.row.razon_social"
+                                :options="estatus"
+                              >
+                  </q-input>
+                  </q-td>
+                </template>
+
+
                 <template v-slot:item="props">
                   <div
                     class="
@@ -1539,98 +1692,409 @@
                           <q-item-section>
                             <q-item-label>{{ col.label }}</q-item-label>
                           </q-item-section>
-                          <q-item-section side>
-                            <q-chip
-                              v-if="col.name === 'status'"
-                              :color="
-                                props.row.status == 'Active'
-                                  ? 'green'
-                                  : props.row.status == 'Disable'
-                                  ? 'red'
-                                  : 'grey'
-                              "
-                              text-color="white"
-                              dense
-                              class="text-weight-bolder"
-                              square
-                              >{{ col.value }}</q-chip
-                            >
-                            <q-btn
-                              v-else-if="col.name === 'action'"
-                              dense
-                              round
-                              flat
-                              color="primary"
-                              icon="edit"
-                              :disabled="this.disabledEdit"
-                              @click="
-                                getData(
-                                  `/clientes/${props.row.id}`,
-                                  'setDataEdit',
-                                  'formEditClientes'
-                                );
-                                formEdit = true;
-                              "
-                            ></q-btn>
-                            <q-chip
-                              v-if="col.name === 'status'"
-                              :color="
-                                props.row.status == 'Active'
-                                  ? 'green'
-                                  : props.row.status == 'Disable'
-                                  ? 'red'
-                                  : 'grey'
-                              "
-                              text-color="white"
-                              dense
-                              class="text-weight-bolder"
-                              square
-                              >{{ col.value }}</q-chip
-                            >
-                            <q-btn
-                              v-else-if="col.name === 'action'"
-                              dense
-                              round
-                              flat
-                              color="primary"
-                              icon="delete"
-                              :disabled="this.disabledDelete"
-                              @click="selected = props.row.id"
-                              @click.capture="clientesDelete = true"
-                            ></q-btn>
-                            <q-chip
-                              v-if="col.name === 'status'"
-                              :color="
-                                props.row.status == 'Active'
-                                  ? 'green'
-                                  : props.row.status == 'Disable'
-                                  ? 'red'
-                                  : 'grey'
-                              "
-                              text-color="white"
-                              dense
-                              class="text-weight-bolder"
-                              square
-                              >{{ col.value }}</q-chip
-                            >
-                            <q-btn
-                              v-else-if="col.name === 'action'"
-                              dense
-                              round
-                              flat
-                              color="primary"
-                              icon="book"
-                              :disabled="this.disabledEdit"
-                              @click="selected = props.row.id"
-                              @click.capture="conceptosBox = true"
-                            ></q-btn>
-                            <q-item-label
-                              v-else
-                              caption
-                              :class="col.classes ? col.classes : ''"
-                              >{{ col.value }}</q-item-label
-                            >
+
+                          <q-item-section side style="padding-left: 0px">
+                              <q-chip
+                                v-if="col.name === 'checke'"
+                                :color="
+                                  props.row.check == 'Active'
+                                    ? 'green'
+                                    : props.row.check == 'Disable'
+                                    ? 'red'
+                                    : 'grey'
+                                "
+                                text-color="white"
+                                dense
+                                class="text-weight-bolder"
+                                square
+                                >{{ col.value }}</q-chip
+                              >
+                              <q-checkbox
+                                v-else-if="col.name === 'check'"
+                                size="lg"
+                                v-model="props.row.cte_decontado"
+                                true-value="1"
+                                false-value="0"
+                                style="font-size: 13px"
+                      />
+                              <q-item-label
+                                v-else
+                                caption
+                                :class="col.classes ? col.classes : ''"
+                                >{{ col.value }}</q-item-label
+                              >
                           </q-item-section>
+
+                          <q-item-section side style="padding-left: 0px">
+                              <q-chip
+                                v-if="col.name === 'checke'"
+                                :color="
+                                  props.row.status == 'Active'
+                                    ? 'green'
+                                    : props.row.status == 'Disable'
+                                    ? 'red'
+                                    : 'grey'
+                                "
+                                text-color="white"
+                                dense
+                                class="text-weight-bolder"
+                                square
+                                >{{ col.value }}</q-chip
+                              >
+                              <q-select
+                                v-else-if="col.name === 'estatus_select'"
+                                outlined
+                                autogrow
+                                v-model="props.row.estatus_desc"
+                                :options="estatus"
+                                label="Estatus"
+                                @update:model-value="
+                                  getDataEdit(props.row.id, 'putDatoSelect');
+                                  this.formEdit.estatus_lote = props.row.estatus_desc.value;
+                                "
+                              >
+                              </q-select>
+                          </q-item-section>
+
+                          <q-item-section side style="padding-left: 0px">
+                              <q-chip
+                                v-if="col.name === 'checke'"
+                                :color="
+                                  props.row.status == 'Active'
+                                    ? 'green'
+                                    : props.row.status == 'Disable'
+                                    ? 'red'
+                                    : 'grey'
+                                "
+                                text-color="white"
+                                dense
+                                class="text-weight-bolder"
+                                square
+                                >{{ col.value }}</q-chip
+                              >
+                              <q-input
+                                v-else-if="col.name === 'persona_recibio_input'"
+                                outlined
+                                v-model="props.row.estatus_desc"
+                                :options="estatus"
+                                label="Persona que Recibio"
+                                @update:model-value="
+                                  getDataEdit(props.row.id, 'putDatoSelect');
+                                  this.formEdit.estatus_lote = props.row.estatus_desc.value;
+                                "
+                              >
+                              </q-input>
+                          </q-item-section>
+
+                          <q-item-section side style="padding-left: 0px">
+                              <q-chip
+                                v-if="col.name === 'checke'"
+                                :color="
+                                  props.row.status == 'Active'
+                                    ? 'green'
+                                    : props.row.status == 'Disable'
+                                    ? 'red'
+                                    : 'grey'
+                                "
+                                text-color="white"
+                                dense
+                                class="text-weight-bolder"
+                                square
+                                >{{ col.value }}</q-chip
+                              >
+                              <q-input
+                                v-else-if="col.name === 'ci_input'"
+                                outlined
+                                v-model="props.row.estatus_desc"
+                                :options="estatus"
+                                label="C.I."
+                                @update:model-value="
+                                  getDataEdit(props.row.id, 'putDatoSelect');
+                                  this.formEdit.estatus_lote = props.row.estatus_desc.value;
+                                "
+                              >
+                              </q-input>
+                          </q-item-section>
+
+                          <q-item-section side style="padding-left: 0px">
+                              <q-chip
+                                v-if="col.name === 'checke'"
+                                :color="
+                                  props.row.status == 'Active'
+                                    ? 'green'
+                                    : props.row.status == 'Disable'
+                                    ? 'red'
+                                    : 'grey'
+                                "
+                                text-color="white"
+                                dense
+                                class="text-weight-bolder"
+                                square
+                                >{{ col.value }}</q-chip
+                              >
+                              <q-input
+                              v-else-if="col.name === 'fecha_entrega_input'"
+                      outlined
+                      label="Fecha Entrega"
+                      hint=""
+                      style="padding-bottom: 0px"
+                      v-model="form.fecha_ini_val"
+                      mask="date"
+                      :rules="['date']"
+                      class="pcform"
+                      lazy-rules
+                >
+                  <template v-slot:append>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                        <q-date v-model="form.fecha_ini_val">
+                          <div class="row items-center justify-end">
+                             <q-btn v-close-popup label="Close" color="primary" flat />
+                          </div>
+                        </q-date>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
+                          </q-item-section>
+
+                          <q-item-section side style="padding-left: 0px">
+                              <q-chip
+                                v-if="col.name === 'checke'"
+                                :color="
+                                  props.row.status == 'Active'
+                                    ? 'green'
+                                    : props.row.status == 'Disable'
+                                    ? 'red'
+                                    : 'grey'
+                                "
+                                text-color="white"
+                                dense
+                                class="text-weight-bolder"
+                                square
+                                >{{ col.value }}</q-chip
+                              >
+                              <q-select
+                                v-else-if="col.name === 'agente_select'"
+                                outlined
+                                autogrow
+                                v-model="props.row.estatus_desc"
+                                :options="estatus"
+                                label="Agente Entrega"
+                                @update:model-value="
+                                  getDataEdit(props.row.id, 'putDatoSelect');
+                                  this.formEdit.estatus_lote = props.row.estatus_desc.value;
+                                "
+                              >
+                              </q-select>
+                          </q-item-section>
+
+                          <q-item-section side style="padding-left: 0px">
+                              <q-chip
+                                v-if="col.name === 'checke'"
+                                :color="
+                                  props.row.status == 'Active'
+                                    ? 'green'
+                                    : props.row.status == 'Disable'
+                                    ? 'red'
+                                    : 'grey'
+                                "
+                                text-color="white"
+                                dense
+                                class="text-weight-bolder"
+                                square
+                                >{{ col.value }}</q-chip
+                              >
+                              <q-input
+                                v-else-if="col.name === 'dias_entrega_input'"
+                                outlined
+                                v-model="props.row.estatus_desc"
+                                :options="estatus"
+                                label="Dias de Entrega"
+                                @update:model-value="
+                                  getDataEdit(props.row.id, 'putDatoSelect');
+                                  this.formEdit.estatus_lote = props.row.estatus_desc.value;
+                                "
+                              >
+                              </q-input>
+                          </q-item-section>
+
+                          <q-item-section side style="padding-left: 0px">
+                              <q-chip
+                                v-if="col.name === 'checke'"
+                                :color="
+                                  props.row.status == 'Active'
+                                    ? 'green'
+                                    : props.row.status == 'Disable'
+                                    ? 'red'
+                                    : 'grey'
+                                "
+                                text-color="white"
+                                dense
+                                class="text-weight-bolder"
+                                square
+                                >{{ col.value }}</q-chip
+                              >
+                              <q-select
+                                autogrow
+                                v-else-if="col.name === 'motivo_retraso_select'"
+                                outlined
+                                v-model="props.row.estatus_desc"
+                                :options="estatus"
+                                label="Motivo de Retraso"
+                                @update:model-value="
+                                  getDataEdit(props.row.id, 'putDatoSelect');
+                                  this.formEdit.estatus_lote = props.row.estatus_desc.value;
+                                "
+                              >
+                              </q-select>
+                          </q-item-section>
+
+                          <q-item-section side style="padding-left: 0px">
+                              <q-chip
+                                v-if="col.name === 'checke'"
+                                :color="
+                                  props.row.status == 'Active'
+                                    ? 'green'
+                                    : props.row.status == 'Disable'
+                                    ? 'red'
+                                    : 'grey'
+                                "
+                                text-color="white"
+                                dense
+                                class="text-weight-bolder"
+                                square
+                                >{{ col.value }}</q-chip
+                              >
+                              <q-select
+                                v-else-if="col.name === 'agencia_trafico_select'"
+                                outlined
+                                autogrow
+                                v-model="props.row.estatus_desc"
+                                :options="estatus"
+                                label="Agencia Transito"
+                                @update:model-value="
+                                  getDataEdit(props.row.id, 'putDatoSelect');
+                                  this.formEdit.estatus_lote = props.row.estatus_desc.value;
+                                "
+                              >
+                              </q-select>
+                          </q-item-section>
+
+                          <q-item-section side style="padding-left: 0px">
+                              <q-chip
+                                v-if="col.name === 'checke'"
+                                :color="
+                                  props.row.status == 'Active'
+                                    ? 'green'
+                                    : props.row.status == 'Disable'
+                                    ? 'red'
+                                    : 'grey'
+                                "
+                                text-color="white"
+                                dense
+                                class="text-weight-bolder"
+                                square
+                                >{{ col.value }}</q-chip
+                              >
+                              <q-input
+                              v-else-if="col.name === 'fecha_llega_transito_input'"
+                      outlined
+                      label="Llega a Transito"
+                      hint=""
+                      v-model="form.fecha_ini_val"
+                      style="padding-bottom: 0px"
+                      mask="date"
+                      :rules="['date']"
+                      class="pcform"
+                      lazy-rules
+                >
+                  <template v-slot:append>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                        <q-date v-model="form.fecha_ini_val">
+                          <div class="row items-center justify-end">
+                             <q-btn v-close-popup label="Close" color="primary" flat />
+                          </div>
+                        </q-date>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
+                          </q-item-section>
+
+                          <q-item-section side style="padding-left: 0px">
+                              <q-chip
+                                v-if="col.name === 'checke'"
+                                :color="
+                                  props.row.status == 'Active'
+                                    ? 'green'
+                                    : props.row.status == 'Disable'
+                                    ? 'red'
+                                    : 'grey'
+                                "
+                                text-color="white"
+                                dense
+                                class="text-weight-bolder"
+                                square
+                                >{{ col.value }}</q-chip
+                              >
+                              <q-input
+                              v-else-if="col.name === 'fecha_sale_transito_input'"
+                      outlined
+                      label="Llega de Transito"
+                      style="padding-bottom: 0px"
+                      hint=""
+                      v-model="form.fecha_ini_val"
+                      mask="date"
+                      :rules="['date']"
+                      class="pcform"
+                      lazy-rules
+                >
+                  <template v-slot:append>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                        <q-date v-model="form.fecha_ini_val">
+                          <div class="row items-center justify-end">
+                             <q-btn v-close-popup label="Close" color="primary" flat />
+                          </div>
+                        </q-date>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
+                          </q-item-section>
+
+                          <q-item-section side style="padding-left: 0px; padding-bottom: 10px">
+                              <q-chip
+                                v-if="col.name === 'checke'"
+                                :color="
+                                  props.row.status == 'Active'
+                                    ? 'green'
+                                    : props.row.status == 'Disable'
+                                    ? 'red'
+                                    : 'grey'
+                                "
+                                text-color="white"
+                                dense
+                                class="text-weight-bolder"
+                                square
+                                >{{ col.value }}</q-chip
+                              >
+                              <q-input
+                                v-else-if="col.name === 'observacion_input'"
+                                outlined
+                                v-model="props.row.estatus_desc"
+                                :options="estatus"
+                                label="Observacion"
+                                @update:model-value="
+                                  getDataEdit(props.row.id, 'putDatoSelect');
+                                  this.formEdit.estatus_lote = props.row.estatus_desc.value;
+                                "
+                              >
+                              </q-input>
+                          </q-item-section>
+
                         </q-item>
                       </q-list>
                     </q-card>
@@ -1709,35 +2173,133 @@ export default {
       columnsClientes: [
         {
           name: "nb_cliente",
-          label: "Nombre",
+          label: "Cliente Origen",
           field: "nb_cliente",
           align: "left",
           sortable: true,
         },
         {
           name: "rif_cedula",
-          label: "RIF",
+          label: "Cliente Destino",
           field: "rif_cedula",
           align: "left",
           sortable: true,
         },
         {
           name: "activo_desc",
-          label: "Estatus",
+          label: "Fecha Emision",
           field: "activo_desc",
           align: "left",
           sortable: true,
         },
         {
           name: "cte_decontado",
-          label: "Cliente Particular",
+          label: "Fecha Envio",
           field: "cte_decontado",
           align: "center",
           sortable: true,
         },
         {
-          name: "action",
-          label: "Acciones",
+          name: "cte_decontado",
+          label: "NRO. Guia",
+          field: "cte_decontado",
+          align: "center",
+          sortable: true,
+        },
+        {
+          name: "cte_decontado",
+          label: "Forma Pago",
+          field: "cte_decontado",
+          align: "center",
+          sortable: true,
+        },
+        {
+          name: "cte_decontado",
+          label: "Pagado En",
+          field: "cte_decontado",
+          align: "center",
+          sortable: true,
+        },
+        {
+          name: "check",
+          label: "Pagado",
+          align: "center",
+          sortable: true,
+          required: true,
+        },
+        {
+          name: "estatus_select",
+          label: "Estatus",
+          align: "center",
+          sortable: true,
+          required: true,
+        },
+        {
+          name: "persona_recibio_input",
+          label: "Persona que Recibió",
+          align: "center",
+          sortable: true,
+          required: true,
+        },
+        {
+          name: "ci_input",
+          label: "C.I.",
+          align: "center",
+          sortable: true,
+          required: true,
+        },
+        {
+          name: "fecha_entrega_input",
+          label: "Fecha Entrega",
+          align: "center",
+          sortable: true,
+          required: true,
+        },
+        {
+          name: "agente_select",
+          label: "Agente Entrega",
+          align: "center",
+          sortable: true,
+          required: true,
+        },
+        {
+          name: "dias_entrega_input",
+          label: "Dias de Entrega",
+          align: "center",
+          sortable: true,
+          required: true,
+        },
+        {
+          name: "motivo_retraso_select",
+          label: "Motivo de Retraso en Entrega",
+          align: "center",
+          sortable: true,
+          required: true,
+        },
+        {
+          name: "agencia_trafico_select",
+          label: "Agencia Transito",
+          align: "center",
+          sortable: true,
+          required: true,
+        },
+        {
+          name: "fecha_llega_transito_input",
+          label: "Fecha Llega Transito",
+          align: "center",
+          sortable: true,
+          required: true,
+        },
+        {
+          name: "fecha_sale_transito_input",
+          label: "Fecha Sale Transito",
+          align: "center",
+          sortable: true,
+          required: true,
+        },
+        {
+          name: "observacion_input",
+          label: "Observacion",
           align: "center",
           sortable: true,
           required: true,
@@ -1890,7 +2452,7 @@ export default {
       paginationConceptos: ref({
         rowsPerPage: 4,
       }),
-      separator: ref("vertical"),
+      separator: ref("cell"),
       form: ref(false),
       loading: ref(false),
       formEdit: ref(false),
@@ -2327,6 +2889,19 @@ export default {
 </script>
 
 <style>
+.q-field__bottom {
+    display: none;
+}
+@media screen and (min-width: 600px) {
+  .q-field--auto-height.q-field--labeled .q-field__native {
+    min-width: 120px
+  }
+}
+@media screen and (max-width: 600px) {
+  .q-field--auto-height.q-field--labeled .q-field__native {
+    min-width: 100px; max-width: 150px
+  }
+}
 .menuFilter {
     padding-bottom: 1px;
 }

@@ -466,7 +466,7 @@
     @set-data="setData" @set-Data-Edit="setData">
     </methods>
     <desactive-crud ref="desactiveCrud"
-    @desactivar-Crud-Bancos="desactivarCrudBancos">
+    @desactivar-Crud="desactivarCrud">
     </desactive-crud>
   </q-page>
 </template>
@@ -611,7 +611,7 @@ export default {
   },
   mounted() {
     this.getData('/bancos','setData','datos')
-    this.$refs.desactiveCrud.desactivarCrud('c_bancos', 'd_bancos', 'u_bancos', 'desactivarCrudBancos')
+    this.$refs.desactiveCrud.desactivarCrud('c_bancos', 'r_bancos', 'u_bancos', 'd_bancos', 'desactivarCrud')
   },
   methods: {
     resetLoading() {
@@ -639,16 +639,18 @@ export default {
        }
       }
     },
-    desactivarCrudBancos(createItem, deleteItem, updateItem) {
-      if (createItem == true) {
+    desactivarCrud(createItem, readItem, deleteItem, updateItem) {
+      if (readItem == true) {
+        if (createItem == true) {
         this.disabledCreate = false
       }
-      if (deleteItem == true) {
+        if (deleteItem == true) {
         this.disabledDelete = false
       }
-      if (updateItem == true) {
+        if (updateItem == true) {
         this.disabledEdit = false
       }
+      } else this.$router.push("/error403");
     },
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);

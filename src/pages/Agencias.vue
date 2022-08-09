@@ -750,7 +750,7 @@
     @set-Data-Estados="setDataEstados"
     @set-Data-Ciudades="setDataCiudades"></methods>
     <desactive-crud ref="desactiveCrud"
-    @desactivar-Crud-Agencias="desactivarCrudAgencias"></desactive-crud>
+    @desactivar-Crud="desactivarCrud"></desactive-crud>
   </q-page>
 </template>
 
@@ -917,7 +917,7 @@ export default {
   mounted() {
     this.getData('/agencias','setData','datos')
     this.getData('/paises','setData','paises')
-    this.$refs.desactiveCrud.desactivarCrud('c_agencias', 'd_agencias', 'u_agencias', 'desactivarCrudAgencias')
+    this.$refs.desactiveCrud.desactivarCrud('c_agencias', 'r_agencias', 'u_agencias', 'd_agencias', 'desactivarCrud')
   },
   methods: {
     filterArray (val, update, abort, pagina, array, element) {
@@ -977,16 +977,18 @@ export default {
       }
       }
     },
-    desactivarCrudAgencias(createItem, deleteItem, updateItem) {
-      if (createItem == true) {
+    desactivarCrud(createItem, readItem, deleteItem, updateItem) {
+      if (readItem == true) {
+        if (createItem == true) {
         this.disabledCreate = false
       }
-      if (deleteItem == true) {
+        if (deleteItem == true) {
         this.disabledDelete = false
       }
-      if (updateItem == true) {
+        if (updateItem == true) {
         this.disabledEdit = false
       }
+      } else this.$router.push("/error403");
     },
 
     getData(url, call, dataRes) {

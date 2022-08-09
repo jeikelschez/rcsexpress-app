@@ -358,7 +358,7 @@
       </q-card>
     </q-dialog>
     <desactivate-crud ref="desactiveCrud"
-      @desactivar-Crud-Zonas="desactivarCrudZonas"
+      @desactivar-Crud="desactivarCrud"
     ></desactivate-crud>
     <methods ref="methods"
       @get-Data="this.axiosConfig.headers.agencia = this.selectedAgencia.id;
@@ -499,7 +499,7 @@ export default {
   },
   mounted() {
     this.getData('/agencias', 'setData', 'agencias');
-    this.$refs.desactiveCrud.desactivarCrud('c_roles', 'd_roles', 'u_roles', 'desactivarCrudZonas')
+    this.$refs.desactiveCrud.desactivarCrud('c_zonas', 'r_zonas', 'u_zonas', 'd_zonas', 'desactivarCrud')
   },
   methods: {
     filterArray (val, update, abort, pagina, array, element) {
@@ -536,16 +536,22 @@ export default {
         return "Debes Seleccionar Algo";
       }
     },
-    desactivarCrudZonas(createItem, deleteItem, updateItem) {
-      if (createItem == true) {
+    desactivarCrud(createItem, readItem, deleteItem, updateItem) {
+      console.log(createItem)
+      console.log(readItem)
+      console.log(deleteItem)
+      console.log(updateItem)
+      if (readItem == true) {
+        if (createItem == true) {
         this.disabledCreate = false
       }
-      if (deleteItem == true) {
+        if (deleteItem == true) {
         this.disabledDelete = false
       }
-      if (updateItem == true) {
+        if (updateItem == true) {
         this.disabledEdit = false
       }
+      } else this.$router.push("/error403");
     },
 
     getData(url, call, dataRes) {

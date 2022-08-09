@@ -427,7 +427,7 @@
     ></methods>
     <desactive-crud
       ref="desactiveCrud"
-      @desactivar-Crud-Agencias="desactivarCrudAgencias"
+      @desactivar-Crud="desactivarCrud"
     ></desactive-crud>
   </q-page>
 </template>
@@ -540,12 +540,7 @@ export default {
   },
   mounted() {
     this.getData("/vcontrol", "setData", "datos");
-    this.$refs.desactiveCrud.desactivarCrud(
-      "c_agencias",
-      "d_agencias",
-      "u_agencias",
-      "desactivarCrudAgencias"
-    );
+    this.$refs.desactiveCrud.desactivarCrud('c_vcontrol', 'r_vcontrol', 'u_vcontrol', 'd_vcontrol', 'desactivarCrud')
   },
   methods: {
     resetLoading() {
@@ -596,16 +591,18 @@ export default {
         return "Debes Seleccionar Algo";
       }
     },
-    desactivarCrudAgencias(createItem, deleteItem, updateItem) {
-      if (createItem == true) {
-        this.disabledCreate = false;
+    desactivarCrud(createItem, readItem, deleteItem, updateItem) {
+      if (readItem == true) {
+        if (createItem == true) {
+        this.disabledCreate = false
       }
-      if (deleteItem == true) {
-        this.disabledDelete = false;
+        if (deleteItem == true) {
+        this.disabledDelete = false
       }
-      if (updateItem == true) {
-        this.disabledEdit = false;
+        if (updateItem == true) {
+        this.disabledEdit = false
       }
+      } else this.$router.push("/error403");
     },
 
     getData(url, call, dataRes) {

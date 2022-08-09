@@ -528,7 +528,7 @@
       @set-Data="setData"
     ></methods>
     <desactivate-crud ref="desactiveCrud"
-      @desactivar-Crud-Usuarios="desactivarCrudUsuarios"
+      @desactivar-Crud="desactivarCrud"
     ></desactivate-crud>
   </q-page>
 </template>
@@ -694,7 +694,7 @@ export default {
   },
   mounted() {
     this.getData('/agencias', 'setData', 'agencias');
-    this.$refs.desactiveCrud.desactivarCrud('c_usuarios', 'd_usuarios', 'u_usuarios', 'desactivarCrudUsuarios')
+    this.$refs.desactiveCrud.desactivarCrud('c_usuarios', 'r_usuarios', 'u_usuarios', 'd_usuarios', 'desactivarCrud')
   },
   methods: {
     filterArray (val, update, abort, pagina, array, element) {
@@ -730,16 +730,18 @@ export default {
         return "Debes Seleccionar Algo";
       }
     },
-    desactivarCrudUsuarios(createItem, deleteItem, updateItem) {
-      if (createItem == true) {
+    desactivarCrud(createItem, readItem, deleteItem, updateItem) {
+      if (readItem == true) {
+        if (createItem == true) {
         this.disabledCreate = false
       }
-      if (deleteItem == true) {
+        if (deleteItem == true) {
         this.disabledDelete = false
       }
-      if (updateItem == true) {
+        if (updateItem == true) {
         this.disabledEdit = false
       }
+      } else this.$router.push("/error403");
     },
     getData(url, call, dataRes) {
     this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
@@ -757,9 +759,9 @@ export default {
     setDataRoles(res, dataRes) {
       this[dataRes] = res
       this.formEditUsuarios.cod_rol = ''
+      this.loading = false
     },
     setDataUsuariosEdit(res, dataRes) {
-      this.loading = false
       this[dataRes].login = res.login;
       this[dataRes].nombre = res.nombre;
       this[dataRes].id = res.id;
@@ -824,7 +826,7 @@ export default {
     },
     setDataRolesIniciar(res, dataRes) {
       this[dataRes] = res
-      this.loading = true;
+      this.loading = false
     },
   },
 };

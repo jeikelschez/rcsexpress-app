@@ -856,7 +856,7 @@
     </methods>
     <desactivate-crud
       ref="desactivateCrud"
-      @desactivar-Crud-Bancos="desactivarCrudBancos"
+      @desactivar-Crud="desactivarCrud"
     >
     </desactivate-crud>
   </q-page>
@@ -1004,12 +1004,7 @@ export default {
   },
   mounted() {
     this.getData("/proveedores", "setData", "datos");
-    this.$refs.desactivateCrud.desactivarCrud(
-      "c_bancos",
-      "d_bancos",
-      "u_bancos",
-      "desactivarCrudBancos"
-    );
+    this.$refs.desactivateCrud.desactivarCrud('c_proveedores', 'r_proveedores', 'u_proveedores', 'd_proveedores', 'desactivarCrud')
   },
   methods: {
     filterArray (val, update, abort, pagina, array, element) {
@@ -1165,16 +1160,18 @@ export default {
     },
 
     // Desactivar CRUD
-    desactivarCrudBancos(createItem, deleteItem, updateItem) {
-      if (createItem == true) {
-        this.disabledCreate = false;
+    desactivarCrud(createItem, readItem, deleteItem, updateItem) {
+      if (readItem == true) {
+        if (createItem == true) {
+        this.disabledCreate = false
       }
-      if (deleteItem == true) {
-        this.disabledDelete = false;
+        if (deleteItem == true) {
+        this.disabledDelete = false
       }
-      if (updateItem == true) {
-        this.disabledEdit = false;
+        if (updateItem == true) {
+        this.disabledEdit = false
       }
+      } else this.$router.push("/error403");
     },
 
     // Metodos CRUD

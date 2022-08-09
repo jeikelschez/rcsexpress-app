@@ -262,7 +262,7 @@
       </q-card>
     </q-dialog>
     <desactivate-crud ref="desactiveCrud"
-      @desactivar-Crud-Permisologia="desactivarCrudPermisologia"
+      @desactivar-Crud="desactivarCrud"
     ></desactivate-crud>
     <methods ref="methods"
       @get-Data-Permisos="this.axiosConfig.headers.rol = this.selectedRol.id;
@@ -447,7 +447,7 @@ export default {
   },
   mounted() {
     this.getData("/agencias", "setData", "agencias");
-    this.$refs.desactiveCrud.desactivarCrud('c_permisos', 'd_permisos', 'u_permisos', 'desactivarCrudPermisologia')
+    this.$refs.desactiveCrud.desactivarCrud('c_permisos', 'r_permisos', 'u_permisos', 'd_permisos', 'desactivarCrud')
   },
   methods: {
     filterArray (val, update, abort, pagina, array, element) {
@@ -489,16 +489,18 @@ export default {
       };
       this.items = 0
     },
-    desactivarCrudPermisologia(createItem, deleteItem, updateItem) {
-      if (createItem == true) {
+    desactivarCrud(createItem, readItem, deleteItem, updateItem) {
+      if (readItem == true) {
+        if (createItem == true) {
         this.disabledCreate = false
       }
-      if (deleteItem == true) {
+        if (deleteItem == true) {
         this.disabledDelete = false
       }
-      if (updateItem == true) {
+        if (updateItem == true) {
         this.disabledEdit = false
       }
+      } else this.$router.push("/error403");
     },
 
     getData(url, call, dataRes) {

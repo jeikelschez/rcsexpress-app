@@ -396,7 +396,7 @@
     @set-data-Edit="setDataEdit">
     </methods>
     <desactive-crud ref="desactiveCrud"
-    @desactivar-Crud-Ayudantes="desactivarCrudAyudantes">
+    @desactivar-Crud="desactivarCrud">
     </desactive-crud>
   </q-page>
 </template>
@@ -534,7 +534,7 @@ export default {
   },
   mounted() {
     this.getData('/ayudantes','setData','datos')
-    this.$refs.desactiveCrud.desactivarCrud('c_bancos', 'd_bancos', 'u_bancos', 'desactivarCrudAyudantes')
+    this.$refs.desactiveCrud.desactivarCrud('c_ayudantes', 'r_ayudantes', 'u_ayudantes', 'd_ayudantes', 'desactivarCrud')
   },
   methods: {
     resetLoading() {
@@ -598,16 +598,18 @@ export default {
        }
       }
     },
-    desactivarCrudAyudantes(createItem, deleteItem, updateItem) {
-      if (createItem == true) {
+    desactivarCrud(createItem, readItem, deleteItem, updateItem) {
+      if (readItem == true) {
+        if (createItem == true) {
         this.disabledCreate = false
       }
-      if (deleteItem == true) {
+        if (deleteItem == true) {
         this.disabledDelete = false
       }
-      if (updateItem == true) {
+        if (updateItem == true) {
         this.disabledEdit = false
       }
+      } else this.$router.push("/error403");
     },
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);

@@ -713,6 +713,7 @@
           <q-btn
             dense
             color="primary"
+            :disabled="this.disabledCreate"
             round
             @click="this.create = true"
             padding="sm"
@@ -734,6 +735,7 @@
             color="primary"
             round
             padding="sm"
+            :disabled="this.disabledDelete"
             style="margin-right: 25px"
             @click="
               selectedAgencia = null;
@@ -939,7 +941,7 @@
 
     <desactive-crud
       ref="desactiveCrud"
-      @desactivar-Crud-Pais-Estado-Ciudad="desactivarCrudPaisEstadoCiudad"
+      @desactivar-Crud="desactivarCrud"
     ></desactive-crud>
 
     <methods
@@ -1130,12 +1132,7 @@ export default {
   },
   mounted() {
     this.getData("/agencias", "setDataIniciar", "agencias");
-    this.$refs.desactiveCrud.desactivarCrud(
-      "c_ciudades",
-      "d_ciudades",
-      "u_ciudades",
-      "desactivarCrudPaisEstadoCiudad"
-    );
+    this.$refs.desactiveCrud.desactivarCrud('c_asignacionguias', 'r_asignacionguias', 'u_asignacionguias', 'd_asignacionguias', 'desactivarCrud')
   },
   methods: {
     filterArray (val, update, abort, pagina, array, element) {
@@ -1216,16 +1213,18 @@ export default {
         return "Debes Seleccionar Algo";
       }
     },
-    desactivarCrudPaisEstadoCiudad(createItem, deleteItem, updateItem) {
-      if (createItem == true) {
-        this.disabledCreate = false;
+    desactivarCrud(createItem, readItem, deleteItem, updateItem) {
+      if (readItem == true) {
+        if (createItem == true) {
+        this.disabledCreate = false
       }
-      if (deleteItem == true) {
-        this.disabledDelete = false;
+        if (deleteItem == true) {
+        this.disabledDelete = false
       }
-      if (updateItem == true) {
-        this.disabledEdit = false;
+        if (updateItem == true) {
+        this.disabledEdit = false
       }
+      } else this.$router.push("/error403");
     },
     // Metodos
     setDataSelect(res, dataRes) {

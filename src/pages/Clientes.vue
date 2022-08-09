@@ -1309,7 +1309,7 @@
     </q-dialog>
     <desactive-crud
       ref="desactivateCrud"
-      @desactivar-Crud-Clientes="desactivarCrudClientes"
+      @desactivar-Crud="desactivarCrud"
     ></desactive-crud>
     <methods
       ref="methods"
@@ -1522,12 +1522,7 @@ export default {
   },
   mounted() {
     this.$refs.methods.getData("/agencias", "setDataIniciar", "agencias", this.axiosConfig);
-    this.$refs.desactivateCrud.desactivarCrud(
-      "c_roles",
-      "d_roles",
-      "u_roles",
-      "desactivarCrudClientes"
-    );
+    this.$refs.desactivateCrud.desactivarCrud('c_clientes', 'r_clientes', 'u_clientes', 'd_clientes', 'desactivarCrud')
   },
   methods: {
     filterArray (val, update, abort, pagina, array, element) {
@@ -1637,16 +1632,18 @@ export default {
         }
       }
     },
-    desactivarCrudClientes(createItem, deleteItem, updateItem) {
-      if (createItem == true) {
-        this.disabledCreate = false;
+    desactivarCrud(createItem, readItem, deleteItem, updateItem) {
+      if (readItem == true) {
+        if (createItem == true) {
+        this.disabledCreate = false
       }
-      if (deleteItem == true) {
-        this.disabledDelete = false;
+        if (deleteItem == true) {
+        this.disabledDelete = false
       }
-      if (updateItem == true) {
-        this.disabledEdit = false;
+        if (updateItem == true) {
+        this.disabledEdit = false
       }
+      } else this.$router.push("/error403");
     },
 
     getData(url, call, dataRes) {

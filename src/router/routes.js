@@ -12,6 +12,11 @@ const routes = [
         meta: { requiresauth: true },
       },
       {
+        path: '/error403',
+        component: () => import('pages/Error403.vue'),
+        meta: { requiresauth: true },
+      },
+      {
         path: '/m_login',
         component: () => import('pages/manuals/m_login.vue'),
         meta: { requiresauth: true },

@@ -459,7 +459,7 @@
     @reset-Loading="resetLoading">
     </methods>
     <desactivate-crud ref="desactivateCrud"
-    @desactivar-Crud-Bancos="desactivarCrudBancos">
+    @desactivar-Crud="desactivarCrud">
     </desactivate-crud>
   </q-page>
 </template>
@@ -568,7 +568,7 @@ export default {
   },
   mounted() {
     this.getData('/empleados','setData','datos')
-    this.$refs.desactivateCrud.desactivarCrud('c_bancos', 'd_bancos', 'u_bancos', 'desactivarCrudBancos')
+    this.$refs.desactivateCrud.desactivarCrud('c_empleados', 'r_empleados', 'u_empleados', 'd_empleados', 'desactivarCrud')
   },
   methods: {
     resetLoading() {
@@ -643,16 +643,18 @@ export default {
       }
     },
 
-    desactivarCrudBancos(createItem, deleteItem, updateItem) {
-      if (createItem == true) {
+    desactivarCrud(createItem, readItem, deleteItem, updateItem) {
+      if (readItem == true) {
+        if (createItem == true) {
         this.disabledCreate = false
       }
-      if (deleteItem == true) {
+        if (deleteItem == true) {
         this.disabledDelete = false
       }
-      if (updateItem == true) {
+        if (updateItem == true) {
         this.disabledEdit = false
       }
+      } else this.$router.push("/error403");
     },
 
     getData(url, call, dataRes) {

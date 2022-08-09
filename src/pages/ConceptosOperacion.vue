@@ -424,7 +424,7 @@
       </q-card>
     </q-dialog>
     <desactivate-crud ref="desactiveCrud"
-      @desactivar-Crud-Roles="desactivarCrudRoles"
+      @desactivar-Crud="desactivarCrud"
     ></desactivate-crud>
     <methods ref="methods"
       @get-Data="getData(`/coperacion`, 'setDataConceptos', 'datos')"
@@ -552,7 +552,7 @@ export default {
   },
   mounted() {
     this.getData('/coperacion', 'setDataIniciar', 'datos');
-    this.$refs.desactiveCrud.desactivarCrud('c_roles', 'd_roles', 'u_roles', 'desactivarCrudRoles')
+    this.$refs.desactiveCrud.desactivarCrud('c_concepto_operacion', 'r_concepto_operacion', 'u_concepto_operacion', 'd_concepto_operacion', 'desactivarCrud')
   },
   methods: {
     filterArray (val, update, abort, pagina, array, element) {
@@ -606,16 +606,18 @@ export default {
       }
       }
     },
-    desactivarCrudRoles(createItem, deleteItem, updateItem) {
-      if (createItem == true) {
+    desactivarCrud(createItem, readItem, deleteItem, updateItem) {
+      if (readItem == true) {
+        if (createItem == true) {
         this.disabledCreate = false
       }
-      if (deleteItem == true) {
+        if (deleteItem == true) {
         this.disabledDelete = false
       }
-      if (updateItem == true) {
+        if (updateItem == true) {
         this.disabledEdit = false
       }
+      } else this.$router.push("/error403");
     },
 
     getData(url, call, dataRes) {

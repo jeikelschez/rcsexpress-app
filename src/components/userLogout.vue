@@ -50,6 +50,7 @@ export default {
     traducirToken: function () {
       var tokenTraducido = jwt_decode(LocalStorage.getItem("token"));
       LocalStorage.set("tokenTraducido", tokenTraducido);
+      console.log(LocalStorage.getItem("token"))
     },
     refreshToken() {
       if (LocalStorage.getItem("user") === true) {

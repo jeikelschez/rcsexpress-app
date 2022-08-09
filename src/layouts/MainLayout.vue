@@ -981,7 +981,11 @@
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item clickable tag="a" to="/agentes" exact>
+                <q-item tag="a"
+exact
+@click="$router.replace('/agentes')"
+:clickable="this.disabledAgentes"
+:disable="this.disabledAgentesSet">
                   <q-item-section avatar>
                     <q-icon size="28px" name="people" />
                     <q-tooltip
@@ -1027,7 +1031,11 @@
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item clickable tag="a" to="/zonasagencia" exact>
+                <q-item tag="a"
+exact
+@click="$router.replace('/zonasagencia')"
+:clickable="this.disabledZonas"
+:disable="this.disabledZonasSet">
                   <q-item-section avatar>
                     <q-icon size="28px" name="map" />
                     <q-tooltip
@@ -1046,7 +1054,11 @@
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item clickable tag="a" to="/unidadestransporte" exact>
+                <q-item tag="a"
+exact
+@click="$router.replace('/unidadestransporte')"
+:clickable="this.disabledUnidades"
+:disable="this.disabledUnidadesSet">
                   <q-item-section avatar>
                     <q-icon size="28px" name="local_shipping" />
                     <q-tooltip
@@ -1069,7 +1081,11 @@
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item clickable tag="a" to="/ayudantes" exact>
+                <q-item tag="a"
+exact
+@click="$router.replace('/ayudantes')"
+:clickable="this.disabledAyudantes"
+:disable="this.disabledAyudantesSet">
                   <q-item-section avatar>
                     <q-icon size="28px" name="account_circle" />
                     <q-tooltip
@@ -1088,7 +1104,11 @@
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item clickable tag="a" to="/receptores" exact>
+                <q-item tag="a"
+exact
+@click="$router.replace('/receptores')"
+:clickable="this.disabledReceptores"
+:disable="this.disabledReceptoresSet">
                   <q-item-section avatar>
                     <q-icon size="28px" name="compare_arrows" />
                     <q-tooltip
@@ -1107,7 +1127,11 @@
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item clickable tag="a" to="/tarifas" exact>
+                <q-item tag="a"
+exact
+@click="$router.replace('/tarifas')"
+:clickable="this.disabledTarifas"
+:disable="this.disabledTarifasSet">
                   <q-item-section avatar>
                     <q-icon size="28px" name="local_atm" />
                     <q-tooltip
@@ -1126,7 +1150,11 @@
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item clickable tag="a" to="/controlcorrelativo" exact>
+                <q-item tag="a"
+exact
+@click="$router.replace('/controlcorrelativo')"
+:clickable="this.disabledCcorrelativo"
+:disable="this.disabledCcorrelativoSet">
                   <q-item-section avatar>
                     <q-icon size="28px" name="point_of_sale" />
                     <q-tooltip
@@ -1149,7 +1177,11 @@
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item clickable tag="a" to="/variablecontrol" exact>
+                <q-item tag="a"
+exact
+@click="$router.replace('/variablecontrol')"
+:clickable="this.disabledVcontrol"
+:disable="this.disabledVcontrolSet">
                   <q-item-section avatar>
                     <q-icon size="28px" name="settings_suggest" />
                     <q-tooltip
@@ -1208,7 +1240,11 @@
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item clickable tag="a" to="/cuentasbancarias" exact>
+                <q-item tag="a"
+exact
+@click="$router.replace('/cuentasbancarias')"
+:clickable="this.disabledCuentas"
+:disable="this.disabledCuentasSet">
                   <q-item-section avatar>
                     <q-icon size="28px" name="account_balance_wallet" />
                     <q-tooltip
@@ -1229,7 +1265,11 @@
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item clickable tag="a" to="/clientes" exact>
+                <q-item tag="a"
+exact
+@click="$router.replace('/clientes')"
+:clickable="this.disabledClientes"
+:disable="this.disabledClientesSet">
                   <q-item-section avatar>
                     <q-icon size="28px" name="groups" />
                     <q-tooltip
@@ -1248,7 +1288,11 @@
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item clickable tag="a" to="/empleados" exact>
+                <q-item tag="a"
+exact
+@click="$router.replace('/empleados')"
+:clickable="this.disabledEmpleados"
+:disable="this.disabledEmpleadosSet">
                   <q-item-section avatar>
                     <q-icon size="28px" name="badge" />
                     <q-tooltip
@@ -1267,7 +1311,11 @@
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item clickable tag="a" to="/proveedores" exact>
+                <q-item tag="a"
+exact
+@click="$router.replace('/proveedores')"
+:clickable="this.disabledProveedores"
+:disable="this.disabledProveedoresSet">
                   <q-item-section avatar>
                     <q-icon size="28px" name="local_shipping" />
                     <q-tooltip
@@ -1286,7 +1334,11 @@
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item clickable tag="a" to="/retenciones" exact>
+                <q-item tag="a"
+exact
+@click="$router.replace('/retenciones')"
+:clickable="this.disabledRetenciones"
+:disable="this.disabledRetencionesSet">
                   <q-item-section avatar>
                     <q-icon size="28px" name="block" />
                     <q-tooltip
@@ -1305,7 +1357,11 @@
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item clickable tag="a" to="/conceptosoperacion" exact>
+                <q-item tag="a"
+exact
+@click="$router.replace('/conceptosoperacion')"
+:clickable="this.disabledConceptoOperacion"
+:disable="this.disabledConceptoOperacionSet">
                   <q-item-section avatar>
                     <q-icon size="28px" name="manage_search" />
                     <q-tooltip
@@ -1328,7 +1384,11 @@
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item clickable tag="a" to="/conceptosfacturacion" exact>
+                <q-item tag="a"
+exact
+@click="$router.replace('/conceptosfacturacion')"
+:clickable="this.disabledConceptoFacturacion"
+:disable="this.disabledConceptoFacturacionSet">
                   <q-item-section avatar>
                     <q-icon size="28px" name="sticky_note_2" />
                     <q-tooltip
@@ -1351,7 +1411,11 @@
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item clickable tag="a" to="/conceptosfpo" exact>
+                <q-item tag="a"
+exact
+@click="$router.replace('/conceptosfpo')"
+:clickable="this.disabledConceptoFpo"
+:disable="this.disabledConceptoFpoSet">
                   <q-item-section avatar>
                     <q-icon size="28px" name="subject" />
                     <q-tooltip
@@ -1370,7 +1434,11 @@
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item clickable tag="a" to="/asignacionguias" exact>
+                <q-item tag="a"
+exact
+@click="$router.replace('/asignacionguias')"
+:clickable="this.disabledAsignacionGuias"
+:disable="this.disabledAsignacionGuiasSet">
                   <q-item-section avatar>
                     <q-icon size="28px" name="menu_book" />
                     <q-tooltip
@@ -1581,7 +1649,8 @@
         "
       />
     </keep-alive>
-    <q-page-container style="padding-bottom: 0px; padding-top: 37px"> </q-page-container>
+    <q-page-container style="padding-bottom: 0px; padding-top: 37px">
+    </q-page-container>
 
     <q-footer elevated bordered>
       <div class="float-left buttons" style="margin-top: 10px;margin-bottom:10px; margin-left: 15px">
@@ -1975,11 +2044,10 @@
         <strong>© 2019. LOS DERECHOS RESERVADOS. RCS EXPRESS</strong>
         </p>
       </div>
+      <user-logout ref="component"></user-logout>
       <desactivate-crud
         ref="desactivateCrud"
-        @desactivar-Opciones-Set="desactivarOpcionesSet"
-      ></desactivate-crud>
-      <user-logout ref="component"></user-logout>
+        @desactivar-Opciones-Set="desactivarOpcionesSet"></desactivate-crud>
     </q-footer>
   </q-layout>
 </template>
@@ -1991,8 +2059,7 @@ import { defineComponent, defineAsyncComponent } from "vue";
 import desactivateCrudVue from "src/components/desactivateCrud.vue";
 import userLogoutVue from "src/components/userLogout.vue";
 
-export default ({
-  name: "PageIndex",
+export default {
   components: {
     "desactivate-crud": desactivateCrudVue,
     "user-logout": userLogoutVue,
@@ -2012,6 +2079,31 @@ export default ({
       octavo: false,
       noveno: false,
       decimo: false,
+      permisos: [
+      "r_bancos",
+      "r_agencias", 
+      "r_ciudades", 
+      "r_permisos", 
+      "r_usuarios", 
+      "r_roles",
+      "r_agentes",
+      "r_zonas",
+      "r_unidades",
+      "r_ayudantes",
+      "r_receptores",
+      "r_tarifas",
+      "r_ccorrelativo",
+      "r_vcontrol",
+      "r_cuentas",
+      "r_clientes",
+      "r_empleados",
+      "r_proveedores",
+      "r_retenciones",
+      "r_concepto_operacion",
+      "r_concepto_facturacion",
+      "r_concepto_fpo",
+      "r_asignacionguias"
+      ],
       decimoprimero: false,
       decimosegundo: false,
       decimotercero: false,
@@ -2028,6 +2120,40 @@ export default ({
       disabledRolesSet: true,
       disabledUsuariosSet: true,
       disabledCiudadesSet: true,
+      disabledAgentes: false,
+      disabledAgentesSet: true,
+      disabledZonas: false,
+      disabledZonasSet: true,
+      disabledUnidades: false,
+      disabledUnidadesSet: true,
+      disabledAyudantes: false,
+      disabledAyudantesSet: true,
+      disabledReceptores: false,
+      disabledReceptoresSet: true,
+      disabledTarifas: false,
+      disabledTarifasSet: true,
+      disabledCcorrelativo: false,
+      disabledCcorrelativoSet: true,
+      disabledVcontrol: false,
+      disabledVcontrolSet: true,
+      disabledCuentas: false,
+      disabledCuentasSet: true,
+      disabledClientes: false,
+      disabledClientesSet: true,
+      disabledEmpleados: false,
+      disabledEmpleadosSet: true,
+      disabledProveedores: false,
+      disabledProveedoresSet: true,
+      disabledRetenciones: false,
+      disabledRetencionesSet: true,
+      disabledConceptoOperacion: false,
+      disabledConceptoOperacionSet: true,
+      disabledConceptoFacturacion: false,
+      disabledConceptoFacturacionSet: true,
+      disabledConceptoFpo: false,
+      disabledConceptoFpoSet: true,
+      disabledAsignacionGuias: false,
+      disabledAsignacionGuiasSet: true,
       drawer: false,
       miniState: false,
       intervalLogout: null,
@@ -2050,50 +2176,10 @@ export default ({
     this.miniState = true;
     this.Authenticator();
     this.refreshTimer();
-    this.$refs.desactivateCrud.desactivarOpciones(
-      "desactivarOpcionesSet",
-      "r_bancos",
-      "r_agencias",
-      "r_ciudades",
-      "r_permisos",
-      "r_usuarios",
-      "r_roles"
-    );
-  },
-  methods: {
-    desactivarOpcionesSet(
-      readBancos,
-      readAgencias,
-      readCiudades,
-      readPermisos,
-      readUsuarios,
-      readRoles
-    ) {
-      if (readBancos == true) {
-        this.disabledBancos = true;
-        this.disabledBancosSet = false;
-      }
-      if (readAgencias == true) {
-        this.disabledAgencias = true;
-        this.disabledAgenciasSet = false;
-      }
-      if (readCiudades == true) {
-        this.disabledCiudades = true;
-        this.disabledCiudadesSet = false;
-      }
-      if (readPermisos == true) {
-        this.disabledPermisos = true;
-        this.disabledPermisosSet = false;
-      }
-      if (readUsuarios == true) {
-        this.disabledUsuarios = true;
-        this.disabledUsuariosSet = false;
-      }
-      if (readRoles == true) {
-        this.disabledRoles = true;
-        this.disabledRolesSet = false;
-      }
+    this.$refs.desactivateCrud.desactivarOpciones("desactivarOpcionesSet");
     },
+
+  methods: {
     drawerClick() {
       if (this.miniState) {
         this.miniState = false;
@@ -2102,6 +2188,17 @@ export default ({
         this.miniState = true;
         this.drawer = true;
       }
+    },
+    desactivarOpcionesSet(permisos) {
+      var permisos = permisos
+      console.log(permisos)
+      for (var e = 0, len = permisos.length; e<len; e++) {
+          if (permisos[e].permiso == true) {
+            this[permisos[e].pagina] = true;
+            this[permisos[e].paginaSet] = false;
+          }
+          if (e == permisos.length - 1) break
+      };
     },
     Authenticator() {
       if (LocalStorage.getItem("user") != true) {
@@ -2207,7 +2304,7 @@ export default ({
       };
     },
   },
-});
+};
 </script>
 
 <style>

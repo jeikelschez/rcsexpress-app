@@ -1177,7 +1177,7 @@
     </q-dialog>
 
     <desactive-crud ref="desactiveCrud"
-    @desactivar-Crud-Pais-Estado-Ciudad="desactivarCrudPaisEstadoCiudad"
+    @desactivar-Crud="desactivarCrud"
     ></desactive-crud>
 
     <methods ref="methods"
@@ -1435,7 +1435,7 @@ export default {
   },
   mounted() {
     this.getDataPaises('/paises', 'setData', 'paises');
-    this.$refs.desactiveCrud.desactivarCrud('c_ciudades', 'd_ciudades', 'u_ciudades', 'desactivarCrudPaisEstadoCiudad')
+    this.$refs.desactiveCrud.desactivarCrud('c_ciudades', 'r_ciudades', 'u_ciudades', 'd_ciudades', 'desactivarCrud')
   },
   methods: {
 
@@ -1493,16 +1493,18 @@ resetLoading() {
         }
       }
     },
-    desactivarCrudPaisEstadoCiudad(createItem, deleteItem, updateItem) {
-      if (createItem == true) {
+    desactivarCrud(createItem, readItem, deleteItem, updateItem) {
+      if (readItem == true) {
+        if (createItem == true) {
         this.disabledCreate = false
       }
-      if (deleteItem == true) {
+        if (deleteItem == true) {
         this.disabledDelete = false
       }
-      if (updateItem == true) {
+        if (updateItem == true) {
         this.disabledEdit = false
       }
+      } else this.$router.push("/error403");
     },
     // Metodos para estados
     getDataPaises(url, call, dataRes) {
