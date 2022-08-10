@@ -46,6 +46,16 @@
               >Tarifear</q-tooltip
             >
         </q-fab-action>
+        <q-fab-action color="primary" icon="description" class="z-top" @click="conceptosBox = true">
+          <q-tooltip
+              class="bg-primary"
+              style="max-height: 30px"
+              transition-show="scale"
+              transition-hide="scale"
+              color="primary"
+              >Detalle del Documento</q-tooltip
+            >
+        </q-fab-action>
       </q-fab>
     </q-page-sticky>
 
@@ -53,7 +63,7 @@
       <div class="row col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
         <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
           <q-table
-            :rows="clientes"
+            :rows="conceptos"
             row-key="id"
             :columns="columnsConceptos"
             :separator="separator"
@@ -226,13 +236,15 @@
               class="row justify-center items-center"
               style="margin-top: 20px"
             >
-              <div class="col-md-4 col-xs-6">
+
+              <div class="col-md-2 col-xs-12 cardMenus" style="margin-bottom: 20px; margin-top: 15px">
+              <div class="col-md-12 col-xs-6">
                 <q-input
                   outlined
                   v-model="formEdit.nro_documento"
                   label="NRO. Guía"
                   hint=""
-                  class="pcform pcmovil"
+                  class="pcform"
                   dense
                   type="number"
                   hide-bottom-space
@@ -244,10 +256,9 @@
                 </q-input>
               </div>
 
-              <div class="col-md-4 col-xs-6">
+              <div class="col-md-12 col-xs-6">
                 <q-input
                   outlined
-                  v-model="formEdit.nro_documento"
                   label="NRO. Factura"
                   hint=""
                   class="pcform"
@@ -261,29 +272,6 @@
                 >
                 </q-input>
               </div>
-
-              <div class="col-md-2 col-xs-6" style="margin-bottom: 20px">
-                <q-checkbox
-                  size="lg"
-                  v-model="checkbox.guia_factura"
-                  true-value="GF"
-                  false-value="0"
-                  style="font-size: 13px"
-                  label="Guía Factura"
-                  @update:model-value="if (this.checkbox.guia_factura == 'GF') {this.checkbox.guia_carga = '0'};"
-                />
-              </div>
-
-              <div class="col-md-2 col-xs-6" style="margin-bottom: 20px">
-                <q-checkbox
-                  size="lg"
-                  v-model="checkbox.guia_carga"
-                  true-value="GC"
-                  false-value="0"
-                  style="font-size: 13px"
-                  label="Guía Carga"
-                  @update:model-value="if (this.checkbox.guia_carga == 'GC') {this.checkbox.guia_factura = '0'};"
-                />
               </div>
 
               <div class="col-md-4 col-xs-12" style="margin-bottom: 20px">
@@ -314,6 +302,7 @@
                       outlined
                       label="Emision"
                       hint=""
+                      dense
                       v-model="formEdit.fecha_emision"
                       mask="date"
                       :rules="['date']"
@@ -339,6 +328,7 @@
                       outlined
                       label="Envio"
                       hint=""
+                      dense
                       v-model="formEdit.fecha_envio"
                       mask="date"
                       :rules="['date']"
@@ -363,6 +353,7 @@
                       outlined
                       label="Aplicación"
                       hint=""
+                      dense
                       v-model="formEdit.fecha_aplicacion"
                       mask="date"
                       :rules="['date']"
@@ -466,9 +457,37 @@
                 </q-card>
               </div>
 
-              <div class="col-md-4 col-xs-12" style="margin-bottom: 25px">
+              <div class="col-md-2 col-xs-12 cardMenus">
+              <div class="col-md-12 col-xs-6" style="margin-bottom: 20px">
+                <q-checkbox
+                  size="lg"
+                  v-model="checkbox.guia_factura"
+                  true-value="GF"
+                  false-value="0"
+                  style="font-size: 13px"
+                  label="Guía Factura"
+                  @update:model-value="if (this.checkbox.guia_factura == 'GF') {this.checkbox.guia_carga = '0'};"
+                />
+              </div>
+
+              <div class="col-md-12 col-xs-6" style="margin-bottom: 20px">
+                <q-checkbox
+                  size="lg"
+                  v-model="checkbox.guia_carga"
+                  true-value="GC"
+                  false-value="0"
+                  style="font-size: 13px"
+                  label="Guía Carga"
+                  @update:model-value="if (this.checkbox.guia_carga == 'GC') {this.checkbox.guia_factura = '0'};"
+                />
+              </div>
+
+              </div>
+
+
+              <div class="col-md-3 col-xs-12" style="margin-bottom: 25px">
                 <q-card
-                  class="q-pa-md col-md-4 col-xs-12"
+                  class="q-pa-md col-md-4 col-xs-12 cardMenus"
                   bordered
                   style="padding: 5px"
                 >
@@ -584,9 +603,9 @@
                 </q-card>
               </div>
 
-              <div class="col-md-4 col-xs-12" style="margin-bottom: 25px">
+              <div class="col-md-6 col-xs-12" style="margin-bottom: 25px">
                 <q-card
-                  class="q-pa-md col-md-4 col-xs-12 cardMenus"
+                  class="q-pa-md col-md-4 col-xs-12"
                   bordered
                   style="padding: 5px"
                 >
@@ -664,7 +683,7 @@
                         </q-select>
                       </div>
                       
-                      <div class="col-md-2 col-xs-2 items-start">
+                      <div class="col-md-2 col-xs-2 items-start" style="text-align: center">
                         <q-btn
                           dense
                           color="primary"
@@ -690,9 +709,10 @@
                 </q-card>
               </div>
 
-              <div class="col-md-5 col-xs-12" style="margin-bottom: 20px">
+
+              <div class="col-md-6 col-xs-12" style="margin-bottom: 20px">
                 <q-card
-                  class="q-pa-md col-md-12 col-xs-12"
+                  class="q-pa-md col-md-12 col-xs-12 cardMenus"
                   bordered
                   style="padding-top: 15px; padding-bottom: 10px; padding-left: 6px; padding-right: 0px"
                 >
@@ -701,7 +721,7 @@
                     style="padding-bottom: 0px; padding-top: 0px"
                   >
                     <div
-                      class="col-md-4 col-xs-12 items-center"
+                      class="col-md-2 col-xs-12 items-center"
                       style="align-self: center; text-align: left"
                     >
                       <h4
@@ -716,7 +736,7 @@
                       </h4>
                     </div>
 
-                    <div class="col-md-4 col-xs-6" style="margin-bottom: 6px">
+                    <div class="col-md-5 col-xs-6 checkboxForaneo" style="margin-bottom: 6px">
                       <q-checkbox
                         size="lg"
                         v-model="checkbox.nacional"
@@ -728,7 +748,7 @@
                       />
                     </div>
 
-                    <div class="col-md-4 col-xs-6" style="margin-bottom: 6px">
+                    <div class="col-md-5 col-xs-6" style="margin-bottom: 6px">
                       <q-checkbox
                         size="lg"
                         v-model="checkbox.internacional"
@@ -802,7 +822,7 @@
                     </div>
 
                     <div
-                      class="col-md-4 col-xs-12 items-center"
+                      class="col-md-2 col-xs-12 items-center"
                       style="align-self: center; text-align: left"
                     >
                       <h4
@@ -817,7 +837,7 @@
                       </h4>
                     </div>
 
-                    <div class="col-md-4 col-xs-6">
+                    <div class="col-md-5 col-xs-6 checkboxForaneo">
                       <q-checkbox
                         size="lg"
                         v-model="checkbox.normal"
@@ -831,7 +851,7 @@
                       />
                     </div>
 
-                    <div class="col-md-4 col-xs-6">
+                    <div class="col-md-5 col-xs-6">
                       <q-checkbox
                         size="lg"
                         v-model="checkbox.emergencia"
@@ -847,6 +867,84 @@
                   </q-card-section>
                 </q-card>
               </div>
+
+              <div class="col-md-6 col-xs-12" style="margin-bottom: 20px">
+                <q-card
+                  class="q-pa-md col-md-12 col-xs-12"
+                  bordered
+                  style="padding: 5px"
+                >
+                  <q-card-section style="padding-bottom: 0px">
+                    <div class="row">
+                      <div
+                        class="col-md-12 col-xs-12"
+                        style="
+                          align-self: center;
+                          text-align: left;
+                          margin-top: -30px;
+                        "
+                      >
+                        <h4
+                          style="font-size: 16px; margin-bottom: 5px"
+                          class="text-secondary"
+                        >
+                          <strong>Totales</strong>
+                        </h4>
+                      </div>
+                      <div class="col-md-6 col-xs-12">
+                        <q-input
+                          outlined
+                          v-model="formEdit.monto_subtotal"
+                          label="Monto Subtotal"
+                          hint=""
+                          dense
+                          class="pcform"
+                          lazy-rules
+                        >
+                        </q-input>
+                      </div>
+
+                      <div class="col-md-6 col-xs-12">
+                        <q-input
+                          outlined
+                          v-model="formEdit.monto_impuesto"
+                          label="Monto Impuesto"
+                          hint=""
+                          dense
+                          lazy-rules
+                        >
+                        </q-input>
+                      </div>
+
+                      <div class="col-md-6 col-xs-12">
+                        <q-input
+                          outlined
+                          v-model="formEdit.monto_base"
+                          label="Monto Base"
+                          hint=""
+                          dense
+                          class="pcform"
+                          lazy-rules
+                        >
+                        </q-input>
+                      </div>
+
+                      <div class="col-md-6 col-xs-12">
+                        <q-input
+                          outlined
+                          v-model="formEdit.monto_total"
+                          label="Monto Total"
+                          hint=""
+                          dense
+                          lazy-rules
+                        >
+                        </q-input>
+                      </div>
+                    </div>
+                  </q-card-section>
+                </q-card>
+              </div>
+
 
               <div class="col-md-3 col-xs-12">
                 <q-select
@@ -913,7 +1011,7 @@
                 </q-input>
               </div>
 
-              <div class="col-md-3 col-xs-12">
+              <div class="col-md-2 col-xs-12">
                 <q-input
                   outlined
                   v-model="formEdit.carga_neta"
@@ -947,7 +1045,7 @@
                 </q-input>
               </div>
 
-              <div class="col-md-2 col-xs-7">
+              <div class="col-md-2 col-xs-9">
                 <q-input
                   outlined
                   v-model="formEdit.valor_declarado_seg"
@@ -964,13 +1062,13 @@
                 </q-input>
               </div>
 
-              <div class="col-md-1 col-xs-3">
+              <div class="col-md-2 col-xs-3">
                 <q-input
                   outlined
                   v-model="formEdit.porc_apl_seguro"
                   hint=""
                   dense
-                  class="pcform pcmovil"
+                  class="pcform"
                   @update:model-value="
                     formEdit.porc_apl_seguro =
                       formEdit.porc_apl_seguro.toUpperCase()
@@ -983,7 +1081,7 @@
                 </q-input>
               </div>
 
-              <div class="col-md-3 col-xs-6">
+              <div class="col-md-3 col-xs-12">
                 <q-input
                   outlined
                   v-model="formEdit.cod_agencia_transito"
@@ -996,95 +1094,6 @@
                   lazy-rules
                 >
                 </q-input>
-              </div>
-
-              <div class="col-md-12 col-xs-12" style="margin-bottom: 20px">
-                <q-card
-                  class="q-pa-md col-md-12 col-xs-12"
-                  bordered
-                  style="padding: 5px"
-                >
-                  <q-card-section style="padding-bottom: 0px">
-                    <div class="row">
-                      <div
-                        class="col-md-12 col-xs-12"
-                        style="
-                          align-self: center;
-                          text-align: left;
-                          margin-top: -30px;
-                        "
-                      >
-                        <h4
-                          style="font-size: 16px; margin-bottom: 5px"
-                          class="text-secondary"
-                        >
-                          <strong>Totales</strong>
-                        </h4>
-                      </div>
-                      <div class="col-md-6 col-xs-12">
-                        <q-input
-                          outlined
-                          v-model="formEdit.monto_subtotal"
-                          label="Monto Subtotal"
-                          hint=""
-                          dense
-                          class="pcform"
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="face" />
-                          </template>
-                        </q-input>
-                      </div>
-
-                      <div class="col-md-6 col-xs-12">
-                        <q-input
-                          outlined
-                          v-model="formEdit.monto_impuesto"
-                          label="Monto Impuesto"
-                          hint=""
-                          dense
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="face" />
-                          </template>
-                        </q-input>
-                      </div>
-
-                      <div class="col-md-6 col-xs-12">
-                        <q-input
-                          outlined
-                          v-model="formEdit.monto_base"
-                          label="Monto Base"
-                          hint=""
-                          dense
-                          class="pcform"
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="face" />
-                          </template>
-                        </q-input>
-                      </div>
-
-                      <div class="col-md-6 col-xs-12">
-                        <q-input
-                          outlined
-                          v-model="formEdit.monto_total"
-                          label="Monto Total"
-                          hint=""
-                          dense
-                          lazy-rules
-                        >
-                          <template v-slot:prepend>
-                            <q-icon name="face" />
-                          </template>
-                        </q-input>
-                      </div>
-                    </div>
-                  </q-card-section>
-                </q-card>
               </div>
 
               <div class="col-md-4 col-xs-12">
@@ -1180,6 +1189,9 @@
                   "
                   lazy-rules
                 >
+                <template v-slot:append>
+                <q-btn round dense flat icon="input" />
+                </template>
                 </q-input>
               </div>
 
@@ -1277,35 +1289,35 @@ export default {
       columnsConceptos: [
         {
           name: "id",
-          label: "Codigo",
+          label: "NRO",
           field: "id",
           align: "left",
           sortable: true,
         },
         {
           name: "nb_cliente",
-          label: "Nombre",
+          label: "Conceptos",
           field: "nb_cliente",
           align: "left",
           sortable: true,
         },
         {
           name: "rif_cedula",
-          label: "RIF",
+          label: "Cantidad",
           field: "rif_cedula",
           align: "left",
           sortable: true,
         },
         {
-          name: "activo_desc",
-          label: "Estatus",
-          field: "activo_desc",
-          align: "left",
+          name: "cte_decontado",
+          label: "Precio Unitario",
+          field: "cte_decontado",
+          align: "center",
           sortable: true,
         },
         {
           name: "cte_decontado",
-          label: "Cliente Particular",
+          label: "Importe Renglon",
           field: "cte_decontado",
           align: "center",
           sortable: true,
@@ -1386,7 +1398,7 @@ export default {
         monto_base: "",
         monto_total: "",
         fecha_llega_transito: "",
-        check_transito: "",
+        check_transito: "0",
         estatus_operativo: "",
         estatus_administra: "",
         monto_ref_cte_sin_imp: "",
@@ -1408,6 +1420,7 @@ export default {
         emergencia: "0",
       },
       agencias: [],
+      conceptos: [],
       agencias_origen: [],
       clientes_origen: [],
       clientes_destino: [],
@@ -1493,6 +1506,7 @@ export default {
       "d_roles",
       "desactivarCrud"
     );
+    this.$refs.methods.getData(`/clientes`, 'setData', 'conceptos', this.axiosConfig);
   },
   methods: {
     // Reglas
@@ -1799,7 +1813,7 @@ export default {
         (this.formEdit.monto_base = ""),
         (this.formEdit.monto_total = ""),
         (this.formEdit.fecha_llega_transito = ""),
-        (this.formEdit.check_transito = ""),
+        (this.formEdit.check_transito = "0"),
         (this.formEdit.estatus_operativo = ""),
         (this.formEdit.estatus_administra = ""),
         (this.formEdit.monto_ref_cte_sin_imp = ""),
