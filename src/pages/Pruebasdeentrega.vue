@@ -1428,7 +1428,7 @@
             >
               <q-card-section
                 class="row col-md-12 col-xs-12 menuFilter2"
-                style="padding: 0px"
+                style="padding-bottom: 0px;padding-top: 0px"
               >
                 <div
                   class="col-md-3 col-xs-12 SelectAgenciaCliente pcform"
@@ -3174,6 +3174,9 @@ export default {
 </script>
 
 <style>
+.q-field__bottom {
+  display: none;
+}
 @media screen and (min-width: 600px) {
   .q-field--auto-height.q-field--labeled .q-field__native {
     min-width: 120px;

@@ -9,7 +9,9 @@
     "test": "react-app-rewired test"
   },
   "dependencies": {
+    "@pdftron/webviewer": "^8.7.0",
     "@quasar/extras": "^1.0.0",
+    "@quasar/quasar-app-extension-qpdfviewer": "^1.0.0-beta.9",
     "@vue/composition-api": "^1.6.2",
     "Buffer": "0.0.0",
     "axios": "^0.21.1",
@@ -19,6 +21,8 @@
     "process": "^0.11.10",
     "prop-types": "^15.8.1",
     "quasar": "^2.0.0",
+    "quasar-app-extension-qpdfviewervue3": "^1.0.3",
+    "stylus-loader": "^7.0.0",
     "vee-validate": "^4.5.11",
     "vue": "^3.2.36",
     "vue-currency-input": "^2.4.0",
