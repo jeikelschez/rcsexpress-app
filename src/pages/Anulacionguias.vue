@@ -477,7 +477,7 @@
       @set-Data="setData"
       @set-Data-Guias="setDataGuias"
       @reset-Loading="resetLoading"
-      @on-Request-Iniciar="onRequestIniciar"
+      @on-Request="onRequest"
       @set-Data-Edit="setDataEdit"
       @set-Data-Select="setDataSelect"
     ></methods>
@@ -604,6 +604,7 @@ export default {
         id: "",
       },
       datos: [],
+      count: 1,
       agencias: [],
       selected: [],
       refAgencia: "",
@@ -651,8 +652,8 @@ export default {
     };
   },
   mounted() {
-    this.getData(`/mmovimientos`, "onRequestIniciar", "datos");
-    this.loading = true
+    this.getData(`/mmovimientos`, "onRequest", "datos");
+    this.loading = true;
     this.$refs.desactiveCrud.desactivarCrud(
       "c_ciudades",
       "r_ciudades",
@@ -662,43 +663,39 @@ export default {
     );
   },
   methods: {
-    onRequest(props) {
-      const { page, rowsPerPage, sortBy, descending } = props.pagination;
-      const filter = props.filter;
-      this.loading = true;
+    onRequest(res, dataRes) {
+      if (this.count == 1) {
+        this[dataRes] = res.data;
+        this.pagination.rowsNumber = res.total;
+        this.loading = false;
+      } else {
+        const { page, rowsPerPage, sortBy, descending } = res.pagination;
+        const filter = res.filter;
+        this.loading = true;
 
-      // get all rows if "All" (0) is selected
-      const fetchCount =
-        rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
+        const fetchCount =
+          rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
 
-      // calculate starting row of data
-      const startRow = (page - 1) * rowsPerPage;
+        const startRow = (page - 1) * rowsPerPage;
 
-      // fetch data from "server"
+        this.axiosConfig.headers.page = page;
+        this.axiosConfig.headers.limit = fetchCount;
+        this.axiosConfig.headers.order_direction = sortBy;
 
-      this.axiosConfig.headers.page = page;
-      this.axiosConfig.headers.limit = fetchCount;
-      this.axiosConfig.headers.order_direction = sortBy;
-
-      this.$refs.methods.getData(
-        `/mmovimientos`,
-        "setDataGuias",
-        "datos",
-        this.axiosConfig
-      );
-    },
-    onRequestIniciar(res, dataRes) {
-      this[dataRes] = res.data;
-      this.pagination.rowsNumber = res.total;
-      this.loading = false 
+        this.$refs.methods.getData(
+          `/mmovimientos`,
+          "setDataGuias",
+          "datos",
+          this.axiosConfig
+        );
+      }
+      this.count = 0;
     },
     setDataGuias(res) {
-      // clear out existing data and add new
       this.datos = res.data;
       this.pagination.rowsNumber = res.total;
       this.pagination.page = res.currentPage;
       this.pagination.rowsPerPage = res.limit;
-      // ...and turn of loading indicator
       this.loading = false;
     },
     resetLoading() {

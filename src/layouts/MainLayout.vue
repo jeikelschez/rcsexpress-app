@@ -981,11 +981,13 @@
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item tag="a"
-exact
-@click="$router.replace('/agentes')"
-:clickable="this.disabledAgentes"
-:disable="this.disabledAgentesSet">
+                <q-item
+                  tag="a"
+                  exact
+                  @click="$router.replace('/agentes')"
+                  :clickable="this.disabledAgentes"
+                  :disable="this.disabledAgentesSet"
+                >
                   <q-item-section avatar>
                     <q-icon size="28px" name="people" />
                     <q-tooltip
@@ -1031,11 +1033,13 @@ exact
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item tag="a"
-exact
-@click="$router.replace('/zonasagencia')"
-:clickable="this.disabledZonas"
-:disable="this.disabledZonasSet">
+                <q-item
+                  tag="a"
+                  exact
+                  @click="$router.replace('/zonasagencia')"
+                  :clickable="this.disabledZonas"
+                  :disable="this.disabledZonasSet"
+                >
                   <q-item-section avatar>
                     <q-icon size="28px" name="map" />
                     <q-tooltip
@@ -1054,11 +1058,13 @@ exact
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item tag="a"
-exact
-@click="$router.replace('/unidadestransporte')"
-:clickable="this.disabledUnidades"
-:disable="this.disabledUnidadesSet">
+                <q-item
+                  tag="a"
+                  exact
+                  @click="$router.replace('/unidadestransporte')"
+                  :clickable="this.disabledUnidades"
+                  :disable="this.disabledUnidadesSet"
+                >
                   <q-item-section avatar>
                     <q-icon size="28px" name="local_shipping" />
                     <q-tooltip
@@ -1081,11 +1087,13 @@ exact
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item tag="a"
-exact
-@click="$router.replace('/ayudantes')"
-:clickable="this.disabledAyudantes"
-:disable="this.disabledAyudantesSet">
+                <q-item
+                  tag="a"
+                  exact
+                  @click="$router.replace('/ayudantes')"
+                  :clickable="this.disabledAyudantes"
+                  :disable="this.disabledAyudantesSet"
+                >
                   <q-item-section avatar>
                     <q-icon size="28px" name="account_circle" />
                     <q-tooltip
@@ -1104,11 +1112,13 @@ exact
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item tag="a"
-exact
-@click="$router.replace('/receptores')"
-:clickable="this.disabledReceptores"
-:disable="this.disabledReceptoresSet">
+                <q-item
+                  tag="a"
+                  exact
+                  @click="$router.replace('/receptores')"
+                  :clickable="this.disabledReceptores"
+                  :disable="this.disabledReceptoresSet"
+                >
                   <q-item-section avatar>
                     <q-icon size="28px" name="compare_arrows" />
                     <q-tooltip
@@ -1127,11 +1137,13 @@ exact
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item tag="a"
-exact
-@click="$router.replace('/tarifas')"
-:clickable="this.disabledTarifas"
-:disable="this.disabledTarifasSet">
+                <q-item
+                  tag="a"
+                  exact
+                  @click="$router.replace('/tarifas')"
+                  :clickable="this.disabledTarifas"
+                  :disable="this.disabledTarifasSet"
+                >
                   <q-item-section avatar>
                     <q-icon size="28px" name="local_atm" />
                     <q-tooltip
@@ -1150,11 +1162,13 @@ exact
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item tag="a"
-exact
-@click="$router.replace('/controlcorrelativo')"
-:clickable="this.disabledCcorrelativo"
-:disable="this.disabledCcorrelativoSet">
+                <q-item
+                  tag="a"
+                  exact
+                  @click="$router.replace('/controlcorrelativo')"
+                  :clickable="this.disabledCcorrelativo"
+                  :disable="this.disabledCcorrelativoSet"
+                >
                   <q-item-section avatar>
                     <q-icon size="28px" name="point_of_sale" />
                     <q-tooltip
@@ -1177,11 +1191,13 @@ exact
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item tag="a"
-exact
-@click="$router.replace('/variablecontrol')"
-:clickable="this.disabledVcontrol"
-:disable="this.disabledVcontrolSet">
+                <q-item
+                  tag="a"
+                  exact
+                  @click="$router.replace('/variablecontrol')"
+                  :clickable="this.disabledVcontrol"
+                  :disable="this.disabledVcontrolSet"
+                >
                   <q-item-section avatar>
                     <q-icon size="28px" name="settings_suggest" />
                     <q-tooltip
@@ -1240,11 +1256,13 @@ exact
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item tag="a"
-exact
-@click="$router.replace('/cuentasbancarias')"
-:clickable="this.disabledCuentas"
-:disable="this.disabledCuentasSet">
+                <q-item
+                  tag="a"
+                  exact
+                  @click="$router.replace('/cuentasbancarias')"
+                  :clickable="this.disabledCuentas"
+                  :disable="this.disabledCuentasSet"
+                >
                   <q-item-section avatar>
                     <q-icon size="28px" name="account_balance_wallet" />
                     <q-tooltip
@@ -1265,11 +1283,13 @@ exact
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item tag="a"
-exact
-@click="$router.replace('/clientes')"
-:clickable="this.disabledClientes"
-:disable="this.disabledClientesSet">
+                <q-item
+                  tag="a"
+                  exact
+                  @click="$router.replace('/clientes')"
+                  :clickable="this.disabledClientes"
+                  :disable="this.disabledClientesSet"
+                >
                   <q-item-section avatar>
                     <q-icon size="28px" name="groups" />
                     <q-tooltip
@@ -1288,11 +1308,13 @@ exact
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item tag="a"
-exact
-@click="$router.replace('/empleados')"
-:clickable="this.disabledEmpleados"
-:disable="this.disabledEmpleadosSet">
+                <q-item
+                  tag="a"
+                  exact
+                  @click="$router.replace('/empleados')"
+                  :clickable="this.disabledEmpleados"
+                  :disable="this.disabledEmpleadosSet"
+                >
                   <q-item-section avatar>
                     <q-icon size="28px" name="badge" />
                     <q-tooltip
@@ -1311,11 +1333,13 @@ exact
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item tag="a"
-exact
-@click="$router.replace('/proveedores')"
-:clickable="this.disabledProveedores"
-:disable="this.disabledProveedoresSet">
+                <q-item
+                  tag="a"
+                  exact
+                  @click="$router.replace('/proveedores')"
+                  :clickable="this.disabledProveedores"
+                  :disable="this.disabledProveedoresSet"
+                >
                   <q-item-section avatar>
                     <q-icon size="28px" name="local_shipping" />
                     <q-tooltip
@@ -1334,11 +1358,13 @@ exact
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item tag="a"
-exact
-@click="$router.replace('/retenciones')"
-:clickable="this.disabledRetenciones"
-:disable="this.disabledRetencionesSet">
+                <q-item
+                  tag="a"
+                  exact
+                  @click="$router.replace('/retenciones')"
+                  :clickable="this.disabledRetenciones"
+                  :disable="this.disabledRetencionesSet"
+                >
                   <q-item-section avatar>
                     <q-icon size="28px" name="block" />
                     <q-tooltip
@@ -1357,11 +1383,13 @@ exact
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item tag="a"
-exact
-@click="$router.replace('/conceptosoperacion')"
-:clickable="this.disabledConceptoOperacion"
-:disable="this.disabledConceptoOperacionSet">
+                <q-item
+                  tag="a"
+                  exact
+                  @click="$router.replace('/conceptosoperacion')"
+                  :clickable="this.disabledConceptoOperacion"
+                  :disable="this.disabledConceptoOperacionSet"
+                >
                   <q-item-section avatar>
                     <q-icon size="28px" name="manage_search" />
                     <q-tooltip
@@ -1384,11 +1412,13 @@ exact
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item tag="a"
-exact
-@click="$router.replace('/conceptosfacturacion')"
-:clickable="this.disabledConceptoFacturacion"
-:disable="this.disabledConceptoFacturacionSet">
+                <q-item
+                  tag="a"
+                  exact
+                  @click="$router.replace('/conceptosfacturacion')"
+                  :clickable="this.disabledConceptoFacturacion"
+                  :disable="this.disabledConceptoFacturacionSet"
+                >
                   <q-item-section avatar>
                     <q-icon size="28px" name="sticky_note_2" />
                     <q-tooltip
@@ -1411,11 +1441,13 @@ exact
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item tag="a"
-exact
-@click="$router.replace('/conceptosfpo')"
-:clickable="this.disabledConceptoFpo"
-:disable="this.disabledConceptoFpoSet">
+                <q-item
+                  tag="a"
+                  exact
+                  @click="$router.replace('/conceptosfpo')"
+                  :clickable="this.disabledConceptoFpo"
+                  :disable="this.disabledConceptoFpoSet"
+                >
                   <q-item-section avatar>
                     <q-icon size="28px" name="subject" />
                     <q-tooltip
@@ -1434,11 +1466,13 @@ exact
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item tag="a"
-exact
-@click="$router.replace('/asignacionguias')"
-:clickable="this.disabledAsignacionGuias"
-:disable="this.disabledAsignacionGuiasSet">
+                <q-item
+                  tag="a"
+                  exact
+                  @click="$router.replace('/asignacionguias')"
+                  :clickable="this.disabledAsignacionGuias"
+                  :disable="this.disabledAsignacionGuiasSet"
+                >
                   <q-item-section avatar>
                     <q-icon size="28px" name="menu_book" />
                     <q-tooltip
@@ -1653,7 +1687,10 @@ exact
     </q-page-container>
 
     <q-footer elevated bordered>
-      <div class="float-left buttons" style="margin-top: 10px;margin-bottom:10px; margin-left: 15px">
+      <div
+        class="float-left buttons"
+        style="margin-top: 10px; margin-bottom: 10px; margin-left: 15px"
+      >
         <q-btn
           dense
           color="white"
@@ -1666,13 +1703,14 @@ exact
         >
           <q-icon size="25px" name="groups" color="primary">
             <q-tooltip
-            transition-show="flip-right"
-            transition-hide="flip-left"
-            class="bg-primary"
-            style="max-height: 30px"
-            color="primary"
-            max-height="40px"
-            >Empleados</q-tooltip>
+              transition-show="flip-right"
+              transition-hide="flip-left"
+              class="bg-primary"
+              style="max-height: 30px"
+              color="primary"
+              max-height="40px"
+              >Empleados</q-tooltip
+            >
           </q-icon>
         </q-btn>
         <q-btn
@@ -1687,13 +1725,14 @@ exact
         >
           <q-icon size="25px" name="block" color="primary">
             <q-tooltip
-            transition-show="flip-right"
-            transition-hide="flip-left"
-            class="bg-primary"
-            style="max-height: 30px"
-            color="primary"
-            max-height="40px"
-            >Retenciones</q-tooltip>
+              transition-show="flip-right"
+              transition-hide="flip-left"
+              class="bg-primary"
+              style="max-height: 30px"
+              color="primary"
+              max-height="40px"
+              >Retenciones</q-tooltip
+            >
           </q-icon>
         </q-btn>
         <q-btn
@@ -1708,13 +1747,14 @@ exact
         >
           <q-icon size="25px" name="auto_stories" color="primary">
             <q-tooltip
-            transition-show="flip-right"
-            transition-hide="flip-left"
-            class="bg-primary"
-            style="max-height: 30px"
-            color="primary"
-            max-height="40px"
-            >Asignación Guias</q-tooltip>
+              transition-show="flip-right"
+              transition-hide="flip-left"
+              class="bg-primary"
+              style="max-height: 30px"
+              color="primary"
+              max-height="40px"
+              >Asignación Guias</q-tooltip
+            >
           </q-icon>
         </q-btn>
         <strong style="margin-right: 10px" class="button3">|</strong>
@@ -1730,13 +1770,14 @@ exact
         >
           <q-icon size="25px" name="face" color="primary">
             <q-tooltip
-            transition-show="flip-right"
-            transition-hide="flip-left"
-            class="bg-primary"
-            style="max-height: 30px"
-            color="primary"
-            max-height="40px"
-            >Clientes</q-tooltip>
+              transition-show="flip-right"
+              transition-hide="flip-left"
+              class="bg-primary"
+              style="max-height: 30px"
+              color="primary"
+              max-height="40px"
+              >Clientes</q-tooltip
+            >
           </q-icon>
         </q-btn>
         <q-btn
@@ -1751,13 +1792,14 @@ exact
         >
           <q-icon size="25px" name="support_agent" color="primary">
             <q-tooltip
-            transition-show="flip-right"
-            transition-hide="flip-left"
-            class="bg-primary"
-            style="max-height: 30px"
-            color="primary"
-            max-height="40px"
-            >Proveedores</q-tooltip>
+              transition-show="flip-right"
+              transition-hide="flip-left"
+              class="bg-primary"
+              style="max-height: 30px"
+              color="primary"
+              max-height="40px"
+              >Proveedores</q-tooltip
+            >
           </q-icon>
         </q-btn>
         <strong style="margin-right: 10px" class="button6">|</strong>
@@ -1773,13 +1815,14 @@ exact
         >
           <q-icon size="25px" name="local_shipping" color="primary">
             <q-tooltip
-            transition-show="flip-right"
-            transition-hide="flip-left"
-            class="bg-primary"
-            style="max-height: 30px"
-            color="primary"
-            max-height="40px"
-            >Costos Transporte</q-tooltip>
+              transition-show="flip-right"
+              transition-hide="flip-left"
+              class="bg-primary"
+              style="max-height: 30px"
+              color="primary"
+              max-height="40px"
+              >Costos Transporte</q-tooltip
+            >
           </q-icon>
         </q-btn>
         <q-btn
@@ -1794,13 +1837,14 @@ exact
         >
           <q-icon size="25px" name="assignment_turned_in" color="primary">
             <q-tooltip
-            transition-show="flip-right"
-            transition-hide="flip-left"
-            class="bg-primary"
-            style="max-height: 30px"
-            color="primary"
-            max-height="40px"
-            >Pruebas de Entrega</q-tooltip>
+              transition-show="flip-right"
+              transition-hide="flip-left"
+              class="bg-primary"
+              style="max-height: 30px"
+              color="primary"
+              max-height="40px"
+              >Pruebas de Entrega</q-tooltip
+            >
           </q-icon>
         </q-btn>
         <strong style="margin-right: 10px" class="button9">|</strong>
@@ -1816,13 +1860,14 @@ exact
         >
           <q-icon size="25px" name="menu_book" color="primary">
             <q-tooltip
-            transition-show="flip-right"
-            transition-hide="flip-left"
-            class="bg-primary"
-            style="max-height: 30px"
-            color="primary"
-            max-height="40px"
-            >Registro Servicio de Carga</q-tooltip>
+              transition-show="flip-right"
+              transition-hide="flip-left"
+              class="bg-primary"
+              style="max-height: 30px"
+              color="primary"
+              max-height="40px"
+              >Registro Servicio de Carga</q-tooltip
+            >
           </q-icon>
         </q-btn>
         <q-btn
@@ -1837,13 +1882,14 @@ exact
         >
           <q-icon size="25px" name="request_quote" color="primary">
             <q-tooltip
-            transition-show="flip-right"
-            transition-hide="flip-left"
-            class="bg-primary"
-            style="max-height: 30px"
-            color="primary"
-            max-height="40px"
-            >Facturación</q-tooltip>
+              transition-show="flip-right"
+              transition-hide="flip-left"
+              class="bg-primary"
+              style="max-height: 30px"
+              color="primary"
+              max-height="40px"
+              >Facturación</q-tooltip
+            >
           </q-icon>
         </q-btn>
         <q-btn
@@ -1858,13 +1904,14 @@ exact
         >
           <q-icon size="25px" name="close" color="primary">
             <q-tooltip
-            transition-show="flip-right"
-            transition-hide="flip-left"
-            class="bg-primary"
-            style="max-height: 30px"
-            color="primary"
-            max-height="40px"
-            >Anulación Guias/Facturas</q-tooltip>
+              transition-show="flip-right"
+              transition-hide="flip-left"
+              class="bg-primary"
+              style="max-height: 30px"
+              color="primary"
+              max-height="40px"
+              >Anulación Guias/Facturas</q-tooltip
+            >
           </q-icon>
         </q-btn>
         <strong style="margin-right: 10px" class="button13">|</strong>
@@ -1880,13 +1927,14 @@ exact
         >
           <q-icon size="25px" name="send_and_archive" color="primary">
             <q-tooltip
-            transition-show="flip-right"
-            transition-hide="flip-left"
-            class="bg-primary"
-            style="max-height: 30px"
-            color="primary"
-            max-height="40px"
-            >Emision Notas Debito</q-tooltip>
+              transition-show="flip-right"
+              transition-hide="flip-left"
+              class="bg-primary"
+              style="max-height: 30px"
+              color="primary"
+              max-height="40px"
+              >Emision Notas Debito</q-tooltip
+            >
           </q-icon>
         </q-btn>
         <q-btn
@@ -1901,13 +1949,14 @@ exact
         >
           <q-icon size="25px" name="send" color="primary">
             <q-tooltip
-            transition-show="flip-right"
-            transition-hide="flip-left"
-            class="bg-primary"
-            style="max-height: 30px"
-            color="primary"
-            max-height="40px"
-            >Emision Notas Credito</q-tooltip>
+              transition-show="flip-right"
+              transition-hide="flip-left"
+              class="bg-primary"
+              style="max-height: 30px"
+              color="primary"
+              max-height="40px"
+              >Emision Notas Credito</q-tooltip
+            >
           </q-icon>
         </q-btn>
         <q-btn
@@ -1922,13 +1971,14 @@ exact
         >
           <q-icon size="25px" name="close" color="primary">
             <q-tooltip
-            transition-show="flip-right"
-            transition-hide="flip-left"
-            class="bg-primary"
-            style="max-height: 30px"
-            color="primary"
-            max-height="40px"
-            >Anulación de Notas</q-tooltip>
+              transition-show="flip-right"
+              transition-hide="flip-left"
+              class="bg-primary"
+              style="max-height: 30px"
+              color="primary"
+              max-height="40px"
+              >Anulación de Notas</q-tooltip
+            >
           </q-icon>
         </q-btn>
         <strong style="margin-right: 10px" class="button17">|</strong>
@@ -1944,13 +1994,14 @@ exact
         >
           <q-icon size="25px" name="price_check" color="primary">
             <q-tooltip
-            transition-show="flip-right"
-            transition-hide="flip-left"
-            class="bg-primary"
-            style="max-height: 30px"
-            color="primary"
-            max-height="40px"
-            >Generar Cobranza</q-tooltip>
+              transition-show="flip-right"
+              transition-hide="flip-left"
+              class="bg-primary"
+              style="max-height: 30px"
+              color="primary"
+              max-height="40px"
+              >Generar Cobranza</q-tooltip
+            >
           </q-icon>
         </q-btn>
         <q-btn
@@ -1965,13 +2016,14 @@ exact
         >
           <q-icon size="25px" name="attach_money" color="primary">
             <q-tooltip
-            transition-show="flip-right"
-            transition-hide="flip-left"
-            class="bg-primary"
-            style="max-height: 30px"
-            color="primary"
-            max-height="40px"
-            >Ingreso de CXP</q-tooltip>
+              transition-show="flip-right"
+              transition-hide="flip-left"
+              class="bg-primary"
+              style="max-height: 30px"
+              color="primary"
+              max-height="40px"
+              >Ingreso de CXP</q-tooltip
+            >
           </q-icon>
         </q-btn>
         <q-btn
@@ -1986,13 +2038,14 @@ exact
         >
           <q-icon size="25px" name="insert_chart" color="primary">
             <q-tooltip
-            transition-show="flip-right"
-            transition-hide="flip-left"
-            class="bg-primary"
-            style="max-height: 30px"
-            color="primary"
-            max-height="40px"
-            >Control Pago Proveedores</q-tooltip>
+              transition-show="flip-right"
+              transition-hide="flip-left"
+              class="bg-primary"
+              style="max-height: 30px"
+              color="primary"
+              max-height="40px"
+              >Control Pago Proveedores</q-tooltip
+            >
           </q-icon>
         </q-btn>
         <strong style="margin-right: 10px" class="button21">|</strong>
@@ -2008,13 +2061,14 @@ exact
         >
           <q-icon size="25px" name="receipt_long" color="primary">
             <q-tooltip
-            transition-show="flip-right"
-            transition-hide="flip-left"
-            class="bg-primary"
-            style="max-height: 30px"
-            color="primary"
-            max-height="40px"
-            >Comisiones Entrega</q-tooltip>
+              transition-show="flip-right"
+              transition-hide="flip-left"
+              class="bg-primary"
+              style="max-height: 30px"
+              color="primary"
+              max-height="40px"
+              >Comisiones Entrega</q-tooltip
+            >
           </q-icon>
         </q-btn>
         <q-btn
@@ -2029,25 +2083,27 @@ exact
         >
           <q-icon size="25px" name="paid" color="primary">
             <q-tooltip
-            transition-show="flip-right"
-            transition-hide="flip-left"
-            class="bg-primary"
-            style="max-height: 30px"
-            color="primary"
-            max-height="40px"
-            >Pago de Comisiones</q-tooltip>
+              transition-show="flip-right"
+              transition-hide="flip-left"
+              class="bg-primary"
+              style="max-height: 30px"
+              color="primary"
+              max-height="40px"
+              >Pago de Comisiones</q-tooltip
+            >
           </q-icon>
         </q-btn>
       </div>
       <div class="text-caption float-right items-center creditos">
-        <p style="font-size: 12px; margin-right: 20px; padding-top:16px">
-        <strong>© 2019. LOS DERECHOS RESERVADOS. RCS EXPRESS</strong>
+        <p style="font-size: 12px; margin-right: 20px; padding-top: 16px">
+          <strong>© 2019. LOS DERECHOS RESERVADOS. RCS EXPRESS</strong>
         </p>
       </div>
       <user-logout ref="component"></user-logout>
       <desactivate-crud
         ref="desactivateCrud"
-        @desactivar-Opciones-Set="desactivarOpcionesSet"></desactivate-crud>
+        @desactivar-Opciones-Set="desactivarOpcionesSet"
+      ></desactivate-crud>
     </q-footer>
   </q-layout>
 </template>
@@ -2080,29 +2136,29 @@ export default {
       noveno: false,
       decimo: false,
       permisos: [
-      "r_bancos",
-      "r_agencias", 
-      "r_ciudades", 
-      "r_permisos", 
-      "r_usuarios", 
-      "r_roles",
-      "r_agentes",
-      "r_zonas",
-      "r_unidades",
-      "r_ayudantes",
-      "r_receptores",
-      "r_tarifas",
-      "r_ccorrelativo",
-      "r_vcontrol",
-      "r_cuentas",
-      "r_clientes",
-      "r_empleados",
-      "r_proveedores",
-      "r_retenciones",
-      "r_concepto_operacion",
-      "r_concepto_facturacion",
-      "r_concepto_fpo",
-      "r_asignacionguias"
+        "r_bancos",
+        "r_agencias",
+        "r_ciudades",
+        "r_permisos",
+        "r_usuarios",
+        "r_roles",
+        "r_agentes",
+        "r_zonas",
+        "r_unidades",
+        "r_ayudantes",
+        "r_receptores",
+        "r_tarifas",
+        "r_ccorrelativo",
+        "r_vcontrol",
+        "r_cuentas",
+        "r_clientes",
+        "r_empleados",
+        "r_proveedores",
+        "r_retenciones",
+        "r_concepto_operacion",
+        "r_concepto_facturacion",
+        "r_concepto_fpo",
+        "r_asignacionguias",
       ],
       decimoprimero: false,
       decimosegundo: false,
@@ -2172,12 +2228,12 @@ export default {
     this.events.forEach(function (event) {
       window.addEventListener(event, this.resetLogoutTimer);
     }, this);
-    this.resetLogoutTimer()
+    this.resetLogoutTimer();
     this.miniState = true;
     this.Authenticator();
     this.refreshTimer();
     this.$refs.desactivateCrud.desactivarOpciones("desactivarOpcionesSet");
-    },
+  },
 
   methods: {
     drawerClick() {
@@ -2190,14 +2246,14 @@ export default {
       }
     },
     desactivarOpcionesSet(permisos) {
-      var permisos = permisos
-      for (var e = 0, len = permisos.length; e<len; e++) {
-          if (permisos[e].permiso == true) {
-            this[permisos[e].pagina] = true;
-            this[permisos[e].paginaSet] = false;
-          }
-          if (e == permisos.length - 1) break
-      };
+      var permisos = permisos;
+      for (var e = 0, len = permisos.length; e < len; e++) {
+        if (permisos[e].permiso == true) {
+          this[permisos[e].pagina] = true;
+          this[permisos[e].paginaSet] = false;
+        }
+        if (e == permisos.length - 1) break;
+      }
     },
     Authenticator() {
       if (LocalStorage.getItem("user") != true) {
@@ -2208,7 +2264,7 @@ export default {
       this.$refs.component.logoutUser();
     },
     refreshTimer() {
-      let _this = this
+      let _this = this;
       var interval;
       let minutes = 19;
       let currentTime = localStorage.getItem("currentTime");
@@ -2227,14 +2283,14 @@ export default {
       }
       function checkComplete() {
         if (LocalStorage.getItem("user") === true) {
-          currentTime = localStorage.getItem("currentTime");   
-          targetTime = localStorage.getItem("targetTime");    
+          currentTime = localStorage.getItem("currentTime");
+          targetTime = localStorage.getItem("targetTime");
           if (currentTime > targetTime) {
             clearInterval(interval);
             LocalStorage.remove("currentTime");
             LocalStorage.remove("targetTime");
-            _this.$refs.component.refreshToken()
-            _this.refreshTimer()
+            _this.$refs.component.refreshToken();
+            _this.refreshTimer();
           } else {
             currentTime = new Date();
             localStorage.setItem("currentTime", currentTime);
@@ -2262,7 +2318,7 @@ export default {
       this.logoutTimer();
     },
     logoutTimer() {
-      let _this = this
+      let _this = this;
       let minutes = 5;
       let currentTime = localStorage.getItem("currentTimeLogout");
       let targetTime = localStorage.getItem("targetTimeLogout");
@@ -2286,7 +2342,7 @@ export default {
             clearInterval(_this.intervalLogout);
             LocalStorage.remove("currentTimeLogout");
             LocalStorage.remove("targetTimeLogout");
-            _this.$refs.component.logoutUser()
+            _this.$refs.component.logoutUser();
           } else {
             currentTime = new Date();
             localStorage.setItem("currentTimeLogout", currentTime);
@@ -2336,102 +2392,102 @@ export default {
 }
 @media screen and (max-width: 680px) {
   .float-left {
-    float: inherit
+    float: inherit;
   }
 }
 @media screen and (max-width: 1265px) {
   .button23 {
-    display: none
+    display: none;
   }
 }
 @media screen and (max-width: 1215px) {
   .button22 {
-    display: none
+    display: none;
   }
   .button21 {
-    display: none
+    display: none;
   }
 }
 @media screen and (max-width: 1156px) {
   .button20 {
-    display: none
+    display: none;
   }
 }
 @media screen and (max-width: 1110px) {
   .button19 {
-    display: none
+    display: none;
   }
 }
 @media screen and (max-width: 1065px) {
   .button18 {
-    display: none
+    display: none;
   }
   .button17 {
-    display: none
+    display: none;
   }
 }
 @media screen and (max-width: 1000px) {
   .button16 {
-    display: none
+    display: none;
   }
 }
 @media screen and (max-width: 956px) {
   .button15 {
-    display: none
+    display: none;
   }
 }
 @media screen and (max-width: 913px) {
   .button14 {
-    display: none
+    display: none;
   }
   .button13 {
-    display: none
+    display: none;
   }
 }
 @media screen and (max-width: 852px) {
   .button12 {
-    display: none
+    display: none;
   }
 }
 @media screen and (max-width: 805px) {
   .button11 {
-    display: none
+    display: none;
   }
 }
 @media screen and (max-width: 803px) {
   .button12 {
-    display: none
+    display: none;
   }
 }
 @media screen and (max-width: 757px) {
   .button10 {
-    display: none
+    display: none;
   }
   .button9 {
-    display: none
+    display: none;
   }
 }
 @media screen and (max-width: 697px) {
   .button8 {
-    display: none
+    display: none;
   }
 }
 @media screen and (max-width: 321px) {
   .button6 {
-    display: none
+    display: none;
   }
   .button3 {
-    display: none
+    display: none;
   }
 }
 @media screen and (max-width: 298px) {
   .button7 {
-    display: none
+    display: none;
   }
 }
 @media screen and (max-width: 1012px) {
   .titleMainLayout {
-    display: none
+    display: none;
   }
 }
 </style>
