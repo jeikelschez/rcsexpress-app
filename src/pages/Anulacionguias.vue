@@ -370,6 +370,7 @@
             :filter="filter"
             style="width: 100%"
             v-model:pagination="pagination"
+            :rows-per-page-options="[5, 10, 15, 20, 50]"
             @request="onRequest"
             binary-state-sort
             :grid="$q.screen.xs"
@@ -508,6 +509,7 @@ export default {
           field: "t_de_documento",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "nro_control",
@@ -625,7 +627,6 @@ export default {
     const $q = useQuasar();
     const loading = ref(false);
     const pagination = ref({
-      sortBy: "desc",
       descending: false,
       page: 1,
       rowsPerPage: 10,
@@ -668,7 +669,6 @@ export default {
         this.pagination.rowsNumber = res.total;
         this.loading = false;
       } else {
-        console.log(res.pagination)
         const { page, rowsPerPage, sortBy, descending } = res.pagination;
         const filter = res.filter;
         const startRow = (page - 1) * rowsPerPage;
@@ -677,7 +677,15 @@ export default {
 
         this.axiosConfig.headers.page = page;
         this.axiosConfig.headers.limit = fetchCount;
-        this.axiosConfig.headers.order_direction = sortBy;
+        this.axiosConfig.headers.order_by = sortBy;
+
+        if (sortBy) {
+          this.pagination.descending = !this.pagination.descending
+          this.pagination.sortBy = sortBy;
+          if (this.pagination.descending) {
+            this.axiosConfig.headers.order_direction = 'DESC'
+          } else this.axiosConfig.headers.order_direction = 'ASC'
+        }
 
         this.getData(`/mmovimientos`, "setDataGuias", "datos");
       }
