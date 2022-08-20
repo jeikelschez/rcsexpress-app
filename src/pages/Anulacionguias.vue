@@ -628,7 +628,7 @@ export default {
       sortBy: "desc",
       descending: false,
       page: 1,
-      rowsPerPage: 5,
+      rowsPerPage: 10,
       rowsNumber: "",
     });
     return {
@@ -636,7 +636,7 @@ export default {
         headers: {
           Authorization: ``,
           page: 1,
-          limit: 5,
+          limit: 10,
           order_by: "",
           order_direction: "",
         },
@@ -671,21 +671,15 @@ export default {
         console.log(res.pagination)
         const { page, rowsPerPage, sortBy, descending } = res.pagination;
         const filter = res.filter;
-        this.loading = true;
-
+        const startRow = (page - 1) * rowsPerPage;
         const fetchCount =
           rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
 
-        const startRow = (page - 1) * rowsPerPage;
-
         this.axiosConfig.headers.page = page;
         this.axiosConfig.headers.limit = fetchCount;
-        this.$refs.methods.getData(
-          `/mmovimientos`,
-          "setDataGuias",
-          "datos",
-          this.axiosConfig
-        );
+        this.axiosConfig.headers.order_direction = sortBy;
+
+        this.getData(`/mmovimientos`, "setDataGuias", "datos");
       }
       this.count = 0;
     },
