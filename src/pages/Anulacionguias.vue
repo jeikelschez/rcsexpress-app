@@ -687,25 +687,10 @@ export default {
         this.axiosConfig
       );
     },
-    onRequestIniciar(res, dataRes, props) {
+    onRequestIniciar(res, dataRes) {
       this[dataRes] = res.data;
       this.pagination.rowsNumber = res.total;
-      const { page, rowsPerPage, sortBy, descending } = props.pagination;
-      const filter = props.filter;
-      this.loading = false
-
-      // get all rows if "All" (0) is selected
-      const fetchCount =
-        rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-
-      // calculate starting row of data
-      const startRow = (page - 1) * rowsPerPage;
-
-      // fetch data from "server"
-
-      this.axiosConfig.headers.page = page;
-      this.axiosConfig.headers.limit = fetchCount;
-      this.axiosConfig.headers.order_direction = sortBy;  
+      this.loading = false 
     },
     setDataGuias(res) {
       // clear out existing data and add new
