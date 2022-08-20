@@ -576,7 +576,6 @@ export default {
           name: "action",
           label: "Acciones",
           align: "center",
-          sortable: true,
           required: true,
         },
       ],
@@ -639,7 +638,7 @@ export default {
           page: 1,
           limit: 5,
           order_by: "",
-          order_direction: "desc",
+          order_direction: "",
         },
       },
       pagination,
@@ -669,6 +668,7 @@ export default {
         this.pagination.rowsNumber = res.total;
         this.loading = false;
       } else {
+        console.log(res.pagination)
         const { page, rowsPerPage, sortBy, descending } = res.pagination;
         const filter = res.filter;
         this.loading = true;
@@ -680,8 +680,6 @@ export default {
 
         this.axiosConfig.headers.page = page;
         this.axiosConfig.headers.limit = fetchCount;
-        this.axiosConfig.headers.order_direction = sortBy;
-
         this.$refs.methods.getData(
           `/mmovimientos`,
           "setDataGuias",
