@@ -10,6 +10,7 @@ const { configure } = require('quasar/wrappers');
 
 module.exports = configure(function (/* ctx */) {
   return {
+
     // https://quasar.dev/quasar-cli/supporting-ts
     supportTS: false,
 
@@ -45,6 +46,11 @@ module.exports = configure(function (/* ctx */) {
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
+      env: {
+        publicPath: process.env.NODE_ENV === 'production'
+          ? 'https://scen.rcsexpress.com'
+          : 'http://localhost:8080'
+      },
       extendWebpack (cfg) { cfg.plugins.push( new webpack.ProvidePlugin({ process: 'process/browser', Buffer: ['buffer', 'Buffer'] }) ) },
       vueRouterMode: 'hash', // available values: 'hash', 'history'
 
@@ -80,7 +86,7 @@ module.exports = configure(function (/* ctx */) {
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
     framework: {
-      config: {},
+      lang: 'es',
 
       // iconSet: 'material-icons', // Quasar icon set
       // lang: 'en-US', // Quasar language pack

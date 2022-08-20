@@ -369,8 +369,10 @@
             class="my-sticky-column-table"
             :filter="filter"
             style="width: 100%"
-            :grid="$q.screen.xs"
             v-model:pagination="pagination"
+            @request="onRequest"
+            binary-state-sort
+            :grid="$q.screen.xs"
           >
             <template v-slot:loading>
               <q-inner-loading showing color="primary" />
@@ -473,8 +475,9 @@
       @get-Data="getData('/cguias', 'setData', 'datos')"
       @get-Data-Guias="getDataGuias('/cguias', 'setData', 'datos')"
       @set-Data="setData"
+      @set-Data-Guias="setDataGuias"
       @reset-Loading="resetLoading"
-      @set-Data-Iniciar="setDataIniciar"
+      @on-Request-Iniciar="onRequestIniciar"
       @set-Data-Edit="setDataEdit"
       @set-Data-Select="setDataSelect"
     ></methods>
@@ -482,7 +485,7 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 
 import { api } from "boot/axios";
 
@@ -618,27 +621,27 @@ export default {
       disabledDelete: true,
     };
   },
-  setup() {
+  setup(data) {
     const $q = useQuasar();
+    const loading = ref(false);
     const pagination = ref({
       sortBy: "desc",
       descending: false,
-      page: 2,
-      control: 0,
-      rowsPerPage: 4,
-      // rowsNumber: xx if getting data from a server
+      page: 1,
+      rowsPerPage: 5,
+      rowsNumber: "",
     });
     return {
       axiosConfig: {
         headers: {
           Authorization: ``,
-          agencia: "",
-          tipo: "",
+          page: 1,
+          limit: 5,
+          order_by: "",
+          order_direction: "desc",
         },
       },
-      pagination: ref({
-        rowsPerPage: 10,
-      }),
+      pagination,
       separator: ref("vertical"),
       anulate: ref(false),
       loading: ref(false),
@@ -648,7 +651,8 @@ export default {
     };
   },
   mounted() {
-    this.getData("/agencias", "setDataIniciar", "agencias");
+    this.getData(`/mmovimientos`, "onRequestIniciar", "datos");
+    this.loading = true
     this.$refs.desactiveCrud.desactivarCrud(
       "c_ciudades",
       "r_ciudades",
@@ -658,6 +662,59 @@ export default {
     );
   },
   methods: {
+    onRequest(props) {
+      const { page, rowsPerPage, sortBy, descending } = props.pagination;
+      const filter = props.filter;
+      this.loading = true;
+
+      // get all rows if "All" (0) is selected
+      const fetchCount =
+        rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
+
+      // calculate starting row of data
+      const startRow = (page - 1) * rowsPerPage;
+
+      // fetch data from "server"
+
+      this.axiosConfig.headers.page = page;
+      this.axiosConfig.headers.limit = fetchCount;
+      this.axiosConfig.headers.order_direction = sortBy;
+
+      this.$refs.methods.getData(
+        `/mmovimientos`,
+        "setDataGuias",
+        "datos",
+        this.axiosConfig
+      );
+    },
+    onRequestIniciar(res, dataRes, props) {
+      this[dataRes] = res.data;
+      this.pagination.rowsNumber = res.total;
+      const { page, rowsPerPage, sortBy, descending } = props.pagination;
+      const filter = props.filter;
+
+      // get all rows if "All" (0) is selected
+      const fetchCount =
+        rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
+
+      // calculate starting row of data
+      const startRow = (page - 1) * rowsPerPage;
+
+      // fetch data from "server"
+
+      this.axiosConfig.headers.page = page;
+      this.axiosConfig.headers.limit = fetchCount;
+      this.axiosConfig.headers.order_direction = sortBy;  
+    },
+    setDataGuias(res) {
+      // clear out existing data and add new
+      this.datos = res.data;
+      this.pagination.rowsNumber = res.total;
+      this.pagination.page = res.currentPage;
+      this.pagination.rowsPerPage = res.limit;
+      // ...and turn of loading indicator
+      this.loading = false;
+    },
     resetLoading() {
       this.loading = false;
     },
@@ -701,11 +758,6 @@ export default {
     },
     setData(res, dataRes) {
       this[dataRes] = res;
-      this.loading = false;
-    },
-    setDataIniciar(res, dataRes) {
-      this[dataRes] = res;
-      this.getDataIniciar();
       this.loading = false;
     },
     setDataEdit(res, dataRes) {

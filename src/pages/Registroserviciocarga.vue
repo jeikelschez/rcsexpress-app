@@ -38,7 +38,7 @@
           icon="print"
           class="z-top"
           style="margin-top: 15px"
-          @click="clienteParticularBox = true"
+          @click="pdfView = true"
         >
           <q-tooltip
             style="max-height: 30px"
@@ -55,6 +55,7 @@
           icon="close"
           class="z-top"
           style="margin-top: 15px"
+          @click="clienteParticularBox = true"
         >
           <q-tooltip
             class="bg-primary"
@@ -634,6 +635,14 @@
       </q-card>
     </q-dialog>
 
+    <q-dialog v-model="pdfView">
+    <div style="width: 100%; max-width: 80vw">
+      <WebViewer
+           initialDoc="https://www.telosalliance.com/uploads/Axia%20Products/Quasar/Assets/1490-00224-001%20Quasar%20User%20Manual%20v1.4.18.pdf"
+      />
+    </div>
+    </q-dialog>
+
     <div class="row q-pa-sm justify-center">
       <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
         <div class="row">
@@ -721,105 +730,87 @@
                       </div>
                       <div class="col-md-6 col-xs-6">
                         <q-input
-                          outlined
-                          label="Emision"
-                          hint=""
-                          dense
-                          v-model="formEdit.fecha_emision"
-                          mask="date"
-                          :rules="['date']"
-                          class="pcform pcmovil"
-                          lazy-rules
-                        >
-                          <template v-slot:append>
-                            <q-icon name="event" class="cursor-pointer">
-                              <q-popup-proxy
-                                cover
-                                transition-show="scale"
-                                transition-hide="scale"
-                              >
-                                <q-date v-model="formEdit.fecha_emision">
-                                  <div class="row items-center justify-end">
-                                    <q-btn
-                                      v-close-popup
-                                      label="Close"
-                                      color="primary"
-                                      flat
-                                    />
-                                  </div>
-                                </q-date>
-                              </q-popup-proxy>
-                            </q-icon>
-                          </template>
-                        </q-input>
+                        outlined
+                        label="Emision"
+                        hint=""
+                        v-model="formEdit.fecha_emision"
+                        lazy-rules
+                        dense
+                        class="pcform pcmovil"
+                        mask="##-##-####"
+                        :rules="[checkDate]"
+                      >
+                        <template v-slot:append>
+                          <q-icon name="event" class="cursor-pointer">
+                            <q-popup-proxy
+                              ref="qDateProxy"
+                              transition-show="scale"
+                              transition-hide="scale"
+                            >
+                              <q-date
+                                v-model="formEdit.fecha_emision"
+                                mask="DD-MM-YYYY"
+                              ></q-date>
+                            </q-popup-proxy>
+                          </q-icon>
+                        </template>
+                      </q-input>
                       </div>
 
                       <div class="col-md-6 col-xs-6">
                         <q-input
-                          outlined
-                          label="Envio"
-                          hint=""
-                          dense
-                          v-model="formEdit.fecha_envio"
-                          mask="date"
-                          :rules="['date']"
-                          lazy-rules
-                        >
-                          <template v-slot:append>
-                            <q-icon name="event" class="cursor-pointer">
-                              <q-popup-proxy
-                                cover
-                                transition-show="scale"
-                                transition-hide="scale"
-                              >
-                                <q-date v-model="formEdit.fecha_envio">
-                                  <div class="row items-center justify-end">
-                                    <q-btn
-                                      v-close-popup
-                                      label="Close"
-                                      color="primary"
-                                      flat
-                                    />
-                                  </div>
-                                </q-date>
-                              </q-popup-proxy>
-                            </q-icon>
-                          </template>
-                        </q-input>
+                        outlined
+                        label="Emision"
+                        hint=""
+                        dense
+                        v-model="formEdit.fecha_envio"
+                        lazy-rules
+                        mask="##-##-####"
+                        :rules="[checkDate]"
+                      >
+                        <template v-slot:append>
+                          <q-icon name="event" class="cursor-pointer">
+                            <q-popup-proxy
+                              ref="qDateProxy"
+                              transition-show="scale"
+                              transition-hide="scale"
+                            >
+                              <q-date
+                                v-model="formEdit.fecha_envio"
+                                mask="DD-MM-YYYY"
+                              ></q-date>
+                            </q-popup-proxy>
+                          </q-icon>
+                        </template>
+                      </q-input>
                       </div>
 
                       <div class="col-md-12 col-xs-12">
                         <q-input
-                          outlined
-                          label="Aplicación"
-                          hint=""
-                          dense
-                          v-model="formEdit.fecha_aplicacion"
-                          mask="date"
-                          :rules="['date']"
-                          lazy-rules
-                        >
-                          <template v-slot:append>
-                            <q-icon name="event" class="cursor-pointer">
-                              <q-popup-proxy
-                                cover
-                                transition-show="scale"
-                                transition-hide="scale"
-                              >
-                                <q-date v-model="formEdit.fecha_aplicacion">
-                                  <div class="row items-center justify-end">
-                                    <q-btn
-                                      v-close-popup
-                                      label="Close"
-                                      color="primary"
-                                      flat
-                                    />
-                                  </div>
-                                </q-date>
-                              </q-popup-proxy>
-                            </q-icon>
-                          </template>
-                        </q-input>
+                        outlined
+                        label="Aplicación"
+                        hint=""
+                        dense
+                        v-model="formEdit.fecha_aplicacion"
+                        lazy-rules
+                        mask="##-##-####"
+                        :rules="[checkDate]"
+                      >
+                        <template v-slot:append>
+                          <q-icon name="event" class="cursor-pointer">
+                            <q-popup-proxy
+                              ref="qDateProxy"
+                              transition-show="scale"
+                              transition-hide="scale"
+                            >
+                              <q-date
+                                v-model="formEdit.fecha_aplicacion"
+                                mask="DD-MM-YYYY"
+                              ></q-date>
+                            </q-popup-proxy>
+                          </q-icon>
+                        </template>
+                      </q-input>
                       </div>
                     </div>
                   </q-card-section>
@@ -1720,37 +1711,31 @@
 
               <div class="col-md-3 col-xs-12">
                 <q-input
-                  outlined
-                  label="Fecha Llegada Transito"
-                  hint=""
-                  v-model="formEdit.fecha_llega_transito"
-                  mask="date"
-                  dense
-                  :rules="['date']"
-                  class="pcform"
-                  lazy-rules
-                >
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy
-                        cover
-                        transition-show="scale"
-                        transition-hide="scale"
+                        outlined
+                        label="Fecha Llegada Transito"
+                        hint=""
+                        dense
+                        v-model="formEdit.fecha_llega_transito"
+                        lazy-rules
+                        class="pcform"
+                        mask="##-##-####"
+                        :rules="[checkDate]"
                       >
-                        <q-date v-model="formEdit.fecha_llega_transito">
-                          <div class="row items-center justify-end">
-                            <q-btn
-                              v-close-popup
-                              label="Close"
-                              color="primary"
-                              flat
-                            />
-                          </div>
-                        </q-date>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
+                        <template v-slot:append>
+                          <q-icon name="event" class="cursor-pointer">
+                            <q-popup-proxy
+                              ref="qDateProxy"
+                              transition-show="scale"
+                              transition-hide="scale"
+                            >
+                              <q-date
+                                v-model="formEdit.fecha_llega_transito"
+                                mask="DD-MM-YYYY"
+                              ></q-date>
+                            </q-popup-proxy>
+                          </q-icon>
+                        </template>
+                      </q-input>
               </div>
 
               <div
@@ -1902,12 +1887,14 @@ import { useQuasar } from "quasar";
 
 import { LocalStorage } from "quasar";
 
+import WebViewer from "src/components/WebViewer.vue";
+
 import methodsVue from "src/components/methods.vue";
 
 import desactivateCrudVue from "src/components/desactivateCrud.vue";
 
 export default {
-  components: { "desactive-crud": desactivateCrudVue, methods: methodsVue },
+  components: { "desactive-crud": desactivateCrudVue, methods: methodsVue, WebViewer},
   name: "registroServicioCarga",
   data() {
     return {
@@ -2130,6 +2117,7 @@ export default {
       clientesDelete: ref(false),
       conceptosBox: ref(false),
       clienteParticularBox: ref(false),
+      pdfView: ref(false),
       filter: ref(""),
     };
   },
@@ -2266,9 +2254,10 @@ export default {
       if (res.t_de_documento == "GC") this.checkbox.guia_carga = "1";
 
       this[dataRes].serie_documento = res.serie_documento;
-      this[dataRes].fecha_emision = res.fecha_emision;
-      this[dataRes].fecha_envio = res.fecha_envio;
-      this[dataRes].fecha_aplicacion = res.fecha_aplicacion;
+      this.formEdit.fecha_emision = res.fecha_emision.split("-").reverse().join("-");
+      this.formEdit.fecha_envio = res.fecha_envio.split("-").reverse().join("-");
+      this.formEdit.fecha_aplicacion = res.fecha_aplicacion.split("-").reverse().join("-");
+      
       this[dataRes].nro_piezas = res.nro_piezas;
       this[dataRes].peso_kgs = res.peso_kgs;
 
@@ -2482,6 +2471,10 @@ export default {
         this.formEdit.estatus_administra =
           this.formEdit.estatus_administra.value;
 
+      this.formEdit.fecha_emision = this.formEdit.fecha_emision.split("-").reverse().join("-");
+      this.formEdit.fecha_envio = this.formEdit.fecha_envio.split("-").reverse().join("-");
+      this.formEdit.fecha_aplicacion = this.formEdit.fecha_aplicacion.split("-").reverse().join("-");
+
       this.$refs.methods.putData(
         `/mmovimientos/${this.formEdit.id}`,
         this.formEdit,
@@ -2547,6 +2540,11 @@ export default {
         (this.clientes_destino = []),
         (this.zonas_destino = []),
         (this.conceptos = []);
+    },
+    checkDate(val) {
+      if (val.length < 10) {
+        return "Fecha Invalida";
+      }
     },
   },
 };

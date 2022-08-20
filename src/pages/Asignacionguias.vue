@@ -58,35 +58,29 @@
 
               <div class="col-md-6 col-xs-12">
                 <q-input
-                  outlined
-                  label="Fecha de Asignación"
-                  hint=""
-                  v-model="form.fecha_asignacion"
-                  mask="date"
-                  :rules="['date']"
-                  lazy-rules
-                >
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy
-                        cover
-                        transition-show="scale"
-                        transition-hide="scale"
+                        outlined
+                        label="Fecha de Asignación"
+                        hint=""
+                        v-model="form.fecha_asignacion"
+                        lazy-rules
+                        mask="##-##-####"
+                        :rules="[checkDate]"
                       >
-                        <q-date v-model="form.fecha_asignacion">
-                          <div class="row items-center justify-end">
-                            <q-btn
-                              v-close-popup
-                              label="Close"
-                              color="primary"
-                              flat
-                            />
-                          </div>
-                        </q-date>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
+                        <template v-slot:append>
+                          <q-icon name="event" class="cursor-pointer">
+                            <q-popup-proxy
+                              ref="qDateProxy"
+                              transition-show="scale"
+                              transition-hide="scale"
+                            >
+                              <q-date
+                                v-model="form.fecha_asignacion"
+                                mask="DD-MM-YYYY"
+                              ></q-date>
+                            </q-popup-proxy>
+                          </q-icon>
+                        </template>
+                      </q-input>
               </div>
 
               <div class="col-md-4 col-xs-12">
@@ -255,36 +249,30 @@
 
               <div class="col-md-6 col-xs-12">
                 <q-input
-                  outlined
-                  label="Fecha de Asignación"
-                  hint=""
-                  :readonly="this.disabledInputsEdit"
-                  v-model="formEdit.fecha_asignacion"
-                  mask="date"
-                  :rules="['date']"
-                  lazy-rules
-                >
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy
-                        cover
-                        transition-show="scale"
-                        transition-hide="scale"
+                        outlined
+                        label="Fecha de Asignación"
+                        hint=""
+                        v-model="formEdit.fecha_asignacion"
+                        lazy-rules
+                        mask="##-##-####"
+                        :readonly="this.disabledInputsEdit"
+                        :rules="[checkDate]"
                       >
-                        <q-date v-model="formEdit.fecha_asignacion">
-                          <div class="row items-center justify-end">
-                            <q-btn
-                              v-close-popup
-                              label="Close"
-                              color="primary"
-                              flat
-                            />
-                          </div>
-                        </q-date>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
+                        <template v-slot:append>
+                          <q-icon name="event" class="cursor-pointer">
+                            <q-popup-proxy
+                              ref="qDateProxy"
+                              transition-show="scale"
+                              transition-hide="scale"
+                            >
+                              <q-date
+                                v-model="formEdit.fecha_asignacion"
+                                mask="DD-MM-YYYY"
+                              ></q-date>
+                            </q-popup-proxy>
+                          </q-icon>
+                        </template>
+                      </q-input>
               </div>
 
               <div class="col-md-4 col-xs-12">
@@ -1240,7 +1228,6 @@ export default {
     },
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
-      console.log(url)
       if (url == "/cguias") {
       this.loading = true;}
     },
@@ -1272,7 +1259,7 @@ export default {
       this[dataRes].control_inicio = res.control_inicio;
       this[dataRes].control_final = res.control_final;
       this[dataRes].cant_asignada = res.cant_asignada;
-      this[dataRes].fecha_asignacion = res.fecha_asignacion;
+      this.formEdit.fecha_asignacion = res.fecha_asignacion.split("-").reverse().join("-");
       var cod_agencia = res.cod_agencia;
       var cod_agente = res.cod_agente;
       var cod_cliente = res.cod_cliente;
@@ -1304,6 +1291,7 @@ export default {
       this.loading = true;
     },
     createData() {
+      this.form.fecha_asignacion = this.form.fecha_asignacion.split("-").reverse().join("-");
       this.form.cod_cliente = this.form.cod_cliente.id;
       this.form.cod_agente = this.form.cod_agente.id;
       this.form.tipo = this.form.tipo.value,
@@ -1325,6 +1313,7 @@ export default {
       this.loading = true;
     },
     putData() {
+      this.formEdit.fecha_asignacion = this.formEdit.fecha_asignacion.split("-").reverse().join("-");
       this.formEdit.cod_agencia = this.formEdit.cod_agencia.id,
       this.formEdit.cod_cliente = this.formEdit.cod_cliente.id;
       this.formEdit.cod_agente = this.formEdit.cod_agente.id;
@@ -1384,6 +1373,12 @@ export default {
       this.getData("/clientes", "setData", "clientes");
       this.getData("/agentes", "setData", "agentes");
       this.getData("/cguias", "setDataGuias", "datos");
+    },
+
+    checkDate(val) {
+      if (val.length < 10) {
+        return "Fecha Invalida";
+      }
     },
   },
 };

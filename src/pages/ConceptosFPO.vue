@@ -75,53 +75,45 @@
                       <h4 style="font-size: 20px" class="text-secondary"><strong>FECHAS DE VALIDEZ</strong></h4>
                     </div>
                     <div class="col-md-6 col-xs-12">
-                      <q-input
-                      outlined
-                      label="Inicial"
-                      hint=""
-                      v-model="form.f_val"
-                      mask="date"
-                      :rules="['date']"
-                      class="pcform"
-                      lazy-rules
-                >
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                        <q-date v-model="form.f_val">
-                          <div class="row items-center justify-end">
-                             <q-btn v-close-popup label="Close" color="primary" flat />
-                          </div>
-                        </q-date>
-                      </q-popup-proxy>
+                      <q-input 
+                    outlined
+                    label="Inicial"
+                    hint=""
+                    v-model="form.f_val"
+                    class="pcform"
+                    lazy-rules
+                    mask="##-##-####" 
+                    :rules="[checkDate]"
+                    >
+                   <template v-slot:append>
+                   <q-icon name="event" class="cursor-pointer">
+                   <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                   <q-date v-model="form.f_val" @input="() => $refs.qDateProxy.hide()" mask="DD-MM-YYYY"></q-date>
+                    </q-popup-proxy>
                     </q-icon>
-                  </template>
-                </q-input>
-                </div>
+                    </template>
+                    </q-input>
+                    </div>
 
                 <div class="col-md-6 col-xs-12">
-                      <q-input
-                      outlined
-                      label="Final"
-                      hint=""
-                      mask="date"
-                      :rules="['date']"
-                      v-model="form.f_anul"
-                      class="pcform"
-                      lazy-rules
-                >
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                        <q-date v-model="form.f_anul">
-                          <div class="row items-center justify-end">
-                             <q-btn v-close-popup label="Close" color="primary" flat />
-                          </div>
-                        </q-date>
-                      </q-popup-proxy>
+                      <q-input 
+                    outlined
+                    label="Final"
+                    hint=""
+                    v-model="form.f_anul"
+                    class="pcform"
+                    lazy-rules
+                    mask="##-##-####" 
+                    :rules="[checkDate]"
+                    >
+                   <template v-slot:append>
+                   <q-icon name="event" class="cursor-pointer">
+                   <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                   <q-date v-model="form.f_anul" @input="() => $refs.qDateProxy.hide()" mask="DD-MM-YYYY"></q-date>
+                    </q-popup-proxy>
                     </q-icon>
-                  </template>
-                </q-input>
+                    </template>
+                    </q-input>
                 </div>
                   </div>
                 </q-card-section>
@@ -280,53 +272,45 @@
                       <h4 style="font-size: 20px" class="text-secondary"><strong>FECHAS DE VALIDEZ</strong></h4>
                     </div>
                     <div class="col-md-6 col-xs-12">
-                      <q-input
-                      outlined
-                      label="Inicial"
-                      hint=""
-                      v-model="formEdit.f_val"
-                      mask="date"
-                      :rules="['date']"
-                      class="pcform"
-                      lazy-rules
-                >
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                        <q-date v-model="formEdit.f_val">
-                          <div class="row items-center justify-end">
-                             <q-btn v-close-popup label="Close" color="primary" flat />
-                          </div>
-                        </q-date>
-                      </q-popup-proxy>
+                      <q-input 
+                    outlined
+                    label="Inicial"
+                    hint=""
+                    v-model="formEdit.f_val"
+                    class="pcform"
+                    lazy-rules
+                    mask="##-##-####" 
+                    :rules="[checkDate]"
+                    >
+                   <template v-slot:append>
+                   <q-icon name="event" class="cursor-pointer">
+                   <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                   <q-date v-model="formEdit.f_val" @input="() => $refs.qDateProxy.hide()" mask="DD-MM-YYYY"></q-date>
+                    </q-popup-proxy>
                     </q-icon>
-                  </template>
-                </q-input>
+                    </template>
+                    </q-input>
                 </div>
 
                 <div class="col-md-6 col-xs-12">
-                      <q-input
-                      outlined
-                      label="Final"
-                      hint=""
-                      mask="date"
-                      :rules="['date']"
-                      v-model="formEdit.f_anul"
-                      class="pcform"
-                      lazy-rules
-                >
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                        <q-date v-model="formEdit.f_anul">
-                          <div class="row items-center justify-end">
-                             <q-btn v-close-popup label="Close" color="primary" flat />
-                          </div>
-                        </q-date>
-                      </q-popup-proxy>
+                      <q-input 
+                    outlined
+                    label="Inicial"
+                    hint=""
+                    v-model="formEdit.f_anul"
+                    class="pcform"
+                    lazy-rules
+                    mask="##-##-####" 
+                    :rules="[checkDate]"
+                    >
+                   <template v-slot:append>
+                   <q-icon name="event" class="cursor-pointer">
+                   <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                   <q-date v-model="formEdit.f_anul" @input="() => $refs.qDateProxy.hide()" mask="DD-MM-YYYY"></q-date>
+                    </q-popup-proxy>
                     </q-icon>
-                  </template>
-                </q-input>
+                    </template>
+                    </q-input>
                 </div>
                   </div>
                 </q-card-section>
@@ -618,6 +602,8 @@ import { api } from "boot/axios";
 
 import { useQuasar } from "quasar";
 
+import { date } from 'quasar'
+
 import { LocalStorage } from "quasar";
 
 import methodsVue from 'src/components/methods.vue';
@@ -865,8 +851,8 @@ export default {
       this.formEdit.cod_fpo = res.cod_fpo
       this.formEdit.desc_tipo = res.desc_tipo
       this.formEdit.valor = res.valor
-      this.formEdit.f_anul = res.f_anul
-      this.formEdit.f_val = res.f_val
+      this.formEdit.f_val = res.f_val.split("-").reverse().join("-");
+      this.formEdit.f_anul = res.f_anul.split("-").reverse().join("-");
       this.formEdit.peso_inicio = res.peso_inicio
       this.formEdit.peso_fin = res.peso_fin
       this.formEdit.valor = res.valor
@@ -876,11 +862,15 @@ export default {
       this.loading = true;
     },
     createData() {
+      this.form.f_val = this.form.f_val.split("-").reverse().join("-");
+      this.form.f_anul = this.form.f_anul.split("-").reverse().join("-");
       this.$refs.methods.createData('/fpos', this.form, 'getData', this.axiosConfig);
       this.resetForm();
       this.loading = true;
     },
     putData() {
+      this.formEdit.f_val = this.formEdit.f_val.split("-").reverse().join("-");
+      this.formEdit.f_anul = this.formEdit.f_anul.split("-").reverse().join("-");
       this.$refs.methods.putData(`/fpos/${this.formEdit.id}`, this.formEdit, 'getData', this.axiosConfig);
       this.edit = false;
       this.resetFormEdit();
@@ -905,6 +895,11 @@ export default {
       (this.formEdit.f_val = ""),
       (this.formEdit.peso_inicio = ""),
       (this.formEdit.peso_fin = "")
+    },
+    checkDate (val) {
+      if(val.length < 10) {
+          return 'Fecha Invalida'
+      }
     },
   },
 };

@@ -56,6 +56,7 @@ import { useQuasar } from "quasar";
             this.error = err.response.data.errors[0].message;
           }
           this.errorDelServidor();
+          this.$emit('resetLoading')
       });
       },
       getDataEdit: function(url, llamada, dataRes, header) {
@@ -69,6 +70,7 @@ import { useQuasar } from "quasar";
             this.error = err.response.data.errors[0].message;
           }
           this.errorDelServidor();
+          this.$emit('resetLoading')
         });
       },
       deleteData: function(url, llamada, header) {
@@ -85,6 +87,7 @@ import { useQuasar } from "quasar";
             this.error = err.response.data.errors[0].message;
           }
           this.errorDelServidor();
+          this.$emit('resetLoading')
         });
       },
       createData: function(url, form, llamada, header) {
@@ -94,6 +97,22 @@ import { useQuasar } from "quasar";
         if ((res.status = 200)) {
             this.$emit(llamada)
             this.añadidoConExito();
+          }
+      })
+      .catch((err) => {
+          if (err.response) {
+            this.error = err.response.data.errors[0].message;
+          }
+          this.errorDelServidor();
+          this.$emit('resetLoading')
+        });
+      },
+      login: function(url, form, llamada, header) {
+      header.headers.Authorization = `Bearer ${LocalStorage.getItem("token")}`
+      api.post(url, form, header)
+      .then((res) => {
+        if ((res.status = 200)) {
+            this.$emit(llamada, res.data)
           }
       })
       .catch((err) => {

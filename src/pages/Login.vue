@@ -51,7 +51,8 @@
             </q-form>
           </div>
         </div>
-        <user-logout ref="component"></user-logout>
+        <methods ref="methods" @log-User="logUser"></methods>
+        <user-logout ref="userLogout"></user-logout>
       </q-page>
     </q-page-container>
   </q-layout>
@@ -62,10 +63,11 @@ import { api } from 'boot/axios';
 import { LocalStorage } from 'quasar';
 import { useQuasar } from "quasar";
 import userLogoutVue from "src/components/userLogout.vue";
+import methodsVue from 'src/components/methods.vue';
 
 export default {
-  components: { "user-logout": userLogoutVue },
-  name: 'PageLogin',
+  components: { "user-logout": userLogoutVue, methods: methodsVue },
+  name: 'login',
   data() {
     return {
       routes: [],
@@ -75,6 +77,11 @@ export default {
       },
       isPwd: true,
       remember: true,
+      axiosConfig: {
+        headers: {
+          Authorization: ``,
+        },
+      },
     };
   },
   setup() {
@@ -82,35 +89,32 @@ export default {
     return {
       isNotAuthenticated() {
         $q.notify({
-          message: "Usuario o Contraseña Invalida",
+          message: "Hubo un error al Iniciar Sesion...",
           color: "red",
         });
       },
     };
   },
+  mounted() {
+
+  },
   methods: {
     onSubmit() {
       LocalStorage.set('usuario', this.form.username)
-      api.post(`/usuarios/login`, this.form)
-        .then((res) => {
-          if ((res.status = 201)) {
-            LocalStorage.set('token', `${res.data.data.accessToken}`),
-            LocalStorage.set('user', true),
-            LocalStorage.set('username', `${res.username}`),
-            LocalStorage.set('refreshToken', `${res.data.data.refreshToken}`),
-            this.$router.push('/dashboard');
-            this.$refs.component.login()
-          }
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.statusCode;
-          }
-          if ((this.error = "404")) {
-            this.isNotAuthenticated()
-            this.onReset()
-          }
-        });
+      this.$refs.methods.login(
+        `/usuarios/login`,
+        this.form,
+        `logUser`,
+        this.axiosConfig
+      );
+    },
+    logUser(res) {
+    LocalStorage.set('token', `${res.data.accessToken}`),
+    LocalStorage.set('user', true),
+    LocalStorage.set('username', `${res.username}`),
+    LocalStorage.set('refreshToken', `${res.data.refreshToken}`),
+    this.$router.push('/dashboard');
+    this.$refs.userLogout.login()
     },
     onReset() {
       this.form.username = '';

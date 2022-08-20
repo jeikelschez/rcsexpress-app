@@ -1703,7 +1703,6 @@
                       :input-style="{ minWidth: '100px' }"
                       v-model="formClientes.nit"
                       mask="date"
-                      hide-bottom-space
                       :rules="['date']"
                       lazy-rules
                     >
@@ -1786,7 +1785,6 @@
                       hint=""
                       style="padding-bottom: 0px"
                       :input-style="{ minWidth: '100px' }"
-                      hide-bottom-space
                       v-model="formClientes.nit"
                       mask="date"
                       :rules="['date']"
@@ -1820,7 +1818,6 @@
                   <q-td :props="props">
                     <q-input
                       outlined
-                      hide-bottom-space
                       hint=""
                       style="padding-bottom: 0px"
                       :input-style="{ minWidth: '100px' }"
@@ -3174,9 +3171,6 @@ export default {
 </script>
 
 <style>
-.q-field__bottom {
-  display: none;
-}
 @media screen and (min-width: 600px) {
   .q-field--auto-height.q-field--labeled .q-field__native {
     min-width: 120px;
