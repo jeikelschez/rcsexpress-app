@@ -692,6 +692,7 @@ export default {
       this.pagination.rowsNumber = res.total;
       const { page, rowsPerPage, sortBy, descending } = props.pagination;
       const filter = props.filter;
+      this.loading = false
 
       // get all rows if "All" (0) is selected
       const fetchCount =
