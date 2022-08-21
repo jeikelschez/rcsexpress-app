@@ -2246,7 +2246,7 @@ export default {
     },
     setDataEdit(res, dataRes) {
       this.resetFormEdit();
-      console.log(res);
+      console.log(dataRes);
       this.axiosConfig.headers.agencia = "";
       this.axiosConfig.headers.nro_documento = "";
 
@@ -2254,9 +2254,9 @@ export default {
       if (res.t_de_documento == "GC") this.checkbox.guia_carga = "1";
 
       this[dataRes].serie_documento = res.serie_documento;
-      this.formEdit.fecha_emision = res.fecha_emision.split("-").reverse().join("-");
-      this.formEdit.fecha_envio = res.fecha_envio.split("-").reverse().join("-");
-      this.formEdit.fecha_aplicacion = res.fecha_aplicacion.split("-").reverse().join("-");
+      if (res.fecha_emision) this.formEdit.fecha_emision = res.fecha_emision.split("-").reverse().join("-");
+      if (res.fecha_emision) this.formEdit.fecha_envio = res.fecha_envio.split("-").reverse().join("-");
+      if (res.fecha_emision) this.formEdit.fecha_aplicacion = res.fecha_aplicacion.split("-").reverse().join("-");
       
       this[dataRes].nro_piezas = res.nro_piezas;
       this[dataRes].peso_kgs = res.peso_kgs;

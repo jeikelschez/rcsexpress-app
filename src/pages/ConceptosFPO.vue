@@ -83,7 +83,7 @@
                     class="pcform"
                     lazy-rules
                     mask="##-##-####" 
-                    :rules="[checkDate]"
+                    :rules="[dateValidation]"
                     >
                    <template v-slot:append>
                    <q-icon name="event" class="cursor-pointer">
@@ -104,7 +104,7 @@
                     class="pcform"
                     lazy-rules
                     mask="##-##-####" 
-                    :rules="[checkDate]"
+                    :rules="[dateValidation]"
                     >
                    <template v-slot:append>
                    <q-icon name="event" class="cursor-pointer">
@@ -280,7 +280,7 @@
                     class="pcform"
                     lazy-rules
                     mask="##-##-####" 
-                    :rules="[checkDate]"
+                    :rules="[dateValidation]"
                     >
                    <template v-slot:append>
                    <q-icon name="event" class="cursor-pointer">
@@ -301,7 +301,7 @@
                     class="pcform"
                     lazy-rules
                     mask="##-##-####" 
-                    :rules="[checkDate]"
+                    :rules="[dateValidation]"
                     >
                    <template v-slot:append>
                    <q-icon name="event" class="cursor-pointer">
@@ -730,6 +730,17 @@ export default {
     this.$refs.desactivateCrud.desactivarCrud('c_concepto_fpo', 'r_concepto_fpo', 'u_concepto_fpo', 'd_concepto_fpo', 'desactivarCrud')
   },
   methods: {
+    dateValidation(val) {
+      let date = val
+      if ((date[0])+date[1] > 31) return "Fecha Invalida"
+      if ((date[3])+date[4] > 12) return "Fecha Invalida"
+      if(date.length < 10) return 'Fecha Invalida'
+      if ((date[3])+date[4] == "04" && (date[0])+date[1] > 30) return "Fecha Invalida"
+      if ((date[3])+date[4] == "06" && (date[0])+date[1] > 30) return "Fecha Invalida"
+      if ((date[3])+date[4] == "09" && (date[0])+date[1] > 30) return "Fecha Invalida"
+      if ((date[3])+date[4] == "11" && (date[0])+date[1] > 30) return "Fecha Invalida"
+      if ((date[3])+date[4] == "02" && (date[0])+date[1] > 28) return "Fecha Invalida"   
+    },
     resetLoading() {
       this.loading = false;
     },
@@ -895,11 +906,6 @@ export default {
       (this.formEdit.f_val = ""),
       (this.formEdit.peso_inicio = ""),
       (this.formEdit.peso_fin = "")
-    },
-    checkDate (val) {
-      if(val.length < 10) {
-          return 'Fecha Invalida'
-      }
     },
   },
 };

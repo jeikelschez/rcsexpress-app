@@ -113,11 +113,11 @@ import { useQuasar } from "quasar";
       .then((res) => {
         if ((res.status = 200)) {
             this.$emit(llamada, res.data)
-          }
+        }
       })
       .catch((err) => {
           if (err.response) {
-            this.error = err.response.data.errors[0].message;
+            this.error = err.response.data.message;
           }
           this.errorDelServidor();
         });

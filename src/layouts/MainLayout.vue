@@ -4,7 +4,7 @@
     <q-header elevated>      
       <q-toolbar class="bg-indigo-9">
         <!-- Boton para expandir Menu -->
-        <q-btn flat dense round @click="this.hideItems()" icon="menu" aria-label="Menu" class="q-mr-sm" />
+        <q-btn flat dense round @click="this.hideItems(); this.drawerClick()" icon="menu" aria-label="Menu" class="q-mr-sm" />
         <!-- Titulo -->
         <q-toolbar-title class="titleMainLayout">SCEN - Sistema de Control de Encomiendas</q-toolbar-title>
         <q-space></q-space>
@@ -1180,7 +1180,7 @@
 
     <!-- Detecta cuando el mouse sale del menu y cierra los items -->
     <keep-alive>
-      <router-view @mouseover="miniState = true; this.hideItems()" />
+      <router-view @mouseover="this.hideItems(); this.miniState = true" />
     </keep-alive>
 
     <!-- Contenedor de las paginas -->
@@ -1594,23 +1594,22 @@ export default {
       };
     },
     hideItems() {
-      this.drawerClick();
-      this.desplegable = hide;
-      this.desplegable2 = hide;
-      this.desplegable3 = hide;
-      this.segundo = hide;
-      this.tercero = hide;
-      this.cuarto = hide;
-      this.quinto = hide;
-      this.sexto = hide;
-      this.septimo = hide;
-      this.octavo = hide;
-      this.noveno = hide;
-      this.decimo = hide;
-      this.decimoprimero = hide;
-      this.decimosegundo = hide;
-      this.decimotercero = hide;
-      this.decimocuarto = hide;
+      this.desplegable = "hide";
+      this.desplegable2 = "hide";
+      this.desplegable3 = "hide";
+      this.segundo = "hide";
+      this.tercero = "hide";
+      this.cuarto = "hide";
+      this.quinto = "hide";
+      this.sexto = "hide";
+      this.septimo = "hide";
+      this.octavo = "hide";
+      this.noveno = "hide";
+      this.decimo = "hide";
+      this.decimoprimero = "hide";
+      this.decimosegundo = "hide";
+      this.decimotercero = "hide";
+      this.decimocuarto = "hide";
     },        
   },
 };
