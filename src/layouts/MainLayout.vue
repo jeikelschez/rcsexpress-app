@@ -1040,6 +1040,139 @@
                 </q-item>
               </div>
             </q-expansion-item>
+
+            <!-- MENUS -->
+            <div v-for="item in items">
+              <div v-if="item.level==0">
+                <!-- LEVEL 0 / Q-ITEMS -->
+                <q-item v-if=item.qitem clickable tag="a" :to=item.url exact>
+                  <q-item-section avatar>
+                    <q-icon size="28px" :name=item.icon />
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label>{{ item.label }}</q-item-label>
+                    <q-item-label caption></q-item-label>
+                  </q-item-section>
+                </q-item>
+
+                <!-- LEVEL 0 / Q-EXPANSION-ITEMS -->
+                <q-expansion-item v-else expand-separator :icon=item.icon group="somegroup" default-opened :label=item.label
+                  expanded="desplegable" v-model="desplegable">
+
+                  <!-- Opcion de Prueba -- EXPANSION ITEM 
+                  <div v-for="item in items">
+                    <div v-if="item.level==1">
+                      <div v-if=item.qitem class="q-pl-lg">
+                        <q-item clickable tag="a" :to=item.url exact>
+                          <q-item-section avatar>
+                            <q-icon size="28px" :name=item.icon />
+                            <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
+                              transition-show="scale" transition-hide="scale">
+                              <div class="tool">{{ item.label }}</div>
+                            </q-tooltip>
+                          </q-item-section>
+                          <q-item-section>
+                            <q-item-label>{{ item.label }}</q-item-label>
+                            <q-item-label caption></q-item-label>
+                          </q-item-section>
+                        </q-item>
+                      </div>
+                    </div>                    
+                  </div> -->               
+                  
+                  <!-- Relacion de Despacho -->
+                  <q-expansion-item :header-inset-level="0.4" :content-inset-level="0.9" expand-separator group="somegroup2"
+                    default-opened icon="assignment" label="Relacion de despacho" expanded="desplegable2"
+                    v-model="desplegable2">
+                    <!-- Items clickeables -->
+                    <q-item clickable tag="a" to="/operativa" exact>
+                      <q-item-section avatar>
+                        <q-icon size="28px" name="folder_open" />
+                        <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
+                          transition-show="scale" transition-hide="scale">
+                          <div class="tool">{{ $t("Menu.Operativa") }}</div>
+                        </q-tooltip>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label>{{ $t("Menu.Operativa") }}</q-item-label>
+                        <q-item-label caption></q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-item clickable tag="a" to="/costos" exact>
+                      <q-item-section avatar>
+                        <q-icon size="28px" name="payments" />
+                        <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
+                          transition-show="scale" transition-hide="scale">
+                          <div class="tool">{{ $t("Menu.Costos") }}</div>
+                        </q-tooltip>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label>{{ $t("Menu.Costos") }}</q-item-label>
+                        <q-item-label caption></q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-expansion-item>
+
+                  <!-- Costos de Transporte -->
+                  <q-expansion-item :header-inset-level="0.4" :content-inset-level="0.9" expand-separator group="somegroup2"
+                    default-opened icon="directions_bus_filled" label="Costos de Transporte" expanded="desplegable3"
+                    v-model="desplegable3">
+                    <!-- Items clickeables -->
+                    <q-item clickable tag="a" to="/registrodecostos" exact>
+                      <q-item-section avatar>
+                        <q-icon size="28px" name="paid" />
+                        <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
+                          transition-show="scale" transition-hide="scale">
+                          <div class="tool">{{ $t("Menu.registrodecostos") }}</div>
+                        </q-tooltip>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label>{{
+                            $t("Menu.Registrodecostos")
+                        }}</q-item-label>
+                        <q-item-label caption></q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-item clickable tag="a" to="/reportedecostos" exact>
+                      <q-item-section avatar>
+                        <q-icon size="28px" name="price_check" />
+                        <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
+                          transition-show="scale" transition-hide="scale">
+                          <div class="tool">{{ $t("Menu.Reportedecostos") }}</div>
+                        </q-tooltip>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label>{{
+                            $t("Menu.Reportedecostos")
+                        }}</q-item-label>
+                        <q-item-label caption></q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-expansion-item>
+
+                  <!-- Item Pruebas de Entrega -->
+                  <div class="q-pl-lg"> <!-- Clase para alinear item -->
+                    <q-item clickable tag="a" to="/pruebasentrega" exact>
+                      <q-item-section avatar>
+                        <q-icon size="28px" name="auto_stories" />
+                        <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
+                          transition-show="scale" transition-hide="scale">
+                          <div class="tool">{{ $t("Menu.Pruebasdeentrega") }}</div>
+                        </q-tooltip>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label>{{
+                            $t("Menu.Pruebasdeentrega")
+                        }}</q-item-label>
+                        <q-item-label caption></q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </div>
+                </q-expansion-item>
+              </div>              
+            </div>
+
+            
           </q-list>
         </div>
       </q-list>
@@ -1215,6 +1348,15 @@ export default {
   },
   data() {
     return {
+      items: [
+        { label: 'Inicio', level: 0, qitem: true, icon: "home", url: "/dashboard" },
+        { label: 'Operaciones', level: 0, qitem: false, icon: "dashboard", url: "" },
+        { label: 'Ventas', level: 0, qitem: false, icon: "sell", url: "" },
+        { label: 'Administracion', level: 0, qitem: false, icon: "topic", url: "" },
+        { label: 'Consultas y Reportes', level: 0, qitem: false, icon: "summarize", url: "" },
+        { label: 'Mantenimiento', level: 0, qitem: false, icon: "settings_applications", url: "" },
+        { label: 'Pruebas de entrega', level: 1, qitem: true, icon: "auto_stories", url: "/pruebasentrega" }
+      ],
       events: ["click", "mousemove", "mousedown", "scroll", "keypress", "load"],
       desplegable: false,
       desplegable2: false,
