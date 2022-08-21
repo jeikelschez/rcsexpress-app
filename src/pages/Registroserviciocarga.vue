@@ -13,8 +13,17 @@
           class="z-top"
           @click="putData()"
         >
-          <q-tooltip ref="fabtp" class="bg-primary" style="max-height: 30px" transition-show="scale"
-            transition-hide="scale" anchor="center left" self="center right" :offset="[5, 10]">Guardar Guia</q-tooltip>
+          <q-tooltip
+            ref="fabtp"
+            class="bg-primary"
+            style="max-height: 30px"
+            transition-show="scale"
+            transition-hide="scale"
+            anchor="center left"
+            self="center right"
+            :offset="[5, 10]"
+            >Guardar Guia</q-tooltip
+          >
         </q-fab-action>
         <q-fab-action
           color="primary"
@@ -28,7 +37,9 @@
             style="max-height: 30px"
             transition-show="scale"
             transition-hide="scale"
-            anchor="center left" self="center right" :offset="[5, 10]"
+            anchor="center left"
+            self="center right"
+            :offset="[5, 10]"
             color="primary"
             >Limpiar Guia</q-tooltip
           >
@@ -45,7 +56,9 @@
             class="bg-primary"
             transition-show="scale"
             transition-hide="scale"
-            anchor="center left" self="center right" :offset="[5, 10]"
+            anchor="center left"
+            self="center right"
+            :offset="[5, 10]"
             color="primary"
             >Imprimir Guia</q-tooltip
           >
@@ -61,7 +74,9 @@
             class="bg-primary"
             style="max-height: 30px"
             transition-show="scale"
-            anchor="center left" self="center right" :offset="[5, 10]"
+            anchor="center left"
+            self="center right"
+            :offset="[5, 10]"
             transition-hide="scale"
             color="primary"
             >Reversar Guia</q-tooltip
@@ -78,7 +93,9 @@
             style="max-height: 30px"
             transition-show="scale"
             transition-hide="scale"
-            anchor="center left" self="center right" :offset="[5, 10]"
+            anchor="center left"
+            self="center right"
+            :offset="[5, 10]"
             color="primary"
             >Tarifear</q-tooltip
           >
@@ -94,7 +111,9 @@
             class="bg-primary"
             style="max-height: 30px"
             transition-show="scale"
-            anchor="center left" self="center right" :offset="[5, 10]"
+            anchor="center left"
+            self="center right"
+            :offset="[5, 10]"
             transition-hide="scale"
             color="primary"
             >Detalle del Documento</q-tooltip
@@ -280,7 +299,13 @@
               "
             >
               <q-btn dense color="primary" round padding="sm">
-                <q-icon size="20px" name="close" color="white" @click="this.clienteParticularBox = false"> </q-icon>
+                <q-icon
+                  size="20px"
+                  name="close"
+                  color="white"
+                  @click="this.clienteParticularBox = false"
+                >
+                </q-icon>
                 <q-tooltip
                   class="bg-primary"
                   transition-show="scale"
@@ -361,6 +386,7 @@
             <div class="col-md-4 col-xs-12">
               <q-select
                 outlined
+                emit-value
                 v-model="formEdit.cod_agencia"
                 label="Estado"
                 dense
@@ -636,11 +662,11 @@
     </q-dialog>
 
     <q-dialog v-model="pdfView">
-    <div style="width: 100%; max-width: 80vw">
-      <WebViewer
-           initialDoc="https://www.telosalliance.com/uploads/Axia%20Products/Quasar/Assets/1490-00224-001%20Quasar%20User%20Manual%20v1.4.18.pdf"
-      />
-    </div>
+      <div style="width: 100%; max-width: 80vw">
+        <WebViewer
+          initialDoc="https://www.telosalliance.com/uploads/Axia%20Products/Quasar/Assets/1490-00224-001%20Quasar%20User%20Manual%20v1.4.18.pdf"
+        />
+      </div>
     </q-dialog>
 
     <div class="row q-pa-sm justify-center">
@@ -667,6 +693,7 @@
                     :rules="[reglasNotNull10]"
                     hide-bottom-space
                     @keydown.enter="
+                      this.resetFormEdit();
                       this.showTextLoading();
                       this.axiosConfig.headers.nro_documento =
                         this.formEdit.nro_documento;
@@ -698,7 +725,10 @@
                 </div>
               </div>
 
-              <div class="col-md-4 col-xs-12" style="margin-bottom: 10px; padding-top: 5px">
+              <div
+                class="col-md-4 col-xs-12"
+                style="margin-bottom: 10px; padding-top: 5px"
+              >
                 <q-card
                   class="q-pa-md col-md-4 col-xs-12 cardMenus"
                   bordered
@@ -709,7 +739,7 @@
                       padding-bottom: 0px;
                       padding-left: 10px;
                       padding-right: 10px;
-                      padding-top: 13px
+                      padding-top: 13px;
                     "
                   >
                     <div class="row">
@@ -722,7 +752,11 @@
                         "
                       >
                         <h4
-                          style="font-size: 16px; margin-bottom: 10px; margin-top: 25px"
+                          style="
+                            font-size: 16px;
+                            margin-bottom: 10px;
+                            margin-top: 25px;
+                          "
                           class="text-secondary"
                         >
                           <strong>Fechas</strong>
@@ -730,94 +764,97 @@
                       </div>
                       <div class="col-md-6 col-xs-6">
                         <q-input
-                        outlined
-                        label="Emision"
-                        hint=""
-                        v-model="formEdit.fecha_emision"
-                        lazy-rules
-                        dense
-                        class="pcform pcmovil"
-                        mask="##-##-####"
-                        :rules="[checkDate]"
-                      >
-                        <template v-slot:append>
-                          <q-icon name="event" class="cursor-pointer">
-                            <q-popup-proxy
-                              ref="qDateProxy"
-                              transition-show="scale"
-                              transition-hide="scale"
-                            >
-                              <q-date
-                                v-model="formEdit.fecha_emision"
-                                mask="DD-MM-YYYY"
-                              ></q-date>
-                            </q-popup-proxy>
-                          </q-icon>
-                        </template>
-                      </q-input>
+                          outlined
+                          label="Emision"
+                          hint=""
+                          v-model="formEdit.fecha_emision"
+                          lazy-rules
+                          dense
+                          class="pcform pcmovil"
+                          mask="##-##-####"
+                          :rules="[checkDate]"
+                        >
+                          <template v-slot:append>
+                            <q-icon name="event" class="cursor-pointer">
+                              <q-popup-proxy
+                                ref="qDateProxy"
+                                transition-show="scale"
+                                transition-hide="scale"
+                              >
+                                <q-date
+                                  v-model="formEdit.fecha_emision"
+                                  mask="DD-MM-YYYY"
+                                ></q-date>
+                              </q-popup-proxy>
+                            </q-icon>
+                          </template>
+                        </q-input>
                       </div>
 
                       <div class="col-md-6 col-xs-6">
                         <q-input
-                        outlined
-                        label="Emision"
-                        hint=""
-                        dense
-                        v-model="formEdit.fecha_envio"
-                        lazy-rules
-                        mask="##-##-####"
-                        :rules="[checkDate]"
-                      >
-                        <template v-slot:append>
-                          <q-icon name="event" class="cursor-pointer">
-                            <q-popup-proxy
-                              ref="qDateProxy"
-                              transition-show="scale"
-                              transition-hide="scale"
-                            >
-                              <q-date
-                                v-model="formEdit.fecha_envio"
-                                mask="DD-MM-YYYY"
-                              ></q-date>
-                            </q-popup-proxy>
-                          </q-icon>
-                        </template>
-                      </q-input>
+                          outlined
+                          label="Emision"
+                          hint=""
+                          dense
+                          v-model="formEdit.fecha_envio"
+                          lazy-rules
+                          mask="##-##-####"
+                          :rules="[checkDate]"
+                        >
+                          <template v-slot:append>
+                            <q-icon name="event" class="cursor-pointer">
+                              <q-popup-proxy
+                                ref="qDateProxy"
+                                transition-show="scale"
+                                transition-hide="scale"
+                              >
+                                <q-date
+                                  v-model="formEdit.fecha_envio"
+                                  mask="DD-MM-YYYY"
+                                ></q-date>
+                              </q-popup-proxy>
+                            </q-icon>
+                          </template>
+                        </q-input>
                       </div>
 
                       <div class="col-md-12 col-xs-12">
                         <q-input
-                        outlined
-                        label="Aplicación"
-                        hint=""
-                        dense
-                        v-model="formEdit.fecha_aplicacion"
-                        lazy-rules
-                        mask="##-##-####"
-                        :rules="[checkDate]"
-                      >
-                        <template v-slot:append>
-                          <q-icon name="event" class="cursor-pointer">
-                            <q-popup-proxy
-                              ref="qDateProxy"
-                              transition-show="scale"
-                              transition-hide="scale"
-                            >
-                              <q-date
-                                v-model="formEdit.fecha_aplicacion"
-                                mask="DD-MM-YYYY"
-                              ></q-date>
-                            </q-popup-proxy>
-                          </q-icon>
-                        </template>
-                      </q-input>
+                          outlined
+                          label="Aplicación"
+                          hint=""
+                          dense
+                          v-model="formEdit.fecha_aplicacion"
+                          lazy-rules
+                          mask="##-##-####"
+                          :rules="[checkDate]"
+                        >
+                          <template v-slot:append>
+                            <q-icon name="event" class="cursor-pointer">
+                              <q-popup-proxy
+                                ref="qDateProxy"
+                                transition-show="scale"
+                                transition-hide="scale"
+                              >
+                                <q-date
+                                  v-model="formEdit.fecha_aplicacion"
+                                  mask="DD-MM-YYYY"
+                                ></q-date>
+                              </q-popup-proxy>
+                            </q-icon>
+                          </template>
+                        </q-input>
                       </div>
                     </div>
                   </q-card-section>
                 </q-card>
               </div>
 
-              <div class="col-md-3 col-xs-12" style="margin-bottom: 10px; padding-top: 5px">
+              <div
+                class="col-md-3 col-xs-12"
+                style="margin-bottom: 10px; padding-top: 5px"
+              >
                 <q-card
                   class="q-pa-md col-md-4 col-xs-12 cardMenus"
                   bordered
@@ -913,7 +950,10 @@
                 </q-card>
               </div>
 
-              <div class="col-md-3 col-xs-12" style="margin-bottom: 15px; padding-top: 10px">
+              <div
+                class="col-md-3 col-xs-12"
+                style="margin-bottom: 15px; padding-top: 10px"
+              >
                 <q-card
                   class="q-pa-md col-md-4 col-xs-12"
                   bordered
@@ -975,7 +1015,7 @@
 
               <div
                 class="col-md-3 col-xs-12"
-                style="margin-bottom: 15px; padding-right: 7px;"
+                style="margin-bottom: 15px; padding-right: 7px"
               >
                 <q-card
                   class="q-pa-md col-md-4 col-xs-12 cardMenus"
@@ -1027,6 +1067,7 @@
                           hide-selected
                           fill-input
                           input-debounce="0"
+                          emit-value
                           class="pcmovil"
                           hint=""
                           :options="agenciasSelected"
@@ -1054,6 +1095,7 @@
                           :rules="[reglasSelect]"
                           hint=""
                           use-input
+                          emit-value
                           hide-selected
                           fill-input
                           input-debounce="0"
@@ -1116,6 +1158,7 @@
                           v-model="formEdit.cod_agencia_dest"
                           label="Agencia"
                           hint=""
+                          emit-value
                           dense
                           use-input
                           hide-selected
@@ -1155,6 +1198,7 @@
                       <div class="col-md-6 col-xs-6">
                         <q-select
                           outlined
+                          emit-value
                           v-model="formEdit.cod_cliente_dest"
                           label="Cliente"
                           dense
@@ -1211,6 +1255,7 @@
                           behavior="dialog"
                           :options="zonasSelected"
                           lazy-rules
+                          emit-value
                           hide-bottom-space
                           option-label="nb_zona"
                           option-value="id"
@@ -1247,7 +1292,10 @@
                 </q-card>
               </div>
 
-              <div class="col-md-4 col-xs-12" style="margin-bottom: 10px; padding-bottom: 5px">
+              <div
+                class="col-md-4 col-xs-12"
+                style="margin-bottom: 10px; padding-bottom: 5px"
+              >
                 <q-card
                   class="q-pa-md col-md-12 col-xs-12"
                   bordered
@@ -1514,6 +1562,7 @@
                       hint=""
                       class="pcform"
                       use-input
+                      emit-value
                       hide-selected
                       fill-input
                       input-debounce="0"
@@ -1545,6 +1594,7 @@
                       hint=""
                       use-input
                       hide-selected
+                      emit-value
                       fill-input
                       input-debounce="0"
                       @filter="
@@ -1686,6 +1736,7 @@
                   hint=""
                   use-input
                   hide-selected
+                  emit-value
                   fill-input
                   input-debounce="0"
                   @filter="
@@ -1711,31 +1762,31 @@
 
               <div class="col-md-3 col-xs-12">
                 <q-input
-                        outlined
-                        label="Fecha Llegada Transito"
-                        hint=""
-                        dense
-                        v-model="formEdit.fecha_llega_transito"
-                        lazy-rules
-                        class="pcform"
-                        mask="##-##-####"
-                        :rules="[checkDate]"
+                  outlined
+                  label="Fecha Llegada Transito"
+                  hint=""
+                  dense
+                  v-model="formEdit.fecha_llega_transito"
+                  lazy-rules
+                  class="pcform"
+                  mask="##-##-####"
+                  :rules="[checkDate]"
+                >
+                  <template v-slot:append>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy
+                        ref="qDateProxy"
+                        transition-show="scale"
+                        transition-hide="scale"
                       >
-                        <template v-slot:append>
-                          <q-icon name="event" class="cursor-pointer">
-                            <q-popup-proxy
-                              ref="qDateProxy"
-                              transition-show="scale"
-                              transition-hide="scale"
-                            >
-                              <q-date
-                                v-model="formEdit.fecha_llega_transito"
-                                mask="DD-MM-YYYY"
-                              ></q-date>
-                            </q-popup-proxy>
-                          </q-icon>
-                        </template>
-                      </q-input>
+                        <q-date
+                          v-model="formEdit.fecha_llega_transito"
+                          mask="DD-MM-YYYY"
+                        ></q-date>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
               </div>
 
               <div
@@ -1874,6 +1925,7 @@
       ref="methods"
       @set-Data="setData"
       @set-Data-Edit="setDataEdit"
+      @reset-Loading="resetLoading"
     ></methods>
   </q-page>
 </template>
@@ -1894,7 +1946,11 @@ import methodsVue from "src/components/methods.vue";
 import desactivateCrudVue from "src/components/desactivateCrud.vue";
 
 export default {
-  components: { "desactive-crud": desactivateCrudVue, methods: methodsVue, WebViewer},
+  components: {
+    "desactive-crud": desactivateCrudVue,
+    methods: methodsVue,
+    WebViewer,
+  },
   name: "registroServicioCarga",
   data() {
     return {
@@ -2031,6 +2087,8 @@ export default {
         normal: "0",
         emergencia: "0",
       },
+      count: 1,
+      objetive: 0,
       agencias: [],
       conceptos: [],
       agencias_origen: [],
@@ -2082,6 +2140,13 @@ export default {
       },
     };
   },
+  watch: {
+    objetive(newValue, oldValue) {
+      if (newValue == this.count) {
+        this.resetLoading();
+      }
+    },
+  },
   setup() {
     const visible = ref(false);
     const showSimulatedReturnData = ref(false);
@@ -2100,11 +2165,10 @@ export default {
       showTextLoading() {
         visible.value = true;
         showSimulatedReturnData.value = false;
-
-        setTimeout(() => {
-          visible.value = false;
-          showSimulatedReturnData.value = true;
-        }, 8000);
+      },
+      resetLoading() {
+        visible.value = false;
+        showSimulatedReturnData.value = true;
       },
       pagination: ref({
         rowsPerPage: 10,
@@ -2245,158 +2309,243 @@ export default {
       this.axiosConfig.headers.nro_documento = "";
     },
     setDataEdit(res, dataRes) {
-      this.resetFormEdit();
-      console.log(dataRes);
+      console.log(this.count);
+      console.log(this.objetive);
       this.axiosConfig.headers.agencia = "";
       this.axiosConfig.headers.nro_documento = "";
+      if (res.cod_agencia) this.count += 3;
+      if (res.cod_agencia_dest) this.count += 2;
+      var cod_agencia = res.cod_agencia;
+      var cod_cliente_org = res.cod_cliente_org;
+      var cod_agencia_dest = res.cod_agencia_dest;
+      var cod_zona_dest = res.cod_zona_dest;
+      var cod_cliente_dest = res.cod_cliente_dest;
+      var cod_agente_venta = res.cod_agente_venta;
+      var cod_agencia_transito = res.cod_agencia_transito;
+      var cod_proveedor = res.cod_proveedor;
 
-      if (res.t_de_documento == "GF") this.checkbox.guia_factura = "1";
-      if (res.t_de_documento == "GC") this.checkbox.guia_carga = "1";
+      api.get(`/agencias`, this.axiosConfig).then((res) => {
+        this.objetive++;
+        if (res.t_de_documento == "GF") this.checkbox.guia_factura = "1";
+        if (res.t_de_documento == "GC") this.checkbox.guia_carga = "1";
 
-      this[dataRes].serie_documento = res.serie_documento;
-      if (res.fecha_emision) this.formEdit.fecha_emision = res.fecha_emision.split("-").reverse().join("-");
-      if (res.fecha_emision) this.formEdit.fecha_envio = res.fecha_envio.split("-").reverse().join("-");
-      if (res.fecha_emision) this.formEdit.fecha_aplicacion = res.fecha_aplicacion.split("-").reverse().join("-");
-      
-      this[dataRes].nro_piezas = res.nro_piezas;
-      this[dataRes].peso_kgs = res.peso_kgs;
+        this[dataRes].serie_documento = res.serie_documento;
 
-      if (res.tipo_carga == "PM") this.checkbox.paquetes = "1";
+        if (res.fecha_emision)
+          this.formEdit.fecha_emision = res.fecha_emision
+            .split("-")
+            .reverse()
+            .join("-");
+        if (res.fecha_envio)
+          this.formEdit.fecha_envio = res.fecha_envio
+            .split("-")
+            .reverse()
+            .join("-");
+        if (res.fecha_aplicacion)
+          this.formEdit.fecha_aplicacion = res.fecha_aplicacion
+            .split("-")
+            .reverse()
+            .join("-");
 
-      if (res.tipo_carga == "SB") this.checkbox.sobres = "1";
+        this[dataRes].nro_piezas = res.nro_piezas;
+        this[dataRes].peso_kgs = res.peso_kgs;
 
-      this[dataRes].modalidad_pago = res.modalidad_pago;
-      this[dataRes].pagado_en = res.pagado_en;
+        if (res.tipo_carga == "PM") this.checkbox.paquetes = "1";
 
-      this.$refs.methods.getData(
-        `/agencias`,
-        "setData",
-        "agencias",
-        this.axiosConfig
-      );
+        if (res.tipo_carga == "SB") this.checkbox.sobres = "1";
 
-      if (res.cod_agencia) {
-        api
-          .get(`/agencias/${res.cod_agencia}`, this.axiosConfig)
-          .then((res) => {
-            this.formEdit.cod_agencia = res.data.nb_agencia;
+        this[dataRes].modalidad_pago = res.modalidad_pago;
+        this[dataRes].pagado_en = res.pagado_en;
+
+        this.agencias = res.data;
+
+        if (cod_agencia) {
+          for (var i = 0; i < this.agencias.length - 1; i++) {
+            if (this.agencias[i].id == cod_agencia) {
+              this.formEdit.cod_agencia = this.agencias[i];
+              break;
+            }
+          }
+
+          this.axiosConfig.headers.agencia = cod_agencia;
+
+          api.get(`/agentes`, this.axiosConfig).then((res) => {
+            this.objetive = this.objetive + 1;
+            this.agentes = res.data;
+            if (cod_agente_venta) {
+              for (var i = 0; i < this.agentes.length - 1; i++) {
+                if (this.agentes[i].id == cod_agente_venta) {
+                  this.formEdit.cod_agente_venta = this.agentes[i];
+                  break;
+                }
+              }
+            }
           });
 
-        this.$refs.methods.getData(
-          `/clientes`,
-          "setData",
-          "clientes_origen",
-          this.axiosConfig
-        );
-      }
-
-      if (res.cod_cliente_org) {
-        api
-          .get(`/clientes/${res.cod_cliente_org}`, this.axiosConfig)
-          .then((res) => {
-            this.formEdit.cod_cliente_org = res.data.nb_cliente;
-          });
-      }
-
-      if (res.cod_agencia_dest) {
-        api
-          .get(`/agencias/${res.cod_agencia_dest}`, this.axiosConfig)
-          .then((res) => {
-            this.formEdit.cod_agencia_dest = res.data;
+          api.get(`/proveedores`, this.axiosConfig).then((res) => {
+            this.objetive = this.objetive + 1;
+            this.proveedores = res.data;
+            if (cod_proveedor) {
+              for (var i = 0; i < this.proveedores.length - 1; i++) {
+                if (this.proveedores[i].id == cod_proveedor) {
+                  this.formEdit.cod_proveedor = this.proveedores[i];
+                  break;
+                }
+              }
+            }
           });
 
-        this.axiosConfig.headers.agencia = res.cod_agencia_dest;
+          api.get(`/clientes`, this.axiosConfig).then((res) => {
+            this.objetive++;
+            this.axiosConfig.headers.agencia = "";
+            this.clientes_origen = res.data;
 
-        this.$refs.methods.getData(
-          `/clientes`,
-          "setData",
-          "clientes_destino",
-          this.axiosConfig
-        );
-        this.$refs.methods.getData(
-          `/zonas`,
-          "setData",
-          "zonas_destino",
-          this.axiosConfig
-        );
-      }
-
-      if (res.cod_cliente_dest) {
-        api
-          .get(`/clientes/${res.cod_cliente_dest}`, this.axiosConfig)
-          .then((res) => {
-            this.formEdit.cod_cliente_dest = res.data;
+            if (cod_cliente_org) {
+              for (var i = 0; i < this.clientes_origen.length - 1; i++) {
+                if (this.clientes_origen[i].id == cod_cliente_org) {
+                  this.formEdit.cod_cliente_org = this.clientes_origen[i];
+                  break;
+                }
+              }
+            }
           });
-      }
+        }
+        if (cod_agencia_dest) {
+          for (var i = 0; i < this.agencias.length - 1; i++) {
+            if (this.agencias[i].id == cod_agencia_dest) {
+              this.formEdit.cod_agencia_dest = this.agencias[i];
+              break;
+            }
+          }
 
-      if (res.cod_zona_dest) {
-        api.get(`/zonas/${res.cod_zona_dest}`, this.axiosConfig).then((res) => {
-          this.formEdit.cod_zona_dest = res.data;
-        });
-      }
+          this.axiosConfig.headers.agencia = cod_agencia_dest;
 
-      if (res.tipo_servicio == "N") this.checkbox.nacional = "1";
+          api.get(`/clientes`, this.axiosConfig).then((res) => {
+            this.objetive = this.objetive + 1;
+            this.clientes_destino = res.data;
 
-      if (res.tipo_servicio == "I") this.checkbox.internacional = "1";
+            if (cod_cliente_dest) {
+              for (var i = 0; i < this.clientes_destino.length - 1; i++) {
+                if (this.clientes_destino[i].id == cod_cliente_dest) {
+                  this.formEdit.cod_cliente_dest = this.clientes_destino[i];
+                  break;
+                }
+              }
+            }
+            api.get(`/zonas`, this.axiosConfig).then((res) => {
+              this.objetive = this.objetive + 1;
+              this.zonas_destino = res.data;
 
-      if (res.tipo_ubicacion == "U") this.checkbox.urbano = "1";
-
-      if (res.tipo_ubicacion == "E") this.checkbox.extra_urbano = "1";
-
-      if (res.tipo_ubicacion == "F") this.checkbox.foraneo = "1";
-
-      if (res.tipo_urgencia == "N") this.checkbox.normal = "1";
-
-      if (res.tipo_urgencia == "E") this.checkbox.emergencia = "1";
-
-      if (res.cod_agente_venta) {
-        api
-          .get(`/agentes/${res.cod_agente_venta}`, this.axiosConfig)
-          .then((res) => {
-            this.formEdit.cod_agente_venta = res.data.nb_agente;
+              if (cod_zona_dest) {
+                for (var i = 0; i < this.zonas_destino.length - 1; i++) {
+                  if (this.zonas_destino[i].id == cod_zona_dest) {
+                    this.formEdit.cod_zona_dest = this.zonas_destino[i];
+                    break;
+                  }
+                }
+              }
+            });
           });
-      }
+        }
 
-      if (res.cod_proveedor) {
-        api
-          .get(`/proveedores/${res.cod_proveedor}`, this.axiosConfig)
-          .then((res) => {
-            this.formEdit.cod_proveedor = res.data.nb_proveedor;
-          });
-      }
+        if (cod_agencia_transito) {
+          for (var i = 0; i < this.agencias.length - 1; i++) {
+            if (this.agencias[i].id == cod_agencia_transito) {
+              this.formEdit.cod_agencia_transito = this.agencias[i];
+              break;
+            }
+          }
+        }
 
-      this[dataRes].dimensiones = res.dimensiones;
-      this[dataRes].desc_contenido = res.desc_contenido;
-      this[dataRes].carga_neta = res.carga_neta;
-      this[dataRes].valor_declarado_cod = res.valor_declarado_cod;
-      this[dataRes].valor_declarado_seg = res.valor_declarado_seg;
-      this[dataRes].porc_apl_seguro = res.porc_apl_seguro;
+        if (res.tipo_servicio == "N") this.checkbox.nacional = "1";
 
-      if (res.cod_agencia_transito) {
-        api
-          .get(`/agencias/${res.cod_agencia_transito}`, this.axiosConfig)
-          .then((res) => {
-            this.formEdit.cod_agencia_transito = res.data.nb_agencia;
-          });
-      }
+        if (res.tipo_servicio == "I") this.checkbox.internacional = "1";
 
-      this[dataRes].monto_subtotal = res.monto_subtotal;
-      this[dataRes].monto_impuesto = res.monto_impuesto;
-      this[dataRes].monto_base = res.monto_base;
-      this[dataRes].monto_total = res.monto_total;
-      this[dataRes].fecha_llega_transito = res.fecha_llega_transito;
-      this[dataRes].check_transito = res.check_transito;
-      this[dataRes].estatus_operativo = res.estatus_operativo;
-      this[dataRes].monto_ref_cte_sin_imp = res.monto_ref_cte_sin_imp;
-      this[dataRes].estatus_administra = res.estatus_administra;
-      this[dataRes].porc_comision = res.porc_comision;
-      this[dataRes].porc_descuento = res.porc_descuento;
-      this.hideTextLoading();
+        if (res.tipo_ubicacion == "U") this.checkbox.urbano = "1";
+
+        if (res.tipo_ubicacion == "E") this.checkbox.extra_urbano = "1";
+
+        if (res.tipo_ubicacion == "F") this.checkbox.foraneo = "1";
+
+        if (res.tipo_urgencia == "N") this.checkbox.normal = "1";
+
+        if (res.tipo_urgencia == "E") this.checkbox.emergencia = "1";
+
+        this[dataRes].dimensiones = res.dimensiones;
+        this[dataRes].desc_contenido = res.desc_contenido;
+        this[dataRes].carga_neta = res.carga_neta;
+        this[dataRes].valor_declarado_cod = res.valor_declarado_cod;
+        this[dataRes].valor_declarado_seg = res.valor_declarado_seg;
+        this[dataRes].porc_apl_seguro = res.porc_apl_seguro;
+        this[dataRes].monto_subtotal = res.monto_subtotal;
+        this[dataRes].monto_impuesto = res.monto_impuesto;
+        this[dataRes].monto_base = res.monto_base;
+        this[dataRes].monto_total = res.monto_total;
+        this[dataRes].fecha_llega_transito = res.fecha_llega_transito;
+        this[dataRes].check_transito = res.check_transito;
+        this[dataRes].estatus_operativo = res.estatus_operativo;
+        this[dataRes].monto_ref_cte_sin_imp = res.monto_ref_cte_sin_imp;
+        this[dataRes].estatus_administra = res.estatus_administra;
+        this[dataRes].porc_comision = res.porc_comision;
+        this[dataRes].porc_descuento = res.porc_descuento;
+      });
     },
+
     putData() {
+      for (var i = 0; i < this.clientes_origen.length - 1; i++) {
+        if (this.clientes_origen[i].id == this.formEdit.cod_cliente_org.id) {
+          if (
+            !this.clientes_origen[i].cod_municipio ||
+            !this.clientes_origen[i].cod_parroquia ||
+            !this.clientes_origen[i].cod_localidad
+          ) {
+            console.log(
+              "NO tiene toda la division politico terricorial ABRE MODAL Y CORTAR FUNCION"
+            );
+          }
+          break;
+        }
+      }
+      if (this.formEdit.cod_cliente_dest) {
+        if (this.formEdit.cod_cliente_dest.cte_decontado == 1) {
+          api
+            .get(
+              `/cparticulares/${this.formEdit.cod_cliente_dest.id_clte_part_dest}`,
+              this.axiosConfig
+            )
+            .then((res) => {
+              if (
+                !res.cod_municipio ||
+                !res.cod_parroquia ||
+                !res.cod_localidad
+              ) {
+                console.log(
+                  "ABRE MODAL DE CLIENTE PARTICULAR, TODOS LOS DATOS Y CORTAR FUNCION"
+                );
+                console.log(
+                  "TIENE QUE FUNCIONAR ESTO MISMO AL HACER CLICK DERECHO EN EL SELECT, LUEGO DE SELECCIONARLO"
+                );
+              }
+            });
+        } else {
+          if (
+            this.clientes_destino[i].id == this.formEdit.cod_cliente_dest.id
+          ) {
+            if (
+              !this.clientes_destino[i].cod_municipio ||
+              !this.clientes_destino[i].cod_parroquia ||
+              !this.clientes_destino[i].cod_localidad
+            ) {
+              console.log(
+                "NO tiene toda la division politico terricorial ABRE MODAL DE CLIENTE Y CORTAR FUNCION"
+              );
+            }
+          }
+        }
+      }
+
       if (this.checkbox.guia_factura == "1")
         this.formEdit.t_de_documento = "GF";
-
       if (this.checkbox.guia_carga == "1") this.formEdit.t_de_documento = "GC";
 
       if (this.checkbox.paquetes == "1") this.formEdit.tipo_carga = "PM";
@@ -2423,47 +2572,6 @@ export default {
       if (this.formEdit.pagado_en.value)
         this.formEdit.pagado_en = this.formEdit.pagado_en.value;
 
-      if (this.formEdit.cod_agencia.id) {
-        this.formEdit.cod_agencia = this.formEdit.cod_agencia.id;
-      } else {
-        this.formEdit.cod_agencia = "";
-      }
-      if (this.formEdit.cod_cliente_org.id) {
-        this.formEdit.cod_cliente_org = this.formEdit.cod_cliente_org.id;
-      } else {
-        this.formEdit.cod_cliente_org = "";
-      }
-      if (this.formEdit.cod_agencia_dest.id) {
-        this.formEdit.cod_agencia_dest = this.formEdit.cod_agencia_dest.id;
-      } else {
-        this.formEdit.cod_agencia_dest = "";
-      }
-      if (this.formEdit.cod_cliente_dest.id) {
-        this.formEdit.cod_cliente_dest = this.formEdit.cod_cliente_dest.id;
-      } else {
-        this.formEdit.cod_cliente_dest = "";
-      }
-      if (this.formEdit.cod_zona_dest.id) {
-        this.formEdit.cod_zona_dest = this.formEdit.cod_zona_dest.id;
-      } else {
-        this.formEdit.cod_zona_dest = "";
-      }
-      if (this.formEdit.cod_agente_venta.id) {
-        this.formEdit.cod_agente_venta = this.formEdit.cod_agente_venta.id;
-      } else {
-        this.formEdit.cod_agente_venta = "";
-      }
-      if (this.formEdit.cod_proveedor.id) {
-        this.formEdit.cod_proveedor = this.formEdit.cod_proveedor.id;
-      } else {
-        this.formEdit.cod_proveedor = "";
-      }
-      if (this.formEdit.cod_agencia_transito.id) {
-        this.formEdit.cod_agencia_transito =
-          this.formEdit.cod_agencia_transito.id;
-      } else {
-        this.formEdit.cod_agencia_transito = "";
-      }
       if (this.formEdit.estatus_operativo)
         this.formEdit.estatus_operativo = this.formEdit.estatus_operativo.value;
 
@@ -2471,9 +2579,18 @@ export default {
         this.formEdit.estatus_administra =
           this.formEdit.estatus_administra.value;
 
-      this.formEdit.fecha_emision = this.formEdit.fecha_emision.split("-").reverse().join("-");
-      this.formEdit.fecha_envio = this.formEdit.fecha_envio.split("-").reverse().join("-");
-      this.formEdit.fecha_aplicacion = this.formEdit.fecha_aplicacion.split("-").reverse().join("-");
+      this.formEdit.fecha_emision = this.formEdit.fecha_emision
+        .split("-")
+        .reverse()
+        .join("-");
+      this.formEdit.fecha_envio = this.formEdit.fecha_envio
+        .split("-")
+        .reverse()
+        .join("-");
+      this.formEdit.fecha_aplicacion = this.formEdit.fecha_aplicacion
+        .split("-")
+        .reverse()
+        .join("-");
 
       this.$refs.methods.putData(
         `/mmovimientos/${this.formEdit.id}`,
@@ -2483,8 +2600,23 @@ export default {
       );
       this.resetFormEdit();
     },
+    clienteClick() {
+      if (this.formEdit.cod_cliente_dest.cte_decontado == 1) {
+        api.get(`/cparticulares/${this.formEdit.cod_cliente_dest.id_clte_part_dest}`,
+            this.axiosConfig
+          )
+          .then((res) => {
+            if (res == []) {
+              console.log("ABRE MODAL DE CLIENTE PARTICULAR para CREAR, TODOS LOS DATOS Y CORTAR FUNCION");
+            } else {
+              console.log("ABRE MODAL DE CLIENTE PARTICULAR para EDITAR, TODOS LOS DATOS Y CORTAR FUNCION");
+            }
+          });
+      }
+    },
     resetFormEdit() {
-      (this.formEdit.nro_documento = ""),
+      (this.count = 1),
+        (this.objetive = 0),
         (this.formEdit.t_de_documento = ""),
         (this.formEdit.serie_documento = ""),
         (this.formEdit.fecha_emision = ""),
@@ -2558,7 +2690,8 @@ export default {
 }
 @media screen and (min-width: 1024px) {
   .marginMenu {
-    margin-bottom: 10px; margin-top: 54px
+    margin-bottom: 10px;
+    margin-top: 54px;
   }
 }
 @media screen and (min-width: 1024px) {

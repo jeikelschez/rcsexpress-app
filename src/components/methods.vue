@@ -53,7 +53,7 @@ import { useQuasar } from "quasar";
       })
       .catch((err) => {
           if (err.response) {
-            this.error = err.response.data.errors[0].message;
+            this.error = err.response.data.message;
           }
           this.errorDelServidor();
           this.$emit('resetLoading')
@@ -67,7 +67,7 @@ import { useQuasar } from "quasar";
       })
       .catch((err) => {
           if (err.response) {
-            this.error = err.response.data.errors[0].message;
+            this.error = err.response.data.message;
           }
           this.errorDelServidor();
           this.$emit('resetLoading')
@@ -84,7 +84,7 @@ import { useQuasar } from "quasar";
       })
       .catch((err) => {
           if (err.response) {
-            this.error = err.response.data.errors[0].message;
+            this.error = err.response.data.message;
           }
           this.errorDelServidor();
           this.$emit('resetLoading')
@@ -101,7 +101,7 @@ import { useQuasar } from "quasar";
       })
       .catch((err) => {
           if (err.response) {
-            this.error = err.response.data.errors[0].message;
+            this.error = err.response.message;
           }
           this.errorDelServidor();
           this.$emit('resetLoading')
@@ -133,7 +133,7 @@ import { useQuasar } from "quasar";
         })
       .catch((err) => {
           if (err.response) {
-            this.error = err.response.data.errors[0].message;
+            this.error = err.response.message;
           }
           this.errorDelServidor();
         });
