@@ -1,5 +1,5 @@
 <template>
-  <q-page class="pagina q-pa-md" style="padding-buttom: 10px">
+  <q-page class="pagina q-pa-md" style="padding-bottom: 0px">
     <q-page-sticky
       position="bottom-right"
       class="z-top"
@@ -49,7 +49,7 @@
           icon="print"
           class="z-top"
           style="margin-top: 15px"
-          @click="pdfView = true"
+          @click="this.pdfView = true"
         >
           <q-tooltip
             style="max-height: 30px"
@@ -86,6 +86,7 @@
           color="primary"
           icon="money"
           class="z-top"
+          @click="clientesForm = true"
           style="margin-top: 15px"
         >
           <q-tooltip
@@ -121,6 +122,262 @@
         </q-fab-action>
       </q-fab>
     </q-page-sticky>
+
+    <q-dialog v-model="clientesForm">
+      <q-card class="q-pa-md" bordered style="width: 999px; max-width: 80vw">
+        <q-card-section>
+          <q-form @submit="putDataClientes()">
+            <div class="row">
+              <div
+                class="col-md-12 col-xs-12"
+                style="align-self: center; text-align: left; margin-top: -30px"
+              >
+                <h4 style="font-size: 20px" class="text-secondary">
+                  <strong>UBICACIÓN GEOGRAFICA DE CLIENTE</strong>
+                </h4>
+              </div>
+              <div class="col-md-4 col-xs-12">
+                <q-select
+                  outlined
+                  v-model="pais"
+                  label="Pais"
+                  hint=""
+                  class="pcform"
+                  :rules="[reglasInputs]"
+                  :options="paisesSelected"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'paisesSelected',
+                        'paises',
+                        'desc_pais'
+                      )
+                  "
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
+                  lazy-rules
+                  option-label="desc_pais"
+                  option-value="id"
+                  @update:model-value="
+                    this.axiosConfig.headers.pais = this.pais.id;
+                    getDataLocalidades('estados', 'setDataEstados');
+                  "
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="south_america" />
+                  </template>
+                </q-select>
+              </div>
+
+              <div class="col-md-4 col-xs-12">
+                <q-select
+                  outlined
+                  v-model="estado"
+                  label="Estado"
+                  class="pcform"
+                  hint=""
+                  :rules="[reglasInputs]"
+                  :options="estadosSelected"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'estadosSelected',
+                        'estados',
+                        'desc_estado'
+                      )
+                  "
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
+                  lazy-rules
+                  option-label="desc_estado"
+                  option-value="id"
+                  @update:model-value="
+                    this.axiosConfig.headers.estado = this.estado.id;
+                    getDataLocalidades('municipios', 'setDataMunicipios');
+                    getDataLocalidades('localidades', 'setDataLocalidades');
+                    getDataLocalidades('ciudades', 'setDataCiudades');
+                  "
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="south_america" />
+                  </template>
+                </q-select>
+              </div>
+
+              <div class="col-md-4 col-xs-12">
+                <q-select
+                  outlined
+                  v-model="ciudad"
+                  label="Ciudad"
+                  hint=""
+                  :rules="[reglasInputs]"
+                  :options="ciudadesSelected"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'ciudadesSelected',
+                        'ciudades',
+                        'desc_ciudad'
+                      )
+                  "
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
+                  lazy-rules
+                  option-label="desc_ciudad"
+                  option-value="id"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="south_america" />
+                  </template>
+                </q-select>
+              </div>
+
+              <div class="col-md-4 col-xs-12">
+                <q-select
+                  outlined
+                  v-model="formClientes.cod_municipio"
+                  label="Municipio"
+                  hint=""
+                  class="pcform"
+                  :rules="[reglasInputs]"
+                  :options="municipiosSelected"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'municipiosSelected',
+                        'municipios',
+                        'desc_municipio'
+                      )
+                  "
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
+                  option-label="desc_municipio"
+                  option-value="id"
+                  lazy-rules
+                  @update:model-value="
+                    this.axiosConfig.headers.municipio =
+                      this.formClientes.cod_municipio.id;
+                    getDataLocalidades('parroquias', 'setDataParroquias');
+                  "
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="south_america" />
+                  </template>
+                </q-select>
+              </div>
+
+              <div class="col-md-4 col-xs-12">
+                <q-select
+                  outlined
+                  v-model="formClientes.cod_parroquia"
+                  label="Parroquia"
+                  hint=""
+                  class="pcform"
+                  :rules="[reglasInputs]"
+                  :options="parroquiasSelected"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'parroquiasSelected',
+                        'parroquias',
+                        'desc_parroquia'
+                      )
+                  "
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
+                  option-label="desc_parroquia"
+                  option-value="id"
+                  lazy-rules
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="south_america" />
+                  </template>
+                </q-select>
+              </div>
+
+              <div class="col-md-4 col-xs-12">
+                <q-select
+                  outlined
+                  v-model="formClientes.cod_localidad"
+                  label="Localidad"
+                  hint=""
+                  :rules="[reglasInputs]"
+                  :options="localidadesSelected"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'localidadesSelected',
+                        'localidades',
+                        'desc_localidad'
+                      )
+                  "
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
+                  option-label="desc_localidad"
+                  option-value="id"
+                  lazy-rules
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="south_america" />
+                  </template>
+                </q-select>
+              </div>
+            </div>
+
+            <div
+              class="full-width row justify-center items-center content-center"
+              style="margin-bottom: 6px; margin-top: 10px"
+            >
+              <q-btn
+                label="Actualizar Cliente"
+                type="submit"
+                color="primary"
+                class="col-md-5 col-sm-5 col-xs-12"
+                icon="person_add"
+              />
+              <q-btn
+                label="Cerrar"
+                color="primary"
+                flat
+                class="col-md-5 col-sm-5 col-xs-12 btnmovil"
+                icon="close"
+                v-close-popup
+              />
+            </div>
+          </q-form>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
 
     <q-dialog v-model="conceptosBox">
       <div class="row col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
@@ -269,386 +526,384 @@
         bordered
         style="width: 999px; max-width: 80vw; padding-bottom: 0px"
       >
-        <q-card-section
-          style="
-            padding-right: 10px;
-            padding-left: 10px;
-            padding-bottom: 10px;
-            padding-top: 0px;
-          "
-        >
-          <div class="row">
-            <div
-              class="col-md-10 col-xs-10"
-              style="align-self: center; text-align: left; margin-top: -20px"
-            >
-              <h4
-                style="font-size: 21px; margin-bottom: 20px"
-                class="text-secondary"
+        <q-card-section>
+          <q-form @submit="putDataClientesParticulares()">
+            <div class="row">
+              <div
+                class="col-md-12 col-xs-12"
+                style="align-self: center; text-align: left; margin-top: -30px"
               >
-                <strong>CLIENTES PARTICULARES - DESTINO</strong>
-              </h4>
-            </div>
-
-            <div
-              class="col-md-2 col-xs-2 text-secondary"
-              style="
-                align-self: center;
-                text-align: right;
-                padding-bottom: 15px;
-              "
-            >
-              <q-btn dense color="primary" round padding="sm">
-                <q-icon
-                  size="20px"
-                  name="close"
-                  color="white"
-                  @click="this.clienteParticularBox = false"
+                <h4 style="font-size: 20px" class="text-secondary">
+                  <strong>CLIENTE PARTICULAR</strong>
+                </h4>
+              </div>
+              <div class="col-md-4 col-xs-12">
+                <q-input
+                  outlined
+                  v-model="formClientesParticulares.rif_ci"
+                  label="RIF/CI"
+                  dense
+                  :rules="[reglasAllowMin3]"
+                  :readonly="this.disabledRif"
+                  @blur="this.validateClient()"
+                  hint=""
+                  lazy-rules
+                  class="pcform"
                 >
-                </q-icon>
-                <q-tooltip
-                  class="bg-primary"
-                  transition-show="scale"
-                  style="max-height: 30px; margin-right: 20px"
-                  transition-hide="scale"
-                  color="primary"
-                  >Cerrar</q-tooltip
+                  <template v-slot:prepend>
+                    <q-icon name="person" />
+                  </template>
+                </q-input>
+              </div>
+              <div class="col-md-4 col-xs-12">
+                <q-select
+                  outlined
+                  v-model="formClientesParticulares.cod_agencia"
+                  label="Agencia"
+                  :readonly="this.disabledAgencia"
+                  hint=""
+                  dense
+                  class="pcform"
+                  :rules="[reglasInputs]"
+                  :options="agenciasSelected"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'agenciasSelected',
+                        'agencias',
+                        'nb_agencia'
+                      )
+                  "
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
+                  lazy-rules
+                  option-label="nb_agencia"
+                  option-value="id"
                 >
-              </q-btn>
-            </div>
+                  <template v-slot:prepend>
+                    <q-icon name="south_america" />
+                  </template>
+                </q-select>
+              </div>
 
-            <div class="col-md-6 col-xs-12">
-              <q-input
-                outlined
-                v-model="form.desc_ciudad"
-                label="Agencia"
-                type="number"
-                dense
-                class="pcform"
-                hint=""
-                lazy-rules
-              >
-                <template v-slot:prepend>
-                  <q-icon name="person" />
-                </template>
-              </q-input>
-            </div>
+              <div class="col-md-4 col-xs-12">
+                <q-input
+                  outlined
+                  v-model="formClientesParticulares.nb_cliente"
+                  label="Cliente"
+                  :readonly="this.disabledCliente"
+                  dense
+                  :rules="[reglasAllowMin3]"
+                  lazy-rules
+                  hint=""
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="person" />
+                  </template>
+                </q-input>
+              </div>
 
-            <div class="col-md-6 col-xs-12">
-              <q-input
-                outlined
-                v-model="form.desc_ciudad"
-                label="Cliente"
-                dense
-                lazy-rules
-                hint=""
-              >
-                <template v-slot:prepend>
-                  <q-icon name="person" />
-                </template>
-              </q-input>
-            </div>
+              <div class="col-md-4 col-xs-12">
+                <q-select
+                  outlined
+                  v-model="pais"
+                  label="Pais"
+                  :readonly="this.disabledInputs"
+                  hint=""
+                  dense
+                  class="pcform"
+                  :rules="[reglasInputs]"
+                  :options="paisesSelected"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'paisesSelected',
+                        'paises',
+                        'desc_pais'
+                      )
+                  "
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
+                  lazy-rules
+                  option-label="desc_pais"
+                  option-value="id"
+                  @update:model-value="
+                    this.axiosConfig.headers.pais = this.pais.id;
+                    getDataLocalidades('estados', 'setDataEstados');
+                  "
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="south_america" />
+                  </template>
+                </q-select>
+              </div>
 
-            <div class="col-md-4 col-xs-12">
-              <q-input
-                outlined
-                v-model="form.desc_ciudad"
-                label="RIF/CI"
-                type="number"
-                dense
-                class="pcform"
-                hint=""
-                lazy-rules
-              >
-                <template v-slot:prepend>
-                  <q-icon name="person" />
-                </template>
-              </q-input>
-            </div>
+              <div class="col-md-4 col-xs-12">
+                <q-select
+                  outlined
+                  v-model="estado"
+                  dense
+                  label="Estado"
+                  class="pcform"
+                  hint=""
+                  :readonly="this.disabledInputs"
+                  :rules="[reglasInputs]"
+                  :options="estadosSelected"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'estadosSelected',
+                        'estados',
+                        'desc_estado'
+                      )
+                  "
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
+                  lazy-rules
+                  option-label="desc_estado"
+                  option-value="id"
+                  @update:model-value="
+                    this.axiosConfig.headers.estado = this.estado.id;
+                    getDataLocalidades('municipios', 'setDataMunicipios');
+                    getDataLocalidades('localidades', 'setDataLocalidades');
+                    getDataLocalidades('ciudades', 'setDataCiudades');
+                  "
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="south_america" />
+                  </template>
+                </q-select>
+              </div>
 
-            <div class="col-md-4 col-xs-12">
-              <q-input
-                outlined
-                v-model="form.desc_ciudad"
-                label="Nombre Cliente"
-                type="number"
-                dense
-                class="pcform"
-                hint=""
-                lazy-rules
-              >
-                <template v-slot:prepend>
-                  <q-icon name="person" />
-                </template>
-              </q-input>
-            </div>
+              <div class="col-md-4 col-xs-12">
+                <q-select
+                  outlined
+                  v-model="ciudad"
+                  label="Ciudad"
+                  dense
+                  hint=""
+                  :readonly="this.disabledInputs"
+                  :rules="[reglasInputs]"
+                  :options="ciudadesSelected"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'ciudadesSelected',
+                        'ciudades',
+                        'desc_ciudad'
+                      )
+                  "
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
+                  lazy-rules
+                  option-label="desc_ciudad"
+                  option-value="id"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="south_america" />
+                  </template>
+                </q-select>
+              </div>
 
-            <div class="col-md-4 col-xs-12">
-              <q-select
-                outlined
-                emit-value
-                v-model="formEdit.cod_agencia"
-                label="Estado"
-                dense
-                :rules="[reglasSelect]"
-                @filter="
-                  (val, update, abort) =>
-                    filterArray(
-                      val,
-                      update,
-                      abort,
-                      'agenciasSelected',
-                      'agencias',
-                      'nb_agencia'
-                    )
-                "
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
-                hint=""
-                :options="agenciasSelected"
-                lazy-rules
-                @update:model-value="
-                  this.axiosConfig.headers.agencia =
-                    this.formEdit.cod_agencia.id;
-                  this.getData(`/clientes`, 'setData', 'clientes_origen');
-                  this.formEdit.cod_cliente_org = '';
-                "
-                option-label="nb_agencia"
-                option-value="id"
-              >
-                <template v-slot:prepend>
-                  <q-icon name="person" />
-                </template>
-              </q-select>
-            </div>
+              <div class="col-md-4 col-xs-12">
+                <q-select
+                  outlined
+                  v-model="formClientesParticulares.cod_municipio"
+                  label="Municipio"
+                  hint=""
+                  class="pcform"
+                  :readonly="this.disabledInputs"
+                  dense
+                  :rules="[reglasInputs]"
+                  :options="municipiosSelected"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'municipiosSelected',
+                        'municipios',
+                        'desc_municipio'
+                      )
+                  "
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
+                  option-label="desc_municipio"
+                  option-value="id"
+                  lazy-rules
+                  @update:model-value="
+                    this.axiosConfig.headers.municipio =
+                      this.formClientesParticulares.cod_municipio.id;
+                    getDataLocalidades('parroquias', 'setDataParroquias');
+                  "
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="south_america" />
+                  </template>
+                </q-select>
+              </div>
 
-            <div class="col-md-4 col-xs-12">
-              <q-select
-                outlined
-                v-model="formEdit.cod_agencia"
-                label="Ciudad"
-                dense
-                :rules="[reglasSelect]"
-                @filter="
-                  (val, update, abort) =>
-                    filterArray(
-                      val,
-                      update,
-                      abort,
-                      'agenciasSelected',
-                      'agencias',
-                      'nb_agencia'
-                    )
-                "
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
-                class="pcform"
-                hint=""
-                :options="agenciasSelected"
-                lazy-rules
-                @update:model-value="
-                  this.axiosConfig.headers.agencia =
-                    this.formEdit.cod_agencia.id;
-                  this.getData(`/clientes`, 'setData', 'clientes_origen');
-                  this.formEdit.cod_cliente_org = '';
-                "
-                option-label="nb_agencia"
-                option-value="id"
-              >
-                <template v-slot:prepend>
-                  <q-icon name="person" />
-                </template>
-              </q-select>
-            </div>
+              <div class="col-md-4 col-xs-12">
+                <q-select
+                  outlined
+                  v-model="formClientesParticulares.cod_parroquia"
+                  label="Parroquia"
+                  :readonly="this.disabledInputs"
+                  hint=""
+                  class="pcform"
+                  dense
+                  :rules="[reglasInputs]"
+                  :options="parroquiasSelected"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'parroquiasSelected',
+                        'parroquias',
+                        'desc_parroquia'
+                      )
+                  "
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
+                  option-label="desc_parroquia"
+                  option-value="id"
+                  lazy-rules
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="south_america" />
+                  </template>
+                </q-select>
+              </div>
 
-            <div class="col-md-4 col-xs-12">
-              <q-select
-                outlined
-                v-model="formEdit.cod_agencia"
-                label="Municipio"
-                dense
-                :rules="[reglasSelect]"
-                @filter="
-                  (val, update, abort) =>
-                    filterArray(
-                      val,
-                      update,
-                      abort,
-                      'agenciasSelected',
-                      'agencias',
-                      'nb_agencia'
-                    )
-                "
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
-                class="pcform"
-                hint=""
-                :options="agenciasSelected"
-                lazy-rules
-                @update:model-value="
-                  this.axiosConfig.headers.agencia =
-                    this.formEdit.cod_agencia.id;
-                  this.getData(`/clientes`, 'setData', 'clientes_origen');
-                  this.formEdit.cod_cliente_org = '';
-                "
-                option-label="nb_agencia"
-                option-value="id"
-              >
-                <template v-slot:prepend>
-                  <q-icon name="person" />
-                </template>
-              </q-select>
-            </div>
+              <div class="col-md-4 col-xs-12">
+                <q-select
+                  outlined
+                  v-model="formClientesParticulares.cod_localidad"
+                  label="Localidad"
+                  hint=""
+                  :readonly="this.disabledInputs"
+                  dense
+                  :rules="[reglasInputs]"
+                  :options="localidadesSelected"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'localidadesSelected',
+                        'localidades',
+                        'desc_localidad'
+                      )
+                  "
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
+                  option-label="desc_localidad"
+                  option-value="id"
+                  lazy-rules
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="south_america" />
+                  </template>
+                </q-select>
+              </div>
 
-            <div class="col-md-4 col-xs-12">
-              <q-select
-                outlined
-                v-model="formEdit.cod_agencia"
-                label="Parroquia"
-                dense
-                :rules="[reglasSelect]"
-                @filter="
-                  (val, update, abort) =>
-                    filterArray(
-                      val,
-                      update,
-                      abort,
-                      'agenciasSelected',
-                      'agencias',
-                      'nb_agencia'
-                    )
-                "
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
-                hint=""
-                :options="agenciasSelected"
-                lazy-rules
-                @update:model-value="
-                  this.axiosConfig.headers.agencia =
-                    this.formEdit.cod_agencia.id;
-                  this.getData(`/clientes`, 'setData', 'clientes_origen');
-                  this.formEdit.cod_cliente_org = '';
-                "
-                option-label="nb_agencia"
-                option-value="id"
-              >
-                <template v-slot:prepend>
-                  <q-icon name="person" />
-                </template>
-              </q-select>
-            </div>
+              <div class="col-md-6 col-xs-12">
+                <q-input
+                  outlined
+                  v-model="formClientesParticulares.telefonos"
+                  label="Telefono"
+                  :rules="[reglasAllowMin3]"
+                  :readonly="this.disabledInputs"
+                  class="pcform"
+                  dense
+                  hint=""
+                  lazy-rules
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="person" />
+                  </template>
+                </q-input>
+              </div>
 
-            <div class="col-md-4 col-xs-12">
-              <q-select
-                outlined
-                v-model="formEdit.cod_agencia"
-                label="Localidad"
-                dense
-                :rules="[reglasSelect]"
-                @filter="
-                  (val, update, abort) =>
-                    filterArray(
-                      val,
-                      update,
-                      abort,
-                      'agenciasSelected',
-                      'agencias',
-                      'nb_agencia'
-                    )
-                "
-                use-input
-                hide-selected
-                fill-input
-                class="pcform"
-                input-debounce="0"
-                hint=""
-                :options="agenciasSelected"
-                lazy-rules
-                @update:model-value="
-                  this.axiosConfig.headers.agencia =
-                    this.formEdit.cod_agencia.id;
-                  this.getData(`/clientes`, 'setData', 'clientes_origen');
-                  this.formEdit.cod_cliente_org = '';
-                "
-                option-label="nb_agencia"
-                option-value="id"
-              >
-                <template v-slot:prepend>
-                  <q-icon name="person" />
-                </template>
-              </q-select>
-            </div>
+              <div class="col-md-6 col-xs-12">
+                <q-input
+                  outlined
+                  v-model="formClientesParticulares.fax"
+                  :readonly="this.disabledInputs"
+                  label="Fax"
+                  dense
+                  hint=""
+                  :rules="[reglasAllowMin3]"
+                  lazy-rules
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="person" />
+                  </template>
+                </q-input>
+              </div>
 
-            <div class="col-md-4 col-xs-12">
-              <q-input
-                outlined
-                v-model="form.desc_ciudad"
-                label="Telefono"
-                type="number"
-                class="pcform"
-                dense
-                hint=""
-                lazy-rules
-              >
-                <template v-slot:prepend>
-                  <q-icon name="person" />
-                </template>
-              </q-input>
-            </div>
-
-            <div class="col-md-4 col-xs-12">
-              <q-input
-                outlined
-                v-model="form.desc_ciudad"
-                label="Fax"
-                type="number"
-                dense
-                hint=""
-                lazy-rules
-              >
-                <template v-slot:prepend>
-                  <q-icon name="person" />
-                </template>
-              </q-input>
-            </div>
-
-            <div class="col-md-12 col-xs-12">
-              <q-input
-                outlined
-                v-model="form.desc_ciudad"
-                label="Descripción"
-                type="number"
-                dense
-                hint=""
-                lazy-rules
-              >
-                <template v-slot:prepend>
-                  <q-icon name="person" />
-                </template>
-              </q-input>
+              <div class="col-md-12 col-xs-12">
+                <q-input
+                  outlined
+                  v-model="formClientesParticulares.direccion"
+                  label="Direccion"
+                  :readonly="this.disabledInputs"
+                  :rules="[reglasAllowMin3]"
+                  dense
+                  hint=""
+                  lazy-rules
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="person" />
+                  </template>
+                </q-input>
+              </div>
             </div>
 
             <div
               class="full-width row justify-center items-center content-center"
-              style="margin-bottom: 10px"
+              style="margin-bottom: 6px; margin-top: 10px"
             >
               <q-btn
-                label="Asignar"
+                label="Actualizar Cliente"
+                :disable="this.disabledInputs"
                 type="submit"
                 color="primary"
                 class="col-md-5 col-sm-5 col-xs-12"
                 icon="person_add"
               />
               <q-btn
-                label="Regresar"
+                label="Cerrar"
                 color="primary"
                 flat
                 class="col-md-5 col-sm-5 col-xs-12 btnmovil"
@@ -656,54 +911,52 @@
                 v-close-popup
               />
             </div>
-          </div>
+          </q-form>
         </q-card-section>
       </q-card>
     </q-dialog>
 
-    <q-dialog v-model="pdfView">
+    <q-dialog v-model="pdfView" @show="this.pdfview()">
       <div style="width: 100%; max-width: 80vw">
-        <WebViewer
-          initialDoc="https://www.telosalliance.com/uploads/Axia%20Products/Quasar/Assets/1490-00224-001%20Quasar%20User%20Manual%20v1.4.18.pdf"
-        />
+        <WebViewer ref="webviewer"></WebViewer>
       </div>
     </q-dialog>
 
-    <div class="row q-pa-sm justify-center">
+    <div class="row q-pa-sm justify-center" style="padding-bottom: 0px">
       <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
         <div class="row">
-          <q-form>
-            <div
-              class="row justify-center items-center"
-              style="margin-top: 10px"
-            >
+          <q-form ref="formData">
+            <div class="row justify-center items-center pageStyle">
               <div
-                class="col-md-2 col-xs-12 cardMenus marginMenu"
-                style="margin-bottom: 10px"
+                class="col-md-2 col-xs-12 cardMenus marginMenu boxStyle"
+                style="margin-bottom: 5px"
               >
                 <div class="col-md-12 col-xs-6">
                   <q-input
                     outlined
                     v-model="formEdit.nro_documento"
-                    label="NRO. Guía"
+                    label="NRO. Documento"
                     hint=""
                     class="pcform"
                     dense
-                    type="number"
                     :rules="[reglasNotNull10]"
                     hide-bottom-space
-                    @keydown.enter="
-                      this.resetFormEdit();
-                      this.showTextLoading();
-                      this.axiosConfig.headers.nro_documento =
-                        this.formEdit.nro_documento;
-                      getData(
-                        `/mmovimientos/${this.formEdit.nro_documento}`,
-                        'setDataEdit',
-                        'formEdit'
-                      );
-                    "
                   >
+                    <template v-slot:append>
+                      <q-icon
+                        @click="
+                          if (formEdit.nro_documento !== '') {
+                            this.axiosConfig.headers.nro_documento =
+                              formEdit.nro_documento;
+                            this.resetFormEdit();
+                            this.showTextLoading();
+                            getData(`/mmovimientos`, 'setDataEdit', 'formEdit');
+                          }
+                        "
+                        class="cursor-pointer"
+                        name="search"
+                      />
+                    </template>
                   </q-input>
                 </div>
 
@@ -726,8 +979,8 @@
               </div>
 
               <div
-                class="col-md-4 col-xs-12"
-                style="margin-bottom: 10px; padding-top: 5px"
+                class="col-md-4 col-xs-12 boxStyle"
+                style="margin-bottom: 5px; padding-top: 5px"
               >
                 <q-card
                   class="q-pa-md col-md-4 col-xs-12 cardMenus"
@@ -852,8 +1105,8 @@
               </div>
 
               <div
-                class="col-md-3 col-xs-12"
-                style="margin-bottom: 10px; padding-top: 5px"
+                class="col-md-3 col-xs-12 boxStyle"
+                style="margin-bottom: 5px; padding-top: 5px"
               >
                 <q-card
                   class="q-pa-md col-md-4 col-xs-12 cardMenus"
@@ -890,7 +1143,7 @@
                           v-model="formEdit.nro_piezas"
                           label="Piezas"
                           hint=""
-                          :rules="[reglasAllowNull3]"
+                          :rules="[reglasNotNull3]"
                           type="number"
                           hide-buttom-space
                           class="pcform pcmovil"
@@ -905,7 +1158,7 @@
                           v-model="formEdit.peso_kgs"
                           label="Peso KGS"
                           hint=""
-                          :rules="[reglasAllowNull6]"
+                          :rules="[reglasNotNull6]"
                           type="number"
                           dense
                           hide-buttom-space
@@ -951,8 +1204,8 @@
               </div>
 
               <div
-                class="col-md-3 col-xs-12"
-                style="margin-bottom: 15px; padding-top: 10px"
+                class="col-md-3 col-xs-12 boxStyle"
+                style="margin-bottom: 10px; padding-top: 10px"
               >
                 <q-card
                   class="q-pa-md col-md-4 col-xs-12"
@@ -988,7 +1241,7 @@
                           v-model="formEdit.modalidad_pago"
                           label="Modalidad Pago"
                           hint=""
-                          :rules="[reglasSelect]"
+                          :rules="[reglasInputs]"
                           dense=""
                           :options="modalidad_pago"
                           lazy-rules
@@ -1002,6 +1255,7 @@
                           v-model="formEdit.pagado_en"
                           label="Pagado En"
                           hint=""
+                          :rules="[reglasInputs]"
                           dense
                           :options="pagado_en"
                           lazy-rules
@@ -1014,8 +1268,8 @@
               </div>
 
               <div
-                class="col-md-3 col-xs-12"
-                style="margin-bottom: 15px; padding-right: 7px"
+                class="col-md-3 col-xs-12 boxStyle"
+                style="margin-bottom: 5px; padding-right: 7px"
               >
                 <q-card
                   class="q-pa-md col-md-4 col-xs-12 cardMenus"
@@ -1051,7 +1305,7 @@
                           v-model="formEdit.cod_agencia"
                           label="Agencia"
                           dense
-                          :rules="[reglasSelect]"
+                          :rules="[reglasInputs]"
                           @filter="
                             (val, update, abort) =>
                               filterArray(
@@ -1067,12 +1321,12 @@
                           hide-selected
                           fill-input
                           input-debounce="0"
-                          emit-value
                           class="pcmovil"
                           hint=""
                           :options="agenciasSelected"
                           lazy-rules
                           @update:model-value="
+                            this.clientes_origen = [];
                             this.axiosConfig.headers.agencia =
                               this.formEdit.cod_agencia.id;
                             this.getData(
@@ -1092,10 +1346,9 @@
                           outlined
                           v-model="formEdit.cod_cliente_org"
                           label="Cliente"
-                          :rules="[reglasSelect]"
+                          :rules="[reglasInputs]"
                           hint=""
                           use-input
-                          emit-value
                           hide-selected
                           fill-input
                           input-debounce="0"
@@ -1116,6 +1369,13 @@
                           option-value="id"
                           lazy-rules
                         >
+                          <template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
                         </q-select>
                       </div>
                     </div>
@@ -1123,7 +1383,10 @@
                 </q-card>
               </div>
 
-              <div class="col-md-5 col-xs-12" style="margin-bottom: 15px">
+              <div
+                class="col-md-5 col-xs-12 boxStyle"
+                style="margin-bottom: 5px"
+              >
                 <q-card
                   class="q-pa-md col-md-4 col-xs-12 cardMenus"
                   bordered
@@ -1158,11 +1421,11 @@
                           v-model="formEdit.cod_agencia_dest"
                           label="Agencia"
                           hint=""
-                          emit-value
                           dense
                           use-input
                           hide-selected
                           fill-input
+                          :rules="[reglasInputs]"
                           input-debounce="0"
                           @filter="
                             (val, update, abort) =>
@@ -1181,6 +1444,9 @@
                           option-label="nb_agencia"
                           option-value="id"
                           @update:model-value="
+                            this.formEdit.id_clte_part_dest = '';
+                            this.clientes_destino = [];
+                            this.zonas_destino = [];
                             this.axiosConfig.headers.agencia =
                               this.formEdit.cod_agencia_dest.id;
                             this.getData(
@@ -1198,8 +1464,8 @@
                       <div class="col-md-6 col-xs-6">
                         <q-select
                           outlined
-                          emit-value
                           v-model="formEdit.cod_cliente_dest"
+                          :rules="[reglasInputs]"
                           label="Cliente"
                           dense
                           hint=""
@@ -1223,6 +1489,18 @@
                           option-label="nb_cliente"
                           option-value="id"
                         >
+                          <template
+                            v-slot:append
+                            v-if="
+                              this.formEdit.cod_cliente_dest.cte_decontado == 1
+                            "
+                          >
+                            <q-icon
+                              @click.stop.prevent="this.clienteClick()"
+                              class="cursor-pointer"
+                              name="settings"
+                            />
+                          </template>
                         </q-select>
                       </div>
                       <div class="col-md-10 col-xs-10">
@@ -1255,7 +1533,6 @@
                           behavior="dialog"
                           :options="zonasSelected"
                           lazy-rules
-                          emit-value
                           hide-bottom-space
                           option-label="nb_zona"
                           option-value="id"
@@ -1293,8 +1570,8 @@
               </div>
 
               <div
-                class="col-md-4 col-xs-12"
-                style="margin-bottom: 10px; padding-bottom: 5px"
+                class="col-md-4 col-xs-12 boxStyle"
+                style="margin-bottom: 0px; padding-bottom: 5px"
               >
                 <q-card
                   class="q-pa-md col-md-12 col-xs-12"
@@ -1308,7 +1585,11 @@
                 >
                   <q-card-section
                     class="row col-md-12 col-xs-12"
-                    style="padding-bottom: 0px; padding-top: 0px"
+                    style="
+                      padding-bottom: 0px;
+                      padding-top: 0px;
+                      padding-left: 10px;
+                    "
                   >
                     <div
                       class="col-md-2 col-xs-12 items-center"
@@ -1320,7 +1601,7 @@
                           margin-top: 0px;
                           margin-bottom: 0px;
                         "
-                        class="text-secondary"
+                        class="text-secondary inputServicio"
                       >
                         <strong>Servicio</strong>
                       </h4>
@@ -1465,7 +1746,10 @@
                 </q-card>
               </div>
 
-              <div class="col-md-6 col-xs-12" style="margin-bottom: 10px">
+              <div
+                class="col-md-6 col-xs-12 lastboxStyle"
+                style="margin-bottom: 5px"
+              >
                 <q-card
                   class="q-pa-md col-md-12 col-xs-12 cardMenus"
                   bordered
@@ -1553,16 +1837,16 @@
               </div>
 
               <div class="row col-md-6 col-xs-12">
-                <div class="row col-md-12 col-xs-12 marginCard">
+                <div class="row col-md-12 col-xs-12 inputsCard">
                   <div class="col-md-6 col-xs-12">
                     <q-select
                       outlined
                       v-model="formEdit.cod_agente_venta"
                       label="Recolectado Por:"
+                      :rules="[reglasInputs]"
                       hint=""
                       class="pcform"
                       use-input
-                      emit-value
                       hide-selected
                       fill-input
                       input-debounce="0"
@@ -1594,7 +1878,6 @@
                       hint=""
                       use-input
                       hide-selected
-                      emit-value
                       fill-input
                       input-debounce="0"
                       @filter="
@@ -1661,7 +1944,7 @@
                       label="Carga Neta"
                       hint=""
                       dense
-                      :rules="[reglasAllowNull6]"
+                      :rules="[reglasNotNull6]"
                       class="pcform"
                       @update:model-value="
                         formEdit.carga_neta = formEdit.carga_neta.toUpperCase()
@@ -1736,7 +2019,6 @@
                   hint=""
                   use-input
                   hide-selected
-                  emit-value
                   fill-input
                   input-debounce="0"
                   @filter="
@@ -1917,15 +2199,23 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+
     <desactive-crud
       ref="desactivateCrud"
       @desactivar-Crud="desactivarCrud"
     ></desactive-crud>
+
     <methods
       ref="methods"
       @set-Data="setData"
       @set-Data-Edit="setDataEdit"
       @reset-Loading="resetLoading"
+      @set-Data-Localidades="setDataLocalidades"
+      @set-Data-Municipios="setDataMunicipios"
+      @set-Data-Parroquias="setDataParroquias"
+      @set-Data-Estados="setDataEstados"
+      @set-Data-Ciudades="setDataCiudades"
+      @set-Data-Paises="setDataPaises"
     ></methods>
   </q-page>
 </template>
@@ -1939,17 +2229,17 @@ import { useQuasar } from "quasar";
 
 import { LocalStorage } from "quasar";
 
-import WebViewer from "src/components/WebViewer.vue";
-
 import methodsVue from "src/components/methods.vue";
 
 import desactivateCrudVue from "src/components/desactivateCrud.vue";
+
+import WebViewerVue from "src/components/WebViewer.vue";
 
 export default {
   components: {
     "desactive-crud": desactivateCrudVue,
     methods: methodsVue,
-    WebViewer,
+    WebViewer: WebViewerVue,
   },
   name: "registroServicioCarga",
   data() {
@@ -1991,51 +2281,11 @@ export default {
           sortable: true,
         },
       ],
-      form: {
-        nro_documento: "",
-        t_de_documento: "",
-        serie_documento: "",
-        fecha_emision: "",
-        fecha_envio: "",
-        fecha_aplicacion: "",
-        nro_piezas: "",
-        peso_kgs: "",
-        tipo_carga: "",
-        modalidad_pago: "",
-        pagado_en: "",
-        cod_agencia: "",
-        cod_cliente_org: "",
-        cod_agencia_dest: "",
-        cod_cliente_dest: "",
-        cod_zona_dest: "",
-        tipo_servicio: "",
-        tipo_ubicacion: "",
-        tipo_urgencia: "",
-        cod_agente_venta: "",
-        cod_proveedor: "",
-        dimensiones: "",
-        desc_contenido: "",
-        carga_neta: "",
-        valor_declarado_cod: "",
-        valor_declarado_seg: "",
-        porc_apl_seguro: "",
-        cod_agencia_transito: "",
-        monto_subtotal: "",
-        monto_impuesto: "",
-        monto_base: "",
-        monto_total: "",
-        fecha_llega_transito: "",
-        check_transito: "",
-        estatus_operativo: "",
-        estatus_administra: "",
-        monto_ref_cte_sin_imp: "",
-        porc_comision: "",
-        porc_descuento: "",
-      },
       formEdit: {
         nro_documento: "",
         t_de_documento: "",
         serie_documento: "",
+        id_clte_part_dest: "",
         fecha_emision: "",
         fecha_envio: "",
         fecha_aplicacion: "",
@@ -2074,6 +2324,48 @@ export default {
         porc_descuento: "",
         id: "",
       },
+      formClientes: {
+        id: "",
+        nb_cliente: "",
+        rif_cedula: "",
+        nit: "",
+        dir_correo: "",
+        dir_fiscal: "",
+        email: "",
+        tlf_cliente: "",
+        fax: "",
+        razon_social: "",
+        descripcion: "",
+        tipo_persona: "",
+        modalidad_pago: "",
+        persona_contacto: "",
+        observacion: "",
+        cte_decontado: "",
+        tipo_persona_new: "",
+        flag_activo: "",
+        cod_agencia: [],
+        cod_ciudad: [],
+        cod_agente: [],
+        cod_municipio: [],
+        cod_parroquia: [],
+        cod_localidad: [],
+      },
+      formClientesParticulares: {
+        id: "",
+        cod_agencia: [],
+        cod_ciudad: [],
+        cod_localidad: [],
+        cod_municipio: [],
+        cod_parroquia: [],
+        cod_cliente: "",
+        direccion: "",
+        estatus: "",
+        fax: "",
+        id: "",
+        nb_cliente: "",
+        rif_ci: "",
+        telefonos: "",
+      },
       checkbox: {
         guia_factura: "0",
         guia_carga: "0",
@@ -2087,9 +2379,30 @@ export default {
         normal: "0",
         emergencia: "0",
       },
+      disabledAgencia: true,
+      disabledInputs: true,
+      disabledRif: true,
+      disabledCliente: true,
       count: 1,
+      pais: "",
+      estado: "",
+      ciudad: "",
+      base64:
+        "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CmVuZG9iagoKOSAwIG9iago8PC9UeXBlL0ZvbnQvU3VidHlwZS9UcnVlVHlwZS9CYXNlRm9udC9CQUFBQUErQXJpYWwtQm9sZE1UCi9GaXJzdENoYXIgMAovTGFzdENoYXIgMTEKL1dpZHRoc1s3NTAgNzIyIDYxMCA4ODkgNTU2IDI3NyA2NjYgNjEwIDMzMyAyNzcgMjc3IDU1NiBdCi9Gb250RGVzY3JpcHRvciA3IDAgUgovVG9Vbmljb2RlIDggMCBSCj4+CmVuZG9iagoKMTAgMCBvYmoKPDwKL0YxIDkgMCBSCj4+CmVuZG9iagoKMTEgMCBvYmoKPDwvRm9udCAxMCAwIFIKL1Byb2NTZXRbL1BERi9UZXh0XT4+CmVuZG9iagoKMSAwIG9iago8PC9UeXBlL1BhZ2UvUGFyZW50IDQgMCBSL1Jlc291cmNlcyAxMSAwIFIvTWVkaWFCb3hbMCAwIDU5NSA4NDJdL0dyb3VwPDwvUy9UcmFuc3BhcmVuY3kvQ1MvRGV2aWNlUkdCL0kgdHJ1ZT4+L0NvbnRlbnRzIDIgMCBSPj4KZW5kb2JqCgoxMiAwIG9iago8PC9Db3VudCAxL0ZpcnN0IDEzIDAgUi9MYXN0IDEzIDAgUgo+PgplbmRvYmoKCjEzIDAgb2JqCjw8L1RpdGxlPEZFRkYwMDQ0MDA3NTAwNkQwMDZEMDA3OTAwMjAwMDUwMDA0NDAwNDYwMDIwMDA2NjAwNjkwMDZDMDA2NT4KL0Rlc3RbMSAwIFIvWFlaIDU2LjcgNzczLjMgMF0vUGFyZW50IDEyIDAgUj4+CmVuZG9iagoKNCAwIG9iago8PC9UeXBlL1BhZ2VzCi9SZXNvdXJjZXMgMTEgMCBSCi9NZWRpYUJveFsgMCAwIDU5NSA4NDIgXQovS2lkc1sgMSAwIFIgXQovQ291bnQgMT4+CmVuZG9iagoKMTQgMCBvYmoKPDwvVHlwZS9DYXRhbG9nL1BhZ2VzIDQgMCBSCi9PdXRsaW5lcyAxMiAwIFIKPj4KZW5kb2JqCgoxNSAwIG9iago8PC9BdXRob3I8RkVGRjAwNDUwMDc2MDA2MTAwNkUwMDY3MDA2NTAwNkMwMDZGMDA3MzAwMjAwMDU2MDA2QzAwNjEwMDYzMDA2ODAwNkYwMDY3MDA2OTAwNjEwMDZFMDA2RTAwNjkwMDczPgovQ3JlYXRvcjxGRUZGMDA1NzAwNzIwMDY5MDA3NDAwNjUwMDcyPgovUHJvZHVjZXI8RkVGRjAwNEYwMDcwMDA2NTAwNkUwMDRGMDA2NjAwNjYwMDY5MDA2MzAwNjUwMDJFMDA2RjAwNzIwMDY3MDAyMDAwMzIwMDJFMDAzMT4KL0NyZWF0aW9uRGF0ZShEOjIwMDcwMjIzMTc1NjM3KzAyJzAwJyk+PgplbmRvYmoKCnhyZWYKMCAxNgowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMTE5OTcgMDAwMDAgbiAKMDAwMDAwMDAxOSAwMDAwMCBuIAowMDAwMDAwMjI0IDAwMDAwIG4gCjAwMDAwMTIzMzAgMDAwMDAgbiAKMDAwMDAwMDI0NCAwMDAwMCBuIAowMDAwMDExMTU0IDAwMDAwIG4gCjAwMDAwMTExNzYgMDAwMDAgbiAKMDAwMDAxMTM2OCAwMDAwMCBuIAowMDAwMDExNzA5IDAwMDAwIG4gCjAwMDAwMTE5MTAgMDAwMDAgbiAKMDAwMDAxMTk0MyAwMDAwMCBuIAowMDAwMDEyMTQwIDAwMDAwIG4gCjAwMDAwMTIxOTYgMDAwMDAgbiAKMDAwMDAxMjQyOSAwMDAwMCBuIAowMDAwMDEyNDk0IDAwMDAwIG4gCnRyYWlsZXIKPDwvU2l6ZSAxNi9Sb290IDE0IDAgUgovSW5mbyAxNSAwIFIKL0lEIFsgPEY3RDc3QjNEMjJCOUY5MjgyOUQ0OUZGNUQ3OEI4RjI4Pgo8RjdENzdCM0QyMkI5RjkyODI5RDQ5RkY1RDc4QjhGMjg+IF0KPj4Kc3RhcnR4cmVmCjEyNzg3CiUlRU9GCg==",
       objetive: 0,
       agencias: [],
+      paises: [],
+      estados: [],
+      ciudades: [],
+      municipios: [],
+      parroquias: [],
+      localidades: [],
+      paisesSelected: [],
+      estadosSelected: [],
+      ciudadesSelected: [],
+      municipiosSelected: [],
+      parroquiasSelected: [],
+      localidadesSelected: [],
       conceptos: [],
       agencias_origen: [],
       clientes_origen: [],
@@ -2136,6 +2449,10 @@ export default {
           nro_documento: ``,
           agencia: ``,
           tipo: `GC`,
+          pais: "",
+          estado: "",
+          municipio: "",
+          rif: "",
         },
       },
     };
@@ -2160,6 +2477,7 @@ export default {
       // rowsNumber: xx if getting data from a server
     });
     return {
+      formData: null,
       visible,
       showSimulatedReturnData,
       showTextLoading() {
@@ -2183,6 +2501,7 @@ export default {
       clienteParticularBox: ref(false),
       pdfView: ref(false),
       filter: ref(""),
+      clientesForm: ref(false),
     };
   },
   mounted() {
@@ -2199,8 +2518,21 @@ export default {
       "conceptos",
       this.axiosConfig
     );
+    this.$refs.methods.getData(
+      `/paises`,
+      `setData`,
+      `paises`,
+      this.axiosConfig
+    );
   },
   methods: {
+    pdfview() {
+      // this.headers.pdf = this.agenciasSelected.id
+      // api.get(`/pdf`, this.axiosConfig).then((res) => {
+      //  this.$refs.WebViewer.pdfView(res.data.base_64);
+      // });
+      this.$refs.webviewer.showpdf(this.base64);
+    },
     filterArray(val, update, abort, pagina, array, element) {
       if (val === "") {
         update(() => {
@@ -2210,10 +2542,10 @@ export default {
       }
       update(() => {
         const needle = val.toUpperCase();
-        var notEqual = JSON.parse(JSON.stringify(this[array]));
-        for (var i = 0, len = this[array].length; i < len; i++) {
-          if (!(this[array][i][element].indexOf(needle) > -1)) {
-            delete notEqual[i];
+        var notEqual = [];
+        for (var i = 0; i <= this[array].length - 1; i++) {
+          if (this[array][i][element].indexOf(needle) > -1) {
+            notEqual.push(this[array][i]);
           }
           if (i == this[array].length - 1) {
             this[pagina] = notEqual;
@@ -2222,64 +2554,99 @@ export default {
         }
       });
     },
+    validateClient() {
+      if (this.formClientesParticulares.rif_ci !== "") {
+        this.axiosConfig.headers.rif = this.formClientesParticulares.rif_ci;
+        this.axiosConfig.headers.agencia = this.formEdit.cod_agencia_dest.id;
+        api.get(`/cparticulares`, this.axiosConfig).then((res) => {
+          if (res.data.data[0]) {
+            this.axiosConfig.headers.rif = "";
+            this.axiosConfig.headers.agencia = "";
+            this.setDataClientesParticulares(res.data.data[0]);
+            this.disabledInputs = false;
+            this.disabledRif = true;
+            return;
+          } else {
+            this.disabledInputs = false;
+            this.disabledCliente = false;
+            this.disabledRif = true;
+          }
+        });
+      }
+    },
     // Reglas
-    reglasSelect(val) {
-      if (val === null) {
+    reglasInputs(val) {
+      if (val == null) {
         return "Debes Seleccionar Algo";
       }
-      if (val === "") {
+      if (val == "") {
         return "Debes Seleccionar Algo";
       }
     },
     reglasNotNull10(val) {
+      if (val == null) {
+        return "Requerido";
+      }
+      if (val == "") {
+        return "Requerido";
+      }
       if ((val !== null) !== "") {
         if (val > 9999999999) {
           return "Deben ser Maximo 10 caracteres";
         }
       }
     },
-    reglasAllowNull3(val) {
-      if (val !== null) {
-        if (val.length > 0) {
-          if (val.length > 999) {
-            return "Deben ser Maximo 3 caracteres";
-          }
+    reglasNotNull3(val) {
+      if (val == null) {
+        return "Requerido";
+      }
+      if (val == "") {
+        return "Requerido";
+      }
+      if (val !== null && val !== "") {
+        if (val > 999) {
+          return "Deben ser Maximo 3 caracteres";
         }
       }
     },
     reglasAllowNull12(val) {
-      if (val !== null) {
-        if (val.length > 0) {
-          if (val.length > 999999999999.99) {
-            return "Deben ser Maximo 12 caracteres";
-          }
+      if (val !== null && val !== "") {
+        if (val > 999999999999.99) {
+          return "Deben ser Maximo 12 caracteres";
         }
       }
     },
-    reglasAllowNull6(val) {
-      if (val !== null) {
-        if (val.length > 0) {
-          if (val.length > 999999.99) {
-            return "Deben ser Maximo 6 caracteres";
-          }
+    reglasNotNull6(val) {
+      if (val == null) {
+        return "Requerido";
+      }
+      if (val == "") {
+        return "Requerido";
+      }
+      if (val !== null && val !== "") {
+        if (val > 999999.99) {
+          return "Deben ser Maximo 6 caracteres";
         }
       }
     },
     reglasAllowNull14(val) {
-      if (val !== null) {
-        if (val.length > 0) {
-          if (val.length > 99999999999999.99) {
-            return "Deben ser Maximo 14 caracteres";
-          }
+      if (val !== null && val !== "") {
+        if (val > 99999999999999.99) {
+          return "Deben ser Maximo 14 caracteres";
         }
       }
     },
     reglasAllowNull3(val) {
-      if (val !== null) {
-        if (val.length > 0) {
-          if (val.length > 999) {
-            return "Deben ser Maximo 3 caracteres";
-          }
+      if (val !== null && val !== "") {
+        if (val > 999) {
+          return "Deben ser Maximo 3 caracteres";
+        }
+      }
+    },
+    reglasAllowMin3(val) {
+      if (val !== null && val !== "") {
+        if (val.length < 3) {
+          return "Deben ser Minimo 3 caracteres";
         }
       }
     },
@@ -2309,23 +2676,22 @@ export default {
       this.axiosConfig.headers.nro_documento = "";
     },
     setDataEdit(res, dataRes) {
-      console.log(this.count);
-      console.log(this.objetive);
-      this.axiosConfig.headers.agencia = "";
       this.axiosConfig.headers.nro_documento = "";
-      if (res.cod_agencia) this.count += 3;
-      if (res.cod_agencia_dest) this.count += 2;
-      var cod_agencia = res.cod_agencia;
-      var cod_cliente_org = res.cod_cliente_org;
-      var cod_agencia_dest = res.cod_agencia_dest;
-      var cod_zona_dest = res.cod_zona_dest;
-      var cod_cliente_dest = res.cod_cliente_dest;
-      var cod_agente_venta = res.cod_agente_venta;
-      var cod_agencia_transito = res.cod_agencia_transito;
-      var cod_proveedor = res.cod_proveedor;
-
-      api.get(`/agencias`, this.axiosConfig).then((res) => {
-        this.objetive++;
+      if (res.data[0]) {
+        var res = res.data[0];
+        this.axiosConfig.headers.agencia = "";
+        if (res.cod_agencia) this.count += 3;
+        if (res.cod_agencia_dest) this.count += 2;
+        var cod_agencia = res.cod_agencia;
+        var cod_cliente_org = res.cod_cliente_org;
+        var cod_agencia_dest = res.cod_agencia_dest;
+        var cod_zona_dest = res.cod_zona_dest;
+        var cod_cliente_dest = res.cod_cliente_dest;
+        var cod_agente_venta = res.cod_agente_venta;
+        var cod_agencia_transito = res.cod_agencia_transito;
+        var cod_proveedor = res.cod_proveedor;
+        this[dataRes].nro_piezas = res.nro_piezas;
+        this[dataRes].peso_kgs = res.peso_kgs;
         if (res.t_de_documento == "GF") this.checkbox.guia_factura = "1";
         if (res.t_de_documento == "GC") this.checkbox.guia_carga = "1";
 
@@ -2355,108 +2721,8 @@ export default {
         if (res.tipo_carga == "SB") this.checkbox.sobres = "1";
 
         this[dataRes].modalidad_pago = res.modalidad_pago;
+        this[dataRes].id_clte_part_dest = res.id_clte_part_dest;
         this[dataRes].pagado_en = res.pagado_en;
-
-        this.agencias = res.data;
-
-        if (cod_agencia) {
-          for (var i = 0; i < this.agencias.length - 1; i++) {
-            if (this.agencias[i].id == cod_agencia) {
-              this.formEdit.cod_agencia = this.agencias[i];
-              break;
-            }
-          }
-
-          this.axiosConfig.headers.agencia = cod_agencia;
-
-          api.get(`/agentes`, this.axiosConfig).then((res) => {
-            this.objetive = this.objetive + 1;
-            this.agentes = res.data;
-            if (cod_agente_venta) {
-              for (var i = 0; i < this.agentes.length - 1; i++) {
-                if (this.agentes[i].id == cod_agente_venta) {
-                  this.formEdit.cod_agente_venta = this.agentes[i];
-                  break;
-                }
-              }
-            }
-          });
-
-          api.get(`/proveedores`, this.axiosConfig).then((res) => {
-            this.objetive = this.objetive + 1;
-            this.proveedores = res.data;
-            if (cod_proveedor) {
-              for (var i = 0; i < this.proveedores.length - 1; i++) {
-                if (this.proveedores[i].id == cod_proveedor) {
-                  this.formEdit.cod_proveedor = this.proveedores[i];
-                  break;
-                }
-              }
-            }
-          });
-
-          api.get(`/clientes`, this.axiosConfig).then((res) => {
-            this.objetive++;
-            this.axiosConfig.headers.agencia = "";
-            this.clientes_origen = res.data;
-
-            if (cod_cliente_org) {
-              for (var i = 0; i < this.clientes_origen.length - 1; i++) {
-                if (this.clientes_origen[i].id == cod_cliente_org) {
-                  this.formEdit.cod_cliente_org = this.clientes_origen[i];
-                  break;
-                }
-              }
-            }
-          });
-        }
-        if (cod_agencia_dest) {
-          for (var i = 0; i < this.agencias.length - 1; i++) {
-            if (this.agencias[i].id == cod_agencia_dest) {
-              this.formEdit.cod_agencia_dest = this.agencias[i];
-              break;
-            }
-          }
-
-          this.axiosConfig.headers.agencia = cod_agencia_dest;
-
-          api.get(`/clientes`, this.axiosConfig).then((res) => {
-            this.objetive = this.objetive + 1;
-            this.clientes_destino = res.data;
-
-            if (cod_cliente_dest) {
-              for (var i = 0; i < this.clientes_destino.length - 1; i++) {
-                if (this.clientes_destino[i].id == cod_cliente_dest) {
-                  this.formEdit.cod_cliente_dest = this.clientes_destino[i];
-                  break;
-                }
-              }
-            }
-            api.get(`/zonas`, this.axiosConfig).then((res) => {
-              this.objetive = this.objetive + 1;
-              this.zonas_destino = res.data;
-
-              if (cod_zona_dest) {
-                for (var i = 0; i < this.zonas_destino.length - 1; i++) {
-                  if (this.zonas_destino[i].id == cod_zona_dest) {
-                    this.formEdit.cod_zona_dest = this.zonas_destino[i];
-                    break;
-                  }
-                }
-              }
-            });
-          });
-        }
-
-        if (cod_agencia_transito) {
-          for (var i = 0; i < this.agencias.length - 1; i++) {
-            if (this.agencias[i].id == cod_agencia_transito) {
-              this.formEdit.cod_agencia_transito = this.agencias[i];
-              break;
-            }
-          }
-        }
-
         if (res.tipo_servicio == "N") this.checkbox.nacional = "1";
 
         if (res.tipo_servicio == "I") this.checkbox.internacional = "1";
@@ -2488,130 +2754,355 @@ export default {
         this[dataRes].estatus_administra = res.estatus_administra;
         this[dataRes].porc_comision = res.porc_comision;
         this[dataRes].porc_descuento = res.porc_descuento;
-      });
-    },
 
-    putData() {
-      for (var i = 0; i < this.clientes_origen.length - 1; i++) {
-        if (this.clientes_origen[i].id == this.formEdit.cod_cliente_org.id) {
-          if (
-            !this.clientes_origen[i].cod_municipio ||
-            !this.clientes_origen[i].cod_parroquia ||
-            !this.clientes_origen[i].cod_localidad
-          ) {
-            console.log(
-              "NO tiene toda la division politico terricorial ABRE MODAL Y CORTAR FUNCION"
-            );
-          }
-          break;
-        }
-      }
-      if (this.formEdit.cod_cliente_dest) {
-        if (this.formEdit.cod_cliente_dest.cte_decontado == 1) {
-          api
-            .get(
-              `/cparticulares/${this.formEdit.cod_cliente_dest.id_clte_part_dest}`,
-              this.axiosConfig
-            )
-            .then((res) => {
-              if (
-                !res.cod_municipio ||
-                !res.cod_parroquia ||
-                !res.cod_localidad
-              ) {
-                console.log(
-                  "ABRE MODAL DE CLIENTE PARTICULAR, TODOS LOS DATOS Y CORTAR FUNCION"
-                );
-                console.log(
-                  "TIENE QUE FUNCIONAR ESTO MISMO AL HACER CLICK DERECHO EN EL SELECT, LUEGO DE SELECCIONARLO"
-                );
+        api.get(`/agencias`, this.axiosConfig).then((res) => {
+          this.objetive++;
+
+          this.agencias = res.data;
+
+          if (cod_agencia) {
+            for (var i = 0; i <= this.agencias.length - 1; i++) {
+              if (this.agencias[i].id == cod_agencia) {
+                this.formEdit.cod_agencia = this.agencias[i];
+                break;
+              }
+            }
+
+            this.axiosConfig.headers.agencia = cod_agencia;
+
+            api.get(`/agentes`, this.axiosConfig).then((res) => {
+              this.objetive = this.objetive + 1;
+              this.agentes = res.data;
+              if (cod_agente_venta) {
+                for (var i = 0; i <= this.agentes.length - 1; i++) {
+                  if (this.agentes[i].id == cod_agente_venta) {
+                    this.formEdit.cod_agente_venta = this.agentes[i];
+                    break;
+                  }
+                }
               }
             });
-        } else {
-          if (
-            this.clientes_destino[i].id == this.formEdit.cod_cliente_dest.id
-          ) {
-            if (
-              !this.clientes_destino[i].cod_municipio ||
-              !this.clientes_destino[i].cod_parroquia ||
-              !this.clientes_destino[i].cod_localidad
-            ) {
-              console.log(
-                "NO tiene toda la division politico terricorial ABRE MODAL DE CLIENTE Y CORTAR FUNCION"
-              );
+
+            api.get(`/proveedores`, this.axiosConfig).then((res) => {
+              this.objetive = this.objetive + 1;
+              this.proveedores = res.data;
+              if (cod_proveedor) {
+                for (var i = 0; i <= this.proveedores.length - 1; i++) {
+                  if (this.proveedores[i].id == cod_proveedor) {
+                    this.formEdit.cod_proveedor = this.proveedores[i];
+                    break;
+                  }
+                }
+              }
+            });
+
+            api.get(`/clientes`, this.axiosConfig).then((res) => {
+              this.objetive++;
+              this.axiosConfig.headers.agencia = "";
+              this.clientes_origen = res.data;
+
+              if (cod_cliente_org) {
+                for (var i = 0; i <= this.clientes_origen.length - 1; i++) {
+                  if (this.clientes_origen[i].id == cod_cliente_org) {
+                    this.formEdit.cod_cliente_org = this.clientes_origen[i];
+                    break;
+                  }
+                }
+              }
+            });
+          }
+          if (cod_agencia_dest) {
+            for (var i = 0; i <= this.agencias.length - 1; i++) {
+              if (this.agencias[i].id == cod_agencia_dest) {
+                this.formEdit.cod_agencia_dest = this.agencias[i];
+                break;
+              }
+            }
+
+            this.axiosConfig.headers.agencia = cod_agencia_dest;
+
+            api.get(`/clientes`, this.axiosConfig).then((res) => {
+              this.objetive = this.objetive + 1;
+              this.clientes_destino = res.data;
+
+              if (cod_cliente_dest) {
+                for (var i = 0; i <= this.clientes_destino.length - 1; i++) {
+                  if (this.clientes_destino[i].id == cod_cliente_dest) {
+                    this.formEdit.cod_cliente_dest = this.clientes_destino[i];
+                    break;
+                  }
+                }
+              }
+              api.get(`/zonas`, this.axiosConfig).then((res) => {
+                this.objetive = this.objetive + 1;
+                this.zonas_destino = res.data;
+                this.axiosConfig.headers.agencia = "";
+
+                if (cod_zona_dest) {
+                  for (var i = 0; i <= this.zonas_destino.length - 1; i++) {
+                    if (this.zonas_destino[i].id == cod_zona_dest) {
+                      this.formEdit.cod_zona_dest = this.zonas_destino[i];
+                      break;
+                    }
+                  }
+                }
+              });
+            });
+          }
+
+          if (cod_agencia_transito) {
+            for (var i = 0; i <= this.agencias.length - 1; i++) {
+              if (this.agencias[i].id == cod_agencia_transito) {
+                this.formEdit.cod_agencia_transito = this.agencias[i];
+                break;
+              }
             }
           }
-        }
+        });
+        console.log(this.formEdit);
+        console.log(res);
+      } else {
+        this.objetive = 1;
+        this.$q.notify({
+          message: "Guia no Existe",
+          color: "red",
+        });
       }
+    },
+    resetFormClientes() {
+      (this.disabledAgencia = true),
+        (this.disabledRif = true),
+        (this.disabledCliente = true),
+        (this.disabledInputs = true),
+        (this.formClientes.id = ""),
+        (this.formClientes.nb_cliente = ""),
+        (this.formClientes.rif_cedula = ""),
+        (this.formClientes.nit = ""),
+        (this.formClientes.dir_correo = ""),
+        (this.formClientes.dir_fiscal = ""),
+        (this.formClientes.email = ""),
+        (this.formClientes.tlf_cliente = ""),
+        (this.formClientes.fax = ""),
+        (this.formClientes.razon_social = ""),
+        (this.formClientes.tipo_persona = ""),
+        (this.formClientes.modalidad_pago = ""),
+        (this.formClientes.persona_contacto = ""),
+        (this.formClientes.observacion = ""),
+        (this.formClientes.cte_decontado = ""),
+        (this.formClientes.tipo_persona_new = ""),
+        (this.formClientes.flag_activo = ""),
+        (this.formClientes.cod_agencia = ""),
+        (this.formClientes.cod_agente = ""),
+        (this.formClientes.cod_municipio = ""),
+        (this.formClientes.cod_parroquia = ""),
+        (this.formClientes.cod_localidad = ""),
+        (this.formClientes.cte_decontado = "0"),
+        (this.pais = ""),
+        (this.estado = ""),
+        (this.ciudad = ""),
+        (this.formClientesParticulares.id = ""),
+        (this.formClientesParticulares.cod_agencia = []),
+        (this.formClientesParticulares.cod_ciudad = []),
+        (this.formClientesParticulares.cod_localidad = []),
+        (this.formClientesParticulares.cod_municipio = []),
+        (this.formClientesParticulares.cod_parroquia = []),
+        (this.formClientesParticulares.direccion = ""),
+        (this.formClientesParticulares.estatus = ""),
+        (this.formClientesParticulares.fax = ""),
+        (this.formClientesParticulares.id = ""),
+        (this.formClientesParticulares.nb_cliente = ""),
+        (this.formClientesParticulares.rif_ci = ""),
+        (this.formClientesParticulares.telefonos = "");
+    },
 
-      if (this.checkbox.guia_factura == "1")
-        this.formEdit.t_de_documento = "GF";
-      if (this.checkbox.guia_carga == "1") this.formEdit.t_de_documento = "GC";
-
-      if (this.checkbox.paquetes == "1") this.formEdit.tipo_carga = "PM";
-
-      if (this.checkbox.sobres == "1") this.formEdit.tipo_carga;
-
-      if (this.checkbox.nacional == "1") this.formEdit.tipo_servicio = "N";
-
-      if (this.checkbox.internacional == "1") this.formEdit.tipo_servicio = "I";
-
-      if (this.checkbox.urbano == "1") this.formEdit.tipo_ubicacion = "U";
-
-      if (this.checkbox.extra_urbano == "1") this.formEdit.tipo_ubicacion = "E";
-
-      if (this.checkbox.foraneo == "1") this.formEdit.tipo_ubicacion = "F";
-
-      if (this.checkbox.normal == "1") this.formEdit.tipo_urgencia = "N";
-
-      if (this.checkbox.emergencia == "1") this.formEdit.tipo_urgencia = "E";
-
-      if (this.formEdit.modalidad_pago)
-        this.formEdit.modalidad_pago = this.formEdit.modalidad_pago.value;
-
-      if (this.formEdit.pagado_en.value)
-        this.formEdit.pagado_en = this.formEdit.pagado_en.value;
-
-      if (this.formEdit.estatus_operativo)
-        this.formEdit.estatus_operativo = this.formEdit.estatus_operativo.value;
-
-      if (this.formEdit.estatus_administra)
-        this.formEdit.estatus_administra =
-          this.formEdit.estatus_administra.value;
-
-      this.formEdit.fecha_emision = this.formEdit.fecha_emision
-        .split("-")
-        .reverse()
-        .join("-");
-      this.formEdit.fecha_envio = this.formEdit.fecha_envio
-        .split("-")
-        .reverse()
-        .join("-");
-      this.formEdit.fecha_aplicacion = this.formEdit.fecha_aplicacion
-        .split("-")
-        .reverse()
-        .join("-");
-
+    async putData() {
+      this.$refs.formData.validate().then((valid) => {
+        if (!valid) {
+          this.$q.notify({
+            message: "Completa los datos requeridos",
+            color: "red",
+          });
+        } else {
+          for (var i = 0; i <= this.clientes_origen.length - 1; i++) {
+            if (
+              this.clientes_origen[i].id == this.formEdit.cod_cliente_org.id
+            ) {
+              if (
+                !this.clientes_origen[i].cod_municipio ||
+                !this.clientes_origen[i].cod_parroquia ||
+                !this.clientes_origen[i].cod_localidad
+              ) {
+                console.log("Encontro un Cliente Origen sin DPL");
+                this.$q.notify({
+                  message: "Debe completar la DPT del Cliente Origen",
+                  color: "red",
+                });
+                console.log(this.clientes_origen[i]);
+                this.clientesForm = true;
+                this.resetFormClientes();
+                this.setDataClientes(this.clientes_origen[i]);
+                return;
+              }
+            }
+          }
+          if (this.formEdit.cod_cliente_dest.cte_decontado == 1) {
+            if (this.formEdit.id_clte_part_dest) {
+              api
+                .get(
+                  `/cparticulares/${this.formEdit.id_clte_part_dest}`,
+                  this.axiosConfig
+                )
+                .then((res) => {
+                  if (
+                    !res.data.cod_municipio ||
+                    !res.data.cod_parroquia ||
+                    !res.data.cod_localidad
+                  ) {
+                    console.log(
+                      "Encontro un Cliente Destino Particular sin DPL"
+                    );
+                    this.$q.notify({
+                      message: "Debe completar la DPT del Cliente Destino",
+                      color: "red",
+                    });
+                    console.log(res);
+                    this.resetFormClientes();
+                    this.clienteParticularBox = true;
+                    this.setDataClientesParticulares(res.data);
+                    return;
+                  }
+                });
+            } else {
+              this.$q.notify({
+                message: "Debe crear el Cliente Particular",
+                color: "red",
+              });
+              this.resetFormClientes();
+              this.disabledRif = false;
+              this.clienteParticularBox = true;
+              return;
+            }
+          } else {
+            for (var i = 0; i <= this.clientes_destino.length - 1; i++) {
+              if (
+                this.clientes_destino[i].id == this.formEdit.cod_cliente_dest.id
+              ) {
+                if (
+                  !this.clientes_destino[i].cod_municipio ||
+                  !this.clientes_destino[i].cod_parroquia ||
+                  !this.clientes_destino[i].cod_localidad
+                ) {
+                  this.$q.notify({
+                    message: "Debe completar la DPT del Cliente Destino",
+                    color: "red",
+                  });
+                  console.log(this.clientes_destino[i]);
+                  this.resetFormClientes();
+                  this.clientesForm = true;
+                  this.setDataClientes(this.clientes_destino[i]);
+                  return;
+                }
+              }
+            }
+          }
+          console.log("no hay problema con el cliente guardado");
+        }
+      });
+    },
+    putDataClientes() {
+      this.formClientes.cod_localidad = this.formClientes.cod_localidad.id;
+      this.formClientes.cod_municipio = this.formClientes.cod_municipio.id;
+      this.formClientes.cod_parroquia = this.formClientes.cod_parroquia.id;
+      this.formClientes.cod_ciudad = this.ciudad.id;
+      this.formClientes.cod_agencia = this.formClientes.cod_agencia.id;
+      this.formClientes.cod_agente = this.formClientes.cod_agente.id;
       this.$refs.methods.putData(
-        `/mmovimientos/${this.formEdit.id}`,
-        this.formEdit,
+        `/clientes/${this.formClientes.id}`,
+        this.formClientes,
         "getData",
         this.axiosConfig
       );
-      this.resetFormEdit();
+      this.axiosConfig.headers.agencia = this.formEdit.cod_agencia.id;
+      this.getData(`/clientes`, "setData", "clientes_origen");
+      this.axiosConfig.headers.agencia = this.formEdit.cod_agencia_dest.id;
+      this.getData(`/clientes`, "setData", "clientes_destino");
+      this.clientesForm = false;
+      this.resetFormClientes();
     },
-    clienteClick() {
-      if (this.formEdit.cod_cliente_dest.cte_decontado == 1) {
-        api.get(`/cparticulares/${this.formEdit.cod_cliente_dest.id_clte_part_dest}`,
+    putDataClientesParticulares() {
+      this.formClientesParticulares.cod_agencia =
+        this.formClientesParticulares.cod_agencia.id;
+      this.formClientesParticulares.cod_localidad =
+        this.formClientesParticulares.cod_localidad.id;
+      this.formClientesParticulares.cod_municipio =
+        this.formClientesParticulares.cod_municipio.id;
+      this.formClientesParticulares.cod_parroquia =
+        this.formClientesParticulares.cod_parroquia.id;
+      this.formClientesParticulares.cod_ciudad = this.ciudad.id;
+      if (this.formClientesParticulares.id) {
+        delete this.formClientesParticulares.cod_cliente;
+        api
+          .put(
+            `/cparticulares/${this.formClientesParticulares.id}`,
+            this.formClientesParticulares,
             this.axiosConfig
           )
           .then((res) => {
-            if (res == []) {
-              console.log("ABRE MODAL DE CLIENTE PARTICULAR para CREAR, TODOS LOS DATOS Y CORTAR FUNCION");
-            } else {
-              console.log("ABRE MODAL DE CLIENTE PARTICULAR para EDITAR, TODOS LOS DATOS Y CORTAR FUNCION");
-            }
+            this.$q.notify({
+              message: "Cliente Particular Actualizado Exitosamente",
+              color: "green",
+            });
+            this.formEdit.id_clte_part_dest = res.data.id;
+            return;
           });
+      } else {
+        delete this.formClientesParticulares.id;
+        this.formClientesParticulares.cod_cliente =
+          this.formEdit.cod_cliente_dest.id;
+        api
+          .post(
+            `/cparticulares`,
+            this.formClientesParticulares,
+            this.axiosConfig
+          )
+          .then((res) => {
+            this.$q.notify({
+              message: "Cliente Particular Creado Exitosamente",
+              color: "green",
+            });
+            this.formEdit.id_clte_part_dest = res.data.id;
+            return;
+          });
+      }
+      this.axiosConfig.headers.agencia = this.formEdit.cod_agencia.id;
+      this.getData(`/clientes`, "setData", "clientes_origen");
+      this.axiosConfig.headers.agencia = this.formEdit.cod_agencia_dest.id;
+      this.getData(`/clientes`, "setData", "clientes_destino");
+      this.clienteParticularBox = false;
+      this.resetFormClientes();
+    },
+
+    clienteClick() {
+      this.resetFormClientes();
+      if (this.formEdit.id_clte_part_dest) {
+        this.axiosConfig.headers.agencia = this.formEdit.cod_agencia_dest.id;
+        api.get(
+            `/cparticulares/${this.formEdit.id_clte_part_dest}`,
+            this.axiosConfig
+          )
+          .then((res) => {
+            this.axiosConfig.headers.agencia = "";
+            console.log("Encontro un Cliente Destino Particular sin DPL");
+            console.log(res);
+            this.clienteParticularBox = true;
+            this.setDataClientesParticulares(res.data);
+            return;
+          });
+      } else {
+        this.formClientesParticulares.cod_agencia =
+          this.formEdit.cod_agencia_dest;
+        this.disabledRif = false;
+        this.clienteParticularBox = true;
       }
     },
     resetFormEdit() {
@@ -2653,6 +3144,7 @@ export default {
         (this.formEdit.estatus_operativo = ""),
         (this.formEdit.estatus_administra = ""),
         (this.formEdit.monto_ref_cte_sin_imp = ""),
+        (this.formEdit.id_clte_part_dest = ""),
         (this.formEdit.porc_comision = ""),
         (this.formEdit.porc_descuento = ""),
         (this.checkbox.guia_factura = "0"),
@@ -2667,7 +3159,6 @@ export default {
         (this.checkbox.normal = "0"),
         (this.checkbox.emergencia = "0"),
         (this.formEdit.id = ""),
-        (this.agencias_origen = []),
         (this.clientes_origen = []),
         (this.clientes_destino = []),
         (this.zonas_destino = []),
@@ -2678,14 +3169,338 @@ export default {
         return "Fecha Invalida";
       }
     },
+
+    createDataClientes() {
+      this.formClientes.cod_localidad = this.formClientes.cod_localidad.id;
+      this.formClientes.cod_municipio = this.formClientes.cod_municipio.id;
+      this.formClientes.cod_parroquia = this.formClientes.cod_parroquia.id;
+      this.formClientes.cod_ciudad = this.ciudad.id;
+      this.$refs.methods.createData(
+        `/clientes`,
+        this.formClientes,
+        "getData",
+        this.axiosConfig
+      );
+      this.formClientes = false;
+      this.resetFormClientes();
+    },
+    setDataClientes(res) {
+      this.formClientes.id = res.id;
+      this.formClientes.descripcion = res.descripcion;
+      this.formClientes.nb_cliente = res.nb_cliente;
+      this.formClientes.rif_cedula = res.rif_cedula;
+      this.formClientes.nit = res.nit;
+      this.formClientes.dir_correo = res.dir_correo;
+      this.formClientes.dir_fiscal = res.dir_fiscal;
+      this.formClientes.tlf_cliente = res.tlf_cliente;
+      this.formClientes.fax = res.fax;
+      this.formClientes.razon_social = res.razon_social;
+      this.formClientes.tipo_persona = res.tipo_persona;
+      this.formClientes.modalidad_pago = res.modalidad_pago;
+      this.formClientes.persona_contacto = res.persona_contacto;
+      this.formClientes.cte_decontado = res.cte_decontado;
+      this.formClientes.flag_activo = res.flag_activo;
+      this.formClientes.cod_agente = res.cod_agente;
+      var cod_municipio = res.cod_municipio;
+      var cod_parroquia = res.cod_parroquia;
+      var cod_localidad = res.cod_localidad;
+      var cod_ciudad = res.cod_ciudad;
+      var cod_agencia = res.cod_agencia;
+
+      if (cod_agencia) {
+        for (var i = 0; i <= this.agencias.length - 1; i++) {
+          if (this.agencias[i].id == cod_agencia) {
+            this.formClientes.cod_agencia = this.agencias[i];
+            break;
+          }
+        }
+      }
+
+      if (cod_municipio) {
+        api
+          .get(`/municipios/${cod_municipio}`, this.axiosConfig)
+          .then((res) => {
+            this.formClientes.cod_municipio = res.data;
+            var cod_estado = res.data.cod_estado;
+            this.axiosConfig.headers.estado = cod_estado;
+            this.axiosConfig.headers.municipio = cod_municipio;
+
+            api.get(`/municipios`, this.axiosConfig).then((res) => {
+              this.municipios = res.data;
+            });
+
+            api.get(`/parroquias`, this.axiosConfig).then((res) => {
+              this.parroquias = res.data;
+              if (cod_parroquia) {
+                for (var i = 0; i <= this.parroquias.length - 1; i++) {
+                  if (this.parroquias[i].id == cod_parroquia) {
+                    this.formClientes.cod_parroquia = this.parroquias[i];
+                    break;
+                  }
+                }
+              }
+            });
+
+            api.get(`/localidades`, this.axiosConfig).then((res) => {
+              this.localidades = res.data;
+              if (cod_localidad) {
+                for (var i = 0; i <= this.localidades.length - 1; i++) {
+                  if (this.localidades[i].id == cod_localidad) {
+                    this.formClientes.cod_localidad = this.localidades[i];
+                    break;
+                  }
+                }
+              }
+            });
+
+            api.get(`/ciudades`, this.axiosConfig).then((res) => {
+              this.ciudades = res.data;
+              for (var i = 0; i <= this.ciudades.length - 1; i++) {
+                if (this.ciudades[i].id == cod_ciudad) {
+                  this.ciudad = this.ciudades[i];
+                  break;
+                }
+              }
+            });
+
+            api.get(`/estados`, this.axiosConfig).then((res) => {
+              this.estados = res.data;
+              this.pais = res.data[0].paises.desc_pais;
+              for (var i = 0; i <= this.estados.length - 1; i++) {
+                if (this.estados[i].id == cod_estado) {
+                  this.estado = this.estados[i];
+                  break;
+                }
+              }
+            });
+            this.axiosConfig.headers.estado = "";
+            this.axiosConfig.headers.municipio = "";
+          });
+      } else {
+        if (cod_ciudad) {
+          api.get(`/ciudades/${cod_ciudad}`, this.axiosConfig).then((res) => {
+            this.ciudad = res.data;
+            var cod_estado = res.data.cod_estado;
+            this.axiosConfig.headers.estado = cod_estado;
+
+            api.get(`/ciudades`, this.axiosConfig).then((res) => {
+              this.ciudades = res.data;
+            });
+
+            api.get(`/estados`, this.axiosConfig).then((res) => {
+              this.estados = res.data;
+              this.pais = res.data[0].paises.desc_pais;
+              for (var i = 0; i <= this.estados.length - 1; i++) {
+                if (this.estados[i].id == cod_estado) {
+                  this.estado = this.estados[i];
+                  break;
+                }
+              }
+            });
+
+            api.get(`/municipios`, this.axiosConfig).then((res) => {
+              this.municipios = res.data;
+            });
+
+            api.get(`/localidades`, this.axiosConfig).then((res) => {
+              this.localidades = res.data;
+            });
+            this.axiosConfig.headers.estado = "";
+          });
+        }
+      }
+    },
+    setDataClientesParticulares(res) {
+      this.formClientesParticulares.id = res.id;
+      this.disabledInputs = false;
+      this.formClientesParticulares.direccion = res.direccion;
+      this.formClientesParticulares.nb_cliente = res.nb_cliente;
+      this.formClientesParticulares.rif_ci = res.rif_ci;
+      this.formClientesParticulares.telefonos = res.telefonos;
+      this.formClientesParticulares.fax = res.fax;
+      this.formClientesParticulares.cod_ciudad = res.cod_ciudad;
+      var cod_municipio = res.cod_municipio;
+      var cod_parroquia = res.cod_parroquia;
+      var cod_localidad = res.cod_localidad;
+      var cod_ciudad = res.cod_ciudad;
+      this.formClientesParticulares.cod_agencia =
+        this.formEdit.cod_agencia_dest;
+
+      if (cod_municipio) {
+        api
+          .get(`/municipios/${cod_municipio}`, this.axiosConfig)
+          .then((res) => {
+            this.formClientesParticulares.cod_municipio = res.data;
+            var cod_estado = res.data.cod_estado;
+            this.axiosConfig.headers.estado = cod_estado;
+            this.axiosConfig.headers.municipio = cod_municipio;
+
+            api.get(`/municipios`, this.axiosConfig).then((res) => {
+              this.municipios = res.data;
+            });
+
+            api.get(`/parroquias`, this.axiosConfig).then((res) => {
+              this.parroquias = res.data;
+              if (cod_parroquia) {
+                for (var i = 0; i <= this.parroquias.length - 1; i++) {
+                  if (this.parroquias[i].id == cod_parroquia) {
+                    this.formClientesParticulares.cod_parroquia =
+                      this.parroquias[i];
+                    break;
+                  }
+                }
+              }
+            });
+
+            api.get(`/localidades`, this.axiosConfig).then((res) => {
+              this.localidades = res.data;
+              if (cod_localidad) {
+                for (var i = 0; i <= this.localidades.length - 1; i++) {
+                  if (this.localidades[i].id == cod_localidad) {
+                    this.formClientesParticulares.cod_localidad =
+                      this.localidades[i];
+                    break;
+                  }
+                }
+              }
+            });
+
+            api.get(`/ciudades`, this.axiosConfig).then((res) => {
+              this.ciudades = res.data;
+              for (var i = 0; i <= this.ciudades.length - 1; i++) {
+                if (this.ciudades[i].id == cod_ciudad) {
+                  this.ciudad = this.ciudades[i];
+                  break;
+                }
+              }
+            });
+
+            api.get(`/estados`, this.axiosConfig).then((res) => {
+              this.estados = res.data;
+              this.pais = res.data[0].paises.desc_pais;
+              for (var i = 0; i <= this.estados.length - 1; i++) {
+                if (this.estados[i].id == cod_estado) {
+                  this.estado = this.estados[i];
+                  this.axiosConfig.headers.pais = this.estados[i].cod_pais;
+                  break;
+                }
+              }
+            });
+            this.axiosConfig.headers.estado = "";
+            this.axiosConfig.headers.municipio = "";
+          });
+      } else {
+        if (cod_ciudad) {
+          api.get(`/ciudades/${cod_ciudad}`, this.axiosConfig).then((res) => {
+            var cod_estado = res.data.cod_estado;
+            this.axiosConfig.headers.estado = cod_estado;
+
+            api.get(`/ciudades`, this.axiosConfig).then((res) => {
+              this.ciudades = res.data;
+              for (var i = 0; i <= this.ciudades.length - 1; i++) {
+                if (this.ciudades[i].id == cod_ciudad) {
+                  this.ciudad = this.ciudades[i];
+                  break;
+                }
+              }
+            });
+
+            api.get(`/estados`, this.axiosConfig).then((res) => {
+              this.estados = res.data;
+              this.pais = res.data[0].paises.desc_pais;
+              for (var i = 0; i <= this.estados.length - 1; i++) {
+                if (this.estados[i].id == cod_estado) {
+                  this.estado = this.estados[i].desc_estado;
+                  this.axiosConfig.headers.pais = this.estados[i].cod_pais;
+                  break;
+                }
+              }
+            });
+
+            api.get(`/municipios`, this.axiosConfig).then((res) => {
+              this.municipios = res.data;
+            });
+
+            api.get(`/localidades`, this.axiosConfig).then((res) => {
+              this.localidades = res.data;
+            });
+            this.axiosConfig.headers.estado = "";
+          });
+        }
+      }
+    },
+
+    getDataLocalidades(sub_location, update) {
+      this.$refs.methods.getData(
+        `/${sub_location}`,
+        `${update}`,
+        `${sub_location}`,
+        this.axiosConfig
+      );
+    },
+    setDataPaises(res, dataRes) {
+      this[dataRes] = res;
+    },
+    setDataCiudades(res, dataRes) {
+      this[dataRes] = res;
+      this.ciudad = "";
+      this.formClientes.cod_localidad = "";
+      this.formClientesParticulares.cod_localidad = "";
+      this.axiosConfig.headers.estado = "";
+    },
+    setDataEstados(res, dataRes) {
+      this[dataRes] = res;
+      this.estado = "";
+      this.ciudad = "";
+      this.localidades = [];
+      this.municipios = [];
+      this.parroquias = [];
+      this.ciudades = [];
+      this.formClientes.cod_localidad = "";
+      this.formClientes.cod_municipio = "";
+      this.formClientes.cod_parroquia = "";
+      this.formClientesParticulares.cod_localidad = "";
+      this.formClientesParticulares.cod_municipio = "";
+      this.formClientesParticulares.cod_parroquia = "";
+      this.axiosConfig.headers.pais = "";
+    },
+    setDataMunicipios(res, dataRes) {
+      this[dataRes] = res;
+      this.formClientes.cod_parroquia = "";
+      this.formClientes.cod_municipio = "";
+      this.formClientesParticulares.cod_parroquia = "";
+      this.formClientesParticulares.cod_municipio = "";
+      this.parroquias = [];
+      this.axiosConfig.headers.estado = "";
+    },
+    setDataParroquias(res, dataRes) {
+      this[dataRes] = res;
+      this.formClientes.cod_parroquia = "";
+      this.formClientesParticulares.cod_parroquia = "";
+      this.axiosConfig.headers.municipio = "";
+    },
+    setDataLocalidades(res, dataRes) {
+      this[dataRes] = res;
+      this.axiosConfig.headers.estado = "";
+    },
   },
 };
 </script>
 
 <style>
+@media screen and (max-width: 1024px) {
+  .inputServicio {
+    padding-top: 5px !important;
+  }
+}
 @media screen and (min-width: 1024px) {
   .marginCard {
     padding-top: 11px;
+  }
+}
+@media screen and (min-width: 1024px) {
+  .inputsCard {
+    padding-top: 15px;
   }
 }
 @media screen and (min-width: 1024px) {
@@ -2741,6 +3556,23 @@ export default {
     width: 96%;
   }
 }
+@media screen and (max-width: 1024px) {
+  .boxStyle {
+    padding-bottom: 5px !important;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+    padding-top: 0px !important;
+    margin-bottom: 5px !important;
+  }
+}
+@media screen and (max-width: 1024px) {
+  .lastboxStyle {
+    padding-bottom: 10px !important;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+    padding-top: 0px !important;
+  }
+}
 @media screen and (min-width: 600px) {
   .selectmovil {
     margin-right: 20px;
@@ -2769,6 +3601,11 @@ export default {
 @media screen and (max-width: 1024px) {
   .inputMovil {
     margin-top: 25px;
+  }
+}
+@media screen and (max-width: 1024px) {
+  .pageStyle {
+    margin-top: 20px;
   }
 }
 </style>

@@ -7,26 +7,41 @@ import { ref, onMounted } from "vue";
 import WebViewer from "@pdftron/webviewer";
 export default {
   name: "WebViewer",
-  props: { initialDoc: { type: String } },
-  setup(props) {
+  data: function() {
+      return {
+      }
+  },
+  setup() {
     const viewer = ref(null);
-    onMounted(() => {
-      const path = `${process.env.publicPath}/webViewer`;
-      WebViewer({ path, initialDoc: props.initialDoc }, viewer.value).then(
-        (instance) => {
-          instance.UI.disableElements(["ribbons"]);
-          instance.UI.disableElements(["toolsHeader"]);
-          instance.UI.setLanguage("es");
-          const { documentViewer } = instance.Core;
-          documentViewer.addEventListener("documentLoaded", () => {
-            // perform document operations
-          });
-        }
-      );
-    });
     return {
       viewer,
     };
+  },
+  methods: {
+    showpdf(pdf) {
+      console.log('asdasd')
+      const path = `${process.env.publicPath}/webViewer`;
+      WebViewer({ path }, this.viewer).then((instance) => {
+        instance.UI.disableElements(["ribbons"]);
+        instance.UI.disableElements(["toolsHeader"]);
+        instance.UI.setLanguage("es");
+        let base64 = pdf
+        const binaryString = window.atob(base64);
+        const len = binaryString.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; ++i) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        let base64String = new Blob([bytes], { type: "application/pdf" });
+        instance.UI.loadDocument(base64String, {
+          filename: "myfile.pdf",
+        });
+        const { documentViewer } = instance.Core;
+        documentViewer.addEventListener("documentLoaded", () => {
+          // perform document operations
+        });
+      });
+    },
   },
 };
 </script>

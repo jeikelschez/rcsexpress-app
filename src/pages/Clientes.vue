@@ -1919,6 +1919,7 @@ export default {
       this.formEditClientes.cod_municipio = "";
       this.formClientes.cod_parroquia = "";
       this.formClientes.cod_municipio = "";
+      this.parroquias = [];
     },
     setDataParroquias(res, dataRes) {
       this[dataRes] = res;

@@ -606,6 +606,7 @@ export default {
       },
       datos: [],
       count: 1,
+      currentPage: 1,
       agencias: [],
       selected: [],
       refAgencia: "",
@@ -626,8 +627,9 @@ export default {
   setup(data) {
     const $q = useQuasar();
     const loading = ref(false);
+    const order = ref(false);
     const pagination = ref({
-      descending: false,
+      descending: "",
       page: 1,
       rowsPerPage: 10,
       rowsNumber: "",
@@ -669,7 +671,10 @@ export default {
         this.pagination.rowsNumber = res.total;
         this.loading = false;
       } else {
-        const { page, rowsPerPage, sortBy, descending } = res.pagination;
+        let { page, rowsPerPage, sortBy, descending } = res.pagination;
+        if (this.currentPage !== page) {
+          descending = "";
+        }
         const filter = res.filter;
         const startRow = (page - 1) * rowsPerPage;
         const fetchCount =
@@ -677,15 +682,18 @@ export default {
 
         this.axiosConfig.headers.page = page;
         this.axiosConfig.headers.limit = fetchCount;
-        this.axiosConfig.headers.order_by = sortBy;
+        if (sortBy) this.axiosConfig.headers.order_by = sortBy;
 
-        if (sortBy) {
-          this.pagination.descending = !this.pagination.descending
-          this.pagination.sortBy = sortBy;
-          if (this.pagination.descending) {
-            this.axiosConfig.headers.order_direction = 'DESC'
-          } else this.axiosConfig.headers.order_direction = 'ASC'
+        if (descending !== "") {
+          this.pagination.descending = !this.pagination.descending;
+          if (this.pagination.descending == true) {
+            this.axiosConfig.headers.order_direction = "DESC";
+          } else this.axiosConfig.headers.order_direction = "ASC";
         }
+
+        if (sortBy) this.pagination.sortBy = sortBy;
+        this.pagination.page = page;
+        this.pagination.rowsPerPage = rowsPerPage;
 
         this.getData(`/mmovimientos`, "setDataGuias", "datos");
       }
@@ -693,8 +701,9 @@ export default {
     },
     setDataGuias(res) {
       this.datos = res.data;
-      this.pagination.rowsNumber = res.total;
       this.pagination.page = res.currentPage;
+      this.currentPage = res.currentPage;
+      this.pagination.rowsNumber = res.total;
       this.pagination.rowsPerPage = res.limit;
       this.loading = false;
     },
