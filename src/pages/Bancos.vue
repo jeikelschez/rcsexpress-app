@@ -317,10 +317,11 @@
               <q-table
                 :rows="datos"
                 :loading="loading"
+                binary-state-sort
                 row-key="id"
                 :columns="columns"
                 :separator="separator"
-                class="my-sticky-column-table"
+                
                 :filter="filter"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -461,7 +462,7 @@
       </q-card>
     </q-dialog>
     <methods ref="methods"
-    @get-Data="getData('/bancos','setData','datos')"
+    @get-Data-Bancos="getDataBancos('/bancos','setData','datos')"
     @reset-Loading="resetLoading"
     @set-data="setData" @set-Data-Edit="setData">
     </methods>
@@ -497,6 +498,7 @@ export default {
           field: "nb_banco",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "tlf_banco",
@@ -504,6 +506,7 @@ export default {
           field: "tlf_banco",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "fax_banco",
@@ -511,6 +514,7 @@ export default {
           field: "fax_banco",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "cod_postal",
@@ -518,6 +522,7 @@ export default {
           field: "cod_postal",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "email_banco",
@@ -525,6 +530,8 @@ export default {
           field: "email_banco",
           align: "left",
           type: "string",
+          sortable: true,
+          required: true,
         },
         {
           name: "action",
@@ -610,7 +617,7 @@ export default {
     };
   },
   mounted() {
-    this.getData('/bancos','setData','datos')
+    this.getDataBancos('/bancos','setData','datos')
     this.$refs.desactiveCrud.desactivarCrud('c_bancos', 'r_bancos', 'u_bancos', 'd_bancos', 'desactivarCrud')
   },
   methods: {
@@ -654,6 +661,9 @@ export default {
     },
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+    },
+    getDataBancos(url, call, dataRes) {
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
       this.loading = true;
     },
     setData(res, dataRes) {
@@ -661,16 +671,16 @@ export default {
       this.loading = false
     },    
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/bancos/${idpost}`, 'getData', this.axiosConfig);
+      this.$refs.methods.deleteData(`/bancos/${idpost}`, 'getDataBancos', this.axiosConfig);
       this.loading = true;
     },
     createData() {
-      this.$refs.methods.createData('/bancos', this.form, 'getData', this.axiosConfig);
+      this.$refs.methods.createData('/bancos', this.form, 'getDataBancos', this.axiosConfig);
       this.resetForm();
       this.loading = true;
     },
     putData() {
-      this.$refs.methods.putData(`/bancos/${this.formEdit.id}`, this.formEdit, 'getData', this.axiosConfig);
+      this.$refs.methods.putData(`/bancos/${this.formEdit.id}`, this.formEdit, 'getDataBancos', this.axiosConfig);
       this.edit = false;
       this.loading = true;
     },

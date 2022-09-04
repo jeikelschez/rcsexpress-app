@@ -309,11 +309,12 @@
             <div bordered flat class="row">
               <q-table
                 :rows="datos"
+                binary-state-sort
                 row-key="id"
                 :loading="loading"
                 :columns="columns"
                 :separator="separator"
-                class="my-sticky-column-table"
+                
                 :filter="filter"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -454,7 +455,7 @@
       </q-card>
     </q-dialog>
     <methods ref="methods"
-    @get-Data="getData('/empleados','setData','datos')"
+    @get-Data-Empleados="getDataEmpleados('/empleados','setData','datos')"
     @set-data="setData" @set-Data-Edit="setData"
     @reset-Loading="resetLoading">
     </methods>
@@ -491,6 +492,7 @@ export default {
           field: "nombre",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "sueldo",
@@ -498,6 +500,7 @@ export default {
           field: "sueldo",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "porcentaje_retencion",
@@ -505,6 +508,7 @@ export default {
           field: "porcentaje_retencion",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "action",
@@ -567,7 +571,7 @@ export default {
     };
   },
   mounted() {
-    this.getData('/empleados','setData','datos')
+    this.getDataEmpleados('/empleados','setData','datos')
     this.$refs.desactivateCrud.desactivarCrud('c_empleados', 'r_empleados', 'u_empleados', 'd_empleados', 'desactivarCrud')
   },
   methods: {
@@ -659,6 +663,9 @@ export default {
 
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+    },
+    getDataEmpleados(url, call, dataRes) {
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
       this.loading = true;
     },
     setData(res, dataRes) {
@@ -674,16 +681,16 @@ export default {
       this.formEdit.sueldo = res.sueldo
     },   
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/empleados/${idpost}`, 'getData', this.axiosConfig);
+      this.$refs.methods.deleteData(`/empleados/${idpost}`, 'getDataEmpleados', this.axiosConfig);
       this.loading = true;
     },
     createData() {
-      this.$refs.methods.createData('/empleados', this.form, 'getData', this.axiosConfig);
+      this.$refs.methods.createData('/empleados', this.form, 'getDataEmpleados', this.axiosConfig);
       this.resetForm();
       this.loading = true;
     },
     putData() {
-      this.$refs.methods.putData(`/empleados/${this.formEdit.id}`, this.formEdit, 'getData', this.axiosConfig);
+      this.$refs.methods.putData(`/empleados/${this.formEdit.id}`, this.formEdit, 'getDataEmpleados', this.axiosConfig);
       this.edit = false;
       this.resetFormEdit();
       this.loading = true;

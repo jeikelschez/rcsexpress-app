@@ -82,7 +82,7 @@
                     v-model="form.f_val"
                     class="pcform"
                     lazy-rules
-                    mask="##-##-####" 
+                    mask="##/##/####" 
                     :rules="[dateValidation]"
                     >
                    <template v-slot:append>
@@ -103,7 +103,7 @@
                     v-model="form.f_anul"
                     class="pcform"
                     lazy-rules
-                    mask="##-##-####" 
+                    mask="##/##/####" 
                     :rules="[dateValidation]"
                     >
                    <template v-slot:append>
@@ -279,7 +279,7 @@
                     v-model="formEdit.f_val"
                     class="pcform"
                     lazy-rules
-                    mask="##-##-####" 
+                    mask="##/##/####" 
                     :rules="[dateValidation]"
                     >
                    <template v-slot:append>
@@ -300,7 +300,7 @@
                     v-model="formEdit.f_anul"
                     class="pcform"
                     lazy-rules
-                    mask="##-##-####" 
+                    mask="##/##/####" 
                     :rules="[dateValidation]"
                     >
                    <template v-slot:append>
@@ -440,10 +440,11 @@
               <q-table
                 :rows="datos"
                 row-key="id"
+                binary-state-sort
                 :columns="columns"
                 :separator="separator"
                 :loading="loading"
-                class="my-sticky-column-table"
+                
                 :filter="filter"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -584,7 +585,7 @@
       </q-card>
     </q-dialog>
     <methods ref="methods"
-    @get-Data="getData('/fpos','setData','datos')"
+    @get-Data-Fpos="getDataFpos('/fpos','setData','datos')"
     @set-data="setData"
     @reset-Loading="resetLoading"
     @set-Data-Edit="setDataEdit">
@@ -627,6 +628,7 @@ export default {
           field: "cod_fpo",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "desc_tipo",
@@ -634,6 +636,7 @@ export default {
           field: "desc_tipo",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "valor",
@@ -641,6 +644,7 @@ export default {
           field: "valor",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "f_anul",
@@ -648,6 +652,7 @@ export default {
           field: "f_anul",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "peso_inicio",
@@ -655,6 +660,7 @@ export default {
           field: "peso_inicio",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "peso_fin",
@@ -662,6 +668,7 @@ export default {
           field: "peso_fin",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "action",
@@ -726,7 +733,7 @@ export default {
     };
   },
   mounted() {
-    this.getData('/fpos','setData','datos')
+    this.getDataFpos('/fpos','setData','datos')
     this.$refs.desactivateCrud.desactivarCrud('c_concepto_fpo', 'r_concepto_fpo', 'u_concepto_fpo', 'd_concepto_fpo', 'desactivarCrud')
   },
   methods: {
@@ -850,6 +857,9 @@ export default {
     // Metodos CRUD
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+    },
+    getDataFpos(url, call, dataRes) {
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
       this.loading = true;
     },
     setData(res, dataRes) {
@@ -862,27 +872,27 @@ export default {
       this.formEdit.cod_fpo = res.cod_fpo
       this.formEdit.desc_tipo = res.desc_tipo
       this.formEdit.valor = res.valor
-      this.formEdit.f_val = res.f_val.split("-").reverse().join("-");
-      this.formEdit.f_anul = res.f_anul.split("-").reverse().join("-");
+      this.formEdit.f_val = res.f_val.split("-").reverse().join("/");
+      this.formEdit.f_anul = res.f_anul.split("-").reverse().join("/");
       this.formEdit.peso_inicio = res.peso_inicio
       this.formEdit.peso_fin = res.peso_fin
       this.formEdit.valor = res.valor
     },   
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/fpos/${idpost}`, 'getData', this.axiosConfig);
+      this.$refs.methods.deleteData(`/fpos/${idpost}`, 'getDataFpos', this.axiosConfig);
       this.loading = true;
     },
     createData() {
-      this.form.f_val = this.form.f_val.split("-").reverse().join("-");
-      this.form.f_anul = this.form.f_anul.split("-").reverse().join("-");
-      this.$refs.methods.createData('/fpos', this.form, 'getData', this.axiosConfig);
+      this.form.f_val = this.form.f_val.split("/").reverse().join("-");
+      this.form.f_anul = this.form.f_anul.split("/").reverse().join("-");
+      this.$refs.methods.createData('/fpos', this.form, 'getDataFpos', this.axiosConfig);
       this.resetForm();
       this.loading = true;
     },
     putData() {
-      this.formEdit.f_val = this.formEdit.f_val.split("-").reverse().join("-");
-      this.formEdit.f_anul = this.formEdit.f_anul.split("-").reverse().join("-");
-      this.$refs.methods.putData(`/fpos/${this.formEdit.id}`, this.formEdit, 'getData', this.axiosConfig);
+      this.formEdit.f_val = this.formEdit.f_val.split("/").reverse().join("-");
+      this.formEdit.f_anul = this.formEdit.f_anul.split("/").reverse().join("-");
+      this.$refs.methods.putData(`/fpos/${this.formEdit.id}`, this.formEdit, 'getDataFpos', this.axiosConfig);
       this.edit = false;
       this.resetFormEdit();
       this.loading = true;

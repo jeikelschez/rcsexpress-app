@@ -22,7 +22,13 @@
                   option-label="codigo"
                   option-value="codigo"
                   lazy-rules
-                >
+                ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
                   <template v-slot:prepend>
                     <q-icon name="settings" />
                   </template>
@@ -95,7 +101,13 @@
                 )
                 this.permisos = []
               "
-            >
+            ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
               <template v-slot:prepend>
                 <q-icon name="search" />
               </template>
@@ -125,13 +137,19 @@
               label="Escoge un Rol"
               @update:model-value="
                 this.axiosConfig.headers.rol = this.selectedRol.id;
-                getData(
+                getDataPermisos(
                   `/permisos`,
                   'setDataPermisos',
                   'permisos'
                 )
               "
-            >
+            ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
               <template v-slot:prepend>
                 <q-icon name="search" />
               </template>
@@ -160,8 +178,9 @@
                 row-key="id"
                 :columns="columnsPermisos"
                 :loading="loading"
+                binary-state-sort
                 :separator="separator"
-                class="my-sticky-column-table"
+                
                 :filter="filterPermisos"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -266,7 +285,7 @@
     ></desactivate-crud>
     <methods ref="methods"
       @get-Data-Permisos="this.axiosConfig.headers.rol = this.selectedRol.id;
-      getData(`/permisos`, 'setDataPermisos','permisos')"
+      getDataPermisos(`/permisos`, 'setDataPermisos','permisos')"
       @set-data-Roles="setDataRoles"
       @reset-Loading="resetLoading"
       @set-data-Permisos="setDataPermisos"
@@ -301,6 +320,7 @@ export default {
           field: "codigo",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "action",
@@ -450,26 +470,26 @@ export default {
     this.$refs.desactiveCrud.desactivarCrud('c_permisos', 'r_permisos', 'u_permisos', 'd_permisos', 'desactivarCrud')
   },
   methods: {
-    filterArray (val, update, abort, pagina, array, element) {
-        if (val === '') {
+    filterArray(val, update, abort, pagina, array, element) {
+      if (val === "") {
         update(() => {
-          this[pagina] = this[array]
-        })
-        return
-    }
-    update(() => {
+          this[pagina] = this[array];
+        });
+        return;
+      }
+      update(() => {
         const needle = val.toUpperCase();
-        var notEqual = JSON.parse(JSON.stringify(this[array]));
-        for (var i = 0, len = this[array].length; i < len; i++) {
-          if (!(this[array][i][element].indexOf(needle) > -1)) {
-            delete notEqual[i];
+        var notEqual = [];
+        for (var i = 0; i <= this[array].length - 1; i++) {
+          if (this[array][i][element].indexOf(needle) > -1) {
+            notEqual.push(this[array][i]);
           }
           if (i == this[array].length - 1) {
-            this[pagina] = notEqual
-            break
-          };
+            this[pagina] = notEqual;
+            break;
+          }
         }
-      })
+      });
     },
     resetLoading() {
       this.loading = false;
@@ -505,6 +525,10 @@ export default {
 
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+    },
+    getDataPermisos(url, call, dataRes) {
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.loading = true
     },
     setData(res, dataRes) {
       this[dataRes] = res;
@@ -599,16 +623,20 @@ export default {
       this.loading = true;
     },
     eliminarDuplicados() {
-      this.objetosNoDuplicados = JSON.parse(JSON.stringify(this.objetos));
-      for (var e = 0, len = this.permisos.length; e < len; e++) {
-        for (var i = 0, len = this.objetos.length; i < len; i++) {
-          if (this.objetos[i].codigo === this.permisos[e].codigo) {
-            delete this.objetosNoDuplicados[i];
+      this.objetosNoDuplicados = []
+      console.log(this.permisos)
+      console.log(this.objetos)
+      for (var e = 0; e <= this.objetos.length - 1; e++) {
+        var find = 0
+        for (var i = 0; i <= this.permisos.length - 1; i++) {
+          if (this.permisos[i].codigo == this.objetos[e].codigo) {
             this.items = this.items + 1
+            find = 1
           }
-          if (i == this.objetos.length - 1) break;
+          if (i == this.permisos.length - 1 && find == 0) {
+            this.objetosNoDuplicados.push(this.objetos[e]);
+          }
         }
-        if (e == this.permisos.length - 1) break;
       };
       this.verificatePermisos();
     },

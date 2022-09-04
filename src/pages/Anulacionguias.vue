@@ -362,17 +362,17 @@
         <div bordered flat class="my-card row">
           <q-table
             :rows="datos"
+            binary-state-sort
             row-key="id"
             :loading="loading"
             :columns="columns"
             :separator="separator"
-            class="my-sticky-column-table"
+            
             :filter="filter"
             style="width: 100%"
             v-model:pagination="pagination"
             :rows-per-page-options="[5, 10, 15, 20, 50]"
             @request="onRequest"
-            binary-state-sort
             :grid="$q.screen.xs"
           >
             <template v-slot:loading>
@@ -517,6 +517,7 @@ export default {
           field: "nro_control",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "nro_documento",
@@ -524,6 +525,7 @@ export default {
           field: "nro_documento",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "cant_asignada",
@@ -531,6 +533,7 @@ export default {
           field: "cant_asignada",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "fecha_emision",
@@ -538,6 +541,7 @@ export default {
           field: "fecha_emision",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "fecha_asignacion",
@@ -545,6 +549,7 @@ export default {
           field: "fecha_asignacion",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "monto_total",
@@ -552,6 +557,7 @@ export default {
           field: "monto_total",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "cant_disponible",
@@ -559,6 +565,7 @@ export default {
           field: "cant_disponible",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "estatus_administra",
@@ -566,6 +573,7 @@ export default {
           field: "estatus_administra",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "tipo_factura",
@@ -573,11 +581,13 @@ export default {
           field: "tipo_factura",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "action",
           label: "Acciones",
           align: "center",
+          sortable: true,
           required: true,
         },
       ],
@@ -606,6 +616,7 @@ export default {
       },
       datos: [],
       count: 1,
+      currentPage: 1,
       agencias: [],
       selected: [],
       refAgencia: "",
@@ -626,8 +637,9 @@ export default {
   setup(data) {
     const $q = useQuasar();
     const loading = ref(false);
+    const order = ref(false);
     const pagination = ref({
-      descending: false,
+      descending: "",
       page: 1,
       rowsPerPage: 10,
       rowsNumber: "",
@@ -669,7 +681,10 @@ export default {
         this.pagination.rowsNumber = res.total;
         this.loading = false;
       } else {
-        const { page, rowsPerPage, sortBy, descending } = res.pagination;
+        let { page, rowsPerPage, sortBy, descending } = res.pagination;
+        if (this.currentPage !== page) {
+          descending = "";
+        }
         const filter = res.filter;
         const startRow = (page - 1) * rowsPerPage;
         const fetchCount =
@@ -677,15 +692,18 @@ export default {
 
         this.axiosConfig.headers.page = page;
         this.axiosConfig.headers.limit = fetchCount;
-        this.axiosConfig.headers.order_by = sortBy;
+        if (sortBy) this.axiosConfig.headers.order_by = sortBy;
 
-        if (sortBy) {
-          this.pagination.descending = !this.pagination.descending
-          this.pagination.sortBy = sortBy;
-          if (this.pagination.descending) {
-            this.axiosConfig.headers.order_direction = 'DESC'
-          } else this.axiosConfig.headers.order_direction = 'ASC'
+        if (descending !== "") {
+          this.pagination.descending = !this.pagination.descending;
+          if (this.pagination.descending == true) {
+            this.axiosConfig.headers.order_direction = "DESC";
+          } else this.axiosConfig.headers.order_direction = "ASC";
         }
+
+        if (sortBy) this.pagination.sortBy = sortBy;
+        this.pagination.page = page;
+        this.pagination.rowsPerPage = rowsPerPage;
 
         this.getData(`/mmovimientos`, "setDataGuias", "datos");
       }
@@ -693,8 +711,9 @@ export default {
     },
     setDataGuias(res) {
       this.datos = res.data;
-      this.pagination.rowsNumber = res.total;
       this.pagination.page = res.currentPage;
+      this.currentPage = res.currentPage;
+      this.pagination.rowsNumber = res.total;
       this.pagination.rowsPerPage = res.limit;
       this.loading = false;
     },

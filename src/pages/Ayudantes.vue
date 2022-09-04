@@ -245,11 +245,12 @@
             <div bordered flat class="row">
               <q-table
                 :rows="datos"
+                binary-state-sort
                 row-key="id"
                 :loading="loading"
                 :columns="columns"
                 :separator="separator"
-                class="my-sticky-column-table"
+                
                 :filter="filter"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -390,7 +391,7 @@
       </q-card>
     </q-dialog>
     <methods ref="methods"
-    @get-Data="getData('/ayudantes','setData','datos')"
+    @get-Data-Ayudantes="getDataAyudantes('/ayudantes','setData','datos')"
     @set-data="setData"
     @reset-Loading="resetLoading"
     @set-data-Edit="setDataEdit">
@@ -427,6 +428,7 @@ export default {
           field: "nb_ayudante",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "activo_desc",
@@ -434,6 +436,7 @@ export default {
           field: "activo_desc",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "dir_ayudante",
@@ -441,6 +444,7 @@ export default {
           field: "dir_ayudante",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "tlf_ayudante",
@@ -448,6 +452,7 @@ export default {
           field: "tlf_ayudante",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "action",
@@ -533,7 +538,7 @@ export default {
     };
   },
   mounted() {
-    this.getData('/ayudantes','setData','datos')
+    this.getDataAyudantes('/ayudantes','setData','datos')
     this.$refs.desactiveCrud.desactivarCrud('c_ayudantes', 'r_ayudantes', 'u_ayudantes', 'd_ayudantes', 'desactivarCrud')
   },
   methods: {
@@ -613,6 +618,9 @@ export default {
     },
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+    },
+    getDataAyudantes(url, call, dataRes) {
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
       this.loading = true;
     },
     setData(res, dataRes) {
@@ -628,18 +636,18 @@ export default {
       this.loading = false
     },   
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/ayudantes/${idpost}`, 'getData', this.axiosConfig);
+      this.$refs.methods.deleteData(`/ayudantes/${idpost}`, 'getDataAyudantes', this.axiosConfig);
       this.loading = true;
     },
     createData() {
       this.form.flag_activo = this.form.flag_activo.value
-      this.$refs.methods.createData('/ayudantes', this.form, 'getData', this.axiosConfig);
+      this.$refs.methods.createData('/ayudantes', this.form, 'getDataAyudantes', this.axiosConfig);
       this.resetForm();
       this.loading = true;
     },
     putData() {
       this.formEdit.flag_activo = this.formEdit.flag_activo.value
-      this.$refs.methods.putData(`/ayudantes/${this.formEdit.id}`, this.formEdit, 'getData', this.axiosConfig);
+      this.$refs.methods.putData(`/ayudantes/${this.formEdit.id}`, this.formEdit, 'getDataAyudantes', this.axiosConfig);
       this.edit = false;
       this.loading = true;
     },

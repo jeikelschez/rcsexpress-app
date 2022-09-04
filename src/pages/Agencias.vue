@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <q-page class="pagina q-pa-md">
     <q-dialog v-model="create">
       <q-card class="q-pa-md" bordered style="width: 900px; max-width: 80vw">
@@ -27,6 +27,13 @@
                   @update:model-value="this.axiosConfig.headers.pais = this.selectedPais.id;
                   getData(`/estados`, 'setDataEstados', 'estados')"
                 >
+                <template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
                   <template v-slot:prepend>
                     <q-icon name="public" />
                   </template>
@@ -55,6 +62,13 @@
                   @update:model-value="this.axiosConfig.headers.estado = this.selectedEstado.id;
                   getData(`/ciudades`, 'setDataCiudades', 'ciudades')"
                 >
+                <template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
                   <template v-slot:prepend>
                     <q-icon name="public" />
                   </template>
@@ -80,6 +94,13 @@
                   option-value="id"
                   lazy-rules
                 >
+                <template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
                   <template v-slot:prepend>
                     <q-icon name="public" />
                   </template>
@@ -300,6 +321,13 @@
                   @update:model-value="this.axiosConfig.headers.pais = this.selectedPais.id;
                   getData(`/estados`, 'setDataEstados', 'estados')"
                 >
+                <template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
                   <template v-slot:prepend>
                     <q-icon name="public" />
                   </template>
@@ -327,6 +355,13 @@
                   @update:model-value="this.axiosConfig.headers.estado = this.selectedEstado.id;
                   getData(`/ciudades`, 'setDataCiudades', 'ciudades')"
                 >
+                <template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
                   <template v-slot:prepend>
                     <q-icon name="public" />
                   </template>
@@ -353,6 +388,13 @@
                   option-value="id"
                   lazy-rules
                 >
+                <template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
                   <template v-slot:prepend>
                     <q-icon name="public" />
                   </template>
@@ -595,10 +637,10 @@
               <q-table
                 :rows="datos"
                 :loading="loading"
+                binary-state-sort
                 row-key="id"
                 :columns="columns"
                 :separator="separator"
-                class="my-sticky-column-table"
                 :filter="filter"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -741,7 +783,7 @@
       </q-card>
     </q-dialog>
     <methods ref="methods"
-    @get-Data="getData('/agencias','setData','datos')"
+    @get-Data-Agencias="getDataAgencias('/agencias','setData','datos')"
     @set-Data="setData"
     @reset-Loading="resetLoading"
     @set-Data-Edit="setDataEdit"
@@ -768,7 +810,7 @@ import { LocalStorage } from "quasar";
 export default {
   components: { 'desactive-crud': desactivateCrudVue,
   "methods": methodsVue },
-  name: "Bancos",
+  name: "Agencias",
   data() {
     return {
       columns: [
@@ -778,6 +820,7 @@ export default {
           field: (row) => row.ciudades.desc_ciudad,
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "nb_agencia",
@@ -785,6 +828,7 @@ export default {
           field: "nb_agencia",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "tlf_agencia",
@@ -792,6 +836,7 @@ export default {
           field: "tlf_agencia",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "activo_desc",
@@ -799,6 +844,8 @@ export default {
           field: "activo_desc",
           align: "left",
           type: "string",
+          sortable: true,
+          required: true,
         },
         {
           name: "action",
@@ -915,31 +962,31 @@ export default {
     };
   },
   mounted() {
-    this.getData('/agencias','setData','datos')
+    this.getDataAgencias('/agencias','setData','datos')
     this.getData('/paises','setData','paises')
     this.$refs.desactiveCrud.desactivarCrud('c_agencias', 'r_agencias', 'u_agencias', 'd_agencias', 'desactivarCrud')
   },
   methods: {
-    filterArray (val, update, abort, pagina, array, element) {
-        if (val === '') {
+    filterArray(val, update, abort, pagina, array, element) {
+      if (val === "") {
         update(() => {
-          this[pagina] = this[array]
-        })
-        return
-    }
-    update(() => {
+          this[pagina] = this[array];
+        });
+        return;
+      }
+      update(() => {
         const needle = val.toUpperCase();
-        var notEqual = JSON.parse(JSON.stringify(this[array]));
-        for (var i = 0, len = this[array].length; i < len; i++) {
-          if (!(this[array][i][element].indexOf(needle) > -1)) {
-            delete notEqual[i];
+        var notEqual = [];
+        for (var i = 0; i <= this[array].length - 1; i++) {
+          if (this[array][i][element].indexOf(needle) > -1) {
+            notEqual.push(this[array][i]);
           }
           if (i == this[array].length - 1) {
-            this[pagina] = notEqual
-            break
-          };
+            this[pagina] = notEqual;
+            break;
+          }
         }
-      })
+      });
     },
     // Reglas
     reglasSelect(val) {
@@ -993,6 +1040,9 @@ export default {
 
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+    },
+    getDataAgencias(url, call, dataRes) {
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
       this.loading = true;
     },
     setData(res, dataRes) {
@@ -1001,7 +1051,7 @@ export default {
     },
 
     getDataEdit(id) {
-      this.$refs.methods.getDataEdit(`/agencias/${id}`, 'setDataEdit', 'formEdit', this.axiosConfig);
+      this.$refs.methods.getData(`/agencias/${id}`, 'setDataEdit', 'formEdit', this.axiosConfig);
     },
     setDataEdit(res, dataRes) {
       this[dataRes].id = res.id
@@ -1018,7 +1068,7 @@ export default {
       this.selectedCiudad = res.ciudades.desc_ciudad;
       this.ciudadEdit = res.ciudades.id
       this.axiosConfig.headers.estado = this.selectedCiudadEdit;
-      this.$refs.methods.getDataEdit(`/ciudades`, 'setDataEditCiudades', 'ciudades', this.axiosConfig);
+      this.$refs.methods.getData(`/ciudades`, 'setDataEditCiudades', 'ciudades', this.axiosConfig);
     },
     setDataEditCiudades(res, dataRes) {
       this[dataRes] = res
@@ -1029,8 +1079,8 @@ export default {
         `/estados`, 'setDataEditEstados', 'estados', this.axiosConfig);
     },
     setDataEditEstados(res, dataRes) {
-      this[dataRes] = res
-      this.selectedPais = res[0].paises.desc_pais;
+      this[dataRes] = res.data
+      this.selectedPais = res.data[0].paises.desc_pais;
     },
 
     setDataEstados(res, dataRes) {
@@ -1045,7 +1095,7 @@ export default {
     },
     
     deleteDato(idpost) {
-      this.$refs.methods.deleteData(`/agencias/${idpost}`, 'getData', this.axiosConfig);
+      this.$refs.methods.deleteData(`/agencias/${idpost}`, 'getDataAgencias', this.axiosConfig);
       this.loading = true;
     },
     resetLoading() {
@@ -1054,14 +1104,14 @@ export default {
     createDato() {
       this.form.cod_ciudad = this.selectedCiudad.id;
       this.form.estatus = this.form.estatus.value;
-      this.$refs.methods.createData('/agencias', this.form, 'getData', this.axiosConfig);
+      this.$refs.methods.createData('/agencias', this.form, 'getDataAgencias', this.axiosConfig);
       this.loading = true;
       this.resetForm();
     },
     putDato() {
       this.formEdit.cod_ciudad = this.selectedCiudad.id;
       this.formEdit.estatus = this.formEdit.estatus.value;
-      this.$refs.methods.putData(`/agencias/${this.formEdit.id}`, this.formEdit, 'getData', this.axiosConfig);
+      this.$refs.methods.putData(`/agencias/${this.formEdit.id}`, this.formEdit, 'getDataAgencias', this.axiosConfig);
       this.loading = true;
       this.edit = false;
     },

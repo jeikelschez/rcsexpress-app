@@ -270,7 +270,13 @@
                   this.axiosConfig.headers.agencia = this.selectedAgencia.id;
                   getDataSelect(`/correlativo`, 'setData', 'datos');
                 "
-              >
+              ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
                 <template v-slot:prepend>
                   <q-icon name="search" />
                 </template>
@@ -300,7 +306,13 @@
                   this.axiosConfig.headers.tipo = this.selectedTipo.id;
                   getDataSelect(`/correlativo`, 'setData', 'datos');
                 "
-              >
+              ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
                 <template v-slot:prepend>
                   <q-icon name="search" />
                 </template>
@@ -344,11 +356,12 @@
               <div bordered flat class="my-card row">
                 <q-table
                   :rows="datos"
+                  binary-state-sort
                   row-key="id"
                   :loading="loading"
                   :columns="columns"
                   :separator="separator"
-                  class="my-sticky-column-table"
+                  
                   :filter="filter"
                   style="width: 100%"
                   :grid="$q.screen.xs"
@@ -538,7 +551,7 @@
     </q-dialog>
     <methods
       ref="methods"
-      @get-Data="getData('/correlativo', 'setData', 'datos')"
+      @get-Data-Correlativo="getDataCorrelativo('/correlativo', 'setData', 'datos')"
       @set-Data="setData"
       @reset-Loading="resetLoading"
       @set-Data-Edit="setDataEdit"
@@ -574,6 +587,7 @@ export default {
           field: "control_inicio",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "control_final",
@@ -581,6 +595,7 @@ export default {
           field: "control_final",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "serie_doc",
@@ -588,6 +603,7 @@ export default {
           field: "serie_doc",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "ult_doc_referencia",
@@ -595,6 +611,8 @@ export default {
           field: "ult_doc_referencia",
           align: "left",
           type: "string",
+          sortable: true,
+          required: true,
         },
         {
           name: "estatus",
@@ -692,30 +710,30 @@ export default {
   mounted() {
     this.getData("/agencias", "setData", "agencias");
     this.getData("/tipos", "setData", "tipos");
-    this.getData("/correlativo", "setData", "datos");
+    this.getDataCorrelativo("/correlativo", "setData", "datos");
     this.$refs.desactiveCrud.desactivarCrud('c_ccorrelativo', 'r_ccorrelativo', 'u_ccorrelativo', 'd_ccorrelativo', 'desactivarCrud')
   },
   methods: {
-    filterArray (val, update, abort, pagina, array, element) {
-        if (val === '') {
+    filterArray(val, update, abort, pagina, array, element) {
+      if (val === "") {
         update(() => {
-          this[pagina] = this[array]
-        })
-        return
-    }
-    update(() => {
+          this[pagina] = this[array];
+        });
+        return;
+      }
+      update(() => {
         const needle = val.toUpperCase();
-        var notEqual = JSON.parse(JSON.stringify(this[array]));
-        for (var i = 0, len = this[array].length; i < len; i++) {
-          if (!(this[array][i][element].indexOf(needle) > -1)) {
-            delete notEqual[i];
+        var notEqual = [];
+        for (var i = 0; i <= this[array].length - 1; i++) {
+          if (this[array][i][element].indexOf(needle) > -1) {
+            notEqual.push(this[array][i]);
           }
           if (i == this[array].length - 1) {
-            this[pagina] = notEqual
-            break
-          };
+            this[pagina] = notEqual;
+            break;
+          }
         }
-      })
+      });
     },
     resetLoading() {
       this.loading = false;
@@ -806,6 +824,9 @@ export default {
 
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+    },
+    getDataCorrelativo(url, call, dataRes) {
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
       this.loading = true;
     },
     setData(res, dataRes) {
@@ -840,7 +861,7 @@ export default {
     deleteDato(idpost) {
       this.$refs.methods.deleteData(
         `/correlativo/${idpost}`,
-        "getData",
+        "getDataCorrelativo",
         this.axiosConfig
       );
       this.loading = true;
@@ -864,7 +885,7 @@ export default {
       this.$refs.methods.createData(
         "/correlativo",
         this.form,
-        "getData",
+        "getDataCorrelativo",
         this.axiosConfig
       );
       this.resetForm();
@@ -886,7 +907,7 @@ export default {
       this.$refs.methods.putData(
         `/correlativo/${this.formEdit.id}`,
         this.formEdit,
-        "getData",
+        "getDataCorrelativo",
         this.axiosConfig
       );
       this.edit = false;
@@ -906,7 +927,7 @@ export default {
           if (this.datos[e].estatus_lote === "A") {
             if (this.formEdit.id !== this.datos[e].id) {
             this.activoExistente();
-            this.getData("/correlativo", "setData", "datos")
+            this.getDataCorrelativo("/correlativo", "setData", "datos")
             return;
             }
           }
@@ -914,7 +935,7 @@ export default {
         }
       }
 
-      this.$refs.methods.putData(`/correlativo/${this.formEdit.id}`,this.formEdit,"getData",this.axiosConfig);
+      this.$refs.methods.putData(`/correlativo/${this.formEdit.id}`,this.formEdit,"getDataCorrelativo",this.axiosConfig);
       this.loading = true;
     },
 

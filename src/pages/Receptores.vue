@@ -401,9 +401,10 @@
                 :rows="datos"
                 row-key="id"
                 :columns="columns"
+                binary-state-sort
                 :loading="loading"
                 :separator="separator"
-                class="my-sticky-column-table"
+                
                 :filter="filter"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -544,7 +545,7 @@
       </q-card>
     </q-dialog>
     <methods ref="methods"
-    @get-Data="getData('/receptores','setData','datos')"
+    @get-Data-Receptores="getDataReceptores('/receptores','setData','datos')"
     @set-data="setData"
     @reset-Loading="resetLoading"
     @set-Data-Edit="setDataEdit">
@@ -582,6 +583,7 @@ export default {
           field: "nb_receptor",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "cedula_receptor",
@@ -589,6 +591,7 @@ export default {
           field: "cedula_receptor",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "activo_desc",
@@ -596,6 +599,7 @@ export default {
           field: "activo_desc",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "action",
@@ -666,7 +670,7 @@ export default {
     };
   },
   mounted() {
-    this.getData('/receptores','setData','datos')
+    this.getDataReceptores('/receptores','setData','datos')
     this.$refs.desactivateCrud.desactivarCrud('c_receptores', 'r_receptores', 'u_receptores', 'd_receptores', 'desactivarCrud')
   },
   methods: {
@@ -789,6 +793,9 @@ export default {
     // Metodos CRUD
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+    },
+    getDataReceptores(url, call, dataRes) {
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
       this.loading = true;
     },
     setData(res, dataRes) {
@@ -808,18 +815,18 @@ export default {
       this.loading = false
     },   
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/receptores/${idpost}`, 'getData', this.axiosConfig);
+      this.$refs.methods.deleteData(`/receptores/${idpost}`, 'getDataReceptores', this.axiosConfig);
       this.loading = true;
     },
     createData() {
       this.form.flag_activo = this.form.flag_activo.value
-      this.$refs.methods.createData('/receptores', this.form, 'getData', this.axiosConfig);
+      this.$refs.methods.createData('/receptores', this.form, 'getDataReceptores', this.axiosConfig);
       this.resetForm();
       this.loading = true;
     },
     putData() {
       this.formEdit.flag_activo = this.formEdit.flag_activo.value
-      this.$refs.methods.putData(`/receptores/${this.formEdit.id}`, this.formEdit, 'getData', this.axiosConfig);
+      this.$refs.methods.putData(`/receptores/${this.formEdit.id}`, this.formEdit, 'getDataReceptores', this.axiosConfig);
       this.edit = false;
       this.resetFormEdit();
       this.loading = true;

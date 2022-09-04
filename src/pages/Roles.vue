@@ -42,7 +42,13 @@
                   option-label="nb_agencia"
                   option-value="id"
                   lazy-rules
-                >
+                ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
                   <template v-slot:prepend>
                     <q-icon name="apartment" />
                   </template>
@@ -117,7 +123,13 @@
                   option-label="nb_agencia"
                   option-value="id"
                   lazy-rules
-                >
+                ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
                   <template v-slot:prepend>
                     <q-icon name="apartment" />
                   </template>
@@ -182,8 +194,14 @@
               standout
               label="Escoge una Agencia"
               @update:model-value="this.axiosConfig.headers.agencia = this.selectedAgencia.id;
-              getData(`/roles`, 'setDataRoles', 'roles')"
-            >
+              getDataRoles(`/roles`, 'setDataRoles', 'roles')"
+            ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
               <template v-slot:prepend>
                 <q-icon name="search" />
               </template>
@@ -229,11 +247,12 @@
             <div bordered flat class="my-card row">
               <q-table
                 :rows="roles"
+                binary-state-sort
                 row-key="id"
                 :columns="columnsRoles"
                 :loading="loading"
                 :separator="separator"
-                class="my-sticky-column-table"
+                
                 :filter="filterRoles"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -377,8 +396,8 @@
       @desactivar-Crud="desactivarCrud"
     ></desactivate-crud>
     <methods ref="methods"
-      @get-Data="this.axiosConfig.headers.agencia = this.selectedAgencia.id;
-      getData(`/roles`, 'setDataRoles', 'roles')"
+      @get-Data-Roles="this.axiosConfig.headers.agencia = this.selectedAgencia.id;
+      getDataRoles(`/roles`, 'setDataRoles', 'roles')"
       @set-Data-Roles="setDataRoles"
       @reset-Loading="resetLoading"
       @set-Data-Roles-Edit="setDataRolesEdit"
@@ -413,6 +432,7 @@ export default {
           field: "descripcion",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "action",
@@ -506,26 +526,26 @@ export default {
     this.$refs.desactiveCrud.desactivarCrud('c_roles', 'r_roles', 'u_roles', 'd_roles', 'desactivarCrud')
   },
   methods: {
-    filterArray (val, update, abort, pagina, array, element) {
-        if (val === '') {
+    filterArray(val, update, abort, pagina, array, element) {
+      if (val === "") {
         update(() => {
-          this[pagina] = this[array]
-        })
-        return
-    }
-    update(() => {
+          this[pagina] = this[array];
+        });
+        return;
+      }
+      update(() => {
         const needle = val.toUpperCase();
-        var notEqual = JSON.parse(JSON.stringify(this[array]));
-        for (var i = 0, len = this[array].length; i < len; i++) {
-          if (!(this[array][i][element].indexOf(needle) > -1)) {
-            delete notEqual[i];
+        var notEqual = [];
+        for (var i = 0; i <= this[array].length - 1; i++) {
+          if (this[array][i][element].indexOf(needle) > -1) {
+            notEqual.push(this[array][i]);
           }
           if (i == this[array].length - 1) {
-            this[pagina] = notEqual
-            break
-          };
+            this[pagina] = notEqual;
+            break;
+          }
         }
-      })
+      });
     },
     resetLoading() {
       this.loading = false;
@@ -555,6 +575,9 @@ export default {
 
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+    },
+    getDataRoles(url, call, dataRes) {
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
       this.loading = true;
     },
     setData(res, dataRes) {
@@ -573,18 +596,18 @@ export default {
       this[dataRes].cod_agencia = this.selectedAgencia
     },
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/roles/${idpost}`, 'getData', this.axiosConfig);
+      this.$refs.methods.deleteData(`/roles/${idpost}`, 'getDataRoles', this.axiosConfig);
       this.loading = true;
     },
     createDataRoles() {
       this.formRoles.cod_agencia = this.formRoles.cod_agencia.id
-      this.$refs.methods.createData(`/roles`, this.formRoles, 'getData', this.axiosConfig);
+      this.$refs.methods.createData(`/roles`, this.formRoles, 'getDataRoles', this.axiosConfig);
       this.resetFormRoles();
       this.loading = true;
     },
     putDataRoles() {
       this.formEditRoles.cod_agencia = this.formEditRoles.cod_agencia.id
-      this.$refs.methods.putData(`/roles/${this.formEditRoles.id}`, this.formEditRoles, 'getData', this.axiosConfig);
+      this.$refs.methods.putData(`/roles/${this.formEditRoles.id}`, this.formEditRoles, 'getDataRoles', this.axiosConfig);
       this.resetFormEditRoles();
       this.loading = true;
     },

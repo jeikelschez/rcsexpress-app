@@ -6,9 +6,9 @@
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
 var webpack = require('webpack');
-const { configure } = require('quasar/wrappers');
+const { configure } = require("quasar/wrappers");
 
-module.exports = configure(function (/* ctx */) {
+module.exports = configure(function (ctx) {
   return {
 
     // https://quasar.dev/quasar-cli/supporting-ts
@@ -51,7 +51,6 @@ module.exports = configure(function (/* ctx */) {
           ? 'https://scen.rcsexpress.com'
           : 'http://localhost:8080'
       },
-      extendWebpack (cfg) { cfg.plugins.push( new webpack.ProvidePlugin({ process: 'process/browser', Buffer: ['buffer', 'Buffer'] }) ) },
       vueRouterMode: 'hash', // available values: 'hash', 'history'
 
       // transpile: false,
@@ -72,14 +71,13 @@ module.exports = configure(function (/* ctx */) {
 
       // https://quasar.dev/quasar-cli/handling-webpack
       // "chain" is a webpack-chain object https://github.com/neutrinojs/webpack-chain
-      chainWebpack (/* chain */) {
-        //
-      },
     },
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
     devServer: {
-      https: false,
+      server: {
+        type: "http",
+      },
       port: 8080,
       open: true // opens browser window automatically
     },
@@ -110,11 +108,28 @@ module.exports = configure(function (/* ctx */) {
 
     // https://quasar.dev/quasar-cli/developing-ssr/configuring-ssr
     ssr: {
-      pwa: false
+      pwa: false,
+
+      // manualStoreHydration: true,
+      // manualPostHydrationTrigger: true,
+
+      prodPort: 3000, // The default port that the production server should use
+      // (gets superseded if process.env.PORT is specified at runtime)
+
+      maxAge: 1000 * 60 * 60 * 24 * 30,
+      // Tell browser when a file from the server should expire from cache (in ms)
+
+      middlewares: [
+        ctx.prod ? "compression" : "",
+        "render", // keep this as last one
+      ],
     },
 
     // https://quasar.dev/quasar-cli/developing-pwa/configuring-pwa
     pwa: {
+      // for the custom service worker ONLY (/src-pwa/custom-service-worker.[js|ts])
+      // if using workbox in InjectManifest mode
+
       workboxPluginMode: 'GenerateSW', // 'GenerateSW' or 'InjectManifest'
       workboxOptions: {}, // only for GenerateSW
       manifest: {
@@ -187,14 +202,6 @@ module.exports = configure(function (/* ctx */) {
 
         appId: 'test'
       },
-
-      // More info: https://quasar.dev/quasar-cli/developing-electron-apps/node-integration
-      nodeIntegration: true,
-
-      extendWebpack (/* cfg */) {
-        // do something with Electron main process Webpack cfg
-        // chainWebpack also available besides this extendWebpack
-      }
     }
   }
 });
