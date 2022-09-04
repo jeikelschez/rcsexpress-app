@@ -38,1015 +38,9 @@
         <div>
           <q-list class="rounded-borders">
             <!-- Opcion del Dashboard -->
-            <q-item clickable tag="a" to="/dashboard" exact>
-              <q-item-section avatar>
-                <q-icon size="28px" name="home" />
-              </q-item-section>
-              <q-item-section>
-                <q-item-label>{{ $t("Menu.dashboard") }}</q-item-label>
-                <q-item-label caption></q-item-label>
-              </q-item-section>
-            </q-item>
-
-            <!-- Operaciones -->
-            <q-expansion-item expand-separator icon="dashboard" group="somegroup" default-opened label="Operaciones"
-              expanded="desplegable" v-model="desplegable">
-              <!-- Relacion de Despacho -->
-              <q-expansion-item :header-inset-level="0.4" :content-inset-level="0.9" expand-separator group="somegroup2"
-                default-opened icon="assignment" label="Relacion de despacho" expanded="desplegable2"
-                v-model="desplegable2">
-                <!-- Items clickeables -->
-                <q-item clickable tag="a" to="/operativa" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="folder_open" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.Operativa") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{ $t("Menu.Operativa") }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-item clickable tag="a" to="/costos" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="payments" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.Costos") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{ $t("Menu.Costos") }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-              </q-expansion-item>
-
-              <!-- Costos de Transporte -->
-              <q-expansion-item :header-inset-level="0.4" :content-inset-level="0.9" expand-separator group="somegroup2"
-                default-opened icon="directions_bus_filled" label="Costos de Transporte" expanded="desplegable3"
-                v-model="desplegable3">
-                <!-- Items clickeables -->
-                <q-item clickable tag="a" to="/registrodecostos" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="paid" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.registrodecostos") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{
-                        $t("Menu.Registrodecostos")
-                    }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-item clickable tag="a" to="/reportedecostos" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="price_check" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.Reportedecostos") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{
-                        $t("Menu.Reportedecostos")
-                    }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-              </q-expansion-item>
-
-              <!-- Item Pruebas de Entrega -->
-              <div class="q-pl-lg"> <!-- Clase para alinear item -->
-                <q-item clickable tag="a" to="/pruebasentrega" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="auto_stories" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.Pruebasdeentrega") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{
-                        $t("Menu.Pruebasdeentrega")
-                    }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-              </div>
-            </q-expansion-item>
-
-            <!-- Ventas -->
-            <q-expansion-item expand-separator icon="sell" label="Ventas" expanded="cuarto" v-model="cuarto"
-              group="somegroup" default-opened>
-              <!-- Item Pruebas de Entrega -->
-              <div class="q-pl-lg"> <!-- Clase para alinear item -->
-                <q-item clickable tag="a" to="/registroserviciocarga" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="local_shipping" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">
-                        {{ $t("Menu.Registroserviciocarga") }}
-                      </div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{
-                        $t("Menu.Registroserviciocarga")
-                    }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-              </div>
-
-              <div class="q-pl-lg">
-                <q-item clickable tag="a" to="/facturacioncredito" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="local_atm" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">
-                        {{ $t("Menu.Facturacioncredito") }}
-                      </div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{
-                        $t("Menu.Facturacioncredito")
-                    }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-              </div>
-
-              <div class="q-pl-lg">
-                <q-item clickable tag="a" to="/anulacionguias" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="block" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.Anulacionguias") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{ $t("Menu.Anulacionguias") }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-              </div>
-
-              <div class="q-pl-lg">
-                <q-item clickable tag="a" to="/emitircarta" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="forward_to_inbox" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.Emitircarta") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{ $t("Menu.Emitircarta") }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-              </div>
-            </q-expansion-item>
-
-            <!-- Administracion -->
-            <q-expansion-item expand-separator icon="topic" expanded="quinto" group="somegroup" default-opened
-              v-model="quinto" label="Administracion">
-              <q-expansion-item :header-inset-level="0.4" :content-inset-level="0.9" expand-separator group="somegroup2"
-                default-opened expanded="sexto" v-model="sexto" icon="menu_book" label="Notas Contables">
-                <q-item clickable tag="a" to="/notasdebito" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="note_alt" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.Notasdebito") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{ $t("Menu.Notasdebito") }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-item clickable tag="a" to="/notascredito" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="note_alt" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.Notascredito") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{ $t("Menu.Notascredito") }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-item clickable tag="a" to="/anulacionnotascontables" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="report" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">
-                        {{ $t("Menu.AnulacionNotasContables") }}
-                      </div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{
-                        $t("Menu.AnulacionNotasContables")
-                    }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-              </q-expansion-item>
-
-              <div class="q-pl-lg">
-                <q-item clickable tag="a" to="/cuentasporcobrar" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="request_quote" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.Cuentasporcobrar") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{
-                        $t("Menu.Cuentasporcobrar")
-                    }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-              </div>
-
-              <q-expansion-item :header-inset-level="0.4" :content-inset-level="0.9" expand-separator expanded="septimo"
-                group="somegroup2" default-opened v-model="septimo" icon="price_check" label="Cuentas por Pagar">
-                <q-item clickable tag="a" to="/ingresocuentaspagar" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="keyboard_double_arrow_up" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">
-                        {{ $t("Menu.Ingresocuentaspagar") }}
-                      </div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{
-                        $t("Menu.Ingresocuentaspagar")
-                    }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-item clickable tag="a" to="/controlpagosproveedores" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="supervised_user_circle" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">
-                        {{ $t("Menu.Controlpagosproveedores") }}
-                      </div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{
-                        $t("Menu.Controlpagosproveedores")
-                    }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-              </q-expansion-item>
-
-              <q-expansion-item :header-inset-level="0.4" :content-inset-level="0.9" expand-separator expanded="octavo"
-                v-model="octavo" group="somegroup2" default-opened icon="list" label="Control de Comisiones">
-                <q-item clickable tag="a" to="/generarcomisiones" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="payment" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.Generarcomisiones") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{
-                        $t("Menu.Generarcomisiones")
-                    }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-item clickable tag="a" to="/pagocomisiones" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="credit_score" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.Pagocomisiones") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{ $t("Menu.Pagocomisiones") }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-              </q-expansion-item>
-
-              <div class="q-pl-lg">
-                <q-item clickable tag="a" to="/retencioncomprador" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="pan_tool" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">
-                        {{ $t("Menu.Retencioncomprador") }}
-                      </div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{
-                        $t("Menu.Retencioncomprador")
-                    }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-              </div>
-
-              <div class="q-pl-lg">
-                <q-item clickable tag="a" to="/relacionretencionescomprador" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="swap_horiz" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">
-                        {{ $t("Menu.RelacionRetencionesComprador") }}
-                      </div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{
-                        $t("Menu.RelacionRetencionesComprador")
-                    }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-              </div>
-
-              <q-expansion-item :header-inset-level="0.4" :content-inset-level="0.9" expand-separator expanded="noveno"
-                v-model="noveno" group="somegroup2" default-opened icon="paid" label="Movimientos Bancarios">
-                <q-item clickable tag="a" to="/ingresomovimientos" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="airplay" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">
-                        {{ $t("Menu.Ingresomovimientos") }}
-                      </div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{
-                        $t("Menu.Ingresomovimientos")
-                    }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-item clickable tag="a" to="/relacionmovimientos" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="developer_board" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">
-                        {{ $t("Menu.Relacionmovimientos") }}
-                      </div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{
-                        $t("Menu.Relacionmovimientos")
-                    }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-              </q-expansion-item>
-
-              <div class="q-pl-lg">
-                <q-item clickable tag="a" to="/estadogananciasperdidas" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="collections_bookmark" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">
-                        {{ $t("Menu.Estadogananciasperdidas") }}
-                      </div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{
-                        $t("Menu.Estadogananciasperdidas")
-                    }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-              </div>
-            </q-expansion-item>
-
-            <!-- Reportes -->
-            <q-expansion-item expand-separator expanded="decimo" v-model="decimo" icon="summarize" group="somegroup"
-              default-opened label="Consultas y Reportes">
-              <div class="q-pl-lg">
-                <q-item clickable tag="a" to="/reporteventas" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="receipt_long" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.Reporteventas") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{ $t("Menu.Reporteventas") }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-              </div>
-
-              <div class="q-pl-lg">
-                <q-item clickable tag="a" to="/librocompras" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="auto_stories" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.Librocompras") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{ $t("Menu.Librocompras") }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-              </div>
-
-              <div class="q-pl-lg">
-                <q-item clickable tag="a" to="/libroventas" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="style" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.Libroventas") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{ $t("Menu.Libroventas") }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-              </div>
-
-              <div class="q-pl-lg">
-                <q-item clickable tag="a" to="/pagospendientesproveedores" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="notifications_active" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">
-                        {{ $t("Menu.Pagospendientesproveedores") }}
-                      </div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{
-                        $t("Menu.Pagospendientesproveedores")
-                    }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-              </div>
-
-              <div class="q-pl-lg">
-                <q-item clickable tag="a" to="/pagosrealizadosproveedores" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="how_to_reg" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">
-                        {{ $t("Menu.Pagosrealizadosproveedores") }}
-                      </div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{
-                        $t("Menu.Pagosrealizadosproveedores")
-                    }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-              </div>
-
-              <div class="q-pl-lg">
-                <q-item clickable tag="a" to="/relacionretenciones" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="app_blocking" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">
-                        {{ $t("Menu.Relacionretenciones") }}
-                      </div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{
-                        $t("Menu.Relacionretenciones")
-                    }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-              </div>
-
-              <div class="q-pl-lg">
-                <q-item clickable tag="a" to="/controlretencionesislr" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="remove_circle_outline" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">
-                        {{ $t("Menu.Controlretencionesislr") }}
-                      </div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{
-                        $t("Menu.Controlretencionesislr")
-                    }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-              </div>
-
-              <div class="q-pl-lg">
-                <q-item clickable tag="a" to="/controlretencionesiva" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="remove_circle" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">
-                        {{ $t("Menu.Controlretencionesiva") }}
-                      </div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{
-                        $t("Menu.Controlretencionesiva")
-                    }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-              </div>
-
-              <div class="q-pl-lg">
-                <q-item clickable tag="a" to="/franqueopostal" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="tag" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.franqueopostal") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{ $t("Menu.franqueopostal") }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-              </div>
-            </q-expansion-item>
-
-            <!-- Mantenimiento -->
-            <q-expansion-item expand-separator icon="settings_applications" expanded="decimoprimero" group="somegroup"
-              default-opened v-model="decimoprimero" label="Mantenimiento">
-              <q-expansion-item :header-inset-level="0.4" :content-inset-level="0.9" expand-separator
-                expanded="decimosegundo" v-model="decimosegundo" group="somegroup2" default-opened icon="table_rows"
-                label="Datos Generales">
-                <q-item tag="a" exact @click="$router.replace('/agencias')" :clickable="this.disabledAgencias"
-                  :disable="this.disabledAgenciasSet">
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="corporate_fare" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.Agencias") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{ $t("Menu.Agencias") }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-item tag="a" exact @click="$router.replace('/agentes')" :clickable="this.disabledAgentes"
-                  :disable="this.disabledAgentesSet">
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="people" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.Agentes") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{ $t("Menu.Agentes") }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-item tag="a" exact @click="$router.replace('/paisestadociudad')" :clickable="this.disabledCiudades"
-                  :disable="this.disabledCiudadesSet">
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="place" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.Paisestadociudad") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{
-                        $t("Menu.Paisestadociudad")
-                    }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-item tag="a" exact @click="$router.replace('/zonasagencia')" :clickable="this.disabledZonas"
-                  :disable="this.disabledZonasSet">
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="map" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.ZonasAgencia") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{ $t("Menu.ZonasAgencia") }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-item tag="a" exact @click="$router.replace('/unidadestransporte')" :clickable="this.disabledUnidades"
-                  :disable="this.disabledUnidadesSet">
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="local_shipping" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">
-                        {{ $t("Menu.UnidadesTransporte") }}
-                      </div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{
-                        $t("Menu.UnidadesTransporte")
-                    }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-item tag="a" exact @click="$router.replace('/ayudantes')" :clickable="this.disabledAyudantes"
-                  :disable="this.disabledAyudantesSet">
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="account_circle" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.Ayudantes") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{ $t("Menu.Ayudantes") }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-item tag="a" exact @click="$router.replace('/receptores')" :clickable="this.disabledReceptores"
-                  :disable="this.disabledReceptoresSet">
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="compare_arrows" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.Receptores") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{ $t("Menu.Receptores") }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-item tag="a" exact @click="$router.replace('/tarifas')" :clickable="this.disabledTarifas"
-                  :disable="this.disabledTarifasSet">
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="local_atm" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.Tarifas") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{ $t("Menu.Tarifas") }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-item tag="a" exact @click="$router.replace('/controlcorrelativo')"
-                  :clickable="this.disabledCcorrelativo" :disable="this.disabledCcorrelativoSet">
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="point_of_sale" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">
-                        {{ $t("Menu.Controlcorrelativo") }}
-                      </div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{
-                        $t("Menu.Controlcorrelativo")
-                    }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-item tag="a" exact @click="$router.replace('/variablecontrol')" :clickable="this.disabledVcontrol"
-                  :disable="this.disabledVcontrolSet">
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="settings_suggest" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.VariableControl") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{
-                        $t("Menu.VariableControl")
-                    }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-              </q-expansion-item>
-
-              <q-expansion-item :header-inset-level="0.4" :content-inset-level="0.9" expand-separator
-                expanded="decimotercero" v-model="decimotercero" group="somegroup2" default-opened icon="widgets"
-                label="Registros Basicos">
-                <q-item tag="a" @click="$router.replace('/bancos')" exact :clickable="this.disabledBancos"
-                  :disable="this.disabledBancosSet">
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="account_balance" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.Bancos") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{ $t("Menu.Bancos") }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-item tag="a" exact @click="$router.replace('/cuentasbancarias')" :clickable="this.disabledCuentas"
-                  :disable="this.disabledCuentasSet">
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="account_balance_wallet" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.CuentasBancarias") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{
-                        $t("Menu.CuentasBancarias")
-                    }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-item tag="a" exact @click="$router.replace('/clientes')" :clickable="this.disabledClientes"
-                  :disable="this.disabledClientesSet">
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="groups" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.Clientes") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{ $t("Menu.Clientes") }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-item tag="a" exact @click="$router.replace('/empleados')" :clickable="this.disabledEmpleados"
-                  :disable="this.disabledEmpleadosSet">
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="badge" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.Empleados") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{ $t("Menu.Empleados") }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-item tag="a" exact @click="$router.replace('/proveedores')" :clickable="this.disabledProveedores"
-                  :disable="this.disabledProveedoresSet">
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="local_shipping" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.Proveedores") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{ $t("Menu.Proveedores") }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-item tag="a" exact @click="$router.replace('/retenciones')" :clickable="this.disabledRetenciones"
-                  :disable="this.disabledRetencionesSet">
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="block" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.Retenciones") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{ $t("Menu.Retenciones") }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-item tag="a" exact @click="$router.replace('/conceptosoperacion')"
-                  :clickable="this.disabledConceptoOperacion" :disable="this.disabledConceptoOperacionSet">
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="manage_search" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">
-                        {{ $t("Menu.ConceptosOperacion") }}
-                      </div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{
-                        $t("Menu.ConceptosOperacion")
-                    }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-item tag="a" exact @click="$router.replace('/conceptosfacturacion')"
-                  :clickable="this.disabledConceptoFacturacion" :disable="this.disabledConceptoFacturacionSet">
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="sticky_note_2" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">
-                        {{ $t("Menu.ConceptosFacturacion") }}
-                      </div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{
-                        $t("Menu.ConceptosFacturacion")
-                    }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-item tag="a" exact @click="$router.replace('/conceptosfpo')" :clickable="this.disabledConceptoFpo"
-                  :disable="this.disabledConceptoFpoSet">
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="subject" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.ConceptosFPO") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{ $t("Menu.ConceptosFPO") }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-item tag="a" exact @click="$router.replace('/asignacionguias')"
-                  :clickable="this.disabledAsignacionGuias" :disable="this.disabledAsignacionGuiasSet">
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="menu_book" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.Asignacionguias") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{
-                        $t("Menu.Asignacionguias")
-                    }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-              </q-expansion-item>
-
-              <q-expansion-item :header-inset-level="0.4" :content-inset-level="0.9" expand-separator icon="security"
-                expanded="decimocuarto" group="somegroup2" default-opened v-model="decimocuarto" label="Seguridad">
-                <q-item tag="a" exact @click="$router.replace('/roles')" :clickable="this.disabledRoles"
-                  :disable="this.disabledRolesSet">
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="person_outline" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.Roles") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{ $t("Menu.Roles") }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-item tag="a" exact @click="$router.replace('/usuarios')" :clickable="this.disabledUsuarios"
-                  :disable="this.disabledUsuariosSet">
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="person" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.Usuarios") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{ $t("Menu.Usuarios") }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-item tag="a" exact @click="$router.replace('/permisologia')" :clickable="this.disabledPermisos"
-                  :disable="this.disabledPermisosSet">
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="manage_accounts" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.Permisologia") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{ $t("Menu.Permisologia") }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-              </q-expansion-item>
-
-              <div class="q-pl-lg">
-                <q-item clickable tag="a" to="/transferencia" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="open_in_new" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.Transferencia") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{ $t("Menu.Transferencia") }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-              </div>
-
-              <div class="q-pl-lg">
-                <q-item clickable tag="a" to="/transferenciahidroca" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="upload_file" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">
-                        {{ $t("Menu.TransferenciaHidroca") }}
-                      </div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{
-                        $t("Menu.TransferenciaHidroca")
-                    }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-              </div>
-
-              <div class="q-pl-lg">
-                <q-item clickable tag="a" to="/cargamanualguias" exact>
-                  <q-item-section avatar>
-                    <q-icon size="28px" name="upload_file" />
-                    <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                      transition-show="scale" transition-hide="scale">
-                      <div class="tool">{{ $t("Menu.CargaManualGuias") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{
-                        $t("Menu.CargaManualGuias")
-                    }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-              </div>
-            </q-expansion-item>
-
-
-            <!-- AQUI EMPIEZA DINAMICO -->
             <!-- MENUS LEVEL 0 -->
             <div v-for="item in items">
-              <div v-if="item.level==0">
-                
+              <div v-if="item.level==0">                
                 <!-- LEVEL 0 / Q-ITEMS -->
                 <q-item v-if=item.qitem clickable tag="a" :to=item.url exact>
                   <q-item-section avatar>
@@ -1057,15 +51,12 @@
                     <q-item-label caption></q-item-label>
                   </q-item-section>
                 </q-item>
-
                 <!-- LEVEL 0 / Q-EXPANSION-ITEMS -->
                 <q-expansion-item v-else expand-separator :icon=item.icon group="somegroup" default-opened :label=item.label
-                  v-model=item.model>
-                  
+                  v-model=item.model>                  
                   <!-- MENUS LEVEL 1 -->
                   <div v-for="item2 in items">
-                    <div v-if="item2.level==1 && item.name==item2.padre">
-                     
+                    <div v-if="item2.level==1 && item.name==item2.padre">                     
                       <!-- LEVEL 1 / Q-ITEMS -->
                       <div v-if=item2.qitem class="q-pl-lg">
                         <q-item clickable tag="a" :to=item2.url exact>
@@ -1081,17 +72,32 @@
                             <q-item-label caption></q-item-label>
                           </q-item-section>
                         </q-item>
-                      </div>
-                      
+                      </div>                      
                       <!-- LEVEL 1 / Q-EXPANSION-ITEMS -->
                       <q-expansion-item v-else :header-inset-level="0.4" :content-inset-level="0.9" expand-separator group="somegroup2"
-                        default-opened :icon=item2.icon :label=item2.label v-model=item2.model>                         
+                        default-opened :icon=item2.icon :label=item2.label v-model=item2.model>                        
+                        <!-- LEVEL 2 / Q-ITEMS -->
+                        <div v-for="item3 in items">
+                          <div v-if="item3.level==2 && item2.name==item3.padre">
+                            <q-item clickable tag="a" :to=item3.url exact>
+                              <q-item-section avatar>
+                                <q-icon size="28px" :name=item3.icon />
+                                <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
+                                  transition-show="scale" transition-hide="scale">
+                                  <div class="tool">{{ item3.label }}</div>
+                                </q-tooltip>
+                              </q-item-section>
+                              <q-item-section>
+                                <q-item-label>{{ item3.label }}</q-item-label>
+                                <q-item-label caption></q-item-label>
+                              </q-item-section>
+                            </q-item>
+                          </div>
+                        </div>                        
                       </q-expansion-item>
-
-                    </div>                    
+                    </div>
                   </div>
                 </q-expansion-item>
-
               </div>              
             </div>
             <!-- AQUI TERMINA DINAMICO -->
@@ -1277,9 +283,72 @@ export default {
         { name: 'administracion', label: 'Administracion', level: 0, qitem: false, icon: "topic", url: "", model: false, padre: "" },
         { name: 'consultas', label: 'Consultas y Reportes', level: 0, qitem: false, icon: "summarize", url: "", model: false, padre: "" },
         { name: 'mantenimiento', label: 'Mantenimiento', level: 0, qitem: false, icon: "settings_applications", url: "", model: false, padre: "" },
-        { name: 'pruebasentrega', label: 'Pruebas de entrega', level: 1, qitem: true, icon: "auto_stories", url: "/pruebasentrega", model: false, padre: "operaciones" },
         { name: 'relaciondespacho', label: 'Relacion de despacho', level: 1, qitem: false, icon: "auto_stories", url: "", model: false, padre: "operaciones" },
-        { name: 'costostransporte', label: 'Costos de transporte', level: 1, qitem: false, icon: "auto_stories", url: "", model: false, padre: "operaciones" }
+        { name: 'costostransporte', label: 'Costos de transporte', level: 1, qitem: false, icon: "auto_stories", url: "", model: false, padre: "operaciones" },
+        { name: 'pruebasentrega', label: 'Pruebas de entrega', level: 1, qitem: true, icon: "auto_stories", url: "/pruebasentrega", model: false, padre: "operaciones" },
+        { name: 'operativa', label: 'Operativa', level: 2, qitem: true, icon: "folder_open", url: "/operativa", model: false, padre: "relaciondespacho" },
+        { name: 'costos', label: 'Costos', level: 2, qitem: true, icon: "payments", url: "/costos", model: false, padre: "relaciondespacho" },
+        { name: 'registrodecostos', label: 'Registro de costos', level: 2, qitem: true, icon: "paid", url: "/registrodecostos", model: false, padre: "costostransporte" },
+        { name: 'reportedecostos', label: 'Reporte de costos', level: 2, qitem: true, icon: "price_check", url: "/reportedecostos", model: false, padre: "costostransporte" },
+        { name: 'registroserviciocarga', label: 'Registro Del Servicio de carga', level: 1, qitem: true, icon: "local_shipping", url: "/registroserviciocarga", model: false, padre: "ventas" },
+        { name: 'facturacioncredito', label: 'Facturación Crédito, Contado u Otros', level: 1, qitem: true, icon: "local_atm", url: "/facturacioncredito", model: false, padre: "ventas" },
+        { name: 'anulacionguias', label: 'Anulacion de Guías y Facturas', level: 1, qitem: true, icon: "block", url: "/anulacionguias", model: false, padre: "ventas" },
+        { name: 'emitircarta', label: 'Emitir Carta para Clientes', level: 1, qitem: true, icon: "forward_to_inbox", url: "/emitircarta", model: false, padre: "ventas" },
+        { name: 'notascontables', label: 'Notas Contables', level: 1, qitem: false, icon: "menu_book", url: "", model: false, padre: "administracion" },
+        { name: 'notasdebito', label: 'Notas de Débito', level: 2, qitem: true, icon: "note_alt", url: "/notasdebito", model: false, padre: "notascontables" },
+        { name: 'notascredito', label: 'Notas de Crédito', level: 2, qitem: true, icon: "note_alt", url: "/notascredito", model: false, padre: "notascontables" },
+        { name: 'anulacionnotascontables', label: 'Anulacion de Notas Contables', level: 2, qitem: true, icon: "report", url: "/anulacionnotascontables", model: false, padre: "notascontables" },
+        { name: 'cuentasporcobrar', label: 'Cuentas por Cobrar', level: 1, qitem: true, icon: "request_quote", url: "/cuentasporcobrar", model: false, padre: "administracion" },
+        { name: 'cuentasporpagar', label: 'Cuentas por Pagar', level: 1, qitem: false, icon: "price_check", url: "", model: false, padre: "administracion" },
+        { name: 'ingresocuentaspagar', label: 'Ingreso de Cuentas por Pagar', level: 2, qitem: true, icon: "keyboard_double_arrow_up", url: "/ingresocuentaspagar", model: false, padre: "cuentasporpagar" },
+        { name: 'controlpagosproveedores', label: 'Control de Pagos a Proveedores', level: 2, qitem: true, icon: "supervised_user_circle", url: "/controlpagosproveedores", model: false, padre: "cuentasporpagar" },
+        { name: 'controlcomisiones', label: 'Control de Comisiones', level: 1, qitem: false, icon: "list", url: "", model: false, padre: "administracion" },
+        { name: 'generarcomisiones', label: 'Generar comisiones en Entrega', level: 2, qitem: true, icon: "payment", url: "/generarcomisiones", model: false, padre: "controlcomisiones" },
+        { name: 'pagocomisiones', label: 'Pago de Comisiones', level: 2, qitem: true, icon: "credit_score", url: "/pagocomisiones", model: false, padre: "controlcomisiones" },
+        { name: 'retencioncomprador', label: 'Retencion Comprador', level: 1, qitem: true, icon: "pan_tool", url: "/retencioncomprador", model: false, padre: "administracion" },
+        { name: 'relacionretencionescomprador', label: 'Relacion Retenciones Comprador', level: 1, qitem: true, icon: "swap_horiz", url: "/relacionretencionescomprador", model: false, padre: "administracion" },
+        { name: 'movimientosbancarios', label: 'Movimientos Bancarios', level: 1, qitem: false, icon: "paid", url: "", model: false, padre: "administracion" },
+        { name: 'ingresomovimientos', label: 'Ingreso de Movimientos', level: 2, qitem: true, icon: "airplay", url: "/ingresomovimientos", model: false, padre: "movimientosbancarios" },
+        { name: 'relacionmovimientos', label: 'Relacion de Movimientos', level: 2, qitem: true, icon: "developer_board", url: "/relacionmovimientos", model: false, padre: "movimientosbancarios" },
+        { name: 'estadogananciasperdidas', label: 'Estado de Ganancias y Perdidas', level: 1, qitem: true, icon: "collections_bookmark", url: "/estadogananciasperdidas", model: false, padre: "administracion" },
+        { name: 'reporteventas', label: 'Reporte de Ventas', level: 1, qitem: true, icon: "receipt_long", url: "/reporteventas", model: false, padre: "consultas" },
+        { name: 'librocompras', label: 'Libro de Compras', level: 1, qitem: true, icon: "auto_stories", url: "/librocompras", model: false, padre: "consultas" },
+        { name: 'libroventas', label: 'Libro de Ventas', level: 1, qitem: true, icon: "style", url: "/libroventas", model: false, padre: "consultas" },
+        { name: 'pagospendientesproveedores', label: 'Pagos Pendientes a Proveedores', level: 1, qitem: true, icon: "notifications_active", url: "/pagospendientesproveedores", model: false, padre: "consultas" },
+        { name: 'pagosrealizadosproveedores', label: 'Pagos Realizados a Proveedores', level: 1, qitem: true, icon: "how_to_reg", url: "/pagosrealizadosproveedores", model: false, padre: "consultas" },
+        { name: 'relacionretenciones', label: 'Relacion de Retenciones', level: 1, qitem: true, icon: "app_blocking", url: "/relacionretenciones", model: false, padre: "consultas" },
+        { name: 'controlretencionesislr', label: 'Control de Retenciones ISLR', level: 1, qitem: true, icon: "remove_circle_outline", url: "/controlretencionesislr", model: false, padre: "consultas" },
+        { name: 'controlretencionesiva', label: 'Control de Retenciones IVA', level: 1, qitem: true, icon: "remove_circle", url: "/controlretencionesiva", model: false, padre: "consultas" },
+        { name: 'franqueopostal', label: 'Franqueo Postal Obligatorio', level: 1, qitem: true, icon: "tag", url: "/franqueopostal", model: false, padre: "consultas" },
+        { name: 'datosgenerales', label: 'Datos Generales', level: 1, qitem: false, icon: "settings_applications", url: "", model: false, padre: "mantenimiento" },
+        { name: 'agencias', label: 'Agencias', level: 2, qitem: true, icon: "corporate_fare", url: "/agencias", model: false, padre: "datosgenerales" },
+        { name: 'agentes', label: 'Agentes', level: 2, qitem: true, icon: "people", url: "/agentes", model: false, padre: "datosgenerales" },
+        { name: 'paisestadociudad', label: 'Pais, Estado, Ciudad', level: 2, qitem: true, icon: "place", url: "/paisestadociudad", model: false, padre: "datosgenerales" },
+        { name: 'zonasagencia', label: 'Zonas por Agencia', level: 2, qitem: true, icon: "map", url: "/zonasagencia", model: false, padre: "datosgenerales" },
+        { name: 'unidadestransporte', label: 'Unidades de Transporte', level: 2, qitem: true, icon: "local_shipping", url: "/unidadestransporte", model: false, padre: "datosgenerales" },
+        { name: 'ayudantes', label: 'Ayudantes', level: 2, qitem: true, icon: "account_circle", url: "/ayudantes", model: false, padre: "datosgenerales" },
+        { name: 'receptores', label: 'Receptores', level: 2, qitem: true, icon: "compare_arrows", url: "/receptores", model: false, padre: "datosgenerales" },
+        { name: 'tarifas', label: 'Tarifas', level: 2, qitem: true, icon: "local_atm", url: "/tarifas", model: false, padre: "datosgenerales" },
+        { name: 'controlcorrelativo', label: 'Control Correlativo', level: 2, qitem: true, icon: "point_of_sale", url: "/controlcorrelativo", model: false, padre: "datosgenerales" },
+        { name: 'variablecontrol', label: 'Variable Control', level: 2, qitem: true, icon: "settings_suggest", url: "/variablecontrol", model: false, padre: "datosgenerales" },
+        { name: 'registrosbasicos', label: 'Registros Básicos', level: 1, qitem: false, icon: "widgets", url: "", model: false, padre: "mantenimiento" },
+        { name: 'bancos', label: 'Bancos', level: 2, qitem: true, icon: "account_balance", url: "/bancos", model: false, padre: "registrosbasicos" },
+        { name: 'cuentasbancarias', label: 'Cuentas Bancarias', level: 2, qitem: true, icon: "account_balance_wallet", url: "/cuentasbancarias", model: false, padre: "registrosbasicos" },
+        { name: 'clientes', label: 'Clientes', level: 2, qitem: true, icon: "groups", url: "/clientes", model: false, padre: "registrosbasicos" },
+        { name: 'empleados', label: 'Empleados', level: 2, qitem: true, icon: "badge", url: "/empleados", model: false, padre: "registrosbasicos" },
+        { name: 'proveedores', label: 'Proveedores', level: 2, qitem: true, icon: "local_shipping", url: "/proveedores", model: false, padre: "registrosbasicos" },
+        { name: 'retenciones', label: 'Retenciones', level: 2, qitem: true, icon: "block", url: "/retenciones", model: false, padre: "registrosbasicos" },
+        { name: 'conceptosoperacion', label: 'Conceptos por Operación', level: 2, qitem: true, icon: "manage_search", url: "/conceptosoperacion", model: false, padre: "registrosbasicos" },
+        { name: 'conceptosfacturacion', label: 'Conceptos por Facturación', level: 2, qitem: true, icon: "sticky_note_2", url: "/conceptosfacturacion", model: false, padre: "registrosbasicos" },
+        { name: 'conceptosfpo', label: 'Conceptos FPO', level: 2, qitem: true, icon: "subject", url: "/conceptosfpo", model: false, padre: "registrosbasicos" },
+        { name: 'asignacionguias', label: 'Asignación de Guías', level: 2, qitem: true, icon: "menu_book", url: "/asignacionguias", model: false, padre: "registrosbasicos" },
+        { name: 'seguridad', label: 'Seguridad', level: 1, qitem: false, icon: "security", url: "", model: false, padre: "mantenimiento" },
+        { name: 'roles', label: 'Roles', level: 2, qitem: true, icon: "person_outline", url: "/roles", model: false, padre: "seguridad" },
+        { name: 'usuarios', label: 'Usuarios', level: 2, qitem: true, icon: "person", url: "/usuarios", model: false, padre: "seguridad" },
+        { name: 'permisologia', label: 'Permisologia', level: 2, qitem: true, icon: "manage_accounts", url: "/permisologia", model: false, padre: "seguridad" },
+        { name: 'transferencia', label: 'Transferencia', level: 1, qitem: true, icon: "open_in_new", url: "/transferencia", model: false, padre: "mantenimiento" },
+        { name: 'transferenciahidroca', label: 'Transferencia de Hidroca', level: 1, qitem: true, icon: "upload_file", url: "/transferenciahidroca", model: false, padre: "mantenimiento" },
+        { name: 'cargamanualguias', label: 'Carga Manual de Guias', level: 1, qitem: true, icon: "upload_file", url: "/cargamanualguias", model: false, padre: "mantenimiento" }
       ],
       events: ["click", "mousemove", "mousedown", "scroll", "keypress", "load"],
       desplegable: false,
