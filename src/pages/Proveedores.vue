@@ -250,7 +250,13 @@
                   option-label="nb_tipo_retencion"
                   option-value="id"
                   lazy-rules
-                >
+                ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
                   <template v-slot:prepend>
                     <q-icon name="block" />
                   </template>
@@ -575,7 +581,13 @@
                   option-label="nb_tipo_retencion"
                   option-value="id"
                   lazy-rules
-                >
+                ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
                   <template v-slot:prepend>
                     <q-icon name="block" />
                   </template>
@@ -691,11 +703,12 @@
             <div bordered flat class="row">
               <q-table
                 :rows="datos"
+                binary-state-sort
                 :loading="loading"
                 row-key="id"
                 :columns="columns"
                 :separator="separator"
-                class="my-sticky-column-table"
+                
                 :filter="filter"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -847,7 +860,7 @@
     </q-dialog>
     <methods
       ref="methods"
-      @get-Data="getData('/proveedores', 'setData', 'datos')"
+      @get-Data-Proveedores="getDataProveedores('/proveedores', 'setData', 'datos')"
       @set-data="setData"
       @reset-Loading="resetLoading"
       @set-data-retenciones="setDataRetenciones"
@@ -890,6 +903,7 @@ export default {
           field: "nb_proveedor",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "condicion_pago",
@@ -897,6 +911,7 @@ export default {
           field: "condicion_pago",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "activo_desc",
@@ -904,6 +919,7 @@ export default {
           field: "activo_desc",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "action",
@@ -1003,30 +1019,30 @@ export default {
     };
   },
   mounted() {
-    this.getData("/proveedores", "setData", "datos");
+    this.getDataProveedores("/proveedores", "setData", "datos");
     this.$refs.desactivateCrud.desactivarCrud('c_proveedores', 'r_proveedores', 'u_proveedores', 'd_proveedores', 'desactivarCrud')
   },
   methods: {
-    filterArray (val, update, abort, pagina, array, element) {
-        if (val === '') {
+    filterArray(val, update, abort, pagina, array, element) {
+      if (val === "") {
         update(() => {
-          this[pagina] = this[array]
-        })
-        return
-    }
-    update(() => {
+          this[pagina] = this[array];
+        });
+        return;
+      }
+      update(() => {
         const needle = val.toUpperCase();
-        var notEqual = JSON.parse(JSON.stringify(this[array]));
-        for (var i = 0, len = this[array].length; i < len; i++) {
-          if (!(this[array][i][element].indexOf(needle) > -1)) {
-            delete notEqual[i];
+        var notEqual = [];
+        for (var i = 0; i <= this[array].length - 1; i++) {
+          if (this[array][i][element].indexOf(needle) > -1) {
+            notEqual.push(this[array][i]);
           }
           if (i == this[array].length - 1) {
-            this[pagina] = notEqual
-            break
-          };
+            this[pagina] = notEqual;
+            break;
+          }
         }
-      })
+      });
     },
     resetLoading() {
       this.loading = false;
@@ -1177,6 +1193,9 @@ export default {
     // Metodos CRUD
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+    },
+    getDataProveedores(url, call, dataRes) {
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
       this.loading = true;
     },
     setData(res, dataRes) {
@@ -1224,7 +1243,7 @@ export default {
     deleteData(idpost) {
       this.$refs.methods.deleteData(
         `/proveedores/${idpost}`,
-        "getData",
+        "getDataProveedores",
         this.axiosConfig
       );
       this.loading = true;
@@ -1242,7 +1261,7 @@ export default {
       this.$refs.methods.createData(
         "/proveedores",
         this.form,
-        "getData",
+        "getDataProveedores",
         this.axiosConfig
       );
       this.resetForm();
@@ -1260,7 +1279,7 @@ export default {
       this.$refs.methods.putData(
         `/proveedores/${this.formEdit.id}`,
         this.formEdit,
-        "getData",
+        "getDataProveedores",
         this.axiosConfig
       );
       this.edit = false;

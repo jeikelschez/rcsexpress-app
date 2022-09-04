@@ -7,7 +7,7 @@ const routes = [
       {
         path: '/dashboard',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/dashboard.vue')}]
+        children: [{ path: "", component: () => import('pages/Dashboard.vue')}]
       },
       {
         path: '/error403',
@@ -22,27 +22,27 @@ const routes = [
       {
         path: '/operativa',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/operativa.vue')}]
+        children: [{ path: "", component: () => import('pages/Operativa.vue')}]
       },
       {
         path: '/costos',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/costos.vue')}]
+        children: [{ path: "", component: () => import('pages/Costos.vue')}]
       },
       {
         path: '/registrodecostos',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/registrodecostos.vue')}]
+        children: [{ path: "", component: () => import('pages/Registrodecostos.vue')}]
       },
       {
         path: '/reportedecostos',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/reportedecostos.vue')}]
+        children: [{ path: "", component: () => import('pages/Reportedecostos.vue')}]
       },
       {
         path: '/pruebasentrega',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/pruebasdeentrega.vue')}]
+        children: [{ path: "", component: () => import('pages/Pruebasdeentrega.vue')}]
       },
       {
         path: "/registroserviciocarga",
@@ -52,162 +52,162 @@ const routes = [
       {
         path: '/facturacioncredito',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/facturacioncredito.vue')}]
+        children: [{ path: "", component: () => import('pages/Facturacioncredito.vue')}]
       },
       {
         path: '/anulacionguias',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/anulacionguias.vue')}]
+        children: [{ path: "", component: () => import('pages/Anulacionguias.vue')}]
       },
       {
         path: '/emitircarta',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/emitircarta.vue')}]
+        children: [{ path: "", component: () => import('pages/Emitircarta.vue')}]
       },
       {
         path: '/administracion',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/administracion.vue')}]
+        children: [{ path: "", component: () => import('pages/Administracion.vue')}]
       },
       {
         path: '/notascontables',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/notascontables.vue')}]
+        children: [{ path: "", component: () => import('pages/Notascontables.vue')}]
       },
       {
         path: '/notasdebito',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/notasdebito.vue')}]
+        children: [{ path: "", component: () => import('pages/Notasdebito.vue')}]
       },
       {
         path: '/notascredito',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/notascredito.vue')}]
+        children: [{ path: "", component: () => import('pages/Notascredito.vue')}]
       },
       {
         path: '/anulacionnotascontables',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/anulacionnotascontables.vue')}]
+        children: [{ path: "", component: () => import('pages/Anulacionnotascontables.vue')}]
       },
       {
         path: '/cuentasporcobrar',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/cuentasporcobrar.vue')}]
+        children: [{ path: "", component: () => import('pages/Cuentasporcobrar.vue')}]
       },
       {
         path: '/cuentasporpagar',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/cuentasporpagar.vue')}]
+        children: [{ path: "", component: () => import('pages/Cuentasporpagar.vue')}]
       },
       {
         path: '/ingresocuentaspagar',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/ingresocuentaspagar.vue')}]
+        children: [{ path: "", component: () => import('pages/Ingresocuentaspagar.vue')}]
       },
       {
         path: '/controlpagosproveedores',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/controlpagosproveedores.vue')}]
+        children: [{ path: "", component: () => import('pages/Controlpagosproveedores.vue')}]
       },
       {
         path: '/controldecomisiones',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/controldecomisiones.vue')}]
+        children: [{ path: "", component: () => import('pages/Controldecomisiones.vue')}]
       },
       {
         path: '/generarcomisiones',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/generarcomisiones.vue')}]
+        children: [{ path: "", component: () => import('pages/Generarcomisiones.vue')}]
       },
       {
         path: '/pagocomisiones',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/pagocomisiones.vue')}]
+        children: [{ path: "", component: () => import('pages/Pagocomisiones.vue')}]
       },
       {
         path: '/retencioncomprador',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/retencioncomprador.vue')}]
+        children: [{ path: "", component: () => import('pages/Retencioncomprador.vue')}]
       },
       {
         path: '/relacionretencionescomprador',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/relacionretencionescomprador.vue')}]
+        children: [{ path: "", component: () => import('pages/Relacionretencionescomprador.vue')}]
       },
       {
         path: '/movimientosbancarios',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/movimientosbancarios.vue')}]
+        children: [{ path: "", component: () => import('pages/Movimientosbancarios.vue')}]
       },
       {
         path: '/ingresomovimientos',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/ingresomovimientos.vue')}]
+        children: [{ path: "", component: () => import('pages/Ingresomovimientos.vue')}]
       },
       {
         path: '/relacionmovimientos',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/relacionmovimientos.vue')}]
+        children: [{ path: "", component: () => import('pages/Relacionmovimientos.vue')}]
       },
       {
         path: '/estadogananciasperdidas',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/estadogananciasperdidas.vue')}]
+        children: [{ path: "", component: () => import('pages/Estadogananciasperdidas.vue')}]
       },
       {
         path: '/reporteventas',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/reporteventas.vue')}]
+        children: [{ path: "", component: () => import('pages/Reporteventas.vue')}]
       },
       {
         path: '/librocompras',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/librocompras.vue')}]
+        children: [{ path: "", component: () => import('pages/Librocompras.vue')}]
       },
       {
         path: '/libroventas',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/libroventas.vue')}]
+        children: [{ path: "", component: () => import('pages/Libroventas.vue')}]
       },
       {
         path: '/pagospendientesproveedores',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/pagospendientesproveedores.vue')}]
+        children: [{ path: "", component: () => import('pages/Pagospendientesproveedores.vue')}]
       },
       {
         path: '/pagosrealizadosproveedores',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/pagosrealizadosproveedores.vue')}]
+        children: [{ path: "", component: () => import('pages/Pagosrealizadosproveedores.vue')}]
       },
       {
         path: '/relacionretenciones',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/relacionretenciones.vue')}]
+        children: [{ path: "", component: () => import('pages/Relacionretenciones.vue')}]
       },
       {
         path: '/controlretencionesislr',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/controlretencionesislr.vue')}]
+        children: [{ path: "", component: () => import('pages/Controlretencionesislr.vue')}]
       },
       {
         path: '/controlretencionesiva',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/controlretencionesiva.vue')}]
+        children: [{ path: "", component: () => import('pages/Controlretencionesiva.vue')}]
       },
       {
         path: '/franqueopostal',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/franqueopostal.vue')}]
+        children: [{ path: "", component: () => import('pages/Franqueopostal.vue')}]
       },
       {
         path: '/agencias',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/agencias.vue')}]
+        children: [{ path: "", component: () => import('pages/Agencias.vue')}]
       },
       {
         path: '/agentes',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/agentes.vue')}]
+        children: [{ path: "", component: () => import('pages/Agentes.vue')}]
       },
       {
         path: '/paisestadociudad',
@@ -217,117 +217,117 @@ const routes = [
       {
         path: '/zonasagencia',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/zonasagencia.vue')}]
+        children: [{ path: "", component: () => import('pages/Zonasagencia.vue')}]
       },
       {
         path: '/unidadestransporte',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/unidadestransporte.vue')}]
+        children: [{ path: "", component: () => import('pages/Unidadestransporte.vue')}]
       },
       {
         path: '/ayudantes',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/ayudantes.vue')}]
+        children: [{ path: "", component: () => import('pages/Ayudantes.vue')}]
       },
       {
         path: '/receptores',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/receptores.vue')}]
+        children: [{ path: "", component: () => import('pages/Receptores.vue')}]
       },
       {
         path: '/tarifas',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/tarifas.vue')}]
+        children: [{ path: "", component: () => import('pages/Tarifas.vue')}]
       },
       {
         path: '/controlcorrelativo',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/controlcorrelativo.vue')}]
+        children: [{ path: "", component: () => import('pages/Controlcorrelativo.vue')}]
       },
       {
         path: '/variablecontrol',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/variablecontrol.vue')}]
+        children: [{ path: "", component: () => import('pages/Variablecontrol.vue')}]
       },
       {
         path: '/bancos',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/bancos.vue')}]
+        children: [{ path: "", component: () => import('pages/Bancos.vue')}]
       },
       {
         path: '/cuentasbancarias',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/cuentasbancarias.vue')}]
+        children: [{ path: "", component: () => import('pages/Cuentasbancarias.vue')}]
       },
       {
         path: '/clientes',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/clientes.vue')}]
+        children: [{ path: "", component: () => import('pages/Clientes.vue')}]
       },
       {
         path: '/empleados',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/empleados.vue')}]
+        children: [{ path: "", component: () => import('pages/Empleados.vue')}]
       },
       {
         path: '/proveedores',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/proveedores.vue')}]
+        children: [{ path: "", component: () => import('pages/Proveedores.vue')}]
       },
       {
         path: '/retenciones',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/retenciones.vue')}]
+        children: [{ path: "", component: () => import('pages/Retenciones.vue')}]
       },
       {
         path: '/conceptosoperacion',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/conceptosoperacion.vue')}]
+        children: [{ path: "", component: () => import('pages/Conceptosoperacion.vue')}]
       },
       {
         path: '/conceptosfacturacion',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/conceptosfacturacion.vue')}]
+        children: [{ path: "", component: () => import('pages/Conceptosfacturacion.vue')}]
       },
       {
         path: '/conceptosfpo',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/conceptosfpo.vue')}]
+        children: [{ path: "", component: () => import('pages/Conceptosfpo.vue')}]
       },
       {
         path: '/asignacionguias',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/asignacionguias.vue')}]
+        children: [{ path: "", component: () => import('pages/Asignacionguias.vue')}]
       },
       {
         path: '/roles',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/roles.vue')}]
+        children: [{ path: "", component: () => import('pages/Roles.vue')}]
       },
       {
         path: '/usuarios',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/usuarios.vue')}]
+        children: [{ path: "", component: () => import('pages/Usuarios.vue')}]
       },
       {
         path: '/permisologia',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/permisologia.vue')}]
+        children: [{ path: "", component: () => import('pages/Permisologia.vue')}]
       },
       {
         path: '/transferencia',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/transferencia.vue')}]
+        children: [{ path: "", component: () => import('pages/Transferencia.vue')}]
       },
       {
         path: '/transferenciahidroca',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/transferenciahidroca.vue')}]
+        children: [{ path: "", component: () => import('pages/Transferenciahidroca.vue')}]
       },
       {
         path: '/cargamanualguias',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/cargamanualguias.vue')}]
+        children: [{ path: "", component: () => import('pages/Cargamanualguias.vue')}]
       },
   ]
   },

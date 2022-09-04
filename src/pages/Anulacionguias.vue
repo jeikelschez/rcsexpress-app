@@ -362,17 +362,17 @@
         <div bordered flat class="my-card row">
           <q-table
             :rows="datos"
+            binary-state-sort
             row-key="id"
             :loading="loading"
             :columns="columns"
             :separator="separator"
-            class="my-sticky-column-table"
+            
             :filter="filter"
             style="width: 100%"
             v-model:pagination="pagination"
             :rows-per-page-options="[5, 10, 15, 20, 50]"
             @request="onRequest"
-            binary-state-sort
             :grid="$q.screen.xs"
           >
             <template v-slot:loading>
@@ -517,6 +517,7 @@ export default {
           field: "nro_control",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "nro_documento",
@@ -524,6 +525,7 @@ export default {
           field: "nro_documento",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "cant_asignada",
@@ -531,6 +533,7 @@ export default {
           field: "cant_asignada",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "fecha_emision",
@@ -538,6 +541,7 @@ export default {
           field: "fecha_emision",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "fecha_asignacion",
@@ -545,6 +549,7 @@ export default {
           field: "fecha_asignacion",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "monto_total",
@@ -552,6 +557,7 @@ export default {
           field: "monto_total",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "cant_disponible",
@@ -559,6 +565,7 @@ export default {
           field: "cant_disponible",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "estatus_administra",
@@ -566,6 +573,7 @@ export default {
           field: "estatus_administra",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "tipo_factura",
@@ -573,11 +581,13 @@ export default {
           field: "tipo_factura",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "action",
           label: "Acciones",
           align: "center",
+          sortable: true,
           required: true,
         },
       ],

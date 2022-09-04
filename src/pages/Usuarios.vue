@@ -102,7 +102,13 @@
                   transition-hide="flip-down"
                   @update:model-value="this.axiosConfig.headers.agencia = this.formUsuarios.cod_agencia.id;
                   getData(`/roles`, 'setDataRoles', 'roles')"
-                >
+                ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
                   <template v-slot:prepend>
                     <q-icon name="apartment" />
                   </template>
@@ -238,7 +244,13 @@
                   transition-hide="flip-down"
                   @update:model-value="this.axiosConfig.headers.agencia = this.formEditUsuarios.cod_agencia.id;
                   getData(`/roles`, 'setDataRoles', 'roles')"
-                >
+                ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
                   <template v-slot:prepend>
                     <q-icon name="apartment" />
                   </template>
@@ -324,8 +336,14 @@
               standout
               label="Escoge una Agencia"
               @update:model-value="this.axiosConfig.headers.agencia = this.selectedAgencia.id;
-              getData(`/usuarios`, 'setDataUsuarios', 'usuarios')"
-            >
+              getDataUsuarios(`/usuarios`, 'setDataUsuarios', 'usuarios')"
+            ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
               <template v-slot:prepend>
                 <q-icon name="search" />
               </template>
@@ -372,10 +390,11 @@
               <q-table
                 :rows="usuarios"
                 row-key="id"
+                binary-state-sort
                 :columns="columnsUsuarios"
                 :separator="separator"
                 :loading="loading"
-                class="my-sticky-column-table"
+                
                 :filter="filterUsuarios"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -519,7 +538,7 @@
       @get-Data="this.axiosConfig.headers.agencia = this.selectedAgencia.id;
       getData(`/usuarios`, 'setDataRoles', 'usuarios')"
       @get-Data-Usuarios="this.axiosConfig.headers.agencia = this.selectedAgencia.id;
-      getData(`/usuarios`, 'setDataUsuarios', 'usuarios')"
+      getDataUsuarios(`/usuarios`, 'setDataUsuarios', 'usuarios')"
       @set-Data-Usuarios="setDataUsuarios"
       @reset-Loading="resetLoading"
       @set-Data-Usuarios-Edit="setDataUsuariosEdit"
@@ -559,6 +578,7 @@ export default {
           field: "login",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "nombre",
@@ -566,6 +586,7 @@ export default {
           field: "nombre",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "roles",
@@ -573,6 +594,7 @@ export default {
           field: (row) => row.roles.descripcion,
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "estatus_desc",
@@ -580,6 +602,7 @@ export default {
           field: "estatus_desc",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "action",
@@ -697,26 +720,26 @@ export default {
     this.$refs.desactiveCrud.desactivarCrud('c_usuarios', 'r_usuarios', 'u_usuarios', 'd_usuarios', 'desactivarCrud')
   },
   methods: {
-    filterArray (val, update, abort, pagina, array, element) {
-        if (val === '') {
+    filterArray(val, update, abort, pagina, array, element) {
+      if (val === "") {
         update(() => {
-          this[pagina] = this[array]
-        })
-        return
-    }
-    update(() => {
+          this[pagina] = this[array];
+        });
+        return;
+      }
+      update(() => {
         const needle = val.toUpperCase();
-        var notEqual = JSON.parse(JSON.stringify(this[array]));
-        for (var i = 0, len = this[array].length; i < len; i++) {
-          if (!(this[array][i][element].indexOf(needle) > -1)) {
-            delete notEqual[i];
+        var notEqual = [];
+        for (var i = 0; i <= this[array].length - 1; i++) {
+          if (this[array][i][element].indexOf(needle) > -1) {
+            notEqual.push(this[array][i]);
           }
           if (i == this[array].length - 1) {
-            this[pagina] = notEqual
-            break
-          };
+            this[pagina] = notEqual;
+            break;
+          }
         }
-      })
+      });
     },
     resetLoading() {
       this.loading = false;
@@ -744,6 +767,9 @@ export default {
       } else this.$router.push("/error403");
     },
     getData(url, call, dataRes) {
+    this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+    },
+    getDataUsuarios(url, call, dataRes) {
     this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
     this.loading = true;
     },

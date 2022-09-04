@@ -288,7 +288,13 @@
                             'setDataEstados'
                           );
                         "
-                      >
+                      ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
                         <template v-slot:prepend>
                           <q-icon name="south_america" />
                         </template>
@@ -328,7 +334,13 @@
                             'setDataCiudades'
                           );
                         "
-                      >
+                      ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
                         <template v-slot:prepend>
                           <q-icon name="south_america" />
                         </template>
@@ -352,7 +364,13 @@
                         lazy-rules
                         option-label="desc_ciudad"
                         option-value="id"
-                      >
+                      ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
                         <template v-slot:prepend>
                           <q-icon name="south_america" />
                         </template>
@@ -384,7 +402,13 @@
                             'setDataParroquias'
                           );
                         "
-                      >
+                      ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
                         <template v-slot:prepend>
                           <q-icon name="south_america" />
                         </template>
@@ -409,7 +433,13 @@
                         option-label="desc_parroquia"
                         option-value="id"
                         lazy-rules
-                      >
+                      ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
                         <template v-slot:prepend>
                           <q-icon name="south_america" />
                         </template>
@@ -433,7 +463,13 @@
                         option-label="desc_localidad"
                         option-value="id"
                         lazy-rules
-                      >
+                      ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
                         <template v-slot:prepend>
                           <q-icon name="south_america" />
                         </template>
@@ -483,7 +519,13 @@
                         option-label="persona_responsable"
                         option-value="id"
                         lazy-rules
-                      >
+                      ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
                         <template v-slot:prepend>
                           <q-icon name="face" />
                         </template>
@@ -822,7 +864,13 @@
                             'setDataEstados'
                           );
                         "
-                      >
+                      ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
                         <template v-slot:prepend>
                           <q-icon name="south_america" />
                         </template>
@@ -862,7 +910,13 @@
                             'setDataCiudades'
                           );
                         "
-                      >
+                      ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
                         <template v-slot:prepend>
                           <q-icon name="south_america" />
                         </template>
@@ -886,7 +940,13 @@
                         lazy-rules
                         option-label="desc_ciudad"
                         option-value="id"
-                      >
+                      ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
                         <template v-slot:prepend>
                           <q-icon name="south_america" />
                         </template>
@@ -918,7 +978,13 @@
                             'setDataParroquias'
                           );
                         "
-                      >
+                      ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
                         <template v-slot:prepend>
                           <q-icon name="south_america" />
                         </template>
@@ -943,7 +1009,13 @@
                         option-label="desc_parroquia"
                         option-value="id"
                         lazy-rules
-                      >
+                      ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
                         <template v-slot:prepend>
                           <q-icon name="south_america" />
                         </template>
@@ -967,7 +1039,13 @@
                         option-label="desc_localidad"
                         option-value="id"
                         lazy-rules
-                      >
+                      ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
                         <template v-slot:prepend>
                           <q-icon name="south_america" />
                         </template>
@@ -1098,7 +1176,7 @@
               label="Escoge una Agencia"
               @update:model-value="
                 this.axiosConfig.headers.agencia = this.selectedAgencia.id;
-                getData(
+                getDataClientes(
                   `/clientes`,
                   'setDataClientes',
                   'clientes'
@@ -1109,7 +1187,13 @@
                   'agentes'
                 );
               "
-            >
+            ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
               <template v-slot:prepend>
                 <q-icon name="search" />
               </template>
@@ -1157,9 +1241,10 @@
                 :rows="clientes"
                 row-key="id"
                 :columns="columnsClientes"
+                binary-state-sort
                 :loading="loading"
                 :separator="separator"
-                class="my-sticky-column-table"
+                
                 :filter="filter"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -1313,9 +1398,9 @@
     ></desactive-crud>
     <methods
       ref="methods"
-      @get-data="
+      @get-data-Clientes="
       this.axiosConfig.headers.agencia = this.selectedAgencia.id;
-        getData(
+      getDataClientes(
           `/clientes`,
           'setDataClientes',
           'clientes'
@@ -1361,6 +1446,7 @@ export default {
           field: "nb_cliente",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "rif_cedula",
@@ -1368,6 +1454,7 @@ export default {
           field: "rif_cedula",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "activo_desc",
@@ -1375,6 +1462,7 @@ export default {
           field: "activo_desc",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "cte_decontado",
@@ -1382,6 +1470,7 @@ export default {
           field: "cte_decontado",
           align: "center",
           sortable: true,
+          required: true,
         },
         {
           name: "action",
@@ -1525,26 +1614,26 @@ export default {
     this.$refs.desactivateCrud.desactivarCrud('c_clientes', 'r_clientes', 'u_clientes', 'd_clientes', 'desactivarCrud')
   },
   methods: {
-    filterArray (val, update, abort, pagina, array, element) {
-        if (val === '') {
+    filterArray(val, update, abort, pagina, array, element) {
+      if (val === "") {
         update(() => {
-          this[pagina] = this[array]
-        })
-        return
-    }
-    update(() => {
+          this[pagina] = this[array];
+        });
+        return;
+      }
+      update(() => {
         const needle = val.toUpperCase();
-        var notEqual = JSON.parse(JSON.stringify(this[array]));
-        for (var i = 0, len = this[array].length; i < len; i++) {
-          if (!(this[array][i][element].indexOf(needle) > -1)) {
-            delete notEqual[i];
+        var notEqual = [];
+        for (var i = 0; i <= this[array].length - 1; i++) {
+          if (this[array][i][element].indexOf(needle) > -1) {
+            notEqual.push(this[array][i]);
           }
           if (i == this[array].length - 1) {
-            this[pagina] = notEqual
-            break
-          };
+            this[pagina] = notEqual;
+            break;
+          }
         }
-      })
+      });
     },
     resetLoading() {
       this.loading = false;
@@ -1648,12 +1737,15 @@ export default {
 
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+    },
+    getDataClientes(url, call, dataRes) {
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
       this.loading = true;
     },
     setDataIniciar(res, dataRes) {
       this[dataRes] = res;
       this.getDataIniciar();
-      this.loading = false
+      this.loading = true
     },
     setDataClientes(res, dataRes) {
       this.loading = false
@@ -1717,7 +1809,7 @@ export default {
 
           api.get(`/ciudades`, this.axiosConfig)
             .then((res) => {
-              this.ciudades = res.data;
+              this.ciudades = res.data.data;
             });
 
           api.get(`/ciudades/${cod_ciudad}`, this.axiosConfig).then((res) => {
@@ -1729,8 +1821,8 @@ export default {
             this.axiosConfig.headers.pais = res.data.cod_pais
             api.get(`/estados`, this.axiosConfig)
               .then((res) => {
-                this.estados = res.data;
-                this.pais = res.data[0].paises.desc_pais;
+                this.estados = res.data.data;
+                this.pais = res.data.data[0].paises.desc_pais;
               });
           });
 
@@ -1748,7 +1840,7 @@ export default {
         });
     },
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/clientes/${idpost}`, "getData", this.axiosConfig);
+      this.$refs.methods.deleteData(`/clientes/${idpost}`, "getDataClientes", this.axiosConfig);
       this.loading = true;
     },
     createDataClientes() {
@@ -1772,7 +1864,7 @@ export default {
         }
       }
       this.formClientes.tipo_persona = this.formClientes.tipo_persona.value;
-      this.$refs.methods.createData(`/clientes`, this.formClientes, "getData", this.axiosConfig);
+      this.$refs.methods.createData(`/clientes`, this.formClientes, "getDataClientes", this.axiosConfig);
       this.form = false;
       this.loading = true;
     },
@@ -1802,7 +1894,7 @@ export default {
       this.$refs.methods.putData(
         `/clientes/${this.formEditClientes.id}`,
         this.formEditClientes,
-        "getData",
+        "getDataClientes",
         this.axiosConfig
       );
       this.formEdit = false;

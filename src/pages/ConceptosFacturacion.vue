@@ -319,7 +319,7 @@
                 :columns="columns"
                 :loading="loading"
                 :separator="separator"
-                class="my-sticky-column-table"
+                
                 :filter="filter"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -498,6 +498,7 @@ export default {
           field: "desc_concepto",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "check_comision",
@@ -505,6 +506,7 @@ export default {
           field: "check_comision",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "check_impuesto",
@@ -512,6 +514,7 @@ export default {
           field: "check_impuesto",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "action",
@@ -646,7 +649,6 @@ export default {
 
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
-      this.loading = true;
     },
     getDataSelect(url, call, dataRes) {
       this.axiosConfig.headers.cod_concepto = this.selectedConcepto.id

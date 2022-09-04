@@ -485,10 +485,11 @@
               <q-table
                 :rows="datos"
                 :loading="loading"
+                binary-state-sort
                 row-key="id"
                 :columns="columns"
                 :separator="separator"
-                class="my-sticky-column-table"
+                
                 :filter="filter"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -629,7 +630,7 @@
       </q-card>
     </q-dialog>
     <methods ref="methods"
-    @get-Data="getData('/tarifas','setData','datos')"
+    @get-Data-Tarifas="getDataTarifas('/tarifas','setData','datos')"
     @set-data="setData"
     @reset-Loading="resetLoading"
     @set-Data-Edit="setDataEdit">
@@ -670,6 +671,7 @@ export default {
           field: "monto_tarifa",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "urgencia_desc",
@@ -677,6 +679,7 @@ export default {
           field: "urgencia_desc",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "tarifa_desc",
@@ -684,6 +687,7 @@ export default {
           field: "tarifa_desc",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "ubicacion_desc",
@@ -691,6 +695,7 @@ export default {
           field: "ubicacion_desc",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "origen_desc",
@@ -698,6 +703,7 @@ export default {
           field: "origen_desc",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "destino_desc",
@@ -705,6 +711,7 @@ export default {
           field: "destino_desc",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "action",
@@ -811,7 +818,7 @@ export default {
     };
   },
   mounted() {
-    this.getData('/tarifas','setData','datos')
+    this.getDataTarifas('/tarifas','setData','datos')
     this.$refs.desactivateCrud.desactivarCrud('c_tarifas', 'r_tarifas', 'u_tarifas', 'd_tarifas', 'desactivarCrud')
   },
   methods: {
@@ -855,6 +862,9 @@ export default {
     // Metodos CRUD
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+    },
+    getDataTarifas(url, call, dataRes) {
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
       this.loading = true;
     },
     setData(res, dataRes) {
@@ -881,7 +891,7 @@ export default {
       }
     },   
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/tarifas/${idpost}`, 'getData', this.axiosConfig);
+      this.$refs.methods.deleteData(`/tarifas/${idpost}`, 'getDataTarifas', this.axiosConfig);
       this.loading = true;
     },
     createData() {
@@ -893,7 +903,7 @@ export default {
       this.form.pagado_en = this.form.pagado_en.value
       this.form.region_origen = this.form.region_origen.value
       this.form.region_destino = this.form.region_destino.value
-      this.$refs.methods.createData('/tarifas', this.form, 'getData', this.axiosConfig);
+      this.$refs.methods.createData('/tarifas', this.form, 'getDataTarifas', this.axiosConfig);
       this.resetForm();
       this.loading = true;
     },
@@ -906,7 +916,7 @@ export default {
       this.formEdit.pagado_en = this.formEdit.pagado_en.value
       this.formEdit.region_origen = this.formEdit.region_origen.value
       this.formEdit.region_destino = this.formEdit.region_destino.value
-      this.$refs.methods.putData(`/tarifas/${this.formEdit.id}`, this.formEdit, 'getData', this.axiosConfig);
+      this.$refs.methods.putData(`/tarifas/${this.formEdit.id}`, this.formEdit, 'getDataTarifas', this.axiosConfig);
       this.edit = false;
       this.resetFormEdit();
       this.loading = true;

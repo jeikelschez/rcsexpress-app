@@ -206,11 +206,12 @@
             <div bordered flat class="row">
               <q-table
                 :rows="datos"
+                binary-state-sort
                 row-key="id"
                 :columns="columns"
                 :loading="loading"
                 :separator="separator"
-                class="my-sticky-column-table"
+                
                 :filter="filter"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -351,7 +352,7 @@
       </q-card>
     </q-dialog>
     <methods ref="methods"
-    @get-Data="getData('/unidades','setData','datos')"
+    @get-Data-Unidades="getDataUnidades('/unidades','setData','datos')"
     @set-data="setData"
     @reset-Loading="resetLoading"
     @set-Data-Edit="setDataEdit">
@@ -392,6 +393,7 @@ export default {
           field: "placas",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "chofer",
@@ -399,6 +401,7 @@ export default {
           field: "chofer",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "descripcion",
@@ -406,6 +409,7 @@ export default {
           field: "descripcion",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "action",
@@ -462,7 +466,7 @@ export default {
     };
   },
   mounted() {
-    this.getData('/unidades','setData','datos')
+    this.getDataUnidades('/unidades','setData','datos')
     this.$refs.desactivateCrud.desactivarCrud('c_unidades', 'r_unidades', 'u_unidades', 'd_unidades', 'desactivarCrud')
   },
   methods: {
@@ -533,6 +537,9 @@ export default {
     // Metodos CRUD
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+    },
+    getDataUnidades(url, call, dataRes) {
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
       this.loading = true;
     },
     setData(res, dataRes) {
@@ -547,16 +554,16 @@ export default {
       this.loading = false
     },   
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/unidades/${idpost}`, 'getData', this.axiosConfig);
+      this.$refs.methods.deleteData(`/unidades/${idpost}`, 'getDataUnidades', this.axiosConfig);
       this.loading = true;
     },
     createData() {
-      this.$refs.methods.createData('/unidades', this.form, 'getData', this.axiosConfig);
+      this.$refs.methods.createData('/unidades', this.form, 'getDataUnidades', this.axiosConfig);
       this.resetForm();
       this.loading = true;
     },
     putData() {
-      this.$refs.methods.putData(`/unidades/${this.formEdit.id}`, this.formEdit, 'getData', this.axiosConfig);
+      this.$refs.methods.putData(`/unidades/${this.formEdit.id}`, this.formEdit, 'getDataUnidades', this.axiosConfig);
       this.edit = false;
       this.resetFormEdit();
       this.loading = true;

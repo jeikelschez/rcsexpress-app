@@ -489,11 +489,12 @@
             <div bordered flat class="row">
               <q-table
                 :rows="datos"
+                binary-state-sort
                 row-key="id"
                 :loading="loading"
                 :columns="columns"
                 :separator="separator"
-                class="my-sticky-column-table"
+                
                 :filter="filter"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -634,7 +635,7 @@
       </q-card>
     </q-dialog>
     <methods ref="methods"
-    @get-Data="getData('/mretenciones','setData','datos')"
+    @get-Data-Retenciones="getDataRetenciones('/mretenciones','setData','datos')"
     @set-data="setData"
     @reset-Loading="resetLoading"
     @set-Data-Edit="setDataEdit">
@@ -673,6 +674,7 @@ export default {
           field: "cod_tipo_retencion",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "nb_tipo_retencion",
@@ -680,6 +682,7 @@ export default {
           field: "nb_tipo_retencion",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "porc_retencion",
@@ -687,6 +690,7 @@ export default {
           field: "porc_retencion",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "pago_mayor",
@@ -694,6 +698,7 @@ export default {
           field: "pago_mayor",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "sustraendo",
@@ -701,6 +706,7 @@ export default {
           field: "sustraendo",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "tipo_persona_desc",
@@ -708,6 +714,7 @@ export default {
           field: "tipo_persona_desc",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "fecha_fin_val",
@@ -715,6 +722,7 @@ export default {
           field: "fecha_fin_val",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "action",
@@ -789,7 +797,7 @@ export default {
     };
   },
   mounted() {
-    this.getData('/mretenciones','setData','datos')
+    this.getDataRetenciones('/mretenciones','setData','datos')
     this.$refs.desactivateCrud.desactivarCrud('c_retenciones', 'r_retenciones', 'u_retenciones', 'd_retenciones', 'desactivarCrud')
 
   },
@@ -877,6 +885,9 @@ export default {
     // Metodos CRUD
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+    },
+    getDataRetenciones(url, call, dataRes) {
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
       this.loading = true;
     },
     setData(res, dataRes) {
@@ -898,18 +909,18 @@ export default {
       this.formEdit.fecha_fin_val = res.fecha_fin_val
     },   
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/mretenciones/${idpost}`, 'getData', this.axiosConfig);
+      this.$refs.methods.deleteData(`/mretenciones/${idpost}`, 'getDataRetenciones', this.axiosConfig);
       this.loading = true;
     },
     createData() {
       this.form.cod_tipo_persona = this.form.cod_tipo_persona.value
-      this.$refs.methods.createData('/mretenciones', this.form, 'getData', this.axiosConfig);
+      this.$refs.methods.createData('/mretenciones', this.form, 'getDataRetenciones', this.axiosConfig);
       this.resetForm();
       this.loading = true;
     },
     putData() {
       this.formEdit.cod_tipo_persona = this.formEdit.cod_tipo_persona.value
-      this.$refs.methods.putData(`/mretenciones/${this.formEdit.id}`, this.formEdit, 'getData', this.axiosConfig);
+      this.$refs.methods.putData(`/mretenciones/${this.formEdit.id}`, this.formEdit, 'getDataRetenciones', this.axiosConfig);
       this.edit = false;
       this.resetFormEdit();
       this.loading = true;

@@ -536,8 +536,15 @@
               standout
               label="Escoge una Agencia"
               @update:model-value="this.axiosConfig.headers.agencia = this.selectedAgencia.id;
-              getData(`/agentes`, 'setDataAgentes', 'agentes')"
+              getDataAgentes(`/agentes`, 'setDataAgentes', 'agentes')"
             >
+            <template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
               <template v-slot:prepend>
                 <q-icon name="search" />
               </template>
@@ -582,10 +589,11 @@
             <div bordered flat class="my-card row">
               <q-table
                 :rows="agentes"
+                binary-state-sort
                 row-key="id"
                 :columns="columnsAgentes"
                 :separator="separator"
-                class="my-sticky-column-table"
+                
                 :filter="filter"
                 style="width: 100%"
                 :loading="loading"
@@ -730,9 +738,9 @@
       @desactivar-Crud="desactivarCrud"
     ></desactivate-crud>
     <methods ref="methods"
-      @get-Data="
+      @get-Data-Agentes="
       this.axiosConfig.headers.agencia = this.selectedAgencia.id;
-      getData(`/agentes`, 'setDataAgentes', 'agentes')"
+      getDataAgentes(`/agentes`, 'setDataAgentes', 'agentes')"
       @set-Data-Agentes="setDataAgentes"
       @reset-Loading="resetLoading"
       @set-Data-Agentes-Edit="setDataAgentesEdit"
@@ -767,6 +775,7 @@ export default {
           field: "nb_agente",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "persona_responsable",
@@ -774,6 +783,7 @@ export default {
           field: "persona_responsable",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "tipo_desc",
@@ -781,6 +791,7 @@ export default {
           field: "tipo_desc",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "activo_desc",
@@ -788,6 +799,7 @@ export default {
           field: "activo_desc",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "action",
@@ -880,26 +892,26 @@ export default {
     this.$refs.desactivateCrud.desactivarCrud('c_agentes', 'r_agentes', 'u_agentes', 'd_agentes', 'desactivarCrud')
   },
   methods: {
-    filterArray (val, update, abort, pagina, array, element) {
-        if (val === '') {
+    filterArray(val, update, abort, pagina, array, element) {
+      if (val === "") {
         update(() => {
-          this[pagina] = this[array]
-        })
-        return
-    }
-    update(() => {
+          this[pagina] = this[array];
+        });
+        return;
+      }
+      update(() => {
         const needle = val.toUpperCase();
-        var notEqual = JSON.parse(JSON.stringify(this[array]));
-        for (var i = 0, len = this[array].length; i < len; i++) {
-          if (!(this[array][i][element].indexOf(needle) > -1)) {
-            delete notEqual[i];
+        var notEqual = [];
+        for (var i = 0; i <= this[array].length - 1; i++) {
+          if (this[array][i][element].indexOf(needle) > -1) {
+            notEqual.push(this[array][i]);
           }
           if (i == this[array].length - 1) {
-            this[pagina] = notEqual
-            break
-          };
+            this[pagina] = notEqual;
+            break;
+          }
         }
-      })
+      });
     },
     reglasSelect(val) {
       if (val === null) {
@@ -983,6 +995,9 @@ export default {
     },
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+    },
+    getDataAgentes(url, call, dataRes) {
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
       this.loading = true;
     },
     setData(res, dataRes) {
@@ -1013,21 +1028,21 @@ export default {
       this.loading = false
     },
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/agentes/${idpost}`, 'getData', this.axiosConfig);
+      this.$refs.methods.deleteData(`/agentes/${idpost}`, 'getDataAgentes', this.axiosConfig);
       this.loading = true;
     },
     createDataCuentas() {
       this.formAgentes.cod_agencia = this.selectedAgencia.id
       this.formAgentes.tipo_agente = this.formAgentes.tipo_agente.value
       this.formAgentes.flag_activo = this.formAgentes.flag_activo.value
-      this.$refs.methods.createData(`/agentes`, this.formAgentes, 'getData', this.axiosConfig);
+      this.$refs.methods.createData(`/agentes`, this.formAgentes, 'getDataAgentes', this.axiosConfig);
       this.loading = true;
       this.resetForm();
     },
     putDataCuentas() {
       this.formEditAgentes.flag_activo = this.formEditAgentes.flag_activo.value
       this.formEditAgentes.tipo_agente = this.formEditAgentes.tipo_agente.value
-      this.$refs.methods.putData(`/agentes/${this.formEditAgentes.id}`, this.formEditAgentes, 'getData', this.axiosConfig);
+      this.$refs.methods.putData(`/agentes/${this.formEditAgentes.id}`, this.formEditAgentes, 'getDataAgentes', this.axiosConfig);
       this.loading = true;
       this.resetFormEdit()
     },
@@ -1067,7 +1082,7 @@ export default {
         this.axiosConfig.headers.agencia = this.agenciaRef
         api.get(`/agentes`, this.axiosConfig)
         .then((res) => {
-          this.agentes = res.data;
+          this.agentes = res.data.data;
         })
     },
   },

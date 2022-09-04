@@ -166,8 +166,14 @@
               standout
               label="Escoge una Agencia"
               @update:model-value="this.axiosConfig.headers.agencia = this.selectedAgencia.id;
-              getData(`/zonas`, 'setDataZonas', 'zonas')"
-            >
+              getDataZonas(`/zonas`, 'setDataZonas', 'zonas')"
+            ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
               <template v-slot:prepend>
                 <q-icon name="search" />
               </template>
@@ -213,11 +219,12 @@
             <div bordered flat class="my-card row">
               <q-table
                 :rows="zonas"
+                binary-state-sort
                 :loading="loading"
                 row-key="id"
                 :columns="columnsZonas"
                 :separator="separator"
-                class="my-sticky-column-table"
+                
                 :filter="filterRoles"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -361,8 +368,8 @@
       @desactivar-Crud="desactivarCrud"
     ></desactivate-crud>
     <methods ref="methods"
-      @get-Data="this.axiosConfig.headers.agencia = this.selectedAgencia.id;
-      getData(`/zonas`, 'setDataZonas', 'zonas')"
+      @get-Data-Zonas="this.axiosConfig.headers.agencia = this.selectedAgencia.id;
+      getDataZonas(`/zonas`, 'setDataZonas', 'zonas')"
       @set-Data-Zonas="setDataZonas"
       @reset-Loading="resetLoading"
       @set-Data-Zonas-Edit="setDataZonasEdit"
@@ -397,6 +404,7 @@ export default {
           field: "nb_zona",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "tipo_desc",
@@ -404,6 +412,7 @@ export default {
           field: "tipo_desc",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "action",
@@ -502,26 +511,26 @@ export default {
     this.$refs.desactiveCrud.desactivarCrud('c_zonas', 'r_zonas', 'u_zonas', 'd_zonas', 'desactivarCrud')
   },
   methods: {
-    filterArray (val, update, abort, pagina, array, element) {
-        if (val === '') {
+    filterArray(val, update, abort, pagina, array, element) {
+      if (val === "") {
         update(() => {
-          this[pagina] = this[array]
-        })
-        return
-    }
-    update(() => {
+          this[pagina] = this[array];
+        });
+        return;
+      }
+      update(() => {
         const needle = val.toUpperCase();
-        var notEqual = JSON.parse(JSON.stringify(this[array]));
-        for (var i = 0, len = this[array].length; i < len; i++) {
-          if (!(this[array][i][element].indexOf(needle) > -1)) {
-            delete notEqual[i];
+        var notEqual = [];
+        for (var i = 0; i <= this[array].length - 1; i++) {
+          if (this[array][i][element].indexOf(needle) > -1) {
+            notEqual.push(this[array][i]);
           }
           if (i == this[array].length - 1) {
-            this[pagina] = notEqual
-            break
-          };
+            this[pagina] = notEqual;
+            break;
+          }
         }
-      })
+      });
     },
 
     resetLoading() {
@@ -556,6 +565,9 @@ export default {
 
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+    },
+    getDataZonas(url, call, dataRes) {
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
       this.loading = true;
     },
     setData(res, dataRes) {
@@ -575,20 +587,20 @@ export default {
       this.loading = false
     },
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/zonas/${idpost}`, 'getData', this.axiosConfig);
+      this.$refs.methods.deleteData(`/zonas/${idpost}`, 'getDataZonas', this.axiosConfig);
       this.loading = true;
     },
     createDataZonas() {
       this.formZonas.cod_agencia = this.selectedAgencia.id
       this.formZonas.tipo_zona = this.formZonas.tipo_zona.value
-      this.$refs.methods.createData(`/zonas`, this.formZonas, 'getData', this.axiosConfig);
+      this.$refs.methods.createData(`/zonas`, this.formZonas, 'getDataZonas', this.axiosConfig);
       this.resetFormZonas();
       this.loading = true;
     },
     putDataZonas() {
       this.formEditZonas.cod_agencia = this.selectedAgencia.id
       this.formEditZonas.tipo_zona = this.formEditZonas.tipo_zona.value
-      this.$refs.methods.putData(`/zonas/${this.formEditZonas.id}`, this.formEditZonas, 'getData', this.axiosConfig);
+      this.$refs.methods.putData(`/zonas/${this.formEditZonas.id}`, this.formEditZonas, 'getDataZonas', this.axiosConfig);
       this.resetFormEditZonas();
       this.loading = true;
     },

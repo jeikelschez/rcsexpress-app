@@ -49,10 +49,14 @@ import { useQuasar } from "quasar";
       header.headers.Authorization = `Bearer ${LocalStorage.getItem("token")}`
       api.get(url, header)
       .then((res) => {
-        this.$emit(llamada, res.data, dataRes)
+        if (res.data.data && url !== "/cguias" && url !== "/dmovimientos") {
+          this.$emit(llamada, res.data.data, dataRes)
+        } else {
+          this.$emit(llamada, res.data, dataRes)
+        }
       })
       .catch((err) => {
-          if (err.response) {
+          if (err.response) {console.log(err.response)
             this.error = err.response.data.message;
           }
           this.errorDelServidor();
@@ -101,7 +105,7 @@ import { useQuasar } from "quasar";
       })
       .catch((err) => {
           if (err.response) {
-            this.error = err.response.message;
+            this.error = err.response.data.message;
           }
           this.errorDelServidor();
           this.$emit('resetLoading')
@@ -112,7 +116,7 @@ import { useQuasar } from "quasar";
       api.post(url, form, header)
       .then((res) => {
         if ((res.status = 200)) {
-            this.$emit(llamada, res.data)
+          this.$emit(llamada, res.data)
         }
       })
       .catch((err) => {
@@ -133,7 +137,7 @@ import { useQuasar } from "quasar";
         })
       .catch((err) => {
           if (err.response) {
-            this.error = err.response.message;
+            this.error = err.response.data.message;
           }
           this.errorDelServidor();
         });

@@ -561,10 +561,11 @@
                     <q-table
                       :rows="paises"
                       row-key="id"
+                      binary-state-sort
                       :loading="loading"
                       :columns="columnsPaises"
                       :separator="separator"
-                      class="my-sticky-column-table"
+                      
                       :filter="filterPaises"
                       style="width: 100%"
                       :grid="$q.screen.xs"
@@ -714,7 +715,13 @@
                     label="Escoge un país"
                     @update:model-value="this.axiosConfig.headers.pais = this.selectedPais.id;
                     getDataEstados(`/estados`, 'setDataEstados', 'estados')"
-                  >
+                  ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
                     <template v-slot:prepend>
                       <q-icon name="search" />
                     </template>
@@ -759,9 +766,10 @@
                     <q-table
                       :rows="estados"
                       row-key="id"
+                      binary-state-sort
                       :columns="columnsEstados"
                       :separator="separator"
-                      class="my-sticky-column-table"
+                      
                       :filter="filterEstados"
                       style="width: 100%"
                       :loading="loading"
@@ -912,7 +920,13 @@
                     label="Escoge un país"
                     @update:model-value="this.axiosConfig.headers.pais = this.selectedPais2.id;
                     getDataEstadosSelect(`/estados`, 'setDataEstadosSelect', 'estadosCiudades')"
-                  >
+                  ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
                     <template v-slot:prepend>
                       <q-icon name="search" />
                     </template>
@@ -940,7 +954,13 @@
                     label="Escoge un estado"
                     @update:model-value="this.axiosConfig.headers.estado = this.selectedEstado.id;
                     getDataCiudades(`/ciudades`, 'setDataCiudades', 'ciudades')"
-                  >
+                  ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
                     <template v-slot:prepend>
                       <q-icon name="search" />
                     </template>
@@ -984,11 +1004,12 @@
                   <div bordered flat class="my-card row">
                     <q-table
                       :rows="ciudades"
+                      binary-state-sort
                       row-key="id"
                       :columns="columnsCiudades"
                       :separator="separator"
                       :loading="loading"
-                      class="my-sticky-column-table"
+                      
                       :filter="filterCiudades"
                       style="width: 100%"
                       :grid="$q.screen.xs"
@@ -1231,6 +1252,7 @@ export default {
           field: "desc_pais",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "tipo_pais_desc",
@@ -1238,6 +1260,7 @@ export default {
           field: "tipo_pais_desc",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "action",
@@ -1254,6 +1277,7 @@ export default {
           field: "desc_estado",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "siglas",
@@ -1261,6 +1285,7 @@ export default {
           field: "siglas",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "action",
@@ -1277,6 +1302,7 @@ export default {
           field: "desc_ciudad",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "siglas",
@@ -1284,6 +1310,7 @@ export default {
           field: "siglas",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "cod_region_desc",
@@ -1291,6 +1318,7 @@ export default {
           field: "cod_region_desc",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "check_urbano_desc",
@@ -1298,6 +1326,7 @@ export default {
           field: "check_urbano_desc",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "action",
@@ -1439,26 +1468,26 @@ export default {
   },
   methods: {
 
-    filterArray (val, update, abort, pagina, array, element) {
-        if (val === '') {
+    filterArray(val, update, abort, pagina, array, element) {
+      if (val === "") {
         update(() => {
-          this[pagina] = this[array]
-        })
-        return
-    }
-    update(() => {
+          this[pagina] = this[array];
+        });
+        return;
+      }
+      update(() => {
         const needle = val.toUpperCase();
-        var notEqual = JSON.parse(JSON.stringify(this[array]));
-        for (var i = 0, len = this[array].length; i < len; i++) {
-          if (!(this[array][i][element].indexOf(needle) > -1)) {
-            delete notEqual[i];
+        var notEqual = [];
+        for (var i = 0; i <= this[array].length - 1; i++) {
+          if (this[array][i][element].indexOf(needle) > -1) {
+            notEqual.push(this[array][i]);
           }
           if (i == this[array].length - 1) {
-            this[pagina] = notEqual
-            break
-          };
+            this[pagina] = notEqual;
+            break;
+          }
         }
-      })
+      });
     },
     
 resetLoading() {
@@ -1657,14 +1686,14 @@ resetLoading() {
       this.axiosConfig.headers.pais = this.paisRef2
       api.get(`/estados`, this.axiosConfig)
       .then((res) => {
-        this.estados = res.data;
-        this.selectedEstado = res.data[0];
-        this.estadosCiudades = res.data;
-        this.estadoRef = res.data[0].id;
+        this.estados = res.data.data;
+        this.selectedEstado = res.data.data[0];
+        this.estadosCiudades = res.data.data;
+        this.estadoRef = res.data.data[0].id;
         this.axiosConfig.headers.estado = this.estadoRef
         api.get(`/ciudades`, this.axiosConfig)
         .then((res) => {
-        this.ciudades = res.data;
+        this.ciudades = res.data.data;
         })
       })
     },

@@ -1610,6 +1610,7 @@
                 :rows="clientes"
                 dense
                 :columns="columnsClientes"
+                binary-state-sort
                 slice
                 :separator="separator"
                 row-key="action"
@@ -2445,6 +2446,7 @@ export default {
           field: "nb_cliente",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "rif_cedula",
@@ -2452,6 +2454,7 @@ export default {
           field: "rif_cedula",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "activo_desc",
@@ -2459,6 +2462,7 @@ export default {
           field: "activo_desc",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "cte_decontado",
@@ -2466,6 +2470,7 @@ export default {
           field: "cte_decontado",
           align: "center",
           sortable: true,
+          required: true,
         },
         {
           name: "cte_decontado",
@@ -2473,6 +2478,7 @@ export default {
           field: "cte_decontado",
           align: "center",
           sortable: true,
+          required: true,
         },
         {
           name: "cte_decontado",
@@ -2480,6 +2486,7 @@ export default {
           field: "cte_decontado",
           align: "center",
           sortable: true,
+          required: true,
         },
         {
           name: "cte_decontado",
@@ -2487,6 +2494,7 @@ export default {
           field: "cte_decontado",
           align: "center",
           sortable: true,
+          required: true,
         },
         {
           name: "check",
@@ -2580,6 +2588,7 @@ export default {
           field: "id",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "nb_cliente",
@@ -2587,6 +2596,7 @@ export default {
           field: "nb_cliente",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "rif_cedula",
@@ -2594,6 +2604,7 @@ export default {
           field: "rif_cedula",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "activo_desc",
@@ -2601,6 +2612,7 @@ export default {
           field: "activo_desc",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "cte_decontado",

@@ -32,7 +32,6 @@
                   label="Valor de Variable"
                   hint=""
                   lazy-rules
-                  :rules="[reglasNotNull100]"
                   type="number"
                 >
                   <template v-slot:prepend>
@@ -114,7 +113,6 @@
                   label="Valor de Variable"
                   hint=""
                   lazy-rules
-                  :rules="[reglasNotNull100]"
                   type="number"
                 >
                   <template v-slot:prepend>
@@ -220,10 +218,11 @@
               <q-table
                 :rows="datos"
                 row-key="id"
+                binary-state-sort
                 :columns="columns"
                 :separator="separator"
                 :loading="loading"
-                class="my-sticky-column-table"
+                
                 :filter="filter"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -419,7 +418,7 @@
     </q-dialog>
     <methods
       ref="methods"
-      @get-Data="getData('/vcontrol', 'setData', 'datos')"
+      @get-Data-Variable="getDataVariable('/vcontrol', 'setData', 'datos')"
       @set-Data="setData"
       @reset-Loading="resetLoading"
       @set-Data-Edit="setDataEdit"
@@ -455,6 +454,7 @@ export default {
           field: "nombre",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "tipo",
@@ -469,6 +469,8 @@ export default {
           field: "valor",
           align: "left",
           type: "string",
+          sortable: true,
+          required: true,
         },
         {
           name: "action",
@@ -539,7 +541,7 @@ export default {
     };
   },
   mounted() {
-    this.getData("/vcontrol", "setData", "datos");
+    this.getDataVariable("/vcontrol", "setData", "datos");
     this.$refs.desactiveCrud.desactivarCrud('c_vcontrol', 'r_vcontrol', 'u_vcontrol', 'd_vcontrol', 'desactivarCrud')
   },
   methods: {
@@ -607,6 +609,9 @@ export default {
 
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+    },
+    getDataVariable(url, call, dataRes) {
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
       this.loading = true;
     },
     setData(res, dataRes) {
@@ -636,7 +641,7 @@ export default {
     deleteDato(idpost) {
       this.$refs.methods.deleteData(
         `/vcontrol/${idpost}`,
-        "getData",
+        "getDataVariable",
         this.axiosConfig
       );
       this.loading = true;
@@ -646,7 +651,7 @@ export default {
       this.$refs.methods.createData(
         "/vcontrol",
         this.form,
-        "getData",
+        "getDataVariable",
         this.axiosConfig
       );
       this.resetForm();
@@ -657,7 +662,7 @@ export default {
       this.$refs.methods.putData(
         `/vcontrol/${this.formEdit.id}`,
         this.formEdit,
-        "getData",
+        "getDataVariable",
         this.axiosConfig
       );
       this.edit = false;
@@ -671,7 +676,7 @@ export default {
       this.$refs.methods.putData(
         `/vcontrol/${this.formEdit.id}`,
         this.formEdit,
-        "getData",
+        "getDataVariable",
         this.axiosConfig
       );
       this.loading = true;

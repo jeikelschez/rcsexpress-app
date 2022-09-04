@@ -236,8 +236,14 @@
               standout
               label="Escoge un Banco"
               @update:model-value="this.axiosConfig.headers.banco = this.selectedBanco.id;
-              getData(`/cuentas`, 'setDataCuentas', 'cuentas')"
-            >
+              getDataCuentas(`/cuentas`, 'setDataCuentas', 'cuentas')"
+            ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
               <template v-slot:prepend>
                 <q-icon name="search" />
               </template>
@@ -284,9 +290,10 @@
               <q-table
                 :rows="cuentas"
                 row-key="id"
+                binary-state-sort
                 :columns="columnsCuentas"
                 :separator="separator"
-                class="my-sticky-column-table"
+                
                 :filter="filter"
                 :loading="loading"
                 style="width: 100%"
@@ -431,8 +438,8 @@
       @desactivar-Crud="desactivarCrud"
     ></desactivate-crud>
     <methods ref="methods"
-      @get-Data="this.axiosConfig.headers.banco = this.selectedBanco.id;
-      getData(`/cuentas`, 'setDataCuentas', 'cuentas')"
+      @get-Data-Cuentas="this.axiosConfig.headers.banco = this.selectedBanco.id;
+      getDataCuentas(`/cuentas`, 'setDataCuentas', 'cuentas')"
       @set-Data-Cuentas="setDataCuentas"
       @reset-Loading="resetLoading"
       @set-Data-Cuentas-Edit="setDataRolesEdit"
@@ -467,6 +474,7 @@ export default {
           field: "nro_cuenta",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "tipo_desc",
@@ -474,6 +482,7 @@ export default {
           field: "tipo_desc",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "activa_desc",
@@ -481,6 +490,7 @@ export default {
           field: "activa_desc",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "firma_autorizada",
@@ -488,6 +498,7 @@ export default {
           field: "firma_autorizada",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "action",
@@ -561,30 +572,30 @@ export default {
     };
   },
   mounted() {
-    this.getData('/bancos', 'setData', 'bancos');
+    this.getDataCuentas('/bancos', 'setData', 'bancos');
     this.$refs.desactivateCrud.desactivarCrud('c_cuentas', 'r_cuentas', 'u_cuentas', 'd_cuentas', 'desactivarCrud')
   },
   methods: {
-    filterArray (val, update, abort, pagina, array, element) {
-        if (val === '') {
+    filterArray(val, update, abort, pagina, array, element) {
+      if (val === "") {
         update(() => {
-          this[pagina] = this[array]
-        })
-        return
-    }
-    update(() => {
+          this[pagina] = this[array];
+        });
+        return;
+      }
+      update(() => {
         const needle = val.toUpperCase();
-        var notEqual = JSON.parse(JSON.stringify(this[array]));
-        for (var i = 0, len = this[array].length; i < len; i++) {
-          if (!(this[array][i][element].indexOf(needle) > -1)) {
-            delete notEqual[i];
+        var notEqual = [];
+        for (var i = 0; i <= this[array].length - 1; i++) {
+          if (this[array][i][element].indexOf(needle) > -1) {
+            notEqual.push(this[array][i]);
           }
           if (i == this[array].length - 1) {
-            this[pagina] = notEqual
-            break
-          };
+            this[pagina] = notEqual;
+            break;
+          }
         }
-      })
+      });
     },
     resetLoading() {
       this.loading = false;
@@ -643,6 +654,9 @@ export default {
 
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+    },
+    getDataCuentas(url, call, dataRes) {
+      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
       this.loading = true;
     },
     setData(res, dataRes) {
@@ -664,21 +678,21 @@ export default {
       this.loading = false;
     },
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/cuentas/${idpost}`, 'getData', this.axiosConfig);
+      this.$refs.methods.deleteData(`/cuentas/${idpost}`, 'getDataCuentas', this.axiosConfig);
       this.loading = true;
     },
     createDataCuentas() {
       this.formCuentas.cod_banco = this.selectedBanco.id
       this.formCuentas.flag_activa = this.formCuentas.flag_activa.value
       this.formCuentas.tipo_cuenta = this.formCuentas.tipo_cuenta.value
-      this.$refs.methods.createData(`/cuentas`, this.formCuentas, 'getData', this.axiosConfig);
+      this.$refs.methods.createData(`/cuentas`, this.formCuentas, 'getDataCuentas', this.axiosConfig);
       this.resetForm();
       this.loading = true;
     },
     putDataCuentas() {
       this.formEditCuentas.flag_activa = this.formEditCuentas.flag_activa.value
       this.formEditCuentas.tipo_cuenta = this.formEditCuentas.tipo_cuenta.value
-      this.$refs.methods.putData(`/cuentas/${this.formEditCuentas.id}`, this.formEditCuentas, 'getData', this.axiosConfig);
+      this.$refs.methods.putData(`/cuentas/${this.formEditCuentas.id}`, this.formEditCuentas, 'getDataCuentas', this.axiosConfig);
       this.resetFormEdit();
       this.loading = true;
     },

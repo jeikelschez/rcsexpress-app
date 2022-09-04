@@ -44,7 +44,13 @@
                 :rules="[reglasSelect]"
                 label="Tipo de Operación"
                 @update:model-value="validationSelect()"
-            >
+            ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
               <template v-slot:prepend>
                 <q-icon name="format_list_bulleted" />
               </template>
@@ -144,7 +150,13 @@
                 :rules="[reglasSelect]"
                 label="Tipo de Operación"
                 @update:model-value="validationSelectEdit()"
-            >
+            ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
               <template v-slot:prepend>
                 <q-icon name="format_list_bulleted" />
               </template>
@@ -233,7 +245,13 @@
               label="Tipo de Operación"
               @update:model-value="this.axiosConfig.headers.tipo = this.selectedTipo.id;
               getDataSelect(`/coperacion`, 'setDataConceptos', 'datos')"
-            >
+            ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
               <template v-slot:prepend>
                 <q-icon name="search" />
               </template>
@@ -280,10 +298,11 @@
               <q-table
                 :rows="datos"
                 row-key="id"
+                binary-state-sort
                 :columns="columns"
                 :loading="loading"
                 :separator="separator"
-                class="my-sticky-column-table"
+                
                 :filter="filter"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -463,6 +482,7 @@ export default {
           field: "desc_concepto",
           align: "left",
           sortable: true,
+          required: true,
         },
         {
           name: "action",
@@ -555,26 +575,26 @@ export default {
     this.$refs.desactiveCrud.desactivarCrud('c_concepto_operacion', 'r_concepto_operacion', 'u_concepto_operacion', 'd_concepto_operacion', 'desactivarCrud')
   },
   methods: {
-    filterArray (val, update, abort, pagina, array, element) {
-        if (val === '') {
+    filterArray(val, update, abort, pagina, array, element) {
+      if (val === "") {
         update(() => {
-          this[pagina] = this[array]
-        })
-        return
-    }
-    update(() => {
+          this[pagina] = this[array];
+        });
+        return;
+      }
+      update(() => {
         const needle = val.toUpperCase();
-        var notEqual = JSON.parse(JSON.stringify(this[array]));
-        for (var i = 0, len = this[array].length; i < len; i++) {
-          if (!(this[array][i][element].indexOf(needle) > -1)) {
-            delete notEqual[i];
+        var notEqual = [];
+        for (var i = 0; i <= this[array].length - 1; i++) {
+          if (this[array][i][element].indexOf(needle) > -1) {
+            notEqual.push(this[array][i]);
           }
           if (i == this[array].length - 1) {
-            this[pagina] = notEqual
-            break
-          };
+            this[pagina] = notEqual;
+            break;
+          }
         }
-      })
+      });
     },
     resetLoading() {
       this.loading = false;
@@ -726,14 +746,12 @@ export default {
       (this.form.desc_concepto = ""),
       (this.form.afecta_estado = "N"),
       (this.form.tipo = ""),
-      (this.disable = true)
       (this.create = false)
     },
     resetFormEdit() {
       (this.formEdit.desc_concepto = ""),
       (this.formEdit.afecta_estado = "N"),
       (this.formEdit.tipo = ""),
-      (this.disableEdit = true)
       (this.edit = false)
     },
   },
