@@ -5,7 +5,6 @@
         <q-card-section>
           <q-form @submit="createData" class="q-gutter-md">
             <div class="row">
-
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
@@ -15,12 +14,10 @@
                   hint=""
                   class="pcform"
                   lazy-rules
-                  @update:model-value="
-                    form.nombre = form.nombre.toUpperCase()
-                  "
+                  @update:model-value="form.nombre = form.nombre.toUpperCase()"
                 >
                   <template v-slot:prepend>
-                    <q-icon name="percent" />
+                    <q-icon name="person" />
                   </template>
                 </q-input>
               </div>
@@ -57,11 +54,11 @@
                   outlined
                   v-model="form.porcentaje_retencion"
                   label="Porcentaje Retención"
+                  v-money="money"
+                  input-class="text-right"
                   :rules="[reglasNotNullPercent]"
                   hint=""
-                  step=".01"
                   lazy-rules
-                  type="number"
                 >
                   <template v-slot:prepend>
                     <q-icon name="percent" />
@@ -95,17 +92,16 @@
                   label="Sueldo"
                   :rules="[reglasAllowNullSueldo]"
                   hint=""
-                  step=".01"
+                  v-money="money"
+                  input-class="text-right"
                   lazy-rules
-                  type="number"
                 >
                   <template v-slot:prepend>
                     <q-icon name="paid" />
                   </template>
                 </q-input>
               </div>
-
-              </div>
+            </div>
 
             <div
               class="full-width row justify-center items-center content-center"
@@ -137,7 +133,6 @@
         <q-card-section>
           <q-form @submit="putData">
             <div class="row">
-
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
@@ -152,7 +147,7 @@
                   "
                 >
                   <template v-slot:prepend>
-                    <q-icon name="percent" />
+                    <q-icon name="person" />
                   </template>
                 </q-input>
               </div>
@@ -191,9 +186,9 @@
                   label="Porcentaje Retención"
                   :rules="[reglasNotNullPercent]"
                   hint=""
-                  step=".01"
+                  v-money="money"
+                  input-class="text-right"
                   lazy-rules
-                  type="number"
                 >
                   <template v-slot:prepend>
                     <q-icon name="percent" />
@@ -227,16 +222,15 @@
                   label="Sueldo"
                   :rules="[reglasAllowNullSueldo]"
                   hint=""
-                  step=".01"
+                  v-money="money"
+                  input-class="text-right"
                   lazy-rules
-                  type="number"
                 >
                   <template v-slot:prepend>
                     <q-icon name="paid" />
                   </template>
                 </q-input>
               </div>
-
             </div>
 
             <div
@@ -314,7 +308,6 @@
                 :loading="loading"
                 :columns="columns"
                 :separator="separator"
-                
                 :filter="filter"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -333,7 +326,11 @@
                       icon="edit"
                       :disabled="this.disabledEdit"
                       @click="
-                        getData(`/empleados/${props.row.id}`, 'setDataEdit', 'formEdit');
+                        getData(
+                          `/empleados/${props.row.id}`,
+                          'setDataEdit',
+                          'formEdit'
+                        );
                         edit = true;
                       "
                     ></q-btn>
@@ -385,7 +382,11 @@
                               icon="edit"
                               :disabled="this.disabledEdit"
                               @click="
-                                getData(`/empleados/${props.row.id}`, 'setDataEdit', 'formEdit');
+                                getData(
+                                  `/empleados/${props.row.id}`,
+                                  'setDataEdit',
+                                  'formEdit'
+                                );
                                 edit = true;
                               "
                             ></q-btn>
@@ -454,13 +455,15 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <methods ref="methods"
-    @get-Data-Empleados="getDataEmpleados('/empleados','setData','datos')"
-    @set-data="setData" @set-Data-Edit="setData"
-    @reset-Loading="resetLoading">
+    <methods
+      ref="methods"
+      @get-Data-Empleados="getDataEmpleados('/empleados', 'setData', 'datos')"
+      @set-data="setData"
+      @set-Data-Edit="setData"
+      @reset-Loading="resetLoading"
+    >
     </methods>
-    <desactivate-crud ref="desactivateCrud"
-    @desactivar-Crud="desactivarCrud">
+    <desactivate-crud ref="desactivateCrud" @desactivar-Crud="desactivarCrud">
     </desactivate-crud>
   </q-page>
 </template>
@@ -474,17 +477,30 @@ import { useQuasar } from "quasar";
 
 import { LocalStorage } from "quasar";
 
-import methodsVue from 'src/components/methods.vue';
+import { VMoney } from "v-money";
 
-import desactivateCrudVue from 'src/components/desactivateCrud.vue';
+import methodsVue from "src/components/methods.vue";
+
+import desactivateCrudVue from "src/components/desactivateCrud.vue";
 
 export default {
+  directives: { money: VMoney },
   components: {
-  "desactivate-crud": desactivateCrudVue,
-  "methods": methodsVue },
+    "desactivate-crud": desactivateCrudVue,
+    methods: methodsVue,
+    VMoney,
+  },
   name: "Empleados",
   data() {
     return {
+      money: {
+        decimal: ",",
+        thousands: ".",
+        prefix: "",
+        suffix: "",
+        precision: 2,
+        masked: true,
+      },
       columns: [
         {
           name: "nombre",
@@ -524,17 +540,17 @@ export default {
         aplica_retencion: "0",
         porcentaje_retencion: "",
         periodo: "",
-        sueldo: ""
+        sueldo: "",
       },
       datos: [],
       formEdit: {
-        id: "", 
+        id: "",
         rif_empleado: "",
         nombre: "",
         aplica_retencion: "0",
         porcentaje_retencion: "",
         periodo: "",
-        sueldo: ""
+        sueldo: "",
       },
       selected: [],
       error: "",
@@ -571,8 +587,14 @@ export default {
     };
   },
   mounted() {
-    this.getDataEmpleados('/empleados','setData','datos')
-    this.$refs.desactivateCrud.desactivarCrud('c_empleados', 'r_empleados', 'u_empleados', 'd_empleados', 'desactivarCrud')
+    this.getDataEmpleados("/empleados", "setData", "datos");
+    this.$refs.desactivateCrud.desactivarCrud(
+      "c_empleados",
+      "r_empleados",
+      "u_empleados",
+      "d_empleados",
+      "desactivarCrud"
+    );
   },
   methods: {
     resetLoading() {
@@ -586,13 +608,13 @@ export default {
       if (val === "") {
         return "Debes Escribir Algo";
       }
-        if (val !== null !== "") {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-          if (val.length > 10) {
-            return "Deben ser Maximo 10 caracteres";
-          }
+      if ((val !== null) !== "") {
+        if (val.length < 3) {
+          return "Deben ser minimo 3 caracteres";
+        }
+        if (val.length > 10) {
+          return "Deben ser Maximo 10 caracteres";
+        }
       }
     },
     reglasNotNull30(val) {
@@ -602,26 +624,28 @@ export default {
       if (val === "") {
         return "Debes Escribir Algo";
       }
-        if (val !== null !== "") {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-          if (val.length > 30) {
-            return "Deben ser Maximo 30 caracteres";
-          }
+      if ((val !== null) !== "") {
+        if (val.length < 3) {
+          return "Deben ser minimo 3 caracteres";
+        }
+        if (val.length > 30) {
+          return "Deben ser Maximo 30 caracteres";
+        }
       }
     },
     reglasNotNullPercent(val) {
+      var val = val;
+      val = val.replaceAll(".", "").replaceAll(",", ".");
       if (val === null) {
         return "Debes Escribir Algo";
       }
       if (val === "") {
         return "Debes Escribir Algo";
       }
-      if (val !== null !== "") {
-          if (val > 999.99) {
-            return "Deben ser Maximo 5 caracteres";
-          }
+      if ((val !== null) !== "") {
+        if (val > 999.99) {
+          return "Deben ser Maximo 5 caracteres";
+        }
       }
     },
     reglasNotNull6(val) {
@@ -631,13 +655,15 @@ export default {
       if (val === "") {
         return "Debes Escribir Algo";
       }
-      if (val !== null !== "") {
-          if (val.length > 6) {
-            return "Deben ser Maximo 6 caracteres";
-          }
+      if ((val !== null) !== "") {
+        if (val.length > 6) {
+          return "Deben ser Maximo 6 caracteres";
+        }
       }
     },
     reglasAllowNullSueldo(val) {
+      var val = val;
+      val = val.replaceAll(".", "").replaceAll(",", ".");
       if (val !== null) {
         if (val.length > 0) {
           if (val > 99999999.99) {
@@ -650,14 +676,14 @@ export default {
     desactivarCrud(createItem, readItem, deleteItem, updateItem) {
       if (readItem == true) {
         if (createItem == true) {
-        this.disabledCreate = false
-      }
+          this.disabledCreate = false;
+        }
         if (deleteItem == true) {
-        this.disabledDelete = false
-      }
+          this.disabledDelete = false;
+        }
         if (updateItem == true) {
-        this.disabledEdit = false
-      }
+          this.disabledEdit = false;
+        }
       } else this.$router.push("/error403");
     },
 
@@ -669,50 +695,76 @@ export default {
       this.loading = true;
     },
     setData(res, dataRes) {
-      this[dataRes] = res
-      this.loading = false
-    },  
+      this[dataRes] = res;
+      this.loading = false;
+    },
     setDataEdit(res, dataRes) {
-      this.formEdit.id = res.id
-      this.formEdit.rif_empleado = res.rif_empleado
-      this.formEdit.aplica_retencion = res.aplica_retencion
-      this.formEdit.porcentaje_retencion = res.porcentaje_retencion
-      this.formEdit.porcentaje_retencion = res.porcentaje_retencion
-      this.formEdit.sueldo = res.sueldo
-    },   
+      this.formEdit.id = res.id;
+      this.formEdit.rif_empleado = res.rif_empleado;
+      this.formEdit.aplica_retencion = res.aplica_retencion;
+      this.formEdit.porcentaje_retencion = res.porcentaje_retencion;
+      this.formEdit.porcentaje_retencion = res.porcentaje_retencion;
+      this.formEdit.sueldo = res.sueldo;
+    },
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/empleados/${idpost}`, 'getDataEmpleados', this.axiosConfig);
+      this.$refs.methods.deleteData(
+        `/empleados/${idpost}`,
+        "getDataEmpleados",
+        this.axiosConfig
+      );
       this.loading = true;
     },
     createData() {
-      this.$refs.methods.createData('/empleados', this.form, 'getDataEmpleados', this.axiosConfig);
+      this.form.porcentaje_retencion = this.form.porcentaje_retencion
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
+      this.form.sueldo = this.form.sueldo
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
+      this.$refs.methods.createData(
+        "/empleados",
+        this.form,
+        "getDataEmpleados",
+        this.axiosConfig
+      );
       this.resetForm();
       this.loading = true;
     },
     putData() {
-      this.$refs.methods.putData(`/empleados/${this.formEdit.id}`, this.formEdit, 'getDataEmpleados', this.axiosConfig);
+      this.formEdit.porcentaje_retencion = this.formEdit.porcentaje_retencion
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
+      this.formEdit.sueldo = this.formEdit.sueldo
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
+      this.$refs.methods.putData(
+        `/empleados/${this.formEdit.id}`,
+        this.formEdit,
+        "getDataEmpleados",
+        this.axiosConfig
+      );
       this.edit = false;
       this.resetFormEdit();
       this.loading = true;
     },
-    
+
     resetForm() {
       (this.form.rif_empleado = ""),
-      (this.form.nombre = ""),
-      (this.form.aplica_retencion = "0"),
-      (this.form.porcentaje_retencion = ""),
-      (this.form.periodo = ""),
-      (this.form.sueldo = ""),
-      (this.create = false);    
+        (this.form.nombre = ""),
+        (this.form.aplica_retencion = "0"),
+        (this.form.porcentaje_retencion = ""),
+        (this.form.periodo = ""),
+        (this.form.sueldo = ""),
+        (this.create = false);
     },
     resetFormEdit() {
       (this.formEdit.rif_empleado = ""),
-      (this.formEdit.nombre = ""),
-      (this.formEdit.aplica_retencion = "0"),
-      (this.formEdit.porcentaje_retencion = ""),
-      (this.formEdit.periodo = ""),
-      (this.formEdit.sueldo = ""),
-      (this.edit = false);    
+        (this.formEdit.nombre = ""),
+        (this.formEdit.aplica_retencion = "0"),
+        (this.formEdit.porcentaje_retencion = ""),
+        (this.formEdit.periodo = ""),
+        (this.formEdit.sueldo = ""),
+        (this.edit = false);
     },
   },
 };

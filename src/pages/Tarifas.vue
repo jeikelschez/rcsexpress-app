@@ -39,8 +39,8 @@
                     <q-icon name="support_agent" />
                   </template>
                 </q-select>
-              </div>   
-              
+              </div>
+
               <div class="col-md-4 col-xs-12">
                 <q-select
                   outlined
@@ -56,16 +56,16 @@
                     <q-icon name="support_agent" />
                   </template>
                 </q-select>
-              </div> 
+              </div>
 
               <div class="col-md-4 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.monto_tarifa"
                   label="Monto de Tarifa"
+                  v-money="money"
+                  input-class="text-right"
                   hint=""
-                  type="number"
-                  step=".01"
                   class="pcform"
                   lazy-rules
                 >
@@ -77,11 +77,12 @@
                   outlined
                   v-model="form.kgr_hasta"
                   label="Kgrs Hasta"
+                  v-money="money"
+                  input-class="text-right"
                   class="pcform"
                   :rules="[reglasAllowNull6]"
                   hint=""
                   lazy-rules
-                  mask="#####"
                 >
                   <template v-slot:prepend>
                     <q-icon name="123" />
@@ -104,7 +105,7 @@
                     <q-icon name="support_agent" />
                   </template>
                 </q-select>
-              </div> 
+              </div>
 
               <div class="col-md-4 col-xs-12">
                 <q-select
@@ -140,8 +141,8 @@
                     <q-icon name="support_agent" />
                   </template>
                 </q-select>
-              </div>   
-              
+              </div>
+
               <div class="col-md-4 col-xs-12">
                 <q-select
                   outlined
@@ -258,8 +259,8 @@
                     <q-icon name="support_agent" />
                   </template>
                 </q-select>
-              </div>   
-              
+              </div>
+
               <div class="col-md-4 col-xs-12">
                 <q-select
                   outlined
@@ -275,15 +276,15 @@
                     <q-icon name="support_agent" />
                   </template>
                 </q-select>
-              </div> 
+              </div>
 
               <div class="col-md-4 col-xs-12">
                 <q-input
-                  type="number"
                   outlined
-                  step=".01"
                   v-model="formEdit.monto_tarifa"
                   label="Monto de Tarifa"
+                  v-money="money"
+                  input-class="text-right"
                   hint=""
                   class="pcform"
                   lazy-rules
@@ -296,11 +297,12 @@
                   outlined
                   v-model="formEdit.kgr_hasta"
                   label="Kgrs Hasta"
+                  v-money="money"
+                  input-class="text-right"
                   class="pcform"
                   :rules="[reglasAllowNull6]"
                   hint=""
                   lazy-rules
-                  mask="#####"
                 >
                   <template v-slot:prepend>
                     <q-icon name="123" />
@@ -323,7 +325,7 @@
                     <q-icon name="support_agent" />
                   </template>
                 </q-select>
-              </div> 
+              </div>
 
               <div class="col-md-4 col-xs-12">
                 <q-select
@@ -359,8 +361,8 @@
                     <q-icon name="support_agent" />
                   </template>
                 </q-select>
-              </div>   
-              
+              </div>
+
               <div class="col-md-4 col-xs-12">
                 <q-select
                   outlined
@@ -489,7 +491,6 @@
                 row-key="id"
                 :columns="columns"
                 :separator="separator"
-                
                 :filter="filter"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -508,7 +509,11 @@
                       icon="edit"
                       :disabled="this.disabledEdit"
                       @click="
-                        getData(`/tarifas/${props.row.id}`, 'setDataEdit', 'formEdit');
+                        getData(
+                          `/tarifas/${props.row.id}`,
+                          'setDataEdit',
+                          'formEdit'
+                        );
                         edit = true;
                       "
                     ></q-btn>
@@ -560,7 +565,11 @@
                               icon="edit"
                               :disabled="this.disabledEdit"
                               @click="
-                                getData(`/tarifas/${props.row.id}`, 'setDataEdit', 'formEdit');
+                                getData(
+                                  `/tarifas/${props.row.id}`,
+                                  'setDataEdit',
+                                  'formEdit'
+                                );
                                 edit = true;
                               "
                             ></q-btn>
@@ -629,14 +638,15 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <methods ref="methods"
-    @get-Data-Tarifas="getDataTarifas('/tarifas','setData','datos')"
-    @set-data="setData"
-    @reset-Loading="resetLoading"
-    @set-Data-Edit="setDataEdit">
+    <methods
+      ref="methods"
+      @get-Data-Tarifas="getDataTarifas('/tarifas', 'setData', 'datos')"
+      @set-data="setData"
+      @reset-Loading="resetLoading"
+      @set-Data-Edit="setDataEdit"
+    >
     </methods>
-    <desactivate-crud ref="desactivateCrud"
-    @desactivar-Crud="desactivarCrud">
+    <desactivate-crud ref="desactivateCrud" @desactivar-Crud="desactivarCrud">
     </desactivate-crud>
   </q-page>
 </template>
@@ -650,20 +660,30 @@ import { useQuasar } from "quasar";
 
 import { LocalStorage } from "quasar";
 
-import methodsVue from 'src/components/methods.vue';
+import methodsVue from "src/components/methods.vue";
 
-import desactivateCrudVue from 'src/components/desactivateCrud.vue';
+import { VMoney } from "v-money";
 
-import currencyInputVue from 'src/components/currency-input.vue';
+import desactivateCrudVue from "src/components/desactivateCrud.vue";
 
 export default {
+  directives: { money: VMoney },
   components: {
-  "desactivate-crud": desactivateCrudVue,
-  "methods": methodsVue,
-  "currency-input": currencyInputVue},
+    "desactivate-crud": desactivateCrudVue,
+    methods: methodsVue,
+    VMoney,
+  },
   name: "Bancos",
   data() {
     return {
+      money: {
+        decimal: ",",
+        thousands: ".",
+        prefix: "",
+        suffix: "",
+        precision: 2,
+        masked: true,
+      },
       columns: [
         {
           name: "monto_tarifa",
@@ -722,7 +742,7 @@ export default {
         },
       ],
       form: {
-        monto_tarifa: "0",
+        monto_tarifa: "",
         tipo_urgencia: [],
         tipo_tarifa: [],
         tipo_ubicacion: [],
@@ -771,7 +791,7 @@ export default {
       datos: [],
       formEdit: {
         id: "",
-        monto_tarifa: "0",
+        monto_tarifa: "",
         tipo_urgencia: [],
         tipo_tarifa: [],
         tipo_ubicacion: [],
@@ -788,11 +808,6 @@ export default {
       disabledCreate: true,
       disabledEdit: true,
       disabledDelete: true,
-      axiosConfig: {
-        headers: {
-          Authorization: ``,
-        },
-      },   
     };
   },
   setup() {
@@ -818,8 +833,14 @@ export default {
     };
   },
   mounted() {
-    this.getDataTarifas('/tarifas','setData','datos')
-    this.$refs.desactivateCrud.desactivarCrud('c_tarifas', 'r_tarifas', 'u_tarifas', 'd_tarifas', 'desactivarCrud')
+    this.getDataTarifas("/tarifas", "setData", "datos");
+    this.$refs.desactivateCrud.desactivarCrud(
+      "c_tarifas",
+      "r_tarifas",
+      "u_tarifas",
+      "d_tarifas",
+      "desactivarCrud"
+    );
   },
   methods: {
     resetLoading() {
@@ -836,6 +857,8 @@ export default {
     },
     reglasAllowNull6(val) {
       if (val !== null) {
+        var val = val;
+        val = val.replaceAll(".", "").replaceAll(",", ".");
         if (val.length > 0) {
           if (val.length > 5) {
             return "Deben ser Maximo 6 caracteres";
@@ -848,109 +871,146 @@ export default {
     desactivarCrud(createItem, readItem, deleteItem, updateItem) {
       if (readItem == true) {
         if (createItem == true) {
-        this.disabledCreate = false
-      }
+          this.disabledCreate = false;
+        }
         if (deleteItem == true) {
-        this.disabledDelete = false
-      }
+          this.disabledDelete = false;
+        }
         if (updateItem == true) {
-        this.disabledEdit = false
-      }
+          this.disabledEdit = false;
+        }
       } else this.$router.push("/error403");
     },
 
     // Metodos CRUD
     getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.$refs.methods.getData(url, call, dataRes, {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        },
+      });
     },
     getDataTarifas(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.$refs.methods.getData(url, call, dataRes, {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        },
+      });
       this.loading = true;
     },
     setData(res, dataRes) {
       this[dataRes] = res;
-      this.loading = false
-    },  
+      this.loading = false;
+    },
     setDataEdit(res, dataRes) {
-      this.formEdit.id = res.id
-      this.formEdit.monto_tarifa = res.monto_tarifa
-      this.formEdit.kgr_hasta = res.kgr_hasta
-      this.formEdit.tiempo_servicio = res.tiempo_servicio
-      this.formEdit.tipo_urgencia = res.urgencia_desc
-      this.formEdit.tipo_tarifa = res.tarifa_desc
-      this.formEdit.tipo_ubicacion = res.ubicacion_desc
-      this.formEdit.tipo_carga = res.carga_desc
-      this.formEdit.modalidad_pago = res.modalidad_desc
-      this.formEdit.pagado_en = res.pagado_desc
-      this.formEdit.region_origen = res.origen_desc
-      this.formEdit.region_destino = res.destino_desc
-      this.formEdit.tiempo_servicio = res.tiempo_servicio
-      this.loading = false
+      this.formEdit.id = res.id;
+      this.formEdit.monto_tarifa = res.monto_tarifa;
+      this.formEdit.kgr_hasta = res.kgr_hasta;
+      this.formEdit.tiempo_servicio = res.tiempo_servicio;
+      this.formEdit.tipo_urgencia = res.urgencia_desc;
+      this.formEdit.tipo_tarifa = res.tarifa_desc;
+      this.formEdit.tipo_ubicacion = res.ubicacion_desc;
+      this.formEdit.tipo_carga = res.carga_desc;
+      this.formEdit.modalidad_pago = res.modalidad_desc;
+      this.formEdit.pagado_en = res.pagado_desc;
+      this.formEdit.region_origen = res.origen_desc;
+      this.formEdit.region_destino = res.destino_desc;
+      this.formEdit.tiempo_servicio = res.tiempo_servicio;
+      this.loading = false;
       if (this.formEdit.tiempo_servicio == null) {
-        this.formEdit.tiempo_servicio = ""
+        this.formEdit.tiempo_servicio = "";
       }
-    },   
+    },
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/tarifas/${idpost}`, 'getDataTarifas', this.axiosConfig);
+      this.$refs.methods.deleteData(`/tarifas/${idpost}`, "getDataTarifas", {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        },
+      });
       this.loading = true;
     },
     createData() {
-      this.form.tipo_urgencia = this.form.tipo_urgencia.value
-      this.form.tipo_tarifa = this.form.tipo_tarifa.value
-      this.form.tipo_ubicacion = this.form.tipo_ubicacion.value
-      this.form.tipo_carga = this.form.tipo_carga.value
-      this.form.modalidad_pago = this.form.modalidad_pago.value
-      this.form.pagado_en = this.form.pagado_en.value
-      this.form.region_origen = this.form.region_origen.value
-      this.form.region_destino = this.form.region_destino.value
-      this.$refs.methods.createData('/tarifas', this.form, 'getDataTarifas', this.axiosConfig);
+      this.form.kgr_hasta = this.form.kgr_hasta
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
+      this.form.monto_tarifa = this.form.monto_tarifa
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
+      this.form.tipo_urgencia = this.form.tipo_urgencia.value;
+      this.form.tipo_tarifa = this.form.tipo_tarifa.value;
+      this.form.tipo_ubicacion = this.form.tipo_ubicacion.value;
+      this.form.tipo_carga = this.form.tipo_carga.value;
+      this.form.modalidad_pago = this.form.modalidad_pago.value;
+      this.form.pagado_en = this.form.pagado_en.value;
+      this.form.region_origen = this.form.region_origen.value;
+      this.form.region_destino = this.form.region_destino.value;
+      this.$refs.methods.createData("/tarifas", this.form, "getDataTarifas", {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        },
+      });
       this.resetForm();
       this.loading = true;
     },
     putData() {
-      this.formEdit.tipo_urgencia = this.formEdit.tipo_urgencia.value
-      this.formEdit.tipo_tarifa = this.formEdit.tipo_tarifa.value
-      this.formEdit.tipo_ubicacion = this.formEdit.tipo_ubicacion.value
-      this.formEdit.tipo_carga = this.formEdit.tipo_carga.value
-      this.formEdit.modalidad_pago = this.formEdit.modalidad_pago.value
-      this.formEdit.pagado_en = this.formEdit.pagado_en.value
-      this.formEdit.region_origen = this.formEdit.region_origen.value
-      this.formEdit.region_destino = this.formEdit.region_destino.value
-      this.$refs.methods.putData(`/tarifas/${this.formEdit.id}`, this.formEdit, 'getDataTarifas', this.axiosConfig);
+      this.formEdit.kgr_hasta = this.formEdit.kgr_hasta
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
+      this.formEdit.monto_tarifa = this.formEdit.monto_tarifa
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
+      this.formEdit.tipo_urgencia = this.formEdit.tipo_urgencia.value;
+      this.formEdit.tipo_tarifa = this.formEdit.tipo_tarifa.value;
+      this.formEdit.tipo_ubicacion = this.formEdit.tipo_ubicacion.value;
+      this.formEdit.tipo_carga = this.formEdit.tipo_carga.value;
+      this.formEdit.modalidad_pago = this.formEdit.modalidad_pago.value;
+      this.formEdit.pagado_en = this.formEdit.pagado_en.value;
+      this.formEdit.region_origen = this.formEdit.region_origen.value;
+      this.formEdit.region_destino = this.formEdit.region_destino.value;
+      this.$refs.methods.putData(
+        `/tarifas/${this.formEdit.id}`,
+        this.formEdit,
+        "getDataTarifas",
+        {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        }
+      );
       this.edit = false;
       this.resetFormEdit();
       this.loading = true;
     },
-    
+
     resetForm() {
       (this.form.monto_tarifa = "0"),
-      (this.form.kgr_hasta = ""),
-      (this.form.tiempo_servicio = ""),
-      (this.form.tipo_urgencia = ""),
-      (this.form.tipo_tarifa = ""),
-      (this.form.tipo_ubicacion = ""),
-      (this.form.tipo_carga = ""),
-      (this.form.modalidad_pago = ""),
-      (this.form.pagado_en = ""),
-      (this.form.region_destino = ""),
-      (this.form.region_origen = ""),
-      (this.form.tiempo_servicio = ""),
-      (this.create = false);    
+        (this.form.kgr_hasta = ""),
+        (this.form.tiempo_servicio = ""),
+        (this.form.tipo_urgencia = ""),
+        (this.form.tipo_tarifa = ""),
+        (this.form.tipo_ubicacion = ""),
+        (this.form.tipo_carga = ""),
+        (this.form.modalidad_pago = ""),
+        (this.form.pagado_en = ""),
+        (this.form.region_destino = ""),
+        (this.form.region_origen = ""),
+        (this.form.tiempo_servicio = ""),
+        (this.create = false);
     },
     resetFormEdit() {
       (this.formEdit.monto_tarifa = "0"),
-      (this.formEdit.kgr_hasta = ""),
-      (this.formEdit.tiempo_servicio = ""),
-      (this.formEdit.tipo_urgencia = ""),
-      (this.formEdit.tipo_tarifa = ""),
-      (this.formEdit.tipo_ubicacion = ""),
-      (this.formEdit.tipo_carga = ""),
-      (this.formEdit.modalidad_pago = ""),
-      (this.formEdit.pagado_en = ""),
-      (this.formEdit.region_destino = ""),
-      (this.formEdit.region_origen = ""),
-      (this.formEdit.tiempo_servicio = ""),
-      (this.create = false);    
+        (this.formEdit.kgr_hasta = ""),
+        (this.formEdit.tiempo_servicio = ""),
+        (this.formEdit.tipo_urgencia = ""),
+        (this.formEdit.tipo_tarifa = ""),
+        (this.formEdit.tipo_ubicacion = ""),
+        (this.formEdit.tipo_carga = ""),
+        (this.formEdit.modalidad_pago = ""),
+        (this.formEdit.pagado_en = ""),
+        (this.formEdit.region_destino = ""),
+        (this.formEdit.region_origen = ""),
+        (this.formEdit.tiempo_servicio = ""),
+        (this.create = false);
     },
   },
 };

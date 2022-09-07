@@ -250,7 +250,6 @@
                 :loading="loading"
                 :columns="columns"
                 :separator="separator"
-                
                 :filter="filter"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -269,7 +268,11 @@
                       icon="edit"
                       :disabled="this.disabledEdit"
                       @click="
-                        getData(`/ayudantes/${props.row.id}`, 'setDataEdit', 'formEdit');
+                        getData(
+                          `/ayudantes/${props.row.id}`,
+                          'setDataEdit',
+                          'formEdit'
+                        );
                         edit = true;
                       "
                     ></q-btn>
@@ -321,7 +324,11 @@
                               icon="edit"
                               :disabled="this.disabledEdit"
                               @click="
-                                getData(`/ayudantes/${props.row.id}`, 'setDataEdit', 'formEdit');
+                                getData(
+                                  `/ayudantes/${props.row.id}`,
+                                  'setDataEdit',
+                                  'formEdit'
+                                );
                                 edit = true;
                               "
                             ></q-btn>
@@ -390,14 +397,15 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <methods ref="methods"
-    @get-Data-Ayudantes="getDataAyudantes('/ayudantes','setData','datos')"
-    @set-data="setData"
-    @reset-Loading="resetLoading"
-    @set-data-Edit="setDataEdit">
+    <methods
+      ref="methods"
+      @get-Data-Ayudantes="getDataAyudantes('/ayudantes', 'setData', 'datos')"
+      @set-data="setData"
+      @reset-Loading="resetLoading"
+      @set-data-Edit="setDataEdit"
+    >
     </methods>
-    <desactive-crud ref="desactiveCrud"
-    @desactivar-Crud="desactivarCrud">
+    <desactive-crud ref="desactiveCrud" @desactivar-Crud="desactivarCrud">
     </desactive-crud>
   </q-page>
 </template>
@@ -405,19 +413,19 @@
 <script>
 import { ref } from "vue";
 
-
 import { useQuasar } from "quasar";
 
 import { LocalStorage } from "quasar";
 
-import methodsVue from 'src/components/methods.vue';
+import methodsVue from "src/components/methods.vue";
 
-import desactivateCrudVue from 'src/components/desactivateCrud.vue';
+import desactivateCrudVue from "src/components/desactivateCrud.vue";
 
 export default {
   components: {
-  "desactive-crud": desactivateCrudVue,
-  "methods": methodsVue },
+    "desactive-crud": desactivateCrudVue,
+    methods: methodsVue,
+  },
   name: "Ayudantes",
   data() {
     return {
@@ -466,14 +474,14 @@ export default {
         nb_ayudante: "",
         dir_ayudante: "",
         tlf_ayudante: "",
-        flag_activo: ""
+        flag_activo: "",
       },
       datos: [],
       formEdit: {
         nb_ayudante: "",
         dir_ayudante: "",
         tlf_ayudante: "",
-        flag_activo: ""
+        flag_activo: "",
       },
       vigente: [
         { label: "ACTIVO", value: "1" },
@@ -484,11 +492,6 @@ export default {
       disabledCreate: true,
       disabledEdit: true,
       disabledDelete: true,
-      axiosConfig: {
-        headers: {
-          Authorization: ``,
-        },
-      },
     };
   },
   setup() {
@@ -538,8 +541,14 @@ export default {
     };
   },
   mounted() {
-    this.getDataAyudantes('/ayudantes','setData','datos')
-    this.$refs.desactiveCrud.desactivarCrud('c_ayudantes', 'r_ayudantes', 'u_ayudantes', 'd_ayudantes', 'desactivarCrud')
+    this.getDataAyudantes("/ayudantes", "setData", "datos");
+    this.$refs.desactiveCrud.desactivarCrud(
+      "c_ayudantes",
+      "r_ayudantes",
+      "u_ayudantes",
+      "d_ayudantes",
+      "desactivarCrud"
+    );
   },
   methods: {
     resetLoading() {
@@ -562,15 +571,15 @@ export default {
       }
     },
     reglaDireccion(val) {
-      if(val !== null) {
-      if (val.length > 0) {
-        if (val.length < 3) {
-        return "Deben ser minimo 3 caracteres";
+      if (val !== null) {
+        if (val.length > 0) {
+          if (val.length < 3) {
+            return "Deben ser minimo 3 caracteres";
+          }
+          if (val.length > 100) {
+            return "Deben ser maximo 100 caracteres";
+          }
         }
-        if (val.length > 100) {
-        return "Deben ser maximo 100 caracteres";
-        }
-       }
       }
     },
     reglaInputName(val) {
@@ -580,91 +589,125 @@ export default {
       if (val === "") {
         return "Debes Escribir Algo";
       }
-      if(val !== null !== "") {
-      if (val.length > 0) {
-        if (val.length < 3) {
-        return "Deben ser minimo 3 caracteres";
+      if ((val !== null) !== "") {
+        if (val.length > 0) {
+          if (val.length < 3) {
+            return "Deben ser minimo 3 caracteres";
+          }
+          if (val.length > 50) {
+            return "Deben ser maximo 50 caracteres";
+          }
         }
-        if (val.length > 50) {
-        return "Deben ser maximo 50 caracteres";
-        }
-       }
       }
     },
     reglaInputPhone(val) {
-      if(val !== null !== "") {
-      if (val.length > 0) {
-        if (val.length < 3) {
-        return "Deben ser minimo 3 caracteres";
+      if ((val !== null) !== "") {
+        if (val.length > 0) {
+          if (val.length < 3) {
+            return "Deben ser minimo 3 caracteres";
+          }
+          if (val.length > 50) {
+            return "Deben ser maximo 50 caracteres";
+          }
         }
-        if (val.length > 50) {
-        return "Deben ser maximo 50 caracteres";
-        }
-       }
       }
     },
     desactivarCrud(createItem, readItem, deleteItem, updateItem) {
       if (readItem == true) {
         if (createItem == true) {
-        this.disabledCreate = false
-      }
+          this.disabledCreate = false;
+        }
         if (deleteItem == true) {
-        this.disabledDelete = false
-      }
+          this.disabledDelete = false;
+        }
         if (updateItem == true) {
-        this.disabledEdit = false
-      }
+          this.disabledEdit = false;
+        }
       } else this.$router.push("/error403");
     },
     getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.$refs.methods.getData(url, call, dataRes, {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        },
+      });
     },
     getDataAyudantes(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.$refs.methods.getData(url, call, dataRes, {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        },
+      });
       this.loading = true;
     },
     setData(res, dataRes) {
       this[dataRes] = res;
-      this.loading = false
-    }, 
+      this.loading = false;
+    },
     setDataEdit(res, dataRes) {
-      this[dataRes].id = res.id
-      this[dataRes].nb_ayudante = res.nb_ayudante
-      this[dataRes].dir_ayudante = res.dir_ayudante
-      this[dataRes].tlf_ayudante = res.tlf_ayudante
-      this[dataRes].flag_activo = res.activo_desc
-      this.loading = false
-    },   
+      this[dataRes].id = res.id;
+      this[dataRes].nb_ayudante = res.nb_ayudante;
+      this[dataRes].dir_ayudante = res.dir_ayudante;
+      this[dataRes].tlf_ayudante = res.tlf_ayudante;
+      this[dataRes].flag_activo = res.activo_desc;
+      this.loading = false;
+    },
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/ayudantes/${idpost}`, 'getDataAyudantes', this.axiosConfig);
+      this.$refs.methods.deleteData(
+        `/ayudantes/${idpost}`,
+        "getDataAyudantes",
+        {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        }
+      );
       this.loading = true;
     },
     createData() {
-      this.form.flag_activo = this.form.flag_activo.value
-      this.$refs.methods.createData('/ayudantes', this.form, 'getDataAyudantes', this.axiosConfig);
+      this.form.flag_activo = this.form.flag_activo.value;
+      this.$refs.methods.createData(
+        "/ayudantes",
+        this.form,
+        "getDataAyudantes",
+        {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        }
+      );
       this.resetForm();
       this.loading = true;
     },
     putData() {
-      this.formEdit.flag_activo = this.formEdit.flag_activo.value
-      this.$refs.methods.putData(`/ayudantes/${this.formEdit.id}`, this.formEdit, 'getDataAyudantes', this.axiosConfig);
+      this.formEdit.flag_activo = this.formEdit.flag_activo.value;
+      this.$refs.methods.putData(
+        `/ayudantes/${this.formEdit.id}`,
+        this.formEdit,
+        "getDataAyudantes",
+        {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        }
+      );
       this.edit = false;
       this.loading = true;
     },
-    
+
     resetForm() {
       (this.form.nb_ayudante = null),
-      (this.form.dir_ayudante = null),
-      (this.form.tlf_ayudante = null),
-      (this.form.flag_activo = null),
-      (this.create = false);    
+        (this.form.dir_ayudante = null),
+        (this.form.tlf_ayudante = null),
+        (this.form.flag_activo = null),
+        (this.create = false);
     },
     resetFormEdit() {
       (this.formEdit.nb_ayudante = null),
-      (this.formEdit.dir_ayudante = null),
-      (this.formEdit.tlf_ayudante = null),
-      (this.formEdit.flag_activo = null),
-      (this.edit = false);    
+        (this.formEdit.dir_ayudante = null),
+        (this.formEdit.tlf_ayudante = null),
+        (this.formEdit.flag_activo = null),
+        (this.edit = false);
     },
   },
 };

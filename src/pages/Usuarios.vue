@@ -3,7 +3,11 @@
     <q-dialog v-model="usuariosForm">
       <q-card class="q-pa-md" bordered style="max-width: 60vw">
         <q-card-section>
-          <q-form @submit="createDataUsuarios()" class="q-gutter-md" autocomplete="off">
+          <q-form
+            @submit="createDataUsuarios()"
+            class="q-gutter-md"
+            autocomplete="off"
+          >
             <div class="row">
               <div class="col-md-5 col-xs-12">
                 <q-input
@@ -13,8 +17,7 @@
                   hint=""
                   class="pcform"
                   @update:model-value="
-                    formUsuarios.login =
-                      formUsuarios.login.toUpperCase()
+                    formUsuarios.login = formUsuarios.login.toUpperCase()
                   "
                   lazy-rules
                   :rules="reglasLogin"
@@ -36,9 +39,9 @@
                 >
                   <template v-slot:prepend>
                     <q-icon
-                    :name="isPwd ? 'visibility_off' : 'visibility'"
-                    class="cursor-pointer"
-                    @click="isPwd = !isPwd"
+                      :name="isPwd ? 'visibility_off' : 'visibility'"
+                      class="cursor-pointer"
+                      @click="isPwd = !isPwd"
                     />
                   </template>
                 </q-input>
@@ -52,8 +55,7 @@
                   label="Nombre"
                   hint=""
                   @update:model-value="
-                    formUsuarios.nombre =
-                      formUsuarios.nombre.toUpperCase()
+                    formUsuarios.nombre = formUsuarios.nombre.toUpperCase()
                   "
                   lazy-rules
                   :rules="reglasNombre"
@@ -89,26 +91,41 @@
                   hint=""
                   :rules="[reglasInputs]"
                   :options="agenciasSelected"
-                @filter="(val,update,abort) => 
-                filterArray(val,update,abort,'agenciasSelected', 'agencias', 'nb_agencia')"
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'agenciasSelected',
+                        'agencias',
+                        'nb_agencia'
+                      )
+                  "
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
                   option-label="nb_agencia"
                   option-value="id"
                   lazy-rules
                   transition-show="flip-up"
                   transition-hide="flip-down"
-                  @update:model-value="this.axiosConfig.headers.agencia = this.formUsuarios.cod_agencia.id;
-                  getData(`/roles`, 'setDataRoles', 'roles')"
-                ><template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
+                  @update:model-value="
+                    getData(`/roles`, 'setDataRoles', 'roles', {
+                      headers: {
+                        Authorization: ``,
+                        agencia: this.formUsuarios.cod_agencia.id,
+                      },
+                    })
+                  "
+                  ><template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        Sin resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
                   <template v-slot:prepend>
                     <q-icon name="apartment" />
                   </template>
@@ -163,7 +180,7 @@
     </q-dialog>
 
     <q-dialog v-model="usuariosFormEdit">
-      <q-card class="q-pa-md" bordered style="max-width: 60vw" >
+      <q-card class="q-pa-md" bordered style="max-width: 60vw">
         <q-card-section>
           <q-form @submit="putDataUsuarios()" autocomplete="off">
             <div class="row">
@@ -231,26 +248,41 @@
                   hint=""
                   :rules="[reglasInputs]"
                   :options="agenciasSelected"
-                @filter="(val,update,abort) => 
-                filterArray(val,update,abort,'agenciasSelected', 'agencias', 'nb_agencia')"
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'agenciasSelected',
+                        'agencias',
+                        'nb_agencia'
+                      )
+                  "
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
                   option-label="nb_agencia"
                   option-value="id"
                   lazy-rules
                   transition-show="flip-up"
                   transition-hide="flip-down"
-                  @update:model-value="this.axiosConfig.headers.agencia = this.formEditUsuarios.cod_agencia.id;
-                  getData(`/roles`, 'setDataRoles', 'roles')"
-                ><template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
+                  @update:model-value="
+                    getData(`/roles`, 'setDataRoles', 'roles', {
+                      headers: {
+                        Authorization: ``,
+                        agencia: this.formEditUsuarios.cod_agencia.id,
+                      },
+                    })
+                  "
+                  ><template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        Sin resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
                   <template v-slot:prepend>
                     <q-icon name="apartment" />
                   </template>
@@ -311,7 +343,9 @@
             class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 text-secondary"
             style="align-self: center; text-align: center"
           >
-            <h4 style="font-size: 30px"><strong>SEGURIDAD - USUARIOS</strong></h4>
+            <h4 style="font-size: 30px">
+              <strong>SEGURIDAD - USUARIOS</strong>
+            </h4>
           </div>
 
           <div
@@ -323,27 +357,37 @@
               transition-show="flip-up"
               transition-hide="flip-down"
               :options="agenciasSelected"
-                @filter="(val,update,abort) => 
-                filterArray(val,update,abort,'agenciasSelected', 'agencias', 'nb_agencia')"
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
+              @filter="
+                (val, update, abort) =>
+                  filterArray(
+                    val,
+                    update,
+                    abort,
+                    'agenciasSelected',
+                    'agencias',
+                    'nb_agencia'
+                  )
+              "
+              use-input
+              hide-selected
+              fill-input
+              input-debounce="0"
               option-label="nb_agencia"
               option-value="id"
               v-model="selectedAgencia"
               outlined
               standout
               label="Escoge una Agencia"
-              @update:model-value="this.axiosConfig.headers.agencia = this.selectedAgencia.id;
-              getDataUsuarios(`/usuarios`, 'setDataUsuarios', 'usuarios')"
-            ><template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
+              @update:model-value="
+                getDataUsuarios(`/usuarios`, 'setDataUsuarios', 'usuarios')
+              "
+              ><template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    Sin resultados
+                  </q-item-section>
+                </q-item>
+              </template>
               <template v-slot:prepend>
                 <q-icon name="search" />
               </template>
@@ -394,7 +438,6 @@
                 :columns="columnsUsuarios"
                 :separator="separator"
                 :loading="loading"
-                
                 :filter="filterUsuarios"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -413,8 +456,17 @@
                       icon="edit"
                       :disabled="this.disabledEdit"
                       @click="
-                      getData(`/usuarios/${props.row.login}`, 'setDataUsuariosEdit', 'formEditUsuarios');
-                      usuariosFormEdit = true;
+                        getData(
+                          `/usuarios/${props.row.login}`,
+                          'setDataUsuariosEdit',
+                          'formEditUsuarios',
+                          {
+                            headers: {
+                              Authorization: ``,
+                            },
+                          }
+                        );
+                        usuariosFormEdit = true;
                       "
                     ></q-btn>
                     <q-btn
@@ -465,7 +517,16 @@
                               icon="edit"
                               :disabled="this.disabledEdit"
                               @click="
-                                getData(`/usuarios/${props.row.login}`, 'setDataUsuariosEdit', 'formEditUsuarios');
+                                getData(
+                                  `/usuarios/${props.row.login}`,
+                                  'setDataUsuariosEdit',
+                                  'formEditUsuarios',
+                                  {
+                                    headers: {
+                                      Authorization: ``,
+                                    },
+                                  }
+                                );
                                 usuariosFormEdit = true;
                               "
                             ></q-btn>
@@ -534,11 +595,11 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <methods ref="methods"
-      @get-Data="this.axiosConfig.headers.agencia = this.selectedAgencia.id;
-      getData(`/usuarios`, 'setDataRoles', 'usuarios')"
-      @get-Data-Usuarios="this.axiosConfig.headers.agencia = this.selectedAgencia.id;
-      getDataUsuarios(`/usuarios`, 'setDataUsuarios', 'usuarios')"
+    <methods
+      ref="methods"
+      @get-Data-Usuarios="
+        getDataUsuarios(`/usuarios`, 'setDataUsuarios', 'usuarios')
+      "
       @set-Data-Usuarios="setDataUsuarios"
       @reset-Loading="resetLoading"
       @set-Data-Usuarios-Edit="setDataUsuariosEdit"
@@ -546,7 +607,8 @@
       @set-Data-Roles-Iniciar="setDataRolesIniciar"
       @set-Data="setData"
     ></methods>
-    <desactivate-crud ref="desactiveCrud"
+    <desactivate-crud
+      ref="desactiveCrud"
       @desactivar-Crud="desactivarCrud"
     ></desactivate-crud>
   </q-page>
@@ -555,19 +617,18 @@
 <script>
 import { ref } from "vue";
 
-import { LocalStorage } from 'quasar';
+import { LocalStorage } from "quasar";
 
 import { api } from "boot/axios";
 
 import { useQuasar } from "quasar";
 
-import methodsVue from 'src/components/methods.vue';
+import methodsVue from "src/components/methods.vue";
 
-import desactivateCrudVue from 'src/components/desactivateCrud.vue';
+import desactivateCrudVue from "src/components/desactivateCrud.vue";
 
 export default {
-  components: { "desactivate-crud": desactivateCrudVue,
-  "methods": methodsVue },
+  components: { "desactivate-crud": desactivateCrudVue, methods: methodsVue },
   name: "Bancos",
   data() {
     return {
@@ -660,14 +721,13 @@ export default {
       axiosConfig: {
         headers: {
           Authorization: ``,
-          agencia: ""
-        }
+        },
       },
       pagination: ref({
         rowsPerPage: 10,
       }),
       separator: ref("vertical"),
-      password: ref(''),
+      password: ref(""),
       loading: ref(false),
       isPwd: ref(true),
       usuariosForm: ref(false),
@@ -698,26 +758,36 @@ export default {
       },
       usuariosDelete: ref(false),
       filterUsuarios: ref(""),
-      reglasLogin: [(val) =>
-          (val !== null && val !== "") || "Por favor escribe algo",
+      reglasLogin: [
+        (val) => (val !== null && val !== "") || "Por favor escribe algo",
         (val) => val.length < 12 || "Deben ser máximo 11 caracteres",
         (val) => val.length >= 3 || "Deben ser minimo 3 caracteres",
       ],
-      reglasPassword: [(val) =>
-        (val !== null && val !== "") || "Por favor escribe algo",
+      reglasPassword: [
+        (val) => (val !== null && val !== "") || "Por favor escribe algo",
         (val) => val.length <= 10 || "Deben ser máximo 10 caracteres",
         (val) => val.length >= 3 || "Deben ser minimo 3 caracteres",
       ],
-      reglasNombre: [(val) =>
-          (val !== null && val !== "") || "Por favor escribe algo",
+      reglasNombre: [
+        (val) => (val !== null && val !== "") || "Por favor escribe algo",
         (val) => val.length <= 50 || "Deben ser máximo 50 caracteres",
         (val) => val.length >= 3 || "Deben ser minimo 3 caracteres",
       ],
     };
   },
   mounted() {
-    this.getData('/agencias', 'setData', 'agencias');
-    this.$refs.desactiveCrud.desactivarCrud('c_usuarios', 'r_usuarios', 'u_usuarios', 'd_usuarios', 'desactivarCrud')
+    this.getData("/agencias", "setData", "agencias", {
+      headers: {
+        Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+      },
+    });
+    this.$refs.desactiveCrud.desactivarCrud(
+      "c_usuarios",
+      "r_usuarios",
+      "u_usuarios",
+      "d_usuarios",
+      "desactivarCrud"
+    );
   },
   methods: {
     filterArray(val, update, abort, pagina, array, element) {
@@ -756,36 +826,41 @@ export default {
     desactivarCrud(createItem, readItem, deleteItem, updateItem) {
       if (readItem == true) {
         if (createItem == true) {
-        this.disabledCreate = false
-      }
+          this.disabledCreate = false;
+        }
         if (deleteItem == true) {
-        this.disabledDelete = false
-      }
+          this.disabledDelete = false;
+        }
         if (updateItem == true) {
-        this.disabledEdit = false
-      }
+          this.disabledEdit = false;
+        }
       } else this.$router.push("/error403");
     },
-    getData(url, call, dataRes) {
-    this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+    getData(url, call, dataRes, axiosConfig) {
+      this.$refs.methods.getData(url, call, dataRes, axiosConfig);
     },
     getDataUsuarios(url, call, dataRes) {
-    this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
-    this.loading = true;
+      this.$refs.methods.getData(url, call, dataRes, {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          agencia: this.selectedAgencia.id,
+        },
+      });
+      this.loading = true;
     },
     setData(res, dataRes) {
-      this[dataRes] = res
+      this[dataRes] = res;
       this.getDatosIniciar();
-      this.loading = false
+      this.loading = false;
     },
     setDataUsuarios(res, dataRes) {
       this[dataRes] = res;
-      this.loading = false
+      this.loading = false;
     },
     setDataRoles(res, dataRes) {
-      this[dataRes] = res
-      this.formEditUsuarios.cod_rol = ''
-      this.loading = false
+      this[dataRes] = res;
+      this.formEditUsuarios.cod_rol = "";
+      this.loading = false;
     },
     setDataUsuariosEdit(res, dataRes) {
       this[dataRes].login = res.login;
@@ -794,18 +869,31 @@ export default {
       this[dataRes].cod_rol = res.roles.descripcion;
       this[dataRes].activo = res.activo_desc;
       this[dataRes].cod_agencia = this.selectedAgencia;
-      this.axiosConfig.headers.agencia = this.formEditUsuarios.cod_agencia.id;
-      this.getData(`/roles`, 'setDataRolesIniciar', 'roles')
+      this.getData(`/roles`, "setDataRolesIniciar", "roles", {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          agencia: this.formEditUsuarios.cod_agencia.id,
+        },
+      });
     },
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/usuarios/${idpost}`, 'getDataUsuarios', this.axiosConfig);
+      this.$refs.methods.deleteData(
+        `/usuarios/${idpost}`,
+        "getDataUsuarios",
+        this.axiosConfig
+      );
       this.loading = true;
     },
     createDataUsuarios() {
       this.formUsuarios.activo = this.formUsuarios.activo.value;
       this.formUsuarios.cod_rol = this.formUsuarios.cod_rol.id;
       this.formUsuarios.cod_agencia = this.formUsuarios.cod_agencia.id;
-      this.$refs.methods.createData(`/usuarios`, this.formUsuarios, 'getDataUsuarios', this.axiosConfig);
+      this.$refs.methods.createData(
+        `/usuarios`,
+        this.formUsuarios,
+        "getDataUsuarios",
+        this.axiosConfig
+      );
       this.usuariosForm = false;
       this.loading = true;
     },
@@ -813,46 +901,62 @@ export default {
       this.formEditUsuarios.activo = this.formEditUsuarios.activo.value;
       this.formEditUsuarios.cod_rol = this.formEditUsuarios.cod_rol.id;
       this.formEditUsuarios.cod_agencia = this.formEditUsuarios.cod_agencia.id;
-      this.$refs.methods.putData(`/usuarios/${this.formEditUsuarios.login}`, this.formEditUsuarios, 'getDataUsuarios', this.axiosConfig);
+      this.$refs.methods.putData(
+        `/usuarios/${this.formEditUsuarios.login}`,
+        this.formEditUsuarios,
+        "getDataUsuarios",
+        this.axiosConfig
+      );
       this.resetFormEditUsuarios();
       this.loading = true;
-    }, 
+    },
     resetFormUsuarios() {
       (this.formUsuarios.nombre = null),
-      (this.formUsuarios.login = null),
-      (this.formUsuarios.cod_rol = null),
-      (this.formUsuarios.activo = null),
-      (this.formUsuarios.password = null),
-      (this.formUsuarios.cod_agencia = null),
-      (this.usuariosForm = false)
+        (this.formUsuarios.login = null),
+        (this.formUsuarios.cod_rol = null),
+        (this.formUsuarios.activo = null),
+        (this.formUsuarios.password = null),
+        (this.formUsuarios.cod_agencia = null),
+        (this.usuariosForm = false);
     },
     resetFormEditUsuarios() {
       (this.formEditUsuarios.nombre = null),
-      (this.formEditUsuarios.login = null),
-      (this.formEditUsuarios.cod_rol = null),
-      (this.formEditUsuarios.activo = null),
-      (this.formUsuarios.password = null),
-      (this.formUsuarios.cod_agencia = null),
-      (this.usuariosFormEdit = false)
+        (this.formEditUsuarios.login = null),
+        (this.formEditUsuarios.cod_rol = null),
+        (this.formEditUsuarios.activo = null),
+        (this.formUsuarios.password = null),
+        (this.formUsuarios.cod_agencia = null),
+        (this.usuariosFormEdit = false);
     },
 
     // Metodos para colocar valores iniciales
     getDatosIniciar() {
-        this.agenciaRef2 = this.agencias[0].id;
-        this.selectedAgencia = this.agencias[0];
-        this.axiosConfig.headers.agencia = this.agenciaRef2
-        api.get(`/roles`, this.axiosConfig)
+      this.agenciaRef2 = this.agencias[0].id;
+      this.selectedAgencia = this.agencias[0];
+      api
+        .get(`/roles`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            agencia: this.agenciaRef2,
+          },
+        })
         .then((res) => {
           this.roles = res.data;
+        });
+      api
+        .get(`/usuarios`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            agencia: this.agenciaRef2,
+          },
         })
-        api.get(`/usuarios`, this.axiosConfig)
         .then((res) => {
           this.usuarios = res.data;
-        })
+        });
     },
     setDataRolesIniciar(res, dataRes) {
-      this[dataRes] = res
-      this.loading = false
+      this[dataRes] = res;
+      this.loading = false;
     },
   },
 };

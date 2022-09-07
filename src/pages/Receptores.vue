@@ -122,9 +122,7 @@
                   :rules="[reglasAllowNull10]"
                   hint=""
                   lazy-rules
-                  @update:model-value="
-                    form.placa = form.placa.toUpperCase()
-                  "
+                  @update:model-value="form.placa = form.placa.toUpperCase()"
                 >
                   <template v-slot:prepend>
                     <q-icon name="money" />
@@ -282,7 +280,8 @@
                   lazy-rules
                   class="pcform"
                   @update:model-value="
-                    formEdit.cedula_receptor = formEdit.cedula_receptor.toUpperCase()
+                    formEdit.cedula_receptor =
+                      formEdit.cedula_receptor.toUpperCase()
                   "
                 >
                   <template v-slot:prepend>
@@ -404,7 +403,6 @@
                 binary-state-sort
                 :loading="loading"
                 :separator="separator"
-                
                 :filter="filter"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -423,7 +421,11 @@
                       icon="edit"
                       :disabled="this.disabledEdit"
                       @click="
-                        getData(`/receptores/${props.row.id}`, 'setDataEdit', 'formEdit');
+                        getData(
+                          `/receptores/${props.row.id}`,
+                          'setDataEdit',
+                          'formEdit'
+                        );
                         edit = true;
                       "
                     ></q-btn>
@@ -475,7 +477,11 @@
                               icon="edit"
                               :disabled="this.disabledEdit"
                               @click="
-                                getData(`/receptores/${props.row.id}`, 'setDataEdit', 'formEdit');
+                                getData(
+                                  `/receptores/${props.row.id}`,
+                                  'setDataEdit',
+                                  'formEdit'
+                                );
                                 edit = true;
                               "
                             ></q-btn>
@@ -544,14 +550,17 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <methods ref="methods"
-    @get-Data-Receptores="getDataReceptores('/receptores','setData','datos')"
-    @set-data="setData"
-    @reset-Loading="resetLoading"
-    @set-Data-Edit="setDataEdit">
+    <methods
+      ref="methods"
+      @get-Data-Receptores="
+        getDataReceptores('/receptores', 'setData', 'datos')
+      "
+      @set-data="setData"
+      @reset-Loading="resetLoading"
+      @set-Data-Edit="setDataEdit"
+    >
     </methods>
-    <desactivate-crud ref="desactivateCrud"
-    @desactivar-Crud="desactivarCrud">
+    <desactivate-crud ref="desactivateCrud" @desactivar-Crud="desactivarCrud">
     </desactivate-crud>
   </q-page>
 </template>
@@ -565,14 +574,15 @@ import { useQuasar } from "quasar";
 
 import { LocalStorage } from "quasar";
 
-import methodsVue from 'src/components/methods.vue';
+import methodsVue from "src/components/methods.vue";
 
-import desactivateCrudVue from 'src/components/desactivateCrud.vue';
+import desactivateCrudVue from "src/components/desactivateCrud.vue";
 
 export default {
   components: {
-  "desactivate-crud": desactivateCrudVue,
-  "methods": methodsVue},
+    "desactivate-crud": desactivateCrudVue,
+    methods: methodsVue,
+  },
   name: "Receptores",
   data() {
     return {
@@ -640,11 +650,6 @@ export default {
       disabledCreate: true,
       disabledEdit: true,
       disabledDelete: true,
-      axiosConfig: {
-        headers: {
-          Authorization: ``,
-        },
-      },
     };
   },
   setup() {
@@ -670,8 +675,14 @@ export default {
     };
   },
   mounted() {
-    this.getDataReceptores('/receptores','setData','datos')
-    this.$refs.desactivateCrud.desactivarCrud('c_receptores', 'r_receptores', 'u_receptores', 'd_receptores', 'desactivarCrud')
+    this.getDataReceptores("/receptores", "setData", "datos");
+    this.$refs.desactivateCrud.desactivarCrud(
+      "c_receptores",
+      "r_receptores",
+      "u_receptores",
+      "d_receptores",
+      "desactivarCrud"
+    );
   },
   methods: {
     resetLoading() {
@@ -687,43 +698,43 @@ export default {
       }
     },
     reglasNotNull100(val) {
-        if (val !== null !== "") {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-          if (val.length > 99) {
-            return "Deben ser Maximo 100 caracteres";
-          }
+      if ((val !== null) !== "") {
+        if (val.length < 3) {
+          return "Deben ser minimo 3 caracteres";
+        }
+        if (val.length > 99) {
+          return "Deben ser Maximo 100 caracteres";
+        }
       }
     },
     reglasNotNull20(val) {
-        if (val !== null !== "") {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-          if (val.length > 19) {
-            return "Deben ser Maximo 19 caracteres";
-          }
+      if ((val !== null) !== "") {
+        if (val.length < 3) {
+          return "Deben ser minimo 3 caracteres";
+        }
+        if (val.length > 19) {
+          return "Deben ser Maximo 19 caracteres";
+        }
       }
     },
     reglasNotNull200(val) {
-        if (val !== null !== "") {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-          if (val.length > 199) {
-            return "Deben ser Maximo 200 caracteres";
-          }
+      if ((val !== null) !== "") {
+        if (val.length < 3) {
+          return "Deben ser minimo 3 caracteres";
+        }
+        if (val.length > 199) {
+          return "Deben ser Maximo 200 caracteres";
+        }
       }
     },
     reglasNotNull50(val) {
-        if (val !== null !== "") {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-          if (val.length > 49) {
-            return "Deben ser Maximo 50 caracteres";
-          }
+      if ((val !== null) !== "") {
+        if (val.length < 3) {
+          return "Deben ser minimo 3 caracteres";
+        }
+        if (val.length > 49) {
+          return "Deben ser Maximo 50 caracteres";
+        }
       }
     },
     reglasAllowNull20(val) {
@@ -779,78 +790,112 @@ export default {
     desactivarCrud(createItem, readItem, deleteItem, updateItem) {
       if (readItem == true) {
         if (createItem == true) {
-        this.disabledCreate = false
-      }
+          this.disabledCreate = false;
+        }
         if (deleteItem == true) {
-        this.disabledDelete = false
-      }
+          this.disabledDelete = false;
+        }
         if (updateItem == true) {
-        this.disabledEdit = false
-      }
+          this.disabledEdit = false;
+        }
       } else this.$router.push("/error403");
     },
 
     // Metodos CRUD
     getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.$refs.methods.getData(url, call, dataRes, {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        },
+      });
     },
     getDataReceptores(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.$refs.methods.getData(url, call, dataRes, {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        },
+      });
       this.loading = true;
     },
     setData(res, dataRes) {
       this[dataRes] = res;
-      this.loading = false
-    },  
+      this.loading = false;
+    },
     setDataEdit(res, dataRes) {
-      this.formEdit.id = res.id
-      this.formEdit.nb_receptor = res.nb_receptor
-      this.formEdit.dir_receptor = res.dir_receptor
-      this.formEdit.tlf_receptor = res.tlf_receptor
-      this.formEdit.cel_receptor = res.cel_receptor
-      this.formEdit.cedula_receptor = res.cedula_receptor
-      this.formEdit.placa = res.placa
-      this.formEdit.vehiculo = res.vehiculo
-      this.formEdit.flag_activo = res.activo_desc
-      this.loading = false
-    },   
+      this.formEdit.id = res.id;
+      this.formEdit.nb_receptor = res.nb_receptor;
+      this.formEdit.dir_receptor = res.dir_receptor;
+      this.formEdit.tlf_receptor = res.tlf_receptor;
+      this.formEdit.cel_receptor = res.cel_receptor;
+      this.formEdit.cedula_receptor = res.cedula_receptor;
+      this.formEdit.placa = res.placa;
+      this.formEdit.vehiculo = res.vehiculo;
+      this.formEdit.flag_activo = res.activo_desc;
+      this.loading = false;
+    },
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/receptores/${idpost}`, 'getDataReceptores', this.axiosConfig);
+      this.$refs.methods.deleteData(
+        `/receptores/${idpost}`,
+        "getDataReceptores",
+        {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        }
+      );
       this.loading = true;
     },
     createData() {
-      this.form.flag_activo = this.form.flag_activo.value
-      this.$refs.methods.createData('/receptores', this.form, 'getDataReceptores', this.axiosConfig);
+      this.form.flag_activo = this.form.flag_activo.value;
+      this.$refs.methods.createData(
+        "/receptores",
+        this.form,
+        "getDataReceptores",
+        {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        }
+      );
       this.resetForm();
       this.loading = true;
     },
     putData() {
-      this.formEdit.flag_activo = this.formEdit.flag_activo.value
-      this.$refs.methods.putData(`/receptores/${this.formEdit.id}`, this.formEdit, 'getDataReceptores', this.axiosConfig);
+      this.formEdit.flag_activo = this.formEdit.flag_activo.value;
+      this.$refs.methods.putData(
+        `/receptores/${this.formEdit.id}`,
+        this.formEdit,
+        "getDataReceptores",
+        {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        }
+      );
       this.edit = false;
       this.resetFormEdit();
       this.loading = true;
     },
-    
+
     resetForm() {
       (this.form.nb_receptor = ""),
-      (this.form.dir_receptor = ""),
-      (this.form.tlf_receptor = ""),
-      (this.form.cel_receptor = ""),
-      (this.form.cedula_receptor = ""),
-      (this.form.cedula_receptor = ""),
-      (this.form.flag_activo = ""),
-      (this.create = false);    
+        (this.form.dir_receptor = ""),
+        (this.form.tlf_receptor = ""),
+        (this.form.cel_receptor = ""),
+        (this.form.cedula_receptor = ""),
+        (this.form.cedula_receptor = ""),
+        (this.form.flag_activo = ""),
+        (this.create = false);
     },
     resetFormEdit() {
       (this.formEdit.nb_receptor = ""),
-      (this.formEdit.dir_receptor = ""),
-      (this.formEdit.tlf_receptor = ""),
-      (this.formEdit.cel_receptor = ""),
-      (this.formEdit.cedula_receptor = ""),
-      (this.formEdit.flag_activo = ""),
-      (this.formEdit.placa = ""),
-      (this.edit = false);    
+        (this.formEdit.dir_receptor = ""),
+        (this.formEdit.tlf_receptor = ""),
+        (this.formEdit.cel_receptor = ""),
+        (this.formEdit.cedula_receptor = ""),
+        (this.formEdit.flag_activo = ""),
+        (this.formEdit.placa = ""),
+        (this.edit = false);
     },
   },
 };

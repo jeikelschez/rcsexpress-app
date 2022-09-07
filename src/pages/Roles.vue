@@ -13,8 +13,7 @@
                   hint=""
                   class="pcform"
                   @update:model-value="
-                    formRoles.descripcion =
-                      formRoles.descripcion.toUpperCase()
+                    formRoles.descripcion = formRoles.descripcion.toUpperCase()
                   "
                   lazy-rules
                   :rules="reglasDescripcion"
@@ -33,22 +32,31 @@
                   hint=""
                   :rules="[reglasInputs]"
                   :options="agenciasSelected"
-                @filter="(val,update,abort) => 
-                filterArray(val,update,abort,'agenciasSelected', 'agencias', 'nb_agencia')"
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'agenciasSelected',
+                        'agencias',
+                        'nb_agencia'
+                      )
+                  "
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
                   option-label="nb_agencia"
                   option-value="id"
                   lazy-rules
-                ><template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
+                  ><template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        Sin resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
                   <template v-slot:prepend>
                     <q-icon name="apartment" />
                   </template>
@@ -114,22 +122,31 @@
                   hint=""
                   :rules="[reglasInputs]"
                   :options="agenciasSelected"
-                @filter="(val,update,abort) => 
-                filterArray(val,update,abort,'agenciasSelected', 'agencias', 'nb_agencia')"
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'agenciasSelected',
+                        'agencias',
+                        'nb_agencia'
+                      )
+                  "
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
                   option-label="nb_agencia"
                   option-value="id"
                   lazy-rules
-                ><template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
+                  ><template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        Sin resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
                   <template v-slot:prepend>
                     <q-icon name="apartment" />
                   </template>
@@ -181,27 +198,37 @@
               transition-show="flip-up"
               transition-hide="flip-down"
               :options="agenciasSelected"
-                @filter="(val,update,abort) => 
-                filterArray(val,update,abort,'agenciasSelected', 'agencias', 'nb_agencia')"
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
+              @filter="
+                (val, update, abort) =>
+                  filterArray(
+                    val,
+                    update,
+                    abort,
+                    'agenciasSelected',
+                    'agencias',
+                    'nb_agencia'
+                  )
+              "
+              use-input
+              hide-selected
+              fill-input
+              input-debounce="0"
               option-label="nb_agencia"
               option-value="id"
               v-model="selectedAgencia"
               outlined
               standout
               label="Escoge una Agencia"
-              @update:model-value="this.axiosConfig.headers.agencia = this.selectedAgencia.id;
-              getDataRoles(`/roles`, 'setDataRoles', 'roles')"
-            ><template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
+              @update:model-value="
+                getDataRoles(`/roles`, 'setDataRoles', 'roles')
+              "
+              ><template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    Sin resultados
+                  </q-item-section>
+                </q-item>
+              </template>
               <template v-slot:prepend>
                 <q-icon name="search" />
               </template>
@@ -252,7 +279,6 @@
                 :columns="columnsRoles"
                 :loading="loading"
                 :separator="separator"
-                
                 :filter="filterRoles"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -271,8 +297,12 @@
                       icon="edit"
                       :disabled="this.disabledEdit"
                       @click="
-                      getData(`/roles/${props.row.id}`, 'setDataRolesEdit', 'formEditRoles');
-                      rolesFormEdit = true;
+                        getData(
+                          `/roles/${props.row.id}`,
+                          'setDataRolesEdit',
+                          'formEditRoles'
+                        );
+                        rolesFormEdit = true;
                       "
                     ></q-btn>
                     <q-btn
@@ -323,7 +353,11 @@
                               icon="edit"
                               :disabled="this.disabledEdit"
                               @click="
-                                getData(`/roles/${props.row.id}`, 'setDataRolesEdit', 'formEditRoles');
+                                getData(
+                                  `/roles/${props.row.id}`,
+                                  'setDataRolesEdit',
+                                  'formEditRoles'
+                                );
                                 rolesFormEdit = true;
                               "
                             ></q-btn>
@@ -392,12 +426,13 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <desactivate-crud ref="desactiveCrud"
+    <desactivate-crud
+      ref="desactiveCrud"
       @desactivar-Crud="desactivarCrud"
     ></desactivate-crud>
-    <methods ref="methods"
-      @get-Data-Roles="this.axiosConfig.headers.agencia = this.selectedAgencia.id;
-      getDataRoles(`/roles`, 'setDataRoles', 'roles')"
+    <methods
+      ref="methods"
+      @get-Data-Roles="getDataRoles(`/roles`, 'setDataRoles', 'roles')"
       @set-Data-Roles="setDataRoles"
       @reset-Loading="resetLoading"
       @set-Data-Roles-Edit="setDataRolesEdit"
@@ -413,15 +448,14 @@ import { api } from "boot/axios";
 
 import { useQuasar } from "quasar";
 
-import { LocalStorage } from 'quasar';
+import { LocalStorage } from "quasar";
 
-import methodsVue from 'src/components/methods.vue';
+import methodsVue from "src/components/methods.vue";
 
-import desactivateCrudVue from 'src/components/desactivateCrud.vue';
+import desactivateCrudVue from "src/components/desactivateCrud.vue";
 
 export default {
-  components: { "desactivate-crud": desactivateCrudVue,
-  "methods": methodsVue},
+  components: { "desactivate-crud": desactivateCrudVue, methods: methodsVue },
   name: "Bancos",
   data() {
     return {
@@ -478,8 +512,7 @@ export default {
       axiosConfig: {
         headers: {
           Authorization: ``,
-          agencia: ""
-        }
+        },
       },
       pagination: ref({
         rowsPerPage: 10,
@@ -514,16 +547,22 @@ export default {
       },
       rolesDelete: ref(false),
       filterRoles: ref(""),
-      reglasDescripcion: [(val) =>
-        (val !== null && val !== "") || "Por favor escribe algo",
+      reglasDescripcion: [
+        (val) => (val !== null && val !== "") || "Por favor escribe algo",
         (val) => val.length < 30 || "Deben ser máximo 30 caracteres",
         (val) => val.length > 2 || "Deben ser minimo 3 caracteres",
       ],
     };
   },
   mounted() {
-    this.getData('/agencias', 'setData', 'agencias');
-    this.$refs.desactiveCrud.desactivarCrud('c_roles', 'r_roles', 'u_roles', 'd_roles', 'desactivarCrud')
+    this.getData("/agencias", "setData", "agencias");
+    this.$refs.desactiveCrud.desactivarCrud(
+      "c_roles",
+      "r_roles",
+      "u_roles",
+      "d_roles",
+      "desactivarCrud"
+    );
   },
   methods: {
     filterArray(val, update, abort, pagina, array, element) {
@@ -562,14 +601,14 @@ export default {
     desactivarCrud(createItem, readItem, deleteItem, updateItem) {
       if (readItem == true) {
         if (createItem == true) {
-        this.disabledCreate = false
-      }
+          this.disabledCreate = false;
+        }
         if (deleteItem == true) {
-        this.disabledDelete = false
-      }
+          this.disabledDelete = false;
+        }
         if (updateItem == true) {
-        this.disabledEdit = false
-      }
+          this.disabledEdit = false;
+        }
       } else this.$router.push("/error403");
     },
 
@@ -577,59 +616,84 @@ export default {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
     },
     getDataRoles(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.$refs.methods.getData(url, call, dataRes, {
+        headers: {
+          Authorization: ``,
+          agencia: this.selectedAgencia.id,
+        },
+      });
       this.loading = true;
     },
     setData(res, dataRes) {
-      this[dataRes] = res
+      this[dataRes] = res;
       this.getDataIniciar();
-      this.loading = false
+      this.loading = false;
     },
     setDataRoles(res, dataRes) {
-      this[dataRes] = res
-      this.loading = false
+      this[dataRes] = res;
+      this.loading = false;
     },
     setDataRolesEdit(res, dataRes) {
       this.loading = false;
-      this[dataRes].id = res.id
-      this[dataRes].descripcion = res.descripcion
-      this[dataRes].cod_agencia = this.selectedAgencia
+      this[dataRes].id = res.id;
+      this[dataRes].descripcion = res.descripcion;
+      this[dataRes].cod_agencia = this.selectedAgencia;
     },
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/roles/${idpost}`, 'getDataRoles', this.axiosConfig);
+      this.$refs.methods.deleteData(
+        `/roles/${idpost}`,
+        "getDataRoles",
+        this.axiosConfig
+      );
       this.loading = true;
     },
     createDataRoles() {
-      this.formRoles.cod_agencia = this.formRoles.cod_agencia.id
-      this.$refs.methods.createData(`/roles`, this.formRoles, 'getDataRoles', this.axiosConfig);
+      this.formRoles.cod_agencia = this.formRoles.cod_agencia.id;
+      this.$refs.methods.createData(
+        `/roles`,
+        this.formRoles,
+        "getDataRoles",
+        this.axiosConfig
+      );
       this.resetFormRoles();
       this.loading = true;
     },
     putDataRoles() {
-      this.formEditRoles.cod_agencia = this.formEditRoles.cod_agencia.id
-      this.$refs.methods.putData(`/roles/${this.formEditRoles.id}`, this.formEditRoles, 'getDataRoles', this.axiosConfig);
+      this.formEditRoles.cod_agencia = this.formEditRoles.cod_agencia.id;
+      this.$refs.methods.putData(
+        `/roles/${this.formEditRoles.id}`,
+        this.formEditRoles,
+        "getDataRoles",
+        this.axiosConfig
+      );
       this.resetFormEditRoles();
       this.loading = true;
     },
     resetFormRoles() {
       (this.formRoles.descripcion = ""),
-      (this.formRoles.cod_agencia = ""),
-      (this.rolesForm = false)
+        (this.formRoles.cod_agencia = ""),
+        (this.rolesForm = false);
     },
     resetFormEditRoles() {
       (this.formEditRoles.descripcion = null),
-      (this.formEditRoles.cod_agencia = null),
-      (this.rolesFormEdit = false)
+        (this.formEditRoles.cod_agencia = null),
+        (this.rolesFormEdit = false);
     },
     // Metodos para colocar valores iniciales
     getDataIniciar() {
-        this.agenciaRef2 = this.agencias[0].id;
-        this.selectedAgencia = this.agencias[0];
-        this.axiosConfig.headers.agencia = this.agenciaRef2;
-        api.get(`/roles`, this.axiosConfig)
+      this.agenciaRef2 = this.agencias[0].id;
+      this.selectedAgencia = this.agencias[0];
+      this.axiosConfig.headers.agencia = this.agenciaRef2;
+      api
+        .get(`/roles`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            agencia: this.agenciaRef2,
+          },
+        })
         .then((res) => {
           this.roles = res.data;
-        })
+        });
     },
   },
 };

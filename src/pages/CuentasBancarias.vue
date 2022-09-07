@@ -211,7 +211,9 @@
             class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 text-secondary"
             style="align-self: center; text-align: center"
           >
-            <h4 style="font-size: 26px"><strong>MANTENIMIENTO - CUENTAS BANCARIAS</strong></h4>
+            <h4 style="font-size: 26px">
+              <strong>MANTENIMIENTO - CUENTAS BANCARIAS</strong>
+            </h4>
           </div>
 
           <div
@@ -223,27 +225,37 @@
               transition-show="flip-up"
               transition-hide="flip-down"
               :options="bancosSelected"
-                @filter="(val,update,abort) => 
-                filterArray(val,update,abort,'bancosSelected', 'bancos', 'nb_banco')"
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
+              @filter="
+                (val, update, abort) =>
+                  filterArray(
+                    val,
+                    update,
+                    abort,
+                    'bancosSelected',
+                    'bancos',
+                    'nb_banco'
+                  )
+              "
+              use-input
+              hide-selected
+              fill-input
+              input-debounce="0"
               option-label="nb_banco"
               option-value="id"
               v-model="selectedBanco"
               outlined
               standout
               label="Escoge un Banco"
-              @update:model-value="this.axiosConfig.headers.banco = this.selectedBanco.id;
-              getDataCuentas(`/cuentas`, 'setDataCuentas', 'cuentas')"
-            ><template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
+              @update:model-value="
+                getDataCuentas(`/cuentas`, 'setDataCuentas', 'cuentas')
+              "
+              ><template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    Sin resultados
+                  </q-item-section>
+                </q-item>
+              </template>
               <template v-slot:prepend>
                 <q-icon name="search" />
               </template>
@@ -293,7 +305,6 @@
                 binary-state-sort
                 :columns="columnsCuentas"
                 :separator="separator"
-                
                 :filter="filter"
                 :loading="loading"
                 style="width: 100%"
@@ -313,8 +324,12 @@
                       icon="edit"
                       :disabled="this.disabledEdit"
                       @click="
-                      getData(`/cuentas/${props.row.id}`, 'setDataCuentasEdit', 'formEditCuentas');
-                      formEdit = true;
+                        getData(
+                          `/cuentas/${props.row.id}`,
+                          'setDataCuentasEdit',
+                          'formEditCuentas'
+                        );
+                        formEdit = true;
                       "
                     ></q-btn>
                     <q-btn
@@ -365,7 +380,11 @@
                               icon="edit"
                               :disabled="this.disabledEdit"
                               @click="
-                                getData(`/cuentas/${props.row.id}`, 'setDataCuentasEdit', 'formEditCuentas');
+                                getData(
+                                  `/cuentas/${props.row.id}`,
+                                  'setDataCuentasEdit',
+                                  'formEditCuentas'
+                                );
                                 formEdit = true;
                               "
                             ></q-btn>
@@ -434,12 +453,15 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <desactivate-crud ref="desactivateCrud"
+    <desactivate-crud
+      ref="desactivateCrud"
       @desactivar-Crud="desactivarCrud"
     ></desactivate-crud>
-    <methods ref="methods"
-      @get-Data-Cuentas="this.axiosConfig.headers.banco = this.selectedBanco.id;
-      getDataCuentas(`/cuentas`, 'setDataCuentas', 'cuentas')"
+    <methods
+      ref="methods"
+      @get-Data-Cuentas="
+        getDataCuentas(`/cuentas`, 'setDataCuentas', 'cuentas')
+      "
       @set-Data-Cuentas="setDataCuentas"
       @reset-Loading="resetLoading"
       @set-Data-Cuentas-Edit="setDataRolesEdit"
@@ -455,15 +477,14 @@ import { api } from "boot/axios";
 
 import { useQuasar } from "quasar";
 
-import { LocalStorage } from 'quasar';
+import { LocalStorage } from "quasar";
 
-import methodsVue from 'src/components/methods.vue';
+import methodsVue from "src/components/methods.vue";
 
-import desactivateCrudVue from 'src/components/desactivateCrud.vue';
+import desactivateCrudVue from "src/components/desactivateCrud.vue";
 
 export default {
-  components: { "desactivate-crud": desactivateCrudVue,
-  "methods": methodsVue},
+  components: { "desactivate-crud": desactivateCrudVue, methods: methodsVue },
   name: "Cuentas",
   data() {
     return {
@@ -557,8 +578,8 @@ export default {
       axiosConfig: {
         headers: {
           Authorization: ``,
-          banco: ""
-        }
+          banco: "",
+        },
       },
       pagination: ref({
         rowsPerPage: 10,
@@ -568,12 +589,18 @@ export default {
       loading: ref(false),
       formEdit: ref(false),
       cuentasDelete: ref(false),
-      filter: ref("")
+      filter: ref(""),
     };
   },
   mounted() {
-    this.getDataCuentas('/bancos', 'setData', 'bancos');
-    this.$refs.desactivateCrud.desactivarCrud('c_cuentas', 'r_cuentas', 'u_cuentas', 'd_cuentas', 'desactivarCrud')
+    this.getDataCuentas("/bancos", "setData", "bancos");
+    this.$refs.desactivateCrud.desactivarCrud(
+      "c_cuentas",
+      "r_cuentas",
+      "u_cuentas",
+      "d_cuentas",
+      "desactivarCrud"
+    );
   },
   methods: {
     filterArray(val, update, abort, pagina, array, element) {
@@ -615,40 +642,40 @@ export default {
       if (val === null) {
         return "Debes Escribir Algo";
       }
-      if(val !== null) {
-      if (val.length > 25) {
-        return "Deben ser máximo 25 caracteres";
+      if (val !== null) {
+        if (val.length > 25) {
+          return "Deben ser máximo 25 caracteres";
         }
-      if (val.length > 0) {
-        if (val.length < 3) {
-        return "Deben ser minimo 3 caracteres";
+        if (val.length > 0) {
+          if (val.length < 3) {
+            return "Deben ser minimo 3 caracteres";
+          }
         }
-      }
       }
     },
     reglaInputFirma(val) {
-      if(val !== null) {
-      if (val.length > 50) {
-        return "Deben ser máximo 50 caracteres";
+      if (val !== null) {
+        if (val.length > 50) {
+          return "Deben ser máximo 50 caracteres";
         }
-      if (val.length > 0) {
-        if (val.length < 3) {
-        return "Deben ser minimo 3 caracteres";
+        if (val.length > 0) {
+          if (val.length < 3) {
+            return "Deben ser minimo 3 caracteres";
+          }
         }
-      }
       }
     },
     desactivarCrud(createItem, readItem, deleteItem, updateItem) {
       if (readItem == true) {
         if (createItem == true) {
-        this.disabledCreate = false
-      }
+          this.disabledCreate = false;
+        }
         if (deleteItem == true) {
-        this.disabledDelete = false
-      }
+          this.disabledDelete = false;
+        }
         if (updateItem == true) {
-        this.disabledEdit = false
-      }
+          this.disabledEdit = false;
+        }
       } else this.$router.push("/error403");
     },
 
@@ -656,70 +683,94 @@ export default {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
     },
     getDataCuentas(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.$refs.methods.getData(url, call, dataRes, {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          banco: this.selectedBanco.id,
+        },
+      });
       this.loading = true;
     },
     setData(res, dataRes) {
-      this[dataRes] = res
+      this[dataRes] = res;
       this.getDataIniciar();
-      this.loading = false
+      this.loading = false;
     },
     setDataCuentas(res, dataRes) {
-      this[dataRes] = res
-      this.loading = false
+      this[dataRes] = res;
+      this.loading = false;
     },
     setDataRolesEdit(res, dataRes) {
-      this[dataRes].id = res.id
-      this[dataRes].nro_cuenta = res.nro_cuenta
-      this[dataRes].flag_activa = res.activa_desc
-      this[dataRes].tipo_cuenta = res.tipo_desc
-      this[dataRes].firma_autorizada = res.firma_autorizada
-      this[dataRes].cod_banco = res.cod_banco
+      this[dataRes].id = res.id;
+      this[dataRes].nro_cuenta = res.nro_cuenta;
+      this[dataRes].flag_activa = res.activa_desc;
+      this[dataRes].tipo_cuenta = res.tipo_desc;
+      this[dataRes].firma_autorizada = res.firma_autorizada;
+      this[dataRes].cod_banco = res.cod_banco;
       this.loading = false;
     },
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/cuentas/${idpost}`, 'getDataCuentas', this.axiosConfig);
+      this.$refs.methods.deleteData(
+        `/cuentas/${idpost}`,
+        "getDataCuentas",
+        this.axiosConfig
+      );
       this.loading = true;
     },
     createDataCuentas() {
-      this.formCuentas.cod_banco = this.selectedBanco.id
-      this.formCuentas.flag_activa = this.formCuentas.flag_activa.value
-      this.formCuentas.tipo_cuenta = this.formCuentas.tipo_cuenta.value
-      this.$refs.methods.createData(`/cuentas`, this.formCuentas, 'getDataCuentas', this.axiosConfig);
+      this.formCuentas.cod_banco = this.selectedBanco.id;
+      this.formCuentas.flag_activa = this.formCuentas.flag_activa.value;
+      this.formCuentas.tipo_cuenta = this.formCuentas.tipo_cuenta.value;
+      this.$refs.methods.createData(
+        `/cuentas`,
+        this.formCuentas,
+        "getDataCuentas",
+        this.axiosConfig
+      );
       this.resetForm();
       this.loading = true;
     },
     putDataCuentas() {
-      this.formEditCuentas.flag_activa = this.formEditCuentas.flag_activa.value
-      this.formEditCuentas.tipo_cuenta = this.formEditCuentas.tipo_cuenta.value
-      this.$refs.methods.putData(`/cuentas/${this.formEditCuentas.id}`, this.formEditCuentas, 'getDataCuentas', this.axiosConfig);
+      this.formEditCuentas.flag_activa = this.formEditCuentas.flag_activa.value;
+      this.formEditCuentas.tipo_cuenta = this.formEditCuentas.tipo_cuenta.value;
+      this.$refs.methods.putData(
+        `/cuentas/${this.formEditCuentas.id}`,
+        this.formEditCuentas,
+        "getDataCuentas",
+        this.axiosConfig
+      );
       this.resetFormEdit();
       this.loading = true;
     },
     resetForm() {
       (this.formCuentas.nro_cuenta = ""),
-      (this.formCuentas.flag_activa = ""),
-      (this.formCuentas.tipo_cuenta = ""),
-      (this.formCuentas.firma_autorizada = ""),
-      (this.form = false)
+        (this.formCuentas.flag_activa = ""),
+        (this.formCuentas.tipo_cuenta = ""),
+        (this.formCuentas.firma_autorizada = ""),
+        (this.form = false);
     },
     resetFormEdit() {
       (this.formEditCuentas.nro_cuenta = ""),
-      (this.formEditCuentas.flag_activa = ""),
-      (this.formEditCuentas.tipo_cuenta = ""),
-      (this.formEditCuentas.firma_autorizada = ""),
-      (this.formEditCuentas.cod_banco = null),
-      (this.formEdit = false)
+        (this.formEditCuentas.flag_activa = ""),
+        (this.formEditCuentas.tipo_cuenta = ""),
+        (this.formEditCuentas.firma_autorizada = ""),
+        (this.formEditCuentas.cod_banco = null),
+        (this.formEdit = false);
     },
     // Metodos para colocar valores iniciales
     getDataIniciar() {
-        this.bancoRef = this.bancos[0].id;
-        this.selectedBanco = this.bancos[0];
-        this.axiosConfig.headers.banco = this.bancoRef;
-        api.get(`/cuentas`, this.axiosConfig)
+      this.bancoRef = this.bancos[0].id;
+      this.selectedBanco = this.bancos[0];
+      api
+        .get(`/cuentas`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            banco: this.bancoRef,
+          },
+        })
         .then((res) => {
           this.cuentas = res.data;
-        })
+        });
     },
   },
 };

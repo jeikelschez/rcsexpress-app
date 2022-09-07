@@ -29,10 +29,10 @@
                   outlined
                   v-model="form.valor"
                   label="Valor"
-                  step=".01"
+                  v-money="money"
+                  input-class="text-right"
                   hint=""
                   class="pcform"
-                  type="number"
                   :rules="[reglasValor]"
                   lazy-rules
                 >
@@ -70,51 +70,73 @@
                   <div class="row">
                     <div
                       class="col-md-12 col-xs-12"
-                      style="align-self: center; text-align: left; margin-top: -30px"
+                      style="
+                        align-self: center;
+                        text-align: left;
+                        margin-top: -30px;
+                      "
                     >
-                      <h4 style="font-size: 20px" class="text-secondary"><strong>FECHAS DE VALIDEZ</strong></h4>
+                      <h4 style="font-size: 20px" class="text-secondary">
+                        <strong>FECHAS DE VALIDEZ</strong>
+                      </h4>
                     </div>
                     <div class="col-md-6 col-xs-12">
-                      <q-input 
-                    outlined
-                    label="Inicial"
-                    hint=""
-                    v-model="form.f_val"
-                    class="pcform"
-                    lazy-rules
-                    mask="##/##/####" 
-                    :rules="[dateValidation]"
-                    >
-                   <template v-slot:append>
-                   <q-icon name="event" class="cursor-pointer">
-                   <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                   <q-date v-model="form.f_val" @input="() => $refs.qDateProxy.hide()" mask="DD-MM-YYYY"></q-date>
-                    </q-popup-proxy>
-                    </q-icon>
-                    </template>
-                    </q-input>
+                      <q-input
+                        outlined
+                        label="Inicial"
+                        hint=""
+                        v-model="form.f_val"
+                        class="pcform"
+                        lazy-rules
+                        mask="##/##/####"
+                        :rules="[dateValidation]"
+                      >
+                        <template v-slot:append>
+                          <q-icon name="event" class="cursor-pointer">
+                            <q-popup-proxy
+                              ref="qDateProxy"
+                              transition-show="scale"
+                              transition-hide="scale"
+                            >
+                              <q-date
+                                v-model="form.f_val"
+                                @input="() => $refs.qDateProxy.hide()"
+                                mask="DD-MM-YYYY"
+                              ></q-date>
+                            </q-popup-proxy>
+                          </q-icon>
+                        </template>
+                      </q-input>
                     </div>
 
-                <div class="col-md-6 col-xs-12">
-                      <q-input 
-                    outlined
-                    label="Final"
-                    hint=""
-                    v-model="form.f_anul"
-                    class="pcform"
-                    lazy-rules
-                    mask="##/##/####" 
-                    :rules="[dateValidation]"
-                    >
-                   <template v-slot:append>
-                   <q-icon name="event" class="cursor-pointer">
-                   <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                   <q-date v-model="form.f_anul" @input="() => $refs.qDateProxy.hide()" mask="DD-MM-YYYY"></q-date>
-                    </q-popup-proxy>
-                    </q-icon>
-                    </template>
-                    </q-input>
-                </div>
+                    <div class="col-md-6 col-xs-12">
+                      <q-input
+                        outlined
+                        label="Final"
+                        hint=""
+                        v-model="form.f_anul"
+                        class="pcform"
+                        lazy-rules
+                        mask="##/##/####"
+                        :rules="[dateValidation]"
+                      >
+                        <template v-slot:append>
+                          <q-icon name="event" class="cursor-pointer">
+                            <q-popup-proxy
+                              ref="qDateProxy"
+                              transition-show="scale"
+                              transition-hide="scale"
+                            >
+                              <q-date
+                                v-model="form.f_anul"
+                                @input="() => $refs.qDateProxy.hide()"
+                                mask="DD-MM-YYYY"
+                              ></q-date>
+                            </q-popup-proxy>
+                          </q-icon>
+                        </template>
+                      </q-input>
+                    </div>
                   </div>
                 </q-card-section>
               </q-card>
@@ -128,44 +150,50 @@
                   <div class="row">
                     <div
                       class="col-md-12 col-xs-12"
-                      style="align-self: center; text-align: left; margin-top: -30px"
+                      style="
+                        align-self: center;
+                        text-align: left;
+                        margin-top: -30px;
+                      "
                     >
-                      <h4 style="font-size: 20px" class="text-secondary"><strong>RANGOS DE PESO</strong></h4>
+                      <h4 style="font-size: 20px" class="text-secondary">
+                        <strong>RANGOS DE PESO</strong>
+                      </h4>
                     </div>
                     <div class="col-md-6 col-xs-12">
                       <q-input
-                      outlined
-                      v-model="form.peso_inicio"
-                      label="Inicial"
-                      hint=""
-                      class="pcform"
-                      type="number"
-                      step=".01"
-                      lazy-rules
-                      :rules="[reglasAllowNull4]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="scale" />
-                  </template>
-                </q-input>
-                </div>
+                        outlined
+                        v-model="form.peso_inicio"
+                        label="Inicial"
+                        hint=""
+                        v-money="money"
+                        input-class="text-right"
+                        class="pcform"
+                        lazy-rules
+                        :rules="[reglasAllowNull4]"
+                      >
+                        <template v-slot:prepend>
+                          <q-icon name="scale" />
+                        </template>
+                      </q-input>
+                    </div>
 
-                <div class="col-md-6 col-xs-12">
+                    <div class="col-md-6 col-xs-12">
                       <q-input
-                      outlined
-                      v-model="form.peso_fin"
-                      label="Final"
-                      hint=""
-                      type="number"
-                      step=".01"
-                      lazy-rules
-                      :rules="[reglasAllowNull4]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="scale" />
-                  </template>
-                </q-input>
-                </div>
+                        outlined
+                        v-model="form.peso_fin"
+                        label="Final"
+                        hint=""
+                        v-money="money"
+                        input-class="text-right"
+                        lazy-rules
+                        :rules="[reglasAllowNull4]"
+                      >
+                        <template v-slot:prepend>
+                          <q-icon name="scale" />
+                        </template>
+                      </q-input>
+                    </div>
                   </div>
                 </q-card-section>
               </q-card>
@@ -223,13 +251,12 @@
 
               <div class="col-md-6 col-xs-12">
                 <q-input
-                  type="number"
                   outlined
                   v-model="formEdit.valor"
                   label="Valor"
-                  step=".01"
                   hint=""
-                  class="pcform"
+                  v-money="money"
+                  input-class="text-right"
                   :rules="[reglasValorEdit]"
                   lazy-rules
                 >
@@ -267,51 +294,73 @@
                   <div class="row">
                     <div
                       class="col-md-12 col-xs-12"
-                      style="align-self: center; text-align: left; margin-top: -30px"
+                      style="
+                        align-self: center;
+                        text-align: left;
+                        margin-top: -30px;
+                      "
                     >
-                      <h4 style="font-size: 20px" class="text-secondary"><strong>FECHAS DE VALIDEZ</strong></h4>
+                      <h4 style="font-size: 20px" class="text-secondary">
+                        <strong>FECHAS DE VALIDEZ</strong>
+                      </h4>
                     </div>
                     <div class="col-md-6 col-xs-12">
-                      <q-input 
-                    outlined
-                    label="Inicial"
-                    hint=""
-                    v-model="formEdit.f_val"
-                    class="pcform"
-                    lazy-rules
-                    mask="##/##/####" 
-                    :rules="[dateValidation]"
-                    >
-                   <template v-slot:append>
-                   <q-icon name="event" class="cursor-pointer">
-                   <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                   <q-date v-model="formEdit.f_val" @input="() => $refs.qDateProxy.hide()" mask="DD-MM-YYYY"></q-date>
-                    </q-popup-proxy>
-                    </q-icon>
-                    </template>
-                    </q-input>
-                </div>
+                      <q-input
+                        outlined
+                        label="Inicial"
+                        hint=""
+                        v-model="formEdit.f_val"
+                        class="pcform"
+                        lazy-rules
+                        mask="##/##/####"
+                        :rules="[dateValidation]"
+                      >
+                        <template v-slot:append>
+                          <q-icon name="event" class="cursor-pointer">
+                            <q-popup-proxy
+                              ref="qDateProxy"
+                              transition-show="scale"
+                              transition-hide="scale"
+                            >
+                              <q-date
+                                v-model="formEdit.f_val"
+                                @input="() => $refs.qDateProxy.hide()"
+                                mask="DD-MM-YYYY"
+                              ></q-date>
+                            </q-popup-proxy>
+                          </q-icon>
+                        </template>
+                      </q-input>
+                    </div>
 
-                <div class="col-md-6 col-xs-12">
-                      <q-input 
-                    outlined
-                    label="Inicial"
-                    hint=""
-                    v-model="formEdit.f_anul"
-                    class="pcform"
-                    lazy-rules
-                    mask="##/##/####" 
-                    :rules="[dateValidation]"
-                    >
-                   <template v-slot:append>
-                   <q-icon name="event" class="cursor-pointer">
-                   <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                   <q-date v-model="formEdit.f_anul" @input="() => $refs.qDateProxy.hide()" mask="DD-MM-YYYY"></q-date>
-                    </q-popup-proxy>
-                    </q-icon>
-                    </template>
-                    </q-input>
-                </div>
+                    <div class="col-md-6 col-xs-12">
+                      <q-input
+                        outlined
+                        label="Final"
+                        hint=""
+                        v-model="formEdit.f_anul"
+                        class="pcform"
+                        lazy-rules
+                        mask="##/##/####"
+                        :rules="[dateValidation]"
+                      >
+                        <template v-slot:append>
+                          <q-icon name="event" class="cursor-pointer">
+                            <q-popup-proxy
+                              ref="qDateProxy"
+                              transition-show="scale"
+                              transition-hide="scale"
+                            >
+                              <q-date
+                                v-model="formEdit.f_anul"
+                                @input="() => $refs.qDateProxy.hide()"
+                                mask="DD-MM-YYYY"
+                              ></q-date>
+                            </q-popup-proxy>
+                          </q-icon>
+                        </template>
+                      </q-input>
+                    </div>
                   </div>
                 </q-card-section>
               </q-card>
@@ -325,44 +374,50 @@
                   <div class="row">
                     <div
                       class="col-md-12 col-xs-12"
-                      style="align-self: center; text-align: left; margin-top: -30px"
+                      style="
+                        align-self: center;
+                        text-align: left;
+                        margin-top: -30px;
+                      "
                     >
-                      <h4 style="font-size: 20px" class="text-secondary"><strong>RANGOS DE PESO</strong></h4>
+                      <h4 style="font-size: 20px" class="text-secondary">
+                        <strong>RANGOS DE PESO</strong>
+                      </h4>
                     </div>
                     <div class="col-md-6 col-xs-12">
                       <q-input
-                      outlined
-                      v-model="formEdit.peso_inicio"
-                      label="Inicial"
-                      hint=""
-                      class="pcform"
-                      type="number"
-                      step=".01"
-                      lazy-rules
-                      :rules="[reglasAllowNull4]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="scale" />
-                  </template>
-                </q-input>
-                </div>
+                        outlined
+                        v-model="formEdit.peso_inicio"
+                        label="Inicial"
+                        hint=""
+                        class="pcform"
+                        v-money="money"
+                        input-class="text-right"
+                        lazy-rules
+                        :rules="[reglasAllowNull4]"
+                      >
+                        <template v-slot:prepend>
+                          <q-icon name="scale" />
+                        </template>
+                      </q-input>
+                    </div>
 
-                <div class="col-md-6 col-xs-12">
+                    <div class="col-md-6 col-xs-12">
                       <q-input
-                      outlined
-                      v-model="formEdit.peso_fin"
-                      label="Final"
-                      hint=""
-                      type="number"
-                      step=".01"
-                      lazy-rules
-                      :rules="[reglasAllowNull4]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="scale" />
-                  </template>
-                </q-input>
-                </div>
+                        outlined
+                        v-model="formEdit.peso_fin"
+                        label="Final"
+                        hint=""
+                        v-money="money"
+                        input-class="text-right"
+                        lazy-rules
+                        :rules="[reglasAllowNull4]"
+                      >
+                        <template v-slot:prepend>
+                          <q-icon name="scale" />
+                        </template>
+                      </q-input>
+                    </div>
                   </div>
                 </q-card-section>
               </q-card>
@@ -444,7 +499,6 @@
                 :columns="columns"
                 :separator="separator"
                 :loading="loading"
-                
                 :filter="filter"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -463,7 +517,11 @@
                       icon="edit"
                       :disabled="this.disabledEdit"
                       @click="
-                        getData(`/fpos/${props.row.id}`, 'setDataEdit', 'formEdit');
+                        getData(
+                          `/fpos/${props.row.id}`,
+                          'setDataEdit',
+                          'formEdit'
+                        );
                         edit = true;
                       "
                     ></q-btn>
@@ -515,7 +573,11 @@
                               icon="edit"
                               :disabled="this.disabledEdit"
                               @click="
-                                getData(`/fpos/${props.row.id}`, 'setDataEdit', 'formEdit');
+                                getData(
+                                  `/fpos/${props.row.id}`,
+                                  'setDataEdit',
+                                  'formEdit'
+                                );
                                 edit = true;
                               "
                             ></q-btn>
@@ -584,14 +646,15 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <methods ref="methods"
-    @get-Data-Fpos="getDataFpos('/fpos','setData','datos')"
-    @set-data="setData"
-    @reset-Loading="resetLoading"
-    @set-Data-Edit="setDataEdit">
+    <methods
+      ref="methods"
+      @get-Data-Fpos="getDataFpos('/fpos', 'setData', 'datos')"
+      @set-data="setData"
+      @reset-Loading="resetLoading"
+      @set-Data-Edit="setDataEdit"
+    >
     </methods>
-    <desactivate-crud ref="desactivateCrud"
-    @desactivar-Crud="desactivarCrud">
+    <desactivate-crud ref="desactivateCrud" @desactivar-Crud="desactivarCrud">
     </desactivate-crud>
   </q-page>
 </template>
@@ -603,24 +666,34 @@ import { api } from "boot/axios";
 
 import { useQuasar } from "quasar";
 
-import { date } from 'quasar'
+import { date } from "quasar";
 
 import { LocalStorage } from "quasar";
 
-import methodsVue from 'src/components/methods.vue';
+import { VMoney } from "v-money";
 
-import desactivateCrudVue from 'src/components/desactivateCrud.vue';
+import methodsVue from "src/components/methods.vue";
 
-import currencyInputVue from 'src/components/currency-input.vue';
+import desactivateCrudVue from "src/components/desactivateCrud.vue";
 
 export default {
+  directives: { money: VMoney },
   components: {
-  "desactivate-crud": desactivateCrudVue,
-  "methods": methodsVue,
-  "currency-input": currencyInputVue},
+    "desactivate-crud": desactivateCrudVue,
+    methods: methodsVue,
+    VMoney,
+  },
   name: "Bancos",
   data() {
     return {
+      money: {
+        decimal: ",",
+        thousands: ".",
+        prefix: "",
+        suffix: "",
+        precision: 2,
+        masked: true,
+      },
       columns: [
         {
           name: "cod_fpo",
@@ -733,20 +806,18 @@ export default {
     };
   },
   mounted() {
-    this.getDataFpos('/fpos','setData','datos')
-    this.$refs.desactivateCrud.desactivarCrud('c_concepto_fpo', 'r_concepto_fpo', 'u_concepto_fpo', 'd_concepto_fpo', 'desactivarCrud')
+    this.getDataFpos("/fpos", "setData", "datos");
+    this.$refs.desactivateCrud.desactivarCrud(
+      "c_concepto_fpo",
+      "r_concepto_fpo",
+      "u_concepto_fpo",
+      "d_concepto_fpo",
+      "desactivarCrud"
+    );
   },
   methods: {
     dateValidation(val) {
-      let date = val
-      if ((date[0])+date[1] > 31) return "Fecha Invalida"
-      if ((date[3])+date[4] > 12) return "Fecha Invalida"
-      if(date.length < 10) return 'Fecha Invalida'
-      if ((date[3])+date[4] == "04" && (date[0])+date[1] > 30) return "Fecha Invalida"
-      if ((date[3])+date[4] == "06" && (date[0])+date[1] > 30) return "Fecha Invalida"
-      if ((date[3])+date[4] == "09" && (date[0])+date[1] > 30) return "Fecha Invalida"
-      if ((date[3])+date[4] == "11" && (date[0])+date[1] > 30) return "Fecha Invalida"
-      if ((date[3])+date[4] == "02" && (date[0])+date[1] > 28) return "Fecha Invalida"   
+      if (date.isValid(val) == false) return "Fecha Invalida";
     },
     resetLoading() {
       this.loading = false;
@@ -761,29 +832,33 @@ export default {
       }
     },
     reglasValor(val) {
-      if (this.form.valor === null) {
+      var val = this.form.valor;
+      val = val.replaceAll(".", "").replaceAll(",", ".");
+      if (val === null) {
         return "Debes Escribir Algo";
       }
-      if (this.form.valor === "") {
+      if (val === "") {
         return "Debes Escribir Algo";
       }
-        if (this.form.valor !== null !== "") {
-          if (this.form.valor > 9.99) {
-            return "El valor maximo es 9,99";
-          }
+      if ((val !== null) !== "") {
+        if (val > 9.99) {
+          return "El valor maximo es 9,99";
+        }
       }
     },
     reglasValorEdit(val) {
-      if (this.formEdit.valor === null) {
+      var val = this.formEdit.valor;
+      val = val.replaceAll(".", "").replaceAll(",", ".");
+      if (val === null) {
         return "Debes Escribir Algo";
       }
-      if (this.formEdit.valor === "") {
+      if (val === "") {
         return "Debes Escribir Algo";
       }
-        if (this.formEdit.valor !== null !== "") {
-          if (this.formEdit.valor > 9.99) {
-            return "El valor maximo es 9,99";
-          }
+      if ((val !== null) !== "") {
+        if (val > 9.99) {
+          return "El valor maximo es 9,99";
+        }
       }
     },
     reglasNotNull4(val) {
@@ -793,17 +868,19 @@ export default {
       if (val === "") {
         return "Debes Escribir Algo";
       }
-        if (val !== null !== "") {
-          if (val > 99.99) {
-            return "Monto Maximo";
-          }
+      if ((val !== null) !== "") {
+        if (val > 99.99) {
+          return "Monto Maximo";
+        }
       }
     },
     reglasAllowNull4(val) {
-        if (val !== null !== "") {
-          if (val > 99.99) {
-            return "Monto Maximo";
-          }
+      var val = val;
+      val = val.replaceAll(".", "").replaceAll(",", ".");
+      if ((val !== null) !== "") {
+        if (val > 99.99) {
+          return "Monto Maximo";
+        }
       }
     },
     reglasNotNull6(val) {
@@ -813,13 +890,13 @@ export default {
       if (val === "") {
         return "Debes Escribir Algo";
       }
-        if (val !== null !== "") {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-          if (val.length > 5) {
-            return "Deben ser Maximo 6 caracteres";
-          }
+      if ((val !== null) !== "") {
+        if (val.length < 3) {
+          return "Deben ser minimo 3 caracteres";
+        }
+        if (val.length > 5) {
+          return "Deben ser Maximo 6 caracteres";
+        }
       }
     },
     reglasNotNull40(val) {
@@ -829,13 +906,13 @@ export default {
       if (val === "") {
         return "Debes Escribir Algo";
       }
-        if (val !== null !== "") {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-          if (val.length > 39) {
-            return "Deben ser Maximo 40 caracteres";
-          }
+      if ((val !== null) !== "") {
+        if (val.length < 3) {
+          return "Deben ser minimo 3 caracteres";
+        }
+        if (val.length > 39) {
+          return "Deben ser Maximo 40 caracteres";
+        }
       }
     },
 
@@ -843,14 +920,14 @@ export default {
     desactivarCrud(createItem, readItem, deleteItem, updateItem) {
       if (readItem == true) {
         if (createItem == true) {
-        this.disabledCreate = false
-      }
+          this.disabledCreate = false;
+        }
         if (deleteItem == true) {
-        this.disabledDelete = false
-      }
+          this.disabledDelete = false;
+        }
         if (updateItem == true) {
-        this.disabledEdit = false
-      }
+          this.disabledEdit = false;
+        }
       } else this.$router.push("/error403");
     },
 
@@ -863,59 +940,94 @@ export default {
       this.loading = true;
     },
     setData(res, dataRes) {
-      this[dataRes] = res
-      this.loading = false
-    },  
+      this[dataRes] = res;
+      this.loading = false;
+    },
     setDataEdit(res, dataRes) {
-      this.loading = false
-      this.formEdit.id = res.id
-      this.formEdit.cod_fpo = res.cod_fpo
-      this.formEdit.desc_tipo = res.desc_tipo
-      this.formEdit.valor = res.valor
+      this.loading = false;
+      this.formEdit.id = res.id;
+      this.formEdit.cod_fpo = res.cod_fpo;
+      this.formEdit.desc_tipo = res.desc_tipo;
+      this.formEdit.valor = res.valor;
       this.formEdit.f_val = res.f_val.split("-").reverse().join("/");
       this.formEdit.f_anul = res.f_anul.split("-").reverse().join("/");
-      this.formEdit.peso_inicio = res.peso_inicio
-      this.formEdit.peso_fin = res.peso_fin
-      this.formEdit.valor = res.valor
-    },   
+      this.formEdit.peso_inicio = res.peso_inicio;
+      this.formEdit.peso_fin = res.peso_fin;
+      this.formEdit.valor = res.valor;
+    },
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/fpos/${idpost}`, 'getDataFpos', this.axiosConfig);
+      this.$refs.methods.deleteData(
+        `/fpos/${idpost}`,
+        "getDataFpos",
+        this.axiosConfig
+      );
       this.loading = true;
     },
     createData() {
+      this.form.valor = this.form.valor
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
+      this.form.peso_inicio = this.form.peso_inicio
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
+      this.form.peso_fin = this.form.peso_fin
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
       this.form.f_val = this.form.f_val.split("/").reverse().join("-");
       this.form.f_anul = this.form.f_anul.split("/").reverse().join("-");
-      this.$refs.methods.createData('/fpos', this.form, 'getDataFpos', this.axiosConfig);
+      this.$refs.methods.createData(
+        "/fpos",
+        this.form,
+        "getDataFpos",
+        this.axiosConfig
+      );
       this.resetForm();
       this.loading = true;
     },
     putData() {
+      this.formEdit.valor = this.formEdit.valor
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
+      this.formEdit.peso_inicio = this.formEdit.peso_inicio
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
+      this.formEdit.peso_fin = this.formEdit.peso_fin
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
       this.formEdit.f_val = this.formEdit.f_val.split("/").reverse().join("-");
-      this.formEdit.f_anul = this.formEdit.f_anul.split("/").reverse().join("-");
-      this.$refs.methods.putData(`/fpos/${this.formEdit.id}`, this.formEdit, 'getDataFpos', this.axiosConfig);
+      this.formEdit.f_anul = this.formEdit.f_anul
+        .split("/")
+        .reverse()
+        .join("-");
+      this.$refs.methods.putData(
+        `/fpos/${this.formEdit.id}`,
+        this.formEdit,
+        "getDataFpos",
+        this.axiosConfig
+      );
       this.edit = false;
       this.resetFormEdit();
       this.loading = true;
     },
-    
+
     resetForm() {
       (this.form.cod_fpo = ""),
-      (this.form.desc_tipo = ""),
-      (this.form.valor = ""),
-      (this.form.f_anul = ""),
-      (this.form.f_val = ""),
-      (this.form.peso_inicio = ""),
-      (this.form.peso_fin = ""),
-      (this.create = false);    
+        (this.form.desc_tipo = ""),
+        (this.form.valor = ""),
+        (this.form.f_anul = ""),
+        (this.form.f_val = ""),
+        (this.form.peso_inicio = ""),
+        (this.form.peso_fin = ""),
+        (this.create = false);
     },
     resetFormEdit() {
       (this.formEdit.cod_fpo = ""),
-      (this.formEdit.desc_tipo = ""),
-      (this.formEdit.valor = ""),
-      (this.formEdit.f_anul = ""),
-      (this.formEdit.f_val = ""),
-      (this.formEdit.peso_inicio = ""),
-      (this.formEdit.peso_fin = "")
+        (this.formEdit.desc_tipo = ""),
+        (this.formEdit.valor = ""),
+        (this.formEdit.f_anul = ""),
+        (this.formEdit.f_val = ""),
+        (this.formEdit.peso_inicio = ""),
+        (this.formEdit.peso_fin = "");
     },
   },
 };

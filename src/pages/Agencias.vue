@@ -15,8 +15,17 @@
                   :rules="[reglasSelect]"
                   hint=""
                   :options="paisesSelected"
-                  @filter="(val,update,abort) => 
-                  filterArray(val,update,abort,'paisesSelected', 'paises', 'desc_pais')"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'paisesSelected',
+                        'paises',
+                        'desc_pais'
+                      )
+                  "
                   use-input
                   hide-selected
                   fill-input
@@ -24,16 +33,22 @@
                   option-label="desc_pais"
                   option-value="id"
                   lazy-rules
-                  @update:model-value="this.axiosConfig.headers.pais = this.selectedPais.id;
-                  getData(`/estados`, 'setDataEstados', 'estados')"
+                  @update:model-value="
+                    getData(`/estados`, 'setDataEstados', 'estados', {
+                      headers: {
+                        Authorization: ``,
+                        pais: this.selectedPais.id,
+                      },
+                    })
+                  "
                 >
-                <template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
+                  <template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        Sin resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
                   <template v-slot:prepend>
                     <q-icon name="public" />
                   </template>
@@ -50,8 +65,17 @@
                   hint=""
                   class="pcform"
                   :options="estadosSelected"
-                  @filter="(val,update,abort) => 
-                  filterArray(val,update,abort,'estadosSelected', 'estados', 'desc_estado')"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'estadosSelected',
+                        'estados',
+                        'desc_estado'
+                      )
+                  "
                   use-input
                   hide-selected
                   fill-input
@@ -59,16 +83,22 @@
                   option-label="desc_estado"
                   option-value="id"
                   lazy-rules
-                  @update:model-value="this.axiosConfig.headers.estado = this.selectedEstado.id;
-                  getData(`/ciudades`, 'setDataCiudades', 'ciudades')"
+                  @update:model-value="
+                    getData(`/ciudades`, 'setDataCiudades', 'ciudades', {
+                      headers: {
+                        Authorization: ``,
+                        estado: this.selectedEstado.id,
+                      },
+                    })
+                  "
                 >
-                <template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
+                  <template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        Sin resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
                   <template v-slot:prepend>
                     <q-icon name="public" />
                   </template>
@@ -84,8 +114,17 @@
                   :rules="[reglasSelect]"
                   hint=""
                   :options="ciudadesSelected"
-                  @filter="(val,update,abort) => 
-                  filterArray(val,update,abort,'ciudadesSelected', 'ciudades', 'desc_ciudad')"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'ciudadesSelected',
+                        'ciudades',
+                        'desc_ciudad'
+                      )
+                  "
                   use-input
                   hide-selected
                   fill-input
@@ -94,13 +133,13 @@
                   option-value="id"
                   lazy-rules
                 >
-                <template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
+                  <template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        Sin resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
                   <template v-slot:prepend>
                     <q-icon name="public" />
                   </template>
@@ -140,7 +179,7 @@
                   "
                 >
                   <template v-slot:prepend>
-                    <q-icon name="account_circle"/>
+                    <q-icon name="account_circle" />
                   </template>
                 </q-input>
               </div>
@@ -177,7 +216,7 @@
                   "
                 >
                   <template v-slot:prepend>
-                    <q-icon name="badge"/>
+                    <q-icon name="badge" />
                   </template>
                 </q-input>
               </div>
@@ -309,8 +348,17 @@
                   :rules="[reglasSelect]"
                   hint=""
                   :options="paisesSelected"
-                  @filter="(val,update,abort) => 
-                  filterArray(val,update,abort,'paisesSelected', 'paises', 'desc_pais')"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'paisesSelected',
+                        'paises',
+                        'desc_pais'
+                      )
+                  "
                   use-input
                   hide-selected
                   fill-input
@@ -318,16 +366,22 @@
                   option-label="desc_pais"
                   option-value="id"
                   lazy-rules
-                  @update:model-value="this.axiosConfig.headers.pais = this.selectedPais.id;
-                  getData(`/estados`, 'setDataEstados', 'estados')"
+                  @update:model-value="
+                    getData(`/estados`, 'setDataEstados', 'estados', {
+                      headers: {
+                        Authorization: ``,
+                        pais: this.selectedPais.id,
+                      },
+                    })
+                  "
                 >
-                <template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
+                  <template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        Sin resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
                   <template v-slot:prepend>
                     <q-icon name="public" />
                   </template>
@@ -343,8 +397,17 @@
                   :rules="[reglasSelect]"
                   hint=""
                   :options="estadosSelected"
-                  @filter="(val,update,abort) => 
-                  filterArray(val,update,abort,'estadosSelected', 'estados', 'desc_estado')"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'estadosSelected',
+                        'estados',
+                        'desc_estado'
+                      )
+                  "
                   use-input
                   hide-selected
                   fill-input
@@ -352,16 +415,22 @@
                   option-label="desc_estado"
                   option-value="id"
                   lazy-rules
-                  @update:model-value="this.axiosConfig.headers.estado = this.selectedEstado.id;
-                  getData(`/ciudades`, 'setDataCiudades', 'ciudades')"
+                  @update:model-value="
+                    getData(`/ciudades`, 'setDataCiudades', 'ciudades', {
+                      headers: {
+                        Authorization: ``,
+                        estado: this.selectedEstado.id,
+                      },
+                    })
+                  "
                 >
-                <template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
+                  <template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        Sin resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
                   <template v-slot:prepend>
                     <q-icon name="public" />
                   </template>
@@ -378,8 +447,17 @@
                   :rules="[reglasSelect]"
                   hint=""
                   :options="ciudadesSelected"
-                  @filter="(val,update,abort) => 
-                  filterArray(val,update,abort,'ciudadesSelected', 'ciudades', 'desc_ciudad')"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'ciudadesSelected',
+                        'ciudades',
+                        'desc_ciudad'
+                      )
+                  "
                   use-input
                   hide-selected
                   fill-input
@@ -388,13 +466,13 @@
                   option-value="id"
                   lazy-rules
                 >
-                <template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
+                  <template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        Sin resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
                   <template v-slot:prepend>
                     <q-icon name="public" />
                   </template>
@@ -782,17 +860,21 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <methods ref="methods"
-    @get-Data-Agencias="getDataAgencias('/agencias','setData','datos')"
-    @set-Data="setData"
-    @reset-Loading="resetLoading"
-    @set-Data-Edit="setDataEdit"
-    @set-Data-Edit-Ciudades="setDataEditCiudades"
-    @set-Data-Edit-Estados="setDataEditEstados"
-    @set-Data-Estados="setDataEstados"
-    @set-Data-Ciudades="setDataCiudades"></methods>
-    <desactive-crud ref="desactiveCrud"
-    @desactivar-Crud="desactivarCrud"></desactive-crud>
+    <methods
+      ref="methods"
+      @get-Data-Agencias="getDataAgencias('/agencias', 'setData', 'datos')"
+      @set-Data="setData"
+      @reset-Loading="resetLoading"
+      @set-Data-Edit="setDataEdit"
+      @set-Data-Edit-Ciudades="setDataEditCiudades"
+      @set-Data-Edit-Estados="setDataEditEstados"
+      @set-Data-Estados="setDataEstados"
+      @set-Data-Ciudades="setDataCiudades"
+    ></methods>
+    <desactive-crud
+      ref="desactiveCrud"
+      @desactivar-Crud="desactivarCrud"
+    ></desactive-crud>
   </q-page>
 </template>
 
@@ -801,15 +883,14 @@ import { ref } from "vue";
 
 import { useQuasar } from "quasar";
 
-import methodsVue from 'src/components/methods.vue';
+import methodsVue from "src/components/methods.vue";
 
-import desactivateCrudVue from 'src/components/desactivateCrud.vue';
+import desactivateCrudVue from "src/components/desactivateCrud.vue";
 
 import { LocalStorage } from "quasar";
 
 export default {
-  components: { 'desactive-crud': desactivateCrudVue,
-  "methods": methodsVue },
+  components: { "desactive-crud": desactivateCrudVue, methods: methodsVue },
   name: "Agencias",
   data() {
     return {
@@ -903,13 +984,6 @@ export default {
       disabledCreate: true,
       disabledEdit: true,
       disabledDelete: true,
-      axiosConfig: {
-        headers: {
-          Authorization: ``,
-          pais: "",
-          estado: ""
-        },
-      },
     };
   },
   setup() {
@@ -962,9 +1036,19 @@ export default {
     };
   },
   mounted() {
-    this.getDataAgencias('/agencias','setData','datos')
-    this.getData('/paises','setData','paises')
-    this.$refs.desactiveCrud.desactivarCrud('c_agencias', 'r_agencias', 'u_agencias', 'd_agencias', 'desactivarCrud')
+    this.getDataAgencias("/agencias", "setData", "datos");
+    this.getData("/paises", "setData", "paises", {
+      headers: {
+        Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+      },
+    });
+    this.$refs.desactiveCrud.desactivarCrud(
+      "c_agencias",
+      "r_agencias",
+      "u_agencias",
+      "d_agencias",
+      "desactivarCrud"
+    );
   },
   methods: {
     filterArray(val, update, abort, pagina, array, element) {
@@ -998,104 +1082,133 @@ export default {
       }
     },
     reglaInputDireccion(val) {
-      if(val !== null) {
-      if (val.length > 200) {
-        return "Deben ser máximo 200 caracteres";
+      if (val !== null) {
+        if (val.length > 200) {
+          return "Deben ser máximo 200 caracteres";
         }
-      if (val.length > 0) {
-        if (val.length < 3) {
-        return "Deben ser minimo 3 caracteres";
+        if (val.length > 0) {
+          if (val.length < 3) {
+            return "Deben ser minimo 3 caracteres";
+          }
         }
-      }
       }
     },
     reglaInputNombre(val) {
-      if(val !== null) {
+      if (val !== null) {
         if (val === null) {
-        return "Debes escribir algo";
-      }
-      if (val === "") {
-        return "Debes escribir Algo";
-      }
-      if (val.length > 0) {
-        if (val.length < 3) {
-        return "Deben ser minimo 3 caracteres";
+          return "Debes escribir algo";
         }
-      }
+        if (val === "") {
+          return "Debes escribir Algo";
+        }
+        if (val.length > 0) {
+          if (val.length < 3) {
+            return "Deben ser minimo 3 caracteres";
+          }
+        }
       }
     },
     desactivarCrud(createItem, readItem, deleteItem, updateItem) {
       if (readItem == true) {
         if (createItem == true) {
-        this.disabledCreate = false
-      }
+          this.disabledCreate = false;
+        }
         if (deleteItem == true) {
-        this.disabledDelete = false
-      }
+          this.disabledDelete = false;
+        }
         if (updateItem == true) {
-        this.disabledEdit = false
-      }
+          this.disabledEdit = false;
+        }
       } else this.$router.push("/error403");
     },
 
-    getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+    getData(url, call, dataRes, axiosConfig) {
+      this.$refs.methods.getData(url, call, dataRes, axiosConfig);
     },
     getDataAgencias(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.$refs.methods.getData(url, call, dataRes, {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        },
+      });
       this.loading = true;
     },
     setData(res, dataRes) {
-      this[dataRes] = res
+      this[dataRes] = res;
       this.loading = false;
     },
 
     getDataEdit(id) {
-      this.$refs.methods.getData(`/agencias/${id}`, 'setDataEdit', 'formEdit', this.axiosConfig);
+      this.$refs.methods.getData(`/agencias/${id}`, "setDataEdit", "formEdit", {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        },
+      });
     },
     setDataEdit(res, dataRes) {
-      this[dataRes].id = res.id
-      this[dataRes].nb_agencia = res.nb_agencia
-      this[dataRes].persona_contacto = res.persona_contacto
-      this[dataRes].dir_agencia = res.dir_agencia
-      this[dataRes].fax_agencia = res.fax_agencia
-      this[dataRes].email_agencia = res.email_agencia
-      this[dataRes].tlf_agencia = res.tlf_agencia
-      this[dataRes].rif_agencia = res.rif_agencia
-      this[dataRes].nit_agencia = res.nit_agencia
-      this[dataRes].estatus = res.activo_desc
-      this.selectedCiudadEdit = res.ciudades.cod_estado,
-      this.selectedCiudad = res.ciudades.desc_ciudad;
-      this.ciudadEdit = res.ciudades.id
-      this.axiosConfig.headers.estado = this.selectedCiudadEdit;
-      this.$refs.methods.getData(`/ciudades`, 'setDataEditCiudades', 'ciudades', this.axiosConfig);
+      this[dataRes].id = res.id;
+      this[dataRes].nb_agencia = res.nb_agencia;
+      this[dataRes].persona_contacto = res.persona_contacto;
+      this[dataRes].dir_agencia = res.dir_agencia;
+      this[dataRes].fax_agencia = res.fax_agencia;
+      this[dataRes].email_agencia = res.email_agencia;
+      this[dataRes].tlf_agencia = res.tlf_agencia;
+      this[dataRes].rif_agencia = res.rif_agencia;
+      this[dataRes].nit_agencia = res.nit_agencia;
+      this[dataRes].estatus = res.activo_desc;
+      (this.selectedCiudadEdit = res.ciudades.cod_estado),
+        (this.selectedCiudad = res.ciudades.desc_ciudad);
+      this.ciudadEdit = res.ciudades.id;
+      this.$refs.methods.getData(
+        `/ciudades`,
+        "setDataEditCiudades",
+        "ciudades",
+        {
+          headers: {
+            Authorization: ``,
+            estado: this.selectedCiudadEdit,
+          },
+        }
+      );
     },
     setDataEditCiudades(res, dataRes) {
-      this[dataRes] = res
+      this[dataRes] = res;
       this.selectedEstadoEdit = res[0].estados.cod_pais;
       this.selectedEstado = res[0].estados.desc_estado;
-      this.axiosConfig.headers.pais = this.selectedEstadoEdit;
       this.$refs.methods.getDataEdit(
-        `/estados`, 'setDataEditEstados', 'estados', this.axiosConfig);
+        `/estados`,
+        "setDataEditEstados",
+        "estados",
+        {
+          headers: {
+            Authorization: ``,
+            pais: this.selectedEstadoEdit,
+          },
+        }
+      );
     },
     setDataEditEstados(res, dataRes) {
-      this[dataRes] = res.data
+      this[dataRes] = res.data;
       this.selectedPais = res.data[0].paises.desc_pais;
     },
 
     setDataEstados(res, dataRes) {
-      this[dataRes] = res
-      this.selectedEstado = ''
-      this.selectedCiudad = ''
-      this.ciudades = ''
+      this[dataRes] = res;
+      this.selectedEstado = "";
+      this.selectedCiudad = "";
+      this.ciudades = "";
     },
     setDataCiudades(res, dataRes) {
-      this.selectedCiudad = ''
-      this[dataRes] = res
+      this.selectedCiudad = "";
+      this[dataRes] = res;
     },
-    
+
     deleteDato(idpost) {
-      this.$refs.methods.deleteData(`/agencias/${idpost}`, 'getDataAgencias', this.axiosConfig);
+      this.$refs.methods.deleteData(`/agencias/${idpost}`, "getDataAgencias", {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        },
+      });
       this.loading = true;
     },
     resetLoading() {
@@ -1104,20 +1217,33 @@ export default {
     createDato() {
       this.form.cod_ciudad = this.selectedCiudad.id;
       this.form.estatus = this.form.estatus.value;
-      this.$refs.methods.createData('/agencias', this.form, 'getDataAgencias', this.axiosConfig);
+      this.$refs.methods.createData("/agencias", this.form, "getDataAgencias", {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        },
+      });
       this.loading = true;
       this.resetForm();
     },
     putDato() {
       this.formEdit.cod_ciudad = this.selectedCiudad.id;
       this.formEdit.estatus = this.formEdit.estatus.value;
-      this.$refs.methods.putData(`/agencias/${this.formEdit.id}`, this.formEdit, 'getDataAgencias', this.axiosConfig);
+      this.$refs.methods.putData(
+        `/agencias/${this.formEdit.id}`,
+        this.formEdit,
+        "getDataAgencias",
+        {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        }
+      );
       this.loading = true;
       this.edit = false;
     },
-    
+
     resetForm() {
-        (this.selectedPais = null),
+      (this.selectedPais = null),
         (this.selectedEstado = null),
         (this.selectedCiudad = null),
         (this.estados = null),
@@ -1132,21 +1258,21 @@ export default {
         (this.form.rif_agencia = ""),
         (this.form.nit_agencia = ""),
         (this.form.estatus = ""),
-        (this.create = null)
+        (this.create = null);
     },
     resetFormEdit() {
       (this.selectedPais = null),
-      (this.selectedEstado = null),
-      (this.selectedCiudad = null),
-      (this.formEdit.persona_contacto = ""),
-      (this.formEdit.dir_agencia = ""),
-      (this.formEdit.fax_agencia = ""),
-      (this.formEdit.email_agencia = ""),
-      (this.formEdit.tlf_agencia = ""),
-      (this.formEdit.rif_agencia = ""),
-      (this.formEdit.nit_agencia = ""),
-      (this.formEdit.nb_agencia = ""),
-      (this.formEdit.estatus = null)
+        (this.selectedEstado = null),
+        (this.selectedCiudad = null),
+        (this.formEdit.persona_contacto = ""),
+        (this.formEdit.dir_agencia = ""),
+        (this.formEdit.fax_agencia = ""),
+        (this.formEdit.email_agencia = ""),
+        (this.formEdit.tlf_agencia = ""),
+        (this.formEdit.rif_agencia = ""),
+        (this.formEdit.nit_agencia = ""),
+        (this.formEdit.nb_agencia = ""),
+        (this.formEdit.estatus = null);
     },
   },
 };

@@ -41,30 +41,30 @@
 
               <div class="col-md-6 col-xs-12">
                 <q-input
-                        outlined
-                        label="Fecha de Asignación"
-                        hint=""
-                        class="pcform"
-                        v-model="form.fecha_asignacion"
-                        lazy-rules
-                        mask="##/##/####"
-                        :rules="[dateValidation]"
+                  outlined
+                  label="Fecha de Asignación"
+                  hint=""
+                  class="pcform"
+                  v-model="form.fecha_asignacion"
+                  lazy-rules
+                  mask="##/##/####"
+                  :rules="[dateValidation]"
+                >
+                  <template v-slot:append>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy
+                        ref="qDateProxy"
+                        transition-show="scale"
+                        transition-hide="scale"
                       >
-                        <template v-slot:append>
-                          <q-icon name="event" class="cursor-pointer">
-                            <q-popup-proxy
-                              ref="qDateProxy"
-                              transition-show="scale"
-                              transition-hide="scale"
-                            >
-                              <q-date
-                                v-model="form.fecha_asignacion"
-                                mask="DD-MM-YYYY"
-                              ></q-date>
-                            </q-popup-proxy>
-                          </q-icon>
-                        </template>
-                      </q-input>
+                        <q-date
+                          v-model="form.fecha_asignacion"
+                          mask="DD-MM-YYYY"
+                        ></q-date>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
               </div>
 
               <div class="col-md-6 col-xs-12">
@@ -76,12 +76,21 @@
                   :readonly="this.disabledAgencia"
                   :rules="[reglasSelect]"
                   :options="agenciasSelected"
-                @filter="(val,update,abort) => 
-                filterArray(val,update,abort,'agenciasSelected', 'agencias', 'nb_agencia')"
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'agenciasSelected',
+                        'agencias',
+                        'nb_agencia'
+                      )
+                  "
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
                   lazy-rules
                   option-label="nb_agencia"
                   option-value="id"
@@ -93,13 +102,13 @@
                     this.form.cod_agente = '';
                   "
                 >
-                <template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
+                  <template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        Sin resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
                   <template v-slot:prepend>
                     <q-icon name="south_america" />
                   </template>
@@ -115,22 +124,31 @@
                   class="pcform"
                   hint=""
                   :options="agentesSelected"
-                @filter="(val,update,abort) => 
-                filterArray(val,update,abort,'agentesSelected', 'agentes', 'persona_responsable')"
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'agentesSelected',
+                        'agentes',
+                        'persona_responsable'
+                      )
+                  "
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
                   lazy-rules
                   option-label="persona_responsable"
                   option-value="id"
-                ><template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
+                  ><template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        Sin resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
                   <template v-slot:prepend>
                     <q-icon name="south_america" />
                   </template>
@@ -145,22 +163,31 @@
                   label="Cliente"
                   hint=""
                   :options="clientesSelected"
-                @filter="(val,update,abort) => 
-                filterArray(val,update,abort,'clientesSelected', 'clientes', 'nb_cliente')"
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'clientesSelected',
+                        'clientes',
+                        'nb_cliente'
+                      )
+                  "
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
                   lazy-rules
                   option-label="nb_cliente"
                   option-value="id"
-                ><template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
+                  ><template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        Sin resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
                   <template v-slot:prepend>
                     <q-icon name="south_america" />
                   </template>
@@ -237,31 +264,31 @@
 
               <div class="col-md-6 col-xs-12">
                 <q-input
-                        outlined
-                        label="Fecha de Asignación"
-                        hint=""
-                        v-model="formEdit.fecha_asignacion"
-                        lazy-rules
-                        class="pcform"
-                        mask="##/##/####"
-                        :readonly="this.disabledInputsEdit"
-                        :rules="[dateValidation]"
+                  outlined
+                  label="Fecha de Asignación"
+                  hint=""
+                  v-model="formEdit.fecha_asignacion"
+                  lazy-rules
+                  class="pcform"
+                  mask="##/##/####"
+                  :readonly="this.disabledInputsEdit"
+                  :rules="[dateValidation]"
+                >
+                  <template v-slot:append>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy
+                        ref="qDateProxy"
+                        transition-show="scale"
+                        transition-hide="scale"
                       >
-                        <template v-slot:append>
-                          <q-icon name="event" class="cursor-pointer">
-                            <q-popup-proxy
-                              ref="qDateProxy"
-                              transition-show="scale"
-                              transition-hide="scale"
-                            >
-                              <q-date
-                                v-model="formEdit.fecha_asignacion"
-                                mask="DD-MM-YYYY"
-                              ></q-date>
-                            </q-popup-proxy>
-                          </q-icon>
-                        </template>
-                      </q-input>
+                        <q-date
+                          v-model="formEdit.fecha_asignacion"
+                          mask="DD-MM-YYYY"
+                        ></q-date>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
               </div>
 
               <div class="col-md-6 col-xs-12">
@@ -273,12 +300,21 @@
                   hint=""
                   :rules="[reglasSelect]"
                   :options="agenciasSelected"
-                @filter="(val,update,abort) => 
-                filterArray(val,update,abort,'agenciasSelected', 'agencias', 'nb_agencia')"
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'agenciasSelected',
+                        'agencias',
+                        'nb_agencia'
+                      )
+                  "
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
                   lazy-rules
                   option-label="nb_agencia"
                   option-value="id"
@@ -290,13 +326,13 @@
                     this.formEdit.cod_cliente = '';
                     this.formEdit.cod_agente = '';
                   "
-                ><template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
+                  ><template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        Sin resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
                   <template v-slot:prepend>
                     <q-icon name="south_america" />
                   </template>
@@ -312,22 +348,31 @@
                   hint=""
                   class="pcform"
                   :options="agentesSelected"
-                @filter="(val,update,abort) => 
-                filterArray(val,update,abort,'agentesSelected', 'agentes', 'persona_responsable')"
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'agentesSelected',
+                        'agentes',
+                        'persona_responsable'
+                      )
+                  "
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
                   lazy-rules
                   option-label="persona_responsable"
                   option-value="id"
-                ><template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
+                  ><template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        Sin resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
                   <template v-slot:prepend>
                     <q-icon name="south_america" />
                   </template>
@@ -342,22 +387,31 @@
                   hint=""
                   :readonly="this.disabledInputsEdit"
                   :options="clientesSelected"
-                @filter="(val,update,abort) => 
-                filterArray(val,update,abort,'clientesSelected', 'clientes', 'nb_cliente')"
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'clientesSelected',
+                        'clientes',
+                        'nb_cliente'
+                      )
+                  "
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
                   lazy-rules
                   option-label="nb_cliente"
                   option-value="id"
-                ><template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
+                  ><template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        Sin resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
                   <template v-slot:prepend>
                     <q-icon name="south_america" />
                   </template>
@@ -411,12 +465,21 @@
             transition-show="flip-up"
             transition-hide="flip-down"
             :options="agenciasSelected"
-                @filter="(val,update,abort) => 
-                filterArray(val,update,abort,'agenciasSelected', 'agencias', 'nb_agencia')"
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
+            @filter="
+              (val, update, abort) =>
+                filterArray(
+                  val,
+                  update,
+                  abort,
+                  'agenciasSelected',
+                  'agencias',
+                  'nb_agencia'
+                )
+            "
+            use-input
+            hide-selected
+            fill-input
+            input-debounce="0"
             option-label="nb_agencia"
             option-value="id"
             v-model="selectedAgencia"
@@ -425,7 +488,7 @@
             label="Agencia"
             @update:model-value="
               this.axiosConfig.headers.agencia = this.selectedAgencia.id;
-              this.axiosConfig.headers.agente= '';
+              this.axiosConfig.headers.agente = '';
               this.axiosConfig.headers.cliente = '';
               this.axiosConfig.headers.order_by = 'control_inicio';
               this.axiosConfig.headers.order_direction = 'DESC';
@@ -435,13 +498,13 @@
               getData(`/agentes`, 'setDataSelect', 'agentes');
               getData(`/clientes`, 'setDataSelect', 'clientes');
             "
-          ><template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
+            ><template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  Sin resultados
+                </q-item-section>
+              </q-item>
+            </template>
             <template v-slot:prepend>
               <q-icon name="search" />
             </template>
@@ -457,12 +520,21 @@
             transition-show="flip-up"
             transition-hide="flip-down"
             :options="agentesSelected"
-                @filter="(val,update,abort) => 
-                filterArray(val,update,abort,'agentesSelected', 'agentes', 'persona_responsable')"
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
+            @filter="
+              (val, update, abort) =>
+                filterArray(
+                  val,
+                  update,
+                  abort,
+                  'agentesSelected',
+                  'agentes',
+                  'persona_responsable'
+                )
+            "
+            use-input
+            hide-selected
+            fill-input
+            input-debounce="0"
             option-label="persona_responsable"
             option-value="id"
             v-model="selectedAgente"
@@ -475,13 +547,13 @@
               this.axiosConfig.headers.order_direction = 'DESC';
               getData(`/cguias`, 'setDataGuias', 'datos');
             "
-          ><template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
+            ><template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  Sin resultados
+                </q-item-section>
+              </q-item>
+            </template>
             <template v-slot:prepend>
               <q-icon name="search" />
             </template>
@@ -497,12 +569,21 @@
             transition-show="flip-up"
             transition-hide="flip-down"
             :options="clientesSelected"
-                @filter="(val,update,abort) => 
-                filterArray(val,update,abort,'clientesSelected', 'clientes', 'nb_cliente')"
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
+            @filter="
+              (val, update, abort) =>
+                filterArray(
+                  val,
+                  update,
+                  abort,
+                  'clientesSelected',
+                  'clientes',
+                  'nb_cliente'
+                )
+            "
+            use-input
+            hide-selected
+            fill-input
+            input-debounce="0"
             option-label="nb_cliente"
             option-value="id"
             v-model="selectedCliente"
@@ -515,13 +596,13 @@
               this.axiosConfig.headers.order_direction = 'DESC';
               getData(`/cguias`, 'setDataGuias', 'datos');
             "
-          ><template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
+            ><template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  Sin resultados
+                </q-item-section>
+              </q-item>
+            </template>
             <template v-slot:prepend>
               <q-icon name="search" />
             </template>
@@ -553,19 +634,23 @@
                   this.axiosConfig.headers.desde = this.guia_desde;
                   getData(`/cguias`, 'setDataGuias', 'datos');
                   if (this.guia_hasta !== '') {
-                  this.reglasCorrelativoFilter()
-                  };"
+                    this.reglasCorrelativoFilter();
+                  }
+                "
                 @keydown.tab="
                   this.axiosConfig.headers.desde = this.guia_desde;
                   getData(`/cguias`, 'setDataGuias', 'datos');
                   if (this.guia_hasta !== '') {
-                  this.reglasCorrelativoFilter()
-                  };"
-                @blur="this.axiosConfig.headers.desde = this.guia_desde;
+                    this.reglasCorrelativoFilter();
+                  }
+                "
+                @blur="
+                  this.axiosConfig.headers.desde = this.guia_desde;
                   getData(`/cguias`, 'setDataGuias', 'datos');
                   if (this.guia_hasta !== '') {
-                  this.reglasCorrelativoFilter()
-                  };"
+                    this.reglasCorrelativoFilter();
+                  }
+                "
                 hide-bottom-space
                 hint=""
                 lazy-rules
@@ -583,15 +668,18 @@
                 @keydown.enter="
                   this.axiosConfig.headers.hasta = this.guia_hasta;
                   getData(`/cguias`, 'setDataGuias', 'datos');
-                  this.reglasCorrelativoFilter()"
+                  this.reglasCorrelativoFilter();
+                "
                 @keydown.tab="
                   this.axiosConfig.headers.hasta = this.guia_hasta;
                   getData(`/cguias`, 'setDataGuias', 'datos');
-                  this.reglasCorrelativoFilter()"
+                  this.reglasCorrelativoFilter();
+                "
                 @blur="
                   this.axiosConfig.headers.hasta = this.guia_hasta;
                   getData(`/cguias`, 'setDataGuias', 'datos');
-                  this.reglasCorrelativoFilter()"
+                  this.reglasCorrelativoFilter();
+                "
                 label="Guia Hasta:"
                 type="number"
                 class="inputMenuGuias"
@@ -618,7 +706,11 @@
                     v-model="selectedCulminado"
                     true-value="0"
                     false-value=""
-                    style="font-size: 13px; margin-left: 10px; margin-right: 10px;"
+                    style="
+                      font-size: 13px;
+                      margin-left: 10px;
+                      margin-right: 10px;
+                    "
                     label="Culminado"
                     @update:model-value="
                       this.axiosConfig.headers.disp = this.selectedCulminado;
@@ -640,7 +732,10 @@
             color="primary"
             :disabled="this.disabledCreate"
             round
-            @click="this.create = true; this.setDataCreate()"
+            @click="
+              this.create = true;
+              this.setDataCreate();
+            "
             padding="sm"
             style="margin-right: 25px"
           >
@@ -675,15 +770,15 @@
               this.axiosConfig.headers.disp = '';
               this.axiosConfig.headers.desde = '';
               this.axiosConfig.headers.hasta = '';
-              this.guia_desde =  '';
-              this.guia_hasta =  '';
+              this.guia_desde = '';
+              this.guia_hasta = '';
               this.axiosConfig.headers.order_by = 'control_inicio';
               this.axiosConfig.headers.order_direction = 'DESC';
               this.clientes = [];
               this.agentes = [];
-              this.disabledAgencia = false
-              this.disabledCliente = false
-              this.disabledAgente = false
+              this.disabledAgencia = false;
+              this.disabledCliente = false;
+              this.disabledAgente = false;
               getData(`/cguias`, 'setDataGuias', 'datos');
             "
           >
@@ -723,7 +818,6 @@
             :columns="columns"
             :loading="loading"
             :separator="separator"
-            
             :filter="filter"
             style="width: 100%"
             :grid="$q.screen.xs"
@@ -732,7 +826,7 @@
             v-model:pagination="pagination"
           >
             <template v-slot:loading>
-                  <q-inner-loading showing color="primary" />
+              <q-inner-loading showing color="primary" />
             </template>
             <template v-slot:body-cell-action="props">
               <q-td :props="props">
@@ -744,10 +838,9 @@
                   icon="edit"
                   :disabled="this.disabledEdit"
                   @click="
-                    this.resetFormEdit()
+                    this.resetFormEdit();
                     getDataEdit(`${props.row.id}`);
                     edit = true;
-                    
                   "
                 ></q-btn>
                 <q-btn
@@ -764,11 +857,7 @@
             </template>
             <template v-slot:item="props">
               <div
-                class="
-                  q-pa-xs
-                  col-xs-12 col-sm-6 col-md-4 col-lg-3
-                  grid-style-transition
-                "
+                class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
                 :style="props.selected ? 'transform: scale(0.95);' : ''"
               >
                 <q-card :class="props.selected ? 'bg-grey-2' : ''">
@@ -802,7 +891,7 @@
                           icon="edit"
                           :disabled="this.disabledEdit"
                           @click="
-                            this.resetFormEdit()
+                            this.resetFormEdit();
                             getDataEdit(`${props.row.id}`);
                             edit = true;
                           "
@@ -896,7 +985,11 @@ import { ref } from "vue";
 
 import { api } from "boot/axios";
 
-import { Notify } from 'quasar'
+import { date } from "quasar";
+
+import moment from "moment";
+
+import { Notify } from "quasar";
 
 import { useQuasar } from "quasar";
 
@@ -1039,7 +1132,7 @@ export default {
       page: 1,
       rowsPerPage: 10,
       rowsNumber: "",
-      order_by: "control_inicio"
+      order_by: "control_inicio",
     });
     return {
       axiosConfig: {
@@ -1077,7 +1170,13 @@ export default {
   mounted() {
     this.getData("/agencias", "setDataIniciar", "agencias");
     this.loading = true;
-    this.$refs.desactiveCrud.desactivarCrud('c_asignacionguias', 'r_asignacionguias', 'u_asignacionguias', 'd_asignacionguias', 'desactivarCrud')
+    this.$refs.desactiveCrud.desactivarCrud(
+      "c_asignacionguias",
+      "r_asignacionguias",
+      "u_asignacionguias",
+      "d_asignacionguias",
+      "desactivarCrud"
+    );
   },
   methods: {
     onRequest(res, dataRes) {
@@ -1123,47 +1222,20 @@ export default {
       this.loading = false;
     },
     setDataCreate() {
-      date = new Date().toLocaleDateString();
-      var date = new Date().toLocaleDateString();
-            if (date[4] == "/") {
-              var date =
-                date[0] +
-                date[1] +
-                "/" +
-                0 +
-                date[3] +
-                "/" +
-                date[5] +
-                date[6] +
-                date[7] +
-                date[8];
-              this.form.fecha_asignacion = date;
-            } else if (date[1] == "/") {
-              var date =
-                0 +
-                date[0] +
-                "/" +
-                0 +
-                date[2] +
-                "/" +
-                date[4] +
-                date[5] +
-                date[6] +
-                date[7];
-              this.form.fecha_asignacion = date;
-            } else {
-              this.form.fecha_asignacion = date;
-            }
+      moment.locale("es");
+      this.form.fecha_asignacion = moment().format("L");
       this.form.cod_agencia = this.selectedAgencia;
       if (this.selectedAgencia.id) {
-        this.disabledAgencia = true
+        this.disabledAgencia = true;
       }
-      if (this.selectedCliente.id)  {
-      this.form.cod_cliente = this.selectedCliente;
-      this.disabledCliente = true}
-      if (this.selectedAgente.id) { 
-      this.form.cod_agente = this.selectedAgente;
-      this.disabledAgente = true}
+      if (this.selectedCliente.id) {
+        this.form.cod_cliente = this.selectedCliente;
+        this.disabledCliente = true;
+      }
+      if (this.selectedAgente.id) {
+        this.form.cod_agente = this.selectedAgente;
+        this.disabledAgente = true;
+      }
     },
     filterArray(val, update, abort, pagina, array, element) {
       if (val === "") {
@@ -1198,7 +1270,7 @@ export default {
         return "Debes Escribir Algo";
       }
       if (val.length > 10) {
-          return "Deben ser Maximo 10 caracteres";
+        return "Deben ser Maximo 10 caracteres";
       }
     },
     reglasSegundoCorrelativo(val) {
@@ -1232,10 +1304,10 @@ export default {
           return "Deben ser Maximo 10 caracteres";
         }
       }
-    }, 
+    },
     reglasCorrelativoFilter() {
-        if ((this.guia_hasta) - (this.guia_desde) < 0) {
-        this.correlativoMayor()
+      if (this.guia_hasta - this.guia_desde < 0) {
+        this.correlativoMayor();
       }
     },
     reglasSelect(val) {
@@ -1249,14 +1321,14 @@ export default {
     desactivarCrud(createItem, readItem, deleteItem, updateItem) {
       if (readItem == true) {
         if (createItem == true) {
-        this.disabledCreate = false
-      }
+          this.disabledCreate = false;
+        }
         if (deleteItem == true) {
-        this.disabledDelete = false
-      }
+          this.disabledDelete = false;
+        }
         if (updateItem == true) {
-        this.disabledEdit = false
-      }
+          this.disabledEdit = false;
+        }
       } else this.$router.push("/error403");
     },
     // Metodos
@@ -1274,7 +1346,8 @@ export default {
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
       if (url == "/cguias") {
-      this.loading = true;}
+        this.loading = true;
+      }
     },
     getDataEdit(id) {
       this.$refs.methods.getDataEdit(
@@ -1295,38 +1368,41 @@ export default {
       this.loading = false;
       this[dataRes].cant_disponible = res.cant_disponible;
       if (this.formEdit.cant_disponible == "0") {
-        this.disabledInputsEdit = true
-      };
+        this.disabledInputsEdit = true;
+      }
       this[dataRes].control_inicio = res.control_inicio;
       this[dataRes].control_final = res.control_final;
       this[dataRes].cant_asignada = res.cant_asignada;
-      this.formEdit.fecha_asignacion = res.fecha_asignacion.split("-").reverse().join("/");
+      this.formEdit.fecha_asignacion = res.fecha_asignacion
+        .split("-")
+        .reverse()
+        .join("/");
       var cod_agencia = res.cod_agencia;
       var cod_agente = res.cod_agente;
       var cod_cliente = res.cod_cliente;
       if (cod_agencia) {
         for (var i = 0; i <= this.agencias.length - 1; i++) {
-            if (this.agencias[i].id == cod_agencia) {
-              this.formEdit.cod_agencia = this.agencias[i];
-              break;
-            }
+          if (this.agencias[i].id == cod_agencia) {
+            this.formEdit.cod_agencia = this.agencias[i];
+            break;
           }
+        }
       }
       if (cod_agente) {
         for (var i = 0; i <= this.agentes.length - 1; i++) {
-            if (this.agentes[i].id == cod_agente) {
-              this.formEdit.cod_agente = this.agentes[i];
-              break;
-            }
+          if (this.agentes[i].id == cod_agente) {
+            this.formEdit.cod_agente = this.agentes[i];
+            break;
           }
+        }
       }
       if (cod_cliente) {
         for (var i = 0; i <= this.clientes.length - 1; i++) {
-            if (this.clientes[i].id == cod_cliente) {
-              this.formEdit.cod_cliente = this.clientes[i];
-              break;
-            }
+          if (this.clientes[i].id == cod_cliente) {
+            this.formEdit.cod_cliente = this.clientes[i];
+            break;
           }
+        }
       }
       this[dataRes].id = res.id;
     },
@@ -1339,30 +1415,36 @@ export default {
       this.loading = true;
     },
     createData() {
-      this.form.fecha_asignacion = this.form.fecha_asignacion.split("/").reverse().join("-");
+      this.form.fecha_asignacion = this.form.fecha_asignacion
+        .split("/")
+        .reverse()
+        .join("-");
       this.form.cod_cliente = this.form.cod_cliente.id;
       this.form.cod_agente = this.form.cod_agente.id;
-      this.form.cod_agencia = this.form.cod_agencia.id,
-      this.axiosConfig.headers.agencia = this.selectedAgencia.id;
+      (this.form.cod_agencia = this.form.cod_agencia.id),
+        (this.axiosConfig.headers.agencia = this.selectedAgencia.id);
       if (this.selectedAgente.id) {
         this.axiosConfig.headers.agente = this.selectedAgente.id;
       }
       if (this.selectedCliente.id) {
         this.axiosConfig.headers.cliente = this.selectedCliente.id;
       }
-        this.$refs.methods.createData(
-          `/cguias`,
-          this.form,
-          "getData",
-          this.axiosConfig
-        );
+      this.$refs.methods.createData(
+        `/cguias`,
+        this.form,
+        "getData",
+        this.axiosConfig
+      );
       this.resetForm();
       this.loading = true;
     },
     putData() {
-      this.formEdit.fecha_asignacion = this.formEdit.fecha_asignacion.split("/").reverse().join("-");
-      this.formEdit.cod_agencia = this.formEdit.cod_agencia.id,
-      this.formEdit.cod_cliente = this.formEdit.cod_cliente.id;
+      this.formEdit.fecha_asignacion = this.formEdit.fecha_asignacion
+        .split("/")
+        .reverse()
+        .join("-");
+      (this.formEdit.cod_agencia = this.formEdit.cod_agencia.id),
+        (this.formEdit.cod_cliente = this.formEdit.cod_cliente.id);
       this.formEdit.cod_agente = this.formEdit.cod_agente.id;
       this.axiosConfig.headers.agencia = this.selectedAgencia.id;
       if (this.selectedAgente.id) {
@@ -1371,42 +1453,42 @@ export default {
       if (this.selectedCliente.id) {
         this.axiosConfig.headers.cliente = this.selectedCliente.id;
       }
-        this.$refs.methods.putData(
-          `/cguias/${this.formEdit.id}`,
-          this.formEdit,
-          "getData",
-          this.axiosConfig
-        );
+      this.$refs.methods.putData(
+        `/cguias/${this.formEdit.id}`,
+        this.formEdit,
+        "getData",
+        this.axiosConfig
+      );
       this.resetFormEdit();
       this.loading = true;
     },
     resetForm() {
       (this.form.control_inicio = ""),
-      (this.form.control_final = ""),
-      (this.form.cant_asignada = ""),
-      (this.form.cant_disponible = ""),
-      (this.form.fecha_asignacion = ""),
-      (this.form.cod_agencia = ""),
-      (this.form.cod_agente = ""),
-      (this.form.cod_cliente = ""),
-      (this.create = false);
+        (this.form.control_final = ""),
+        (this.form.cant_asignada = ""),
+        (this.form.cant_disponible = ""),
+        (this.form.fecha_asignacion = ""),
+        (this.form.cod_agencia = ""),
+        (this.form.cod_agente = ""),
+        (this.form.cod_cliente = ""),
+        (this.create = false);
       this.disabledAgencia = false;
       this.disabledAgente = false;
       this.disabledCliente = false;
     },
     resetFormEdit() {
       (this.disabledInputsEdit = false),
-      (this.formEdit.control_inicio = ""),
-      (this.formEdit.control_final = ""),
-      (this.formEdit.cant_asignada = ""),
-      (this.formEdit.cant_disponible = ""),
-      (this.formEdit.fecha_asignacion = ""),
-      (this.formEdit.cod_agencia = ""),
-      (this.formEdit.cod_agente = ""),
-      (this.formEdit.cod_cliente = ""),
-      (this.agentesForm = []),
-      (this.clientesForm = []),
-      (this.edit = false);
+        (this.formEdit.control_inicio = ""),
+        (this.formEdit.control_final = ""),
+        (this.formEdit.cant_asignada = ""),
+        (this.formEdit.cant_disponible = ""),
+        (this.formEdit.fecha_asignacion = ""),
+        (this.formEdit.cod_agencia = ""),
+        (this.formEdit.cod_agente = ""),
+        (this.formEdit.cod_cliente = ""),
+        (this.agentesForm = []),
+        (this.clientesForm = []),
+        (this.edit = false);
     },
 
     // Metodos para colocar valores iniciales
@@ -1415,23 +1497,15 @@ export default {
       this.selectedAgencia = this.agencias[0];
       this.getData("/clientes", "setData", "clientes");
       this.getData("/agentes", "setData", "agentes");
-      this.axiosConfig.headers.page = 1,
-      this.axiosConfig.headers.limit = 10,
-      this.axiosConfig.headers.order_by = "control_inicio",
-      this.axiosConfig.headers.order_direction = "DESC",
-      this.getData(`/cguias`, "onRequest", "datos");
+      (this.axiosConfig.headers.page = 1),
+        (this.axiosConfig.headers.limit = 10),
+        (this.axiosConfig.headers.order_by = "control_inicio"),
+        (this.axiosConfig.headers.order_direction = "DESC"),
+        this.getData(`/cguias`, "onRequest", "datos");
     },
 
     dateValidation(val) {
-      let date = val
-      if ((date[0])+date[1] > 31) return "Fecha Invalida"
-      if ((date[3])+date[4] > 12) return "Fecha Invalida"
-      if(date.length < 10) return 'Fecha Invalida'
-      if ((date[3])+date[4] == "04" && (date[0])+date[1] > 30) return "Fecha Invalida"
-      if ((date[3])+date[4] == "06" && (date[0])+date[1] > 30) return "Fecha Invalida"
-      if ((date[3])+date[4] == "09" && (date[0])+date[1] > 30) return "Fecha Invalida"
-      if ((date[3])+date[4] == "11" && (date[0])+date[1] > 30) return "Fecha Invalida"
-      if ((date[3])+date[4] == "02" && (date[0])+date[1] > 28) return "Fecha Invalida"   
+      if (date.isValid(val) == false) return "Fecha Invalida";
     },
   },
 };
@@ -1459,7 +1533,7 @@ export default {
   }
 }
 .menuFilter {
-    padding-bottom: 1px;
+  padding-bottom: 1px;
 }
 @media screen and (max-width: 1024px) {
   .inputMenuGuias {

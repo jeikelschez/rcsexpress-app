@@ -367,7 +367,6 @@
             :loading="loading"
             :columns="columns"
             :separator="separator"
-            
             :filter="filter"
             style="width: 100%"
             v-model:pagination="pagination"

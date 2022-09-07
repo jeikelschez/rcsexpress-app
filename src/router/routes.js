@@ -1,3 +1,4 @@
+
 const routes = [
   {
     path: '/',
@@ -217,12 +218,12 @@ const routes = [
       {
         path: '/zonasagencia',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/Zonasagencia.vue')}]
+        children: [{ path: "", component: () => import('pages/ZonasAgencia.vue')}]
       },
       {
         path: '/unidadestransporte',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/Unidadestransporte.vue')}]
+        children: [{ path: "", component: () => import('pages/UnidadesTransporte.vue')}]
       },
       {
         path: '/ayudantes',
@@ -247,7 +248,7 @@ const routes = [
       {
         path: '/variablecontrol',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/Variablecontrol.vue')}]
+        children: [{ path: "", component: () => import('pages/VariableControl.vue')}]
       },
       {
         path: '/bancos',
@@ -257,7 +258,7 @@ const routes = [
       {
         path: '/cuentasbancarias',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/Cuentasbancarias.vue')}]
+        children: [{ path: "", component: () => import('pages/CuentasBancarias.vue')}]
       },
       {
         path: '/clientes',
@@ -282,17 +283,17 @@ const routes = [
       {
         path: '/conceptosoperacion',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/Conceptosoperacion.vue')}]
+        children: [{ path: "", component: () => import('pages/ConceptosOperacion.vue')}]
       },
       {
         path: '/conceptosfacturacion',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/Conceptosfacturacion.vue')}]
+        children: [{ path: "", component: () => import('pages/ConceptosFacturacion.vue')}]
       },
       {
         path: '/conceptosfpo',
         component: () => import("layouts/mainlayout.vue"),
-        children: [{ path: "", component: () => import('pages/Conceptosfpo.vue')}]
+        children: [{ path: "", component: () => import('pages/ConceptosFPO.vue')}]
       },
       {
         path: '/asignacionguias',
@@ -674,5 +675,4 @@ const routes = [
   },
 
 ]
-
 export default routes

@@ -256,8 +256,17 @@
                 option-label="nb_agencia"
                 option-value="id"
                 :options="agenciasSelected"
-                @filter="(val,update,abort) => 
-                filterArray(val,update,abort,'agenciasSelected', 'agencias', 'nb_agencia')"
+                @filter="
+                  (val, update, abort) =>
+                    filterArray(
+                      val,
+                      update,
+                      abort,
+                      'agenciasSelected',
+                      'agencias',
+                      'nb_agencia'
+                    )
+                "
                 use-input
                 hide-selected
                 fill-input
@@ -270,13 +279,13 @@
                   this.axiosConfig.headers.agencia = this.selectedAgencia.id;
                   getDataSelect(`/correlativo`, 'setData', 'datos');
                 "
-              ><template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
+                ><template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      Sin resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
                 <template v-slot:prepend>
                   <q-icon name="search" />
                 </template>
@@ -290,8 +299,17 @@
                 transition-show="flip-up"
                 transition-hide="flip-down"
                 :options="tiposSelected"
-                @filter="(val,update,abort) => 
-                filterArray(val,update,abort,'tiposSelected', 'tipos', 'descripcion')"
+                @filter="
+                  (val, update, abort) =>
+                    filterArray(
+                      val,
+                      update,
+                      abort,
+                      'tiposSelected',
+                      'tipos',
+                      'descripcion'
+                    )
+                "
                 use-input
                 hide-selected
                 fill-input
@@ -306,13 +324,13 @@
                   this.axiosConfig.headers.tipo = this.selectedTipo.id;
                   getDataSelect(`/correlativo`, 'setData', 'datos');
                 "
-              ><template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
+                ><template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      Sin resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
                 <template v-slot:prepend>
                   <q-icon name="search" />
                 </template>
@@ -361,14 +379,13 @@
                   :loading="loading"
                   :columns="columns"
                   :separator="separator"
-                  
                   :filter="filter"
                   style="width: 100%"
                   :grid="$q.screen.xs"
                   v-model:pagination="pagination"
                 >
                   <template v-slot:loading>
-                  <q-inner-loading showing color="primary" />
+                    <q-inner-loading showing color="primary" />
                   </template>
                   <template v-slot:body-cell-estatus="props">
                     <q-td :props="props">
@@ -378,7 +395,9 @@
                         :options="estatus"
                         @update:model-value="
                           this.getDataEdit(props.row.id, 'putDatoSelect');
-                          this.formEdit.estatus_lote = props.row.estatus_desc.value;"
+                          this.formEdit.estatus_lote =
+                            props.row.estatus_desc.value;
+                        "
                       >
                       </q-select>
                     </q-td>
@@ -505,7 +524,8 @@
                                 :options="estatus"
                                 @update:model-value="
                                   getDataEdit(props.row.id, 'putDatoSelect');
-                                  this.formEdit.estatus_lote = props.row.estatus_desc.value;
+                                  this.formEdit.estatus_lote =
+                                    props.row.estatus_desc.value;
                                 "
                               >
                               </q-select>
@@ -551,7 +571,9 @@
     </q-dialog>
     <methods
       ref="methods"
-      @get-Data-Correlativo="getDataCorrelativo('/correlativo', 'setData', 'datos')"
+      @get-Data-Correlativo="
+        getDataCorrelativo('/correlativo', 'setData', 'datos')
+      "
       @set-Data="setData"
       @reset-Loading="resetLoading"
       @set-Data-Edit="setDataEdit"
@@ -659,13 +681,13 @@ export default {
       tiposSelected: [],
       datos: [],
       selectedTipo: {
-        "id": 16,
-        "codigo": "FA",
-        "descripcion": "Facturación",
+        id: 16,
+        codigo: "FA",
+        descripcion: "Facturación",
       },
       selectedAgencia: {
-        "id": 1,
-        "nb_agencia": "VALENCIA, RCS EXPRESS",
+        id: 1,
+        nb_agencia: "VALENCIA, RCS EXPRESS",
       },
       disabledCreate: true,
       disabledEdit: true,
@@ -711,7 +733,13 @@ export default {
     this.getData("/agencias", "setData", "agencias");
     this.getData("/tipos", "setData", "tipos");
     this.getDataCorrelativo("/correlativo", "setData", "datos");
-    this.$refs.desactiveCrud.desactivarCrud('c_ccorrelativo', 'r_ccorrelativo', 'u_ccorrelativo', 'd_ccorrelativo', 'desactivarCrud')
+    this.$refs.desactiveCrud.desactivarCrud(
+      "c_ccorrelativo",
+      "r_ccorrelativo",
+      "u_ccorrelativo",
+      "d_ccorrelativo",
+      "desactivarCrud"
+    );
   },
   methods: {
     filterArray(val, update, abort, pagina, array, element) {
@@ -740,19 +768,19 @@ export default {
     },
     // Reglas
     reglasAllowNull1(val) {
-      console.log(val)
-        if (val) {
-          if (val.length > 1) {
-            return "Deben ser Maximo 1 caracter";
-          }
+      console.log(val);
+      if (val) {
+        if (val.length > 1) {
+          return "Deben ser Maximo 1 caracter";
+        }
       }
     },
     reglasAllowNull10(val) {
-      console.log(val)
-        if (val) {
-          if (val.length > 10) {
-            return "Deben ser Maximo 10 caracteres";
-          }
+      console.log(val);
+      if (val) {
+        if (val.length > 10) {
+          return "Deben ser Maximo 10 caracteres";
+        }
       }
     },
     reglasNotNull10(val) {
@@ -762,10 +790,10 @@ export default {
       if (val === "") {
         return "Debes Escribir Algo";
       }
-        if (val !== null !== "") {
-          if (val.length > 10) {
-            return "Deben ser Maximo 10 caracteres";
-          }
+      if ((val !== null) !== "") {
+        if (val.length > 10) {
+          return "Deben ser Maximo 10 caracteres";
+        }
       }
     },
     reglasSegundoCorrelativo(val) {
@@ -775,13 +803,13 @@ export default {
       if (val === "") {
         return "Debes Escribir Algo";
       }
-        if (val !== null !== "") {
-          if (val < this.form.control_inicio) {
-            return "El Ultimo Correlativo debe ser Mayor al Primero"
-          }
-          if (val.length > 10) {
-            return "Deben ser Maximo 10 caracteres";
-          }
+      if ((val !== null) !== "") {
+        if (val < this.form.control_inicio) {
+          return "El Ultimo Correlativo debe ser Mayor al Primero";
+        }
+        if (val.length > 10) {
+          return "Deben ser Maximo 10 caracteres";
+        }
       }
     },
     reglasSegundoCorrelativoEdit(val) {
@@ -791,13 +819,13 @@ export default {
       if (val === "") {
         return "Debes Escribir Algo";
       }
-        if (val !== null !== "") {
-          if (val < this.formEdit.control_inicio) {
-            return "El Ultimo Correlativo debe ser Mayor al Primero"
-          }
-          if (val.length > 10) {
-            return "Deben ser Maximo 10 caracteres";
-          }
+      if ((val !== null) !== "") {
+        if (val < this.formEdit.control_inicio) {
+          return "El Ultimo Correlativo debe ser Mayor al Primero";
+        }
+        if (val.length > 10) {
+          return "Deben ser Maximo 10 caracteres";
+        }
       }
     },
     reglasSelect(val) {
@@ -811,14 +839,14 @@ export default {
     desactivarCrud(createItem, readItem, deleteItem, updateItem) {
       if (readItem == true) {
         if (createItem == true) {
-        this.disabledCreate = false
-      }
+          this.disabledCreate = false;
+        }
         if (deleteItem == true) {
-        this.disabledDelete = false
-      }
+          this.disabledDelete = false;
+        }
         if (updateItem == true) {
-        this.disabledEdit = false
-      }
+          this.disabledEdit = false;
+        }
       } else this.$router.push("/dashboard");
     },
 
@@ -831,7 +859,7 @@ export default {
     },
     setData(res, dataRes) {
       this[dataRes] = res;
-      this.loading = false
+      this.loading = false;
     },
 
     getDataEdit(id, call) {
@@ -871,16 +899,15 @@ export default {
         for (var e = 0, len = this.datos.length; e < len; e++) {
           if (this.datos[e].estatus_lote === "A") {
             if (this.form.id !== this.datos[e].id) {
-            this.activoExistente();
-            return;
+              this.activoExistente();
+              return;
             }
           }
           if (e == this.datos.length - 1) break;
         }
-        
       }
-      this.form.cod_agencia = this.selectedAgencia.id
-      this.form.tipo = this.selectedTipo.id
+      this.form.cod_agencia = this.selectedAgencia.id;
+      this.form.tipo = this.selectedTipo.id;
       this.form.estatus_lote = this.form.estatus_lote.value;
       this.$refs.methods.createData(
         "/correlativo",
@@ -896,8 +923,8 @@ export default {
         for (var e = 0, len = this.datos.length; e < len; e++) {
           if (this.datos[e].estatus_lote === "A") {
             if (this.formEdit.id !== this.datos[e].id) {
-            this.activoExistente();
-            return;
+              this.activoExistente();
+              return;
             }
           }
           if (e == this.datos.length - 1) break;
@@ -921,43 +948,48 @@ export default {
       this[dataRes].ult_doc_referencia = res.ult_doc_referencia;
       this[dataRes].serie_doc = res.serie_doc;
       this[dataRes].cod_agencia = res.cod_agencia;
-      console.log(this.formEdit)
+      console.log(this.formEdit);
       if (this.formEdit.estatus_lote === "A") {
         for (var e = 0, len = this.datos.length; e < len; e++) {
           if (this.datos[e].estatus_lote === "A") {
             if (this.formEdit.id !== this.datos[e].id) {
-            this.activoExistente();
-            this.getDataCorrelativo("/correlativo", "setData", "datos")
-            return;
+              this.activoExistente();
+              this.getDataCorrelativo("/correlativo", "setData", "datos");
+              return;
             }
           }
           if (e == this.datos.length - 1) break;
         }
       }
 
-      this.$refs.methods.putData(`/correlativo/${this.formEdit.id}`,this.formEdit,"getDataCorrelativo",this.axiosConfig);
+      this.$refs.methods.putData(
+        `/correlativo/${this.formEdit.id}`,
+        this.formEdit,
+        "getDataCorrelativo",
+        this.axiosConfig
+      );
       this.loading = true;
     },
 
     resetForm() {
       (this.form.tipo = ""),
-      (this.form.control_inicio = ""),
-      (this.form.control_final = ""),
-      (this.form.ult_doc_referencia = ""),
-      (this.form.estatus_lote = ""),
-      (this.form.serie_doc = ""),
-      (this.form.cod_agencia = ""),
-      (this.create = null);
+        (this.form.control_inicio = ""),
+        (this.form.control_final = ""),
+        (this.form.ult_doc_referencia = ""),
+        (this.form.estatus_lote = ""),
+        (this.form.serie_doc = ""),
+        (this.form.cod_agencia = ""),
+        (this.create = null);
     },
     resetFormEdit() {
       (this.formEdit.tipo = ""),
-      (this.formEdit.control_inicio = ""),
-      (this.formEdit.control_final = ""),
-      (this.formEdit.ult_doc_referencia = ""),
-      (this.formEdit.estatus_lote = ""),
-      (this.formEdit.serie_doc = ""),
-      (this.formEdit.cod_agencia = ""),
-      (this.edit = null);
+        (this.formEdit.control_inicio = ""),
+        (this.formEdit.control_final = ""),
+        (this.formEdit.ult_doc_referencia = ""),
+        (this.formEdit.estatus_lote = ""),
+        (this.formEdit.serie_doc = ""),
+        (this.formEdit.cod_agencia = ""),
+        (this.edit = null);
     },
   },
 };

@@ -321,7 +321,6 @@
                 row-key="id"
                 :columns="columns"
                 :separator="separator"
-                
                 :filter="filter"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -340,7 +339,11 @@
                       icon="edit"
                       :disabled="this.disabledEdit"
                       @click="
-                        getData(`/bancos/${props.row.id}`, 'setData', 'formEdit');
+                        getData(
+                          `/bancos/${props.row.id}`,
+                          'setData',
+                          'formEdit'
+                        );
                         edit = true;
                       "
                     ></q-btn>
@@ -392,7 +395,11 @@
                               icon="edit"
                               :disabled="this.disabledEdit"
                               @click="
-                                getData(`/bancos/${props.row.id}`, 'setData', 'formEdit');
+                                getData(
+                                  `/bancos/${props.row.id}`,
+                                  'setData',
+                                  'formEdit'
+                                );
                                 edit = true;
                               "
                             ></q-btn>
@@ -461,13 +468,15 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <methods ref="methods"
-    @get-Data-Bancos="getDataBancos('/bancos','setData','datos')"
-    @reset-Loading="resetLoading"
-    @set-data="setData" @set-Data-Edit="setData">
+    <methods
+      ref="methods"
+      @get-Data-Bancos="getDataBancos('/bancos', 'setData', 'datos')"
+      @reset-Loading="resetLoading"
+      @set-data="setData"
+      @set-Data-Edit="setData"
+    >
     </methods>
-    <desactive-crud ref="desactiveCrud"
-    @desactivar-Crud="desactivarCrud">
+    <desactive-crud ref="desactiveCrud" @desactivar-Crud="desactivarCrud">
     </desactive-crud>
   </q-page>
 </template>
@@ -475,19 +484,19 @@
 <script>
 import { ref } from "vue";
 
-
 import { useQuasar } from "quasar";
 
 import { LocalStorage } from "quasar";
 
-import methodsVue from 'src/components/methods.vue';
+import methodsVue from "src/components/methods.vue";
 
-import desactivateCrudVue from 'src/components/desactivateCrud.vue';
+import desactivateCrudVue from "src/components/desactivateCrud.vue";
 
 export default {
   components: {
-  "desactive-crud": desactivateCrudVue,
-  "methods": methodsVue },
+    "desactive-crud": desactivateCrudVue,
+    methods: methodsVue,
+  },
   name: "Bancos",
   data() {
     return {
@@ -617,8 +626,14 @@ export default {
     };
   },
   mounted() {
-    this.getDataBancos('/bancos','setData','datos')
-    this.$refs.desactiveCrud.desactivarCrud('c_bancos', 'r_bancos', 'u_bancos', 'd_bancos', 'desactivarCrud')
+    this.getDataBancos("/bancos", "setData", "datos");
+    this.$refs.desactiveCrud.desactivarCrud(
+      "c_bancos",
+      "r_bancos",
+      "u_bancos",
+      "d_bancos",
+      "desactivarCrud"
+    );
   },
   methods: {
     resetLoading() {
@@ -633,30 +648,30 @@ export default {
       }
       if (val.length > 0) {
         if (val.length < 3) {
-        return "Deben ser minimo 3 caracteres";
+          return "Deben ser minimo 3 caracteres";
         }
       }
     },
     reglaInput(val) {
-      if(val !== null) {
-      if (val.length > 0) {
-        if (val.length < 3) {
-        return "Deben ser minimo 3 caracteres";
+      if (val !== null) {
+        if (val.length > 0) {
+          if (val.length < 3) {
+            return "Deben ser minimo 3 caracteres";
+          }
         }
-       }
       }
     },
     desactivarCrud(createItem, readItem, deleteItem, updateItem) {
       if (readItem == true) {
         if (createItem == true) {
-        this.disabledCreate = false
-      }
+          this.disabledCreate = false;
+        }
         if (deleteItem == true) {
-        this.disabledDelete = false
-      }
+          this.disabledDelete = false;
+        }
         if (updateItem == true) {
-        this.disabledEdit = false
-      }
+          this.disabledEdit = false;
+        }
       } else this.$router.push("/error403");
     },
     getData(url, call, dataRes) {
@@ -667,32 +682,46 @@ export default {
       this.loading = true;
     },
     setData(res, dataRes) {
-      this[dataRes] = res
-      this.loading = false
-    },    
+      this[dataRes] = res;
+      this.loading = false;
+    },
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/bancos/${idpost}`, 'getDataBancos', this.axiosConfig);
+      this.$refs.methods.deleteData(
+        `/bancos/${idpost}`,
+        "getDataBancos",
+        this.axiosConfig
+      );
       this.loading = true;
     },
     createData() {
-      this.$refs.methods.createData('/bancos', this.form, 'getDataBancos', this.axiosConfig);
+      this.$refs.methods.createData(
+        "/bancos",
+        this.form,
+        "getDataBancos",
+        this.axiosConfig
+      );
       this.resetForm();
       this.loading = true;
     },
     putData() {
-      this.$refs.methods.putData(`/bancos/${this.formEdit.id}`, this.formEdit, 'getDataBancos', this.axiosConfig);
+      this.$refs.methods.putData(
+        `/bancos/${this.formEdit.id}`,
+        this.formEdit,
+        "getDataBancos",
+        this.axiosConfig
+      );
       this.edit = false;
       this.loading = true;
     },
-    
+
     resetForm() {
       (this.form.nb_banco = null),
-      (this.form.direccion_banco = null),
-      (this.form.tlf_banco = null),
-      (this.form.fax_banco = null),
-      (this.form.cod_postal = null),
-      (this.form.email_banco = null),
-      (this.create = false);    
+        (this.form.direccion_banco = null),
+        (this.form.tlf_banco = null),
+        (this.form.fax_banco = null),
+        (this.form.cod_postal = null),
+        (this.form.email_banco = null),
+        (this.create = false);
     },
   },
 };

@@ -48,7 +48,8 @@
                   lazy-rules
                   :rules="[reglasNotNull50]"
                   @update:model-value="
-                    form.nb_tipo_retencion = form.nb_tipo_retencion.toUpperCase()
+                    form.nb_tipo_retencion =
+                      form.nb_tipo_retencion.toUpperCase()
                   "
                 >
                   <template v-slot:prepend>
@@ -64,9 +65,9 @@
                   label="Porcentaje Base"
                   hint=""
                   class="pcform"
-                  type="number"
+                  v-money="money"
+                  input-class="text-right"
                   lazy-rules
-                  step=".01"
                   :rules="[reglasNotNull12]"
                 >
                   <template v-slot:prepend>
@@ -82,9 +83,9 @@
                   label="Porcentaje Retención"
                   hint=""
                   lazy-rules
-                  step=".01"
+                  v-money="money"
+                  input-class="text-right"
                   class="pcform"
-                  type="number"
                   :rules="[reglasNotNull12]"
                 >
                   <template v-slot:prepend>
@@ -99,9 +100,9 @@
                   v-model="form.pago_mayor"
                   label="Monto"
                   hint=""
-                  step=".01"
+                  v-money="money"
+                  input-class="text-right"
                   lazy-rules
-                  type="number"
                   :rules="[reglasNotNull12]"
                 >
                   <template v-slot:prepend>
@@ -117,9 +118,9 @@
                   label="Sustraendo"
                   hint=""
                   lazy-rules
-                  step=".01"
                   class="pcform"
-                  type="number"
+                  v-money="money"
+                  input-class="text-right"
                   :rules="[reglasNotNull12]"
                 >
                   <template v-slot:prepend>
@@ -147,22 +148,31 @@
               </div>
 
               <div class="col-md-6 col-xs-12">
-                      <q-input
-                      outlined
-                      label="Fecha de Validez Inicial"
-                      hint=""
-                      v-model="form.fecha_ini_val"
-                      mask="date"
-                      :rules="['date']"
-                      class="pcform"
-                      lazy-rules
+                <q-input
+                  outlined
+                  label="Fecha de Validez Inicial"
+                  hint=""
+                  v-model="form.fecha_ini_val"
+                  mask="##/##/####"
+                  :rules="[checkDate]"
+                  class="pcform"
+                  lazy-rules
                 >
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                        <q-date v-model="form.fecha_ini_val">
+                      <q-popup-proxy
+                        cover
+                        transition-show="scale"
+                        transition-hide="scale"
+                      >
+                        <q-date v-model="form.fecha_ini_val" mask="DD-MM-YYYY">
                           <div class="row items-center justify-end">
-                             <q-btn v-close-popup label="Close" color="primary" flat />
+                            <q-btn
+                              v-close-popup
+                              label="Close"
+                              color="primary"
+                              flat
+                            />
                           </div>
                         </q-date>
                       </q-popup-proxy>
@@ -172,21 +182,30 @@
               </div>
 
               <div class="col-md-6 col-xs-12">
-                      <q-input
-                      outlined
-                      label="Fecha de Validez Final"
-                      hint=""
-                      v-model="form.fecha_fin_val"
-                      mask="date"
-                      :rules="['date']"
-                      lazy-rules
+                <q-input
+                  outlined
+                  label="Fecha de Validez Final"
+                  hint=""
+                  v-model="form.fecha_fin_val"
+                  mask="##/##/####"
+                  :rules="[checkDate]"
+                  lazy-rules
                 >
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                        <q-date v-model="form.fecha_fin_val">
+                      <q-popup-proxy
+                        cover
+                        transition-show="scale"
+                        transition-hide="scale"
+                      >
+                        <q-date v-model="form.fecha_fin_val" mask="DD-MM-YYYY">
                           <div class="row items-center justify-end">
-                             <q-btn v-close-popup label="Close" color="primary" flat />
+                            <q-btn
+                              v-close-popup
+                              label="Close"
+                              color="primary"
+                              flat
+                            />
                           </div>
                         </q-date>
                       </q-popup-proxy>
@@ -270,7 +289,8 @@
                   lazy-rules
                   :rules="[reglasNotNull50]"
                   @update:model-value="
-                    formEdit.nb_tipo_retencion = formEdit.nb_tipo_retencion.toUpperCase()
+                    formEdit.nb_tipo_retencion =
+                      formEdit.nb_tipo_retencion.toUpperCase()
                   "
                 >
                   <template v-slot:prepend>
@@ -286,8 +306,8 @@
                   label="Porcentaje Base"
                   hint=""
                   class="pcform"
-                  step=".01"
-                  type="number"
+                  v-money="money"
+                  input-class="text-right"
                   lazy-rules
                   :rules="[reglasNotNull12]"
                 >
@@ -304,9 +324,9 @@
                   label="Porcentaje Retención"
                   hint=""
                   lazy-rules
-                  step=".01"
+                  v-money="money"
+                  input-class="text-right"
                   class="pcform"
-                  type="number"
                   :rules="[reglasNotNull12]"
                 >
                   <template v-slot:prepend>
@@ -320,10 +340,10 @@
                   outlined
                   v-model="formEdit.pago_mayor"
                   label="Monto"
-                  step=".01"
                   hint=""
                   lazy-rules
-                  type="number"
+                  v-money="money"
+                  input-class="text-right"
                   :rules="[reglasNotNull12]"
                 >
                   <template v-slot:prepend>
@@ -339,9 +359,9 @@
                   label="Sustraendo"
                   hint=""
                   lazy-rules
-                  step=".01"
                   class="pcform"
-                  type="number"
+                  v-money="money"
+                  input-class="text-right"
                   :rules="[reglasNotNull12]"
                 >
                   <template v-slot:prepend>
@@ -369,22 +389,34 @@
               </div>
 
               <div class="col-md-6 col-xs-12">
-                      <q-input
-                      outlined
-                      label="Fecha de Validez Inicial"
-                      hint=""
-                      v-model="formEdit.fecha_ini_val"
-                      mask="date"
-                      :rules="['date']"
-                      class="pcform"
-                      lazy-rules
+                <q-input
+                  outlined
+                  label="Fecha de Validez Inicial"
+                  hint=""
+                  v-model="formEdit.fecha_ini_val"
+                  mask="##/##/####"
+                  :rules="[checkDate]"
+                  class="pcform"
+                  lazy-rules
                 >
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                        <q-date v-model="formEdit.fecha_ini_val">
+                      <q-popup-proxy
+                        cover
+                        transition-show="scale"
+                        transition-hide="scale"
+                      >
+                        <q-date
+                          v-model="formEdit.fecha_ini_val"
+                          mask="DD-MM-YYYY"
+                        >
                           <div class="row items-center justify-end">
-                             <q-btn v-close-popup label="Close" color="primary" flat />
+                            <q-btn
+                              v-close-popup
+                              label="Close"
+                              color="primary"
+                              flat
+                            />
                           </div>
                         </q-date>
                       </q-popup-proxy>
@@ -394,21 +426,33 @@
               </div>
 
               <div class="col-md-6 col-xs-12">
-                      <q-input
-                      outlined
-                      label="Fecha de Validez Final"
-                      hint=""
-                      v-model="formEdit.fecha_fin_val"
-                      mask="date"
-                      :rules="['date']"
-                      lazy-rules
+                <q-input
+                  outlined
+                  label="Fecha de Validez Final"
+                  hint=""
+                  v-model="formEdit.fecha_fin_val"
+                  mask="##/##/####"
+                  :rules="[checkDate]"
+                  lazy-rules
                 >
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                        <q-date v-model="formEdit.fecha_fin_val">
+                      <q-popup-proxy
+                        cover
+                        transition-show="scale"
+                        transition-hide="scale"
+                      >
+                        <q-date
+                          v-model="formEdit.fecha_fin_val"
+                          mask="DD-MM-YYYY"
+                        >
                           <div class="row items-center justify-end">
-                             <q-btn v-close-popup label="Close" color="primary" flat />
+                            <q-btn
+                              v-close-popup
+                              label="Close"
+                              color="primary"
+                              flat
+                            />
                           </div>
                         </q-date>
                       </q-popup-proxy>
@@ -494,7 +538,6 @@
                 :loading="loading"
                 :columns="columns"
                 :separator="separator"
-                
                 :filter="filter"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -513,7 +556,11 @@
                       icon="edit"
                       :disabled="this.disabledEdit"
                       @click="
-                        getData(`/mretenciones/${props.row.id}`, 'setDataEdit', 'formEdit');
+                        getData(
+                          `/mretenciones/${props.row.id}`,
+                          'setDataEdit',
+                          'formEdit'
+                        );
                         edit = true;
                       "
                     ></q-btn>
@@ -565,7 +612,11 @@
                               icon="edit"
                               :disabled="this.disabledEdit"
                               @click="
-                                getData(`/mretenciones/${props.row.id}`, 'setDataEdit', 'formEdit');
+                                getData(
+                                  `/mretenciones/${props.row.id}`,
+                                  'setDataEdit',
+                                  'formEdit'
+                                );
                                 edit = true;
                               "
                             ></q-btn>
@@ -634,14 +685,17 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <methods ref="methods"
-    @get-Data-Retenciones="getDataRetenciones('/mretenciones','setData','datos')"
-    @set-data="setData"
-    @reset-Loading="resetLoading"
-    @set-Data-Edit="setDataEdit">
+    <methods
+      ref="methods"
+      @get-Data-Retenciones="
+        getDataRetenciones('/mretenciones', 'setData', 'datos')
+      "
+      @set-data="setData"
+      @reset-Loading="resetLoading"
+      @set-Data-Edit="setDataEdit"
+    >
     </methods>
-    <desactivate-crud ref="desactivateCrud"
-    @desactivar-Crud="desactivarCrud">
+    <desactivate-crud ref="desactivateCrud" @desactivar-Crud="desactivarCrud">
     </desactivate-crud>
   </q-page>
 </template>
@@ -653,20 +707,30 @@ import { useQuasar } from "quasar";
 
 import { LocalStorage } from "quasar";
 
-import methodsVue from 'src/components/methods.vue';
+import { VMoney } from "v-money";
 
-import desactivateCrudVue from 'src/components/desactivateCrud.vue';
+import methodsVue from "src/components/methods.vue";
 
-import currencyInputVue from 'src/components/currency-input.vue';
+import desactivateCrudVue from "src/components/desactivateCrud.vue";
 
 export default {
+  directives: { money: VMoney },
   components: {
-  "desactivate-crud": desactivateCrudVue,
-  "methods": methodsVue,
-  "currency-input": currencyInputVue},
+    "desactivate-crud": desactivateCrudVue,
+    methods: methodsVue,
+    VMoney,
+  },
   name: "retenciones",
   data() {
     return {
+      money: {
+        decimal: ",",
+        thousands: ".",
+        prefix: "",
+        suffix: "",
+        precision: 2,
+        masked: true,
+      },
       columns: [
         {
           name: "cod_tipo_retencion",
@@ -742,7 +806,7 @@ export default {
         sustraendo: "",
         cod_seniat: "",
         fecha_ini_val: "",
-        fecha_fin_val: ""
+        fecha_fin_val: "",
       },
       datos: [],
       formEdit: {
@@ -797,9 +861,14 @@ export default {
     };
   },
   mounted() {
-    this.getDataRetenciones('/mretenciones','setData','datos')
-    this.$refs.desactivateCrud.desactivarCrud('c_retenciones', 'r_retenciones', 'u_retenciones', 'd_retenciones', 'desactivarCrud')
-
+    this.getDataRetenciones("/mretenciones", "setData", "datos");
+    this.$refs.desactivateCrud.desactivarCrud(
+      "c_retenciones",
+      "r_retenciones",
+      "u_retenciones",
+      "d_retenciones",
+      "desactivarCrud"
+    );
   },
   methods: {
     resetLoading() {
@@ -821,23 +890,25 @@ export default {
       if (val === "") {
         return "Debes Escribir Algo";
       }
-        if (val !== null !== "") {
-          if (val > 49) {
-            return "Deben ser Maximo 50 Caracteres";
-          }
+      if ((val !== null) !== "") {
+        if (val > 49) {
+          return "Deben ser Maximo 50 Caracteres";
+        }
       }
     },
     reglasNotNull12(val) {
+      var val = val;
+      val = val.replaceAll(".", "").replaceAll(",", ".");
       if (val === null) {
         return "Debes Escribir Algo";
       }
       if (val === "") {
         return "Debes Escribir Algo";
       }
-        if (val !== null !== "") {
-          if (val > 9999999999.99) {
-            return "Monto Maximo Superado";
-          }
+      if ((val !== null) !== "") {
+        if (val > 9999999999.99) {
+          return "Monto Maximo Superado";
+        }
       }
     },
     reglasNotNull3(val) {
@@ -847,10 +918,10 @@ export default {
       if (val === "") {
         return "Debes Escribir Algo";
       }
-        if (val !== null !== "") {
-          if (val > 999) {
-            return "Deben ser Maximo 3 Caracteres";
-          }
+      if ((val !== null) !== "") {
+        if (val > 999) {
+          return "Deben ser Maximo 3 Caracteres";
+        }
       }
     },
     reglasNotNull2(val) {
@@ -860,10 +931,10 @@ export default {
       if (val === "") {
         return "Debes Escribir Algo";
       }
-        if (val !== null !== "") {
-          if (val > 99) {
-            return "Deben ser Maximo 2 Caracteres";
-          }
+      if ((val !== null) !== "") {
+        if (val > 99) {
+          return "Deben ser Maximo 2 Caracteres";
+        }
       }
     },
 
@@ -871,14 +942,14 @@ export default {
     desactivarCrud(createItem, readItem, deleteItem, updateItem) {
       if (readItem == true) {
         if (createItem == true) {
-        this.disabledCreate = false
-      }
+          this.disabledCreate = false;
+        }
         if (deleteItem == true) {
-        this.disabledDelete = false
-      }
+          this.disabledDelete = false;
+        }
         if (updateItem == true) {
-        this.disabledEdit = false
-      }
+          this.disabledEdit = false;
+        }
       } else this.$router.push("/error403");
     },
 
@@ -892,65 +963,129 @@ export default {
     },
     setData(res, dataRes) {
       this[dataRes] = res;
-      this.loading = false
-    },  
+      this.loading = false;
+    },
     setDataEdit(res, dataRes) {
-      this.loading = false
-      this.formEdit.id = res.id
-      this.formEdit.cod_tipo_persona = res.tipo_persona_desc
-      this.formEdit.cod_tipo_retencion = res.cod_tipo_retencion
-      this.formEdit.nb_tipo_retencion = res.nb_tipo_retencion
-      this.formEdit.porc_base = res.porc_base
-      this.formEdit.porc_retencion = res.porc_retencion
-      this.formEdit.pago_mayor = res.pago_mayor
-      this.formEdit.sustraendo = res.sustraendo
-      this.formEdit.cod_seniat = res.cod_seniat
-      this.formEdit.fecha_ini_val = res.fecha_ini_val
-      this.formEdit.fecha_fin_val = res.fecha_fin_val
-    },   
+      this.loading = false;
+      this.formEdit.id = res.id;
+      this.formEdit.cod_tipo_persona = res.tipo_persona_desc;
+      this.formEdit.cod_tipo_retencion = res.cod_tipo_retencion;
+      this.formEdit.nb_tipo_retencion = res.nb_tipo_retencion;
+      this.formEdit.porc_base = res.porc_base;
+      this.formEdit.porc_retencion = res.porc_retencion;
+      this.formEdit.pago_mayor = res.pago_mayor;
+      this.formEdit.sustraendo = res.sustraendo;
+      this.formEdit.cod_seniat = res.cod_seniat;
+      if (res.fecha_ini_val)
+        this.formEdit.fecha_ini_val = res.fecha_ini_val
+          .split("-")
+          .reverse()
+          .join("/");
+      if (res.fecha_fin_val)
+        this.formEdit.fecha_fin_val = res.fecha_fin_val
+          .split("-")
+          .reverse()
+          .join("/");
+    },
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/mretenciones/${idpost}`, 'getDataRetenciones', this.axiosConfig);
+      this.$refs.methods.deleteData(
+        `/mretenciones/${idpost}`,
+        "getDataRetenciones",
+        this.axiosConfig
+      );
       this.loading = true;
     },
     createData() {
-      this.form.cod_tipo_persona = this.form.cod_tipo_persona.value
-      this.$refs.methods.createData('/mretenciones', this.form, 'getDataRetenciones', this.axiosConfig);
+      this.form.fecha_ini_val = this.form.fecha_ini_val
+        .split("/")
+        .reverse()
+        .join("-");
+
+      this.form.fecha_fin_val = this.form.fecha_fin_val
+        .split("/")
+        .reverse()
+        .join("-");
+      this.form.porc_base = this.form.porc_base
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
+      this.form.porc_retencion = this.form.porc_retencion
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
+      this.form.pago_mayor = this.form.pago_mayor
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
+      this.form.sustraendo = this.form.sustraendo
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
+      this.form.cod_tipo_persona = this.form.cod_tipo_persona.value;
+      this.$refs.methods.createData(
+        "/mretenciones",
+        this.form,
+        "getDataRetenciones",
+        this.axiosConfig
+      );
       this.resetForm();
       this.loading = true;
     },
     putData() {
-      this.formEdit.cod_tipo_persona = this.formEdit.cod_tipo_persona.value
-      this.$refs.methods.putData(`/mretenciones/${this.formEdit.id}`, this.formEdit, 'getDataRetenciones', this.axiosConfig);
+      this.formEdit.fecha_ini_val = this.formEdit.fecha_ini_val
+        .split("/")
+        .reverse()
+        .join("-");
+
+      this.formEdit.fecha_fin_val = this.formEdit.fecha_fin_val
+        .split("/")
+        .reverse()
+        .join("-");
+      this.formEdit.porc_base = this.formEdit.porc_base
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
+      this.formEdit.porc_retencion = this.formEdit.porc_retencion
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
+      this.formEdit.pago_mayor = this.formEdit.pago_mayor
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
+      this.formEdit.sustraendo = this.formEdit.sustraendo
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
+      this.formEdit.cod_tipo_persona = this.formEdit.cod_tipo_persona.value;
+      this.$refs.methods.putData(
+        `/mretenciones/${this.formEdit.id}`,
+        this.formEdit,
+        "getDataRetenciones",
+        this.axiosConfig
+      );
       this.edit = false;
       this.resetFormEdit();
       this.loading = true;
     },
-    
+
     resetForm() {
       (this.form.cod_tipo_persona = ""),
-      (this.form.cod_tipo_retencion = ""),
-      (this.form.nb_tipo_retencion = ""),
-      (this.form.porc_base = ""),
-      (this.form.porc_retencion = ""),
-      (this.form.pago_mayor = ""),
-      (this.form.cod_seniat = ""),
-      (this.form.sustraendo = ""),
-      (this.form.fecha_ini_val = ""),
-      (this.form.fecha_fin_val = ""),
-      (this.create = false);    
+        (this.form.cod_tipo_retencion = ""),
+        (this.form.nb_tipo_retencion = ""),
+        (this.form.porc_base = ""),
+        (this.form.porc_retencion = ""),
+        (this.form.pago_mayor = ""),
+        (this.form.cod_seniat = ""),
+        (this.form.sustraendo = ""),
+        (this.form.fecha_ini_val = ""),
+        (this.form.fecha_fin_val = ""),
+        (this.create = false);
     },
     resetFormEdit() {
       (this.formEdit.id = ""),
-      (this.formEdit.cod_tipo_persona = ""),
-      (this.formEdit.cod_tipo_retencion = ""),
-      (this.formEdit.nb_tipo_retencion = ""),
-      (this.formEdit.porc_base = ""),
-      (this.formEdit.porc_retencion = ""),
-      (this.formEdit.pago_mayor = ""),
-      (this.formEdit.cod_seniat = ""),
-      (this.formEdit.sustraendo = ""),
-      (this.formEdit.fecha_ini_val = ""),
-      (this.formEdit.fecha_fin_val = "")
+        (this.formEdit.cod_tipo_persona = ""),
+        (this.formEdit.cod_tipo_retencion = ""),
+        (this.formEdit.nb_tipo_retencion = ""),
+        (this.formEdit.porc_base = ""),
+        (this.formEdit.porc_retencion = ""),
+        (this.formEdit.pago_mayor = ""),
+        (this.formEdit.cod_seniat = ""),
+        (this.formEdit.sustraendo = ""),
+        (this.formEdit.fecha_ini_val = ""),
+        (this.formEdit.fecha_fin_val = "");
     },
   },
 };

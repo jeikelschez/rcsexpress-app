@@ -86,7 +86,8 @@
                   v-model="form.condicion_pago"
                   label="Condición de Pago (Días)"
                   :rules="[reglasAllowNullDias]"
-                  type="number"
+                  v-money="moneyNotDecimal"
+                  input-class="text-right"
                   hint=""
                   lazy-rules
                 >
@@ -217,12 +218,17 @@
                   :rules="[reglasSelect]"
                   lazy-rules
                   @update:model-value="
-                    this.axiosConfig.headers.tipo_persona =
-                      form.tipo_persona.value;
                     this.getData(
                       `/mretenciones`,
                       'setDataRetenciones',
-                      'retenciones'
+                      'retenciones',
+                      {
+                        headers: {
+                          Authorization: ``,
+                          vigente: 's',
+                          tipo_persona: form.tipo_persona.value,
+                        },
+                      }
                     );
                     this.form.cod_tipo_retencion = [];
                   "
@@ -240,23 +246,32 @@
                   label="Tipo Retención ISLR"
                   hint=""
                   :options="retencionesSelected"
-                @filter="(val,update,abort) => 
-                filterArray(val,update,abort,'retencionesSelected', 'retenciones', 'nb_tipo_retencion')"
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'retencionesSelected',
+                        'retenciones',
+                        'nb_tipo_retencion'
+                      )
+                  "
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
                   :rules="[reglasSelectRetenciones]"
                   option-label="nb_tipo_retencion"
                   option-value="id"
                   lazy-rules
-                ><template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
+                  ><template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        Sin resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
                   <template v-slot:prepend>
                     <q-icon name="block" />
                   </template>
@@ -414,7 +429,8 @@
                   v-model="formEdit.condicion_pago"
                   label="Condición de Pago (Días)"
                   :rules="[reglasAllowNullDias]"
-                  type="number"
+                  v-money="moneyNotDecimal"
+                  input-class="text-right"
                   hint=""
                   lazy-rules
                 >
@@ -548,12 +564,17 @@
                   :options="tipo_persona"
                   lazy-rules
                   @update:model-value="
-                    this.axiosConfig.headers.tipo_persona =
-                      formEdit.tipo_persona.value;
                     this.getData(
                       `/mretenciones`,
                       'setDataRetenciones',
-                      'retenciones'
+                      'retenciones',
+                      {
+                        headers: {
+                          Authorization: ``,
+                          vigente: 's',
+                          tipo_persona: formEdit.tipo_persona.value,
+                        },
+                      }
                     );
                     this.formEdit.cod_tipo_retencion = [];
                   "
@@ -572,22 +593,31 @@
                   input-class="input"
                   hint=""
                   :options="retencionesSelected"
-                @filter="(val,update,abort) => 
-                filterArray(val,update,abort,'retencionesSelected', 'retenciones', 'nb_tipo_retencion')"
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'retencionesSelected',
+                        'retenciones',
+                        'nb_tipo_retencion'
+                      )
+                  "
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
                   option-label="nb_tipo_retencion"
                   option-value="id"
                   lazy-rules
-                ><template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
+                  ><template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        Sin resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
                   <template v-slot:prepend>
                     <q-icon name="block" />
                   </template>
@@ -708,7 +738,6 @@
                 row-key="id"
                 :columns="columns"
                 :separator="separator"
-                
                 :filter="filter"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -730,7 +759,13 @@
                         getData(
                           `/proveedores/${props.row.id}`,
                           'setDataEdit',
-                          'formEdit'
+                          'formEdit',
+                          {
+                            headers: {
+                              Authorization: ``,
+                              vigente: 's',
+                            },
+                          }
                         );
                         edit = true;
                         this.resetFormEdit();
@@ -787,7 +822,13 @@
                                 getData(
                                   `/proveedores/${props.row.id}`,
                                   'setDataEdit',
-                                  'formEdit'
+                                  'formEdit',
+                                  {
+                                    headers: {
+                                      Authorization: ``,
+                                      vigente: 's',
+                                    },
+                                  }
                                 );
                                 this.resetFormEdit();
                                 edit = true;
@@ -860,17 +901,16 @@
     </q-dialog>
     <methods
       ref="methods"
-      @get-Data-Proveedores="getDataProveedores('/proveedores', 'setData', 'datos')"
+      @get-Data-Proveedores="
+        getDataProveedores('/proveedores', 'setData', 'datos')
+      "
       @set-data="setData"
       @reset-Loading="resetLoading"
       @set-data-retenciones="setDataRetenciones"
       @set-Data-Edit="setDataEdit"
     >
     </methods>
-    <desactivate-crud
-      ref="desactivateCrud"
-      @desactivar-Crud="desactivarCrud"
-    >
+    <desactivate-crud ref="desactivateCrud" @desactivar-Crud="desactivarCrud">
     </desactivate-crud>
   </q-page>
 </template>
@@ -884,18 +924,30 @@ import { useQuasar } from "quasar";
 
 import { LocalStorage } from "quasar";
 
+import { VMoney } from "v-money";
+
 import methodsVue from "src/components/methods.vue";
 
 import desactivateCrudVue from "src/components/desactivateCrud.vue";
 
 export default {
+  directives: { money: VMoney },
   components: {
     "desactivate-crud": desactivateCrudVue,
     methods: methodsVue,
+    VMoney,
   },
   name: "Bancos",
   data() {
     return {
+      moneyNotDecimal: {
+        decimal: ",",
+        thousands: ".",
+        prefix: "",
+        suffix: "",
+        precision: 0,
+        masked: true,
+      },
       columns: [
         {
           name: "nb_proveedor",
@@ -986,13 +1038,6 @@ export default {
       disabledCreate: true,
       disabledEdit: true,
       disabledDelete: true,
-      axiosConfig: {
-        headers: {
-          Authorization: ``,
-          tipo_persona: "",
-          vigente: "s",
-        },
-      },
     };
   },
   setup() {
@@ -1020,7 +1065,13 @@ export default {
   },
   mounted() {
     this.getDataProveedores("/proveedores", "setData", "datos");
-    this.$refs.desactivateCrud.desactivarCrud('c_proveedores', 'r_proveedores', 'u_proveedores', 'd_proveedores', 'desactivarCrud')
+    this.$refs.desactivateCrud.desactivarCrud(
+      "c_proveedores",
+      "r_proveedores",
+      "u_proveedores",
+      "d_proveedores",
+      "desactivarCrud"
+    );
   },
   methods: {
     filterArray(val, update, abort, pagina, array, element) {
@@ -1166,6 +1217,8 @@ export default {
       }
     },
     reglasAllowNullDias(val) {
+      var val = val;
+      val = val.replaceAll(".", "").replaceAll(",", ".");
       if (val !== null) {
         if (val.length > 0) {
           if (val > 99) {
@@ -1179,27 +1232,32 @@ export default {
     desactivarCrud(createItem, readItem, deleteItem, updateItem) {
       if (readItem == true) {
         if (createItem == true) {
-        this.disabledCreate = false
-      }
+          this.disabledCreate = false;
+        }
         if (deleteItem == true) {
-        this.disabledDelete = false
-      }
+          this.disabledDelete = false;
+        }
         if (updateItem == true) {
-        this.disabledEdit = false
-      }
+          this.disabledEdit = false;
+        }
       } else this.$router.push("/error403");
     },
 
     // Metodos CRUD
-    getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+    getData(url, call, dataRes, axiosConfig) {
+      this.$refs.methods.getData(url, call, dataRes, axiosConfig);
     },
     getDataProveedores(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.$refs.methods.getData(url, call, dataRes, {
+        headers: {
+          Authorization: ``,
+          vigente: "s",
+        },
+      });
       this.loading = true;
     },
     setData(res, dataRes) {
-      this.loading = false
+      this.loading = false;
       this[dataRes] = res;
       for (var e = 0, len = this.datos.length; e < len; e++) {
         if (this.datos[e].condicion_pago !== null) {
@@ -1214,12 +1272,18 @@ export default {
     },
     setDataEdit(res, dataRes) {
       if (res.tipo_persona === "J") {
-        (this.axiosConfig.headers.tipo_persona = "J");
+        var tipo_personaHeader = "J";
       } else if (res.tipo_persona === "N") {
-        (this.axiosConfig.headers.tipo_persona = "N");
+        var tipo_personaHeader = "N";
       }
       this.loading = false;
-      this.getData(`/mretenciones`, "setDataRetenciones", "retenciones");
+      this.getData(`/mretenciones`, "setDataRetenciones", "retenciones", {
+        headers: {
+          Authorization: ``,
+          vigente: "s",
+          tipo_persona: tipo_personaHeader,
+        },
+      });
       this.formEdit.id = res.id;
       this.formEdit.condicion_pago = res.condicion_pago;
       this.formEdit.nb_proveedor = res.nb_proveedor;
@@ -1235,7 +1299,7 @@ export default {
       this.formEdit.tipo_servicio = res.tipo_svc;
       this.formEdit.tipo_persona = res.tipo_desc;
       this.formEdit.flag_activo = res.activo_desc;
-      
+
       if (res.cod_tipo_retencion !== null) {
         this.formEdit.cod_tipo_retencion = res.retenciones.nb_tipo_retencion;
       }
@@ -1244,11 +1308,19 @@ export default {
       this.$refs.methods.deleteData(
         `/proveedores/${idpost}`,
         "getDataProveedores",
-        this.axiosConfig
+        {
+          headers: {
+            Authorization: ``,
+            vigente: "s",
+          },
+        }
       );
       this.loading = true;
     },
     createData() {
+      this.form.condicion_pago = this.form.condicion_pago
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
       this.form.tipo_servicio = this.form.tipo_servicio.value;
       this.form.tipo_persona = this.form.tipo_persona.value;
       this.form.flag_activo = this.form.flag_activo.value;
@@ -1262,12 +1334,20 @@ export default {
         "/proveedores",
         this.form,
         "getDataProveedores",
-        this.axiosConfig
+        {
+          headers: {
+            Authorization: ``,
+            vigente: "s",
+          },
+        }
       );
       this.resetForm();
       this.loading = true;
     },
     putData() {
+      this.formEdit.condicion_pago = this.formEdit.condicion_pago
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
       this.formEdit.tipo_servicio = this.formEdit.tipo_servicio.value;
       if (!this.formEdit.cod_tipo_retencion.id) {
         delete this.formEdit.cod_tipo_retencion;
@@ -1280,7 +1360,11 @@ export default {
         `/proveedores/${this.formEdit.id}`,
         this.formEdit,
         "getDataProveedores",
-        this.axiosConfig
+        {
+          headers: {
+            Authorization: ``,
+          },
+        }
       );
       this.edit = false;
       this.resetFormEdit();

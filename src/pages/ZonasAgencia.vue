@@ -13,8 +13,7 @@
                   hint=""
                   class="pcform"
                   @update:model-value="
-                    formZonas.nb_zona =
-                      formZonas.nb_zona.toUpperCase()
+                    formZonas.nb_zona = formZonas.nb_zona.toUpperCase()
                   "
                   lazy-rules
                   :rules="reglasDescripcion"
@@ -80,8 +79,7 @@
                   hint=""
                   class="pcform"
                   @update:model-value="
-                    formEditZonas.nb_zona =
-                      formEditZonas.nb_zona.toUpperCase()
+                    formEditZonas.nb_zona = formEditZonas.nb_zona.toUpperCase()
                   "
                   lazy-rules
                   :rules="reglasDescripcion"
@@ -141,7 +139,9 @@
             class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 text-secondary"
             style="align-self: center; text-align: center"
           >
-            <h4 style="font-size: 25px"><strong>MANTENIMIENTO - ZONAS POR AGENCIA</strong></h4>
+            <h4 style="font-size: 25px">
+              <strong>MANTENIMIENTO - ZONAS POR AGENCIA</strong>
+            </h4>
           </div>
 
           <div
@@ -153,27 +153,37 @@
               transition-show="flip-up"
               transition-hide="flip-down"
               :options="agenciasSelected"
-                @filter="(val,update,abort) => 
-                filterArray(val,update,abort,'agenciasSelected', 'agencias', 'nb_agencia')"
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
+              @filter="
+                (val, update, abort) =>
+                  filterArray(
+                    val,
+                    update,
+                    abort,
+                    'agenciasSelected',
+                    'agencias',
+                    'nb_agencia'
+                  )
+              "
+              use-input
+              hide-selected
+              fill-input
+              input-debounce="0"
               option-label="nb_agencia"
               option-value="id"
               v-model="selectedAgencia"
               outlined
               standout
               label="Escoge una Agencia"
-              @update:model-value="this.axiosConfig.headers.agencia = this.selectedAgencia.id;
-              getDataZonas(`/zonas`, 'setDataZonas', 'zonas')"
-            ><template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
+              @update:model-value="
+                getDataZonas(`/zonas`, 'setDataZonas', 'zonas')
+              "
+              ><template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    Sin resultados
+                  </q-item-section>
+                </q-item>
+              </template>
               <template v-slot:prepend>
                 <q-icon name="search" />
               </template>
@@ -224,7 +234,6 @@
                 row-key="id"
                 :columns="columnsZonas"
                 :separator="separator"
-                
                 :filter="filterRoles"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -243,8 +252,12 @@
                       icon="edit"
                       :disabled="this.disabledEdit"
                       @click="
-                      getData(`/Zonas/${props.row.id}`, 'setDataZonasEdit', 'formEditZonas');
-                      zonasFormEdit = true;
+                        getData(
+                          `/Zonas/${props.row.id}`,
+                          'setDataZonasEdit',
+                          'formEditZonas'
+                        );
+                        zonasFormEdit = true;
                       "
                     ></q-btn>
                     <q-btn
@@ -295,7 +308,11 @@
                               icon="edit"
                               :disabled="this.disabledEdit"
                               @click="
-                                getData(`/zonas/${props.row.id}`, 'setDataZonasEdit', 'formEditZonas');
+                                getData(
+                                  `/zonas/${props.row.id}`,
+                                  'setDataZonasEdit',
+                                  'formEditZonas'
+                                );
                                 zonasFormEdit = true;
                               "
                             ></q-btn>
@@ -364,12 +381,13 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <desactivate-crud ref="desactiveCrud"
+    <desactivate-crud
+      ref="desactiveCrud"
       @desactivar-Crud="desactivarCrud"
     ></desactivate-crud>
-    <methods ref="methods"
-      @get-Data-Zonas="this.axiosConfig.headers.agencia = this.selectedAgencia.id;
-      getDataZonas(`/zonas`, 'setDataZonas', 'zonas')"
+    <methods
+      ref="methods"
+      @get-Data-Zonas="getDataZonas(`/zonas`, 'setDataZonas', 'zonas')"
       @set-Data-Zonas="setDataZonas"
       @reset-Loading="resetLoading"
       @set-Data-Zonas-Edit="setDataZonasEdit"
@@ -385,15 +403,14 @@ import { api } from "boot/axios";
 
 import { useQuasar } from "quasar";
 
-import { LocalStorage } from 'quasar';
+import { LocalStorage } from "quasar";
 
-import methodsVue from 'src/components/methods.vue';
+import methodsVue from "src/components/methods.vue";
 
-import desactivateCrudVue from 'src/components/desactivateCrud.vue';
+import desactivateCrudVue from "src/components/desactivateCrud.vue";
 
 export default {
-  components: { "desactivate-crud": desactivateCrudVue,
-  "methods": methodsVue},
+  components: { "desactivate-crud": desactivateCrudVue, methods: methodsVue },
   name: "Zonas",
   data() {
     return {
@@ -460,12 +477,6 @@ export default {
       // rowsNumber: xx if getting data from a server
     });
     return {
-      axiosConfig: {
-        headers: {
-          Authorization: ``,
-          agencia: ""
-        }
-      },
       pagination: ref({
         rowsPerPage: 10,
       }),
@@ -499,16 +510,22 @@ export default {
       },
       zonasDelete: ref(false),
       filterRoles: ref(""),
-      reglasDescripcion: [(val) =>
-        (val !== null && val !== "") || "Por favor escribe algo",
+      reglasDescripcion: [
+        (val) => (val !== null && val !== "") || "Por favor escribe algo",
         (val) => val.length < 250 || "Deben ser máximo 250 caracteres",
         (val) => val.length > 2 || "Deben ser minimo 3 caracteres",
       ],
     };
   },
   mounted() {
-    this.getData('/agencias', 'setData', 'agencias');
-    this.$refs.desactiveCrud.desactivarCrud('c_zonas', 'r_zonas', 'u_zonas', 'd_zonas', 'desactivarCrud')
+    this.getData("/agencias", "setData", "agencias");
+    this.$refs.desactiveCrud.desactivarCrud(
+      "c_zonas",
+      "r_zonas",
+      "u_zonas",
+      "d_zonas",
+      "desactivarCrud"
+    );
   },
   methods: {
     filterArray(val, update, abort, pagina, array, element) {
@@ -546,85 +563,116 @@ export default {
       }
     },
     desactivarCrud(createItem, readItem, deleteItem, updateItem) {
-      console.log(createItem)
-      console.log(readItem)
-      console.log(deleteItem)
-      console.log(updateItem)
+      console.log(createItem);
+      console.log(readItem);
+      console.log(deleteItem);
+      console.log(updateItem);
       if (readItem == true) {
         if (createItem == true) {
-        this.disabledCreate = false
-      }
+          this.disabledCreate = false;
+        }
         if (deleteItem == true) {
-        this.disabledDelete = false
-      }
+          this.disabledDelete = false;
+        }
         if (updateItem == true) {
-        this.disabledEdit = false
-      }
+          this.disabledEdit = false;
+        }
       } else this.$router.push("/error403");
     },
 
     getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.$refs.methods.getData(url, call, dataRes, {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        },
+      });
     },
     getDataZonas(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.$refs.methods.getData(url, call, dataRes, {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          agencia: this.selectedAgencia.id,
+        },
+      });
       this.loading = true;
     },
     setData(res, dataRes) {
-      this[dataRes] = res
+      this[dataRes] = res;
       this.getDataIniciar();
-      this.loading = false
+      this.loading = false;
     },
     setDataZonas(res, dataRes) {
-      this[dataRes] = res
+      this[dataRes] = res;
       this.loading = false;
     },
     setDataZonasEdit(res, dataRes) {
-      this[dataRes].id = res.id
-      this[dataRes].nb_zona = res.nb_zona
-      this[dataRes].tipo_zona = res.tipo_desc
-      this[dataRes].cod_agencia = this.selectedAgencia
-      this.loading = false
+      this[dataRes].id = res.id;
+      this[dataRes].nb_zona = res.nb_zona;
+      this[dataRes].tipo_zona = res.tipo_desc;
+      this[dataRes].cod_agencia = this.selectedAgencia;
+      this.loading = false;
     },
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/zonas/${idpost}`, 'getDataZonas', this.axiosConfig);
+      this.$refs.methods.deleteData(`/zonas/${idpost}`, "getDataZonas", {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        },
+      });
       this.loading = true;
     },
     createDataZonas() {
-      this.formZonas.cod_agencia = this.selectedAgencia.id
-      this.formZonas.tipo_zona = this.formZonas.tipo_zona.value
-      this.$refs.methods.createData(`/zonas`, this.formZonas, 'getDataZonas', this.axiosConfig);
+      this.formZonas.cod_agencia = this.selectedAgencia.id;
+      this.formZonas.tipo_zona = this.formZonas.tipo_zona.value;
+      this.$refs.methods.createData(`/zonas`, this.formZonas, "getDataZonas", {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        },
+      });
       this.resetFormZonas();
       this.loading = true;
     },
     putDataZonas() {
-      this.formEditZonas.cod_agencia = this.selectedAgencia.id
-      this.formEditZonas.tipo_zona = this.formEditZonas.tipo_zona.value
-      this.$refs.methods.putData(`/zonas/${this.formEditZonas.id}`, this.formEditZonas, 'getDataZonas', this.axiosConfig);
+      this.formEditZonas.cod_agencia = this.selectedAgencia.id;
+      this.formEditZonas.tipo_zona = this.formEditZonas.tipo_zona.value;
+      this.$refs.methods.putData(
+        `/zonas/${this.formEditZonas.id}`,
+        this.formEditZonas,
+        "getDataZonas",
+        {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        }
+      );
       this.resetFormEditZonas();
       this.loading = true;
     },
     resetFormZonas() {
       (this.formZonas.nb_zona = ""),
-      (this.formZonas.tipo_zona = ""),
-      (this.formZonas.cod_agencia = ""),
-      (this.zonasForm = false)
+        (this.formZonas.tipo_zona = ""),
+        (this.formZonas.cod_agencia = ""),
+        (this.zonasForm = false);
     },
     resetFormEditZonas() {
       (this.formEditZonas.nb_zona = ""),
-      (this.formEditZonas.tipo_zona = ""),
-      (this.formEditZonas.cod_agencia = null),
-      (this.zonasFormEdit = false)
+        (this.formEditZonas.tipo_zona = ""),
+        (this.formEditZonas.cod_agencia = null),
+        (this.zonasFormEdit = false);
     },
     // Metodos para colocar valores iniciales
     getDataIniciar() {
-        this.agenciaRef = this.agencias[0].id;
-        this.selectedAgencia = this.agencias[0];
-        this.axiosConfig.headers.agencia = this.agenciaRef
-        api.get(`/zonas`, this.axiosConfig)
+      this.agenciaRef = this.agencias[0].id;
+      this.selectedAgencia = this.agencias[0];
+      api
+        .get(`/zonas`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            agencia: this.agenciaRef,
+          },
+        })
         .then((res) => {
           this.zonas = res.data;
-        })
+        });
     },
   },
 };

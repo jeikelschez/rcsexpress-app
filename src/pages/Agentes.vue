@@ -13,8 +13,7 @@
                   class="pcform"
                   hint=""
                   @update:model-value="
-                    formAgentes.nb_agente =
-                      formAgentes.nb_agente.toUpperCase()
+                    formAgentes.nb_agente = formAgentes.nb_agente.toUpperCase()
                   "
                   lazy-rules
                   :rules="[reglaInput]"
@@ -66,19 +65,19 @@
               </div>
 
               <div class="col-md-6 col-xs-12">
-                      <q-select
-                        outlined
-                        v-model="formAgentes.flag_activo"
-                        label="Activo"
-                        hint=""
-                        :rules="[reglasSelect]"
-                        :options="estatus"
-                        lazy-rules
-                      >
-                        <template v-slot:prepend>
-                          <q-icon name="rule" />
-                        </template>
-                      </q-select>
+                <q-select
+                  outlined
+                  v-model="formAgentes.flag_activo"
+                  label="Activo"
+                  hint=""
+                  :rules="[reglasSelect]"
+                  :options="estatus"
+                  lazy-rules
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="rule" />
+                  </template>
+                </q-select>
               </div>
 
               <div class="col-md-12 col-xs-12">
@@ -108,8 +107,7 @@
                   hint=""
                   type="email"
                   @update:model-value="
-                    formAgentes.email_web =
-                      formAgentes.email_web.toUpperCase()
+                    formAgentes.email_web = formAgentes.email_web.toUpperCase()
                   "
                   lazy-rules
                   :rules="[reglaInput100]"
@@ -129,28 +127,35 @@
                   <div class="row">
                     <div
                       class="col-md-12 col-xs-12"
-                      style="align-self: center; text-align: left; margin-top: -30px"
+                      style="
+                        align-self: center;
+                        text-align: left;
+                        margin-top: -30px;
+                      "
                     >
-                      <h4 style="font-size: 20px" class="text-secondary"><strong>IDENTIFICACIÓN Y COMISIONES</strong></h4>
+                      <h4 style="font-size: 20px" class="text-secondary">
+                        <strong>IDENTIFICACIÓN Y COMISIONES</strong>
+                      </h4>
                     </div>
                     <div class="col-md-6 col-xs-12">
                       <q-input
-                      outlined
-                      v-model="formAgentes.rif_ci_agente"
-                      label="RIF/CI"
-                      hint=""
-                      class="pcform"
-                      @update:model-value="
-                      formAgentes.rif_ci_agente =
-                      formAgentes.rif_ci_agente.toUpperCase()"
-                      lazy-rules
-                      :rules="[reglaInput20]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="account_box" />
-                  </template>
-                </q-input>
-                </div>
+                        outlined
+                        v-model="formAgentes.rif_ci_agente"
+                        label="RIF/CI"
+                        hint=""
+                        class="pcform"
+                        @update:model-value="
+                          formAgentes.rif_ci_agente =
+                            formAgentes.rif_ci_agente.toUpperCase()
+                        "
+                        lazy-rules
+                        :rules="[reglaInput20]"
+                      >
+                        <template v-slot:prepend>
+                          <q-icon name="account_box" />
+                        </template>
+                      </q-input>
+                    </div>
 
                     <div class="col-md-6 col-xs-12">
                       <q-select
@@ -169,59 +174,65 @@
                     </div>
 
                     <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formAgentes.porc_comision_venta"
-                  label="% Comisión por Venta"
-                  hint=""
-                  class="pcform"
-                  @update:model-value="
-                    formAgentes.porc_comision_venta =
-                      formAgentes.porc_comision_venta.toUpperCase()
-                  "
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="percent" />
-                  </template>
-                </q-input>
+                      <q-input
+                        outlined
+                        v-model="formAgentes.porc_comision_venta"
+                        label="% Comisión por Venta"
+                        v-money="money"
+                        input-class="text-right"
+                        hint=""
+                        class="pcform"
+                        @update:model-value="
+                          formAgentes.porc_comision_venta =
+                            formAgentes.porc_comision_venta.toUpperCase()
+                        "
+                        lazy-rules
+                      >
+                        <template v-slot:prepend>
+                          <q-icon name="percent" />
+                        </template>
+                      </q-input>
                     </div>
 
                     <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  class="pcform"
-                  v-model="formAgentes.porc_comision_entrega"
-                  label="% Comisión por Entrega"
-                  hint=""
-                  @update:model-value="
-                    formAgentes.porc_comision_entrega =
-                      formAgentes.porc_comision_entrega.toUpperCase()
-                  "
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="percent" />
-                  </template>
-                </q-input>
+                      <q-input
+                        outlined
+                        class="pcform"
+                        v-model="formAgentes.porc_comision_entrega"
+                        label="% Comisión por Entrega"
+                        v-money="money"
+                        input-class="text-right"
+                        hint=""
+                        @update:model-value="
+                          formAgentes.porc_comision_entrega =
+                            formAgentes.porc_comision_entrega.toUpperCase()
+                        "
+                        lazy-rules
+                      >
+                        <template v-slot:prepend>
+                          <q-icon name="percent" />
+                        </template>
+                      </q-input>
                     </div>
 
                     <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formAgentes.porc_comision_seguro"
-                  label="% Comisión por Seguro"
-                  hint=""
-                  @update:model-value="
-                    formAgentes.porc_comision_seguro =
-                      formAgentes.porc_comision_seguro.toUpperCase()
-                  "
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="percent" />
-                  </template>
-                </q-input>
+                      <q-input
+                        outlined
+                        v-model="formAgentes.porc_comision_seguro"
+                        label="% Comisión por Seguro"
+                        v-money="money"
+                        input-class="text-right"
+                        hint=""
+                        @update:model-value="
+                          formAgentes.porc_comision_seguro =
+                            formAgentes.porc_comision_seguro.toUpperCase()
+                        "
+                        lazy-rules
+                      >
+                        <template v-slot:prepend>
+                          <q-icon name="percent" />
+                        </template>
+                      </q-input>
                     </div>
                   </div>
                 </q-card-section>
@@ -319,19 +330,19 @@
               </div>
 
               <div class="col-md-6 col-xs-12">
-                      <q-select
-                        outlined
-                        v-model="formEditAgentes.flag_activo"
-                        label="Activo"
-                        hint=""
-                        :rules="[reglasSelect]"
-                        :options="estatus"
-                        lazy-rules
-                      >
-                        <template v-slot:prepend>
-                          <q-icon name="rule" />
-                        </template>
-                      </q-select>
+                <q-select
+                  outlined
+                  v-model="formEditAgentes.flag_activo"
+                  label="Activo"
+                  hint=""
+                  :rules="[reglasSelect]"
+                  :options="estatus"
+                  lazy-rules
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="rule" />
+                  </template>
+                </q-select>
               </div>
 
               <div class="col-md-12 col-xs-12">
@@ -382,28 +393,35 @@
                   <div class="row">
                     <div
                       class="col-md-12 col-xs-12"
-                      style="align-self: center; text-align: left; margin-top: -30px"
+                      style="
+                        align-self: center;
+                        text-align: left;
+                        margin-top: -30px;
+                      "
                     >
-                      <h4 style="font-size: 20px" class="text-secondary"><strong>IDENTIFICACIÓN Y COMISIONES</strong></h4>
+                      <h4 style="font-size: 20px" class="text-secondary">
+                        <strong>IDENTIFICACIÓN Y COMISIONES</strong>
+                      </h4>
                     </div>
                     <div class="col-md-6 col-xs-12">
                       <q-input
-                      outlined
-                      v-model="formEditAgentes.rif_ci_agente"
-                      label="RIF/CI"
-                      hint=""
-                      class="pcform"
-                      @update:model-value="
-                      formAgentes.rif_ci_agente =
-                      formAgentes.rif_ci_agente.toUpperCase()"
-                      lazy-rules
-                      :rules="[reglaInput20]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="account_box" />
-                  </template>
-                </q-input>
-                </div>
+                        outlined
+                        v-model="formEditAgentes.rif_ci_agente"
+                        label="RIF/CI"
+                        hint=""
+                        class="pcform"
+                        @update:model-value="
+                          formAgentes.rif_ci_agente =
+                            formAgentes.rif_ci_agente.toUpperCase()
+                        "
+                        lazy-rules
+                        :rules="[reglaInput20]"
+                      >
+                        <template v-slot:prepend>
+                          <q-icon name="account_box" />
+                        </template>
+                      </q-input>
+                    </div>
 
                     <div class="col-md-6 col-xs-12">
                       <q-select
@@ -422,59 +440,65 @@
                     </div>
 
                     <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEditAgentes.porc_comision_venta"
-                  label="% Comisión por Venta"
-                  hint=""
-                  class="pcform"
-                  @update:model-value="
-                    formEditAgentes.porc_comision_venta =
-                      formEditAgentes.porc_comision_venta.toUpperCase()
-                  "
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="percent" />
-                  </template>
-                </q-input>
+                      <q-input
+                        outlined
+                        v-model="formEditAgentes.porc_comision_venta"
+                        label="% Comisión por Venta"
+                        v-money="money"
+                        input-class="text-right"
+                        hint=""
+                        class="pcform"
+                        @update:model-value="
+                          formEditAgentes.porc_comision_venta =
+                            formEditAgentes.porc_comision_venta.toUpperCase()
+                        "
+                        lazy-rules
+                      >
+                        <template v-slot:prepend>
+                          <q-icon name="percent" />
+                        </template>
+                      </q-input>
                     </div>
 
                     <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  class="pcform"
-                  v-model="formEditAgentes.porc_comision_entrega"
-                  label="% Comisión por Entrega"
-                  hint=""
-                  @update:model-value="
-                    formEditAgentes.porc_comision_entrega =
-                      formEditAgentes.porc_comision_entrega.toUpperCase()
-                  "
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="percent" />
-                  </template>
-                </q-input>
+                      <q-input
+                        outlined
+                        class="pcform"
+                        v-model="formEditAgentes.porc_comision_entrega"
+                        label="% Comisión por Entrega"
+                        v-money="money"
+                        input-class="text-right"
+                        hint=""
+                        @update:model-value="
+                          formEditAgentes.porc_comision_entrega =
+                            formEditAgentes.porc_comision_entrega.toUpperCase()
+                        "
+                        lazy-rules
+                      >
+                        <template v-slot:prepend>
+                          <q-icon name="percent" />
+                        </template>
+                      </q-input>
                     </div>
 
                     <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEditAgentes.porc_comision_seguro"
-                  label="% Comisión por Seguro"
-                  hint=""
-                  @update:model-value="
-                    formEditAgentes.porc_comision_seguro =
-                      formEditAgentes.porc_comision_seguro.toUpperCase()
-                  "
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="percent" />
-                  </template>
-                </q-input>
+                      <q-input
+                        outlined
+                        v-model="formEditAgentes.porc_comision_seguro"
+                        label="% Comisión por Seguro"
+                        v-money="money"
+                        input-class="text-right"
+                        hint=""
+                        @update:model-value="
+                          formEditAgentes.porc_comision_seguro =
+                            formEditAgentes.porc_comision_seguro.toUpperCase()
+                        "
+                        lazy-rules
+                      >
+                        <template v-slot:prepend>
+                          <q-icon name="percent" />
+                        </template>
+                      </q-input>
                     </div>
                   </div>
                 </q-card-section>
@@ -509,13 +533,17 @@
     <div class="row q-pa-sm justify-center">
       <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
         <div class="row">
-          <div class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 text-secondary"
+          <div
+            class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 text-secondary"
             style="align-self: center; text-align: center"
           >
-            <h4 style="font-size: 26px"><strong>MANTENIMIENTO - AGENTES</strong></h4>
+            <h4 style="font-size: 26px">
+              <strong>MANTENIMIENTO - AGENTES</strong>
+            </h4>
           </div>
 
-          <div class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-5 inputestadospc"
+          <div
+            class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-5 inputestadospc"
             style="align-self: center; text-align: center; margin-right: 16px"
           >
             <q-select
@@ -523,8 +551,17 @@
               transition-show="flip-up"
               transition-hide="flip-down"
               :options="agenciasSelected"
-              @filter="(val,update,abort) => 
-              filterArray(val,update,abort,'agenciasSelected', 'agencias', 'nb_agencia')"
+              @filter="
+                (val, update, abort) =>
+                  filterArray(
+                    val,
+                    update,
+                    abort,
+                    'agenciasSelected',
+                    'agencias',
+                    'nb_agencia'
+                  )
+              "
               use-input
               hide-selected
               fill-input
@@ -535,23 +572,25 @@
               outlined
               standout
               label="Escoge una Agencia"
-              @update:model-value="this.axiosConfig.headers.agencia = this.selectedAgencia.id;
-              getDataAgentes(`/agentes`, 'setDataAgentes', 'agentes')"
+              @update:model-value="
+                getDataAgentes(`/agentes`, 'setDataAgentes', 'agentes')
+              "
             >
-            <template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    Sin resultados
+                  </q-item-section>
+                </q-item>
+              </template>
               <template v-slot:prepend>
                 <q-icon name="search" />
               </template>
             </q-select>
           </div>
 
-          <div class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-6 inputestadospc2"
+          <div
+            class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-6 inputestadospc2"
             style="align-self: center; text-align: center; margin-right: 16px"
           >
             <q-input
@@ -567,8 +606,9 @@
               </template>
             </q-input>
           </div>
-          
-          <div class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
+
+          <div
+            class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
             style="text-align: center; align-self: center"
           >
             <q-btn
@@ -593,7 +633,6 @@
                 row-key="id"
                 :columns="columnsAgentes"
                 :separator="separator"
-                
                 :filter="filter"
                 style="width: 100%"
                 :loading="loading"
@@ -613,8 +652,12 @@
                       icon="edit"
                       :disabled="this.disabledEdit"
                       @click="
-                      getData(`/agentes/${props.row.id}`, 'setDataAgentesEdit', 'formEditAgentes');
-                      formEdit = true;
+                        getDataEdit(
+                          `/agentes/${props.row.id}`,
+                          'setDataAgentesEdit',
+                          'formEditAgentes'
+                        );
+                        formEdit = true;
                       "
                     ></q-btn>
                     <q-btn
@@ -665,7 +708,11 @@
                               icon="edit"
                               :disabled="this.disabledEdit"
                               @click="
-                                getData(`/agentes/${props.row.id}`, 'setDataAgentesEdit', 'formEditAgentes');
+                                getDataEdit(
+                                  `/agentes/${props.row.id}`,
+                                  'setDataAgentesEdit',
+                                  'formEditAgentes'
+                                );
                                 formEdit = true;
                               "
                             ></q-btn>
@@ -734,13 +781,15 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <desactivate-crud ref="desactivateCrud"
+    <desactivate-crud
+      ref="desactivateCrud"
       @desactivar-Crud="desactivarCrud"
     ></desactivate-crud>
-    <methods ref="methods"
+    <methods
+      ref="methods"
       @get-Data-Agentes="
-      this.axiosConfig.headers.agencia = this.selectedAgencia.id;
-      getDataAgentes(`/agentes`, 'setDataAgentes', 'agentes')"
+        getDataAgentes(`/agentes`, 'setDataAgentes', 'agentes')
+      "
       @set-Data-Agentes="setDataAgentes"
       @reset-Loading="resetLoading"
       @set-Data-Agentes-Edit="setDataAgentesEdit"
@@ -756,18 +805,32 @@ import { api } from "boot/axios";
 
 import { useQuasar } from "quasar";
 
-import { LocalStorage } from 'quasar';
+import { LocalStorage } from "quasar";
 
-import methodsVue from 'src/components/methods.vue';
+import { VMoney } from "v-money";
 
-import desactivateCrudVue from 'src/components/desactivateCrud.vue';
+import methodsVue from "src/components/methods.vue";
+
+import desactivateCrudVue from "src/components/desactivateCrud.vue";
 
 export default {
-  components: { "desactivate-crud": desactivateCrudVue,
-  "methods": methodsVue},
+  directives: { money: VMoney },
+  components: {
+    "desactivate-crud": desactivateCrudVue,
+    methods: methodsVue,
+    VMoney,
+  },
   name: "Agentes",
   data() {
     return {
+      money: {
+        decimal: ",",
+        thousands: ".",
+        prefix: "",
+        suffix: "",
+        precision: 2,
+        masked: true,
+      },
       columnsAgentes: [
         {
           name: "nb_agente",
@@ -871,11 +934,6 @@ export default {
       // rowsNumber: xx if getting data from a server
     });
     return {
-      axiosConfig: {
-        headers: {
-          Authorization: ``,
-        }
-      },
       pagination: ref({
         rowsPerPage: 10,
       }),
@@ -888,8 +946,18 @@ export default {
     };
   },
   mounted() {
-    this.getData('/agencias', 'setData', 'agencias');
-    this.$refs.desactivateCrud.desactivarCrud('c_agentes', 'r_agentes', 'u_agentes', 'd_agentes', 'desactivarCrud')
+    this.getData("/agencias", "setData", "agencias", {
+      headers: {
+        Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+      },
+    });
+    this.$refs.desactivateCrud.desactivarCrud(
+      "c_agentes",
+      "r_agentes",
+      "u_agentes",
+      "d_agentes",
+      "desactivarCrud"
+    );
   },
   methods: {
     filterArray(val, update, abort, pagina, array, element) {
@@ -928,162 +996,224 @@ export default {
       if (val === null) {
         return "Debes Escribir Algo";
       }
-      if(val !== null) {
-      if (val.length > 25) {
-        return "Deben ser máximo 25 caracteres";
+      if (val !== null) {
+        if (val.length > 25) {
+          return "Deben ser máximo 25 caracteres";
         }
-      if (val.length > 0) {
-        if (val.length < 3) {
-        return "Deben ser minimo 3 caracteres";
+        if (val.length > 0) {
+          if (val.length < 3) {
+            return "Deben ser minimo 3 caracteres";
+          }
         }
-      }
       }
     },
     reglaInput100(val) {
-      if(val !== null) {
-      if (val.length > 100) {
-        return "Deben ser máximo 100 caracteres";
+      if (val !== null) {
+        if (val.length > 100) {
+          return "Deben ser máximo 100 caracteres";
         }
-      if (val.length > 0) {
-        if (val.length < 3) {
-        return "Deben ser minimo 3 caracteres";
+        if (val.length > 0) {
+          if (val.length < 3) {
+            return "Deben ser minimo 3 caracteres";
+          }
         }
-      }
       }
     },
     reglaInput50(val) {
-      if(val !== null) {
-      if (val.length > 50) {
-        return "Deben ser máximo 50 caracteres";
+      if (val !== null) {
+        if (val.length > 50) {
+          return "Deben ser máximo 50 caracteres";
         }
-      if (val.length > 0) {
-        if (val.length < 3) {
-        return "Deben ser minimo 3 caracteres";
+        if (val.length > 0) {
+          if (val.length < 3) {
+            return "Deben ser minimo 3 caracteres";
+          }
         }
-      }
       }
     },
     reglaInput20(val) {
-      if(val !== null) {
-      if (val.length > 20) {
-        return "Deben ser máximo 20 caracteres";
+      if (val !== null) {
+        if (val.length > 20) {
+          return "Deben ser máximo 20 caracteres";
         }
-      if (val.length > 0) {
-        if (val.length < 3) {
-        return "Deben ser minimo 3 caracteres";
+        if (val.length > 0) {
+          if (val.length < 3) {
+            return "Deben ser minimo 3 caracteres";
+          }
         }
-      }
       }
     },
     desactivarCrud(createItem, readItem, deleteItem, updateItem) {
       if (readItem == true) {
         if (createItem == true) {
-        this.disabledCreate = false
-      }
+          this.disabledCreate = false;
+        }
         if (deleteItem == true) {
-        this.disabledDelete = false
-      }
+          this.disabledDelete = false;
+        }
         if (updateItem == true) {
-        this.disabledEdit = false
-      }
+          this.disabledEdit = false;
+        }
       } else this.$router.push("/error403");
     },
 
-    
     resetLoading() {
       this.loading = false;
     },
-    getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+    getData(url, call, dataRes, axiosConfig) {
+      this.$refs.methods.getData(url, call, dataRes, axiosConfig);
+    },
+    getDataEdit(url, call, dataRes) {
+      this.$refs.methods.getData(url, call, dataRes, {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        },
+      });
     },
     getDataAgentes(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.$refs.methods.getData(url, call, dataRes, {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          agencia: this.selectedAgencia.id,
+        },
+      });
       this.loading = true;
     },
     setData(res, dataRes) {
-      this[dataRes] = res
-      this.getDataIniciar()
-      this.loading = false
+      this[dataRes] = res;
+      this.getDataIniciar();
+      this.loading = false;
     },
     setDataAgentes(res, dataRes) {
-      this[dataRes] = res
-      this.loading = false
+      this[dataRes] = res;
+      this.loading = false;
     },
     setDataAgentesEdit(res, dataRes) {
-      this[dataRes].id = res.id
-      this[dataRes].flag_activo = res.activo_desc
-      this[dataRes].nb_agente = res.nb_agente
-      this[dataRes].persona_responsable = res.persona_responsable
-      this[dataRes].dir_agente = res.dir_agente
-      this[dataRes].tlf_agente = res.tlf_agente
-      this[dataRes].fax_agente = res.fax_agente
-      this[dataRes].email_web = res.email_web
-      this[dataRes].rif_ci_agente = res.rif_ci_agente
-      this[dataRes].porc_comision_venta = res.porc_comision_venta
-      this[dataRes].porc_comision_seguro = res.porc_comision_seguro
-      this[dataRes].porc_comision_entrega = res.porc_comision_entrega
-      this[dataRes].flag_activo = res.activo_desc
-      this[dataRes].tipo_agente = res.tipo_desc
-      this[dataRes].cod_agencia = res.cod_agencia
-      this.loading = false
+      this[dataRes].id = res.id;
+      this[dataRes].flag_activo = res.activo_desc;
+      this[dataRes].nb_agente = res.nb_agente;
+      this[dataRes].persona_responsable = res.persona_responsable;
+      this[dataRes].dir_agente = res.dir_agente;
+      this[dataRes].tlf_agente = res.tlf_agente;
+      this[dataRes].fax_agente = res.fax_agente;
+      this[dataRes].email_web = res.email_web;
+      this[dataRes].rif_ci_agente = res.rif_ci_agente;
+      this[dataRes].porc_comision_venta = res.porc_comision_venta;
+      this[dataRes].porc_comision_seguro = res.porc_comision_seguro;
+      this[dataRes].porc_comision_entrega = res.porc_comision_entrega;
+      this[dataRes].flag_activo = res.activo_desc;
+      this[dataRes].tipo_agente = res.tipo_desc;
+      this[dataRes].cod_agencia = res.cod_agencia;
+      this.loading = false;
     },
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/agentes/${idpost}`, 'getDataAgentes', this.axiosConfig);
+      this.$refs.methods.deleteData(`/agentes/${idpost}`, "getDataAgentes", {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        },
+      });
       this.loading = true;
     },
     createDataCuentas() {
-      this.formAgentes.cod_agencia = this.selectedAgencia.id
-      this.formAgentes.tipo_agente = this.formAgentes.tipo_agente.value
-      this.formAgentes.flag_activo = this.formAgentes.flag_activo.value
-      this.$refs.methods.createData(`/agentes`, this.formAgentes, 'getDataAgentes', this.axiosConfig);
+      this.formAgentes.porc_comision_venta =
+        this.formAgentes.porc_comision_venta
+          .replaceAll(".", "")
+          .replaceAll(",", ".");
+      this.formAgentes.porc_comision_entrega =
+        this.formAgentes.porc_comision_entrega
+          .replaceAll(".", "")
+          .replaceAll(",", ".");
+      this.formAgentes.porc_comision_seguro =
+        this.formAgentes.porc_comision_seguro
+          .replaceAll(".", "")
+          .replaceAll(",", ".");
+      this.formAgentes.cod_agencia = this.selectedAgencia.id;
+      this.formAgentes.tipo_agente = this.formAgentes.tipo_agente.value;
+      this.formAgentes.flag_activo = this.formAgentes.flag_activo.value;
+      this.$refs.methods.createData(
+        `/agentes`,
+        this.formAgentes,
+        "getDataAgentes",
+        {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        }
+      );
       this.loading = true;
       this.resetForm();
     },
     putDataCuentas() {
-      this.formEditAgentes.flag_activo = this.formEditAgentes.flag_activo.value
-      this.formEditAgentes.tipo_agente = this.formEditAgentes.tipo_agente.value
-      this.$refs.methods.putData(`/agentes/${this.formEditAgentes.id}`, this.formEditAgentes, 'getDataAgentes', this.axiosConfig);
+      this.formEditAgentes.porc_comision_venta =
+        this.formEditAgentes.porc_comision_venta
+          .replaceAll(".", "")
+          .replaceAll(",", ".");
+      this.formEditAgentes.porc_comision_entrega =
+        this.formEditAgentes.porc_comision_entrega
+          .replaceAll(".", "")
+          .replaceAll(",", ".");
+      this.formEditAgentes.porc_comision_seguro =
+        this.formEditAgentes.porc_comision_seguro
+          .replaceAll(".", "")
+          .replaceAll(",", ".");
+      this.formEditAgentes.flag_activo = this.formEditAgentes.flag_activo.value;
+      this.formEditAgentes.tipo_agente = this.formEditAgentes.tipo_agente.value;
+      this.$refs.methods.putData(
+        `/agentes/${this.formEditAgentes.id}`,
+        this.formEditAgentes,
+        "getDataAgentes",
+        {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        }
+      );
       this.loading = true;
-      this.resetFormEdit()
+      this.resetFormEdit();
     },
     resetForm() {
       (this.formAgentes.nb_agente = ""),
-      (this.formAgentes.persona_responsable = ""),
-      (this.formAgentes.dir_agente = ""),
-      (this.formAgentes.tlf_agente = ""),
-      (this.formAgentes.email_web = ""),
-      (this.formAgentes.tipo_agente = ""),
-      (this.formAgentes.rif_ci_agente = ""),
-      (this.formAgentes.porc_comision_venta = ""),
-      (this.formAgentes.flag_activo = ""),
-      (this.formAgentes.porc_comision_entrega = ""),
-      (this.formAgentes.porc_comision_seguro = ""),
-      (this.formAgentes.cod_agencia = null),
-      (this.form = false)
+        (this.formAgentes.persona_responsable = ""),
+        (this.formAgentes.dir_agente = ""),
+        (this.formAgentes.tlf_agente = ""),
+        (this.formAgentes.email_web = ""),
+        (this.formAgentes.tipo_agente = ""),
+        (this.formAgentes.rif_ci_agente = ""),
+        (this.formAgentes.porc_comision_venta = ""),
+        (this.formAgentes.flag_activo = ""),
+        (this.formAgentes.porc_comision_entrega = ""),
+        (this.formAgentes.porc_comision_seguro = ""),
+        (this.formAgentes.cod_agencia = null),
+        (this.form = false);
     },
     resetFormEdit() {
       (this.formEditAgentes.nb_agente = ""),
-      (this.formEditAgentes.persona_responsable = ""),
-      (this.formEditAgentes.dir_agente = ""),
-      (this.formEditAgentes.tlf_agente = ""),
-      (this.formEditAgentes.email_web = ""),
-      (this.formEditAgentes.tipo_agente = ""),
-      (this.formEditAgentes.rif_ci_agente = ""),
-      (this.formEditAgentes.porc_comision_venta = ""),
-      (this.formEditAgentes.porc_comision_entrega = ""),
-      (this.formEditAgentes.porc_comision_seguro = ""),
-      (this.formEditAgentes.cod_agencia = null),
-      (this.formEdit = false)
+        (this.formEditAgentes.persona_responsable = ""),
+        (this.formEditAgentes.dir_agente = ""),
+        (this.formEditAgentes.tlf_agente = ""),
+        (this.formEditAgentes.email_web = ""),
+        (this.formEditAgentes.tipo_agente = ""),
+        (this.formEditAgentes.rif_ci_agente = ""),
+        (this.formEditAgentes.porc_comision_venta = ""),
+        (this.formEditAgentes.porc_comision_entrega = ""),
+        (this.formEditAgentes.porc_comision_seguro = ""),
+        (this.formEditAgentes.cod_agencia = null),
+        (this.formEdit = false);
     },
     // Metodos para colocar valores iniciales
     getDataIniciar() {
-        this.agenciaRef = this.agencias[0].id;
-        this.selectedAgencia = this.agencias[0];
-        this.axiosConfig.headers.agencia = this.agenciaRef
-        api.get(`/agentes`, this.axiosConfig)
+      this.agenciaRef = this.agencias[0].id;
+      this.selectedAgencia = this.agencias[0];
+      api
+        .get(`/agentes`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            agencia: this.agenciaRef,
+          },
+        })
         .then((res) => {
           this.agentes = res.data.data;
-        })
+        });
     },
   },
 };

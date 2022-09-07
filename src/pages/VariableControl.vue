@@ -14,9 +14,7 @@
                   class="pcform"
                   lazy-rules
                   :rules="[reglasNotNull50]"
-                  @update:model-value="
-                    form.nombre = form.nombre.toUpperCase()
-                  "
+                  @update:model-value="form.nombre = form.nombre.toUpperCase()"
                 >
                   <template v-slot:prepend>
                     <q-icon name="pin_drop" />
@@ -30,9 +28,10 @@
                   outlined
                   v-model="form.valor"
                   label="Valor de Variable"
+                  v-money="money"
+                  input-class="text-right"
                   hint=""
                   lazy-rules
-                  type="number"
                 >
                   <template v-slot:prepend>
                     <q-icon name="apartment" />
@@ -111,9 +110,10 @@
                   outlined
                   v-model="formEdit.valor"
                   label="Valor de Variable"
+                  v-money="money"
+                  input-class="text-right"
                   hint=""
                   lazy-rules
-                  type="number"
                 >
                   <template v-slot:prepend>
                     <q-icon name="apartment" />
@@ -165,12 +165,7 @@
 
     <div class="row q-pa-sm justify-center">
       <div
-        class="
-          row
-          q-pa-md
-          col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12
-          text-secondary
-        "
+        class="row q-pa-md col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 text-secondary"
       >
         <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
           <h4 style="font-size: 35px; align-self: center; text-align: center">
@@ -222,7 +217,6 @@
                 :columns="columns"
                 :separator="separator"
                 :loading="loading"
-                
                 :filter="filter"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -239,8 +233,7 @@
                       :options="tipo"
                       @update:model-value="
                         this.getDataEdit(props.row.id, 'putDatoSelect');
-                        this.formEdit.tipo =
-                          props.row.tipo_desc.value;
+                        this.formEdit.tipo = props.row.tipo_desc.value;
                       "
                     >
                     </q-select>
@@ -274,11 +267,7 @@
                 </template>
                 <template v-slot:item="props">
                   <div
-                    class="
-                      q-pa-xs
-                      col-xs-12 col-sm-6 col-md-4 col-lg-3
-                      grid-style-transition
-                    "
+                    class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
                     :style="props.selected ? 'transform: scale(0.95);' : ''"
                   >
                     <q-card :class="props.selected ? 'bg-grey-2' : ''">
@@ -372,8 +361,7 @@
                               :options="tipo"
                               @update:model-value="
                                 getDataEdit(props.row.id, 'putDatoSelect');
-                                this.formEdit.tipo =
-                                  props.row.tipo_desc.value;
+                                this.formEdit.tipo = props.row.tipo_desc.value;
                               "
                             >
                             </q-select>
@@ -442,11 +430,26 @@ import desactivateCrudVue from "src/components/desactivateCrud.vue";
 
 import { LocalStorage } from "quasar";
 
+import { VMoney } from "v-money";
+
 export default {
-  components: { "desactive-crud": desactivateCrudVue, methods: methodsVue },
+  directives: { money: VMoney },
+  components: {
+    "desactive-crud": desactivateCrudVue,
+    methods: methodsVue,
+    VMoney,
+  },
   name: "Bancos",
   data() {
     return {
+      money: {
+        decimal: ",",
+        thousands: ".",
+        prefix: "",
+        suffix: "",
+        precision: 2,
+        masked: true,
+      },
       columns: [
         {
           name: "nombre",
@@ -542,7 +545,13 @@ export default {
   },
   mounted() {
     this.getDataVariable("/vcontrol", "setData", "datos");
-    this.$refs.desactiveCrud.desactivarCrud('c_vcontrol', 'r_vcontrol', 'u_vcontrol', 'd_vcontrol', 'desactivarCrud')
+    this.$refs.desactiveCrud.desactivarCrud(
+      "c_vcontrol",
+      "r_vcontrol",
+      "u_vcontrol",
+      "d_vcontrol",
+      "desactivarCrud"
+    );
   },
   methods: {
     resetLoading() {
@@ -596,14 +605,14 @@ export default {
     desactivarCrud(createItem, readItem, deleteItem, updateItem) {
       if (readItem == true) {
         if (createItem == true) {
-        this.disabledCreate = false
-      }
+          this.disabledCreate = false;
+        }
         if (deleteItem == true) {
-        this.disabledDelete = false
-      }
+          this.disabledDelete = false;
+        }
         if (updateItem == true) {
-        this.disabledEdit = false
-      }
+          this.disabledEdit = false;
+        }
       } else this.$router.push("/error403");
     },
 
@@ -616,7 +625,7 @@ export default {
     },
     setData(res, dataRes) {
       this[dataRes] = res;
-      this.loading = false
+      this.loading = false;
     },
 
     getDataEdit(id, call) {
@@ -647,6 +656,9 @@ export default {
       this.loading = true;
     },
     createDato() {
+      this.form.valor = this.form.valor
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
       this.form.tipo = this.form.tipo.value;
       this.$refs.methods.createData(
         "/vcontrol",
@@ -658,6 +670,9 @@ export default {
       this.loading = true;
     },
     putDato() {
+      this.formEdit.valor = this.formEdit.valor
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
       this.formEdit.tipo = this.formEdit.tipo.value;
       this.$refs.methods.putData(
         `/vcontrol/${this.formEdit.id}`,

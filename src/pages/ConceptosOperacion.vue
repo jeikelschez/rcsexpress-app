@@ -4,7 +4,7 @@
       <q-card class="q-pa-md" bordered style="width: 999px; max-width: 80vw">
         <q-card-section>
           <q-form @submit="createData()" class="q-gutter-md">
-            <div class="row">              
+            <div class="row">
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
@@ -13,8 +13,7 @@
                   hint=""
                   class="pcform"
                   @update:model-value="
-                    form.desc_concepto =
-                      form.desc_concepto.toUpperCase()
+                    form.desc_concepto = form.desc_concepto.toUpperCase()
                   "
                   lazy-rules
                   :rules="[reglasInputs]"
@@ -27,57 +26,70 @@
 
               <div class="col-md-6 col-xs-12">
                 <q-select
-                transition-show="flip-up"
-                transition-hide="flip-down"
-                :options="tipoDeOperacionSelected"
-                @filter="(val,update,abort) => 
-                filterArray(val,update,abort,'tipoDeOperacionSelected', 'tipoDeOperacion', 'descripcion')"
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
-                option-label="descripcion"
-                option-value="id"
-                v-model="form.tipo"
-                outlined
-                standout
-                :rules="[reglasSelect]"
-                label="Tipo de Operación"
-                @update:model-value="validationSelect()"
-            ><template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
-              <template v-slot:prepend>
-                <q-icon name="format_list_bulleted" />
-              </template>
-            </q-select>
+                  transition-show="flip-up"
+                  transition-hide="flip-down"
+                  :options="tipoDeOperacionSelected"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'tipoDeOperacionSelected',
+                        'tipoDeOperacion',
+                        'descripcion'
+                      )
+                  "
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
+                  option-label="descripcion"
+                  option-value="id"
+                  v-model="form.tipo"
+                  outlined
+                  standout
+                  :rules="[reglasSelect]"
+                  label="Tipo de Operación"
+                  @update:model-value="validationSelect()"
+                  ><template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        Sin resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                  <template v-slot:prepend>
+                    <q-icon name="format_list_bulleted" />
+                  </template>
+                </q-select>
               </div>
 
-              <div class="col-md-12 col-xs-12 displayHide" style="margin-bottom: 7px" id="select"> 
-              <q-field
-              :rules="[reglasSelect]"
-              hide-bottom-space
-              borderless
-              dense
-              v-model="form.afecta_estado"
-              :disable="disable"
+              <div
+                class="col-md-12 col-xs-12 displayHide"
+                style="margin-bottom: 7px"
+                id="select"
               >
-              <template v-slot:control>
-                  <q-checkbox
-                  size="lg"
+                <q-field
+                  :rules="[reglasSelect]"
+                  hide-bottom-space
+                  borderless
+                  dense
                   v-model="form.afecta_estado"
-                  true-value="S"
-                  false-value="N"
-                  style="font-size: 13px"
-                  label="¿AFECTA ESTADO DE GANANCIAS Y PERDIDAS?"
                   :disable="disable"
-                />
-              </template>
-              </q-field>
+                >
+                  <template v-slot:control>
+                    <q-checkbox
+                      size="lg"
+                      v-model="form.afecta_estado"
+                      true-value="S"
+                      false-value="N"
+                      style="font-size: 13px"
+                      label="¿AFECTA ESTADO DE GANANCIAS Y PERDIDAS?"
+                      :disable="disable"
+                    />
+                  </template>
+                </q-field>
               </div>
             </div>
 
@@ -133,57 +145,70 @@
 
               <div class="col-md-6 col-xs-12">
                 <q-select
-                transition-show="flip-up"
-                transition-hide="flip-down"
-                :options="tipoDeOperacionSelected"
-                @filter="(val,update,abort) => 
-                filterArray(val,update,abort,'tipoDeOperacionSelected', 'tipoDeOperacion', 'descripcion')"
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
-                option-label="descripcion"
-                option-value="id"
-                v-model="formEdit.tipo"
-                outlined
-                standout
-                :rules="[reglasSelect]"
-                label="Tipo de Operación"
-                @update:model-value="validationSelectEdit()"
-            ><template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
-              <template v-slot:prepend>
-                <q-icon name="format_list_bulleted" />
-              </template>
-            </q-select>
+                  transition-show="flip-up"
+                  transition-hide="flip-down"
+                  :options="tipoDeOperacionSelected"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'tipoDeOperacionSelected',
+                        'tipoDeOperacion',
+                        'descripcion'
+                      )
+                  "
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
+                  option-label="descripcion"
+                  option-value="id"
+                  v-model="formEdit.tipo"
+                  outlined
+                  standout
+                  :rules="[reglasSelect]"
+                  label="Tipo de Operación"
+                  @update:model-value="validationSelectEdit()"
+                  ><template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        Sin resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                  <template v-slot:prepend>
+                    <q-icon name="format_list_bulleted" />
+                  </template>
+                </q-select>
               </div>
 
-              <div class="col-md-12 col-xs-12 displayHide" style="margin-bottom: 20px" id="selectEdit"> 
-              <q-field
-              :rules="[reglasSelect]"
-              hide-bottom-space
-              borderless
-              dense
-              v-model="formEdit.afecta_estado"
-              :disable="disableEdit"
+              <div
+                class="col-md-12 col-xs-12 displayHide"
+                style="margin-bottom: 20px"
+                id="selectEdit"
               >
-              <template v-slot:control>
-                  <q-checkbox
-                  size="lg"
+                <q-field
+                  :rules="[reglasSelect]"
+                  hide-bottom-space
+                  borderless
+                  dense
                   v-model="formEdit.afecta_estado"
-                  true-value="S"
-                  false-value="N"
-                  style="font-size: 13px"
-                  label="¿AFECTA ESTADO DE GANANCIAS Y PERDIDAS?"
                   :disable="disableEdit"
-                />
-              </template>
-              </q-field>
+                >
+                  <template v-slot:control>
+                    <q-checkbox
+                      size="lg"
+                      v-model="formEdit.afecta_estado"
+                      true-value="S"
+                      false-value="N"
+                      style="font-size: 13px"
+                      label="¿AFECTA ESTADO DE GANANCIAS Y PERDIDAS?"
+                      :disable="disableEdit"
+                    />
+                  </template>
+                </q-field>
               </div>
             </div>
 
@@ -219,7 +244,9 @@
             class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 text-secondary"
             style="align-self: center; text-align: center"
           >
-            <h4 style="font-size: 30px"><strong>CONCEPTOS POR OPERACIÓN</strong></h4>
+            <h4 style="font-size: 30px">
+              <strong>CONCEPTOS POR OPERACIÓN</strong>
+            </h4>
           </div>
 
           <div
@@ -231,27 +258,37 @@
               transition-show="flip-up"
               transition-hide="flip-down"
               :options="tipoDeOperacionSelected"
-                @filter="(val,update,abort) => 
-                filterArray(val,update,abort,'tipoDeOperacionSelected', 'tipoDeOperacion', 'descripcion')"
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
+              @filter="
+                (val, update, abort) =>
+                  filterArray(
+                    val,
+                    update,
+                    abort,
+                    'tipoDeOperacionSelected',
+                    'tipoDeOperacion',
+                    'descripcion'
+                  )
+              "
+              use-input
+              hide-selected
+              fill-input
+              input-debounce="0"
               option-label="descripcion"
               option-value="id"
               v-model="selectedTipo"
               outlined
               standout
               label="Tipo de Operación"
-              @update:model-value="this.axiosConfig.headers.tipo = this.selectedTipo.id;
-              getDataSelect(`/coperacion`, 'setDataConceptos', 'datos')"
-            ><template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
+              @update:model-value="
+                getDataSelect(`/coperacion`, 'setDataConceptos', 'datos')
+              "
+              ><template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    Sin resultados
+                  </q-item-section>
+                </q-item>
+              </template>
               <template v-slot:prepend>
                 <q-icon name="search" />
               </template>
@@ -302,7 +339,6 @@
                 :columns="columns"
                 :loading="loading"
                 :separator="separator"
-                
                 :filter="filter"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -321,8 +357,12 @@
                       icon="edit"
                       :disabled="this.disabledEdit"
                       @click="
-                      getData(`/coperacion/${props.row.id}`, 'setDataEdit', 'formEdit');
-                      edit = true;
+                        getData(
+                          `/coperacion/${props.row.id}`,
+                          'setDataEdit',
+                          'formEdit'
+                        );
+                        edit = true;
                       "
                     ></q-btn>
                     <q-btn
@@ -373,7 +413,11 @@
                               icon="edit"
                               :disabled="this.disabledEdit"
                               @click="
-                                getData(`/coperacion/${props.row.id}`, 'setDataEdit', 'formRoles');
+                                getData(
+                                  `/coperacion/${props.row.id}`,
+                                  'setDataEdit',
+                                  'formRoles'
+                                );
                                 edit = true;
                               "
                             ></q-btn>
@@ -442,10 +486,12 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <desactivate-crud ref="desactiveCrud"
+    <desactivate-crud
+      ref="desactiveCrud"
       @desactivar-Crud="desactivarCrud"
     ></desactivate-crud>
-    <methods ref="methods"
+    <methods
+      ref="methods"
       @get-Data="getData(`/coperacion`, 'setDataConceptos', 'datos')"
       @set-Data-Conceptos="setDataConceptos"
       @reset-Loading="resetLoading"
@@ -463,15 +509,14 @@ import { api } from "boot/axios";
 
 import { useQuasar } from "quasar";
 
-import { LocalStorage } from 'quasar';
+import { LocalStorage } from "quasar";
 
-import methodsVue from 'src/components/methods.vue';
+import methodsVue from "src/components/methods.vue";
 
-import desactivateCrudVue from 'src/components/desactivateCrud.vue';
+import desactivateCrudVue from "src/components/desactivateCrud.vue";
 
 export default {
-  components: { "desactivate-crud": desactivateCrudVue,
-  "methods": methodsVue},
+  components: { "desactivate-crud": desactivateCrudVue, methods: methodsVue },
   name: "Bancos",
   data() {
     return {
@@ -495,13 +540,13 @@ export default {
       form: {
         desc_concepto: "",
         tipo: "",
-        afecta_estado: "N"
+        afecta_estado: "N",
       },
       formEdit: {
         id: "",
         desc_concepto: "",
         tipo: "",
-        afecta_estado: "N"
+        afecta_estado: "N",
       },
       tipoDeOperacion: [],
       datos: [],
@@ -529,9 +574,8 @@ export default {
       axiosConfig: {
         headers: {
           Authorization: ``,
-          tipo: "1",
-          fuente: "OP"
-        }
+          fuente: "OP",
+        },
       },
       pagination: ref({
         rowsPerPage: 10,
@@ -571,8 +615,15 @@ export default {
     };
   },
   mounted() {
-    this.getData('/coperacion', 'setDataIniciar', 'datos');
-    this.$refs.desactiveCrud.desactivarCrud('c_concepto_operacion', 'r_concepto_operacion', 'u_concepto_operacion', 'd_concepto_operacion', 'desactivarCrud')
+    this.selectedTipo.id = "1";
+    this.getData("/coperacion", "setDataIniciar", "datos");
+    this.$refs.desactiveCrud.desactivarCrud(
+      "c_concepto_operacion",
+      "r_concepto_operacion",
+      "u_concepto_operacion",
+      "d_concepto_operacion",
+      "desactivarCrud"
+    );
   },
   methods: {
     filterArray(val, update, abort, pagina, array, element) {
@@ -615,144 +666,172 @@ export default {
       if (val === null) {
         return "Debes Escribir Algo";
       }
-      if(val !== null) {
-      if (val.length > 100) {
-        return "Deben ser máximo 100 caracteres";
+      if (val !== null) {
+        if (val.length > 100) {
+          return "Deben ser máximo 100 caracteres";
         }
-      if (val.length > 0) {
-        if (val.length < 3) {
-        return "Deben ser minimo 3 caracteres";
+        if (val.length > 0) {
+          if (val.length < 3) {
+            return "Deben ser minimo 3 caracteres";
+          }
         }
-      }
       }
     },
     desactivarCrud(createItem, readItem, deleteItem, updateItem) {
       if (readItem == true) {
         if (createItem == true) {
-        this.disabledCreate = false
-      }
+          this.disabledCreate = false;
+        }
         if (deleteItem == true) {
-        this.disabledDelete = false
-      }
+          this.disabledDelete = false;
+        }
         if (updateItem == true) {
-        this.disabledEdit = false
-      }
+          this.disabledEdit = false;
+        }
       } else this.$router.push("/error403");
     },
 
     getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.$refs.methods.getData(url, call, dataRes, {
+        headers: {
+          Authorization: ``,
+          tipo: this.selectedTipo.id,
+          fuente: "OP",
+        },
+      });
     },
     validationSelect() {
       if (this.form.tipo.codigo == "DGA") {
-          var element = document.getElementById("select");
-          element.classList.remove("displayHide");
-          element.classList.add("displayShow");
-          this.disable = false
+        var element = document.getElementById("select");
+        element.classList.remove("displayHide");
+        element.classList.add("displayShow");
+        this.disable = false;
       }
       if (this.form.tipo.codigo == "DCO") {
-          var element = document.getElementById("select");
-          element.classList.remove("displayHide");
-          element.classList.add("displayShow");
-          this.disable = false
-      };
+        var element = document.getElementById("select");
+        element.classList.remove("displayHide");
+        element.classList.add("displayShow");
+        this.disable = false;
+      }
       if (this.form.tipo.codigo !== "DGA" && this.form.tipo.codigo !== "DCO") {
         var element = document.getElementById("select");
         element.classList.remove("displayShow");
         element.classList.add("displayHide");
-        this.disable = true
+        this.disable = true;
       }
     },
     validationSelectEdit() {
       if (this.formEdit.tipo.codigo == "DGA") {
-          var element = document.getElementById("selectEdit");
-          element.classList.remove("displayHide");
-          element.classList.add("displayShow");
-          this.disableEdit = false
+        var element = document.getElementById("selectEdit");
+        element.classList.remove("displayHide");
+        element.classList.add("displayShow");
+        this.disableEdit = false;
       }
       if (this.formEdit.tipo.codigo == "DCO") {
-          var element = document.getElementById("selectEdit");
-          element.classList.remove("displayHide");
-          element.classList.add("displayShow");
-          this.disableEdit = false
-      };
-      if (this.formEdit.tipo.codigo !== "DGA" && this.formEdit.tipo.codigo !== "DCO") {
+        var element = document.getElementById("selectEdit");
+        element.classList.remove("displayHide");
+        element.classList.add("displayShow");
+        this.disableEdit = false;
+      }
+      if (
+        this.formEdit.tipo.codigo !== "DGA" &&
+        this.formEdit.tipo.codigo !== "DCO"
+      ) {
         var element = document.getElementById("selectEdit");
         element.classList.remove("displayShow");
         element.classList.add("displayHide");
-        this.disableEdit = true
+        this.disableEdit = true;
       }
     },
     getDataSelect(url, call, dataRes) {
-      this.axiosConfig.headers.tipo = this.selectedTipo.id
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.$refs.methods.getData(url, call, dataRes, {
+        headers: {
+          Authorization: ``,
+          tipo: this.selectedTipo.id,
+          fuente: "OP",
+        },
+      });
       this.loading = true;
     },
     setDataIniciar(res, dataRes) {
-      this.loading = false
-      this[dataRes] = res
-      this.getData('/tipos', 'setDataTipos', 'tipoDeOperacion')
+      this.loading = false;
+      this[dataRes] = res;
+      this.getData("/tipos", "setDataTipos", "tipoDeOperacion");
     },
     setDataTipos(res, dataRes) {
-      this[dataRes] = res
-      this.selectedTipo = res[0].descripcion
+      this[dataRes] = res;
+      this.selectedTipo = res[0].descripcion;
     },
     setDataConceptos(res, dataRes) {
-      this[dataRes] = res
-      this.loading = false
+      this[dataRes] = res;
+      this.loading = false;
     },
     setDataEdit(res, dataRes) {
-      this[dataRes].tipo = res.tipos.descripcion
-      this[dataRes].id = res.id
-      this[dataRes].desc_concepto = res.desc_concepto
-      this[dataRes].afecta_estado = res.afecta_estado
-      var codigo = res.tipos.codigo
+      this[dataRes].tipo = res.tipos.descripcion;
+      this[dataRes].id = res.id;
+      this[dataRes].desc_concepto = res.desc_concepto;
+      this[dataRes].afecta_estado = res.afecta_estado;
+      var codigo = res.tipos.codigo;
       if (codigo == "DCO") {
-          var element = document.getElementById("selectEdit");
-          element.classList.remove("displayHide");
-          element.classList.add("displayShow");
-          this.disableEdit = false
+        var element = document.getElementById("selectEdit");
+        element.classList.remove("displayHide");
+        element.classList.add("displayShow");
+        this.disableEdit = false;
       }
       if (codigo == "DGA") {
-          var element = document.getElementById("selectEdit");
-          element.classList.remove("displayHide");
-          element.classList.add("displayShow");
-          this.disableEdit = false
-      };
+        var element = document.getElementById("selectEdit");
+        element.classList.remove("displayHide");
+        element.classList.add("displayShow");
+        this.disableEdit = false;
+      }
       if (codigo !== "DCO" && codigo !== "DGA") {
         var element = document.getElementById("selectEdit");
         element.classList.remove("displayShow");
         element.classList.add("displayHide");
-        this.disableEdit = true
+        this.disableEdit = true;
       }
     },
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/coperacion/${idpost}`, 'getData', this.axiosConfig);
+      this.$refs.methods.deleteData(
+        `/coperacion/${idpost}`,
+        "getData",
+        this.axiosConfig
+      );
       this.loading = true;
     },
     createData() {
-      this.form.tipo = this.form.tipo.id
-      this.$refs.methods.createData(`/coperacion`, this.form, 'getData', this.axiosConfig);
+      this.form.tipo = this.form.tipo.id;
+      this.$refs.methods.createData(
+        `/coperacion`,
+        this.form,
+        "getData",
+        this.axiosConfig
+      );
       this.resetForm();
       this.loading = true;
     },
     putData() {
-      this.formEdit.tipo = this.formEdit.tipo.id
-      this.$refs.methods.putData(`/coperacion/${this.formEdit.id}`, this.formEdit, 'getData', this.axiosConfig);
+      this.formEdit.tipo = this.formEdit.tipo.id;
+      this.$refs.methods.putData(
+        `/coperacion/${this.formEdit.id}`,
+        this.formEdit,
+        "getData",
+        this.axiosConfig
+      );
       this.resetFormEdit();
       this.loading = true;
     },
     resetForm() {
       (this.form.desc_concepto = ""),
-      (this.form.afecta_estado = "N"),
-      (this.form.tipo = ""),
-      (this.create = false)
+        (this.form.afecta_estado = "N"),
+        (this.form.tipo = ""),
+        (this.create = false);
     },
     resetFormEdit() {
       (this.formEdit.desc_concepto = ""),
-      (this.formEdit.afecta_estado = "N"),
-      (this.formEdit.tipo = ""),
-      (this.edit = false)
+        (this.formEdit.afecta_estado = "N"),
+        (this.formEdit.tipo = ""),
+        (this.edit = false);
     },
   },
 };

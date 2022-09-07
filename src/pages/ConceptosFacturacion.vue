@@ -13,8 +13,7 @@
                   hint=""
                   class="pcform"
                   @update:model-value="
-                    form.desc_concepto =
-                      form.desc_concepto.toUpperCase()
+                    form.desc_concepto = form.desc_concepto.toUpperCase()
                   "
                   lazy-rules
                   :rules="[reglasNotNull100]"
@@ -27,71 +26,88 @@
 
               <div class="col-md-6 col-xs-12">
                 <q-select
-                transition-show="flip-up"
-                transition-hide="flip-down"
-                :options="conceptosSelected"
-                @filter="(val,update,abort) => 
-                filterArray(val,update,abort,'conceptosSelected', 'conceptos', 'desc_concepto')"
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
-                option-label="desc_concepto"
-                option-value="id"
-                class="pcform"
-                v-model="form.cod_concepto"
-                outlined
-                standout
-                :rules="[reglasSelect]"
-                label="Tipo de Operación"
-            >
-              <template v-slot:prepend>
-                <q-icon name="format_list_bulleted" />
-              </template>
-            </q-select>
+                  transition-show="flip-up"
+                  transition-hide="flip-down"
+                  :options="conceptosSelected"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'conceptosSelected',
+                        'conceptos',
+                        'desc_concepto'
+                      )
+                  "
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
+                  option-label="desc_concepto"
+                  option-value="id"
+                  class="pcform"
+                  v-model="form.cod_concepto"
+                  outlined
+                  standout
+                  :rules="[reglasSelect]"
+                  label="Tipo de Operación"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="format_list_bulleted" />
+                  </template>
+                </q-select>
               </div>
 
-              <div class="col-md-3 col-xs-6" style="margin-bottom: 7px" id="select"> 
-              <q-field
-              :rules="[reglasSelect]"
-              hide-bottom-space
-              borderless
-              dense
-              class="pcform"
-              v-model="form.check_comision"
+              <div
+                class="col-md-3 col-xs-6"
+                style="margin-bottom: 7px"
+                id="select"
               >
-              <template v-slot:control>
-                  <q-checkbox
-                  size="lg"
+                <q-field
+                  :rules="[reglasSelect]"
+                  hide-bottom-space
+                  borderless
+                  dense
+                  class="pcform"
                   v-model="form.check_comision"
-                  true-value="1"
-                  false-value="0"
-                  style="font-size: 13px"
-                  label="¿GENERA COMISIÓN?"
-                />
-              </template>
-              </q-field>
+                >
+                  <template v-slot:control>
+                    <q-checkbox
+                      size="lg"
+                      v-model="form.check_comision"
+                      true-value="1"
+                      false-value="0"
+                      style="font-size: 13px"
+                      label="¿GENERA COMISIÓN?"
+                    />
+                  </template>
+                </q-field>
               </div>
 
-              <div class="col-md-3 col-xs-6" style="margin-bottom: 7px" id="select"> 
-              <q-field
-              :rules="[reglasSelect]"
-              hide-bottom-space
-              borderless
-              dense
-              v-model="form.check_impuesto"
+              <div
+                class="col-md-3 col-xs-6"
+                style="margin-bottom: 7px"
+                id="select"
               >
-              <template v-slot:control>
-                  <q-checkbox
-                  size="lg"
+                <q-field
+                  :rules="[reglasSelect]"
+                  hide-bottom-space
+                  borderless
+                  dense
                   v-model="form.check_impuesto"
-                  true-value="1"
-                  false-value="0"
-                  style="font-size: 13px"
-                  label="¿INFLUYE EN IMPUESTO?"
-                />
-              </template>
-              </q-field>
+                >
+                  <template v-slot:control>
+                    <q-checkbox
+                      size="lg"
+                      v-model="form.check_impuesto"
+                      true-value="1"
+                      false-value="0"
+                      style="font-size: 13px"
+                      label="¿INFLUYE EN IMPUESTO?"
+                    />
+                  </template>
+                </q-field>
               </div>
             </div>
 
@@ -147,71 +163,88 @@
 
               <div class="col-md-6 col-xs-12">
                 <q-select
-                transition-show="flip-up"
-                transition-hide="flip-down"
-                :options="conceptosSelected"
-                @filter="(val,update,abort) => 
-                filterArray(val,update,abort,'conceptosSelected', 'conceptos', 'desc_concepto')"
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
-                option-label="desc_concepto"
-                option-value="id"
-                class="pcform"
-                v-model="formEdit.cod_concepto"
-                outlined
-                standout
-                :rules="[reglasSelect]"
-                label="Tipo de Operación"
-            >
-              <template v-slot:prepend>
-                <q-icon name="format_list_bulleted" />
-              </template>
-            </q-select>
+                  transition-show="flip-up"
+                  transition-hide="flip-down"
+                  :options="conceptosSelected"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'conceptosSelected',
+                        'conceptos',
+                        'desc_concepto'
+                      )
+                  "
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
+                  option-label="desc_concepto"
+                  option-value="id"
+                  class="pcform"
+                  v-model="formEdit.cod_concepto"
+                  outlined
+                  standout
+                  :rules="[reglasSelect]"
+                  label="Tipo de Operación"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="format_list_bulleted" />
+                  </template>
+                </q-select>
               </div>
 
-              <div class="col-md-3 col-xs-6" style="margin-bottom: 7px" id="select"> 
-              <q-field
-              :rules="[reglasSelect]"
-              hide-bottom-space
-              borderless
-              dense
-              class="pcform"
-              v-model="formEdit.check_comision"
+              <div
+                class="col-md-3 col-xs-6"
+                style="margin-bottom: 7px"
+                id="select"
               >
-              <template v-slot:control>
-                  <q-checkbox
-                  size="lg"
+                <q-field
+                  :rules="[reglasSelect]"
+                  hide-bottom-space
+                  borderless
+                  dense
+                  class="pcform"
                   v-model="formEdit.check_comision"
-                  true-value="1"
-                  false-value="0"
-                  style="font-size: 13px"
-                  label="¿GENERA COMISIÓN?"
-                />
-              </template>
-              </q-field>
+                >
+                  <template v-slot:control>
+                    <q-checkbox
+                      size="lg"
+                      v-model="formEdit.check_comision"
+                      true-value="1"
+                      false-value="0"
+                      style="font-size: 13px"
+                      label="¿GENERA COMISIÓN?"
+                    />
+                  </template>
+                </q-field>
               </div>
 
-              <div class="col-md-3 col-xs-6" style="margin-bottom: 7px" id="select"> 
-              <q-field
-              :rules="[reglasSelect]"
-              hide-bottom-space
-              borderless
-              dense
-              v-model="formEdit.check_impuesto"
+              <div
+                class="col-md-3 col-xs-6"
+                style="margin-bottom: 7px"
+                id="select"
               >
-              <template v-slot:control>
-                  <q-checkbox
-                  size="lg"
+                <q-field
+                  :rules="[reglasSelect]"
+                  hide-bottom-space
+                  borderless
+                  dense
                   v-model="formEdit.check_impuesto"
-                  true-value="1"
-                  false-value="0"
-                  style="font-size: 13px"
-                  label="¿INFLUYE EN IMPUESTO?"
-                />
-              </template>
-              </q-field>
+                >
+                  <template v-slot:control>
+                    <q-checkbox
+                      size="lg"
+                      v-model="formEdit.check_impuesto"
+                      true-value="1"
+                      false-value="0"
+                      style="font-size: 13px"
+                      label="¿INFLUYE EN IMPUESTO?"
+                    />
+                  </template>
+                </q-field>
               </div>
             </div>
 
@@ -243,13 +276,17 @@
     <div class="row q-pa-sm justify-center">
       <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
         <div class="row">
-          <div class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 text-secondary"
+          <div
+            class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 text-secondary"
             style="align-self: center; text-align: center"
           >
-            <h4 style="font-size: 26px"><strong>CONCEPTOS DE FACTURACIÓN</strong></h4>
+            <h4 style="font-size: 26px">
+              <strong>CONCEPTOS DE FACTURACIÓN</strong>
+            </h4>
           </div>
 
-          <div class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-5 inputestadospc"
+          <div
+            class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-5 inputestadospc"
             style="align-self: center; text-align: center; margin-right: 16px"
           >
             <q-select
@@ -257,19 +294,30 @@
               transition-show="flip-up"
               transition-hide="flip-down"
               :options="conceptosSelected"
-                @filter="(val,update,abort) => 
-                filterArray(val,update,abort,'conceptosSelected', 'conceptos', 'desc_concepto')"
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
+              @filter="
+                (val, update, abort) =>
+                  filterArray(
+                    val,
+                    update,
+                    abort,
+                    'conceptosSelected',
+                    'conceptos',
+                    'desc_concepto'
+                  )
+              "
+              use-input
+              hide-selected
+              fill-input
+              input-debounce="0"
               option-label="desc_concepto"
               option-value="id"
               v-model="selectedConcepto"
               outlined
               standout
               label="Escoge un Concepto"
-              @update:model-value="getDataSelect(`/cfacturacion`, 'setData', 'datos')"
+              @update:model-value="
+                getDataSelect(`/cfacturacion`, 'setData', 'datos')
+              "
             >
               <template v-slot:prepend>
                 <q-icon name="search" />
@@ -277,7 +325,8 @@
             </q-select>
           </div>
 
-          <div class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-6 inputestadospc2"
+          <div
+            class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-6 inputestadospc2"
             style="align-self: center; text-align: center; margin-right: 16px"
           >
             <q-input
@@ -293,8 +342,9 @@
               </template>
             </q-input>
           </div>
-          
-          <div class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
+
+          <div
+            class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
             style="text-align: center; align-self: center"
           >
             <q-btn
@@ -319,7 +369,6 @@
                 :columns="columns"
                 :loading="loading"
                 :separator="separator"
-                
                 :filter="filter"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -338,8 +387,12 @@
                       icon="edit"
                       :disabled="this.disabledEdit"
                       @click="
-                      getData(`/cfacturacion/${props.row.id}`, 'setDataEdit', 'formEdit');
-                      edit = true;
+                        getData(
+                          `/cfacturacion/${props.row.id}`,
+                          'setDataEdit',
+                          'formEdit'
+                        );
+                        edit = true;
                       "
                     ></q-btn>
                     <q-btn
@@ -390,7 +443,11 @@
                               icon="edit"
                               :disabled="this.disabledEdit"
                               @click="
-                                getData(`/cfacturacion/${props.row.id}`, 'setDataEdit', 'formEdit');
+                                getData(
+                                  `/cfacturacion/${props.row.id}`,
+                                  'setDataEdit',
+                                  'formEdit'
+                                );
                                 edit = true;
                               "
                             ></q-btn>
@@ -459,11 +516,13 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <desactivate-crud ref="desactivateCrud"
+    <desactivate-crud
+      ref="desactivateCrud"
       @desactivar-Crud="desactivarCrud"
     ></desactivate-crud>
-    <methods ref="methods"
-      @get-Data="getData(`/cfacturacion`, 'setData', 'datos')"
+    <methods
+      ref="methods"
+      @get-Data="getDataSelect(`/cfacturacion`, 'setData', 'datos')"
       @set-Data-Iniciar="setDataIniciar"
       @reset-Loading="resetLoading"
       @set-Data-Edit="setDataEdit"
@@ -479,15 +538,14 @@ import { api } from "boot/axios";
 
 import { useQuasar } from "quasar";
 
-import { LocalStorage } from 'quasar';
+import { LocalStorage } from "quasar";
 
-import methodsVue from 'src/components/methods.vue';
+import methodsVue from "src/components/methods.vue";
 
-import desactivateCrudVue from 'src/components/desactivateCrud.vue';
+import desactivateCrudVue from "src/components/desactivateCrud.vue";
 
 export default {
-  components: { "desactivate-crud": desactivateCrudVue,
-  "methods": methodsVue},
+  components: { "desactivate-crud": desactivateCrudVue, methods: methodsVue },
   name: "Agentes",
   data() {
     return {
@@ -562,9 +620,8 @@ export default {
       axiosConfig: {
         headers: {
           Authorization: ``,
-          cod_concepto: "1",
-          tipo: "8"
-        }
+          tipo: "8",
+        },
       },
       pagination: ref({
         rowsPerPage: 10,
@@ -574,24 +631,29 @@ export default {
       loading: ref(false),
       edit: ref(false),
       deleteForm: ref(false),
-      filter: ref("")
+      filter: ref(""),
     };
   },
   mounted() {
-    this.getData('/coperacion', 'setDataIniciar', 'conceptos');
-    this.getData('/cfacturacion', 'setData', 'datos');
-    this.$refs.desactivateCrud.desactivarCrud('c_concepto_facturacion', 'r_concepto_facturacion', 'u_concepto_facturacion', 'd_concepto_facturacion', 'desactivarCrud');
+    this.getData("/coperacion", "setDataIniciar", "conceptos");
+    this.$refs.desactivateCrud.desactivarCrud(
+      "c_concepto_facturacion",
+      "r_concepto_facturacion",
+      "u_concepto_facturacion",
+      "d_concepto_facturacion",
+      "desactivarCrud"
+    );
   },
-  
+
   methods: {
-    filterArray (val, update, abort, pagina, array, element) {
-        if (val === '') {
+    filterArray(val, update, abort, pagina, array, element) {
+      if (val === "") {
         update(() => {
-          this[pagina] = this[array]
-        })
-        return
-    }
-    update(() => {
+          this[pagina] = this[array];
+        });
+        return;
+      }
+      update(() => {
         const needle = val.toUpperCase();
         var notEqual = JSON.parse(JSON.stringify(this[array]));
         for (var i = 0, len = this[array].length; i < len; i++) {
@@ -599,11 +661,11 @@ export default {
             delete notEqual[i];
           }
           if (i == this[array].length - 1) {
-            this[pagina] = notEqual
-            break
-          };
+            this[pagina] = notEqual;
+            break;
+          }
         }
-      })
+      });
     },
     resetLoading() {
       this.loading = false;
@@ -623,27 +685,27 @@ export default {
       if (val === "") {
         return "Debes Escribir Algo";
       }
-        if (val !== null !== "") {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-          if (val.length > 100) {
-            return "Deben ser Maximo 100 caracteres";
-          }
+      if ((val !== null) !== "") {
+        if (val.length < 3) {
+          return "Deben ser minimo 3 caracteres";
+        }
+        if (val.length > 100) {
+          return "Deben ser Maximo 100 caracteres";
+        }
       }
     },
 
     desactivarCrud(createItem, readItem, deleteItem, updateItem) {
       if (readItem == true) {
         if (createItem == true) {
-        this.disabledCreate = false
-      }
+          this.disabledCreate = false;
+        }
         if (deleteItem == true) {
-        this.disabledDelete = false
-      }
+          this.disabledDelete = false;
+        }
         if (updateItem == true) {
-        this.disabledEdit = false
-      }
+          this.disabledEdit = false;
+        }
       } else this.$router.push("/error403");
     },
 
@@ -651,88 +713,107 @@ export default {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
     },
     getDataSelect(url, call, dataRes) {
-      this.axiosConfig.headers.cod_concepto = this.selectedConcepto.id
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.$refs.methods.getData(url, call, dataRes, {
+        headers: {
+          Authorization: ``,
+          cod_concepto: this.selectedConcepto.id,
+          tipo: "8",
+        },
+      });
       this.loading = true;
     },
     setDataIniciar(res, dataRes) {
-      this[dataRes] = res
-        for (var e = 0, len = this.datos.length; e < len; e++) {
-          if (this.datos[e].check_comision === "1") {
-            this.datos[e].check_comision = "✓"
-          }
-          if (this.datos[e].check_comision === "0") {
-            this.datos[e].check_comision = ""
-          }
-          if (this.datos[e].check_impuesto === "1") {
-            this.datos[e].check_impuesto = "✓"
-          }
-          if (this.datos[e].check_impuesto === "0") {
-            this.datos[e].check_impuesto = ""
-          }
-          if (e == this.datos.length - 1) break;
+      this[dataRes] = res;
+      for (var e = 0, len = this.datos.length; e < len; e++) {
+        if (this.datos[e].check_comision === "1") {
+          this.datos[e].check_comision = "✓";
         }
-      this.selectedConcepto = this.conceptos[0].desc_concepto;
-      this.getData('/cfacturacion', 'setData', 'datos')
-      this.loading = false
+        if (this.datos[e].check_comision === "0") {
+          this.datos[e].check_comision = "";
+        }
+        if (this.datos[e].check_impuesto === "1") {
+          this.datos[e].check_impuesto = "✓";
+        }
+        if (this.datos[e].check_impuesto === "0") {
+          this.datos[e].check_impuesto = "";
+        }
+        if (e == this.datos.length - 1) break;
+      }
+      this.selectedConcepto = this.conceptos[0];
+      this.getDataSelect("/cfacturacion", "setData", "datos");
+      this.loading = false;
     },
     setData(res, dataRes) {
-      this[dataRes] = res
-      this.loading = false
+      this[dataRes] = res;
+      this.loading = false;
       for (var e = 0, len = this.datos.length; e < len; e++) {
-          if (this.datos[e].check_comision === "1") {
-            this.datos[e].check_comision = "✓"
-          }
-          if (this.datos[e].check_comision === "0") {
-            this.datos[e].check_comision = ""
-          }
-          if (this.datos[e].check_impuesto === "1") {
-            this.datos[e].check_impuesto = "✓"
-          }
-          if (this.datos[e].check_impuesto === "0") {
-            this.datos[e].check_impuesto = ""
-          }
-          if (e == this.datos.length - 1) break;
+        if (this.datos[e].check_comision === "1") {
+          this.datos[e].check_comision = "✓";
         }
+        if (this.datos[e].check_comision === "0") {
+          this.datos[e].check_comision = "";
+        }
+        if (this.datos[e].check_impuesto === "1") {
+          this.datos[e].check_impuesto = "✓";
+        }
+        if (this.datos[e].check_impuesto === "0") {
+          this.datos[e].check_impuesto = "";
+        }
+        if (e == this.datos.length - 1) break;
+      }
     },
     setDataEdit(res, dataRes) {
-      this.loading = false
-      this[dataRes].id = res.id
-      this[dataRes].desc_concepto = res.desc_concepto
-      this[dataRes].check_comision = res.check_comision
-      this[dataRes].check_impuesto = res.check_impuesto
-      this[dataRes].cod_concepto = res.conceptos.desc_concepto
+      this.loading = false;
+      this[dataRes].id = res.id;
+      this[dataRes].desc_concepto = res.desc_concepto;
+      this[dataRes].check_comision = res.check_comision;
+      this[dataRes].check_impuesto = res.check_impuesto;
+      this[dataRes].cod_concepto = res.conceptos.desc_concepto;
     },
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/cfacturacion/${idpost}`, 'getData', this.axiosConfig);
+      this.$refs.methods.deleteData(
+        `/cfacturacion/${idpost}`,
+        "getData",
+        this.axiosConfig
+      );
       this.loading = true;
     },
     createData() {
-      this.form.cod_concepto = this.form.cod_concepto.id
-      this.$refs.methods.createData(`/cfacturacion`, this.form, 'getData', this.axiosConfig);
+      this.form.cod_concepto = this.form.cod_concepto.id;
+      this.$refs.methods.createData(
+        `/cfacturacion`,
+        this.form,
+        "getData",
+        this.axiosConfig
+      );
       this.resetForm();
       this.loading = true;
     },
     putData() {
-      this.formEdit.cod_concepto = this.formEdit.cod_concepto.id
-      this.$refs.methods.putData(`/cfacturacion/${this.formEdit.id}`, this.formEdit, 'getData', this.axiosConfig);
+      this.formEdit.cod_concepto = this.formEdit.cod_concepto.id;
+      this.$refs.methods.putData(
+        `/cfacturacion/${this.formEdit.id}`,
+        this.formEdit,
+        "getData",
+        this.axiosConfig
+      );
       this.resetFormEdit();
       this.loading = true;
     },
 
     resetForm() {
       (this.form.desc_concepto = ""),
-      (this.form.check_comision = "0"),
-      (this.form.check_impuesto = "0"),
-      (this.form.cod_concepto = ""),
-      (this.create = false)
+        (this.form.check_comision = "0"),
+        (this.form.check_impuesto = "0"),
+        (this.form.cod_concepto = ""),
+        (this.create = false);
     },
     resetFormEdit() {
       (this.formEdit.desc_concepto = ""),
-      (this.formEdit.check_comision = "0"),
-      (this.formEdit.check_impuesto = "0"),
-      (this.formEdit.cod_concepto = ""),
-      (this.edit = false)
+        (this.formEdit.check_comision = "0"),
+        (this.formEdit.check_impuesto = "0"),
+        (this.formEdit.cod_concepto = ""),
+        (this.edit = false);
     },
   },
 };

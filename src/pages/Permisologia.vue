@@ -13,22 +13,31 @@
                   hint=""
                   :rules="[reglasInputs]"
                   :options="objetosNoDuplicadosSelected"
-                @filter="(val,update,abort) => 
-                filterArray(val,update,abort,'objetosNoDuplicadosSelected', 'objetosNoDuplicados', 'codigo')"
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
+                  @filter="
+                    (val, update, abort) =>
+                      filterArray(
+                        val,
+                        update,
+                        abort,
+                        'objetosNoDuplicadosSelected',
+                        'objetosNoDuplicados',
+                        'codigo'
+                      )
+                  "
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
                   option-label="codigo"
                   option-value="codigo"
                   lazy-rules
-                ><template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
+                  ><template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        Sin resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
                   <template v-slot:prepend>
                     <q-icon name="settings" />
                   </template>
@@ -68,7 +77,9 @@
             class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 text-secondary"
             style="align-self: center; text-align: center"
           >
-            <h4 style="font-size: 30px"><strong>SEGURIDAD - PERMISOLOGÍA</strong></h4>
+            <h4 style="font-size: 30px">
+              <strong>SEGURIDAD - PERMISOLOGÍA</strong>
+            </h4>
           </div>
 
           <div
@@ -80,12 +91,21 @@
               transition-show="flip-up"
               transition-hide="flip-down"
               :options="agenciasSelected"
-                @filter="(val,update,abort) => 
-                filterArray(val,update,abort,'agenciasSelected', 'agencias', 'nb_agencia')"
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
+              @filter="
+                (val, update, abort) =>
+                  filterArray(
+                    val,
+                    update,
+                    abort,
+                    'agenciasSelected',
+                    'agencias',
+                    'nb_agencia'
+                  )
+              "
+              use-input
+              hide-selected
+              fill-input
+              input-debounce="0"
               option-label="nb_agencia"
               option-value="id"
               v-model="selectedAgencia"
@@ -93,21 +113,21 @@
               standout
               label="Escoge una Agencia"
               @update:model-value="
-                this.axiosConfig.headers.agencia = this.selectedAgencia.id;
-                getData(
-                  `/roles`,
-                  'setDataRoles',
-                  'rolesPermisos'
-                )
-                this.permisos = []
+                getData(`/roles`, 'setDataRoles', 'rolesPermisos', {
+                  headers: {
+                    Authorization: ``,
+                    agencia: this.selectedAgencia.id,
+                  },
+                });
+                this.permisos = [];
               "
-            ><template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
+              ><template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    Sin resultados
+                  </q-item-section>
+                </q-item>
+              </template>
               <template v-slot:prepend>
                 <q-icon name="search" />
               </template>
@@ -123,12 +143,21 @@
               transition-show="flip-up"
               transition-hide="flip-down"
               :options="rolesPermisosSelected"
-                @filter="(val,update,abort) => 
-                filterArray(val,update,abort,'rolesPermisosSelected', 'rolesPermisos', 'descripcion')"
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
+              @filter="
+                (val, update, abort) =>
+                  filterArray(
+                    val,
+                    update,
+                    abort,
+                    'rolesPermisosSelected',
+                    'rolesPermisos',
+                    'descripcion'
+                  )
+              "
+              use-input
+              hide-selected
+              fill-input
+              input-debounce="0"
               option-label="descripcion"
               option-value="id"
               v-model="selectedRol"
@@ -136,20 +165,15 @@
               standout
               label="Escoge un Rol"
               @update:model-value="
-                this.axiosConfig.headers.rol = this.selectedRol.id;
-                getDataPermisos(
-                  `/permisos`,
-                  'setDataPermisos',
-                  'permisos'
-                )
+                getDataPermisos(`/permisos`, 'setDataPermisos', 'permisos')
               "
-            ><template v-slot:no-option>
-                            <q-item>
-                              <q-item-section class="text-grey">
-                                Sin resultados
-                              </q-item-section>
-                            </q-item>
-                          </template>
+              ><template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    Sin resultados
+                  </q-item-section>
+                </q-item>
+              </template>
               <template v-slot:prepend>
                 <q-icon name="search" />
               </template>
@@ -180,7 +204,6 @@
                 :loading="loading"
                 binary-state-sort
                 :separator="separator"
-                
                 :filter="filterPermisos"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -280,12 +303,15 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <desactivate-crud ref="desactiveCrud"
+    <desactivate-crud
+      ref="desactiveCrud"
       @desactivar-Crud="desactivarCrud"
     ></desactivate-crud>
-    <methods ref="methods"
-      @get-Data-Permisos="this.axiosConfig.headers.rol = this.selectedRol.id;
-      getDataPermisos(`/permisos`, 'setDataPermisos','permisos')"
+    <methods
+      ref="methods"
+      @get-Data-Permisos="
+        getDataPermisos(`/permisos`, 'setDataPermisos', 'permisos')
+      "
       @set-data-Roles="setDataRoles"
       @reset-Loading="resetLoading"
       @set-data-Permisos="setDataPermisos"
@@ -303,13 +329,12 @@ import { useQuasar } from "quasar";
 
 import methodsVue from "src/components/methods.vue";
 
-import { LocalStorage } from 'quasar';
+import { LocalStorage } from "quasar";
 
-import desactivateCrudVue from 'src/components/desactivateCrud.vue';
+import desactivateCrudVue from "src/components/desactivateCrud.vue";
 
 export default {
-  components: { "desactivate-crud": desactivateCrudVue,
-  "methods": methodsVue },
+  components: { "desactivate-crud": desactivateCrudVue, methods: methodsVue },
   name: "Permisologia",
   data() {
     return {
@@ -415,9 +440,7 @@ export default {
       axiosConfig: {
         headers: {
           Authorization: ``,
-          agencia: "",
-          rol: ""
-        }
+        },
       },
       pagination: ref({
         rowsPerPage: 10,
@@ -466,8 +489,18 @@ export default {
     };
   },
   mounted() {
-    this.getData("/agencias", "setData", "agencias");
-    this.$refs.desactiveCrud.desactivarCrud('c_permisos', 'r_permisos', 'u_permisos', 'd_permisos', 'desactivarCrud')
+    this.getData("/agencias", "setData", "agencias", {
+      headers: {
+        Authorization: ``,
+      },
+    });
+    this.$refs.desactiveCrud.desactivarCrud(
+      "c_permisos",
+      "r_permisos",
+      "u_permisos",
+      "d_permisos",
+      "desactivarCrud"
+    );
   },
   methods: {
     filterArray(val, update, abort, pagina, array, element) {
@@ -502,41 +535,50 @@ export default {
     },
     verificatePermisos() {
       if (this.items === this.objetos.length) {
-        this.sinPermisos()
-      };
+        this.sinPermisos();
+      }
       if (this.items < this.objetos.length) {
-        this.permisosForm = true
-      };
-      this.items = 0
+        this.permisosForm = true;
+      }
+      this.items = 0;
     },
     desactivarCrud(createItem, readItem, deleteItem, updateItem) {
       if (readItem == true) {
         if (createItem == true) {
-        this.disabledCreate = false
-      }
+          this.disabledCreate = false;
+        }
         if (deleteItem == true) {
-        this.disabledDelete = false
-      }
+          this.disabledDelete = false;
+        }
         if (updateItem == true) {
-        this.disabledEdit = false
-      }
+          this.disabledEdit = false;
+        }
       } else this.$router.push("/error403");
     },
 
-    getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+    getData(url, call, dataRes, axiosConfig) {
+      this.$refs.methods.getData(url, call, dataRes, axiosConfig);
     },
     getDataPermisos(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
-      this.loading = true
+      this.$refs.methods.getData(url, call, dataRes, {
+        headers: {
+          Authorization: ``,
+          rol: this.selectedRol.id,
+        },
+      });
+      this.loading = true;
     },
     setData(res, dataRes) {
       this[dataRes] = res;
       if (dataRes == "agencias") {
-        this.getData("/objetos", "setData", "objetos");
+        this.getData("/objetos", "setData", "objetos", {
+          headers: {
+            Authorization: ``,
+          },
+        });
         this.getDataIniciar();
       }
-      this.loading = false
+      this.loading = false;
     },
     // Metodos para permisos
     setDataRoles(res, dataRes) {
@@ -546,13 +588,14 @@ export default {
     setDataPermisos(res, dataRes) {
       this[dataRes] = res;
       this.permisosDuplicados = res;
-      this.loading = false
+      this.loading = false;
     },
 
     deleteData(selected) {
       this.$refs.methods.deleteData(
         `/permisos/${selected}`,
-        "getDataPermisos", this.axiosConfig
+        "getDataPermisos",
+        this.axiosConfig
       );
       this.loading = true;
     },
@@ -562,7 +605,8 @@ export default {
       this.$refs.methods.createData(
         `/permisos`,
         this.formPermisos,
-        "getDataPermisos", this.axiosConfig
+        "getDataPermisos",
+        this.axiosConfig
       );
       this.resetFormPermisos();
       this.loading = true;
@@ -607,37 +651,47 @@ export default {
     getDataIniciar() {
       this.selectedAgencia = this.agencias[0];
       this.agenciaRef = this.agencias[0].id;
-      this.axiosConfig.headers.agencia = this.agenciaRef;
-      api.get(`/roles`, this.axiosConfig)
-      .then((res) => {
-        this.selectedRol = res.data[0];
-        this.rolesPermisos = res.data;
-        this.rolesRef = res.data[0].id;
-        this.axiosConfig.headers.rol = this.rolesRef;
-        api.get(`/permisos`, this.axiosConfig)
+      api
+        .get(`/roles`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            agencia: this.agenciaRef,
+          },
+        })
         .then((res) => {
-          this.permisos = res.data;
-          this.permisosDuplicados = res.data;
+          this.selectedRol = res.data[0];
+          this.rolesPermisos = res.data;
+          this.rolesRef = res.data[0].id;
+          api
+            .get(`/permisos`, {
+              headers: {
+                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                rol: this.rolesRef,
+              },
+            })
+            .then((res) => {
+              this.permisos = res.data;
+              this.permisosDuplicados = res.data;
+            });
         });
-      });
       this.loading = true;
     },
     eliminarDuplicados() {
-      this.objetosNoDuplicados = []
-      console.log(this.permisos)
-      console.log(this.objetos)
+      this.objetosNoDuplicados = [];
+      console.log(this.permisos);
+      console.log(this.objetos);
       for (var e = 0; e <= this.objetos.length - 1; e++) {
-        var find = 0
+        var find = 0;
         for (var i = 0; i <= this.permisos.length - 1; i++) {
           if (this.permisos[i].codigo == this.objetos[e].codigo) {
-            this.items = this.items + 1
-            find = 1
+            this.items = this.items + 1;
+            find = 1;
           }
           if (i == this.permisos.length - 1 && find == 0) {
             this.objetosNoDuplicados.push(this.objetos[e]);
           }
         }
-      };
+      }
       this.verificatePermisos();
     },
   },

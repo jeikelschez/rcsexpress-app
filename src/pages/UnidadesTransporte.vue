@@ -36,8 +36,8 @@
                     <q-icon name="face" />
                   </template>
                 </q-input>
-              </div>   
-              
+              </div>
+
               <div class="col-md-12 col-xs-12">
                 <q-input
                   outlined
@@ -46,7 +46,9 @@
                   :rules="[reglasNotNull100]"
                   hint=""
                   lazy-rules
-                  @update:model-value="form.descripcion = form.descripcion.toUpperCase()"
+                  @update:model-value="
+                    form.descripcion = form.descripcion.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="description" />
@@ -94,7 +96,9 @@
                   :rules="[reglasNotNull10]"
                   hint=""
                   lazy-rules
-                  @update:model-value="formEdit.placas = formEdit.placas.toUpperCase()"
+                  @update:model-value="
+                    formEdit.placas = formEdit.placas.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="recent_actors" />
@@ -110,14 +114,16 @@
                   :rules="[reglasAllowNull30]"
                   hint=""
                   lazy-rules
-                  @update:model-value="formEdit.chofer = formEdit.chofer.toUpperCase()"
+                  @update:model-value="
+                    formEdit.chofer = formEdit.chofer.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="face" />
                   </template>
                 </q-input>
-              </div>   
-              
+              </div>
+
               <div class="col-md-12 col-xs-12">
                 <q-input
                   outlined
@@ -126,7 +132,9 @@
                   :rules="[reglasNotNull100]"
                   hint=""
                   lazy-rules
-                  @update:model-value="formEdit.descripcion = formEdit.descripcion.toUpperCase()"
+                  @update:model-value="
+                    formEdit.descripcion = formEdit.descripcion.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="description" />
@@ -211,7 +219,6 @@
                 :columns="columns"
                 :loading="loading"
                 :separator="separator"
-                
                 :filter="filter"
                 style="width: 100%"
                 :grid="$q.screen.xs"
@@ -230,7 +237,11 @@
                       icon="edit"
                       :disabled="this.disabledEdit"
                       @click="
-                        getData(`/unidades/${props.row.id}`, 'setDataEdit', 'formEdit');
+                        getData(
+                          `/unidades/${props.row.id}`,
+                          'setDataEdit',
+                          'formEdit'
+                        );
                         edit = true;
                       "
                     ></q-btn>
@@ -282,7 +293,11 @@
                               icon="edit"
                               :disabled="this.disabledEdit"
                               @click="
-                                getData(`/unidades/${props.row.id}`, 'setDataEdit', 'formEdit');
+                                getData(
+                                  `/unidades/${props.row.id}`,
+                                  'setDataEdit',
+                                  'formEdit'
+                                );
                                 edit = true;
                               "
                             ></q-btn>
@@ -351,14 +366,15 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <methods ref="methods"
-    @get-Data-Unidades="getDataUnidades('/unidades','setData','datos')"
-    @set-data="setData"
-    @reset-Loading="resetLoading"
-    @set-Data-Edit="setDataEdit">
+    <methods
+      ref="methods"
+      @get-Data-Unidades="getDataUnidades('/unidades', 'setData', 'datos')"
+      @set-data="setData"
+      @reset-Loading="resetLoading"
+      @set-Data-Edit="setDataEdit"
+    >
     </methods>
-    <desactivate-crud ref="desactivateCrud"
-    @desactivar-Crud="desactivarCrud">
+    <desactivate-crud ref="desactivateCrud" @desactivar-Crud="desactivarCrud">
     </desactivate-crud>
   </q-page>
 </template>
@@ -372,17 +388,18 @@ import { useQuasar } from "quasar";
 
 import { LocalStorage } from "quasar";
 
-import methodsVue from 'src/components/methods.vue';
+import methodsVue from "src/components/methods.vue";
 
-import desactivateCrudVue from 'src/components/desactivateCrud.vue';
+import desactivateCrudVue from "src/components/desactivateCrud.vue";
 
-import currencyInputVue from 'src/components/currency-input.vue';
+import CurrencyInput from "src/components/CurrencyInput.vue";
 
 export default {
   components: {
-  "desactivate-crud": desactivateCrudVue,
-  "methods": methodsVue,
-  "currency-input": currencyInputVue},
+    "desactivate-crud": desactivateCrudVue,
+    methods: methodsVue,
+    CurrencyInput,
+  },
   name: "Bancos",
   data() {
     return {
@@ -436,11 +453,6 @@ export default {
       disabledCreate: true,
       disabledEdit: true,
       disabledDelete: true,
-      axiosConfig: {
-        headers: {
-          Authorization: ``,
-        },
-      },   
     };
   },
   setup() {
@@ -466,8 +478,14 @@ export default {
     };
   },
   mounted() {
-    this.getDataUnidades('/unidades','setData','datos')
-    this.$refs.desactivateCrud.desactivarCrud('c_unidades', 'r_unidades', 'u_unidades', 'd_unidades', 'desactivarCrud')
+    this.getDataUnidades("/unidades", "setData", "datos");
+    this.$refs.desactivateCrud.desactivarCrud(
+      "c_unidades",
+      "r_unidades",
+      "u_unidades",
+      "d_unidades",
+      "desactivarCrud"
+    );
   },
   methods: {
     resetLoading() {
@@ -475,7 +493,7 @@ export default {
     },
     // Reglas
     reglasAllowNull30(val) {
-      if (val !== null !== "") {
+      if ((val !== null) !== "") {
         if (val.length > 0) {
           if (val.length < 3) {
             return "Deben ser minimo 3 caracteres";
@@ -487,99 +505,124 @@ export default {
       }
     },
     reglasNotNull10(val) {
-        if (val === null) {
+      if (val === null) {
         return "Debes Seleccionar Algo";
       }
       if (val === "") {
         return "Debes Seleccionar Algo";
       }
-        if (val !== null !== "") {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-          if (val.length > 9) {
-            return "Deben ser Maximo 10 caracteres";
-          }
+      if ((val !== null) !== "") {
+        if (val.length < 3) {
+          return "Deben ser minimo 3 caracteres";
+        }
+        if (val.length > 9) {
+          return "Deben ser Maximo 10 caracteres";
+        }
       }
     },
     reglasNotNull100(val) {
-        if (val === null) {
+      if (val === null) {
         return "Debes Escribir Algo";
       }
       if (val === "") {
         return "Debes Escribir Algo";
       }
-        if (val !== null !== "") {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-          if (val.length > 99) {
-            return "Deben ser Maximo 100 caracteres";
-          }
+      if ((val !== null) !== "") {
+        if (val.length < 3) {
+          return "Deben ser minimo 3 caracteres";
+        }
+        if (val.length > 99) {
+          return "Deben ser Maximo 100 caracteres";
+        }
       }
     },
 
     // Desactivar CRUD
-   desactivarCrud(createItem, readItem, deleteItem, updateItem) {
+    desactivarCrud(createItem, readItem, deleteItem, updateItem) {
       if (readItem == true) {
         if (createItem == true) {
-        this.disabledCreate = false
-      }
+          this.disabledCreate = false;
+        }
         if (deleteItem == true) {
-        this.disabledDelete = false
-      }
+          this.disabledDelete = false;
+        }
         if (updateItem == true) {
-        this.disabledEdit = false
-      }
+          this.disabledEdit = false;
+        }
       } else this.$router.push("/error403");
     },
 
     // Metodos CRUD
     getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.$refs.methods.getData(url, call, dataRes, {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        },
+      });
     },
     getDataUnidades(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.$refs.methods.getData(url, call, dataRes, {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        },
+      });
       this.loading = true;
     },
     setData(res, dataRes) {
-      this[dataRes] = res
-      this.loading = false
-    },  
+      this[dataRes] = res;
+      this.loading = false;
+    },
     setDataEdit(res, dataRes) {
-      this.formEdit.id = res.id
-      this.formEdit.descripcion = res.descripcion
-      this.formEdit.placas = res.placas
-      this.formEdit.chofer = res.chofer
-      this.loading = false
-    },   
+      this.formEdit.id = res.id;
+      this.formEdit.descripcion = res.descripcion;
+      this.formEdit.placas = res.placas;
+      this.formEdit.chofer = res.chofer;
+      this.loading = false;
+    },
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/unidades/${idpost}`, 'getDataUnidades', this.axiosConfig);
+      this.$refs.methods.deleteData(`/unidades/${idpost}`, "getDataUnidades", {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        },
+      });
       this.loading = true;
     },
     createData() {
-      this.$refs.methods.createData('/unidades', this.form, 'getDataUnidades', this.axiosConfig);
+      this.$refs.methods.createData("/unidades", this.form, "getDataUnidades", {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        },
+      });
       this.resetForm();
       this.loading = true;
     },
     putData() {
-      this.$refs.methods.putData(`/unidades/${this.formEdit.id}`, this.formEdit, 'getDataUnidades', this.axiosConfig);
+      this.$refs.methods.putData(
+        `/unidades/${this.formEdit.id}`,
+        this.formEdit,
+        "getDataUnidades",
+        {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        }
+      );
       this.edit = false;
       this.resetFormEdit();
       this.loading = true;
     },
-    
+
     resetForm() {
       (this.form.chofer = ""),
-      (this.form.descripcion = ""),
-      (this.form.placas = ""),
-      (this.create = false);    
+        (this.form.descripcion = ""),
+        (this.form.placas = ""),
+        (this.create = false);
     },
     resetFormEdit() {
       (this.formEdit.chofer = ""),
-      (this.formEdit.descripcion = ""),
-      (this.formEdit.placas = ""),
-      (this.edit = false);    
+        (this.formEdit.descripcion = ""),
+        (this.formEdit.placas = ""),
+        (this.edit = false);
     },
   },
 };

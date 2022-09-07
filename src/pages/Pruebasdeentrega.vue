@@ -1428,7 +1428,7 @@
             >
               <q-card-section
                 class="row col-md-12 col-xs-12 menuFilter2"
-                style="padding-bottom: 0px;padding-top: 0px"
+                style="padding-bottom: 0px; padding-top: 0px"
               >
                 <div
                   class="col-md-3 col-xs-12 SelectAgenciaCliente pcform"
@@ -2438,7 +2438,7 @@ export default {
           field: "action",
           align: "center",
           required: true,
-          sortable: true
+          sortable: true,
         },
         {
           name: "nb_cliente",
