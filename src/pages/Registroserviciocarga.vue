@@ -1108,11 +1108,12 @@
                   <q-input
                     outlined
                     v-model="formEdit.nro_documento"
+                    :error="errors.nro_documento"
                     label="NRO. Documento"
                     hint=""
                     class="pcform"
                     dense
-                    :rules="[reglasNotNull10]"
+                    :rules="[isMax(formEdit.nro_documento, 10, 'nro_documento')]"
                     hide-bottom-space
                   >
                     <template v-slot:append>
@@ -1196,8 +1197,8 @@
                           dense
                           style="padding-bottom: 10px"
                           class="pcform pcmovil"
-                          mask="##/##/####"
                           :rules="[checkDate]"
+                          mask="##/##/####"
                         >
                           <template v-slot:append>
                             <q-icon name="event" class="cursor-pointer">
@@ -1208,7 +1209,9 @@
                               >
                                 <q-date
                                   v-model="formEdit.fecha_emision"
-                                  mask="DD-MM-YYYY"
+                                  mask="DD/MM/YYYY"
+                                  @update:model-value="this.$refs.qDateProxy.hide()
+                                  "
                                 ></q-date>
                               </q-popup-proxy>
                             </q-icon>
@@ -1219,13 +1222,13 @@
                       <div class="col-md-6 col-xs-6">
                         <q-input
                           outlined
-                          label="Emision"
+                          label="Envio"
                           hint=""
                           dense
                           style="padding-bottom: 10px"
                           v-model="formEdit.fecha_envio"
                           lazy-rules
-                          mask="##/##/####"
+                          
                           :rules="[checkDate]"
                         >
                           <template v-slot:append>
@@ -1237,7 +1240,9 @@
                               >
                                 <q-date
                                   v-model="formEdit.fecha_envio"
-                                  mask="DD-MM-YYYY"
+                                  mask="DD/MM/YYYY"
+                                  @update:model-value="this.$refs.qDateProxy.hide()
+                                   "
                                 ></q-date>
                               </q-popup-proxy>
                             </q-icon>
@@ -1254,7 +1259,7 @@
                           style="padding-bottom: 10px"
                           v-model="formEdit.fecha_aplicacion"
                           lazy-rules
-                          mask="##/##/####"
+                          
                           :rules="[checkDate]"
                         >
                           <template v-slot:append>
@@ -1266,7 +1271,9 @@
                               >
                                 <q-date
                                   v-model="formEdit.fecha_aplicacion"
-                                  mask="DD-MM-YYYY"
+                                  mask="DD/MM/YYYY"
+                                  @update:model-value="this.$refs.qDateProxy.hide()
+                                   "
                                 ></q-date>
                               </q-popup-proxy>
                             </q-icon>
@@ -1285,13 +1292,14 @@
                 <q-card
                   class="q-pa-md col-md-4 col-xs-12 cardMenus"
                   bordered
-                  style="padding: 5px"
+                  style="padding: 5px; padding-top: 10px"
                 >
                   <q-card-section
                     style="
                       padding-bottom: 7px;
                       padding-left: 10px;
                       padding-right: 10px;
+                      padding-top: 10px
                     "
                   >
                     <div class="row">
@@ -2356,7 +2364,7 @@
                   v-model="formEdit.fecha_llega_transito"
                   lazy-rules
                   class="pcform"
-                  mask="##/##/####"
+                  
                   :rules="[checkDate]"
                 >
                   <template v-slot:append>
@@ -2368,7 +2376,9 @@
                       >
                         <q-date
                           v-model="formEdit.fecha_llega_transito"
-                          mask="DD-MM-YYYY"
+                          mask="DD/MM/YYYY"
+                                  @update:model-value="this.$refs.qDateProxy.hide()
+                                   "
                         ></q-date>
                       </q-popup-proxy>
                     </q-icon>
@@ -2685,6 +2695,54 @@ export default {
         porc_descuento: "",
         id: "",
       },
+      errors: {
+        fecha_elab: false,
+        check_elab: false,
+        check_pe: false,
+        fecha_pe: false,
+        nro_documento: false,
+        t_de_documento: false,
+        serie_documento: false,
+        id_clte_part_dest: false,
+        id_clte_part_orig: false,
+        fecha_emision: false,
+        fecha_envio: false,
+        fecha_aplicacion: false,
+        nro_piezas: false,
+        peso_kgs: false,
+        tipo_carga: false,
+        modalidad_pago: false,
+        pagado_en: false,
+        cod_agencia: false,
+        cod_cliente_org: false,
+        cod_agencia_dest: false,
+        cod_cliente_dest: false,
+        cod_zona_dest: false,
+        tipo_servicio: false,
+        tipo_ubicacion: false,
+        tipo_urgencia: false,
+        cod_agente_venta: false,
+        cod_proveedor: false,
+        dimensiones: false,
+        desc_contenido: false,
+        carga_neta: false,
+        valor_declarado_cod: false,
+        valor_declarado_seg: false,
+        porc_apl_seguro: false,
+        saldo: false,
+        cod_agencia_transito: false,
+        monto_subtotal: false,
+        monto_impuesto: false,
+        monto_base: false,
+        monto_total: false,
+        fecha_llega_transito: false,
+        check_transito: false,
+        estatus_operativo: false,
+        estatus_administra: false,
+        monto_ref_cte_sin_imp: false,
+        porc_comision: false,
+        porc_descuento: false,
+      },
       formClientes: {
         id: "",
         nb_cliente: "",
@@ -2907,7 +2965,7 @@ export default {
       this.$refs.webviewer.showpdf(this.base64);
     },
     validacionDetalle() {
-      if (this.formEdit.nro_documento !== "") {
+      if (this.agencias[0]) {
         if (this.detalle_movimiento[0]) {
           this.detalle = true;
         } else {
@@ -2916,11 +2974,6 @@ export default {
             color: "red",
           });
         }
-      } else if (this.clientes_origen[0]) {
-        this.$q.notify({
-          message: "La guía no está Tarifeada",
-          color: "red",
-        });
       } else {
         this.$q.notify({
           message: "Debe Cargar una Guía",
@@ -3299,70 +3352,42 @@ export default {
       this.loading = false;
     },
     // Reglas
-    reglasInputs(val) {
-      if (val == null) {
-        this.$q.notify({
-          message: "Input Requerido",
-          color: "red",
-        });
-        return "";
-      }
-      if (val == "") {
-        this.$q.notify({
-          message: "Input Requerido",
-          color: "red",
-        });
-        return "";
+    isRequired(val, form) {
+      if (val == null || val == "") {
+        this.errors[form] = true
+      } else {
+        this.errors[form] = false
       }
     },
-    reglasNotNull10(val) {
-      if (val == null) {
-        this.$q.notify({
-          message: "Input Requerido",
-          color: "red",
-        });
-        return "";
-      }
-      if (val == "") {
-        this.$q.notify({
-          message: "Input Requerido",
-          color: "red",
-        });
-        return "";
-      }
-      if ((val !== null) !== "") {
-        if (val > 9999999999) {
-          this.$q.notify({
-            message: "Deben ser Maximo de 10 caracteres",
-            color: "red",
-          });
-          return "";
-        }
+
+    isMax(val, max, form) {
+      if (val.length > max) {
+        console.log(form)
+        this.errors[form] = true
+      } else {
+        this.errors[form] = false
       }
     },
+
+    isMin(val, min, form) {
+      if (val.length < min) {
+        this.errors[form] = true
+      } else {
+        this.errors[form] = false
+      }
+    },
+
     reglasNotNull3(val) {
       var val = val;
       val = val.replaceAll(".", "").replaceAll(",", ".");
       if (val == null) {
-        this.$q.notify({
-          message: "Requerido",
-          color: "red",
-        });
         return "";
       }
       if (val == "") {
-        this.$q.notify({
-          message: "Input Requerido",
-          color: "red",
-        });
         return "";
       }
       if (val !== null && val !== "") {
         if (val > 999) {
-          this.$q.notify({
-            message: "Input debe ser Maximo de 3 Caracteres",
-            color: "red",
-          });
           return "";
         }
       }
@@ -3370,10 +3395,6 @@ export default {
     reglasAllowNull12(val) {
       if (val !== null && val !== "") {
         if (val > 999999999999.99) {
-          this.$q.notify({
-            message: "Input debe ser Maximo de 12 caracteres",
-            color: "red",
-          });
           return "";
         }
       }
@@ -3382,25 +3403,13 @@ export default {
       var val = val;
       val = val.replaceAll(".", "").replaceAll(",", ".");
       if (val == null) {
-        this.$q.notify({
-          message: "Input Requerido",
-          color: "red",
-        });
         return "";
       }
       if (val == "") {
-        this.$q.notify({
-          message: "Input Requerido",
-          color: "red",
-        });
         return "";
       }
       if (val !== null && val !== "") {
         if (val > 999999.99) {
-          this.$q.notify({
-            message: "Input debe ser Maximo de 6 caracteres",
-            color: "red",
-          });
           return "";
         }
       }
@@ -3408,10 +3417,6 @@ export default {
     reglasAllowNull14(val) {
       if (val !== null && val !== "") {
         if (val > 99999999999999.99) {
-          this.$q.notify({
-            message: "Input debe ser Maximo de 14 caracteres",
-            color: "red",
-          });
           return "";
         }
       }
@@ -3419,10 +3424,6 @@ export default {
     reglasAllowNull3(val) {
       if (val !== null && val !== "") {
         if (val > 999) {
-          this.$q.notify({
-            message: "Input debe ser Maximo de 3 caracteres",
-            color: "red",
-          });
           return "";
         }
       }
@@ -3430,10 +3431,6 @@ export default {
     reglasAllowMin3(val) {
       if (val !== null && val !== "") {
         if (val.length < 3) {
-          this.$q.notify({
-            message: "Input debe ser Minimo de 3 caracteres",
-            color: "red",
-          });
           return "";
         }
       }
@@ -4009,6 +4006,11 @@ export default {
             .reverse()
             .join("-");
 
+            formEdit.fecha_elab = formEdit.fecha_elab
+            .split("/")
+            .reverse()
+            .join("-");
+
           if (formEdit.id !== "") {
             delete formEdit.porc_comision
             if (formEdit.id_clte_part_dest == "") delete formEdit.id_clte_part_dest
@@ -4320,6 +4322,7 @@ export default {
         (this.detalle_movimiento = []),
         (this.clientes_destino = []),
         (this.zonas_destino = []),
+        (this.agencias = []),
         (this.conceptos = []);
     },
     resetFormPut() {
@@ -4331,11 +4334,7 @@ export default {
         (this.objetive = 0);
     },
     checkDate(val) {
-      if (date.isValid(val) == false) {
-        this.$q.notify({
-          message: "Fecha Invalida",
-          color: "red",
-        });
+      if (moment(val, 'DD/MM/YYYY', true)._isValid == false) {
         return "";
       }
     },

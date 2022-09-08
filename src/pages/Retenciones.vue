@@ -165,7 +165,9 @@
                         transition-show="scale"
                         transition-hide="scale"
                       >
-                        <q-date v-model="form.fecha_ini_val" mask="DD-MM-YYYY">
+                        <q-date v-model="form.fecha_ini_val" mask="DD/MM/YYYY"
+                                  @update:model-value="this.$refs.qDateProxy.hide()
+                                   ">
                           <div class="row items-center justify-end">
                             <q-btn
                               v-close-popup
@@ -198,7 +200,9 @@
                         transition-show="scale"
                         transition-hide="scale"
                       >
-                        <q-date v-model="form.fecha_fin_val" mask="DD-MM-YYYY">
+                        <q-date v-model="form.fecha_fin_val" mask="DD/MM/YYYY"
+                                  @update:model-value="this.$refs.qDateProxy.hide()
+                                   ">
                           <div class="row items-center justify-end">
                             <q-btn
                               v-close-popup
@@ -408,7 +412,9 @@
                       >
                         <q-date
                           v-model="formEdit.fecha_ini_val"
-                          mask="DD-MM-YYYY"
+                          mask="DD/MM/YYYY"
+                                  @update:model-value="this.$refs.qDateProxy.hide()
+                                   "
                         >
                           <div class="row items-center justify-end">
                             <q-btn
@@ -444,7 +450,9 @@
                       >
                         <q-date
                           v-model="formEdit.fecha_fin_val"
-                          mask="DD-MM-YYYY"
+                          mask="DD/MM/YYYY"
+                                  @update:model-value="this.$refs.qDateProxy.hide()
+                                   "
                         >
                           <div class="row items-center justify-end">
                             <q-btn
@@ -875,6 +883,28 @@ export default {
       this.loading = false;
     },
     // Reglas
+    checkDate(val) {
+      var fecha = val.split("/")
+      var year =  fecha[2]
+      var month = fecha[1]
+      var day = fecha[0]
+      if (month == "" && day == "" && year == "") {
+        this.$q.notify({
+          message: "Fecha Invalida",
+          color: "red",
+        });
+        return "";
+      } else {
+      fecha = month+ "/" + day + "/" + year
+      if (date.isValid(fecha) == false) {
+        console.log(fecha)
+        this.$q.notify({
+          message: "Fecha Invalida",
+          color: "red",
+        });
+        return "";
+      }}
+    },
     reglasSelect(val) {
       if (val === null) {
         return "Debes Seleccionar Algo";

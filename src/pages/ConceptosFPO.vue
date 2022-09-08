@@ -101,7 +101,9 @@
                               <q-date
                                 v-model="form.f_val"
                                 @input="() => $refs.qDateProxy.hide()"
-                                mask="DD-MM-YYYY"
+                                mask="DD/MM/YYYY"
+                                  @update:model-value="this.$refs.qDateProxy.hide()
+                                   "
                               ></q-date>
                             </q-popup-proxy>
                           </q-icon>
@@ -130,7 +132,9 @@
                               <q-date
                                 v-model="form.f_anul"
                                 @input="() => $refs.qDateProxy.hide()"
-                                mask="DD-MM-YYYY"
+                                mask="DD/MM/YYYY"
+                                  @update:model-value="this.$refs.qDateProxy.hide()
+                                   "
                               ></q-date>
                             </q-popup-proxy>
                           </q-icon>
@@ -324,8 +328,9 @@
                             >
                               <q-date
                                 v-model="formEdit.f_val"
-                                @input="() => $refs.qDateProxy.hide()"
-                                mask="DD-MM-YYYY"
+                                mask="DD/MM/YYYY"
+                                  @update:model-value="this.$refs.qDateProxy.hide()
+                                   "
                               ></q-date>
                             </q-popup-proxy>
                           </q-icon>
@@ -353,8 +358,9 @@
                             >
                               <q-date
                                 v-model="formEdit.f_anul"
-                                @input="() => $refs.qDateProxy.hide()"
-                                mask="DD-MM-YYYY"
+                                mask="DD/MM/YYYY"
+                                  @update:model-value="this.$refs.qDateProxy.hide()
+                                   "
                               ></q-date>
                             </q-popup-proxy>
                           </q-icon>
@@ -817,7 +823,26 @@ export default {
   },
   methods: {
     dateValidation(val) {
-      if (date.isValid(val) == false) return "Fecha Invalida";
+      var fecha = val.split("/")
+      var year =  fecha[2]
+      var month = fecha[1]
+      var day = fecha[0]
+      if (month == "" && day == "" && year == "") {
+        this.$q.notify({
+          message: "Fecha Invalida",
+          color: "red",
+        });
+        return "";
+      } else {
+      fecha = month+ "/" + day + "/" + year
+      if (date.isValid(fecha) == false) {
+        console.log(fecha)
+        this.$q.notify({
+          message: "Fecha Invalida",
+          color: "red",
+        });
+        return "";
+      }}
     },
     resetLoading() {
       this.loading = false;
