@@ -16,7 +16,7 @@
                     formAgentes.nb_agente = formAgentes.nb_agente.toUpperCase()
                   "
                   lazy-rules
-                  :rules="[reglaInput]"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Input Requerido'), (val) => this.$refs.rulesVue.isMax(val, 25, 'Maximo 25 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
                 >
                   <template v-slot:prepend>
                     <q-icon name="person" />
@@ -36,7 +36,7 @@
                       formAgentes.fax_agente.toUpperCase()
                   "
                   lazy-rules
-                  :rules="[reglaInput50]"
+                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 50, 'Maximo 50 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
                 >
                   <template v-slot:prepend>
                     <q-icon name="fax" />
@@ -573,7 +573,7 @@
               standout
               label="Escoge una Agencia"
               @update:model-value="
-                getDataAgentes(`/agentes`, 'setDataAgentes', 'agentes')
+                getDataAgentes(`/agentes`, 'setDataTable', 'agentes')
               "
             >
               <template v-slot:no-option>
@@ -633,6 +633,8 @@
                 row-key="id"
                 :columns="columnsAgentes"
                 :separator="separator"
+                :rows-per-page-options="[5, 10, 15, 20, 50]"
+                @request="onRequest"
                 :filter="filter"
                 style="width: 100%"
                 :loading="loading"
@@ -790,11 +792,16 @@
       @get-Data-Agentes="
         getDataAgentes(`/agentes`, 'setDataAgentes', 'agentes')
       "
+      @set-Data-Table="setDataTable"
+      @on-Request="onRequest"
       @set-Data-Agentes="setDataAgentes"
       @reset-Loading="resetLoading"
       @set-Data-Agentes-Edit="setDataAgentesEdit"
       @set-Data="setData"
     ></methods>
+    <rules-vue
+      ref="rulesVue"
+    ></rules-vue>
   </q-page>
 </template>
 
@@ -802,6 +809,8 @@
 import { ref } from "vue";
 
 import { api } from "boot/axios";
+
+import rulesVue from "src/components/rules.vue";
 
 import { useQuasar } from "quasar";
 
@@ -818,7 +827,7 @@ export default {
   components: {
     "desactivate-crud": desactivateCrudVue,
     methods: methodsVue,
-    VMoney,
+    VMoney, rulesVue
   },
   name: "Agentes",
   data() {
@@ -911,6 +920,8 @@ export default {
         { label: "RESPONSABLE DE AGENCIA", value: "RP" },
         { label: "COURIERS", value: "CR" },
       ],
+      count: 1,
+      currentPage: 1,
       agencias: [],
       agenciasSelected: [],
       agentes: [],
@@ -925,18 +936,17 @@ export default {
   },
   setup() {
     const $q = useQuasar();
+    const loading = ref(false);
+    const order = ref(false);
     const pagination = ref({
-      sortBy: "desc",
-      descending: false,
-      page: 2,
-      control: 0,
-      rowsPerPage: 4,
-      // rowsNumber: xx if getting data from a server
+      descending: "",
+      page: 1,
+      rowsPerPage: 10,
+      rowsNumber: "",
     });
     return {
-      pagination: ref({
-        rowsPerPage: 10,
-      }),
+      pagination,
+      anulate: ref(false),
       loading: ref(false),
       separator: ref("vertical"),
       form: ref(false),
@@ -960,6 +970,67 @@ export default {
     );
   },
   methods: {
+    onRequest(res, dataRes) {
+      if (this.count == 1) {
+        this[dataRes] = res.data;
+        this.pagination.rowsNumber = res.total;
+      } else {
+        let { page, rowsPerPage, sortBy, descending } = res.pagination;
+        if (this.currentPage !== page) {
+          descending = "";
+        }
+        const filter = res.filter;
+        const startRow = (page - 1) * rowsPerPage;
+        const fetchCount =
+          rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
+
+        var headerPage = page;
+        var headerLimit = fetchCount;
+        if (sortBy) {
+          var headerOrder_by = sortBy;
+        } else {
+          var headerOrder_by = "";
+        }
+
+        if (headerOrder_by == "tipo_desc") {
+          var headerOrder_by = "tipo_agente";
+        }
+        if (headerOrder_by == "activo_desc") {
+          var headerOrder_by = "flag_activo";
+        }
+
+        if (descending !== "") {
+          this.pagination.descending = !this.pagination.descending;
+          if (this.pagination.descending == true) {
+            this.headerOrder_direction = "DESC";
+          } else this.headerOrder_direction = "ASC";
+        }
+
+        if (sortBy) this.pagination.sortBy = sortBy;
+        this.pagination.page = page;
+        this.pagination.rowsPerPage = rowsPerPage;
+        var headerCod_movimiento = this.formEdit.id;
+        this.getData(`/agentes`, "setDataTable", "agentes", {
+          headers: {
+            Authorization: ``,
+            page: headerPage,
+            limit: headerLimit,
+            order_direction: this.headerOrder_direction,
+            cod_movimiento: headerCod_movimiento,
+            order_by: headerOrder_by,
+          },
+        });
+      }
+      this.count = 0;
+    },
+    setDataTable(res, dataRes) {
+      this[dataRes] = res.data;
+      this.pagination.page = res.currentPage;
+      this.currentPage = res.currentPage;
+      this.pagination.rowsNumber = res.total;
+      this.pagination.rowsPerPage = res.limit;
+      this.loading = false;
+    },
     filterArray(val, update, abort, pagina, array, element) {
       if (val === "") {
         update(() => {
@@ -1075,13 +1146,26 @@ export default {
         headers: {
           Authorization: `Bearer ${LocalStorage.getItem("token")}`,
           agencia: this.selectedAgencia.id,
+          page: 1,
+          limit: 10,
         },
       });
       this.loading = true;
     },
     setData(res, dataRes) {
-      this[dataRes] = res;
-      this.getDataIniciar();
+      this[dataRes] = res.data;
+      this.agenciaRef = this.agencias[0].id;
+      this.selectedAgencia = this.agencias[0];
+
+      this.$refs.methods.getData("/agentes", "onRequest", "agentes", {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            agencia: this.agenciaRef,
+            page: 1,
+            limit: 10,
+          },
+        }
+      );
       this.loading = false;
     },
     setDataAgentes(res, dataRes) {
@@ -1199,21 +1283,6 @@ export default {
         (this.formEditAgentes.porc_comision_seguro = ""),
         (this.formEditAgentes.cod_agencia = null),
         (this.formEdit = false);
-    },
-    // Metodos para colocar valores iniciales
-    getDataIniciar() {
-      this.agenciaRef = this.agencias[0].id;
-      this.selectedAgencia = this.agencias[0];
-      api
-        .get(`/agentes`, {
-          headers: {
-            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            agencia: this.agenciaRef,
-          },
-        })
-        .then((res) => {
-          this.agentes = res.data.data;
-        });
     },
   },
 };
