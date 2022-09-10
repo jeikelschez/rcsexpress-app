@@ -16,7 +16,21 @@
                     formAgentes.nb_agente = formAgentes.nb_agente.toUpperCase()
                   "
                   lazy-rules
-                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Input Requerido'), (val) => this.$refs.rulesVue.isMax(val, 25, 'Maximo 25 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
+                  :rules="[
+                    (val) => this.$refs.rulesVue.isReq(val, 'Valor Requerido'),
+                    (val) =>
+                      this.$refs.rulesVue.isMax(
+                        val,
+                        25,
+                        'Maximo 25 Caracteres'
+                      ),
+                    (val) =>
+                      this.$refs.rulesVue.isMin(
+                        val,
+                        3,
+                        'Minimo 3 Caracteres'
+                      ) || '',
+                  ]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="person" />
@@ -36,7 +50,20 @@
                       formAgentes.fax_agente.toUpperCase()
                   "
                   lazy-rules
-                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 50, 'Maximo 50 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
+                  :rules="[
+                    (val) =>
+                      this.$refs.rulesVue.isMax(
+                        val,
+                        50,
+                        'Maximo 50 Caracteres'
+                      ),
+                    (val) =>
+                      this.$refs.rulesVue.isMin(
+                        val,
+                        3,
+                        'Minimo 3 Caracteres'
+                      ) || '',
+                  ]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="fax" />
@@ -56,7 +83,20 @@
                       formAgentes.persona_responsable.toUpperCase()
                   "
                   lazy-rules
-                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 50, 'Maximo 50 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
+                  :rules="[
+                    (val) =>
+                      this.$refs.rulesVue.isMax(
+                        val,
+                        50,
+                        'Maximo 50 Caracteres'
+                      ),
+                    (val) =>
+                      this.$refs.rulesVue.isMin(
+                        val,
+                        3,
+                        'Minimo 3 Caracteres'
+                      ) || '',
+                  ]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="contact_phone" />
@@ -70,7 +110,11 @@
                   v-model="formAgentes.flag_activo"
                   label="Activo"
                   hint=""
-                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Input Requerido') || '']"
+                  :rules="[
+                    (val) =>
+                      this.$refs.rulesVue.isReqSelect(val, 'Valor Requerido') ||
+                      '',
+                  ]"
                   :options="estatus"
                   lazy-rules
                 >
@@ -91,7 +135,20 @@
                       formAgentes.dir_agente.toUpperCase()
                   "
                   lazy-rules
-                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 100, 'Maximo 100 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
+                  :rules="[
+                    (val) =>
+                      this.$refs.rulesVue.isMax(
+                        val,
+                        100,
+                        'Maximo 100 Caracteres'
+                      ),
+                    (val) =>
+                      this.$refs.rulesVue.isMin(
+                        val,
+                        3,
+                        'Minimo 3 Caracteres'
+                      ) || '',
+                  ]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="pin_drop" />
@@ -110,7 +167,20 @@
                     formAgentes.email_web = formAgentes.email_web.toUpperCase()
                   "
                   lazy-rules
-                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 100, 'Maximo 100 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
+                  :rules="[
+                    (val) =>
+                      this.$refs.rulesVue.isMax(
+                        val,
+                        100,
+                        'Maximo 100 Caracteres'
+                      ),
+                    (val) =>
+                      this.$refs.rulesVue.isMin(
+                        val,
+                        3,
+                        'Minimo 3 Caracteres'
+                      ) || '',
+                  ]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="email" />
@@ -149,7 +219,20 @@
                             formAgentes.rif_ci_agente.toUpperCase()
                         "
                         lazy-rules
-                        :rules="[(val) => this.$refs.rulesVue.isMax(val, 20, 'Maximo 20 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
+                        :rules="[
+                          (val) =>
+                            this.$refs.rulesVue.isMax(
+                              val,
+                              20,
+                              'Maximo 20 Caracteres'
+                            ),
+                          (val) =>
+                            this.$refs.rulesVue.isMin(
+                              val,
+                              3,
+                              'Minimo 3 Caracteres'
+                            ) || '',
+                        ]"
                       >
                         <template v-slot:prepend>
                           <q-icon name="account_box" />
@@ -163,7 +246,13 @@
                         v-model="formAgentes.tipo_agente"
                         label="Tipo de Agente"
                         hint=""
-                        :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Input Requerido') || '']"
+                        :rules="[
+                          (val) =>
+                            this.$refs.rulesVue.isReqSelect(
+                              val,
+                              'Valor Requerido'
+                            ) || '',
+                        ]"
                         :options="tipoDeAgente"
                         lazy-rules
                       >
@@ -281,7 +370,10 @@
                       formEditAgentes.nb_agente.toUpperCase()
                   "
                   lazy-rules
-                  :rules="[reglaInput]"
+                  :rules="[
+                    (val) =>
+                      this.$refs.rulesVue.isReq(val, 'Valor Requerido') || '',
+                  ]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="person" />
@@ -301,7 +393,20 @@
                       formEditAgentes.fax_agente.toUpperCase()
                   "
                   lazy-rules
-                  :rules="[reglaInput50]"
+                  :rules="[
+                    (val) =>
+                      this.$refs.rulesVue.isMax(
+                        val,
+                        50,
+                        'Maximo 50 Caracteres'
+                      ),
+                    (val) =>
+                      this.$refs.rulesVue.isMin(
+                        val,
+                        3,
+                        'Minimo 3 Caracteres'
+                      ) || '',
+                  ]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="fax" />
@@ -321,7 +426,20 @@
                       formEditAgentes.persona_responsable.toUpperCase()
                   "
                   lazy-rules
-                  :rules="[reglaInput50]"
+                  :rules="[
+                    (val) =>
+                      this.$refs.rulesVue.isMax(
+                        val,
+                        50,
+                        'Maximo 50 Caracteres'
+                      ),
+                    (val) =>
+                      this.$refs.rulesVue.isMin(
+                        val,
+                        3,
+                        'Minimo 3 Caracteres'
+                      ) || '',
+                  ]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="contact_phone" />
@@ -335,7 +453,11 @@
                   v-model="formEditAgentes.flag_activo"
                   label="Activo"
                   hint=""
-                  :rules="[reglasSelect]"
+                  :rules="[
+                    (val) =>
+                      this.$refs.rulesVue.isReqSelect(val, 'Valor Requerido') ||
+                      '',
+                  ]"
                   :options="estatus"
                   lazy-rules
                 >
@@ -356,7 +478,20 @@
                       formEditAgentes.dir_agente.toUpperCase()
                   "
                   lazy-rules
-                  :rules="[reglaInput100]"
+                  :rules="[
+                    (val) =>
+                      this.$refs.rulesVue.isMax(
+                        val,
+                        100,
+                        'Maximo 100 Caracteres'
+                      ),
+                    (val) =>
+                      this.$refs.rulesVue.isMin(
+                        val,
+                        3,
+                        'Minimo 3 Caracteres'
+                      ) || '',
+                  ]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="pin_drop" />
@@ -376,7 +511,20 @@
                       formEditAgentes.email_web.toUpperCase()
                   "
                   lazy-rules
-                  :rules="[reglaInput50]"
+                  :rules="[
+                    (val) =>
+                      this.$refs.rulesVue.isMax(
+                        val,
+                        50,
+                        'Maximo 50 Caracteres'
+                      ),
+                    (val) =>
+                      this.$refs.rulesVue.isMin(
+                        val,
+                        3,
+                        'Minimo 3 Caracteres'
+                      ) || '',
+                  ]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="email" />
@@ -415,7 +563,20 @@
                             formAgentes.rif_ci_agente.toUpperCase()
                         "
                         lazy-rules
-                        :rules="[reglaInput20]"
+                        :rules="[
+                          (val) =>
+                            this.$refs.rulesVue.isMax(
+                              val,
+                              20,
+                              'Maximo 20 Caracteres'
+                            ),
+                          (val) =>
+                            this.$refs.rulesVue.isMin(
+                              val,
+                              3,
+                              'Minimo 3 Caracteres'
+                            ) || '',
+                        ]"
                       >
                         <template v-slot:prepend>
                           <q-icon name="account_box" />
@@ -429,7 +590,13 @@
                         v-model="formEditAgentes.tipo_agente"
                         label="Tipo de Agente"
                         hint=""
-                        :rules="[reglasSelect]"
+                        :rules="[
+                          (val) =>
+                            this.$refs.rulesVue.isReqSelect(
+                              val,
+                              'Valor Requerido'
+                            ) || '',
+                        ]"
                         :options="tipoDeAgente"
                         lazy-rules
                       >
@@ -789,9 +956,7 @@
     ></desactivate-crud>
     <methods
       ref="methods"
-      @get-Data-Agentes="
-        getDataAgentes(`/agentes`, 'setDataAgentes', 'agentes')
-      "
+      @get-Data-Agentes="getDataAgentes(`/agentes`, 'setDataTable', 'agentes')"
       @set-Data-Table="setDataTable"
       @on-Request="onRequest"
       @set-Data-Agentes="setDataAgentes"
@@ -799,9 +964,7 @@
       @set-Data-Agentes-Edit="setDataAgentesEdit"
       @set-Data="setData"
     ></methods>
-    <rules-vue
-      ref="rulesVue"
-    ></rules-vue>
+    <rules-vue ref="rulesVue"></rules-vue>
   </q-page>
 </template>
 
@@ -827,7 +990,8 @@ export default {
   components: {
     "desactivate-crud": desactivateCrudVue,
     methods: methodsVue,
-    VMoney, rulesVue
+    VMoney,
+    rulesVue,
   },
   name: "Agentes",
   data() {
@@ -957,9 +1121,7 @@ export default {
   },
   mounted() {
     this.getData("/agencias", "setData", "agencias", {
-      headers: {
-        Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-      },
+      headers: {},
     });
     this.$refs.desactivateCrud.desactivarCrud(
       "c_agentes",
@@ -1013,6 +1175,7 @@ export default {
         this.getData(`/agentes`, "setDataTable", "agentes", {
           headers: {
             Authorization: ``,
+            agencia: this.selectedAgencia.id,
             page: headerPage,
             limit: headerLimit,
             order_direction: this.headerOrder_direction,
@@ -1052,68 +1215,6 @@ export default {
         }
       });
     },
-    reglasSelect(val) {
-      if (val === null) {
-        return "Debes Seleccionar Algo";
-      }
-      if (val === "") {
-        return "Debes Seleccionar Algo";
-      }
-    },
-    reglaInput(val) {
-      if (val === "") {
-        return "Debes Escribir Algo";
-      }
-      if (val === null) {
-        return "Debes Escribir Algo";
-      }
-      if (val !== null) {
-        if (val.length > 25) {
-          return "Deben ser máximo 25 caracteres";
-        }
-        if (val.length > 0) {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-        }
-      }
-    },
-    reglaInput100(val) {
-      if (val !== null) {
-        if (val.length > 100) {
-          return "Deben ser máximo 100 caracteres";
-        }
-        if (val.length > 0) {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-        }
-      }
-    },
-    reglaInput50(val) {
-      if (val !== null) {
-        if (val.length > 50) {
-          return "Deben ser máximo 50 caracteres";
-        }
-        if (val.length > 0) {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-        }
-      }
-    },
-    reglaInput20(val) {
-      if (val !== null) {
-        if (val.length > 20) {
-          return "Deben ser máximo 20 caracteres";
-        }
-        if (val.length > 0) {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-        }
-      }
-    },
     desactivarCrud(createItem, readItem, deleteItem, updateItem) {
       if (readItem == true) {
         if (createItem == true) {
@@ -1144,7 +1245,6 @@ export default {
     getDataAgentes(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, {
         headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
           agencia: this.selectedAgencia.id,
           page: 1,
           limit: 10,
@@ -1158,23 +1258,28 @@ export default {
       this.selectedAgencia = this.agencias[0];
 
       this.$refs.methods.getData("/agentes", "onRequest", "agentes", {
-          headers: {
-            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            agencia: this.agenciaRef,
-            page: 1,
-            limit: 10,
-          },
-        }
-      );
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          agencia: this.agenciaRef,
+          page: 1,
+          limit: 10,
+        },
+      });
       this.loading = false;
     },
-    setDataAgentes(res, dataRes) {
-      this[dataRes] = res;
-      this.loading = false;
+    filterSelect(array, codigo, searched, selectedOption, selectedOptionValue) {
+      var find = this[array].findIndex((item) => item[codigo] == searched);
+      if (find >= 0) {
+        console.log(this[selectedOption][selectedOptionValue])
+        console.log(this[array][find])
+        this[selectedOption][selectedOptionValue] = this[array][find];
+      } else {
+        this[selectedOption][selectedOptionValue] = { label: "", value: null };
+      }
     },
     setDataAgentesEdit(res, dataRes) {
       this[dataRes].id = res.id;
-      this[dataRes].flag_activo = res.activo_desc;
+      this.filterSelect("estatus", "value", res.flag_activo, "formEditAgentes", "flag_activo")
       this[dataRes].nb_agente = res.nb_agente;
       this[dataRes].persona_responsable = res.persona_responsable;
       this[dataRes].dir_agente = res.dir_agente;
@@ -1185,8 +1290,7 @@ export default {
       this[dataRes].porc_comision_venta = res.porc_comision_venta;
       this[dataRes].porc_comision_seguro = res.porc_comision_seguro;
       this[dataRes].porc_comision_entrega = res.porc_comision_entrega;
-      this[dataRes].flag_activo = res.activo_desc;
-      this[dataRes].tipo_agente = res.tipo_desc;
+      this.filterSelect("tipoDeAgente", "value", res.tipo_agente, "formEditAgentes", "tipo_agente")
       this[dataRes].cod_agencia = res.cod_agencia;
       this.loading = false;
     },

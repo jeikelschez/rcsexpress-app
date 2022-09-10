@@ -17,31 +17,27 @@ export default {
   methods: {
     // Reglas
     isReq(val, reason) {
-      if (val == null || val.trim() == "") {
-        return reason;
-      } else {
-        return true;
-      }
+      var ret = true;
+      if (val == null || val.trim() == "") ret = reason;
+      return ret;
+    },
+    
+    isReqSelect(val, reason) {
+      var ret = true;
+      if (val == null || val == [] || val == "") ret = reason;
+      return ret;
     },
 
     isMax(val, max, reason) {
-      if (val.length > max) {
-        return reason;
-      } else {
-        return true;
-      }
+      var ret = true;
+      if (val !== "" && val !== null && val.length > max) ret = reason;
+      return ret;
     },
 
     isMin(val, min, reason) {
-      if (val !== "") {
-        if (val.length < min) {
-          return reason;
-        } else {
-          return true;
-        }
-      } else {
-        return true;
-      }
+      var ret = true;
+      if (val !== "" && val !== null && val.length < min) return reason;
+      return ret;
     },
   },
 };
