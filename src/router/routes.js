@@ -3,7 +3,7 @@ const routes = [
   {
     path: '/',
     redirect: '/login',
-    component: () => import('layouts/mainlayout.vue'),
+    component: () => import('src/layouts/mainlayout.vue'),
     children: [
       {
         path: '/dashboard',
