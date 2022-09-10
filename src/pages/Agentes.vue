@@ -56,7 +56,7 @@
                       formAgentes.persona_responsable.toUpperCase()
                   "
                   lazy-rules
-                  :rules="[reglaInput50]"
+                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 50, 'Maximo 50 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
                 >
                   <template v-slot:prepend>
                     <q-icon name="contact_phone" />
@@ -70,7 +70,7 @@
                   v-model="formAgentes.flag_activo"
                   label="Activo"
                   hint=""
-                  :rules="[reglasSelect]"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Input Requerido') || '']"
                   :options="estatus"
                   lazy-rules
                 >
@@ -91,7 +91,7 @@
                       formAgentes.dir_agente.toUpperCase()
                   "
                   lazy-rules
-                  :rules="[reglaInput100]"
+                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 100, 'Maximo 100 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
                 >
                   <template v-slot:prepend>
                     <q-icon name="pin_drop" />
@@ -110,7 +110,7 @@
                     formAgentes.email_web = formAgentes.email_web.toUpperCase()
                   "
                   lazy-rules
-                  :rules="[reglaInput100]"
+                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 100, 'Maximo 100 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
                 >
                   <template v-slot:prepend>
                     <q-icon name="email" />
@@ -149,7 +149,7 @@
                             formAgentes.rif_ci_agente.toUpperCase()
                         "
                         lazy-rules
-                        :rules="[reglaInput20]"
+                        :rules="[(val) => this.$refs.rulesVue.isMax(val, 20, 'Maximo 20 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
                       >
                         <template v-slot:prepend>
                           <q-icon name="account_box" />
@@ -163,7 +163,7 @@
                         v-model="formAgentes.tipo_agente"
                         label="Tipo de Agente"
                         hint=""
-                        :rules="[reglasSelect]"
+                        :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Input Requerido') || '']"
                         :options="tipoDeAgente"
                         lazy-rules
                       >

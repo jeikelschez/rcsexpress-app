@@ -33,13 +33,15 @@ export default {
     },
 
     isMin(val, min, reason) {
-      if (val !== null || val !== "") {
-      if (val.length < min) {
-        return reason;
+      if (val !== "") {
+        if (val.length < min) {
+          return reason;
+        } else {
+          return true;
+        }
       } else {
         return true;
       }
-    }
     },
   },
 };
