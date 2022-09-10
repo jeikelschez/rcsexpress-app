@@ -323,8 +323,7 @@
                   option-label="nb_agencia"
                   option-value="id"
                   @update:model-value="
-                    this.axiosConfig.headers.agencia =
-                      this.formEdit.cod_agencia.id;
+                    this.axiosConfig.headers.agencia = this.formEdit.cod_agencia.id;
                     getData('/clientes', 'setData', 'clientes');
                     getData('/agentes', 'setData', 'agentes');
                     this.formEdit.cod_cliente = '';
@@ -496,7 +495,7 @@
               this.axiosConfig.headers.cliente = '';
               this.axiosConfig.headers.order_by = 'control_inicio';
               this.axiosConfig.headers.order_direction = 'DESC';
-              getData(`/cguias`, 'setDataGuias', 'datos');
+              getData(`/cguias`, 'setDataTable', 'datos');
               this.axiosConfig.headers.order_by = '';
               this.axiosConfig.headers.order_direction = '';
               getData(`/agentes`, 'setDataSelect', 'agentes');
@@ -549,7 +548,7 @@
               this.axiosConfig.headers.agente = this.selectedAgente.id;
               this.axiosConfig.headers.order_by = 'control_inicio';
               this.axiosConfig.headers.order_direction = 'DESC';
-              getData(`/cguias`, 'setDataGuias', 'datos');
+              getData(`/cguias`, 'setDataTable', 'datos');
             "
             ><template v-slot:no-option>
               <q-item>
@@ -598,7 +597,7 @@
               this.axiosConfig.headers.cliente = this.selectedCliente.id;
               this.axiosConfig.headers.order_by = 'control_inicio';
               this.axiosConfig.headers.order_direction = 'DESC';
-              getData(`/cguias`, 'setDataGuias', 'datos');
+              getData(`/cguias`, 'setDataTable', 'datos');
             "
             ><template v-slot:no-option>
               <q-item>
@@ -636,21 +635,21 @@
                 class="pcform"
                 @keydown.enter="
                   this.axiosConfig.headers.desde = this.guia_desde;
-                  getData(`/cguias`, 'setDataGuias', 'datos');
+                  getData(`/cguias`, 'setDataTable', 'datos');
                   if (this.guia_hasta !== '') {
                     this.reglasCorrelativoFilter();
                   }
                 "
                 @keydown.tab="
                   this.axiosConfig.headers.desde = this.guia_desde;
-                  getData(`/cguias`, 'setDataGuias', 'datos');
+                  getData(`/cguias`, 'setDataTable', 'datos');
                   if (this.guia_hasta !== '') {
                     this.reglasCorrelativoFilter();
                   }
                 "
                 @blur="
                   this.axiosConfig.headers.desde = this.guia_desde;
-                  getData(`/cguias`, 'setDataGuias', 'datos');
+                  getData(`/cguias`, 'setDataTable', 'datos');
                   if (this.guia_hasta !== '') {
                     this.reglasCorrelativoFilter();
                   }
@@ -671,17 +670,17 @@
                 v-model="guia_hasta"
                 @keydown.enter="
                   this.axiosConfig.headers.hasta = this.guia_hasta;
-                  getData(`/cguias`, 'setDataGuias', 'datos');
+                  getData(`/cguias`, 'setDataTable', 'datos');
                   this.reglasCorrelativoFilter();
                 "
                 @keydown.tab="
                   this.axiosConfig.headers.hasta = this.guia_hasta;
-                  getData(`/cguias`, 'setDataGuias', 'datos');
+                  getData(`/cguias`, 'setDataTable', 'datos');
                   this.reglasCorrelativoFilter();
                 "
                 @blur="
                   this.axiosConfig.headers.hasta = this.guia_hasta;
-                  getData(`/cguias`, 'setDataGuias', 'datos');
+                  getData(`/cguias`, 'setDataTable', 'datos');
                   this.reglasCorrelativoFilter();
                 "
                 label="Guia Hasta:"
@@ -718,7 +717,7 @@
                     label="Culminado"
                     @update:model-value="
                       this.axiosConfig.headers.disp = this.selectedCulminado;
-                      getData(`/cguias`, 'setDataGuias', 'datos');
+                      getData(`/cguias`, 'setDataTable', 'datos');
                     "
                   />
                 </template>
@@ -783,7 +782,7 @@
               this.disabledAgencia = false;
               this.disabledCliente = false;
               this.disabledAgente = false;
-              getData(`/cguias`, 'setDataGuias', 'datos');
+              getData(`/cguias`, 'setDataTable', 'datos');
             "
           >
             <q-icon size="40px" name="filter_alt_off" color="white"> </q-icon>
@@ -971,15 +970,15 @@
 
     <methods
       ref="methods"
-      @get-Data="getData('/cguias', 'setDataGuias', 'datos')"
-      @get-Data-Guias="getDataGuias('/cguias', 'setDataGuias', 'datos')"
+      @get-Data="getData('/cguias', 'setDataTable', 'datos')"
+      @get-Data-Guias="getDataGuias('/cguias', 'setDataTable', 'datos')"
       @set-Data="setData"
-      @set-Data-Guias="setDataGuias"
+      @set-Data-Table="setDataTable"
+      @on-Request="onRequest"
       @reset-Loading="resetLoading"
       @set-Data-Iniciar="setDataIniciar"
       @set-Data-Edit="setDataEdit"
       @set-Data-Select="setDataSelect"
-      @on-Request="onRequest"
     ></methods>
   </q-page>
 </template>
@@ -1185,6 +1184,7 @@ export default {
   methods: {
     onRequest(res, dataRes) {
       if (this.count == 1) {
+        console.log(res)
         this[dataRes] = res.data;
         this.pagination.rowsNumber = res.total;
         this.loading = false;
@@ -1213,12 +1213,12 @@ export default {
         this.pagination.page = page;
         this.pagination.rowsPerPage = rowsPerPage;
 
-        this.getData(`/cguias`, "setDataGuias", "datos");
+        this.getData(`/cguias`, "setDataTable", "datos");
       }
       this.count = 0;
     },
-    setDataGuias(res) {
-      this.datos = res.data;
+    setDataTable(res, dataRes) {
+      this[dataRes] = res.data;
       this.pagination.page = res.currentPage;
       this.currentPage = res.currentPage;
       this.pagination.rowsNumber = res.total;
@@ -1365,8 +1365,16 @@ export default {
       this[dataRes] = res;
     },
     setDataIniciar(res, dataRes) {
-      this[dataRes] = res;
-      this.getDataIniciar();
+      this[dataRes] = res.data;
+      this.axiosConfig.headers.agencia = this.agencias[0].id;
+      this.selectedAgencia = this.agencias[0];
+      this.getData("/clientes", "setData", "clientes");
+      this.getData("/agentes", "setData", "agentes");
+      (this.axiosConfig.headers.page = 1),
+      (this.axiosConfig.headers.limit = 10),
+      (this.axiosConfig.headers.order_by = "control_inicio"),
+      (this.axiosConfig.headers.order_direction = "DESC"),
+      this.getData(`/cguias`, "onRequest", "datos");
     },
     setDataEdit(res, dataRes) {
       this.loading = false;
@@ -1493,19 +1501,6 @@ export default {
         (this.agentesForm = []),
         (this.clientesForm = []),
         (this.edit = false);
-    },
-
-    // Metodos para colocar valores iniciales
-    getDataIniciar() {
-      this.axiosConfig.headers.agencia = this.agencias[0].id;
-      this.selectedAgencia = this.agencias[0];
-      this.getData("/clientes", "setData", "clientes");
-      this.getData("/agentes", "setData", "agentes");
-      (this.axiosConfig.headers.page = 1),
-        (this.axiosConfig.headers.limit = 10),
-        (this.axiosConfig.headers.order_by = "control_inicio"),
-        (this.axiosConfig.headers.order_direction = "DESC"),
-        this.getData(`/cguias`, "onRequest", "datos");
     },
 
     dateValidation(val) {

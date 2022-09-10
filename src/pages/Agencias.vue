@@ -720,6 +720,8 @@
                 :columns="columns"
                 :separator="separator"
                 :filter="filter"
+                :rows-per-page-options="[5, 10, 15, 20, 50]"
+                @request="onRequest"
                 style="width: 100%"
                 :grid="$q.screen.xs"
                 v-model:pagination="pagination"
@@ -866,10 +868,12 @@
       @set-Data="setData"
       @reset-Loading="resetLoading"
       @set-Data-Edit="setDataEdit"
+      @on-Request="onRequest"
       @set-Data-Edit-Ciudades="setDataEditCiudades"
       @set-Data-Edit-Estados="setDataEditEstados"
       @set-Data-Estados="setDataEstados"
       @set-Data-Ciudades="setDataCiudades"
+      @set-Data-Table="setDataTable"
     ></methods>
     <desactive-crud
       ref="desactiveCrud"
@@ -967,6 +971,8 @@ export default {
       ],
       paises: [],
       estados: [],
+      count: 1,
+      currentPage: 1,
       ciudades: [],
       datos: [],
       paisesSelected: [],
@@ -988,17 +994,17 @@ export default {
   },
   setup() {
     const $q = useQuasar();
+    const loading = ref(false);
+    const order = ref(false);
     const pagination = ref({
-      sortBy: "desc",
-      descending: false,
-      page: 2,
-      rowsPerPage: 4,
-      // rowsNumber: xx if getting data from a server
+      descending: "",
+      page: 1,
+      rowsPerPage: 10,
+      rowsNumber: "",
     });
     return {
-      pagination: ref({
-        rowsPerPage: 10,
-      }),
+      pagination,
+      anulate: ref(false),
       loading: ref(false),
       separator: ref("vertical"),
       create: ref(false),
@@ -1036,7 +1042,7 @@ export default {
     };
   },
   mounted() {
-    this.getDataAgencias("/agencias", "setData", "datos");
+    this.getDataAgencias("/agencias", "onRequest", "datos");
     this.getData("/paises", "setData", "paises", {
       headers: {
         Authorization: `Bearer ${LocalStorage.getItem("token")}`,
@@ -1051,6 +1057,48 @@ export default {
     );
   },
   methods: {
+    onRequest(res, dataRes) {
+      if (this.count == 1) {
+        this[dataRes] = res;
+        this.pagination.rowsNumber = res.total;
+        this.loading = false;
+      } else {
+        let { page, rowsPerPage, sortBy, descending } = res.pagination;
+        if (this.currentPage !== page) {
+          descending = "";
+        }
+        const filter = res.filter;
+        const startRow = (page - 1) * rowsPerPage;
+        const fetchCount =
+          rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
+
+        this.axiosConfig.headers.page = page;
+        this.axiosConfig.headers.limit = fetchCount;
+        if (sortBy) this.axiosConfig.headers.order_by = sortBy;
+
+        if (descending !== "") {
+          this.pagination.descending = !this.pagination.descending;
+          if (this.pagination.descending == true) {
+            this.axiosConfig.headers.order_direction = "DESC";
+          } else this.axiosConfig.headers.order_direction = "ASC";
+        }
+
+        if (sortBy) this.pagination.sortBy = sortBy;
+        this.pagination.page = page;
+        this.pagination.rowsPerPage = rowsPerPage;
+
+        this.getData(`/agencias`, "setDataTable", "datos");
+      }
+      this.count = 0;
+    },
+    setDataTable(res) {
+      this[dataRes] = res.data;
+      this.pagination.page = res.currentPage;
+      this.currentPage = res.currentPage;
+      this.pagination.rowsNumber = res.total;
+      this.pagination.rowsPerPage = res.limit;
+      this.loading = false;
+    },
     filterArray(val, update, abort, pagina, array, element) {
       if (val === "") {
         update(() => {

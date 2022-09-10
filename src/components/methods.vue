@@ -49,11 +49,7 @@ import { useQuasar } from "quasar";
       header.headers.Authorization = `Bearer ${LocalStorage.getItem("token")}`
       api.get(url, header)
       .then((res) => {
-        if (res.data.data && url !== "/cguias" && url !== "/dmovimientos") {
-          this.$emit(llamada, res.data.data, dataRes)
-        } else {
-          this.$emit(llamada, res.data, dataRes)
-        }
+        this.$emit(llamada, res.data, dataRes)
       })
       .catch((err) => {
           if (err.response) {console.log(err.response)

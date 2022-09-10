@@ -225,7 +225,6 @@ export default {
       this.$refs.methods.getData(url, call, dataRes, axiosConfig);
     },
     setData(res, dataRes) {
-      console.log(res)
       this[dataRes] = res
     },
     drawerClick() {

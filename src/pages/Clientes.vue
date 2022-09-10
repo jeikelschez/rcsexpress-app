@@ -1905,7 +1905,26 @@ export default {
     },
     setDataIniciar(res, dataRes) {
       this[dataRes] = res;
-      this.getDataIniciar();
+      this.agenciaRef = this.agencias[0].id;
+      this.selectedAgencia = this.agencias[0];
+      this.$refs.methods.getData(`/paises`, `setDataPaises`, `paises`, {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        },
+      });
+      this.$refs.methods.getData(`/clientes`, "setDataClientes", `clientes`, {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          agencia: this.agenciaRef,
+        },
+      });
+      this.$refs.methods.getData(`/agentes`, `setDataAgentes`, `agentes`, {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          agencia: this.agenciaRef,
+        },
+      });
+      
       this.loading = true;
     },
     setDataClientes(res, dataRes) {
@@ -2199,28 +2218,6 @@ export default {
         (this.pais = ""),
         (this.estado = ""),
         (this.ciudad = "");
-    },
-    // Metodos para colocar valores iniciales
-    getDataIniciar() {
-      this.agenciaRef = this.agencias[0].id;
-      this.selectedAgencia = this.agencias[0];
-      this.$refs.methods.getData(`/paises`, `setDataPaises`, `paises`, {
-        headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-        },
-      });
-      this.$refs.methods.getData(`/clientes`, "setDataClientes", `clientes`, {
-        headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-          agencia: this.agenciaRef,
-        },
-      });
-      this.$refs.methods.getData(`/agentes`, `setDataAgentes`, `agentes`, {
-        headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-          agencia: this.agenciaRef,
-        },
-      });
     },
 
     getDataLocalidades(sub_location, update, axiosConfig) {
