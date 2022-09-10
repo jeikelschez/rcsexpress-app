@@ -959,7 +959,6 @@
       @get-Data-Agentes="getDataAgentes(`/agentes`, 'setDataTable', 'agentes')"
       @set-Data-Table="setDataTable"
       @on-Request="onRequest"
-      @set-Data-Agentes="setDataAgentes"
       @reset-Loading="resetLoading"
       @set-Data-Agentes-Edit="setDataAgentesEdit"
       @set-Data="setData"

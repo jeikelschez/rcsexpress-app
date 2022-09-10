@@ -4,13 +4,33 @@
     <q-header elevated>
       <q-toolbar class="bg-indigo-9">
         <!-- Boton para expandir Menu -->
-        <q-btn flat dense round @click="this.hideItems(); this.drawerClick()" icon="menu" aria-label="Menu"
-          class="q-mr-sm" />
+        <q-btn
+          flat
+          dense
+          round
+          @click="
+            this.hideItems();
+            this.drawerClick();
+          "
+          icon="menu"
+          aria-label="Menu"
+          class="q-mr-sm"
+        />
         <!-- Titulo -->
-        <q-toolbar-title class="titleMainLayout">SCEN - Sistema de Control de Encomiendas</q-toolbar-title>
+        <q-toolbar-title class="titleMainLayout"
+          >SCEN - Sistema de Control de Encomiendas</q-toolbar-title
+        >
         <q-space></q-space>
         <!-- Boton para acceder a manuales -->
-        <q-btn dense color="white" round style="margin-right: 10px" clickable to="/m_bancos" padding="xs">
+        <q-btn
+          dense
+          color="white"
+          round
+          style="margin-right: 10px"
+          clickable
+          to="/m_bancos"
+          padding="xs"
+        >
           <q-icon size="20px" name="question_mark" color="primary"> </q-icon>
         </q-btn>
         <!-- Boton usuario y Logout -->
@@ -18,7 +38,11 @@
           <q-avatar size="42px">
             <img :src="url" />
           </q-avatar>
-          <q-menu transition-show="flip-right" transition-hide="flip-left" auto-close>
+          <q-menu
+            transition-show="flip-right"
+            transition-hide="flip-left"
+            auto-close
+          >
             <q-list style="min-width: 100px">
               <q-item clickable v-ripple @click="logout">
                 <q-item-section avatar>
@@ -33,8 +57,17 @@
     </q-header>
 
     <!-- Menu lateral izquierdo -->
-    <q-drawer v-model="drawer" show-if-above :breakpoint="500" bordered :width="350" auto-close
-      :mini="!drawer || miniState" @click="miniState = false" content-class="bg-grey-3">
+    <q-drawer
+      v-model="drawer"
+      show-if-above
+      :breakpoint="500"
+      bordered
+      :width="350"
+      auto-close
+      :mini="!drawer || miniState"
+      @click="miniState = false"
+      content-class="bg-grey-3"
+    >
       <q-list>
         <div>
           <q-list class="rounded-borders">
@@ -43,9 +76,15 @@
             <div v-for="item in items">
               <div v-if="item.level == 0">
                 <!-- LEVEL 0 / Q-ITEMS -->
-                <q-item v-if=item.qitem clickable tag="a" :to=item.url exact>
+                <q-item
+                  v-if="item.qitem"
+                  clickable
+                  tag="a"
+                  :to="item.url"
+                  exact
+                >
                   <q-item-section avatar>
-                    <q-icon size="28px" :name=item.icon />
+                    <q-icon size="28px" :name="item.icon" />
                   </q-item-section>
                   <q-item-section>
                     <q-item-label>{{ item.label }}</q-item-label>
@@ -53,18 +92,31 @@
                   </q-item-section>
                 </q-item>
                 <!-- LEVEL 0 / Q-EXPANSION-ITEMS -->
-                <q-expansion-item v-else expand-separator :icon=item.icon group="somegroup" default-opened
-                  :label=item.label v-model=item.model>
+                <q-expansion-item
+                  v-else
+                  expand-separator
+                  :icon="item.icon"
+                  group="somegroup"
+                  default-opened
+                  :label="item.label"
+                  v-model="item.model"
+                >
                   <!-- MENUS LEVEL 1 -->
                   <div v-for="item2 in items">
                     <div v-if="item2.level == 1 && item.name == item2.padre">
                       <!-- LEVEL 1 / Q-ITEMS -->
-                      <div v-if=item2.qitem class="q-pl-lg">
-                        <q-item clickable tag="a" :to=item2.url exact>
+                      <div v-if="item2.qitem" class="q-pl-lg">
+                        <q-item clickable tag="a" :to="item2.url" exact>
                           <q-item-section avatar>
-                            <q-icon size="28px" :name=item2.icon />
-                            <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                              transition-show="scale" transition-hide="scale">
+                            <q-icon size="28px" :name="item2.icon" />
+                            <q-tooltip
+                              v-if="miniState"
+                              anchor="center right"
+                              self="center left"
+                              :offset="[10, 10]"
+                              transition-show="scale"
+                              transition-hide="scale"
+                            >
                               <div class="tool">{{ item2.label }}</div>
                             </q-tooltip>
                           </q-item-section>
@@ -75,16 +127,33 @@
                         </q-item>
                       </div>
                       <!-- LEVEL 1 / Q-EXPANSION-ITEMS -->
-                      <q-expansion-item v-else :header-inset-level="0.4" :content-inset-level="0.9" expand-separator
-                        group="somegroup2" default-opened :icon=item2.icon :label=item2.label v-model=item2.model>
+                      <q-expansion-item
+                        v-else
+                        :header-inset-level="0.4"
+                        :content-inset-level="0.9"
+                        expand-separator
+                        group="somegroup2"
+                        default-opened
+                        :icon="item2.icon"
+                        :label="item2.label"
+                        v-model="item2.model"
+                      >
                         <!-- LEVEL 2 / Q-ITEMS -->
                         <div v-for="item3 in items">
-                          <div v-if="item3.level == 2 && item2.name == item3.padre">
-                            <q-item clickable tag="a" :to=item3.url exact>
+                          <div
+                            v-if="item3.level == 2 && item2.name == item3.padre"
+                          >
+                            <q-item clickable tag="a" :to="item3.url" exact>
                               <q-item-section avatar>
-                                <q-icon size="28px" :name=item3.icon />
-                                <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                                  transition-show="scale" transition-hide="scale">
+                                <q-icon size="28px" :name="item3.icon" />
+                                <q-tooltip
+                                  v-if="miniState"
+                                  anchor="center right"
+                                  self="center left"
+                                  :offset="[10, 10]"
+                                  transition-show="scale"
+                                  transition-hide="scale"
+                                >
                                   <div class="tool">{{ item3.label }}</div>
                                 </q-tooltip>
                               </q-item-section>
@@ -108,9 +177,11 @@
     </q-drawer>
 
     <!-- Detecta cuando el mouse sale del menu y cierra los items -->
-    <keep-alive>
-      <router-view @mouseover="this.hideItems(); this.miniState = true" />
-    </keep-alive>
+
+    <router-view @mouseover=" this.hideItems();this.miniState = true;"
+    >
+    </router-view>
+    <keep-alive> </keep-alive>
 
     <!-- Contenedor de las paginas -->
     <q-page-container style="padding-bottom: 0px; padding-top: 37px">
@@ -118,13 +189,32 @@
 
     <!-- Pie de Pagina -->
     <q-footer elevated bordered>
-      <div v-for="item4 in directs" class="float-left"
-        style="margin-top: 10px; margin-bottom: 10px; margin-left: 15px">
-        <q-btn v-show="item4.direct" dense color="white" round :class="`b${item4.dorder}`" clickable :to=item4.url exact
-          padding="xs">
-          <q-icon size="25px" :name=item4.icon color="primary">
-            <q-tooltip transition-show="flip-right" transition-hide="flip-left" class="bg-primary"
-              style="max-height: 30px" color="primary" max-height="40px">{{ item4.label }}</q-tooltip>
+      <div
+        v-for="item4 in directs"
+        class="float-left"
+        style="margin-top: 10px; margin-bottom: 10px; margin-left: 15px"
+      >
+        <q-btn
+          v-show="item4.direct"
+          dense
+          color="white"
+          round
+          :class="`b${item4.dorder}`"
+          clickable
+          :to="item4.url"
+          exact
+          padding="xs"
+        >
+          <q-icon size="25px" :name="item4.icon" color="primary">
+            <q-tooltip
+              transition-show="flip-right"
+              transition-hide="flip-left"
+              class="bg-primary"
+              style="max-height: 30px"
+              color="primary"
+              max-height="40px"
+              >{{ item4.label }}</q-tooltip
+            >
           </q-icon>
         </q-btn>
       </div>
@@ -134,7 +224,10 @@
         </p>
       </div>
       <user-logout ref="component"></user-logout>
-      <desactivate-crud ref="desactivateCrud" @desactivar-Opciones-Set="desactivarOpcionesSet"></desactivate-crud>
+      <desactivate-crud
+        ref="desactivateCrud"
+        @desactivar-Opciones-Set="desactivarOpcionesSet"
+      ></desactivate-crud>
     </q-footer>
   </q-layout>
   <methods ref="methods" @set-Data="setData"></methods>
@@ -146,13 +239,13 @@ import { LocalStorage } from "quasar";
 import { defineComponent, defineAsyncComponent } from "vue";
 import desactivateCrudVue from "src/components/desactivateCrud.vue";
 import userLogoutVue from "src/components/userLogout.vue";
-import methodsVue from 'src/components/methods.vue';
+import methodsVue from "src/components/methods.vue";
 
 export default {
   components: {
     "desactivate-crud": desactivateCrudVue,
     "user-logout": userLogoutVue,
-    "methods": methodsVue
+    methods: methodsVue,
   },
   data() {
     return {
@@ -207,17 +300,17 @@ export default {
     this.Authenticator();
     this.refreshTimer();
     this.$refs.desactivateCrud.desactivarOpciones("desactivarOpcionesSet");
-    this.getData('/menus', 'setData', 'items', {
-        headers: {
-          Authorization: ``
-        },
-      })
-    this.getData('/menus', 'setData', 'directs', {
-        headers: {
-          Authorization: ``,
-          direct: 1
-        },
-      })
+    this.getData("/menus", "setData", "items", {
+      headers: {
+        Authorization: ``,
+      },
+    });
+    this.getData("/menus", "setData", "directs", {
+      headers: {
+        Authorization: ``,
+        direct: 1,
+      },
+    });
   },
 
   methods: {
@@ -225,7 +318,7 @@ export default {
       this.$refs.methods.getData(url, call, dataRes, axiosConfig);
     },
     setData(res, dataRes) {
-      this[dataRes] = res
+      this[dataRes] = res;
     },
     drawerClick() {
       if (this.miniState) {
@@ -351,8 +444,8 @@ export default {
     },
     hideItems() {
       for (var i = 0; i < this.items.length - 1; i++) {
-        this.items[i].model = false
-      };
+        this.items[i].model = false;
+      }
     },
   },
 };
@@ -458,7 +551,7 @@ export default {
 
 @media screen {
   .float-left {
-    float: left
+    float: left;
   }
 }
 @media screen and (max-width: 680px) {

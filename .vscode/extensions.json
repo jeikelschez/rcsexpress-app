@@ -1,6 +1,7 @@
 {
   "recommendations": [
-    "octref.vetur"
+    "octref.vetur",
+    "febean.vue-format"
   ],
   "unwantedRecommendations": [
     "hookyqr.beautify",
