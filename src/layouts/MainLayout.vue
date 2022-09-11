@@ -54,7 +54,7 @@
                 </q-item>
                 <!-- LEVEL 0 / Q-EXPANSION-ITEMS -->
                 <q-expansion-item v-else expand-separator :icon=item.icon group="somegroup" default-opened
-                  :label=item.label v-model=item.model>
+                  :label=item.label v-model="items_model[item.name]">
                   <!-- MENUS LEVEL 1 -->
                   <div v-for="item2 in items">
                     <div v-if="item2.level == 1 && item.name == item2.padre">
@@ -76,7 +76,8 @@
                       </div>
                       <!-- LEVEL 1 / Q-EXPANSION-ITEMS -->
                       <q-expansion-item v-else :header-inset-level="0.4" :content-inset-level="0.9" expand-separator
-                        group="somegroup2" default-opened :icon=item2.icon :label=item2.label v-model=item2.model>
+                        group="somegroup2" default-opened :icon=item2.icon :label=item2.label
+                        v-model="items_model[item2.name]">
                         <!-- LEVEL 2 / Q-ITEMS -->
                         <div v-for="item3 in items">
                           <div v-if="item3.level == 2 && item2.name == item3.padre">
@@ -118,8 +119,7 @@
 
     <!-- Pie de Pagina -->
     <q-footer elevated bordered>
-      <div v-for="item4 in directs" class="float-left"
-        style="margin-top: 10px; margin-bottom: 10px; margin-left: 15px">
+      <div v-for="item4 in directs" class="float-left" style="margin-top: 10px; margin-bottom: 10px; margin-left: 15px">
         <q-btn v-show="item4.direct" dense color="white" round :class="`b${item4.dorder}`" clickable :to=item4.url exact
           padding="xs">
           <q-icon size="25px" :name=item4.icon color="primary">
@@ -158,6 +158,7 @@ export default {
     return {
       directs: [],
       items: [],
+      items_model: {},
       events: ["click", "mousemove", "mousedown", "scroll", "keypress", "load"],
       permisos: [
         "r_bancos",
@@ -208,16 +209,16 @@ export default {
     this.refreshTimer();
     this.$refs.desactivateCrud.desactivarOpciones("desactivarOpcionesSet");
     this.getData('/menus', 'setData', 'items', {
-        headers: {
-          Authorization: ``
-        },
-      })
+      headers: {
+        Authorization: ``
+      },
+    })
     this.getData('/menus', 'setData', 'directs', {
-        headers: {
-          Authorization: ``,
-          direct: 1
-        },
-      })
+      headers: {
+        Authorization: ``,
+        direct: 1
+      },
+    })
   },
 
   methods: {
@@ -351,7 +352,7 @@ export default {
     },
     hideItems() {
       for (var i = 0; i < this.items.length - 1; i++) {
-        this.items[i].model = false
+        this.items_model[this.items[i].name] = false;
       };
     },
   },
@@ -390,66 +391,79 @@ export default {
     display: none;
   }
 }
+
 @media screen and (max-width: 1160px) {
   .b17 {
     display: none;
   }
 }
+
 @media screen and (max-width: 1130px) {
   .b16 {
     display: none;
   }
 }
+
 @media screen and (max-width: 1095px) {
   .b15 {
     display: none;
   }
 }
+
 @media screen and (max-width: 1061px) {
   .b14 {
     display: none;
   }
 }
+
 @media screen and (max-width: 1029px) {
   .b13 {
     display: none;
   }
 }
+
 @media screen and (max-width: 993px) {
   .b12 {
     display: none;
   }
 }
+
 @media screen and (max-width: 961px) {
   .b11 {
     display: none;
   }
 }
+
 @media screen and (max-width: 927px) {
   .b10 {
     display: none;
   }
 }
+
 @media screen and (max-width: 897px) {
   .b9 {
     display: none;
   }
 }
+
 @media screen and (max-width: 861px) {
   .b8 {
     display: none;
   }
 }
+
 @media screen and (max-width: 830px) {
   .b7 {
     display: none;
   }
 }
+
 @media screen and (max-width: 358px) {
   .b6 {
     display: none;
   }
 }
+
 @media screen and (max-width: 317px) {
   .b5 {
     display: none;
@@ -461,6 +475,7 @@ export default {
     float: left
   }
 }
+
 @media screen and (max-width: 680px) {
   .buttons {
     text-align: center;
