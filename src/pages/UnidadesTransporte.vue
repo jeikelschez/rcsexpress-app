@@ -11,7 +11,7 @@
                   v-model="form.placas"
                   label="Placa Vehículo"
                   class="pcform"
-                  :rules="[reglasNotNull10]"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 10, 'Maximo 10 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
                   hint=""
                   lazy-rules
                   @update:model-value="form.placas = form.placas.toUpperCase()"
@@ -27,7 +27,7 @@
                   outlined
                   v-model="form.chofer"
                   label="Chofer"
-                  :rules="[reglasAllowNull30]"
+                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 20, 'Maximo 30 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracterers') || '']"
                   hint=""
                   lazy-rules
                   @update:model-value="form.chofer = form.chofer.toUpperCase()"
@@ -43,7 +43,7 @@
                   outlined
                   v-model="form.descripcion"
                   label="Descripción"
-                  :rules="[reglasNotNull100]"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 100, 'Maximo 100 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
                   hint=""
                   lazy-rules
                   @update:model-value="
@@ -93,7 +93,7 @@
                   v-model="formEdit.placas"
                   label="Placa Vehículo"
                   class="pcform"
-                  :rules="[reglasNotNull10]"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 10, 'Maximo 10 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
                   hint=""
                   lazy-rules
                   @update:model-value="
@@ -111,7 +111,7 @@
                   outlined
                   v-model="formEdit.chofer"
                   label="Chofer"
-                  :rules="[reglasAllowNull30]"
+                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 20, 'Maximo 30 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracterers') || '']"
                   hint=""
                   lazy-rules
                   @update:model-value="
@@ -129,7 +129,7 @@
                   outlined
                   v-model="formEdit.descripcion"
                   label="Descripción"
-                  :rules="[reglasNotNull100]"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 100, 'Maximo 100 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
                   hint=""
                   lazy-rules
                   @update:model-value="
@@ -376,6 +376,10 @@
     </methods>
     <desactivate-crud ref="desactivateCrud" @desactivar-Crud="desactivarCrud">
     </desactivate-crud>
+    <rules-vue
+      ref="rulesVue"
+    ></rules-vue>
+
   </q-page>
 </template>
 
@@ -390,6 +394,8 @@ import { LocalStorage } from "quasar";
 
 import methodsVue from "src/components/methods.vue";
 
+import rulesVue from "src/components/rules.vue";
+
 import desactivateCrudVue from "src/components/desactivateCrud.vue";
 
 import CurrencyInput from "src/components/CurrencyInput.vue";
@@ -398,7 +404,7 @@ export default {
   components: {
     "desactivate-crud": desactivateCrudVue,
     methods: methodsVue,
-    CurrencyInput,
+    CurrencyInput, rulesVue
   },
   name: "Bancos",
   data() {
@@ -491,51 +497,6 @@ export default {
     resetLoading() {
       this.loading = false;
     },
-    // Reglas
-    reglasAllowNull30(val) {
-      if ((val !== null) !== "") {
-        if (val.length > 0) {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-          if (val.length > 29) {
-            return "Deben ser Maximo 30 caracteres";
-          }
-        }
-      }
-    },
-    reglasNotNull10(val) {
-      if (val === null) {
-        return "Debes Seleccionar Algo";
-      }
-      if (val === "") {
-        return "Debes Seleccionar Algo";
-      }
-      if ((val !== null) !== "") {
-        if (val.length < 3) {
-          return "Deben ser minimo 3 caracteres";
-        }
-        if (val.length > 9) {
-          return "Deben ser Maximo 10 caracteres";
-        }
-      }
-    },
-    reglasNotNull100(val) {
-      if (val === null) {
-        return "Debes Escribir Algo";
-      }
-      if (val === "") {
-        return "Debes Escribir Algo";
-      }
-      if ((val !== null) !== "") {
-        if (val.length < 3) {
-          return "Deben ser minimo 3 caracteres";
-        }
-        if (val.length > 99) {
-          return "Deben ser Maximo 100 caracteres";
-        }
-      }
-    },
 
     // Desactivar CRUD
     desactivarCrud(createItem, readItem, deleteItem, updateItem) {
@@ -554,18 +515,10 @@ export default {
 
     // Metodos CRUD
     getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, {
-        headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-        },
-      });
+      this.$refs.methods.getData(url, call, dataRes);
     },
     getDataUnidades(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, {
-        headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-        },
-      });
+      this.$refs.methods.getData(url, call, dataRes);
       this.loading = true;
     },
     setData(res, dataRes) {
@@ -580,33 +533,18 @@ export default {
       this.loading = false;
     },
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/unidades/${idpost}`, "getDataUnidades", {
-        headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-        },
-      });
+      this.$refs.methods.deleteData(`/unidades/${idpost}`, "getDataUnidades");
       this.loading = true;
     },
     createData() {
-      this.$refs.methods.createData("/unidades", this.form, "getDataUnidades", {
-        headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-        },
-      });
+      this.$refs.methods.createData("/unidades", this.form, "getDataUnidades");
       this.resetForm();
       this.loading = true;
     },
     putData() {
       this.$refs.methods.putData(
         `/unidades/${this.formEdit.id}`,
-        this.formEdit,
-        "getDataUnidades",
-        {
-          headers: {
-            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-          },
-        }
-      );
+        this.formEdit);
       this.edit = false;
       this.resetFormEdit();
       this.loading = true;

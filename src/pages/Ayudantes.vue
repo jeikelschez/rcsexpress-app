@@ -13,7 +13,7 @@
                   hint=""
                   class="pcform"
                   lazy-rules
-                  :rules="[reglaInputName]"
+                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 50, 'Maximo 50 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
                   @update:model-value="
                     form.nb_ayudante = form.nb_ayudante.toUpperCase()
                   "
@@ -29,7 +29,7 @@
                   outlined
                   v-model="form.tlf_ayudante"
                   label="Teléfono"
-                  :rules="[reglaInputPhone]"
+                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 50, 'Maximo 50 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
                   hint=""
                   lazy-rules
                   mask="### - ### - ##########"
@@ -46,7 +46,7 @@
                   v-model="form.dir_ayudante"
                   label="Direccion"
                   hint=""
-                  :rules="[reglaDireccion]"
+                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 100, 'Maximo 100 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
                   lazy-rules
                   @update:model-value="
                     form.dir_ayudante = form.dir_ayudante.toUpperCase()
@@ -64,7 +64,7 @@
                   v-model="form.flag_activo"
                   label="Vigente"
                   hint=""
-                  :rules="[reglasSelect]"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido')|| '']"
                   :options="vigente"
                   lazy-rules
                 >
@@ -113,7 +113,7 @@
                   hint=""
                   class="pcform"
                   lazy-rules
-                  :rules="[reglaInputName]"
+                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 50, 'Maximo 50 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
                   @update:model-value="
                     formEdit.nb_ayudante = formEdit.nb_ayudante.toUpperCase()
                   "
@@ -129,7 +129,7 @@
                   outlined
                   v-model="formEdit.tlf_ayudante"
                   label="Teléfono"
-                  :rules="[reglaInputPhone]"
+                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 50, 'Maximo 50 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
                   hint=""
                   lazy-rules
                   mask="### - ### - ##########"
@@ -146,7 +146,7 @@
                   v-model="formEdit.dir_ayudante"
                   label="Direccion"
                   hint=""
-                  :rules="[reglaDireccion]"
+                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 100, 'Maximo 100 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
                   lazy-rules
                   @update:model-value="
                     formEdit.dir_ayudante = formEdit.dir_ayudante.toUpperCase()
@@ -164,7 +164,7 @@
                   v-model="formEdit.flag_activo"
                   label="Vigente"
                   hint=""
-                  :rules="[reglasSelect]"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido')|| '']"
                   :options="vigente"
                   lazy-rules
                 >
@@ -234,7 +234,7 @@
               label="Insertar Ayudante"
               rounded
               color="primary"
-              @click="create = true"
+              @click="create = true; this.resetForm()"
               :disabled="this.disabledCreate"
             ></q-btn>
           </div>
@@ -273,6 +273,7 @@
                           'setDataEdit',
                           'formEdit'
                         );
+                        this.resetFormEdit()
                         edit = true;
                       "
                     ></q-btn>
@@ -329,6 +330,7 @@
                                   'setDataEdit',
                                   'formEdit'
                                 );
+                                this.resetFormEdit()
                                 edit = true;
                               "
                             ></q-btn>
@@ -405,6 +407,9 @@
       @set-data-Edit="setDataEdit"
     >
     </methods>
+    <rules-vue
+      ref="rulesVue"
+    ></rules-vue>
     <desactive-crud ref="desactiveCrud" @desactivar-Crud="desactivarCrud">
     </desactive-crud>
   </q-page>
@@ -415,6 +420,8 @@ import { ref } from "vue";
 
 import { useQuasar } from "quasar";
 
+import rulesVue from "src/components/rules.vue";
+
 import { LocalStorage } from "quasar";
 
 import methodsVue from "src/components/methods.vue";
@@ -424,7 +431,7 @@ import desactivateCrudVue from "src/components/desactivateCrud.vue";
 export default {
   components: {
     "desactive-crud": desactivateCrudVue,
-    methods: methodsVue,
+    methods: methodsVue, rulesVue
   },
   name: "Ayudantes",
   data() {
@@ -554,64 +561,6 @@ export default {
     resetLoading() {
       this.loading = false;
     },
-    reglasSelect(val) {
-      if (val === null) {
-        return "Debes Seleccionar Algo";
-      }
-      if (val === "") {
-        return "Debes Seleccionar Algo";
-      }
-    },
-    reglasInputs(val) {
-      if (val === null) {
-        return "Debes Seleccionar Algo";
-      }
-      if (val === "") {
-        return "Debes Seleccionar Algo";
-      }
-    },
-    reglaDireccion(val) {
-      if (val !== null) {
-        if (val.length > 0) {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-          if (val.length > 100) {
-            return "Deben ser maximo 100 caracteres";
-          }
-        }
-      }
-    },
-    reglaInputName(val) {
-      if (val === null) {
-        return "Debes Escribir Algo";
-      }
-      if (val === "") {
-        return "Debes Escribir Algo";
-      }
-      if ((val !== null) !== "") {
-        if (val.length > 0) {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-          if (val.length > 50) {
-            return "Deben ser maximo 50 caracteres";
-          }
-        }
-      }
-    },
-    reglaInputPhone(val) {
-      if ((val !== null) !== "") {
-        if (val.length > 0) {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-          if (val.length > 50) {
-            return "Deben ser maximo 50 caracteres";
-          }
-        }
-      }
-    },
     desactivarCrud(createItem, readItem, deleteItem, updateItem) {
       if (readItem == true) {
         if (createItem == true) {
@@ -626,18 +575,10 @@ export default {
       } else this.$router.push("/error403");
     },
     getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, {
-        headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-        },
-      });
+      this.$refs.methods.getData(url, call, dataRes);
     },
     getDataAyudantes(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, {
-        headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-        },
-      });
+      this.$refs.methods.getData(url, call, dataRes);
       this.loading = true;
     },
     setData(res, dataRes) {
@@ -655,28 +596,16 @@ export default {
     deleteData(idpost) {
       this.$refs.methods.deleteData(
         `/ayudantes/${idpost}`,
-        "getDataAyudantes",
-        {
-          headers: {
-            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-          },
-        }
-      );
+        "getDataAyudantes");
       this.loading = true;
     },
     createData() {
       this.form.flag_activo = this.form.flag_activo.value;
       this.$refs.methods.createData(
         "/ayudantes",
-        this.form,
-        "getDataAyudantes",
-        {
-          headers: {
-            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-          },
-        }
-      );
+        this.form);
       this.resetForm();
+      this.create = false;
       this.loading = true;
     },
     putData() {
@@ -684,30 +613,22 @@ export default {
       this.$refs.methods.putData(
         `/ayudantes/${this.formEdit.id}`,
         this.formEdit,
-        "getDataAyudantes",
-        {
-          headers: {
-            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-          },
-        }
-      );
+        "getDataAyudantes");
       this.edit = false;
-      this.loading = true;
+      this.loading = true
     },
 
     resetForm() {
       (this.form.nb_ayudante = null),
         (this.form.dir_ayudante = null),
         (this.form.tlf_ayudante = null),
-        (this.form.flag_activo = null),
-        (this.create = false);
+        (this.form.flag_activo = null)
     },
     resetFormEdit() {
       (this.formEdit.nb_ayudante = null),
         (this.formEdit.dir_ayudante = null),
         (this.formEdit.tlf_ayudante = null),
-        (this.formEdit.flag_activo = null),
-        (this.edit = false);
+        (this.formEdit.flag_activo = null)
     },
   },
 };

@@ -32,7 +32,7 @@
                   label="Tipo de País"
                   input-class="input"
                   hint=""
-                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido') || '']"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '']"
                   lazy-rules
                 >
                   <template v-slot:prepend>
@@ -324,7 +324,7 @@
                   v-model="formCiudades.cod_region"
                   label="Región"
                   hint=""
-                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido') || '']"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '']"
                   :options="tipoDeRegion"
                   class="pcform"
                   lazy-rules
@@ -341,7 +341,7 @@
                   v-model="formCiudades.check_urbano"
                   label="Zona Horaria"
                   input-class="input"
-                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido') || '']"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '']"
                   hint=""
                   :options="tipoDeZona"
                   lazy-rules

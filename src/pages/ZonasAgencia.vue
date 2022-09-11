@@ -16,7 +16,7 @@
                     formZonas.nb_zona = formZonas.nb_zona.toUpperCase()
                   "
                   lazy-rules
-                  :rules="reglasDescripcion"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 250, 'Maximo 250 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracterers') || '']"
                 >
                   <template v-slot:prepend>
                     <q-icon name="drive_file_rename_outline" />
@@ -30,7 +30,7 @@
                   v-model="formZonas.tipo_zona"
                   label="Tipo de Zona"
                   hint=""
-                  :rules="[reglasInputs]"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '']"
                   :options="tipoDeZona"
                   lazy-rules
                 >
@@ -82,7 +82,7 @@
                     formEditZonas.nb_zona = formEditZonas.nb_zona.toUpperCase()
                   "
                   lazy-rules
-                  :rules="reglasDescripcion"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 250, 'Maximo 250 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracterers') || '']"
                 >
                   <template v-slot:prepend>
                     <q-icon name="drive_file_rename_outline" />
@@ -96,7 +96,7 @@
                   v-model="formEditZonas.tipo_zona"
                   label="Tipo de Zona"
                   hint=""
-                  :rules="[reglasInputs]"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '']"
                   :options="tipoDeZona"
                   lazy-rules
                 >
@@ -393,6 +393,9 @@
       @set-Data-Zonas-Edit="setDataZonasEdit"
       @set-Data="setData"
     ></methods>
+    <rules-vue
+      ref="rulesVue"
+    ></rules-vue>
   </q-page>
 </template>
 
@@ -405,12 +408,14 @@ import { useQuasar } from "quasar";
 
 import { LocalStorage } from "quasar";
 
+import rulesVue from "src/components/rules.vue";
+
 import methodsVue from "src/components/methods.vue";
 
 import desactivateCrudVue from "src/components/desactivateCrud.vue";
 
 export default {
-  components: { "desactivate-crud": desactivateCrudVue, methods: methodsVue },
+  components: { "desactivate-crud": desactivateCrudVue, methods: methodsVue, rulesVue },
   name: "Zonas",
   data() {
     return {
@@ -509,12 +514,7 @@ export default {
         });
       },
       zonasDelete: ref(false),
-      filterRoles: ref(""),
-      reglasDescripcion: [
-        (val) => (val !== null && val !== "") || "Por favor escribe algo",
-        (val) => val.length < 250 || "Deben ser máximo 250 caracteres",
-        (val) => val.length > 2 || "Deben ser minimo 3 caracteres",
-      ],
+      filterRoles: ref("")
     };
   },
   mounted() {
@@ -553,15 +553,6 @@ export default {
     resetLoading() {
       this.loading = false;
     },
-    // Reglas
-    reglasInputs(val) {
-      if (val === null) {
-        return "Debes Seleccionar Algo";
-      }
-      if (val === "") {
-        return "Debes Seleccionar Algo";
-      }
-    },
     desactivarCrud(createItem, readItem, deleteItem, updateItem) {
       console.log(createItem);
       console.log(readItem);
@@ -581,24 +572,29 @@ export default {
     },
 
     getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, {
-        headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-        },
-      });
+      this.$refs.methods.getData(url, call, dataRes);
     },
     getDataZonas(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, {
         headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
           agencia: this.selectedAgencia.id,
         },
       });
       this.loading = true;
     },
     setData(res, dataRes) {
-      this[dataRes] = res;
-      this.getDataIniciar();
+      this[dataRes] = res.data;
+      this.agenciaRef = this.agencias[0].id;
+      this.selectedAgencia = this.agencias[0];
+      api.get(`/zonas`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            agencia: this.agenciaRef,
+          },
+        })
+        .then((res) => {
+          this.zonas = res.data;
+        });
       this.loading = false;
     },
     setDataZonas(res, dataRes) {
@@ -613,21 +609,13 @@ export default {
       this.loading = false;
     },
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/zonas/${idpost}`, "getDataZonas", {
-        headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-        },
-      });
+      this.$refs.methods.deleteData(`/zonas/${idpost}`, "getDataZonas");
       this.loading = true;
     },
     createDataZonas() {
       this.formZonas.cod_agencia = this.selectedAgencia.id;
       this.formZonas.tipo_zona = this.formZonas.tipo_zona.value;
-      this.$refs.methods.createData(`/zonas`, this.formZonas, "getDataZonas", {
-        headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-        },
-      });
+      this.$refs.methods.createData(`/zonas`, this.formZonas, "getDataZonas");
       this.resetFormZonas();
       this.loading = true;
     },
@@ -637,13 +625,7 @@ export default {
       this.$refs.methods.putData(
         `/zonas/${this.formEditZonas.id}`,
         this.formEditZonas,
-        "getDataZonas",
-        {
-          headers: {
-            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-          },
-        }
-      );
+        "getDataZonas");
       this.resetFormEditZonas();
       this.loading = true;
     },
@@ -658,21 +640,6 @@ export default {
         (this.formEditZonas.tipo_zona = ""),
         (this.formEditZonas.cod_agencia = null),
         (this.zonasFormEdit = false);
-    },
-    // Metodos para colocar valores iniciales
-    getDataIniciar() {
-      this.agenciaRef = this.agencias[0].id;
-      this.selectedAgencia = this.agencias[0];
-      api
-        .get(`/zonas`, {
-          headers: {
-            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            agencia: this.agenciaRef,
-          },
-        })
-        .then((res) => {
-          this.zonas = res.data;
-        });
     },
   },
 };
