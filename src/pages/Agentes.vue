@@ -1119,9 +1119,7 @@ export default {
     };
   },
   mounted() {
-    this.getData("/agencias", "setData", "agencias", {
-      headers: {},
-    });
+    this.getData("/agencias", "setData", "agencias");
     this.$refs.desactivateCrud.desactivarCrud(
       "c_agentes",
       "r_agentes",
@@ -1170,15 +1168,12 @@ export default {
         if (sortBy) this.pagination.sortBy = sortBy;
         this.pagination.page = page;
         this.pagination.rowsPerPage = rowsPerPage;
-        var headerCod_movimiento = this.formEdit.id;
         this.getData(`/agentes`, "setDataTable", "agentes", {
           headers: {
-            Authorization: ``,
             agencia: this.selectedAgencia.id,
             page: headerPage,
             limit: headerLimit,
             order_direction: this.headerOrder_direction,
-            cod_movimiento: headerCod_movimiento,
             order_by: headerOrder_by,
           },
         });
@@ -1235,11 +1230,7 @@ export default {
       this.$refs.methods.getData(url, call, dataRes, axiosConfig);
     },
     getDataEdit(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, {
-        headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-        },
-      });
+      this.$refs.methods.getData(url, call, dataRes);
     },
     getDataAgentes(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, {
@@ -1258,7 +1249,6 @@ export default {
 
       this.$refs.methods.getData("/agentes", "onRequest", "agentes", {
         headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
           agencia: this.agenciaRef,
           page: 1,
           limit: 10,
@@ -1294,11 +1284,7 @@ export default {
       this.loading = false;
     },
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/agentes/${idpost}`, "getDataAgentes", {
-        headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-        },
-      });
+      this.$refs.methods.deleteData(`/agentes/${idpost}`, "getDataAgentes");
       this.loading = true;
     },
     createDataCuentas() {
@@ -1320,13 +1306,7 @@ export default {
       this.$refs.methods.createData(
         `/agentes`,
         this.formAgentes,
-        "getDataAgentes",
-        {
-          headers: {
-            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-          },
-        }
-      );
+        "getDataAgentes");
       this.loading = true;
       this.resetForm();
     },
@@ -1348,12 +1328,7 @@ export default {
       this.$refs.methods.putData(
         `/agentes/${this.formEditAgentes.id}`,
         this.formEditAgentes,
-        "getDataAgentes",
-        {
-          headers: {
-            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-          },
-        }
+        "getDataAgentes"
       );
       this.loading = true;
       this.resetFormEdit();
