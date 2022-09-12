@@ -18,7 +18,10 @@
         />
         <!-- Titulo -->
         <q-toolbar-title class="titleMainLayout"
-          >SCEN - Sistema de Control de Encomiendas</q-toolbar-title
+          >{{title}}</q-toolbar-title
+        >
+        <q-toolbar-title class="titleMainLayoutMobile"
+          >{{titleMobile}}</q-toolbar-title
         >
         <q-space></q-space>
         <!-- Boton para acceder a manuales -->
@@ -78,6 +81,7 @@
                 <!-- LEVEL 0 / Q-ITEMS -->
                 <q-item
                   v-if="item.qitem"
+                  style="margin-top:5px"
                   clickable
                   tag="a"
                   :to="item.url"
@@ -163,14 +167,10 @@
 
     <!-- Detecta cuando el mouse sale del menu y cierra los items -->
 
-    <router-view @mouseover=" this.hideItems();this.miniState = true;"
+    <router-view @change-Title="changeTitle" @mouseover=" this.hideItems();this.miniState = true;"
     >
     </router-view>
     <keep-alive> </keep-alive>
-
-    <!-- Contenedor de las paginas -->
-    <q-page-container style="padding-bottom: 0px; padding-top: 37px">
-    </q-page-container>
 
     <!-- Pie de Pagina -->
     <q-footer elevated bordered>
@@ -215,6 +215,8 @@ export default {
   data() {
     return {
       directs: [],
+      title: "SCEN - Sistema de Control de Encomiendas",
+      titleMobile: "SCEN",
       items: [],
       items_model: {},
       events: ["click", "mousemove", "mousedown", "scroll", "keypress", "load"],
@@ -413,6 +415,10 @@ export default {
         this.items_model[this.items[i].name] = false;
       };
     },
+    changeTitle(text, textMobile) {
+      this.title = text,
+      this.titleMobile = textMobile
+    },
   },
 };
 </script>
@@ -543,6 +549,16 @@ export default {
 @media screen and (max-width: 1012px) {
   .titleMainLayout {
     display: none;
+  }
+}
+@media screen and (min-width: 600px) {
+  .titleMainLayoutMobile {
+    display: none;
+  }
+}
+@media screen and (max-width: 600px) {
+  .titleMainLayoutMobile {
+    display: block;
   }
 }
 </style>
