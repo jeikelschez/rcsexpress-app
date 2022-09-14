@@ -432,7 +432,7 @@
               label="Insertar"
               rounded
               color="primary"
-              :disabled="this.disabledCreate"
+              :disabled="this.allowOption(2)"
               @click="formDialog = true"
               @click.capture="resetForm()"
               size="16px"
@@ -467,7 +467,7 @@
                   flat
                   color="primary"
                   icon="edit"
-                  :disabled="this.disabledEdit"
+                  :disabled="this.allowOption(3)"
                   @click="
                     getData(`/agentes/${props.row.id}`, 'setDataEdit', 'form');
                     formDialog = true;
@@ -479,7 +479,7 @@
                   flat
                   color="primary"
                   icon="delete"
-                  :disabled="this.disabledDelete"
+                  :disabled="this.allowOption(4)"
                   @click="selected = props.row.id"
                   @click.capture="agentesDelete = true"
                 ></q-btn>
@@ -519,7 +519,7 @@
                           flat
                           color="primary"
                           icon="edit"
-                          :disabled="this.disabledEdit"
+                          :disabled="this.allowOption(3)"
                           @click="
                             getData(
                               `/agentes/${props.row.id}`,
@@ -551,7 +551,7 @@
                           flat
                           color="primary"
                           icon="delete"
-                          :disabled="this.disabledDelete"
+                          :disabled="this.allowOption(4)"
                           @click="selected = props.row.id"
                           @click.capture="agentesDelete = true"
                         ></q-btn>
@@ -593,11 +593,6 @@
       </q-card>
     </q-dialog>
 
-    <desactivate-crud
-      ref="desactivateCrud"
-      @desactivar-Crud="desactivarCrud"
-    ></desactivate-crud>
-
     <methods
       ref="methods"
       @get-Data-Table="getDataTable(`/agentes`, 'setDataTable', 'agentes')"
@@ -606,6 +601,7 @@
       @reset-Loading="resetLoading"
       @set-Data-Edit="setDataEdit"
       @set-Data-Init="setDataInit"
+      @set-Data-Permisos="setDataPermisos"
     ></methods>
     <rules-vue ref="rulesVue"></rules-vue>
   </q-page>
@@ -613,21 +609,15 @@
 
 <script>
 import { ref } from "vue";
-
+import { LocalStorage } from 'quasar';
 import rulesVue from "src/components/rules.vue";
-
 import { useQuasar } from "quasar";
-
 import { VMoney } from "v-money";
-
 import methodsVue from "src/components/methods.vue";
-
-import desactivateCrudVue from "src/components/desactivateCrud.vue";
 
 export default {
   directives: { money: VMoney },
   components: {
-    "desactivate-crud": desactivateCrudVue,
     methods: methodsVue,
     VMoney,
     rulesVue,
@@ -711,13 +701,11 @@ export default {
       currentPage: 1,
       agencias: [],
       agenciasSelected: [],
+      rpermisos: [],
       agentes: [],
       selected: [],
       selectedAgencia: [],
       error: "",
-      disabledCreate: true,
-      disabledEdit: true,
-      disabledDelete: true,
     };
   },
   setup() {
@@ -743,15 +731,15 @@ export default {
   mounted() {
     this.$emit("changeTitle", "SCEN - Mantenimiento - Agentes", "");
     this.getData("/agencias", "setDataInit", "agencias");
-    this.$refs.desactivateCrud.desactivarCrud(
-      "c_agentes",
-      "r_agentes",
-      "u_agentes",
-      "d_agentes",
-      "desactivarCrud"
-    );
+
+    this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos" , {
+      headers: {
+        rol: LocalStorage.getItem('tokenTraducido').usuario.roles.id,
+        menu: "agentes"
+      },
+    });
   },
-  methods: {
+  methods: {    
     // Metodo para hacer Get de Datos cuando se utilizan controles de Tabla
     onRequest(res, dataRes) {
       if (this.count == 1) {
@@ -828,18 +816,8 @@ export default {
       });
     },
     // Metodo para validar Permisos
-    desactivarCrud(createItem, readItem, deleteItem, updateItem) {
-      if (readItem == true) {
-        if (createItem == true) {
-          this.disabledCreate = false;
-        }
-        if (deleteItem == true) {
-          this.disabledDelete = false;
-        }
-        if (updateItem == true) {
-          this.disabledEdit = false;
-        }
-      } else this.$router.push("/error403");
+    allowOption(option) {
+      return this.rpermisos.findIndex((item) => item.acciones.accion == option) < 0;
     },
     // Metodo para desactivar Icono de Carga
     resetLoading() {
@@ -924,6 +902,12 @@ export default {
       );
       this[dataRes].cod_agencia = res.cod_agencia;
       this.loading = false;
+    },
+    // Metodo para Setear Datos Permisos
+    setDataPermisos(res, dataRes) {
+      this[dataRes] = res;
+      if (this.rpermisos.findIndex((item) => item.acciones.accion == 1) < 0) 
+        this.$router.push("/error403");
     },
     // Metodo para Eliminar Agente
     deleteData(idpost) {
