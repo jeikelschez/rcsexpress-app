@@ -1,9 +1,9 @@
 <template>
   <q-page class="pagina q-pa-md">
-    <q-dialog v-model="create">
+    <q-dialog v-model="agenciasDialog">
       <q-card class="q-pa-md" bordered style="width: 900px; max-width: 80vw">
         <q-card-section>
-          <q-form @submit="createDato" class="q-gutter-md">
+          <q-form @submit="sendData" class="q-gutter-md">
             <div class="row">
               <div class="col-md-4 col-xs-12">
                 <q-select
@@ -12,7 +12,10 @@
                   label="País"
                   class="pcform"
                   input-class="input"
-                  :rules="[reglasSelect]"
+                  :rules="[
+                    (val) =>
+                      this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
+                  ]"
                   hint=""
                   :options="paisesSelected"
                   @filter="
@@ -34,12 +37,15 @@
                   option-value="id"
                   lazy-rules
                   @update:model-value="
-                    getData(`/estados`, 'setDataEstados', 'estados', {
-                      headers: {
-                        Authorization: ``,
-                        pais: this.selectedPais.id,
-                      },
-                    })
+                    (this.selectedEstado = []),
+                      (this.selectedCiudad = []),
+                      (this.estados = []);
+                    (this.ciudades = []),
+                      getData(`/estados`, 'setData', 'estados', {
+                        headers: {
+                          pais: this.selectedPais.id,
+                        },
+                      });
                   "
                 >
                   <template v-slot:no-option>
@@ -61,7 +67,10 @@
                   v-model="selectedEstado"
                   label="Estado"
                   input-class="input"
-                  :rules="[reglasSelect]"
+                  :rules="[
+                    (val) =>
+                      this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
+                  ]"
                   hint=""
                   class="pcform"
                   :options="estadosSelected"
@@ -84,12 +93,13 @@
                   option-value="id"
                   lazy-rules
                   @update:model-value="
-                    getData(`/ciudades`, 'setDataCiudades', 'ciudades', {
+                    this.selectedCiudad = [];
+                    this.ciudades = [];
+                    getData(`/ciudades`, 'setData', 'ciudades', {
                       headers: {
-                        Authorization: ``,
                         estado: this.selectedEstado.id,
                       },
-                    })
+                    });
                   "
                 >
                   <template v-slot:no-option>
@@ -111,7 +121,10 @@
                   v-model="selectedCiudad"
                   label="Ciudad"
                   input-class="input"
-                  :rules="[reglasSelect]"
+                  :rules="[
+                    (val) =>
+                      this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
+                  ]"
                   hint=""
                   :options="ciudadesSelected"
                   @filter="
@@ -155,7 +168,15 @@
                   class="pcform"
                   hint=""
                   lazy-rules
-                  :rules="[reglaInputNombre]"
+                  :rules="[
+                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
+                    (val) =>
+                      this.$refs.rulesVue.isMin(
+                        val,
+                        3,
+                        'Minimo 3 Caracteres'
+                      ) || '',
+                  ]"
                   @update:model-value="
                     form.nb_agencia = form.nb_agencia.toUpperCase()
                   "
@@ -171,7 +192,20 @@
                   outlined
                   v-model="form.persona_contacto"
                   label="Nombre"
-                  :rules="[reglaInputDireccion]"
+                  :rules="[
+                    (val) =>
+                      this.$refs.rulesVue.isMax(
+                        val,
+                        200,
+                        'Maximo 200 Caracteres'
+                      ),
+                    (val) =>
+                      this.$refs.rulesVue.isMin(
+                        val,
+                        3,
+                        'Minimo 3 Caracteres'
+                      ) || '',
+                  ]"
                   hint=""
                   lazy-rules
                   @update:model-value="
@@ -192,7 +226,20 @@
                   class="pcform"
                   hint=""
                   lazy-rules
-                  :rules="[reglaInputDireccion]"
+                  :rules="[
+                    (val) =>
+                      this.$refs.rulesVue.isMax(
+                        val,
+                        200,
+                        'Maximo 200 Caracteres'
+                      ),
+                    (val) =>
+                      this.$refs.rulesVue.isMin(
+                        val,
+                        3,
+                        'Minimo 3 Caracteres'
+                      ) || '',
+                  ]"
                   @update:model-value="
                     form.dir_agencia = form.dir_agencia.toUpperCase()
                   "
@@ -209,7 +256,20 @@
                   v-model="form.rif_agencia"
                   label="Rif"
                   hint=""
-                  :rules="[reglaInputDireccion]"
+                  :rules="[
+                    (val) =>
+                      this.$refs.rulesVue.isMax(
+                        val,
+                        200,
+                        'Maximo 200 Caracteres'
+                      ),
+                    (val) =>
+                      this.$refs.rulesVue.isMin(
+                        val,
+                        3,
+                        'Minimo 3 Caracteres'
+                      ) || '',
+                  ]"
                   lazy-rules
                   @update:model-value="
                     form.rif_agencia = form.rif_agencia.toUpperCase()
@@ -226,7 +286,20 @@
                   outlined
                   v-model="form.nit_agencia"
                   label="NIT Agencia"
-                  :rules="[reglaInputDireccion]"
+                  :rules="[
+                    (val) =>
+                      this.$refs.rulesVue.isMax(
+                        val,
+                        200,
+                        'Maximo 200 Caracteres'
+                      ),
+                    (val) =>
+                      this.$refs.rulesVue.isMin(
+                        val,
+                        3,
+                        'Minimo 3 Caracteres'
+                      ) || '',
+                  ]"
                   hint=""
                   class="pcform"
                   lazy-rules
@@ -248,7 +321,20 @@
                   class="pcform"
                   hint=""
                   lazy-rules
-                  :rules="[reglaInputDireccion]"
+                  :rules="[
+                    (val) =>
+                      this.$refs.rulesVue.isMax(
+                        val,
+                        200,
+                        'Maximo 200 Caracteres'
+                      ),
+                    (val) =>
+                      this.$refs.rulesVue.isMin(
+                        val,
+                        3,
+                        'Minimo 3 Caracteres'
+                      ) || '',
+                  ]"
                   mask="####-#####"
                 >
                   <template v-slot:prepend>
@@ -264,7 +350,20 @@
                   label="Teléfono"
                   hint=""
                   lazy-rules
-                  :rules="[reglaInputDireccion]"
+                  :rules="[
+                    (val) =>
+                      this.$refs.rulesVue.isMax(
+                        val,
+                        200,
+                        'Maximo 200 Caracteres'
+                      ),
+                    (val) =>
+                      this.$refs.rulesVue.isMin(
+                        val,
+                        3,
+                        'Minimo 3 Caracteres'
+                      ) || '',
+                  ]"
                   mask="(###) ### - ####"
                 >
                   <template v-slot:prepend>
@@ -280,7 +379,10 @@
                   label="Estatus"
                   hint=""
                   class="pcform"
-                  :rules="[reglasSelect]"
+                  :rules="[
+                    (val) =>
+                      this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
+                  ]"
                   :options="estatus"
                   lazy-rules
                 >
@@ -313,7 +415,7 @@
               class="full-width row justify-center items-center content-center"
             >
               <q-btn
-                label="Agregar Agencia"
+                label="Enviar"
                 type="submit"
                 color="primary"
                 class="col-md-5 col-sm-5 col-xs-12"
@@ -333,353 +435,17 @@
       </q-card>
     </q-dialog>
 
-    <q-dialog v-model="edit">
-      <q-card class="q-pa-md" bordered style="width: 999px; max-width: 80vw">
-        <q-card-section>
-          <q-form @submit="putDato">
-            <div class="row">
-              <div class="col-md-5 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="selectedPais"
-                  label="País"
-                  class="pcform"
-                  input-class="input"
-                  :rules="[reglasSelect]"
-                  hint=""
-                  :options="paisesSelected"
-                  @filter="
-                    (val, update, abort) =>
-                      filterArray(
-                        val,
-                        update,
-                        abort,
-                        'paisesSelected',
-                        'paises',
-                        'desc_pais'
-                      )
-                  "
-                  use-input
-                  hide-selected
-                  fill-input
-                  input-debounce="0"
-                  option-label="desc_pais"
-                  option-value="id"
-                  lazy-rules
-                  @update:model-value="
-                    getData(`/estados`, 'setDataEstados', 'estados', {
-                      headers: {
-                        Authorization: ``,
-                        pais: this.selectedPais.id,
-                      },
-                    })
-                  "
-                >
-                  <template v-slot:no-option>
-                    <q-item>
-                      <q-item-section class="text-grey">
-                        Sin resultados
-                      </q-item-section>
-                    </q-item>
-                  </template>
-                  <template v-slot:prepend>
-                    <q-icon name="public" />
-                  </template>
-                </q-select>
-              </div>
-
-              <div class="col-md-7 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="selectedEstado"
-                  label="Estado"
-                  input-class="input"
-                  :rules="[reglasSelect]"
-                  hint=""
-                  :options="estadosSelected"
-                  @filter="
-                    (val, update, abort) =>
-                      filterArray(
-                        val,
-                        update,
-                        abort,
-                        'estadosSelected',
-                        'estados',
-                        'desc_estado'
-                      )
-                  "
-                  use-input
-                  hide-selected
-                  fill-input
-                  input-debounce="0"
-                  option-label="desc_estado"
-                  option-value="id"
-                  lazy-rules
-                  @update:model-value="
-                    getData(`/ciudades`, 'setDataCiudades', 'ciudades', {
-                      headers: {
-                        Authorization: ``,
-                        estado: this.selectedEstado.id,
-                      },
-                    })
-                  "
-                >
-                  <template v-slot:no-option>
-                    <q-item>
-                      <q-item-section class="text-grey">
-                        Sin resultados
-                      </q-item-section>
-                    </q-item>
-                  </template>
-                  <template v-slot:prepend>
-                    <q-icon name="public" />
-                  </template>
-                </q-select>
-              </div>
-
-              <div class="col-md-5 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="selectedCiudad"
-                  label="Ciudad"
-                  class="pcform"
-                  input-class="input"
-                  :rules="[reglasSelect]"
-                  hint=""
-                  :options="ciudadesSelected"
-                  @filter="
-                    (val, update, abort) =>
-                      filterArray(
-                        val,
-                        update,
-                        abort,
-                        'ciudadesSelected',
-                        'ciudades',
-                        'desc_ciudad'
-                      )
-                  "
-                  use-input
-                  hide-selected
-                  fill-input
-                  input-debounce="0"
-                  option-label="desc_ciudad"
-                  option-value="id"
-                  lazy-rules
-                >
-                  <template v-slot:no-option>
-                    <q-item>
-                      <q-item-section class="text-grey">
-                        Sin resultados
-                      </q-item-section>
-                    </q-item>
-                  </template>
-                  <template v-slot:prepend>
-                    <q-icon name="public" />
-                  </template>
-                </q-select>
-              </div>
-
-              <div class="col-md-7 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.nb_agencia"
-                  label="Agencia"
-                  hint=""
-                  lazy-rules
-                  :rules="[reglaInputNombre]"
-                  @update:model-value="
-                    formEdit.nb_agencia = formEdit.nb_agencia.toUpperCase()
-                  "
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="apartment" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-5 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.persona_contacto"
-                  label="Nombre"
-                  class="pcform"
-                  hint=""
-                  lazy-rules
-                  :rules="[reglaInputDireccion]"
-                  @update:model-value="
-                    formEdit.persona_contacto =
-                      formEdit.persona_contacto.toUpperCase()
-                  "
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="account_circle" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-7 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.dir_agencia"
-                  label="Dirección"
-                  hint=""
-                  lazy-rules
-                  :rules="[reglaInputDireccion]"
-                  @update:model-value="
-                    formEdit.dir_agencia = formEdit.dir_agencia.toUpperCase()
-                  "
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="pin_drop" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-5 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.rif_agencia"
-                  label="Rif"
-                  hint=""
-                  class="pcform"
-                  lazy-rules
-                  :rules="[reglaInputDireccion]"
-                  @update:model-value="
-                    formEdit.rif_agencia = formEdit.rif_agencia.toUpperCase()
-                  "
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-7 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.nit_agencia"
-                  label="NIT Agencia"
-                  hint=""
-                  lazy-rules
-                  :rules="[reglaInputDireccion]"
-                  @update:model-value="
-                    formEdit.nit_agencia = formEdit.nit_agencia.toUpperCase()
-                  "
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="list" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-5 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.fax_agencia"
-                  label="Fax"
-                  class="pcform"
-                  hint=""
-                  lazy-rules
-                  :rules="[reglaInputDireccion]"
-                  mask="####-#####"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="fax" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-7 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.tlf_agencia"
-                  label="Teléfono"
-                  hint=""
-                  lazy-rules
-                  :rules="[reglaInputDireccion]"
-                  mask="(###) ### - ######"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="phone" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-5 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="formEdit.estatus"
-                  input
-                  label="Estatus"
-                  hint=""
-                  :rules="[reglasSelect]"
-                  :options="estatus"
-                  class="pcform"
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="done_all" />
-                  </template>
-                </q-select>
-              </div>
-
-              <div class="col-md-7 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.email_agencia"
-                  label="Correo Electrónico"
-                  hint=""
-                  type="email"
-                  lazy-rules
-                  @update:model-value="
-                    formEdit.email_agencia =
-                      formEdit.email_agencia.toUpperCase()
-                  "
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="email" />
-                  </template>
-                </q-input>
-              </div>
-            </div>
-
-            <div
-              class="full-width row justify-center items-center content-center"
-              style="margin-top: 10px"
+    <div class="q-pa-sm justify-center">
+      <div class="row justify-end q-pa-md col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
+          <div
+              class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 text-secondary movilTitle"
+              style="align-self: center; text-align: center; font-size: 20px"
             >
-              <q-btn
-                label="Editar Agencia"
-                type="submit"
-                color="primary"
-                class="col-md-5 col-sm-5 col-xs-12"
-                icon="person_add"
-              />
-              <q-btn
-                label="Cerrar"
-                color="primary"
-                flat
-                class="col-md-5 col-sm-5 col-xs-12 btnmovil"
-                icon="close"
-                v-close-popup
-              />
+              <p><strong>MANTENIMIENTO - AGENCIAS</strong></p>
             </div>
-          </q-form>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
-
-    <div class="row q-pa-sm justify-center">
-      <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
-        <div class="row">
           <div
-            class="col-md-4 col-xs-12 text-secondary"
-            style="align-self: center; text-align: center; margin-right: 16px"
-          >
-            <h4><strong>MANTENIMIENTO - AGENCIAS</strong></h4>
-          </div>
-          <div
-            class="col-md-5 col-sm-7 col-xs-6"
-            style="align-self: center; margin-right: 20px"
+            class="col-md-5 col-sm-7 col-xs-12 cardMargin selectMobile"
+            style="align-self: center"
           >
             <q-input
               v-model="filter"
@@ -693,9 +459,9 @@
                 <q-icon name="search" />
               </template>
             </q-input>
-          </div>
+          </div>        
           <div
-            class="col-md-2 col-sm-4 col-xs-5"
+            class="col-md-2 col-sm-3 col-xs-12"
             style="text-align: center; align-self: center"
           >
             <q-btn
@@ -703,7 +469,7 @@
               rounded
               color="primary"
               :disabled="this.disabledCreate"
-              @click="create = true"
+              @click="agenciasDialog = true"
               @click.capture="this.resetForm()"
             ></q-btn>
           </div>
@@ -737,11 +503,15 @@
                       flat
                       color="primary"
                       icon="edit"
-                      @click.capture="resetFormEdit"
+                      @click.capture="resetForm"
                       :disabled="this.disabledEdit"
                       @click="
-                        getDataEdit(props.row.id);
-                        edit = true;
+                        getData(
+                          `/agencias/${props.row.id}`,
+                          'setDataEdit',
+                          'form'
+                        );
+                        agenciasDialog = true;
                       "
                     ></q-btn>
                     <q-btn
@@ -791,10 +561,14 @@
                               color="primary"
                               icon="edit"
                               :disabled="this.disabledEdit"
-                              @click.capture="resetFormEdit"
+                              @click.capture="resetForm"
                               @click="
-                                getDataEdit(props.row.id);
-                                edit = true;
+                                getData(
+                                  `/agencias/${props.row.id}`,
+                                  'setDataEdit',
+                                  'form'
+                                );
+                                agenciasDialog = true;
                               "
                             ></q-btn>
                             <q-chip
@@ -840,7 +614,6 @@
           </div>
         </div>
       </div>
-    </div>
 
     <q-dialog v-model="deletePopup">
       <q-card style="width: 700px">
@@ -857,35 +630,44 @@
             label="Aceptar"
             color="primary"
             v-close-popup
-            @click="deleteDato(selected)"
+            @click="deleteData(selected)"
           />
         </q-card-actions>
       </q-card>
     </q-dialog>
     <methods
       ref="methods"
-      @get-Data-Agencias="getDataAgencias('/agencias', 'setData', 'datos')"
+      @get-Data="
+        getData('/agencias', 'setDataTable', 'datos', {
+          headers: {
+            page: 1,
+            limit: 9,
+          },
+        })
+      "
       @set-Data="setData"
+      @set-Data-Paises="setDataPaises"
       @reset-Loading="resetLoading"
       @set-Data-Edit="setDataEdit"
       @on-Request="onRequest"
-      @set-Data-Edit-Ciudades="setDataEditCiudades"
-      @set-Data-Edit-Estados="setDataEditEstados"
-      @set-Data-Estados="setDataEstados"
-      @set-Data-Ciudades="setDataCiudades"
       @set-Data-Table="setDataTable"
     ></methods>
     <desactive-crud
       ref="desactiveCrud"
       @desactivar-Crud="desactivarCrud"
     ></desactive-crud>
+    <rules-vue ref="rulesVue"></rules-vue>
   </q-page>
 </template>
 
 <script>
 import { ref } from "vue";
 
+import { api } from "boot/axios";
+
 import { useQuasar } from "quasar";
+
+import rulesVue from "src/components/rules.vue";
 
 import methodsVue from "src/components/methods.vue";
 
@@ -894,7 +676,11 @@ import desactivateCrudVue from "src/components/desactivateCrud.vue";
 import { LocalStorage } from "quasar";
 
 export default {
-  components: { "desactive-crud": desactivateCrudVue, methods: methodsVue },
+  components: {
+    "desactive-crud": desactivateCrudVue,
+    methods: methodsVue,
+    rulesVue,
+  },
   name: "Agencias",
   data() {
     return {
@@ -981,12 +767,6 @@ export default {
       selectedPais: [],
       selectedEstado: [],
       selectedCiudad: [],
-      selectedPaisEdit: "",
-      selectedEstadoEdit: "",
-      selectedCiudadEdit: "",
-      CiudadEdit: "",
-      EstadoEdit: "",
-      PaisEdit: "",
       disabledCreate: true,
       disabledEdit: true,
       disabledDelete: true,
@@ -999,7 +779,7 @@ export default {
     const pagination = ref({
       descending: "",
       page: 1,
-      rowsPerPage: 10,
+      rowsPerPage: 9,
       rowsNumber: "",
     });
     return {
@@ -1007,8 +787,7 @@ export default {
       anulate: ref(false),
       loading: ref(false),
       separator: ref("vertical"),
-      create: ref(false),
-      edit: ref(false),
+      agenciasDialog: ref(false),
       reglasInputs: [
         (val) => (val !== null && val !== "") || "Debes escribir algo",
         (val) => val.length <= 50 || "Deben ser máximo 50 caracteres",
@@ -1042,12 +821,13 @@ export default {
     };
   },
   mounted() {
-    this.getDataAgencias("/agencias", "onRequest", "datos");
-    this.getData("/paises", "setData", "paises", {
+    this.getData("/agencias", "onRequest", "datos", {
       headers: {
-        Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        page: 1,
+        limit: 9,
       },
     });
+    this.getData("/paises", "setDataPaises", "paises");
     this.$refs.desactiveCrud.desactivarCrud(
       "c_agencias",
       "r_agencias",
@@ -1057,11 +837,12 @@ export default {
     );
   },
   methods: {
+    // Metodo para Get de Tabla
     onRequest(res, dataRes) {
       if (this.count == 1) {
-        this[dataRes] = res;
+        console.log(res);
+        this[dataRes] = res.data;
         this.pagination.rowsNumber = res.total;
-        this.loading = false;
       } else {
         let { page, rowsPerPage, sortBy, descending } = res.pagination;
         if (this.currentPage !== page) {
@@ -1072,26 +853,46 @@ export default {
         const fetchCount =
           rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
 
-        this.axiosConfig.headers.page = page;
-        this.axiosConfig.headers.limit = fetchCount;
-        if (sortBy) this.axiosConfig.headers.order_by = sortBy;
-
+        var headerPage = page;
+        var headerOrder_direction = "";
+        var headerLimit = fetchCount;
+        if (sortBy) {
+          var headerOrder_by = sortBy;
+        } else {
+          var headerOrder_by = "";
+        }
         if (descending !== "") {
           this.pagination.descending = !this.pagination.descending;
           if (this.pagination.descending == true) {
-            this.axiosConfig.headers.order_direction = "DESC";
-          } else this.axiosConfig.headers.order_direction = "ASC";
+            headerOrder_direction = "DESC";
+          } else headerOrder_direction = "ASC";
+        }
+
+        if (headerOrder_by == "Ciudades") {
+          var headerOrder_by = "";
+        }
+        if (headerOrder_by == "activo_desc") {
+          var headerOrder_by = "estatus";
         }
 
         if (sortBy) this.pagination.sortBy = sortBy;
         this.pagination.page = page;
         this.pagination.rowsPerPage = rowsPerPage;
-
-        this.getData(`/agencias`, "setDataTable", "datos");
+        var headerCod_movimiento = this.formEdit.id;
+        this.getData(`/agencias`, "setDataTable", "datos", {
+          headers: {
+            page: headerPage,
+            limit: headerLimit,
+            order_direction: headerOrder_direction,
+            cod_movimiento: headerCod_movimiento,
+            order_by: headerOrder_by,
+          },
+        });
       }
       this.count = 0;
     },
-    setDataTable(res) {
+    // Metodo para Setear Datos de Tabla
+    setDataTable(res, dataRes) {
       this[dataRes] = res.data;
       this.pagination.page = res.currentPage;
       this.currentPage = res.currentPage;
@@ -1099,6 +900,7 @@ export default {
       this.pagination.rowsPerPage = res.limit;
       this.loading = false;
     },
+    // Metodo para Filtrar Datos de Selects
     filterArray(val, update, abort, pagina, array, element) {
       if (val === "") {
         update(() => {
@@ -1120,42 +922,7 @@ export default {
         }
       });
     },
-    // Reglas
-    reglasSelect(val) {
-      if (val === null) {
-        return "Debes Seleccionar Algo";
-      }
-      if (val === "") {
-        return "Debes Seleccionar Algo";
-      }
-    },
-    reglaInputDireccion(val) {
-      if (val !== null) {
-        if (val.length > 200) {
-          return "Deben ser máximo 200 caracteres";
-        }
-        if (val.length > 0) {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-        }
-      }
-    },
-    reglaInputNombre(val) {
-      if (val !== null) {
-        if (val === null) {
-          return "Debes escribir algo";
-        }
-        if (val === "") {
-          return "Debes escribir Algo";
-        }
-        if (val.length > 0) {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-        }
-      }
-    },
+    // Metodo para Validar Permisos
     desactivarCrud(createItem, readItem, deleteItem, updateItem) {
       if (readItem == true) {
         if (createItem == true) {
@@ -1169,30 +936,27 @@ export default {
         }
       } else this.$router.push("/error403");
     },
-
-    getData(url, call, dataRes, axiosConfig) {
-      this.$refs.methods.getData(url, call, dataRes, axiosConfig);
-    },
-    getDataAgencias(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, {
-        headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-        },
-      });
-      this.loading = true;
-    },
-    setData(res, dataRes) {
-      this[dataRes] = res;
+    // Metodo para Resetear Carga
+    resetLoading() {
       this.loading = false;
     },
 
-    getDataEdit(id) {
-      this.$refs.methods.getData(`/agencias/${id}`, "setDataEdit", "formEdit", {
-        headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-        },
-      });
+    // METODOS DE PAGINA
+
+    // Metodo para Get de Datos
+    getData(url, call, dataRes, axiosConfig) {
+      this.$refs.methods.getData(url, call, dataRes, axiosConfig);
     },
+    // Metodo para Setear Paises
+    setDataPaises(res, dataRes) {
+      this[dataRes] = res;
+    },
+    // Metodo para Setear Datos
+    setData(res, dataRes) {
+      this[dataRes] = res.data;
+      this.loading = false;
+    },
+    // Metodo para Setear Datos de Agencia Seleccionada
     setDataEdit(res, dataRes) {
       this[dataRes].id = res.id;
       this[dataRes].nb_agencia = res.nb_agencia;
@@ -1204,144 +968,114 @@ export default {
       this[dataRes].rif_agencia = res.rif_agencia;
       this[dataRes].nit_agencia = res.nit_agencia;
       this[dataRes].estatus = res.activo_desc;
-      (this.selectedCiudadEdit = res.ciudades.cod_estado),
-        (this.selectedCiudad = res.ciudades.desc_ciudad);
+      this.selectedCiudad = res.ciudades;
       this.ciudadEdit = res.ciudades.id;
-      this.$refs.methods.getData(
-        `/ciudades`,
-        "setDataEditCiudades",
-        "ciudades",
-        {
-          headers: {
-            Authorization: ``,
-            estado: this.selectedCiudadEdit,
-          },
-        }
-      );
-    },
-    setDataEditCiudades(res, dataRes) {
-      this[dataRes] = res;
-      this.selectedEstadoEdit = res[0].estados.cod_pais;
-      this.selectedEstado = res[0].estados.desc_estado;
-      this.$refs.methods.getDataEdit(
-        `/estados`,
-        "setDataEditEstados",
-        "estados",
-        {
-          headers: {
-            Authorization: ``,
-            pais: this.selectedEstadoEdit,
-          },
-        }
-      );
-    },
-    setDataEditEstados(res, dataRes) {
-      this[dataRes] = res.data;
-      this.selectedPais = res.data[0].paises.desc_pais;
-    },
-
-    setDataEstados(res, dataRes) {
-      this[dataRes] = res;
-      this.selectedEstado = "";
-      this.selectedCiudad = "";
-      this.ciudades = "";
-    },
-    setDataCiudades(res, dataRes) {
-      this.selectedCiudad = "";
-      this[dataRes] = res;
-    },
-
-    deleteDato(idpost) {
-      this.$refs.methods.deleteData(`/agencias/${idpost}`, "getDataAgencias", {
-        headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-        },
-      });
-      this.loading = true;
-    },
-    resetLoading() {
-      this.loading = false;
-    },
-    createDato() {
-      this.form.cod_ciudad = this.selectedCiudad.id;
-      this.form.estatus = this.form.estatus.value;
-      this.$refs.methods.createData("/agencias", this.form, "getDataAgencias", {
-        headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-        },
-      });
-      this.loading = true;
-      this.resetForm();
-    },
-    putDato() {
-      this.formEdit.cod_ciudad = this.selectedCiudad.id;
-      this.formEdit.estatus = this.formEdit.estatus.value;
-      this.$refs.methods.putData(
-        `/agencias/${this.formEdit.id}`,
-        this.formEdit,
-        "getDataAgencias",
-        {
+      api
+        .get(`/ciudades`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            estado: this.selectedCiudad.cod_estado,
           },
-        }
-      );
-      this.loading = true;
-      this.edit = false;
+        })
+        .then((res) => {
+          this.ciudades = res.data.data;
+          this.selectedEstado = res.data.data[0].estados;
+          api
+            .get(`/estados`, {
+              headers: {
+                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                pais: this.selectedEstado.cod_pais,
+              },
+            })
+            .then((res) => {
+              this.estados = res.data.data;
+              this.selectedPais = res.data.data[0].paises.desc_pais;
+            });
+        });
     },
-
+    // Metodo para Eliminar Agencia
+    deleteData(idpost) {
+      this.$refs.methods.deleteData(`/agencias/${idpost}`, "getData");
+      this.loading = true;
+    },
+    // Metodo para Editar o Crear Agencia
+    sendData() {
+      this.form.cod_ciudad = this.selectedCiudad.id;
+      this.form.estatus = this.form.estatus.value;
+      if (!this.form.id) {
+        this.$refs.methods.createData("/agencias", this.form, "getData");
+        this.loading = true;
+        this.agenciasDialog = false;
+        this.resetForm();
+      } else {
+        this.$refs.methods.putData(
+          `/agencias/${this.form.id}`,
+          this.form,
+          "getData"
+        );
+        this.loading = true;
+        this.agenciasDialog = false;
+      }
+    },
+    // Metodo para Resetear Datos
     resetForm() {
-      (this.selectedPais = null),
-        (this.selectedEstado = null),
-        (this.selectedCiudad = null),
-        (this.estados = null),
-        (this.ciudades = null),
+      delete this.form.id;
+      (this.selectedPais = []),
+        (this.selectedEstado = []),
+        (this.selectedCiudad = []),
+        (this.estados = []),
+        (this.ciudades = []),
         (this.form.persona_contacto = ""),
         (this.form.nb_agencia = ""),
-        (this.form.persona_contacto = ""),
         (this.form.dir_agencia = ""),
         (this.form.fax_agencia = ""),
         (this.form.email_agencia = ""),
         (this.form.tlf_agencia = ""),
         (this.form.rif_agencia = ""),
         (this.form.nit_agencia = ""),
-        (this.form.estatus = ""),
-        (this.create = null);
-    },
-    resetFormEdit() {
-      (this.selectedPais = null),
-        (this.selectedEstado = null),
-        (this.selectedCiudad = null),
-        (this.formEdit.persona_contacto = ""),
-        (this.formEdit.dir_agencia = ""),
-        (this.formEdit.fax_agencia = ""),
-        (this.formEdit.email_agencia = ""),
-        (this.formEdit.tlf_agencia = ""),
-        (this.formEdit.rif_agencia = ""),
-        (this.formEdit.nit_agencia = ""),
-        (this.formEdit.nb_agencia = ""),
-        (this.formEdit.estatus = null);
+        (this.form.estatus = "");
     },
   },
 };
 </script>
 
-<style lang="sass">
-.my-sticky-column-table
-  /* specifying max-width so the example can
-    highlight the sticky column on any browser window */
+<style>
+  .hide {
+    display: none;
+  }
 
-
-  thead tr:first-child th:first-child
-    /* bg color is important for th; just specify one */
-    background-color: #FFFFFF
-
-  td:first-child
-    background-color: #FFFFFF
-
-  th:first-child,
-  td:first-child
-    position: sticky
-    left: 0
-    z-index: 1
-</style>
+  @media screen and (min-width: 600px) {
+  .movilTitle {
+    display: none;
+  }
+}
+@media screen and (max-width: 600px) {
+  .movilTitle {
+    display: block;
+  }
+}
+  
+  @media screen and (min-width: 600px) {
+    .cardMargin {
+      padding-right: 20px !important;
+    }
+  }
+  
+  @media screen and (min-width: 1024px) {
+    .cardMarginFilter {
+      padding-right: 20px !important;
+    }
+  }
+  
+  @media screen and (max-width: 1024px) {
+    .buttonMargin {
+      margin-bottom: 15px !important;
+    }
+  }
+  
+  @media screen and (max-width: 600px) {
+    .selectMobile {
+      margin-bottom: 15px !important;
+    }
+  }
+  </style>
