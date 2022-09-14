@@ -419,12 +419,12 @@ export default {
       sortBy: "desc",
       descending: false,
       page: 2,
-      rowsPerPage: 4,
+      rowsPerPage: 9,
       // rowsNumber: xx if getting data from a server
     });
     return {
       pagination: ref({
-        rowsPerPage: 10,
+        rowsPerPage: 9,
       }),
       loading: ref(false),
       separator: ref("vertical"),

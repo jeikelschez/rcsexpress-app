@@ -1,9 +1,9 @@
 <template>
   <q-page class="pagina q-pa-md">
-    <q-dialog v-model="create">
+    <q-dialog v-model="dialog">
       <q-card class="q-pa-md" bordered style="width: 999px; max-width: 70vw">
         <q-card-section>
-          <q-form @submit="createData" class="q-gutter-md">
+          <q-form @submit="sendData" class="q-gutter-md">
             <div class="row">
               <div class="col-md-6 col-xs-12">
                 <q-input
@@ -13,7 +13,7 @@
                   hint=""
                   class="pcform"
                   lazy-rules
-                  :rules="[reglaInputBancos]"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
                   @update:model-value="
                     form.nb_banco = form.nb_banco.toUpperCase()
                   "
@@ -30,7 +30,7 @@
                   v-model="form.direccion_banco"
                   label="Direccion"
                   hint=""
-                  :rules="[reglaInput]"
+                  :rules="[(val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
                   lazy-rules
                   @update:model-value="
                     form.direccion_banco = form.direccion_banco.toUpperCase()
@@ -48,7 +48,7 @@
                   v-model="form.fax_banco"
                   label="Fax"
                   class="pcform"
-                  :rules="[reglaInput]"
+                  :rules="[(val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
                   hint=""
                   lazy-rules
                   mask="#### - ##########"
@@ -64,7 +64,7 @@
                   outlined
                   v-model="form.tlf_banco"
                   label="Teléfono"
-                  :rules="[reglaInput]"
+                  :rules="[(val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
                   hint=""
                   lazy-rules
                   mask="### - ### - ##########"
@@ -115,7 +115,7 @@
               style="margin-bottom: 10px"
             >
               <q-btn
-                label="Agregar Banco"
+                label="Enviar"
                 type="submit"
                 color="primary"
                 class="col-md-5 col-sm-5 col-xs-12"
@@ -135,154 +135,17 @@
       </q-card>
     </q-dialog>
 
-    <q-dialog v-model="edit">
-      <q-card class="q-pa-md" bordered style="width: 999px; max-width: 70vw">
-        <q-card-section>
-          <q-form @submit="putData">
-            <div class="row">
-              <div class="col-md-5 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.nb_banco"
-                  label="Nombre"
-                  hint=""
-                  @update:model-value="
-                    formEdit.nb_banco = formEdit.nb_banco.toUpperCase()
-                  "
-                  class="pcform"
-                  lazy-rules
-                  :rules="[reglaInputBancos]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="person" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-7 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.direccion_banco"
-                  label="Direccion"
-                  hint=""
-                  :rules="[reglaInput]"
-                  @update:model-value="
-                    formEdit.direccion_banco =
-                      formEdit.direccion_banco.toUpperCase()
-                  "
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="location_on" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.fax_banco"
-                  label="Fax"
-                  hint=""
-                  :rules="[reglaInput]"
-                  class="pcform"
-                  lazy-rules
-                  mask="#### - #######################"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="fax" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.tlf_banco"
-                  label="Teléfono"
-                  :rules="[reglaInput]"
-                  hint=""
-                  lazy-rules
-                  mask="### - ### - ##########"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="phone" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-5 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.cod_postal"
-                  label="Código Postal"
-                  hint=""
-                  class="pcform"
-                  lazy-rules
-                  mask="##########"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="dialpad" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-7 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.email_banco"
-                  label="Correo Electrónico"
-                  hint=""
-                  type="email"
-                  lazy-rules
-                  @update:model-value="
-                    formEdit.email_banco = formEdit.email_banco.toUpperCase()
-                  "
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="email" />
-                  </template>
-                </q-input>
-              </div>
-            </div>
-
-            <div
-              class="row justify-center items-center content-center"
-              style="margin-bottom: 10px"
-            >
-              <q-btn
-                label="Editar Banco"
-                type="submit"
-                color="primary"
-                class="col-md-5 col-sm-5 col-xs-12"
-                icon="person_add"
-              />
-              <q-btn
-                label="Cerrar"
-                color="primary"
-                flat
-                class="col-md-5 col-sm-5 col-xs-12 btnmovil"
-                icon="close"
-                v-close-popup
-              />
-            </div>
-          </q-form>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
-
-    <div class="row q-pa-sm justify-center">
-      <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
-        <div class="row">
+    <div class="q-pa-sm justify-center">
+        <div class="row q-pa-md justify-end">
           <div
-            class="col-md-4 col-xs-12 text-secondary"
-            style="align-self: center; text-align: center; margin-right: 16px"
+            class="col-md-4 col-xs-12 text-secondary movilTitle"
+            style="align-self: center; text-align: center"
           >
             <h4><strong>MANTENIMIENTO - BANCOS</strong></h4>
           </div>
           <div
-            class="col-md-5 col-sm-9 col-xs-12"
-            style="align-self: center; margin-right: 20px"
+            class="col-md-6 col-sm-7 col-xs-12 cardMargin selectMobile"
+            style="text-align: center; align-self: center"
           >
             <q-input
               v-model="filter"
@@ -298,22 +161,21 @@
             </q-input>
           </div>
           <div
-            class="col-md-2 col-sm-2 col-xs-12"
+            class="col-md-2 col-sm-4 col-xs-12 buttonMargin"
             style="text-align: center; align-self: center"
           >
             <q-btn
               label="Insertar Banco"
               rounded
+              size="16px"
               color="primary"
-              @click="create = true"
+              @click="dialog = true; this.resetForm()"
               :disabled="this.disabledCreate"
             ></q-btn>
           </div>
         </div>
 
-        <div class="q-pa-md">
-          <div class="q-gutter-y-md">
-            <div bordered flat class="row">
+        <div class="q-pa-md q-gutter-y-md">
               <q-table
                 :rows="datos"
                 :loading="loading"
@@ -342,9 +204,9 @@
                         getData(
                           `/bancos/${props.row.id}`,
                           'setData',
-                          'formEdit'
+                          'form'
                         );
-                        edit = true;
+                        dialog = true;
                       "
                     ></q-btn>
                     <q-btn
@@ -398,9 +260,9 @@
                                 getData(
                                   `/bancos/${props.row.id}`,
                                   'setData',
-                                  'formEdit'
+                                  'form'
                                 );
-                                edit = true;
+                                dialog = true;
                               "
                             ></q-btn>
                             <q-chip
@@ -442,11 +304,8 @@
                   </div>
                 </template>
               </q-table>
-            </div>
-          </div>
         </div>
       </div>
-    </div>
 
     <q-dialog v-model="deletePopup">
       <q-card style="width: 700px">
@@ -468,16 +327,22 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+
     <methods
       ref="methods"
-      @get-Data-Bancos="getDataBancos('/bancos', 'setData', 'datos')"
+      @get-Data="getData('/bancos', 'setData', 'datos'); this.loading = true;"
       @reset-Loading="resetLoading"
       @set-data="setData"
       @set-Data-Edit="setData"
     >
     </methods>
+
     <desactive-crud ref="desactiveCrud" @desactivar-Crud="desactivarCrud">
     </desactive-crud>
+
+    <rules-vue
+      ref="rulesVue"
+    ></rules-vue>
   </q-page>
 </template>
 
@@ -486,7 +351,7 @@ import { ref } from "vue";
 
 import { useQuasar } from "quasar";
 
-import { LocalStorage } from "quasar";
+import rulesVue from "src/components/rules.vue";
 
 import methodsVue from "src/components/methods.vue";
 
@@ -495,9 +360,8 @@ import desactivateCrudVue from "src/components/desactivateCrud.vue";
 export default {
   components: {
     "desactive-crud": desactivateCrudVue,
-    methods: methodsVue,
+    methods: methodsVue, rulesVue
   },
-  name: "Bancos",
   data() {
     return {
       columns: [
@@ -559,7 +423,7 @@ export default {
         email_banco: "",
       },
       datos: [],
-      formEdit: {
+      form: {
         nb_banco: "",
         direccion_banco: "",
         tlf_banco: "",
@@ -593,40 +457,16 @@ export default {
         rowsPerPage: 10,
       }),
       separator: ref("vertical"),
-      create: ref(false),
+      dialog: ref(false),
       loading: ref(false),
-      edit: ref(false),
-      errorDelServidor() {
-        $q.notify({
-          message: this.error,
-          color: "red",
-        });
-      },
-      añadidoConExito() {
-        $q.notify({
-          message: "Banco agregado exitosamente",
-          color: "green",
-        });
-      },
-      editadoConExito() {
-        $q.notify({
-          message: "Banco editado exitosamente",
-          color: "green",
-        });
-      },
-      eliminadoConExito() {
-        $q.notify({
-          message: "Banco eliminado exitosamente",
-          color: "green",
-        });
-      },
-      medium: ref(false),
       deletePopup: ref(false),
       filter: ref(""),
     };
   },
   mounted() {
-    this.getDataBancos("/bancos", "setData", "datos");
+    this.$emit("changeTitle", "SCEN - Mantenimiento - Bancos", "");
+    this.getData("/bancos", "setData", "datos");
+    this.loading = true;
     this.$refs.desactiveCrud.desactivarCrud(
       "c_bancos",
       "r_bancos",
@@ -636,31 +476,11 @@ export default {
     );
   },
   methods: {
+    // Metodo para Resetear Carga
     resetLoading() {
       this.loading = false;
     },
-    reglaInputBancos(val) {
-      if (val === null) {
-        return "Debes Escribir Algo";
-      }
-      if (val === "") {
-        return "Debes Escribir Algo";
-      }
-      if (val.length > 0) {
-        if (val.length < 3) {
-          return "Deben ser minimo 3 caracteres";
-        }
-      }
-    },
-    reglaInput(val) {
-      if (val !== null) {
-        if (val.length > 0) {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-        }
-      }
-    },
+    // Metodo para Validar Permisos
     desactivarCrud(createItem, readItem, deleteItem, updateItem) {
       if (readItem == true) {
         if (createItem == true) {
@@ -674,75 +494,97 @@ export default {
         }
       } else this.$router.push("/error403");
     },
+
+    // METODOS DE PAGINA 
+    
+    // Metodo para hacer Get de Datos
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
     },
-    getDataBancos(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
-      this.loading = true;
-    },
+    // Metodo para Setear Datos
     setData(res, dataRes) {
       this[dataRes] = res;
       this.loading = false;
     },
+    // Metodo para Eliminar Datos
     deleteData(idpost) {
       this.$refs.methods.deleteData(
         `/bancos/${idpost}`,
-        "getDataBancos",
-        this.axiosConfig
+        "getData"
       );
       this.loading = true;
     },
-    createData() {
+    // Metodo para Editar y Crear Datos
+    sendData() {
+      if (!this.form.id){
       this.$refs.methods.createData(
         "/bancos",
         this.form,
-        "getDataBancos",
-        this.axiosConfig
+        "getData"
       );
       this.resetForm();
-      this.loading = true;
-    },
-    putData() {
-      this.$refs.methods.putData(
-        `/bancos/${this.formEdit.id}`,
-        this.formEdit,
-        "getDataBancos",
-        this.axiosConfig
+      this.dialog = false 
+      this.loading = true;} else {
+        this.$refs.methods.putData(
+        `/bancos/${this.form.id}`,
+        this.form,
+        "getData"
       );
-      this.edit = false;
+      this.dialog = false;
       this.loading = true;
+      }
     },
-
+    // Metodo para Resetear Formulario
     resetForm() {
-      (this.form.nb_banco = null),
-        (this.form.direccion_banco = null),
-        (this.form.tlf_banco = null),
-        (this.form.fax_banco = null),
-        (this.form.cod_postal = null),
-        (this.form.email_banco = null),
-        (this.create = false);
+      delete this.form.id
+      this.form.nb_banco = null,
+      this.form.direccion_banco = null,
+      this.form.tlf_banco = null,
+      this.form.fax_banco = null,
+      this.form.cod_postal = null,
+      this.form.email_banco = null
     },
   },
 };
 </script>
 
-<style lang="sass">
-.my-sticky-column-table
-  /* specifying max-width so the example can
-    highlight the sticky column on any browser window */
-
-
-  thead tr:first-child th:first-child
-    /* bg color is important for th; just specify one */
-    background-color: #FFFFFF
-
-  td:first-child
-    background-color: #FFFFFF
-
-  th:first-child,
-  td:first-child
-    position: sticky
-    left: 0
-    z-index: 1
-</style>
+<style>
+  .hide {
+    display: none;
+  }
+  
+  @media screen and (min-width: 600px) {
+    .movilTitle {
+      display: none;
+    }
+  }
+  @media screen and (max-width: 600px) {
+    .movilTitle {
+      display: block;
+    }
+  }
+  
+  @media screen and (min-width: 600px) {
+    .cardMargin {
+      padding-right: 20px !important;
+    }
+  }
+  
+  @media screen and (min-width: 1024px) {
+    .cardMarginFilter {
+      padding-right: 20px !important;
+    }
+  }
+  
+  @media screen and (max-width: 1024px) {
+    .buttonMargin {
+      margin-bottom: 15px !important;
+    }
+  }
+  
+  @media screen and (max-width: 600px) {
+    .selectMobile {
+      margin-bottom: 25px !important;
+    }
+  }
+  </style>

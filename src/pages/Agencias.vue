@@ -821,6 +821,7 @@ export default {
     };
   },
   mounted() {
+    this.$emit("changeTitle", "SCEN - Mantenimiento - Agencias", "");
     this.getData("/agencias", "onRequest", "datos", {
       headers: {
         page: 1,
@@ -1069,13 +1070,13 @@ export default {
   
   @media screen and (max-width: 1024px) {
     .buttonMargin {
-      margin-bottom: 15px !important;
+      margin-bottom: 20px !important;
     }
   }
   
   @media screen and (max-width: 600px) {
     .selectMobile {
-      margin-bottom: 15px !important;
+      margin-bottom: 20px !important;
     }
   }
   </style>

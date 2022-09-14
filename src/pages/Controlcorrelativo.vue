@@ -1,9 +1,9 @@
 <template>
   <q-page class="pagina q-pa-md">
-    <q-dialog v-model="create">
+    <q-dialog v-model="dialog">
       <q-card class="q-pa-md" bordered style="width: 900px; max-width: 80vw">
         <q-card-section>
-          <q-form @submit="createDato" class="q-gutter-md">
+          <q-form @submit="sendData" class="q-gutter-md">
             <div class="row">
               <div class="col-md-6 col-xs-12">
                 <q-input
@@ -14,7 +14,7 @@
                   class="pcform"
                   hint=""
                   lazy-rules
-                  :rules="[reglasNotNull10]"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 10, 'Maximo 10 Caracteres') || '']"
                   type="number"
                 >
                   <template v-slot:prepend>
@@ -47,7 +47,7 @@
                   hint=""
                   class="pcform"
                   lazy-rules
-                  :rules="[reglasAllowNull1]"
+                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 1, 'Maximo 1 Caracter') || '']"
                   @update:model-value="
                     form.serie_doc = form.serie_doc.toUpperCase()
                   "
@@ -66,7 +66,7 @@
                   hint=""
                   class="pcform"
                   type="number"
-                  :rules="[reglasAllowNull10]"
+                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 10, 'Maximo 10 Caracteres') || '']"
                   lazy-rules
                 >
                   <template v-slot:prepend>
@@ -83,7 +83,7 @@
                   hint=""
                   :options="estatus"
                   lazy-rules
-                  :rules="[reglasSelect]"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '']"
                 >
                   <template v-slot:prepend>
                     <q-icon name="done_all" />
@@ -116,295 +116,250 @@
       </q-card>
     </q-dialog>
 
-    <q-dialog v-model="edit">
-      <q-card class="q-pa-md" bordered style="width: 999px; max-width: 80vw">
-        <q-card-section>
-          <q-form @submit="putDato">
-            <div class="row">
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  upper-case
-                  outlined
-                  v-model="formEdit.control_inicio"
-                  label="Primer Correlativo"
-                  class="pcform"
-                  hint=""
-                  lazy-rules
-                  :rules="[reglasNotNull10]"
-                  type="number"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="apartment" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.control_final"
-                  label="Ultimo Correlativo"
-                  :rules="[reglasSegundoCorrelativoEdit]"
-                  hint=""
-                  lazy-rules
-                  type="number"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="account_circle" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-2 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.serie_doc"
-                  label="Serie Lote"
-                  hint=""
-                  class="pcform"
-                  lazy-rules
-                  :rules="[reglasAllowNull1]"
-                  @update:model-value="
-                    formEdit.serie_doc = formEdit.serie_doc.toUpperCase()
-                  "
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="pin_drop" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.ult_doc_referencia"
-                  label="Ultimo Numero Asignado"
-                  hint=""
-                  class="pcform"
-                  type="number"
-                  :rules="[reglasAllowNull10]"
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="formEdit.estatus_lote"
-                  label="Estatus"
-                  hint=""
-                  :options="estatus"
-                  :rules="[reglasSelect]"
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="done_all" />
-                  </template>
-                </q-select>
-              </div>
-            </div>
-
-            <div
-              class="full-width row justify-center items-center content-center"
-              style="margin-top: 10px"
-            >
-              <q-btn
-                label="Editar Control"
-                type="submit"
-                color="primary"
-                class="col-md-5 col-sm-5 col-xs-12"
-                icon="person_add"
-              />
-              <q-btn
-                label="Cerrar"
-                color="primary"
-                flat
-                class="col-md-5 col-sm-5 col-xs-12 btnmovil"
-                icon="close"
-                v-close-popup
-              />
-            </div>
-          </q-form>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
-
-    <div class="row q-pa-sm justify-center">
+    <div class="q-pa-sm justify-center">
       <div
-        class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 text-secondary"
+        class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 text-secondary movilTitle"
       >
-        <div>
-          <h4 style="font-size: 35px; align-self: center; text-align: center">
-            <strong>MANTENIMIENTO - CONTROL CORRELATIVO</strong>
-          </h4>
+        <p style="font-size: 25px; align-self: center; text-align: center; margin-top: 18px">
+          <strong>MANTENIMIENTO - CONTROL CORRELATIVO</strong>
+        </p>
+      </div>
+
+      <div
+        class="q-pa-md row col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
+      >
+        <div
+          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-6 cardMarginFilter cardMarginSm selectMobile"
+        >
+          <q-select
+            rounded
+            transition-show="flip-up"
+            transition-hide="flip-down"
+            option-label="nb_agencia"
+            option-value="id"
+            :options="agenciasSelected"
+            @filter="
+              (val, update, abort) =>
+                filterArray(
+                  val,
+                  update,
+                  abort,
+                  'agenciasSelected',
+                  'agencias',
+                  'nb_agencia'
+                )
+            "
+            use-input
+            hide-selected
+            fill-input
+            input-debounce="0"
+            v-model="selectedAgencia"
+            outlined
+            standout
+            label="Escoge una Agencia"
+            @update:model-value="
+              getData(`/correlativo`, 'setDataTable', 'datos', {
+                headers: {
+              page: 1,
+              limit: 6,
+                  agencia: this.selectedAgencia.id,
+                  tipo: this.selectedTipo.id,
+                  fuente: 'CR',
+                },
+              })
+            "
+            ><template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  Sin resultados
+                </q-item-section>
+              </q-item>
+            </template>
+            <template v-slot:prepend>
+              <q-icon name="search" />
+            </template>
+          </q-select>
+        </div>
+        <div
+          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-6 cardMarginFilter selectMobile"
+        >
+          <q-select
+            rounded
+            transition-show="flip-up"
+            transition-hide="flip-down"
+            :options="tiposSelected"
+            @filter="
+              (val, update, abort) =>
+                filterArray(
+                  val,
+                  update,
+                  abort,
+                  'tiposSelected',
+                  'tipos',
+                  'descripcion'
+                )
+            "
+            use-input
+            hide-selected
+            fill-input
+            input-debounce="0"
+            option-label="descripcion"
+            option-value="id"
+            v-model="selectedTipo"
+            outlined
+            standout
+            label="Tipo de Control"
+            @update:model-value="
+              getData(`/correlativo`, 'setDataTable', 'datos', {
+                headers: {
+              page: 1,
+              limit: 6,
+                  agencia: this.selectedAgencia.id,
+                  tipo: this.selectedTipo.id,
+                  fuente: 'CR',
+                },
+              })
+            "
+            ><template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  Sin resultados
+                </q-item-section>
+              </q-item>
+            </template>
+            <template v-slot:prepend>
+              <q-icon name="search" />
+            </template>
+          </q-select>
+        </div>
+        <div
+          class="col-md-4 col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 cardMarginFilter selectMobile"
+        >
+          <q-input
+            rounded
+            outlined
+            v-model="filter"
+            standout
+            type="search"
+            label="Búsqueda avanzada"
+          >
+            <template v-slot:prepend>
+              <q-icon name="search" />
+            </template>
+          </q-input>
+        </div>
+        <div
+          class="col-md-2 col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
+          style="text-align: center; align-self: center"
+        >
+          <q-btn
+            label="Insertar"
+            rounded
+            color="primary"
+            :disabled="this.disabledCreate"
+            @click="dialog = true"
+            @click.capture="resetForm"
+            size="16px"
+            class="q-px-xl q-py-xs"
+          ></q-btn>
         </div>
       </div>
-      <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
-        <div class="col-md-11 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
-          <div class="row">
-            <div
-              class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-5 inputciudadespc"
-            >
-              <q-select
-                rounded
-                transition-show="flip-up"
-                transition-hide="flip-down"
-                option-label="nb_agencia"
-                option-value="id"
-                :options="agenciasSelected"
-                @filter="
-                  (val, update, abort) =>
-                    filterArray(
-                      val,
-                      update,
-                      abort,
-                      'agenciasSelected',
-                      'agencias',
-                      'nb_agencia'
-                    )
-                "
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
-                v-model="selectedAgencia"
-                outlined
-                standout
-                label="Escoge una Agencia"
-                @update:model-value="
-                  this.axiosConfig.headers.agencia = this.selectedAgencia.id;
-                  getDataSelect(`/correlativo`, 'setData', 'datos');
-                "
-                ><template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      Sin resultados
-                    </q-item-section>
-                  </q-item>
-                </template>
-                <template v-slot:prepend>
-                  <q-icon name="search" />
-                </template>
-              </q-select>
-            </div>
-            <div
-              class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-6 inputciudadespc2"
-            >
-              <q-select
-                rounded
-                transition-show="flip-up"
-                transition-hide="flip-down"
-                :options="tiposSelected"
-                @filter="
-                  (val, update, abort) =>
-                    filterArray(
-                      val,
-                      update,
-                      abort,
-                      'tiposSelected',
-                      'tipos',
-                      'descripcion'
-                    )
-                "
-                use-input
-                hide-selected
-                fill-input
-                input-debounce="0"
-                option-label="descripcion"
-                option-value="id"
-                v-model="selectedTipo"
-                outlined
-                standout
-                label="Tipo de Control"
-                @update:model-value="
-                  this.axiosConfig.headers.tipo = this.selectedTipo.id;
-                  getDataSelect(`/correlativo`, 'setData', 'datos');
-                "
-                ><template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      Sin resultados
-                    </q-item-section>
-                  </q-item>
-                </template>
-                <template v-slot:prepend>
-                  <q-icon name="search" />
-                </template>
-              </q-select>
-            </div>
-            <div
-              class="col-md-3 col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-6 inputpc"
-            >
-              <q-input
-                rounded
-                outlined
-                v-model="filter"
-                standout
-                type="search"
-                label="Búsqueda avanzada"
-              >
-                <template v-slot:prepend>
-                  <q-icon name="search" />
-                </template>
-              </q-input>
-            </div>
-            <div
-              class="col-md-2 col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-5 inputpc"
-              style="text-align: center; align-self: center"
-            >
-              <q-btn
-                label="Insertar"
-                rounded
-                color="primary"
-                :disabled="this.disabledCreate"
-                @click="create = true"
-                @click.capture="resetForm"
-                size="16px"
-                class="q-px-xl q-py-xs"
-              ></q-btn>
-            </div>
-          </div>
 
-          <div class="q-pa-md" style="margin-top: 20px">
-            <div class="q-gutter-y-md">
-              <div bordered flat class="my-card row">
-                <q-table
-                  :rows="datos"
-                  binary-state-sort
-                  row-key="id"
-                  :loading="loading"
-                  :columns="columns"
-                  :separator="separator"
-                  :filter="filter"
-                  style="width: 100%"
-                  :grid="$q.screen.xs"
-                  v-model:pagination="pagination"
-                >
-                  <template v-slot:loading>
-                    <q-inner-loading showing color="primary" />
-                  </template>
-                  <template v-slot:body-cell-estatus="props">
-                    <q-td :props="props">
-                      <q-select
-                        outlined
-                        v-model="props.row.estatus_desc"
-                        :options="estatus"
-                        @update:model-value="
-                          this.getDataEdit(props.row.id, 'putDatoSelect');
-                          this.formEdit.estatus_lote =
-                            props.row.estatus_desc.value;
+      <div class="q-pa-md q-gutter-y-md">
+        <q-table
+          :rows="datos"
+          binary-state-sort
+          row-key="id"
+          :loading="loading"
+          :columns="columns"
+          :rows-per-page-options="[5, 10, 15, 20, 50]"
+          @request="onRequest"
+          :separator="separator"
+          :filter="filter"
+          style="width: 100%"
+          :grid="$q.screen.xs"
+          v-model:pagination="pagination"
+        >
+          <template v-slot:loading>
+            <q-inner-loading showing color="primary" />
+          </template>
+          <template v-slot:body-cell-estatus="props">
+            <q-td :props="props">
+              <q-select
+                outlined
+                v-model="props.row.estatus_desc"
+                :options="estatus"
+                @update:model-value="
+                  getData(
+                    `/correlativo/${props.row.id}`,
+                    `putDataSelect`,
+                    'form'
+                  );
+                  this.form.estatus_lote = props.row.estatus_desc.value;
+                "
+              >
+              </q-select>
+            </q-td>
+          </template>
+          <template v-slot:body-cell-action="props">
+            <q-td :props="props">
+              <q-btn
+                dense
+                round
+                flat
+                color="primary"
+                icon="edit"
+                :disabled="this.disabledEdit"
+                @click="
+                  getData(
+                    `/correlativo/${props.row.id}`,
+                    `setDataEdit`,
+                    'form'
+                  );
+                  dialog = true;
+                "
+              ></q-btn>
+              <q-btn
+                dense
+                round
+                flat
+                color="primary"
+                icon="delete"
+                :disabled="this.disabledDelete"
+                @click="selected = props.row.id"
+                @click.capture="deletePopup = true"
+              ></q-btn>
+            </q-td>
+          </template>
+          <template v-slot:item="props">
+            <div
+              class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+              :style="props.selected ? 'transform: scale(0.95);' : ''"
+            >
+              <q-card :class="props.selected ? 'bg-grey-2' : ''">
+                <q-list dense>
+                  <q-item v-for="col in props.cols" :key="col.name">
+                    <q-item-section>
+                      <q-item-label>{{ col.label }}</q-item-label>
+                    </q-item-section>
+                    <q-item-section side>
+                      <q-chip
+                        v-if="col.name === 'status'"
+                        :color="
+                          props.row.status == 'Active'
+                            ? 'green'
+                            : props.row.status == 'Disable'
+                            ? 'red'
+                            : 'grey'
                         "
+                        text-color="white"
+                        dense
+                        class="text-weight-bolder"
+                        square
+                        >{{ col.value }}</q-chip
                       >
-                      </q-select>
-                    </q-td>
-                  </template>
-                  <template v-slot:body-cell-action="props">
-                    <q-td :props="props">
                       <q-btn
+                        v-else-if="col.name === 'action'"
                         dense
                         round
                         flat
@@ -412,11 +367,31 @@
                         icon="edit"
                         :disabled="this.disabledEdit"
                         @click="
-                          getDataEdit(props.row.id, 'setDataEdit');
-                          edit = true;
+                          getData(
+                            `/correlativo/${props.row.id}`,
+                            `setDataEdit`,
+                            'form'
+                          );
+                          dialog = true;
                         "
                       ></q-btn>
+                      <q-chip
+                        v-if="col.name === 'status'"
+                        :color="
+                          props.row.status == 'Active'
+                            ? 'green'
+                            : props.row.status == 'Disable'
+                            ? 'red'
+                            : 'grey'
+                        "
+                        text-color="white"
+                        dense
+                        class="text-weight-bolder"
+                        square
+                        >{{ col.value }}</q-chip
+                      >
                       <q-btn
+                        v-else-if="col.name === 'action'"
                         dense
                         round
                         flat
@@ -426,126 +401,57 @@
                         @click="selected = props.row.id"
                         @click.capture="deletePopup = true"
                       ></q-btn>
-                    </q-td>
-                  </template>
-                  <template v-slot:item="props">
-                    <div
-                      class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
-                      :style="props.selected ? 'transform: scale(0.95);' : ''"
-                    >
-                      <q-card :class="props.selected ? 'bg-grey-2' : ''">
-                        <q-list dense>
-                          <q-item v-for="col in props.cols" :key="col.name">
-                            <q-item-section>
-                              <q-item-label>{{ col.label }}</q-item-label>
-                            </q-item-section>
-                            <q-item-section side>
-                              <q-chip
-                                v-if="col.name === 'status'"
-                                :color="
-                                  props.row.status == 'Active'
-                                    ? 'green'
-                                    : props.row.status == 'Disable'
-                                    ? 'red'
-                                    : 'grey'
-                                "
-                                text-color="white"
-                                dense
-                                class="text-weight-bolder"
-                                square
-                                >{{ col.value }}</q-chip
-                              >
-                              <q-btn
-                                v-else-if="col.name === 'action'"
-                                dense
-                                round
-                                flat
-                                color="primary"
-                                icon="edit"
-                                :disabled="this.disabledEdit"
-                                @click="
-                                  getDataEdit(props.row.id, 'setDataEdit');
-                                  edit = true;
-                                "
-                              ></q-btn>
-                              <q-chip
-                                v-if="col.name === 'status'"
-                                :color="
-                                  props.row.status == 'Active'
-                                    ? 'green'
-                                    : props.row.status == 'Disable'
-                                    ? 'red'
-                                    : 'grey'
-                                "
-                                text-color="white"
-                                dense
-                                class="text-weight-bolder"
-                                square
-                                >{{ col.value }}</q-chip
-                              >
-                              <q-btn
-                                v-else-if="col.name === 'action'"
-                                dense
-                                round
-                                flat
-                                color="primary"
-                                icon="delete"
-                                :disabled="this.disabledDelete"
-                                @click="selected = props.row.id"
-                                @click.capture="deletePopup = true"
-                              ></q-btn>
-                              <q-item-label
-                                v-else
-                                caption
-                                :class="col.classes ? col.classes : ''"
-                                >{{ col.value }}</q-item-label
-                              >
-                            </q-item-section>
-                            <q-item-section side>
-                              <q-chip
-                                v-if="col.name === 'status'"
-                                :color="
-                                  props.row.status == 'Active'
-                                    ? 'green'
-                                    : props.row.status == 'Disable'
-                                    ? 'red'
-                                    : 'grey'
-                                "
-                                text-color="white"
-                                dense
-                                class="text-weight-bolder"
-                                square
-                                >{{ col.value }}</q-chip
-                              >
-                              <q-select
-                                v-else-if="col.name === 'estatus'"
-                                outlined
-                                v-model="props.row.estatus_desc"
-                                :options="estatus"
-                                @update:model-value="
-                                  getDataEdit(props.row.id, 'putDatoSelect');
-                                  this.formEdit.estatus_lote =
-                                    props.row.estatus_desc.value;
-                                "
-                              >
-                              </q-select>
-                              <q-item-label
-                                v-else
-                                caption
-                                :class="col.classes ? col.classes : ''"
-                                >{{ col.value }}</q-item-label
-                              >
-                            </q-item-section>
-                          </q-item>
-                        </q-list>
-                      </q-card>
-                    </div>
-                  </template>
-                </q-table>
-              </div>
+                      <q-item-label
+                        v-else
+                        caption
+                        :class="col.classes ? col.classes : ''"
+                        >{{ col.value }}</q-item-label
+                      >
+                    </q-item-section>
+                    <q-item-section side>
+                      <q-chip
+                        v-if="col.name === 'status'"
+                        :color="
+                          props.row.status == 'Active'
+                            ? 'green'
+                            : props.row.status == 'Disable'
+                            ? 'red'
+                            : 'grey'
+                        "
+                        text-color="white"
+                        dense
+                        class="text-weight-bolder"
+                        square
+                        >{{ col.value }}</q-chip
+                      >
+                      <q-select
+                        v-else-if="col.name === 'estatus'"
+                        outlined
+                        v-model="props.row.estatus_desc"
+                        :options="estatus"
+                        @update:model-value="
+                          getData(
+                            `/correlativo/${props.row.id}`,
+                            `putDataSelect`,
+                            'form'
+                          );
+                          this.form.estatus_lote = props.row.estatus_desc.value;
+                        "
+                      >
+                      </q-select>
+                      <q-item-label
+                        v-else
+                        caption
+                        :class="col.classes ? col.classes : ''"
+                        >{{ col.value }}</q-item-label
+                      >
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-card>
             </div>
-          </div>
-        </div>
+          </template>
+        </q-table>
       </div>
     </div>
 
@@ -564,30 +470,52 @@
             label="Aceptar"
             color="primary"
             v-close-popup
-            @click="deleteDato(selected)"
+            @click="deleteData(selected)"
           />
         </q-card-actions>
       </q-card>
     </q-dialog>
+
     <methods
       ref="methods"
-      @get-Data-Correlativo="
-        getDataCorrelativo('/correlativo', 'setData', 'datos')
+      @get-Data="
+        getData('/correlativo', 'setData', 'datos', {
+          headers: {
+              page: 1,
+              limit: 6,
+            agencia: '1',
+            tipo: '16',
+            fuente: 'CR',
+          },
+        })
       "
+      @set-Data-Table="setDataTable"
+      @on-Request="onRequest"
       @set-Data="setData"
+      @set-Data-Iniciar="setDataIniciar"
       @reset-Loading="resetLoading"
       @set-Data-Edit="setDataEdit"
-      @put-Dato-Select="putDatoSelect"
+      @put-Data-Select="putDataSelect"
     ></methods>
+
     <desactive-crud
       ref="desactiveCrud"
       @desactivar-Crud="desactivarCrud"
     ></desactive-crud>
+
+    <rules-vue
+      ref="rulesVue"
+    ></rules-vue>
+
   </q-page>
 </template>
 
 <script>
 import { ref } from "vue";
+
+import { api } from "boot/axios";
+
+import rulesVue from "src/components/rules.vue";
 
 import { useQuasar } from "quasar";
 
@@ -598,8 +526,7 @@ import desactivateCrudVue from "src/components/desactivateCrud.vue";
 import { LocalStorage } from "quasar";
 
 export default {
-  components: { "desactive-crud": desactivateCrudVue, methods: methodsVue },
-  name: "Bancos",
+  components: { "desactive-crud": desactivateCrudVue, methods: methodsVue, rulesVue },
   data() {
     return {
       columns: [
@@ -660,64 +587,40 @@ export default {
         serie_doc: "",
         cod_agencia: "",
       },
-      formEdit: {
-        id: "",
-        tipo: "",
-        control_inicio: "",
-        control_final: "",
-        ult_doc_referencia: "",
-        estatus_lote: "",
-        serie_doc: "",
-        cod_agencia: "",
-      },
       estatus: [
         { label: "CERRADO", value: "C" },
         { label: "ACTIVO", value: "A" },
         { label: "INACTIVO", value: "I" },
       ],
       agencias: [],
+      count: 1,
+      currentPage: 1,
       tipos: [],
+      selectedAgencia: [],
+      selectedTipo: [],
       agenciasSelected: [],
       tiposSelected: [],
       datos: [],
-      selectedTipo: {
-        id: 16,
-        codigo: "FA",
-        descripcion: "Facturación",
-      },
-      selectedAgencia: {
-        id: 1,
-        nb_agencia: "VALENCIA, RCS EXPRESS",
-      },
       disabledCreate: true,
       disabledEdit: true,
       disabledDelete: true,
-      axiosConfig: {
-        headers: {
-          Authorization: ``,
-          agencia: "1",
-          tipo: "16",
-          fuente: "CR",
-        },
-      },
     };
   },
   setup() {
     const $q = useQuasar();
+    const loading = ref(false);
+    const order = ref(false);
     const pagination = ref({
-      sortBy: "desc",
-      descending: false,
-      page: 2,
-      rowsPerPage: 4,
-      // rowsNumber: xx if getting data from a server
+      descending: "",
+      page: 1,
+      rowsPerPage: 9,
+      rowsNumber: "",
     });
     return {
-      pagination: ref({
-        rowsPerPage: 10,
-      }),
+      pagination,
+      anulate: ref(false),
       separator: ref("vertical"),
-      create: ref(false),
-      edit: ref(false),
+      dialog: ref(false),
       loading: ref(false),
       activoExistente() {
         $q.notify({
@@ -730,9 +633,8 @@ export default {
     };
   },
   mounted() {
-    this.getData("/agencias", "setData", "agencias");
-    this.getData("/tipos", "setData", "tipos");
-    this.getDataCorrelativo("/correlativo", "setData", "datos");
+    this.$emit("changeTitle", "SCEN - Mantenimiento - Control Correlativo", "");
+    this.getData("/agencias", "setDataIniciar", "agencias");
     this.$refs.desactiveCrud.desactivarCrud(
       "c_ccorrelativo",
       "r_ccorrelativo",
@@ -742,6 +644,66 @@ export default {
     );
   },
   methods: {
+    // Metodos para Solicitar Datos al Tocar Opcion de Tabla
+    onRequest(res, dataRes) {
+      if (this.count== 1) {
+        this[dataRes] = res.data;
+        this.pagination.rowsNumber = res.total;
+      } else {
+        let { page, rowsPerPage, sortBy, descending } = res.pagination;
+        if (this.currentPage !== page) {
+          descending = "";
+        }
+        const filter = res.filter;
+        const startRow = (page - 1) * rowsPerPage;
+        const fetchCount =
+          rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
+
+        var headerPage = page;
+        var headerLimit = fetchCount;
+        if (sortBy) {
+          var headerOrder_by = sortBy;
+        } else {
+          var headerOrder_by = "";
+        }
+
+        if (headerOrder_by == "estatus") {
+          var headerOrder_by = "estatus_lote";
+        }
+
+        var headerOrder_direction = "";
+
+        if (descending !== "") {
+          this.pagination.descending = !this.pagination.descending;
+          if (this.pagination.descending == true) {
+            headerOrder_direction = "DESC";
+          } else headerOrder_direction = "ASC";
+        }
+
+        if (sortBy) this.pagination.sortBy = sortBy;
+        this.pagination.page = page;
+        this.pagination.rowsPerPage = rowsPerPage;
+        this.getData(`/correlativo`, "setDataTable", "datos", {
+          headers: {
+            page: headerPage,
+            limit: headerLimit,
+            order_direction: headerOrder_direction,
+            order_by: headerOrder_by,
+          },
+        });
+      }
+      this.count= 0;
+    },
+    // Metodos para Setear los Datos y Actualizar Paginado
+    setDataTable(res, dataRes) {
+      this[dataRes] = res.data;
+      this.pagination.page = res.currentPage;
+      this.currentPage = res.currentPage;
+      this.pagination.rowsNumber = res.total;
+      this.pagination.rowsPerPage = res.limit;
+      this.loading = false;
+    },
+    // Metodos para Filtrar Selects
     filterArray(val, update, abort, pagina, array, element) {
       if (val === "") {
         update(() => {
@@ -763,39 +725,26 @@ export default {
         }
       });
     },
+    // Metodos para Resetear Carga
     resetLoading() {
       this.loading = false;
     },
-    // Reglas
-    reglasAllowNull1(val) {
-      console.log(val);
-      if (val) {
-        if (val.length > 1) {
-          return "Deben ser Maximo 1 caracter";
+    // Metodos para Validar Permisos
+    desactivarCrud(createItem, readItem, deleteItem, updateItem) {
+      if (readItem == true) {
+        if (createItem == true) {
+          this.disabledCreate = false;
         }
-      }
-    },
-    reglasAllowNull10(val) {
-      console.log(val);
-      if (val) {
-        if (val.length > 10) {
-          return "Deben ser Maximo 10 caracteres";
+        if (deleteItem == true) {
+          this.disabledDelete = false;
         }
-      }
-    },
-    reglasNotNull10(val) {
-      if (val === null) {
-        return "Debes Escribir Algo";
-      }
-      if (val === "") {
-        return "Debes Escribir Algo";
-      }
-      if ((val !== null) !== "") {
-        if (val.length > 10) {
-          return "Deben ser Maximo 10 caracteres";
+        if (updateItem == true) {
+          this.disabledEdit = false;
         }
-      }
+      } else this.$router.push("/dashboard");
     },
+
+    // Reglas de Correlativos
     reglasSegundoCorrelativo(val) {
       if (val === null) {
         return "Debes Escribir Algo";
@@ -820,7 +769,7 @@ export default {
         return "Debes Escribir Algo";
       }
       if ((val !== null) !== "") {
-        if (val < this.formEdit.control_inicio) {
+        if (val < this.form.control_inicio) {
           return "El Ultimo Correlativo debe ser Mayor al Primero";
         }
         if (val.length > 10) {
@@ -828,48 +777,44 @@ export default {
         }
       }
     },
-    reglasSelect(val) {
-      if (val === null) {
-        return "Debes Seleccionar Algo";
-      }
-      if (val === "") {
-        return "Debes Seleccionar Algo";
-      }
-    },
-    desactivarCrud(createItem, readItem, deleteItem, updateItem) {
-      if (readItem == true) {
-        if (createItem == true) {
-          this.disabledCreate = false;
-        }
-        if (deleteItem == true) {
-          this.disabledDelete = false;
-        }
-        if (updateItem == true) {
-          this.disabledEdit = false;
-        }
-      } else this.$router.push("/dashboard");
-    },
 
-    getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+    // METODOS PARA PAGINA
+
+    // Metodos para hacer Get de Datos
+    getData(url, call, dataRes, axiosConfig) {
+      this.$refs.methods.getData(url, call, dataRes, axiosConfig);
     },
-    getDataCorrelativo(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
-      this.loading = true;
-    },
+    // Metodos para Setear Datos
     setData(res, dataRes) {
-      this[dataRes] = res;
+      this[dataRes] = res.data;
       this.loading = false;
     },
-
-    getDataEdit(id, call) {
-      this.$refs.methods.getDataEdit(
-        `/correlativo/${id}`,
-        `${call}`,
-        "formEdit",
-        this.axiosConfig
-      );
+    // Metodos para Setear Datos al Iniciar
+    setDataIniciar(res, dataRes) {
+      this[dataRes] = res.data;
+      this.selectedAgencia = this.agencias[0];
+      api
+        .get(`/tipos`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            fuente: "CR",
+          },
+        })
+        .then((res) => {
+          this.tipos = res.data;
+          this.selectedTipo = this.tipos[0];
+          this.getData("/correlativo", "onRequest", "datos", {
+            headers: {
+              page: 1,
+              limit: 6,
+              agencia: this.selectedAgencia.id,
+              tipo: this.selectedTipo.id,
+              fuente: "CR",
+            },
+          });
+        });
     },
+    // Metodos para Setear Datos Seleccionados
     setDataEdit(res, dataRes) {
       this[dataRes].id = res.id;
       this[dataRes].tipo = res.tipo;
@@ -880,21 +825,24 @@ export default {
       this[dataRes].serie_doc = res.serie_doc;
       this[dataRes].cod_agencia = res.cod_agencia;
     },
-
-    getDataSelect(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
-      this.loading = true;
-    },
-
-    deleteDato(idpost) {
+    // Metodos para Eliminar Datos
+    deleteData(idpost) {
       this.$refs.methods.deleteData(
         `/correlativo/${idpost}`,
-        "getDataCorrelativo",
-        this.axiosConfig
+        "getData", {
+            headers: {
+              page: 1,
+              limit: 6,
+              agencia: this.selectedAgencia.id,
+              tipo: this.selectedTipo.id,
+              fuente: "CR",
+            },
+          }
       );
       this.loading = true;
     },
-    createDato() {
+    // Metodos para Crear y Editar Datos
+    sendData() {
       if (this.form.estatus_lote.value === "A") {
         for (var e = 0, len = this.datos.length; e < len; e++) {
           if (this.datos[e].estatus_lote === "A") {
@@ -909,38 +857,44 @@ export default {
       this.form.cod_agencia = this.selectedAgencia.id;
       this.form.tipo = this.selectedTipo.id;
       this.form.estatus_lote = this.form.estatus_lote.value;
+      if (!this.form.id){
       this.$refs.methods.createData(
         "/correlativo",
         this.form,
-        "getDataCorrelativo",
-        this.axiosConfig
+        "getData",
+        {
+            headers: {
+              page: 1,
+              limit: 6,
+              agencia: this.selectedAgencia.id,
+              tipo: this.selectedTipo.id,
+              fuente: "CR",
+            },
+          }
       );
       this.resetForm();
-      this.loading = true;
-    },
-    putDato() {
-      if (this.formEdit.estatus_lote.value === "A") {
-        for (var e = 0, len = this.datos.length; e < len; e++) {
-          if (this.datos[e].estatus_lote === "A") {
-            if (this.formEdit.id !== this.datos[e].id) {
-              this.activoExistente();
-              return;
-            }
+      this.dialog = false
+      this.loading = true;} else {
+        this.$refs.methods.putData(
+        `/correlativo/${this.form.id}`,
+        this.form,
+        "getData",
+        {
+            headers: {
+              page: 1,
+              limit: 6,
+              agencia: this.selectedAgencia.id,
+              tipo: this.selectedTipo.id,
+              fuente: "CR",
+            },
           }
-          if (e == this.datos.length - 1) break;
-        }
-      }
-      this.formEdit.estatus_lote = this.formEdit.estatus_lote.value;
-      this.$refs.methods.putData(
-        `/correlativo/${this.formEdit.id}`,
-        this.formEdit,
-        "getDataCorrelativo",
-        this.axiosConfig
       );
-      this.edit = false;
+      this.dialog = false;
       this.loading = true;
+      }
     },
-    putDatoSelect(res, dataRes) {
+    // Metodos para hacer Edit con Select en Tabla
+    putDataSelect(res, dataRes) {
       this[dataRes].id = res.id;
       this[dataRes].tipo = res.tipo;
       this[dataRes].control_inicio = res.control_inicio;
@@ -948,13 +902,20 @@ export default {
       this[dataRes].ult_doc_referencia = res.ult_doc_referencia;
       this[dataRes].serie_doc = res.serie_doc;
       this[dataRes].cod_agencia = res.cod_agencia;
-      console.log(this.formEdit);
-      if (this.formEdit.estatus_lote === "A") {
+      if (this.form.estatus_lote === "A") {
         for (var e = 0, len = this.datos.length; e < len; e++) {
           if (this.datos[e].estatus_lote === "A") {
-            if (this.formEdit.id !== this.datos[e].id) {
+            if (this.form.id !== this.datos[e].id) {
               this.activoExistente();
-              this.getDataCorrelativo("/correlativo", "setData", "datos");
+              this.getData("/correlativo", "setDataTable", "datos", {
+            headers: {
+              page: 1,
+              limit: 6,
+              agencia: this.selectedAgencia.id,
+              tipo: this.selectedTipo.id,
+              fuente: "CR",
+            },
+          });
               return;
             }
           }
@@ -963,54 +924,79 @@ export default {
       }
 
       this.$refs.methods.putData(
-        `/correlativo/${this.formEdit.id}`,
-        this.formEdit,
-        "getDataCorrelativo",
-        this.axiosConfig
+        `/correlativo/${this.form.id}`,
+        this.form,
+        "getData",
+        {
+            headers: {
+              page: 1,
+              limit: 6,
+              agencia: this.selectedAgencia.id,
+              tipo: this.selectedTipo.id,
+              fuente: "CR",
+            },
+          }
       );
       this.loading = true;
     },
-
+    // Metodos para Resetear Datos
     resetForm() {
-      (this.form.tipo = ""),
-        (this.form.control_inicio = ""),
-        (this.form.control_final = ""),
-        (this.form.ult_doc_referencia = ""),
-        (this.form.estatus_lote = ""),
-        (this.form.serie_doc = ""),
-        (this.form.cod_agencia = ""),
-        (this.create = null);
-    },
-    resetFormEdit() {
-      (this.formEdit.tipo = ""),
-        (this.formEdit.control_inicio = ""),
-        (this.formEdit.control_final = ""),
-        (this.formEdit.ult_doc_referencia = ""),
-        (this.formEdit.estatus_lote = ""),
-        (this.formEdit.serie_doc = ""),
-        (this.formEdit.cod_agencia = ""),
-        (this.edit = null);
+      delete this.form.id;
+      this.form.tipo = "",
+      this.form.control_inicio = "",
+      this.form.control_final = "",
+      this.form.ult_doc_referencia = "",
+      this.form.estatus_lote = "",
+      this.form.serie_doc = "",
+      this.form.cod_agencia = ""
     },
   },
 };
 </script>
 
-<style lang="sass">
-.my-sticky-column-table
-  /* specifying max-width so the example can
-    highlight the sticky column on any browser window */
+<style>
+  .hide {
+    display: none;
+  }
+  
+  @media screen and (min-width: 600px) {
+    .movilTitle {
+      display: none;
+    }
+  }
+  @media screen and (max-width: 600px) {
+    .movilTitle {
+      display: block;
+    }
+  }
+  
+  @media screen and (min-width: 600px) {
+    .cardMargin {
+      padding-right: 20px !important;
+    }
+  }
+  
+  @media screen and (min-width: 1024px) {
+    .cardMarginFilter {
+      padding-right: 20px !important;
+    }
+  }
 
-
-  thead tr:first-child th:first-child
-    /* bg color is important for th; just specify one */
-    background-color: #FFFFFF
-
-  td:first-child
-    background-color: #FFFFFF
-
-  th:first-child,
-  td:first-child
-    position: sticky
-    left: 0
-    z-index: 1
-</style>
+  @media screen and (min-width: 600px) {
+    .cardMarginSm {
+      padding-right: 20px !important;
+    }
+  }
+  
+  @media screen and (max-width: 1024px) {
+    .buttonMargin {
+      margin-bottom: 15px !important;
+    }
+  }
+  
+  @media screen and (max-width:1024px) {
+    .selectMobile {
+      margin-bottom: 15px !important;
+    }
+  }
+  </style>
