@@ -213,7 +213,7 @@ const routes = [
       {
         path: '/paisestadociudad',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('pages/paisestadociudad.vue')}]
+        children: [{ path: "", component: () => import('pages/paisEstadoCiudad.vue')}]
       },
       {
         path: '/zonasagencia',

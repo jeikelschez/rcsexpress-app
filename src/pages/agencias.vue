@@ -701,7 +701,6 @@ export default {
       this[dataRes] = res;
       if (this.rpermisos.findIndex((item) => item.acciones.accion == 1) < 0)
         this.$router.push("/error403");
-      console.log(this.rpermisos)
     },
     // Metodo para Eliminar Agencia
     deleteData(idpost) {
