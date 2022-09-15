@@ -1,9 +1,9 @@
 <template>
   <q-page class="pagina q-pa-md">
-    <q-dialog v-model="create">
+    <q-dialog v-model="dialog">
       <q-card class="q-pa-md" bordered style="width: 900px; max-width: 80vw">
         <q-card-section>
-          <q-form @submit="createData" class="q-gutter-md">
+          <q-form @submit="sendData" class="q-gutter-md">
             <div class="row">
               <div class="col-md-4 col-xs-12">
                 <q-select
@@ -12,7 +12,9 @@
                   label="Tipo de Urgencia"
                   class="pcform"
                   input-class="input"
-                  :rules="[reglasSelect]"
+                  :rules="[
+                    (val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
+                  ]"
                   hint=""
                   :options="urgencias"
                   lazy-rules
@@ -30,7 +32,9 @@
                   label="Tipo de Tarifa"
                   class="pcform"
                   input-class="input"
-                  :rules="[reglasSelect]"
+                  :rules="[
+                    (val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
+                  ]"
                   hint=""
                   :options="tarifas"
                   lazy-rules
@@ -47,7 +51,9 @@
                   v-model="form.tipo_ubicacion"
                   label="Tipo de Ubicación"
                   input-class="input"
-                  :rules="[reglasSelect]"
+                  :rules="[
+                    (val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
+                  ]"
                   hint=""
                   :options="ubicacion"
                   lazy-rules
@@ -80,7 +86,14 @@
                   v-money="money"
                   input-class="text-right"
                   class="pcform"
-                  :rules="[reglasAllowNull6]"
+                  :rules="[
+                    (val) =>
+                      this.$refs.rulesVue.isMax(
+                        val,
+                        8,
+                        'Maximo 6 Caracteres'
+                      ) || '',
+                  ]"
                   hint=""
                   lazy-rules
                 >
@@ -96,7 +109,9 @@
                   v-model="form.tipo_carga"
                   label="Tipo de Carga"
                   input-class="input"
-                  :rules="[reglasSelect]"
+                  :rules="[
+                    (val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
+                  ]"
                   hint=""
                   :options="cargas"
                   lazy-rules
@@ -114,7 +129,9 @@
                   label="Modalidad de Pago"
                   class="pcform"
                   input-class="input"
-                  :rules="[reglasSelect]"
+                  :rules="[
+                    (val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
+                  ]"
                   hint=""
                   :options="modalidad_pago"
                   lazy-rules
@@ -132,7 +149,9 @@
                   label="Lugar de Pago"
                   class="pcform"
                   input-class="input"
-                  :rules="[reglasSelect]"
+                  :rules="[
+                    (val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
+                  ]"
                   hint=""
                   :options="ubicacion_pago"
                   lazy-rules
@@ -149,7 +168,9 @@
                   v-model="form.region_origen"
                   label="Region Origen"
                   input-class="input"
-                  :rules="[reglasSelect]"
+                  :rules="[
+                    (val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
+                  ]"
                   hint=""
                   :options="region_origen"
                   lazy-rules
@@ -167,7 +188,9 @@
                   label="Region Destino"
                   input-class="input"
                   class="pcform"
-                  :rules="[reglasSelect]"
+                  :rules="[
+                    (val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
+                  ]"
                   hint=""
                   :options="region_destino"
                   lazy-rules
@@ -200,7 +223,7 @@
               style="margin-bottom: 10px"
             >
               <q-btn
-                label="Agregar Tarifa"
+                label="Enviar"
                 type="submit"
                 color="primary"
                 class="col-md-5 col-sm-5 col-xs-12"
@@ -220,401 +243,173 @@
       </q-card>
     </q-dialog>
 
-    <q-dialog v-model="edit">
-      <q-card class="q-pa-md" bordered style="width: 900px; max-width: 80vw">
-        <q-card-section>
-          <q-form @submit="putData">
-            <div class="row">
-              <div class="col-md-4 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="formEdit.tipo_urgencia"
-                  label="Tipo de Urgencia"
-                  class="pcform"
-                  input-class="input"
-                  :rules="[reglasSelect]"
-                  hint=""
-                  :options="urgencias"
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="support_agent" />
-                  </template>
-                </q-select>
-              </div>
+    <div
+      class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 q-pa-sm justify-center"
+    >
+      <div class="justify-end q-pa-md row">
+        <div
+          class="col-md-4 col-xs-12 text-secondary movilTitle"
+          style="align-self: center; text-align: center"
+        >
+          <h4><strong>MANTENIMIENTO - TARIFAS</strong></h4>
+        </div>
+        <div
+          class="col-md-6 col-sm-7 col-xs-12 cardMargin selectMobile"
+          style="align-self: center"
+        >
+          <q-input
+            v-model="filter"
+            rounded
+            outlined
+            standout
+            type="search"
+            label="Búsqueda avanzada"
+          >
+            <template v-slot:prepend>
+              <q-icon name="search" />
+            </template>
+          </q-input>
+        </div>
+        <div
+          class="col-md-2 col-sm-4 col-xs-12"
+          style="text-align: center; align-self: center"
+        >
+          <q-btn
+            label="Insertar Tarifa"
+            rounded
+            color="primary"
+            @click="dialog = true"
+            @click.capture="resetForm()"
+            :disabled="this.disabledCreate"
+          ></q-btn>
+        </div>
+      </div>
 
-              <div class="col-md-4 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="formEdit.tipo_tarifa"
-                  label="Tipo de Tarifa"
-                  class="pcform"
-                  input-class="input"
-                  :rules="[reglasSelect]"
-                  hint=""
-                  :options="tarifas"
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="support_agent" />
-                  </template>
-                </q-select>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="formEdit.tipo_ubicacion"
-                  label="Tipo de Ubicación"
-                  input-class="input"
-                  :rules="[reglasSelect]"
-                  hint=""
-                  :options="ubicacion"
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="support_agent" />
-                  </template>
-                </q-select>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.monto_tarifa"
-                  label="Monto de Tarifa"
-                  v-money="money"
-                  input-class="text-right"
-                  hint=""
-                  class="pcform"
-                  lazy-rules
-                >
-                </q-input>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.kgr_hasta"
-                  label="Kgrs Hasta"
-                  v-money="money"
-                  input-class="text-right"
-                  class="pcform"
-                  :rules="[reglasAllowNull6]"
-                  hint=""
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="123" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="formEdit.tipo_carga"
-                  label="Tipo de Carga"
-                  input-class="input"
-                  :rules="[reglasSelect]"
-                  hint=""
-                  :options="cargas"
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="support_agent" />
-                  </template>
-                </q-select>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="formEdit.modalidad_pago"
-                  label="Modalidad de Pago"
-                  class="pcform"
-                  input-class="input"
-                  :rules="[reglasSelect]"
-                  hint=""
-                  :options="modalidad_pago"
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="support_agent" />
-                  </template>
-                </q-select>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="formEdit.pagado_en"
-                  label="Lugar de Pago"
-                  class="pcform"
-                  input-class="input"
-                  :rules="[reglasSelect]"
-                  hint=""
-                  :options="ubicacion_pago"
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="support_agent" />
-                  </template>
-                </q-select>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="formEdit.region_origen"
-                  label="Region Origen"
-                  input-class="input"
-                  :rules="[reglasSelect]"
-                  hint=""
-                  :options="region_origen"
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="support_agent" />
-                  </template>
-                </q-select>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="formEdit.region_destino"
-                  label="Region Destino"
-                  input-class="input"
-                  class="pcform"
-                  :rules="[reglasSelect]"
-                  hint=""
-                  :options="region_destino"
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="support_agent" />
-                  </template>
-                </q-select>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.tiempo_servicio"
-                  label="Tiempo (HRS) Servicio"
-                  hint=""
-                  type="number"
-                  lazy-rules
-                  min="0"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-            </div>
-
+      <div class="row q-gutter-y-md q-pa-md">
+        <q-table
+          :rows="datos"
+          :loading="loading"
+          binary-state-sort
+          row-key="id"
+          :columns="columns"
+          :separator="separator"
+          :filter="filter"
+          style="width: 100%"
+          :grid="$q.screen.xs"
+          v-model:pagination="pagination"
+        >
+          <template v-slot:loading>
+            <q-inner-loading showing color="primary" />
+          </template>
+          <template v-slot:body-cell-action="props">
+            <q-td :props="props">
+              <q-btn
+                dense
+                round
+                flat
+                color="primary"
+                icon="edit"
+                :disabled="this.disabledEdit"
+                @click="
+                  getData(`/tarifas/${props.row.id}`, 'setDataEdit', 'form');
+                  dialog = true;
+                "
+              ></q-btn>
+              <q-btn
+                dense
+                round
+                flat
+                color="primary"
+                icon="delete"
+                :disabled="this.disabledDelete"
+                @click="selected = props.row.id"
+                @click.capture="deletePopup = true"
+              ></q-btn>
+            </q-td>
+          </template>
+          <template v-slot:item="props">
             <div
-              class="full-width row justify-center items-center content-center"
-              style="margin-bottom: 10px"
+              class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+              :style="props.selected ? 'transform: scale(0.95);' : ''"
             >
-              <q-btn
-                label="Editar Tarifa"
-                type="submit"
-                color="primary"
-                class="col-md-5 col-sm-5 col-xs-12"
-                icon="person_add"
-              />
-              <q-btn
-                label="Cerrar"
-                color="primary"
-                flat
-                class="col-md-5 col-sm-5 col-xs-12 btnmovil"
-                icon="close"
-                v-close-popup
-              />
+              <q-card :class="props.selected ? 'bg-grey-2' : ''">
+                <q-list dense>
+                  <q-item v-for="col in props.cols" :key="col.name">
+                    <q-item-section>
+                      <q-item-label>{{ col.label }}</q-item-label>
+                    </q-item-section>
+                    <q-item-section side>
+                      <q-chip
+                        v-if="col.name === 'status'"
+                        :color="
+                          props.row.status == 'Active'
+                            ? 'green'
+                            : props.row.status == 'Disable'
+                            ? 'red'
+                            : 'grey'
+                        "
+                        text-color="white"
+                        dense
+                        class="text-weight-bolder"
+                        square
+                        >{{ col.value }}</q-chip
+                      >
+                      <q-btn
+                        v-else-if="col.name === 'action'"
+                        dense
+                        round
+                        flat
+                        color="primary"
+                        icon="edit"
+                        :disabled="this.disabledEdit"
+                        @click="
+                          getData(
+                            `/tarifas/${props.row.id}`,
+                            'setDataEdit',
+                            'form'
+                          );
+                          dialog = true;
+                        "
+                      ></q-btn>
+                      <q-chip
+                        v-if="col.name === 'status'"
+                        :color="
+                          props.row.status == 'Active'
+                            ? 'green'
+                            : props.row.status == 'Disable'
+                            ? 'red'
+                            : 'grey'
+                        "
+                        text-color="white"
+                        dense
+                        class="text-weight-bolder"
+                        square
+                        >{{ col.value }}</q-chip
+                      >
+                      <q-btn
+                        v-else-if="col.name === 'action'"
+                        dense
+                        round
+                        flat
+                        color="primary"
+                        icon="delete"
+                        :disabled="this.disabledDelete"
+                        @click="selected = props.row.id"
+                        @click.capture="deletePopup = true"
+                      ></q-btn>
+                      <q-item-label
+                        v-else
+                        caption
+                        :class="col.classes ? col.classes : ''"
+                        >{{ col.value }}</q-item-label
+                      >
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-card>
             </div>
-          </q-form>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
-
-    <div class="row q-pa-sm justify-center">
-      <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
-        <div class="row">
-          <div
-            class="col-md-4 col-xs-12 text-secondary"
-            style="align-self: center; text-align: center; margin-right: 16px"
-          >
-            <h4><strong>MANTENIMIENTO - TARIFAS</strong></h4>
-          </div>
-          <div
-            class="col-md-5 col-sm-7 col-xs-6"
-            style="align-self: center; margin-right: 20px"
-          >
-            <q-input
-              v-model="filter"
-              rounded
-              outlined
-              standout
-              type="search"
-              label="Búsqueda avanzada"
-            >
-              <template v-slot:prepend>
-                <q-icon name="search" />
-              </template>
-            </q-input>
-          </div>
-          <div
-            class="col-md-2 col-sm-4 col-xs-5"
-            style="text-align: center; align-self: center"
-          >
-            <q-btn
-              label="Insertar Tarifa"
-              rounded
-              color="primary"
-              @click="create = true"
-              @click.capture="resetForm()"
-              :disabled="this.disabledCreate"
-            ></q-btn>
-          </div>
-        </div>
-
-        <div class="q-pa-md">
-          <div class="q-gutter-y-md">
-            <div bordered flat class="row">
-              <q-table
-                :rows="datos"
-                :loading="loading"
-                binary-state-sort
-                row-key="id"
-                :columns="columns"
-                :separator="separator"
-                :filter="filter"
-                style="width: 100%"
-                :grid="$q.screen.xs"
-                v-model:pagination="pagination"
-              >
-                <template v-slot:loading>
-                  <q-inner-loading showing color="primary" />
-                </template>
-                <template v-slot:body-cell-action="props">
-                  <q-td :props="props">
-                    <q-btn
-                      dense
-                      round
-                      flat
-                      color="primary"
-                      icon="edit"
-                      :disabled="this.disabledEdit"
-                      @click="
-                        getData(
-                          `/tarifas/${props.row.id}`,
-                          'setDataEdit',
-                          'formEdit'
-                        );
-                        edit = true;
-                      "
-                    ></q-btn>
-                    <q-btn
-                      dense
-                      round
-                      flat
-                      color="primary"
-                      icon="delete"
-                      :disabled="this.disabledDelete"
-                      @click="selected = props.row.id"
-                      @click.capture="deletePopup = true"
-                    ></q-btn>
-                  </q-td>
-                </template>
-                <template v-slot:item="props">
-                  <div
-                    class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
-                    :style="props.selected ? 'transform: scale(0.95);' : ''"
-                  >
-                    <q-card :class="props.selected ? 'bg-grey-2' : ''">
-                      <q-list dense>
-                        <q-item v-for="col in props.cols" :key="col.name">
-                          <q-item-section>
-                            <q-item-label>{{ col.label }}</q-item-label>
-                          </q-item-section>
-                          <q-item-section side>
-                            <q-chip
-                              v-if="col.name === 'status'"
-                              :color="
-                                props.row.status == 'Active'
-                                  ? 'green'
-                                  : props.row.status == 'Disable'
-                                  ? 'red'
-                                  : 'grey'
-                              "
-                              text-color="white"
-                              dense
-                              class="text-weight-bolder"
-                              square
-                              >{{ col.value }}</q-chip
-                            >
-                            <q-btn
-                              v-else-if="col.name === 'action'"
-                              dense
-                              round
-                              flat
-                              color="primary"
-                              icon="edit"
-                              :disabled="this.disabledEdit"
-                              @click="
-                                getData(
-                                  `/tarifas/${props.row.id}`,
-                                  'setDataEdit',
-                                  'formEdit'
-                                );
-                                edit = true;
-                              "
-                            ></q-btn>
-                            <q-chip
-                              v-if="col.name === 'status'"
-                              :color="
-                                props.row.status == 'Active'
-                                  ? 'green'
-                                  : props.row.status == 'Disable'
-                                  ? 'red'
-                                  : 'grey'
-                              "
-                              text-color="white"
-                              dense
-                              class="text-weight-bolder"
-                              square
-                              >{{ col.value }}</q-chip
-                            >
-                            <q-btn
-                              v-else-if="col.name === 'action'"
-                              dense
-                              round
-                              flat
-                              color="primary"
-                              icon="delete"
-                              :disabled="this.disabledDelete"
-                              @click="selected = props.row.id"
-                              @click.capture="deletePopup = true"
-                            ></q-btn>
-                            <q-item-label
-                              v-else
-                              caption
-                              :class="col.classes ? col.classes : ''"
-                              >{{ col.value }}</q-item-label
-                            >
-                          </q-item-section>
-                        </q-item>
-                      </q-list>
-                    </q-card>
-                  </div>
-                </template>
-              </q-table>
-            </div>
-          </div>
-        </div>
+          </template>
+        </q-table>
       </div>
     </div>
 
@@ -638,27 +433,32 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+
     <methods
       ref="methods"
-      @get-Data-Tarifas="getDataTarifas('/tarifas', 'setData', 'datos')"
+      @get-Data="
+        getData('/tarifas', 'setData', 'datos');
+        this.loading = true;
+      "
       @set-data="setData"
       @reset-Loading="resetLoading"
       @set-Data-Edit="setDataEdit"
     >
     </methods>
+
     <desactivate-crud ref="desactivateCrud" @desactivar-Crud="desactivarCrud">
     </desactivate-crud>
+
+    <rules-vue ref="rulesVue"></rules-vue>
   </q-page>
 </template>
 
 <script>
 import { ref } from "vue";
 
-import { api } from "boot/axios";
-
 import { useQuasar } from "quasar";
 
-import { LocalStorage } from "quasar";
+import rulesVue from "src/components/rules.vue";
 
 import methodsVue from "src/components/methods.vue";
 
@@ -672,6 +472,7 @@ export default {
     "desactivate-crud": desactivateCrudVue,
     methods: methodsVue,
     VMoney,
+    rulesVue,
   },
   name: "Bancos",
   data() {
@@ -789,20 +590,6 @@ export default {
         { label: "ORIENTAL", value: "OR" },
       ],
       datos: [],
-      formEdit: {
-        id: "",
-        monto_tarifa: "",
-        tipo_urgencia: [],
-        tipo_tarifa: [],
-        tipo_ubicacion: [],
-        kgr_hasta: "",
-        tipo_carga: [],
-        modalidad_pago: [],
-        pagado_en: [],
-        region_origen: [],
-        region_destino: [],
-        tiempo_servicio: "",
-      },
       selected: [],
       error: "",
       disabledCreate: true,
@@ -816,24 +603,24 @@ export default {
       sortBy: "desc",
       descending: false,
       page: 2,
-      rowsPerPage: 4,
+      rowsPerPage: 9,
       // rowsNumber: xx if getting data from a server
     });
     return {
       pagination: ref({
-        rowsPerPage: 10,
+        rowsPerPage: 9,
       }),
       separator: ref("vertical"),
-      create: ref(false),
+      dialog: ref(false),
       loading: ref(false),
-      edit: ref(false),
-      medium: ref(false),
       deletePopup: ref(false),
       filter: ref(""),
     };
   },
   mounted() {
-    this.getDataTarifas("/tarifas", "setData", "datos");
+    this.$emit("changeTitle", "SCEN - Mantenimiento - Tarifas", "");
+    this.getData("/tarifas", "setData", "datos");
+    this.loading = true;
     this.$refs.desactivateCrud.desactivarCrud(
       "c_tarifas",
       "r_tarifas",
@@ -843,31 +630,11 @@ export default {
     );
   },
   methods: {
+    // Metodo para Resetear Carga
     resetLoading() {
       this.loading = false;
     },
-    // Reglas
-    reglasSelect(val) {
-      if (val === null) {
-        return "Debes Seleccionar Algo";
-      }
-      if (val === "") {
-        return "Debes Seleccionar Algo";
-      }
-    },
-    reglasAllowNull6(val) {
-      if (val !== null) {
-        var val = val;
-        val = val.replaceAll(".", "").replaceAll(",", ".");
-        if (val.length > 0) {
-          if (val.length > 5) {
-            return "Deben ser Maximo 6 caracteres";
-          }
-        }
-      }
-    },
-
-    // Desactivar CRUD
+    // Metodo para Validar Permisos
     desactivarCrud(createItem, readItem, deleteItem, updateItem) {
       if (readItem == true) {
         if (createItem == true) {
@@ -882,54 +649,44 @@ export default {
       } else this.$router.push("/error403");
     },
 
-    // Metodos CRUD
+    // METODOS DE PAGINA
+
+    // Metodo para hacer Get de Datos
     getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, {
-        headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-        },
-      });
+      this.$refs.methods.getData(url, call, dataRes);
     },
-    getDataTarifas(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, {
-        headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-        },
-      });
-      this.loading = true;
-    },
+    // Metodo para Setear Datos
     setData(res, dataRes) {
       this[dataRes] = res;
       this.loading = false;
     },
+    // Metodo para Setear Datos Seleccionados
     setDataEdit(res, dataRes) {
-      this.formEdit.id = res.id;
-      this.formEdit.monto_tarifa = res.monto_tarifa;
-      this.formEdit.kgr_hasta = res.kgr_hasta;
-      this.formEdit.tiempo_servicio = res.tiempo_servicio;
-      this.formEdit.tipo_urgencia = res.urgencia_desc;
-      this.formEdit.tipo_tarifa = res.tarifa_desc;
-      this.formEdit.tipo_ubicacion = res.ubicacion_desc;
-      this.formEdit.tipo_carga = res.carga_desc;
-      this.formEdit.modalidad_pago = res.modalidad_desc;
-      this.formEdit.pagado_en = res.pagado_desc;
-      this.formEdit.region_origen = res.origen_desc;
-      this.formEdit.region_destino = res.destino_desc;
-      this.formEdit.tiempo_servicio = res.tiempo_servicio;
+      this.form.id = res.id;
+      this.form.monto_tarifa = res.monto_tarifa;
+      this.form.kgr_hasta = res.kgr_hasta;
+      this.form.tiempo_servicio = res.tiempo_servicio;
+      this.form.tipo_urgencia = res.urgencia_desc;
+      this.form.tipo_tarifa = res.tarifa_desc;
+      this.form.tipo_ubicacion = res.ubicacion_desc;
+      this.form.tipo_carga = res.carga_desc;
+      this.form.modalidad_pago = res.modalidad_desc;
+      this.form.pagado_en = res.pagado_desc;
+      this.form.region_origen = res.origen_desc;
+      this.form.region_destino = res.destino_desc;
+      this.form.tiempo_servicio = res.tiempo_servicio;
       this.loading = false;
-      if (this.formEdit.tiempo_servicio == null) {
-        this.formEdit.tiempo_servicio = "";
+      if (this.form.tiempo_servicio == null) {
+        this.form.tiempo_servicio = "";
       }
     },
+    // Metodo para Eliminar Datos
     deleteData(idpost) {
-      this.$refs.methods.deleteData(`/tarifas/${idpost}`, "getDataTarifas", {
-        headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-        },
-      });
+      this.$refs.methods.deleteData(`/tarifas/${idpost}`, "getData");
       this.loading = true;
     },
-    createData() {
+    // Metodo para Editar y Crear Datos
+    sendData() {
       this.form.kgr_hasta = this.form.kgr_hasta
         .replaceAll(".", "")
         .replaceAll(",", ".");
@@ -944,45 +701,25 @@ export default {
       this.form.pagado_en = this.form.pagado_en.value;
       this.form.region_origen = this.form.region_origen.value;
       this.form.region_destino = this.form.region_destino.value;
-      this.$refs.methods.createData("/tarifas", this.form, "getDataTarifas", {
-        headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-        },
-      });
-      this.resetForm();
-      this.loading = true;
+      if (!this.form.id) {
+        this.$refs.methods.createData("/tarifas", this.form, "getData");
+        this.resetForm();
+        this.dialog = false;
+        this.loading = true;
+      } else {
+        this.$refs.methods.putData(
+          `/tarifas/${this.form.id}`,
+          this.form,
+          "getData"
+        );
+        this.dialog = false;
+        this.resetForm();
+        this.loading = true;
+      }
     },
-    putData() {
-      this.formEdit.kgr_hasta = this.formEdit.kgr_hasta
-        .replaceAll(".", "")
-        .replaceAll(",", ".");
-      this.formEdit.monto_tarifa = this.formEdit.monto_tarifa
-        .replaceAll(".", "")
-        .replaceAll(",", ".");
-      this.formEdit.tipo_urgencia = this.formEdit.tipo_urgencia.value;
-      this.formEdit.tipo_tarifa = this.formEdit.tipo_tarifa.value;
-      this.formEdit.tipo_ubicacion = this.formEdit.tipo_ubicacion.value;
-      this.formEdit.tipo_carga = this.formEdit.tipo_carga.value;
-      this.formEdit.modalidad_pago = this.formEdit.modalidad_pago.value;
-      this.formEdit.pagado_en = this.formEdit.pagado_en.value;
-      this.formEdit.region_origen = this.formEdit.region_origen.value;
-      this.formEdit.region_destino = this.formEdit.region_destino.value;
-      this.$refs.methods.putData(
-        `/tarifas/${this.formEdit.id}`,
-        this.formEdit,
-        "getDataTarifas",
-        {
-          headers: {
-            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-          },
-        }
-      );
-      this.edit = false;
-      this.resetFormEdit();
-      this.loading = true;
-    },
-
+    // Metodo para Resetear Datos
     resetForm() {
+      delete this.form.id;
       (this.form.monto_tarifa = "0"),
         (this.form.kgr_hasta = ""),
         (this.form.tiempo_servicio = ""),
@@ -994,44 +731,49 @@ export default {
         (this.form.pagado_en = ""),
         (this.form.region_destino = ""),
         (this.form.region_origen = ""),
-        (this.form.tiempo_servicio = ""),
-        (this.create = false);
-    },
-    resetFormEdit() {
-      (this.formEdit.monto_tarifa = "0"),
-        (this.formEdit.kgr_hasta = ""),
-        (this.formEdit.tiempo_servicio = ""),
-        (this.formEdit.tipo_urgencia = ""),
-        (this.formEdit.tipo_tarifa = ""),
-        (this.formEdit.tipo_ubicacion = ""),
-        (this.formEdit.tipo_carga = ""),
-        (this.formEdit.modalidad_pago = ""),
-        (this.formEdit.pagado_en = ""),
-        (this.formEdit.region_destino = ""),
-        (this.formEdit.region_origen = ""),
-        (this.formEdit.tiempo_servicio = ""),
-        (this.create = false);
+        (this.form.tiempo_servicio = "");
     },
   },
 };
 </script>
 
-<style lang="sass">
-.my-sticky-column-table
-  /* specifying max-width so the example can
-    highlight the sticky column on any browser window */
+<style>
+.hide {
+  display: none;
+}
 
+@media screen and (min-width: 600px) {
+  .movilTitle {
+    display: none;
+  }
+}
+@media screen and (max-width: 600px) {
+  .movilTitle {
+    display: block;
+  }
+}
 
-  thead tr:first-child th:first-child
-    /* bg color is important for th; just specify one */
-    background-color: #FFFFFF
+@media screen and (min-width: 600px) {
+  .cardMargin {
+    padding-right: 20px !important;
+  }
+}
 
-  td:first-child
-    background-color: #FFFFFF
+@media screen and (min-width: 1024px) {
+  .cardMarginFilter {
+    padding-right: 20px !important;
+  }
+}
 
-  th:first-child,
-  td:first-child
-    position: sticky
-    left: 0
-    z-index: 1
+@media screen and (max-width: 1024px) {
+  .buttonMargin {
+    margin-bottom: 15px !important;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .selectMobile {
+    margin-bottom: 25px !important;
+  }
+}
 </style>

@@ -1,9 +1,9 @@
 <template>
   <q-page class="pagina q-pa-md">
-    <q-dialog v-model="create">
+    <q-dialog v-model="dialog">
       <q-card class="q-pa-md" bordered style="max-width: 60vw">
         <q-card-section>
-          <q-form @submit="createData" class="q-gutter-md">
+          <q-form @submit="sendData" class="q-gutter-md">
             <div class="row">
               <div class="col-md-6 col-xs-12">
                 <q-input
@@ -13,7 +13,20 @@
                   hint=""
                   class="pcform"
                   lazy-rules
-                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 50, 'Maximo 50 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
+                  :rules="[
+                    (val) =>
+                      this.$refs.rulesVue.isMax(
+                        val,
+                        50,
+                        'Maximo 50 Caracteres'
+                      ),
+                    (val) =>
+                      this.$refs.rulesVue.isMin(
+                        val,
+                        3,
+                        'Minimo 3 Caracteres'
+                      ) || '',
+                  ]"
                   @update:model-value="
                     form.nb_ayudante = form.nb_ayudante.toUpperCase()
                   "
@@ -29,7 +42,20 @@
                   outlined
                   v-model="form.tlf_ayudante"
                   label="Teléfono"
-                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 50, 'Maximo 50 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
+                  :rules="[
+                    (val) =>
+                      this.$refs.rulesVue.isMax(
+                        val,
+                        50,
+                        'Maximo 50 Caracteres'
+                      ),
+                    (val) =>
+                      this.$refs.rulesVue.isMin(
+                        val,
+                        3,
+                        'Minimo 3 Caracteres'
+                      ) || '',
+                  ]"
                   hint=""
                   lazy-rules
                   mask="### - ### - ##########"
@@ -46,7 +72,20 @@
                   v-model="form.dir_ayudante"
                   label="Direccion"
                   hint=""
-                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 100, 'Maximo 100 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
+                  :rules="[
+                    (val) =>
+                      this.$refs.rulesVue.isMax(
+                        val,
+                        100,
+                        'Maximo 100 Caracteres'
+                      ),
+                    (val) =>
+                      this.$refs.rulesVue.isMin(
+                        val,
+                        3,
+                        'Minimo 3 Caracteres'
+                      ) || '',
+                  ]"
                   lazy-rules
                   @update:model-value="
                     form.dir_ayudante = form.dir_ayudante.toUpperCase()
@@ -64,7 +103,10 @@
                   v-model="form.flag_activo"
                   label="Vigente"
                   hint=""
-                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido')|| '']"
+                  :rules="[
+                    (val) =>
+                      this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
+                  ]"
                   :options="vigente"
                   lazy-rules
                 >
@@ -80,7 +122,7 @@
               style="margin-bottom: 10px"
             >
               <q-btn
-                label="Agregar Ayudante"
+                label="Enviar"
                 type="submit"
                 color="primary"
                 class="col-md-5 col-sm-5 col-xs-12"
@@ -100,282 +142,177 @@
       </q-card>
     </q-dialog>
 
-    <q-dialog v-model="edit">
-      <q-card class="q-pa-md" bordered style="max-width: 60vw">
-        <q-card-section>
-          <q-form @submit="putData">
-            <div class="row">
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.nb_ayudante"
-                  label="Nombre"
-                  hint=""
-                  class="pcform"
-                  lazy-rules
-                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 50, 'Maximo 50 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
-                  @update:model-value="
-                    formEdit.nb_ayudante = formEdit.nb_ayudante.toUpperCase()
-                  "
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="person" />
-                  </template>
-                </q-input>
-              </div>
+    <div
+      class="q-pa-sm justify-center col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
+    >
+      <div class="row q-pa-md justify-end">
+        <div
+          class="col-md-4 col-xs-12 text-secondary movilTitle"
+          style="align-self: center; text-align: center"
+        >
+          <h4><strong>MANTENIMIENTO - AYUDANTES</strong></h4>
+        </div>
+        <div
+          class="col-md-6 col-sm-7 col-xs-12 cardMargin selectMobile"
+          style="align-self: center"
+        >
+          <q-input
+            v-model="filter"
+            rounded
+            outlined
+            standout
+            type="search"
+            label="Búsqueda avanzada"
+          >
+            <template v-slot:prepend>
+              <q-icon name="search" />
+            </template>
+          </q-input>
+        </div>
+        <div
+          class="col-md-2 col-sm-4 col-xs-12"
+          style="text-align: center; align-self: center"
+        >
+          <q-btn
+            label="Insertar Ayudante"
+            rounded
+            color="primary"
+            @click="
+              dialog = true;
+              this.resetForm();
+            "
+            :disabled="this.disabledCreate"
+          ></q-btn>
+        </div>
+      </div>
 
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.tlf_ayudante"
-                  label="Teléfono"
-                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 50, 'Maximo 50 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
-                  hint=""
-                  lazy-rules
-                  mask="### - ### - ##########"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="phone" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-12 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.dir_ayudante"
-                  label="Direccion"
-                  hint=""
-                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 100, 'Maximo 100 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
-                  lazy-rules
-                  @update:model-value="
-                    formEdit.dir_ayudante = formEdit.dir_ayudante.toUpperCase()
-                  "
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="location_on" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-12 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="formEdit.flag_activo"
-                  label="Vigente"
-                  hint=""
-                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido')|| '']"
-                  :options="vigente"
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="rule" />
-                  </template>
-                </q-select>
-              </div>
-            </div>
-
-            <div
-              class="full-width row justify-center items-center content-center"
-              style="margin-bottom: 10px"
-            >
+      <div class="row q-pa-md q-gutter-y-md">
+        <q-table
+          :rows="datos"
+          binary-state-sort
+          row-key="id"
+          :loading="loading"
+          :columns="columns"
+          :separator="separator"
+          :filter="filter"
+          style="width: 100%"
+          :grid="$q.screen.xs"
+          v-model:pagination="pagination"
+        >
+          <template v-slot:loading>
+            <q-inner-loading showing color="primary" />
+          </template>
+          <template v-slot:body-cell-action="props">
+            <q-td :props="props">
               <q-btn
-                label="Editar Ayudante"
-                type="submit"
-                color="primary"
-                class="col-md-5 col-sm-5 col-xs-12"
-                icon="person_add"
-              />
-              <q-btn
-                label="Cerrar"
-                color="primary"
+                dense
+                round
                 flat
-                class="col-md-5 col-sm-5 col-xs-12 btnmovil"
-                icon="close"
-                v-close-popup
-              />
-            </div>
-          </q-form>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
-
-    <div class="row q-pa-sm justify-center">
-      <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
-        <div class="row">
-          <div
-            class="col-md-4 col-xs-12 text-secondary"
-            style="align-self: center; text-align: center; margin-right: 16px"
-          >
-            <h4><strong>MANTENIMIENTO - AYUDANTES</strong></h4>
-          </div>
-          <div
-            class="col-md-5 col-sm-7 col-xs-6"
-            style="align-self: center; margin-right: 20px"
-          >
-            <q-input
-              v-model="filter"
-              rounded
-              outlined
-              standout
-              type="search"
-              label="Búsqueda avanzada"
+                color="primary"
+                icon="edit"
+                :disabled="this.disabledEdit"
+                @click="
+                  getData(`/ayudantes/${props.row.id}`, 'setDataEdit', 'form');
+                  this.resetForm();
+                  dialog = true;
+                "
+              ></q-btn>
+              <q-btn
+                dense
+                round
+                flat
+                color="primary"
+                icon="delete"
+                :disabled="this.disabledDelete"
+                @click="selected = props.row.id"
+                @click.capture="deletePopup = true"
+              ></q-btn>
+            </q-td>
+          </template>
+          <template v-slot:item="props">
+            <div
+              class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+              :style="props.selected ? 'transform: scale(0.95);' : ''"
             >
-              <template v-slot:prepend>
-                <q-icon name="search" />
-              </template>
-            </q-input>
-          </div>
-          <div
-            class="col-md-2 col-sm-4 col-xs-5"
-            style="text-align: center; align-self: center"
-          >
-            <q-btn
-              label="Insertar Ayudante"
-              rounded
-              color="primary"
-              @click="create = true; this.resetForm()"
-              :disabled="this.disabledCreate"
-            ></q-btn>
-          </div>
-        </div>
-
-        <div class="q-pa-md">
-          <div class="q-gutter-y-md">
-            <div bordered flat class="row">
-              <q-table
-                :rows="datos"
-                binary-state-sort
-                row-key="id"
-                :loading="loading"
-                :columns="columns"
-                :separator="separator"
-                :filter="filter"
-                style="width: 100%"
-                :grid="$q.screen.xs"
-                v-model:pagination="pagination"
-              >
-                <template v-slot:loading>
-                  <q-inner-loading showing color="primary" />
-                </template>
-                <template v-slot:body-cell-action="props">
-                  <q-td :props="props">
-                    <q-btn
-                      dense
-                      round
-                      flat
-                      color="primary"
-                      icon="edit"
-                      :disabled="this.disabledEdit"
-                      @click="
-                        getData(
-                          `/ayudantes/${props.row.id}`,
-                          'setDataEdit',
-                          'formEdit'
-                        );
-                        this.resetFormEdit()
-                        edit = true;
-                      "
-                    ></q-btn>
-                    <q-btn
-                      dense
-                      round
-                      flat
-                      color="primary"
-                      icon="delete"
-                      :disabled="this.disabledDelete"
-                      @click="selected = props.row.id"
-                      @click.capture="deletePopup = true"
-                    ></q-btn>
-                  </q-td>
-                </template>
-                <template v-slot:item="props">
-                  <div
-                    class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
-                    :style="props.selected ? 'transform: scale(0.95);' : ''"
-                  >
-                    <q-card :class="props.selected ? 'bg-grey-2' : ''">
-                      <q-list dense>
-                        <q-item v-for="col in props.cols" :key="col.name">
-                          <q-item-section>
-                            <q-item-label>{{ col.label }}</q-item-label>
-                          </q-item-section>
-                          <q-item-section side>
-                            <q-chip
-                              v-if="col.name === 'status'"
-                              :color="
-                                props.row.status == 'Active'
-                                  ? 'green'
-                                  : props.row.status == 'Disable'
-                                  ? 'red'
-                                  : 'grey'
-                              "
-                              text-color="white"
-                              dense
-                              class="text-weight-bolder"
-                              square
-                              >{{ col.value }}</q-chip
-                            >
-                            <q-btn
-                              v-else-if="col.name === 'action'"
-                              dense
-                              round
-                              flat
-                              color="primary"
-                              icon="edit"
-                              :disabled="this.disabledEdit"
-                              @click="
-                                getData(
-                                  `/ayudantes/${props.row.id}`,
-                                  'setDataEdit',
-                                  'formEdit'
-                                );
-                                this.resetFormEdit()
-                                edit = true;
-                              "
-                            ></q-btn>
-                            <q-chip
-                              v-if="col.name === 'status'"
-                              :color="
-                                props.row.status == 'Active'
-                                  ? 'green'
-                                  : props.row.status == 'Disable'
-                                  ? 'red'
-                                  : 'grey'
-                              "
-                              text-color="white"
-                              dense
-                              class="text-weight-bolder"
-                              square
-                              >{{ col.value }}</q-chip
-                            >
-                            <q-btn
-                              v-else-if="col.name === 'action'"
-                              dense
-                              round
-                              flat
-                              color="primary"
-                              icon="delete"
-                              :disabled="this.disabledDelete"
-                              @click="selected = props.row.id"
-                              @click.capture="deletePopup = true"
-                            ></q-btn>
-                            <q-item-label
-                              v-else
-                              caption
-                              :class="col.classes ? col.classes : ''"
-                              >{{ col.value }}</q-item-label
-                            >
-                          </q-item-section>
-                        </q-item>
-                      </q-list>
-                    </q-card>
-                  </div>
-                </template>
-              </q-table>
+              <q-card :class="props.selected ? 'bg-grey-2' : ''">
+                <q-list dense>
+                  <q-item v-for="col in props.cols" :key="col.name">
+                    <q-item-section>
+                      <q-item-label>{{ col.label }}</q-item-label>
+                    </q-item-section>
+                    <q-item-section side>
+                      <q-chip
+                        v-if="col.name === 'status'"
+                        :color="
+                          props.row.status == 'Active'
+                            ? 'green'
+                            : props.row.status == 'Disable'
+                            ? 'red'
+                            : 'grey'
+                        "
+                        text-color="white"
+                        dense
+                        class="text-weight-bolder"
+                        square
+                        >{{ col.value }}</q-chip
+                      >
+                      <q-btn
+                        v-else-if="col.name === 'action'"
+                        dense
+                        round
+                        flat
+                        color="primary"
+                        icon="edit"
+                        :disabled="this.disabledEdit"
+                        @click="
+                          getData(
+                            `/ayudantes/${props.row.id}`,
+                            'setDataEdit',
+                            'form'
+                          );
+                          this.resetFormEdit();
+                          edit = true;
+                        "
+                      ></q-btn>
+                      <q-chip
+                        v-if="col.name === 'status'"
+                        :color="
+                          props.row.status == 'Active'
+                            ? 'green'
+                            : props.row.status == 'Disable'
+                            ? 'red'
+                            : 'grey'
+                        "
+                        text-color="white"
+                        dense
+                        class="text-weight-bolder"
+                        square
+                        >{{ col.value }}</q-chip
+                      >
+                      <q-btn
+                        v-else-if="col.name === 'action'"
+                        dense
+                        round
+                        flat
+                        color="primary"
+                        icon="delete"
+                        :disabled="this.disabledDelete"
+                        @click="selected = props.row.id"
+                        @click.capture="deletePopup = true"
+                      ></q-btn>
+                      <q-item-label
+                        v-else
+                        caption
+                        :class="col.classes ? col.classes : ''"
+                        >{{ col.value }}</q-item-label
+                      >
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-card>
             </div>
-          </div>
-        </div>
+          </template>
+        </q-table>
       </div>
     </div>
 
@@ -399,17 +336,21 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+
     <methods
       ref="methods"
-      @get-Data-Ayudantes="getDataAyudantes('/ayudantes', 'setData', 'datos')"
-      @set-data="setData"
+      @get-Data="
+        getData('/ayudantes', 'setData', 'datos');
+        this.loading = true;
+      "
+      @set-Data="setData"
       @reset-Loading="resetLoading"
       @set-data-Edit="setDataEdit"
     >
     </methods>
-    <rules-vue
-      ref="rulesVue"
-    ></rules-vue>
+
+    <rules-vue ref="rulesVue"></rules-vue>
+
     <desactive-crud ref="desactiveCrud" @desactivar-Crud="desactivarCrud">
     </desactive-crud>
   </q-page>
@@ -431,7 +372,8 @@ import desactivateCrudVue from "src/components/desactivateCrud.vue";
 export default {
   components: {
     "desactive-crud": desactivateCrudVue,
-    methods: methodsVue, rulesVue
+    methods: methodsVue,
+    rulesVue,
   },
   name: "Ayudantes",
   data() {
@@ -484,12 +426,6 @@ export default {
         flag_activo: "",
       },
       datos: [],
-      formEdit: {
-        nb_ayudante: "",
-        dir_ayudante: "",
-        tlf_ayudante: "",
-        flag_activo: "",
-      },
       vigente: [
         { label: "ACTIVO", value: "1" },
         { label: "INACTIVO", value: "0" },
@@ -507,48 +443,24 @@ export default {
       sortBy: "desc",
       descending: false,
       page: 2,
-      rowsPerPage: 4,
+      rowsPerPage: 9,
       // rowsNumber: xx if getting data from a server
     });
     return {
       pagination: ref({
-        rowsPerPage: 10,
+        rowsPerPage: 9,
       }),
       separator: ref("vertical"),
-      create: ref(false),
       loading: ref(false),
-      edit: ref(false),
-      errorDelServidor() {
-        $q.notify({
-          message: this.error,
-          color: "red",
-        });
-      },
-      añadidoConExito() {
-        $q.notify({
-          message: "Banco agregado exitosamente",
-          color: "green",
-        });
-      },
-      editadoConExito() {
-        $q.notify({
-          message: "Banco editado exitosamente",
-          color: "green",
-        });
-      },
-      eliminadoConExito() {
-        $q.notify({
-          message: "Banco eliminado exitosamente",
-          color: "green",
-        });
-      },
-      medium: ref(false),
+      dialog: ref(false),
       deletePopup: ref(false),
       filter: ref(""),
     };
   },
   mounted() {
-    this.getDataAyudantes("/ayudantes", "setData", "datos");
+    this.$emit("changeTitle", "SCEN - Mantenimiento - Ayudantes", "");
+    this.getData("/ayudantes", "setData", "datos");
+    this.loading = true;
     this.$refs.desactiveCrud.desactivarCrud(
       "c_ayudantes",
       "r_ayudantes",
@@ -558,9 +470,11 @@ export default {
     );
   },
   methods: {
+    // Metodo para Resetear Carga
     resetLoading() {
       this.loading = false;
     },
+    // Metodo para Validar Permisos
     desactivarCrud(createItem, readItem, deleteItem, updateItem) {
       if (readItem == true) {
         if (createItem == true) {
@@ -574,17 +488,19 @@ export default {
         }
       } else this.$router.push("/error403");
     },
+    // Metodo para Hacer Get de Datos
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes);
     },
-    getDataAyudantes(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes);
-      this.loading = true;
-    },
+
+    // METODOS DE PAGINAS
+
+    // Metodo para Setear Datos
     setData(res, dataRes) {
       this[dataRes] = res;
       this.loading = false;
     },
+    // Metodo para Setear Datos de Ayudante Seleccionado
     setDataEdit(res, dataRes) {
       this[dataRes].id = res.id;
       this[dataRes].nb_ayudante = res.nb_ayudante;
@@ -593,63 +509,79 @@ export default {
       this[dataRes].flag_activo = res.activo_desc;
       this.loading = false;
     },
+    // Metodo para Eliminar Datos
     deleteData(idpost) {
-      this.$refs.methods.deleteData(
-        `/ayudantes/${idpost}`,
-        "getDataAyudantes");
+      this.$refs.methods.deleteData(`/ayudantes/${idpost}`, "getData");
       this.loading = true;
     },
-    createData() {
+    // Metodo para Editar o Crear Datos
+    sendData() {
       this.form.flag_activo = this.form.flag_activo.value;
-      this.$refs.methods.createData(
-        "/ayudantes",
-        this.form);
-      this.resetForm();
-      this.create = false;
-      this.loading = true;
+      if (!this.form.id) {
+        this.$refs.methods.createData("/ayudantes", this.form);
+        this.resetForm();
+        this.dialog = false;
+        this.loading = true;
+      } else {
+        this.$refs.methods.putData(
+          `/ayudantes/${this.form.id}`,
+          this.form,
+          "getData"
+        );
+        this.resetForm();
+        this.dialog = false;
+        this.loading = true;
+      }
     },
-    putData() {
-      this.formEdit.flag_activo = this.formEdit.flag_activo.value;
-      this.$refs.methods.putData(
-        `/ayudantes/${this.formEdit.id}`,
-        this.formEdit,
-        "getDataAyudantes");
-      this.edit = false;
-      this.loading = true
-    },
-
+    // Metodo para Resetear Datos
     resetForm() {
+      delete this.form.id;
       (this.form.nb_ayudante = null),
         (this.form.dir_ayudante = null),
         (this.form.tlf_ayudante = null),
-        (this.form.flag_activo = null)
-    },
-    resetFormEdit() {
-      (this.formEdit.nb_ayudante = null),
-        (this.formEdit.dir_ayudante = null),
-        (this.formEdit.tlf_ayudante = null),
-        (this.formEdit.flag_activo = null)
+        (this.form.flag_activo = null);
     },
   },
 };
 </script>
 
-<style lang="sass">
-.my-sticky-column-table
-  /* specifying max-width so the example can
-    highlight the sticky column on any browser window */
+<style>
+.hide {
+  display: none;
+}
 
+@media screen and (min-width: 600px) {
+  .movilTitle {
+    display: none;
+  }
+}
+@media screen and (max-width: 600px) {
+  .movilTitle {
+    display: block;
+  }
+}
 
-  thead tr:first-child th:first-child
-    /* bg color is important for th; just specify one */
-    background-color: #FFFFFF
+@media screen and (min-width: 600px) {
+  .cardMargin {
+    padding-right: 20px !important;
+  }
+}
 
-  td:first-child
-    background-color: #FFFFFF
+@media screen and (min-width: 1024px) {
+  .cardMarginFilter {
+    padding-right: 20px !important;
+  }
+}
 
-  th:first-child,
-  td:first-child
-    position: sticky
-    left: 0
-    z-index: 1
+@media screen and (max-width: 1024px) {
+  .buttonMargin {
+    margin-bottom: 15px !important;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .selectMobile {
+    margin-bottom: 25px !important;
+  }
+}
 </style>
