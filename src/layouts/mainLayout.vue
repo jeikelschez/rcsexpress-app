@@ -4,36 +4,16 @@
     <q-header elevated>
       <q-toolbar class="bg-indigo-9">
         <!-- Boton para expandir Menu -->
-        <q-btn
-          flat
-          dense
-          round
-          @click="
-            this.hideItems();
-            this.drawerClick();
-          "
-          icon="menu"
-          aria-label="Menu"
-          class="q-mr-sm"
-        />
+        <q-btn flat dense round @click="
+          this.hideItems();
+          this.drawerClick();
+        " icon="menu" aria-label="Menu" class="q-mr-sm" />
         <!-- Titulo -->
-        <q-toolbar-title class="titleMainLayout"
-          >{{title}}</q-toolbar-title
-        >
-        <q-toolbar-title class="titleMainLayoutMobile"
-          >{{titleMobile}}</q-toolbar-title
-        >
+        <q-toolbar-title class="titleMainLayout">{{title}}</q-toolbar-title>
+        <q-toolbar-title class="titleMainLayoutMobile">{{titleMobile}}</q-toolbar-title>
         <q-space></q-space>
         <!-- Boton para acceder a manuales -->
-        <q-btn
-          dense
-          color="white"
-          round
-          style="margin-right: 10px"
-          clickable
-          to="/m_bancos"
-          padding="xs"
-        >
+        <q-btn dense color="white" round style="margin-right: 10px" clickable to="/m_bancos" padding="xs">
           <q-icon size="20px" name="question_mark" color="primary"> </q-icon>
         </q-btn>
         <!-- Boton usuario y Logout -->
@@ -41,11 +21,7 @@
           <q-avatar size="42px">
             <img :src="url" />
           </q-avatar>
-          <q-menu
-            transition-show="flip-right"
-            transition-hide="flip-left"
-            auto-close
-          >
+          <q-menu transition-show="flip-right" transition-hide="flip-left" auto-close>
             <q-list style="min-width: 100px">
               <q-item clickable v-ripple @click="logout">
                 <q-item-section avatar>
@@ -60,17 +36,8 @@
     </q-header>
 
     <!-- Menu lateral izquierdo -->
-    <q-drawer
-      v-model="drawer"
-      show-if-above
-      :breakpoint="500"
-      bordered
-      :width="350"
-      auto-close
-      :mini="!drawer || miniState"
-      @click="miniState = false"
-      content-class="bg-grey-3"
-    >
+    <q-drawer v-model="drawer" show-if-above :breakpoint="500" bordered :width="350" auto-close
+      :mini="!drawer || miniState" @click="miniState = false" content-class="bg-grey-3">
       <q-list>
         <div>
           <q-list class="rounded-borders">
@@ -79,14 +46,7 @@
             <div v-for="item in items">
               <div v-if="item.level == 0">
                 <!-- LEVEL 0 / Q-ITEMS -->
-                <q-item
-                  v-if="item.qitem"
-                  style="margin-top:5px"
-                  clickable
-                  tag="a"
-                  :to="item.url"
-                  exact
-                >
+                <q-item v-if="item.qitem" style="margin-top:5px" clickable :to="item.url" :disable=allowOption(item) exact>
                   <q-item-section avatar>
                     <q-icon size="28px" :name="item.icon" />
                   </q-item-section>
@@ -103,17 +63,11 @@
                     <div v-if="item2.level == 1 && item.name == item2.padre">
                       <!-- LEVEL 1 / Q-ITEMS -->
                       <div v-if="item2.qitem" class="q-pl-lg">
-                        <q-item clickable tag="a" :to="item2.url" exact>
+                        <q-item clickable :to="item2.url" :disable=allowOption(item2) exact>
                           <q-item-section avatar>
                             <q-icon size="28px" :name="item2.icon" />
-                            <q-tooltip
-                              v-if="miniState"
-                              anchor="center right"
-                              self="center left"
-                              :offset="[10, 10]"
-                              transition-show="scale"
-                              transition-hide="scale"
-                            >
+                            <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
+                              transition-show="scale" transition-hide="scale">
                               <div class="tool">{{ item2.label }}</div>
                             </q-tooltip>
                           </q-item-section>
@@ -129,20 +83,12 @@
                         v-model="items_model[item2.name]">
                         <!-- LEVEL 2 / Q-ITEMS -->
                         <div v-for="item3 in items">
-                          <div
-                            v-if="item3.level == 2 && item2.name == item3.padre"
-                          >
-                            <q-item clickable tag="a" :to="item3.url" exact>
+                          <div v-if="item3.level == 2 && item2.name == item3.padre">
+                            <q-item clickable :to="item3.url" :disable=allowOption(item3) exact>
                               <q-item-section avatar>
                                 <q-icon size="28px" :name="item3.icon" />
-                                <q-tooltip
-                                  v-if="miniState"
-                                  anchor="center right"
-                                  self="center left"
-                                  :offset="[10, 10]"
-                                  transition-show="scale"
-                                  transition-hide="scale"
-                                >
+                                <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
+                                  transition-show="scale" transition-hide="scale">
                                   <div class="tool">{{ item3.label }}</div>
                                 </q-tooltip>
                               </q-item-section>
@@ -166,9 +112,7 @@
     </q-drawer>
 
     <!-- Detecta cuando el mouse sale del menu y cierra los items -->
-
-    <router-view @change-Title="changeTitle" @mouseover=" this.hideItems();this.miniState = true;"
-    >
+    <router-view @change-Title="changeTitle" @mouseover="this.hideItems(); this.miniState = true;">
     </router-view>
     <keep-alive> </keep-alive>
 
@@ -176,7 +120,7 @@
     <q-footer elevated bordered>
       <div v-for="item4 in directs" class="float-left" style="margin-top: 10px; margin-bottom: 10px; margin-left: 15px">
         <q-btn v-show="item4.direct" dense color="white" round :class="`b${item4.dorder}`" clickable :to=item4.url exact
-          padding="xs">
+          padding="xs" :disable=allowOption(item4)>
           <q-icon size="25px" :name=item4.icon color="primary">
             <q-tooltip transition-show="flip-right" transition-hide="flip-left" class="bg-primary"
               style="max-height: 30px" color="primary" max-height="40px">{{ item4.label }}</q-tooltip>
@@ -185,14 +129,10 @@
       </div>
       <div class="text-caption float-right items-center creditos">
         <p style="font-size: 12px; margin-right: 20px; padding-top: 16px">
-          <strong>© 2019. LOS DERECHOS RESERVADOS. RCS EXPRESS</strong>
+          <strong>© 2022. LOS DERECHOS RESERVADOS. RCS EXPRESS</strong>
         </p>
       </div>
-      <user-logout ref="component"></user-logout>
-      <desactivate-crud
-        ref="desactivateCrud"
-        @desactivar-Opciones-Set="desactivarOpcionesSet"
-      ></desactivate-crud>
+      <user-logout ref="component"></user-logout>      
     </q-footer>
   </q-layout>
   <methods ref="methods" @set-Data="setData"></methods>
@@ -201,14 +141,12 @@
 <script>
 import { ref } from "vue";
 import { LocalStorage } from "quasar";
-import { defineComponent, defineAsyncComponent } from "vue";
-import desactivateCrudVue from "src/components/desactivateCrud.vue";
 import userLogoutVue from "src/components/userLogout.vue";
 import methodsVue from "src/components/methods.vue";
 
 export default {
+  emits: ["changeTitle", "mouseover"],
   components: {
-    "desactivate-crud": desactivateCrudVue,
     "user-logout": userLogoutVue,
     methods: methodsVue,
   },
@@ -219,44 +157,12 @@ export default {
       titleMobile: "SCEN",
       items: [],
       items_model: {},
-      events: ["click", "mousemove", "mousedown", "scroll", "keypress", "load"],
-      permisos: [
-        "r_bancos",
-        "r_agencias",
-        "r_ciudades",
-        "r_permisos",
-        "r_usuarios",
-        "r_roles",
-        "r_agentes",
-        "r_zonas",
-        "r_unidades",
-        "r_ayudantes",
-        "r_receptores",
-        "r_tarifas",
-        "r_ccorrelativo",
-        "r_vcontrol",
-        "r_cuentas",
-        "r_clientes",
-        "r_empleados",
-        "r_proveedores",
-        "r_retenciones",
-        "r_concepto_operacion",
-        "r_concepto_facturacion",
-        "r_concepto_fpo",
-        "r_asignacionguias",
-      ],
+      events: ["click", "mousemove", "mousedown", "scroll", "keypress", "load"],      
       drawer: false,
       miniState: false,
       intervalLogout: null,
       dashboard: this.$t("Menu.dashboard"),
-      picture:
-        "https://www.thepeakid.com/wp-content/uploads/2016/03/default-profile-picture.jpg",
-    };
-  },
-  setup() {
-    const url = ref("https://joshuaproject.net/assets/img/chatbot/default.jpg");
-    return {
-      url,
+      url: ref("https://joshuaproject.net/assets/img/chatbot/default.jpg")
     };
   },
   mounted() {
@@ -265,17 +171,17 @@ export default {
     }, this);
     this.resetLogoutTimer();
     this.miniState = true;
-    this.Authenticator();
+    this.authenticator();
     this.refreshTimer();
-    this.$refs.desactivateCrud.desactivarOpciones("desactivarOpcionesSet");
+
     this.getData('/menus', 'setData', 'items', {
       headers: {
-        Authorization: ``
+        rol: LocalStorage.getItem('tokenTraducido').usuario.roles.id
       },
     })
     this.getData('/menus', 'setData', 'directs', {
       headers: {
-        Authorization: ``,
+        rol: LocalStorage.getItem('tokenTraducido').usuario.roles.id,
         direct: 1
       },
     })
@@ -297,17 +203,15 @@ export default {
         this.drawer = true;
       }
     },
-    desactivarOpcionesSet(permisos) {
-      var permisos = permisos;
-      for (var e = 0, len = permisos.length; e < len; e++) {
-        if (permisos[e].permiso == true) {
-          this[permisos[e].pagina] = true;
-          this[permisos[e].paginaSet] = false;
-        }
-        if (e == permisos.length - 1) break;
+    // Metodo para validar Permisos, muestra mensaje de error si no tiene permisos
+    allowOption(items) {
+      if (items.acciones[0].rpermisos.length == 0) {
+        return true;
+      } else {
+        return false;
       }
     },
-    Authenticator() {
+    authenticator() {
       if (LocalStorage.getItem("user") != true) {
         this.$router.push("/login");
       }
@@ -354,7 +258,6 @@ export default {
           _this.$router.push("/login");
         }
       }
-
       document.onbeforeunload = function () {
         localStorage.setItem("currentTime", currentTime);
       };
@@ -416,8 +319,8 @@ export default {
       };
     },
     changeTitle(text, textMobile) {
-      this.title = text,
-      this.titleMobile = textMobile
+      this.title = text;
+      this.titleMobile = textMobile;
     },
   },
 };
@@ -551,11 +454,13 @@ export default {
     display: none;
   }
 }
+
 @media screen and (min-width: 600px) {
   .titleMainLayoutMobile {
     display: none;
   }
 }
+
 @media screen and (max-width: 600px) {
   .titleMainLayoutMobile {
     display: block;
