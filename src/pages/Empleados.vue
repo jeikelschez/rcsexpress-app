@@ -1,16 +1,16 @@
 <template>
   <q-page class="pagina q-pa-md">
-    <q-dialog v-model="create">
+    <q-dialog v-model="dialog">
       <q-card class="q-pa-md" bordered style="width: 900px; max-width: 80vw">
         <q-card-section>
-          <q-form @submit="createData" class="q-gutter-md">
+          <q-form @submit="sendData" class="q-gutter-md">
             <div class="row">
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.nombre"
                   label="Nombre de Empleado"
-                  :rules="[reglasNotNull30]"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 30, 'Maximo 30 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
                   hint=""
                   class="pcform"
                   lazy-rules
@@ -27,7 +27,7 @@
                   outlined
                   v-model="form.rif_empleado"
                   label="RIF de Empleado"
-                  :rules="[reglasNotNull10]"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 10, 'Maximo 10 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
                   hint=""
                   lazy-rules
                   mask="##########"
@@ -56,7 +56,7 @@
                   label="Porcentaje Retención"
                   v-money="money"
                   input-class="text-right"
-                  :rules="[reglasNotNullPercent]"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 6, 'Maxima Cantidad'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
                   hint=""
                   lazy-rules
                 >
@@ -71,7 +71,7 @@
                   outlined
                   v-model="form.periodo"
                   label="Período"
-                  :rules="[reglasNotNull6]"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 6, 'Maximo 6 Caracteres') || '']"
                   hint=""
                   class="pcform"
                   lazy-rules
@@ -90,7 +90,7 @@
                   outlined
                   v-model="form.sueldo"
                   label="Sueldo"
-                  :rules="[reglasAllowNullSueldo]"
+                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 13, 'Maxima Cantidad') || '']"
                   hint=""
                   v-money="money"
                   input-class="text-right"
@@ -108,7 +108,7 @@
               style="margin-bottom: 10px"
             >
               <q-btn
-                label="Agregar Empleado"
+                label="Enviar"
                 type="submit"
                 color="primary"
                 class="col-md-5 col-sm-5 col-xs-12"
@@ -128,148 +128,17 @@
       </q-card>
     </q-dialog>
 
-    <q-dialog v-model="edit">
-      <q-card class="q-pa-md" bordered style="width: 900px; max-width: 80vw">
-        <q-card-section>
-          <q-form @submit="putData">
-            <div class="row">
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.nombre"
-                  label="Nombre de Empleado"
-                  :rules="[reglasNotNull30]"
-                  hint=""
-                  class="pcform"
-                  lazy-rules
-                  @update:model-value="
-                    formEdit.nombre = formEdit.nombre.toUpperCase()
-                  "
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="person" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.rif_empleado"
-                  label="RIF de Empleado"
-                  :rules="[reglasNotNull10]"
-                  hint=""
-                  lazy-rules
-                  mask="##########"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="fact_check" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-3 col-xs-12" style="margin-bottom: 15px">
-                <q-checkbox
-                  size="lg"
-                  v-model="formEdit.aplica_retencion"
-                  true-value="1"
-                  false-value="0"
-                  style="font-size: 13px"
-                  label="¿APLICA RETENCIÓN?"
-                />
-              </div>
-
-              <div class="col-md-9 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.porcentaje_retencion"
-                  label="Porcentaje Retención"
-                  :rules="[reglasNotNullPercent]"
-                  hint=""
-                  v-money="money"
-                  input-class="text-right"
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="percent" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.periodo"
-                  label="Período"
-                  :rules="[reglasNotNull6]"
-                  hint=""
-                  class="pcform"
-                  lazy-rules
-                  @update:model-value="
-                    formEdit.periodo = formEdit.periodo.toUpperCase()
-                  "
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="calendar_today" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.sueldo"
-                  label="Sueldo"
-                  :rules="[reglasAllowNullSueldo]"
-                  hint=""
-                  v-money="money"
-                  input-class="text-right"
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="paid" />
-                  </template>
-                </q-input>
-              </div>
-            </div>
-
-            <div
-              class="full-width row justify-center items-center content-center"
-              style="margin-bottom: 10px"
-            >
-              <q-btn
-                label="Editar Empleado"
-                type="submit"
-                color="primary"
-                class="col-md-5 col-sm-5 col-xs-12"
-                icon="person_add"
-              />
-              <q-btn
-                label="Cerrar"
-                color="primary"
-                flat
-                class="col-md-5 col-sm-5 col-xs-12 btnmovil"
-                icon="close"
-                v-close-popup
-              />
-            </div>
-          </q-form>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
-
-    <div class="row q-pa-sm justify-center">
-      <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
-        <div class="row">
+    <div class="q-pa-sm justify-center">
+        <div class="row q-pa-md justify-end">
           <div
-            class="col-md-4 col-xs-12 text-secondary"
-            style="align-self: center; text-align: center; margin-right: 16px"
+            class="col-md-4 col-xs-12 text-secondary movilTitle"
+            style="align-self: center; text-align: center; font-size: 20px; margin-bottom: 15px"
           >
-            <h4><strong>MANTENIMIENTO - EMPLEADOS</strong></h4>
+            <p><strong>MANTENIMIENTO - EMPLEADOS</strong></p>
           </div>
           <div
-            class="col-md-5 col-sm-7 col-xs-6"
-            style="align-self: center; margin-right: 20px"
+            class="col-md-5 col-sm-7 col-xs-12 cardMargin selectMobile"
+            style="align-self: center; text-align: center"
           >
             <q-input
               v-model="filter"
@@ -284,23 +153,22 @@
               </template>
             </q-input>
           </div>
+
           <div
-            class="col-md-2 col-sm-4 col-xs-5"
+            class="col-md-2 col-sm-4 col-xs-12"
             style="text-align: center; align-self: center"
           >
             <q-btn
-              label="Insertar Empleado"
+              label="Añadir Empleado"
               rounded
               color="primary"
-              @click="create = true"
+              @click="dialog = true"
               :disabled="this.disabledCreate"
             ></q-btn>
           </div>
         </div>
 
-        <div class="q-pa-md">
-          <div class="q-gutter-y-md">
-            <div bordered flat class="row">
+        <div class="q-pa-md q-gutter-y-md">
               <q-table
                 :rows="datos"
                 binary-state-sort
@@ -329,9 +197,9 @@
                         getData(
                           `/empleados/${props.row.id}`,
                           'setDataEdit',
-                          'formEdit'
+                          'form'
                         );
-                        edit = true;
+                        dialog = true;
                       "
                     ></q-btn>
                     <q-btn
@@ -385,9 +253,9 @@
                                 getData(
                                   `/empleados/${props.row.id}`,
                                   'setDataEdit',
-                                  'formEdit'
+                                  'form'
                                 );
-                                edit = true;
+                                dialog = true;
                               "
                             ></q-btn>
                             <q-chip
@@ -431,9 +299,6 @@
               </q-table>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
 
     <q-dialog v-model="deletePopup">
       <q-card style="width: 700px">
@@ -455,32 +320,32 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+
     <methods
       ref="methods"
-      @get-Data-Empleados="getDataEmpleados('/empleados', 'setData', 'datos')"
+      @get-Data="getData('/empleados', 'setData', 'datos')"
       @set-data="setData"
       @set-Data-Edit="setData"
       @reset-Loading="resetLoading"
     >
     </methods>
+
     <desactivate-crud ref="desactivateCrud" @desactivar-Crud="desactivarCrud">
     </desactivate-crud>
+
+    <rules-vue
+      ref="rulesVue"
+    ></rules-vue>
+    
   </q-page>
 </template>
 
 <script>
 import { ref } from "vue";
-
-import { api } from "boot/axios";
-
 import { useQuasar } from "quasar";
-
-import { LocalStorage } from "quasar";
-
 import { VMoney } from "v-money";
-
 import methodsVue from "src/components/methods.vue";
-
+import rulesVue from "src/components/rules.vue";
 import desactivateCrudVue from "src/components/desactivateCrud.vue";
 
 export default {
@@ -488,7 +353,7 @@ export default {
   components: {
     "desactivate-crud": desactivateCrudVue,
     methods: methodsVue,
-    VMoney,
+    VMoney, rulesVue
   },
   name: "Empleados",
   data() {
@@ -543,15 +408,6 @@ export default {
         sueldo: "",
       },
       datos: [],
-      formEdit: {
-        id: "",
-        rif_empleado: "",
-        nombre: "",
-        aplica_retencion: "0",
-        porcentaje_retencion: "",
-        periodo: "",
-        sueldo: "",
-      },
       selected: [],
       error: "",
       disabledCreate: true,
@@ -570,24 +426,23 @@ export default {
       sortBy: "desc",
       descending: false,
       page: 2,
-      rowsPerPage: 4,
+      rowsPerPage: 8,
       // rowsNumber: xx if getting data from a server
     });
     return {
       pagination: ref({
-        rowsPerPage: 10,
+        rowsPerPage: 8,
       }),
       separator: ref("vertical"),
-      create: ref(false),
-      edit: ref(false),
+      dialog: ref(false),
       loading: ref(false),
-      medium: ref(false),
       deletePopup: ref(false),
       filter: ref(""),
     };
   },
   mounted() {
-    this.getDataEmpleados("/empleados", "setData", "datos");
+    this.$emit("changeTitle", "SCEN - Mantenimiento - Empleados", "");
+    this.getData("/empleados", "setData", "datos");
     this.$refs.desactivateCrud.desactivarCrud(
       "c_empleados",
       "r_empleados",
@@ -597,82 +452,11 @@ export default {
     );
   },
   methods: {
+    // Metodo para Resetear Carga
     resetLoading() {
       this.loading = false;
     },
-    // Reglas
-    reglasNotNull10(val) {
-      if (val === null) {
-        return "Debes Escribir Algo";
-      }
-      if (val === "") {
-        return "Debes Escribir Algo";
-      }
-      if ((val !== null) !== "") {
-        if (val.length < 3) {
-          return "Deben ser minimo 3 caracteres";
-        }
-        if (val.length > 10) {
-          return "Deben ser Maximo 10 caracteres";
-        }
-      }
-    },
-    reglasNotNull30(val) {
-      if (val === null) {
-        return "Debes Escribir Algo";
-      }
-      if (val === "") {
-        return "Debes Escribir Algo";
-      }
-      if ((val !== null) !== "") {
-        if (val.length < 3) {
-          return "Deben ser minimo 3 caracteres";
-        }
-        if (val.length > 30) {
-          return "Deben ser Maximo 30 caracteres";
-        }
-      }
-    },
-    reglasNotNullPercent(val) {
-      var val = val;
-      val = val.replaceAll(".", "").replaceAll(",", ".");
-      if (val === null) {
-        return "Debes Escribir Algo";
-      }
-      if (val === "") {
-        return "Debes Escribir Algo";
-      }
-      if ((val !== null) !== "") {
-        if (val > 999.99) {
-          return "Deben ser Maximo 5 caracteres";
-        }
-      }
-    },
-    reglasNotNull6(val) {
-      if (val === null) {
-        return "Debes Escribir Algo";
-      }
-      if (val === "") {
-        return "Debes Escribir Algo";
-      }
-      if ((val !== null) !== "") {
-        if (val.length > 6) {
-          return "Deben ser Maximo 6 caracteres";
-        }
-      }
-    },
-    reglasAllowNullSueldo(val) {
-      var val = val;
-      val = val.replaceAll(".", "").replaceAll(",", ".");
-      if (val !== null) {
-        if (val.length > 0) {
-          if (val > 99999999.99) {
-            return "Deben ser Maximo 10 caracteres";
-          }
-        }
-      }
-    },
-
+    // Metodo para Validar Permisos
     desactivarCrud(createItem, readItem, deleteItem, updateItem) {
       if (readItem == true) {
         if (createItem == true) {
@@ -686,106 +470,109 @@ export default {
         }
       } else this.$router.push("/error403");
     },
-
+    // Metodo para Get de Datos
     getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.$refs.methods.getData(url, call, dataRes);
     },
-    getDataEmpleados(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
-      this.loading = true;
-    },
+    // Metodo para Setear Datos
     setData(res, dataRes) {
       this[dataRes] = res;
       this.loading = false;
     },
+    // Metodo para Setear Datos Seleccionados
     setDataEdit(res, dataRes) {
-      this.formEdit.id = res.id;
-      this.formEdit.rif_empleado = res.rif_empleado;
-      this.formEdit.aplica_retencion = res.aplica_retencion;
-      this.formEdit.porcentaje_retencion = res.porcentaje_retencion;
-      this.formEdit.porcentaje_retencion = res.porcentaje_retencion;
-      this.formEdit.sueldo = res.sueldo;
+      this.form.id = res.id;
+      this.form.rif_empleado = res.rif_empleado;
+      this.form.aplica_retencion = res.aplica_retencion;
+      this.form.porcentaje_retencion = res.porcentaje_retencion;
+      this.form.porcentaje_retencion = res.porcentaje_retencion;
+      this.form.sueldo = res.sueldo;
     },
+    // Metodo para Eliminar Datos
     deleteData(idpost) {
       this.$refs.methods.deleteData(
         `/empleados/${idpost}`,
-        "getDataEmpleados",
-        this.axiosConfig
+        "getData"
       );
       this.loading = true;
     },
-    createData() {
+    // Metodo para Editar o Crear Datos
+    sendData() {
       this.form.porcentaje_retencion = this.form.porcentaje_retencion
         .replaceAll(".", "")
         .replaceAll(",", ".");
       this.form.sueldo = this.form.sueldo
         .replaceAll(".", "")
         .replaceAll(",", ".");
+        if (!this.form.id){
       this.$refs.methods.createData(
         "/empleados",
         this.form,
-        "getDataEmpleados",
-        this.axiosConfig
+        "getData"
       );
       this.resetForm();
       this.loading = true;
-    },
-    putData() {
-      this.formEdit.porcentaje_retencion = this.formEdit.porcentaje_retencion
-        .replaceAll(".", "")
-        .replaceAll(",", ".");
-      this.formEdit.sueldo = this.formEdit.sueldo
-        .replaceAll(".", "")
-        .replaceAll(",", ".");
-      this.$refs.methods.putData(
-        `/empleados/${this.formEdit.id}`,
-        this.formEdit,
-        "getDataEmpleados",
-        this.axiosConfig
+    this.dialog = false} else {
+        this.$refs.methods.putData(
+        `/empleados/${this.form.id}`,
+        this.form,
+        "getData"
       );
-      this.edit = false;
-      this.resetFormEdit();
+      this.dialog = false;
+      this.resetForm();
       this.loading = true;
+      }
     },
-
+    // Metodo para Resetear Datos
     resetForm() {
-      (this.form.rif_empleado = ""),
-        (this.form.nombre = ""),
-        (this.form.aplica_retencion = "0"),
-        (this.form.porcentaje_retencion = ""),
-        (this.form.periodo = ""),
-        (this.form.sueldo = ""),
-        (this.create = false);
-    },
-    resetFormEdit() {
-      (this.formEdit.rif_empleado = ""),
-        (this.formEdit.nombre = ""),
-        (this.formEdit.aplica_retencion = "0"),
-        (this.formEdit.porcentaje_retencion = ""),
-        (this.formEdit.periodo = ""),
-        (this.formEdit.sueldo = ""),
-        (this.edit = false);
+      delete this.form.id,
+      this.form.rif_empleado = "",
+      this.form.nombre = "",
+      this.form.aplica_retencion = "0",
+      this.form.porcentaje_retencion = "",
+      this.form.periodo = "",
+      this.form.sueldo = ""
     },
   },
 };
 </script>
 
-<style lang="sass">
-.my-sticky-column-table
-  /* specifying max-width so the example can
-    highlight the sticky column on any browser window */
+<style>
+.hide {
+  display: none;
+}
 
+@media screen and (min-width: 600px) {
+  .movilTitle {
+    display: none;
+  }
+}
+@media screen and (max-width: 600px) {
+  .movilTitle {
+    display: block;
+  }
+}
 
-  thead tr:first-child th:first-child
-    /* bg color is important for th; just specify one */
-    background-color: #FFFFFF
+@media screen and (min-width: 600px) {
+  .cardMargin {
+    padding-right: 20px !important;
+  }
+}
+@media screen and (min-width: 1024px) {
+  .cardMarginLast {
+    padding-right: 20px !important;
+  }
+}
 
-  td:first-child
-    background-color: #FFFFFF
+@media screen and (max-width: 1024px) {
+  .buttonMargin {
+    margin-bottom: 20px !important;
+  }
+}
 
-  th:first-child,
-  td:first-child
-    position: sticky
-    left: 0
-    z-index: 1
+@media screen and (max-width: 600px) {
+  .selectMobile {
+    margin-bottom: 20px !important;
+  }
+}
 </style>

@@ -1,9 +1,9 @@
 <template>
   <q-page class="pagina q-pa-md">
-    <q-dialog v-model="create">
+    <q-dialog v-model="dialog">
       <q-card class="q-pa-md" bordered style="width: 900px; max-width: 90vw">
         <q-card-section>
-          <q-form @submit="createData" class="q-gutter-md">
+          <q-form @submit="sendData" class="q-gutter-md">
             <div class="row">
               <div class="col-md-3 col-xs-12">
                 <q-input
@@ -14,7 +14,7 @@
                   lazy-rules
                   class="pcform"
                   type="number"
-                  :rules="[reglasNotNull2]"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 2, 'Maximo 2 Caracteres')|| '']"
                 >
                   <template v-slot:prepend>
                     <q-icon name="qr_code_2" />
@@ -29,7 +29,7 @@
                   label="Tipo Persona"
                   hint=""
                   class="pcform"
-                  :rules="[reglasSelect]"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido')|| '']"
                   :options="tipo_persona"
                   lazy-rules
                 >
@@ -46,7 +46,7 @@
                   label="Descripción"
                   hint=""
                   lazy-rules
-                  :rules="[reglasNotNull50]"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 50, 'Maximo 50 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
                   @update:model-value="
                     form.nb_tipo_retencion =
                       form.nb_tipo_retencion.toUpperCase()
@@ -68,7 +68,7 @@
                   v-money="money"
                   input-class="text-right"
                   lazy-rules
-                  :rules="[reglasNotNull12]"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 12, 'Maximo 12 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
                 >
                   <template v-slot:prepend>
                     <q-icon name="qr_code_2" />
@@ -86,7 +86,7 @@
                   v-money="money"
                   input-class="text-right"
                   class="pcform"
-                  :rules="[reglasNotNull12]"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 12, 'Maximo 12 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
                 >
                   <template v-slot:prepend>
                     <q-icon name="qr_code_2" />
@@ -103,7 +103,7 @@
                   v-money="money"
                   input-class="text-right"
                   lazy-rules
-                  :rules="[reglasNotNull12]"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 12, 'Maximo 12 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
                 >
                   <template v-slot:prepend>
                     <q-icon name="qr_code_2" />
@@ -121,7 +121,7 @@
                   class="pcform"
                   v-money="money"
                   input-class="text-right"
-                  :rules="[reglasNotNull12]"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 12, 'Maximo 12 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
                 >
                   <template v-slot:prepend>
                     <q-icon name="qr_code_2" />
@@ -136,7 +136,7 @@
                   label="Codigo SENIAT"
                   hint=""
                   lazy-rules
-                  :rules="[reglasNotNull3]"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 3, 'Maximo 3 Caracteres')|| '']"
                   @update:model-value="
                     form.cod_seniat = form.cod_seniat.toUpperCase()
                   "
@@ -154,20 +154,23 @@
                   hint=""
                   v-model="form.fecha_ini_val"
                   mask="##/##/####"
-                  :rules="[checkDate]"
+                  :rules="[(val) => this.$refs.rulesVue.checkDate(val, '') || '']"
                   class="pcform"
                   lazy-rules
                 >
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
                       <q-popup-proxy
+                        ref="qDateProxy"
                         cover
                         transition-show="scale"
                         transition-hide="scale"
                       >
-                        <q-date v-model="form.fecha_ini_val" mask="DD/MM/YYYY"
-                                  @update:model-value="this.$refs.qDateProxy.hide()
-                                   ">
+                        <q-date
+                          v-model="form.fecha_ini_val"
+                          mask="DD/MM/YYYY"
+                          @update:model-value="this.$refs.qDateProxy.hide()"
+                        >
                           <div class="row items-center justify-end">
                             <q-btn
                               v-close-popup
@@ -190,269 +193,21 @@
                   hint=""
                   v-model="form.fecha_fin_val"
                   mask="##/##/####"
-                  :rules="[checkDate]"
+                  :rules="[(val) => this.$refs.rulesVue.checkDate(val, '') || '']"
                   lazy-rules
                 >
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
                       <q-popup-proxy
-                        cover
-                        transition-show="scale"
-                        transition-hide="scale"
-                      >
-                        <q-date v-model="form.fecha_fin_val" mask="DD/MM/YYYY"
-                                  @update:model-value="this.$refs.qDateProxy.hide()
-                                   ">
-                          <div class="row items-center justify-end">
-                            <q-btn
-                              v-close-popup
-                              label="Close"
-                              color="primary"
-                              flat
-                            />
-                          </div>
-                        </q-date>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </div>
-            </div>
-
-            <div
-              class="full-width row justify-center items-center content-center"
-              style="margin-bottom: 10px"
-            >
-              <q-btn
-                label="Agregar Retención"
-                type="submit"
-                color="primary"
-                class="col-md-5 col-sm-5 col-xs-12"
-                icon="person_add"
-              />
-              <q-btn
-                label="Cerrar"
-                color="primary"
-                flat
-                class="col-md-5 col-sm-5 col-xs-12 btnmovil"
-                icon="close"
-                v-close-popup
-                @click="setData()"
-              />
-            </div>
-          </q-form>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
-
-    <q-dialog v-model="edit">
-      <q-card class="q-pa-md" bordered style="width: 900px; max-width: 90vw">
-        <q-card-section>
-          <q-form @submit="putData">
-            <div class="row">
-              <div class="col-md-3 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.cod_tipo_retencion"
-                  label="Codigo"
-                  hint=""
-                  lazy-rules
-                  class="pcform"
-                  type="number"
-                  :rules="[reglasNotNull2]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="qr_code_2" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="formEdit.cod_tipo_persona"
-                  label="Tipo Persona"
-                  hint=""
-                  class="pcform"
-                  :rules="[reglasSelect]"
-                  :options="tipo_persona"
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="group" />
-                  </template>
-                </q-select>
-              </div>
-
-              <div class="col-md-5 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.nb_tipo_retencion"
-                  label="Descripción"
-                  hint=""
-                  lazy-rules
-                  :rules="[reglasNotNull50]"
-                  @update:model-value="
-                    formEdit.nb_tipo_retencion =
-                      formEdit.nb_tipo_retencion.toUpperCase()
-                  "
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="qr_code_2" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.porc_base"
-                  label="Porcentaje Base"
-                  hint=""
-                  class="pcform"
-                  v-money="money"
-                  input-class="text-right"
-                  lazy-rules
-                  :rules="[reglasNotNull12]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="qr_code_2" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.porc_retencion"
-                  label="Porcentaje Retención"
-                  hint=""
-                  lazy-rules
-                  v-money="money"
-                  input-class="text-right"
-                  class="pcform"
-                  :rules="[reglasNotNull12]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="qr_code_2" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.pago_mayor"
-                  label="Monto"
-                  hint=""
-                  lazy-rules
-                  v-money="money"
-                  input-class="text-right"
-                  :rules="[reglasNotNull12]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="qr_code_2" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.sustraendo"
-                  label="Sustraendo"
-                  hint=""
-                  lazy-rules
-                  class="pcform"
-                  v-money="money"
-                  input-class="text-right"
-                  :rules="[reglasNotNull12]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="qr_code_2" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.cod_seniat"
-                  label="Codigo SENIAT"
-                  hint=""
-                  lazy-rules
-                  :rules="[reglasNotNull3]"
-                  @update:model-value="
-                    formEdit.cod_seniat = formEdit.cod_seniat.toUpperCase()
-                  "
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="qr_code_2" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  label="Fecha de Validez Inicial"
-                  hint=""
-                  v-model="formEdit.fecha_ini_val"
-                  mask="##/##/####"
-                  :rules="[checkDate]"
-                  class="pcform"
-                  lazy-rules
-                >
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy
+                        ref="qDateProxy"
                         cover
                         transition-show="scale"
                         transition-hide="scale"
                       >
                         <q-date
-                          v-model="formEdit.fecha_ini_val"
+                          v-model="form.fecha_fin_val"
                           mask="DD/MM/YYYY"
-                                  @update:model-value="this.$refs.qDateProxy.hide()
-                                   "
-                        >
-                          <div class="row items-center justify-end">
-                            <q-btn
-                              v-close-popup
-                              label="Close"
-                              color="primary"
-                              flat
-                            />
-                          </div>
-                        </q-date>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  label="Fecha de Validez Final"
-                  hint=""
-                  v-model="formEdit.fecha_fin_val"
-                  mask="##/##/####"
-                  :rules="[checkDate]"
-                  lazy-rules
-                >
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy
-                        cover
-                        transition-show="scale"
-                        transition-hide="scale"
-                      >
-                        <q-date
-                          v-model="formEdit.fecha_fin_val"
-                          mask="DD/MM/YYYY"
-                                  @update:model-value="this.$refs.qDateProxy.hide()
-                                   "
+                          @update:model-value="this.$refs.qDateProxy.hide()"
                         >
                           <div class="row items-center justify-end">
                             <q-btn
@@ -475,7 +230,7 @@
               style="margin-bottom: 10px"
             >
               <q-btn
-                label="Editar Retención"
+                label="Enviar"
                 type="submit"
                 color="primary"
                 class="col-md-5 col-sm-5 col-xs-12"
@@ -495,181 +250,179 @@
       </q-card>
     </q-dialog>
 
-    <div class="row q-pa-sm justify-center">
-      <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
-        <div class="row">
-          <div
-            class="col-md-4 col-xs-12 text-secondary"
-            style="align-self: center; text-align: center; margin-right: 16px"
-          >
-            <h4><strong>MANTENIMIENTO - RETENCIONES</strong></h4>
-          </div>
-          <div
-            class="col-md-5 col-sm-7 col-xs-6"
-            style="align-self: center; margin-right: 20px"
-          >
-            <q-input
-              v-model="filter"
-              rounded
-              outlined
-              standout
-              type="search"
-              label="Búsqueda avanzada"
-            >
-              <template v-slot:prepend>
-                <q-icon name="search" />
-              </template>
-            </q-input>
-          </div>
-          <div
-            class="col-md-2 col-sm-4 col-xs-5"
-            style="text-align: center; align-self: center"
-          >
-            <q-btn
-              label="Insertar Retención"
-              rounded
-              color="primary"
-              @click="create = true"
-              @click.capture="resetForm()"
-              :disabled="this.disabledCreate"
-            ></q-btn>
-          </div>
+    <div class="q-pa-sm justify-center">
+      <div class="row q-pa-md justify-end">
+        <div
+          class="col-md-4 col-xs-12 text-secondary movilTitle"
+          style="align-self: center; text-align: center; font-size: 20px"
+        >
+          <p><strong>MANTENIMIENTO - RETENCIONES</strong></p>
         </div>
+        <div
+          class="col-md-5 col-sm-7 col-xs-12 cardMargin selectMobile"
+          style="align-self: center"
+        >
+          <q-input
+            v-model="filter"
+            rounded
+            outlined
+            standout
+            type="search"
+            label="Búsqueda avanzada"
+          >
+            <template v-slot:prepend>
+              <q-icon name="search" />
+            </template>
+          </q-input>
+        </div>
+        <div
+          class="col-md-2 col-sm-4 col-xs-12"
+          style="text-align: center; align-self: center"
+        >
+          <q-btn
+            label="Insertar Retención"
+            rounded
+            color="primary"
+            @click="
+              dialog = true;
+              this.resetForm();
+            "
+            :disabled="this.disabledCreate"
+          ></q-btn>
+        </div>
+      </div>
 
-        <div class="q-pa-md">
-          <div class="q-gutter-y-md">
-            <div bordered flat class="row">
-              <q-table
-                :rows="datos"
-                binary-state-sort
-                row-key="id"
-                :loading="loading"
-                :columns="columns"
-                :separator="separator"
-                :filter="filter"
-                style="width: 100%"
-                :grid="$q.screen.xs"
-                v-model:pagination="pagination"
-              >
-                <template v-slot:loading>
-                  <q-inner-loading showing color="primary" />
-                </template>
-                <template v-slot:body-cell-action="props">
-                  <q-td :props="props">
-                    <q-btn
-                      dense
-                      round
-                      flat
-                      color="primary"
-                      icon="edit"
-                      :disabled="this.disabledEdit"
-                      @click="
-                        getData(
-                          `/mretenciones/${props.row.id}`,
-                          'setDataEdit',
-                          'formEdit'
-                        );
-                        edit = true;
-                      "
-                    ></q-btn>
-                    <q-btn
-                      dense
-                      round
-                      flat
-                      color="primary"
-                      icon="delete"
-                      :disabled="this.disabledDelete"
-                      @click="selected = props.row.id"
-                      @click.capture="deletePopup = true"
-                    ></q-btn>
-                  </q-td>
-                </template>
-                <template v-slot:item="props">
-                  <div
-                    class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
-                    :style="props.selected ? 'transform: scale(0.95);' : ''"
-                  >
-                    <q-card :class="props.selected ? 'bg-grey-2' : ''">
-                      <q-list dense>
-                        <q-item v-for="col in props.cols" :key="col.name">
-                          <q-item-section>
-                            <q-item-label>{{ col.label }}</q-item-label>
-                          </q-item-section>
-                          <q-item-section side>
-                            <q-chip
-                              v-if="col.name === 'status'"
-                              :color="
-                                props.row.status == 'Active'
-                                  ? 'green'
-                                  : props.row.status == 'Disable'
-                                  ? 'red'
-                                  : 'grey'
-                              "
-                              text-color="white"
-                              dense
-                              class="text-weight-bolder"
-                              square
-                              >{{ col.value }}</q-chip
-                            >
-                            <q-btn
-                              v-else-if="col.name === 'action'"
-                              dense
-                              round
-                              flat
-                              color="primary"
-                              icon="edit"
-                              :disabled="this.disabledEdit"
-                              @click="
-                                getData(
-                                  `/mretenciones/${props.row.id}`,
-                                  'setDataEdit',
-                                  'formEdit'
-                                );
-                                edit = true;
-                              "
-                            ></q-btn>
-                            <q-chip
-                              v-if="col.name === 'status'"
-                              :color="
-                                props.row.status == 'Active'
-                                  ? 'green'
-                                  : props.row.status == 'Disable'
-                                  ? 'red'
-                                  : 'grey'
-                              "
-                              text-color="white"
-                              dense
-                              class="text-weight-bolder"
-                              square
-                              >{{ col.value }}</q-chip
-                            >
-                            <q-btn
-                              v-else-if="col.name === 'action'"
-                              dense
-                              round
-                              flat
-                              color="primary"
-                              icon="delete"
-                              :disabled="this.disabledDelete"
-                              @click="selected = props.row.id"
-                              @click.capture="deletePopup = true"
-                            ></q-btn>
-                            <q-item-label
-                              v-else
-                              caption
-                              :class="col.classes ? col.classes : ''"
-                              >{{ col.value }}</q-item-label
-                            >
-                          </q-item-section>
-                        </q-item>
-                      </q-list>
-                    </q-card>
-                  </div>
-                </template>
-              </q-table>
+      <div class="q-pa-md q-gutter-y-md">
+        <q-table
+          :rows="datos"
+          binary-state-sort
+          :rows-per-page-options="[5, 10, 15, 20, 50]"
+          @request="onRequest"
+          row-key="id"
+          :loading="loading"
+          :columns="columns"
+          :separator="separator"
+          :filter="filter"
+          style="width: 100%"
+          :grid="$q.screen.xs"
+          v-model:pagination="pagination"
+        >
+          <template v-slot:loading>
+            <q-inner-loading showing color="primary" />
+          </template>
+          <template v-slot:body-cell-action="props">
+            <q-td :props="props">
+              <q-btn
+                dense
+                round
+                flat
+                color="primary"
+                icon="edit"
+                :disabled="this.disabledEdit"
+                @click="
+                  getData(
+                    `/mretenciones/${props.row.id}`,
+                    'setDataEdit',
+                    'form'
+                  );
+                  dialog = true;
+                "
+              ></q-btn>
+              <q-btn
+                dense
+                round
+                flat
+                color="primary"
+                icon="delete"
+                :disabled="this.disabledDelete"
+                @click="selected = props.row.id"
+                @click.capture="deletePopup = true"
+              ></q-btn>
+            </q-td>
+          </template>
+          <template v-slot:item="props">
+            <div
+              class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+              :style="props.selected ? 'transform: scale(0.95);' : ''"
+            >
+              <q-card :class="props.selected ? 'bg-grey-2' : ''">
+                <q-list dense>
+                  <q-item v-for="col in props.cols" :key="col.name">
+                    <q-item-section>
+                      <q-item-label>{{ col.label }}</q-item-label>
+                    </q-item-section>
+                    <q-item-section side>
+                      <q-chip
+                        v-if="col.name === 'status'"
+                        :color="
+                          props.row.status == 'Active'
+                            ? 'green'
+                            : props.row.status == 'Disable'
+                            ? 'red'
+                            : 'grey'
+                        "
+                        text-color="white"
+                        dense
+                        class="text-weight-bolder"
+                        square
+                        >{{ col.value }}</q-chip
+                      >
+                      <q-btn
+                        v-else-if="col.name === 'action'"
+                        dense
+                        round
+                        flat
+                        color="primary"
+                        icon="edit"
+                        :disabled="this.disabledEdit"
+                        @click="
+                          getData(
+                            `/mretenciones/${props.row.id}`,
+                            'setDataEdit',
+                            'form'
+                          );
+                          dialog = true;
+                        "
+                      ></q-btn>
+                      <q-chip
+                        v-if="col.name === 'status'"
+                        :color="
+                          props.row.status == 'Active'
+                            ? 'green'
+                            : props.row.status == 'Disable'
+                            ? 'red'
+                            : 'grey'
+                        "
+                        text-color="white"
+                        dense
+                        class="text-weight-bolder"
+                        square
+                        >{{ col.value }}</q-chip
+                      >
+                      <q-btn
+                        v-else-if="col.name === 'action'"
+                        dense
+                        round
+                        flat
+                        color="primary"
+                        icon="delete"
+                        :disabled="this.disabledDelete"
+                        @click="selected = props.row.id"
+                        @click.capture="deletePopup = true"
+                      ></q-btn>
+                      <q-item-label
+                        v-else
+                        caption
+                        :class="col.classes ? col.classes : ''"
+                        >{{ col.value }}</q-item-label
+                      >
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-card>
             </div>
-          </div>
-        </div>
+          </template>
+        </q-table>
       </div>
     </div>
 
@@ -693,32 +446,32 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+
     <methods
       ref="methods"
       @get-Data-Retenciones="
-        getDataRetenciones('/mretenciones', 'setData', 'datos')
+        getDataRetenciones('/mretenciones', 'setDataTable', 'datos')
       "
-      @set-data="setData"
       @reset-Loading="resetLoading"
       @set-Data-Edit="setDataEdit"
+      @set-Data-Table="setDataTable"
+      @on-Request="onRequest"
     >
     </methods>
+
     <desactivate-crud ref="desactivateCrud" @desactivar-Crud="desactivarCrud">
     </desactivate-crud>
+
+    <rules-vue ref="rulesVue"></rules-vue>
   </q-page>
 </template>
 
 <script>
 import { ref } from "vue";
-
 import { useQuasar } from "quasar";
-
-import { LocalStorage } from "quasar";
-
+import rulesVue from "src/components/rules.vue";
 import { VMoney } from "v-money";
-
 import methodsVue from "src/components/methods.vue";
-
 import desactivateCrudVue from "src/components/desactivateCrud.vue";
 
 export default {
@@ -727,8 +480,8 @@ export default {
     "desactivate-crud": desactivateCrudVue,
     methods: methodsVue,
     VMoney,
+    rulesVue,
   },
-  name: "retenciones",
   data() {
     return {
       money: {
@@ -817,19 +570,8 @@ export default {
         fecha_fin_val: "",
       },
       datos: [],
-      formEdit: {
-        id: "",
-        cod_tipo_persona: "",
-        cod_tipo_retencion: "",
-        nb_tipo_retencion: "",
-        porc_base: "",
-        porc_retencion: "",
-        pago_mayor: "",
-        sustraendo: "",
-        cod_seniat: "",
-        fecha_ini_val: "",
-        fecha_fin_val: "",
-      },
+      count: 1,
+      currentPage: 1,
       tipo_persona: [
         { label: "JURÍDICA", value: "J" },
         { label: "NATURAL", value: "N" },
@@ -839,37 +581,31 @@ export default {
       disabledCreate: true,
       disabledEdit: true,
       disabledDelete: true,
-      axiosConfig: {
-        headers: {
-          Authorization: ``,
-        },
-      },
     };
   },
   setup() {
     const $q = useQuasar();
+    const loading = ref(false);
+    const order = ref(false);
     const pagination = ref({
-      sortBy: "desc",
-      descending: false,
-      page: 2,
-      rowsPerPage: 4,
-      // rowsNumber: xx if getting data from a server
+      descending: "",
+      page: 1,
+      rowsPerPage: 8,
+      rowsNumber: "",
     });
     return {
-      pagination: ref({
-        rowsPerPage: 10,
-      }),
+      pagination,
+      anulate: ref(false),
       separator: ref("vertical"),
-      create: ref(false),
-      edit: ref(false),
+      dialog: ref(false),
       loading: ref(false),
-      medium: ref(false),
       deletePopup: ref(false),
       filter: ref(""),
     };
   },
   mounted() {
-    this.getDataRetenciones("/mretenciones", "setData", "datos");
+    this.$emit("changeTitle", "SCEN - Mantenimiento - Retenciones", "");
+    this.getDataRetenciones("/mretenciones", "onRequest", "datos");
     this.$refs.desactivateCrud.desactivarCrud(
       "c_retenciones",
       "r_retenciones",
@@ -879,96 +615,66 @@ export default {
     );
   },
   methods: {
+    // Metodo para hacer Get de Datos cuando seleccionas opcion de Tabla
+    onRequest(res, dataRes) {
+      if (this.count == 1) {
+        this.loading = false;
+        this[dataRes] = res.data;
+        this.pagination.rowsNumber = res.total;
+      } else {
+        let { page, rowsPerPage, sortBy, descending } = res.pagination;
+        if (this.currentPage !== page) {
+          descending = "";
+        }
+        const filter = res.filter;
+        const startRow = (page - 1) * rowsPerPage;
+        const fetchCount =
+          rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
+
+        var headerPage = page;
+        var headerOrder_direction = "";
+        var headerLimit = fetchCount;
+        if (sortBy) {
+          var headerOrder_by = sortBy;
+        } else {
+          var headerOrder_by = "";
+        }
+
+        if (descending !== "") {
+          this.pagination.descending = !this.pagination.descending;
+          if (this.pagination.descending == true) {
+            headerOrder_direction = "DESC";
+          } else headerOrder_direction = "ASC";
+        }
+
+        if (sortBy) this.pagination.sortBy = sortBy;
+        this.pagination.page = page;
+        this.pagination.rowsPerPage = rowsPerPage;
+        this.getData(`/mretenciones`, "setDataTable", "datos", {
+          headers: {
+            page: headerPage,
+            limit: headerLimit,
+            order_direction: headerOrder_direction,
+            order_by: headerOrder_by,
+          },
+        });
+      }
+      this.count = 0;
+    },
+    // Metodo para Setear Datos en Tabla
+    setDataTable(res, dataRes) {
+      this[dataRes] = res.data;
+      this.pagination.page = res.currentPage;
+      this.currentPage = res.currentPage;
+      this.pagination.rowsNumber = res.total;
+      this.pagination.rowsPerPage = res.limit;
+      this.loading = false;
+    },
+    // Metodo para Resetear Carga
     resetLoading() {
       this.loading = false;
     },
-    // Reglas
-    checkDate(val) {
-      var fecha = val.split("/")
-      var year =  fecha[2]
-      var month = fecha[1]
-      var day = fecha[0]
-      if (month == "" && day == "" && year == "") {
-        this.$q.notify({
-          message: "Fecha Invalida",
-          color: "red",
-        });
-        return "";
-      } else {
-      fecha = month+ "/" + day + "/" + year
-      if (date.isValid(fecha) == false) {
-        console.log(fecha)
-        this.$q.notify({
-          message: "Fecha Invalida",
-          color: "red",
-        });
-        return "";
-      }}
-    },
-    reglasSelect(val) {
-      if (val === null) {
-        return "Debes Seleccionar Algo";
-      }
-      if (val === "") {
-        return "Debes Seleccionar Algo";
-      }
-    },
-    reglasNotNull50(val) {
-      if (val === null) {
-        return "Debes Escribir Algo";
-      }
-      if (val === "") {
-        return "Debes Escribir Algo";
-      }
-      if ((val !== null) !== "") {
-        if (val > 49) {
-          return "Deben ser Maximo 50 Caracteres";
-        }
-      }
-    },
-    reglasNotNull12(val) {
-      var val = val;
-      val = val.replaceAll(".", "").replaceAll(",", ".");
-      if (val === null) {
-        return "Debes Escribir Algo";
-      }
-      if (val === "") {
-        return "Debes Escribir Algo";
-      }
-      if ((val !== null) !== "") {
-        if (val > 9999999999.99) {
-          return "Monto Maximo Superado";
-        }
-      }
-    },
-    reglasNotNull3(val) {
-      if (val === null) {
-        return "Debes Escribir Algo";
-      }
-      if (val === "") {
-        return "Debes Escribir Algo";
-      }
-      if ((val !== null) !== "") {
-        if (val > 999) {
-          return "Deben ser Maximo 3 Caracteres";
-        }
-      }
-    },
-    reglasNotNull2(val) {
-      if (val === null) {
-        return "Debes Escribir Algo";
-      }
-      if (val === "") {
-        return "Debes Escribir Algo";
-      }
-      if ((val !== null) !== "") {
-        if (val > 99) {
-          return "Deben ser Maximo 2 Caracteres";
-        }
-      }
-    },
-
-    // Desactivar CRUD
+    // Metodo para Validar Permisos
     desactivarCrud(createItem, readItem, deleteItem, updateItem) {
       if (readItem == true) {
         if (createItem == true) {
@@ -983,49 +689,55 @@ export default {
       } else this.$router.push("/error403");
     },
 
-    // Metodos CRUD
-    getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+    // METODOS DE PAGINA
+
+    // Metodo para hacer Get de Datos
+    getData(url, call, dataRes, axiosConfig) {
+      this.$refs.methods.getData(url, call, dataRes, axiosConfig);
     },
+    // Metodo para hacer Get de Retenciones
     getDataRetenciones(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+      this.$refs.methods.getData(url, call, dataRes, {
+        headers: {
+          page: 1,
+          limit: 8,
+        },
+      });
       this.loading = true;
     },
-    setData(res, dataRes) {
-      this[dataRes] = res;
-      this.loading = false;
-    },
+    // Metodo para Setear Datos Seleccionados
     setDataEdit(res, dataRes) {
       this.loading = false;
-      this.formEdit.id = res.id;
-      this.formEdit.cod_tipo_persona = res.tipo_persona_desc;
-      this.formEdit.cod_tipo_retencion = res.cod_tipo_retencion;
-      this.formEdit.nb_tipo_retencion = res.nb_tipo_retencion;
-      this.formEdit.porc_base = res.porc_base;
-      this.formEdit.porc_retencion = res.porc_retencion;
-      this.formEdit.pago_mayor = res.pago_mayor;
-      this.formEdit.sustraendo = res.sustraendo;
-      this.formEdit.cod_seniat = res.cod_seniat;
+      this.form.id = res.id;
+      this.form.cod_tipo_persona = res.tipo_persona_desc;
+      this.form.cod_tipo_retencion = res.cod_tipo_retencion;
+      this.form.nb_tipo_retencion = res.nb_tipo_retencion;
+      this.form.porc_base = res.porc_base;
+      this.form.porc_retencion = res.porc_retencion;
+      this.form.pago_mayor = res.pago_mayor;
+      this.form.sustraendo = res.sustraendo;
+      this.form.cod_seniat = res.cod_seniat;
       if (res.fecha_ini_val)
-        this.formEdit.fecha_ini_val = res.fecha_ini_val
+        this.form.fecha_ini_val = res.fecha_ini_val
           .split("-")
           .reverse()
           .join("/");
       if (res.fecha_fin_val)
-        this.formEdit.fecha_fin_val = res.fecha_fin_val
+        this.form.fecha_fin_val = res.fecha_fin_val
           .split("-")
           .reverse()
           .join("/");
     },
+    // Metodo para Eliminar Datos Seleccionados
     deleteData(idpost) {
       this.$refs.methods.deleteData(
         `/mretenciones/${idpost}`,
-        "getDataRetenciones",
-        this.axiosConfig
+        "getDataRetenciones"
       );
       this.loading = true;
     },
-    createData() {
+    // Metodo para Editar o Crear Datos
+    sendData() {
       this.form.fecha_ini_val = this.form.fecha_ini_val
         .split("/")
         .reverse()
@@ -1048,50 +760,29 @@ export default {
         .replaceAll(".", "")
         .replaceAll(",", ".");
       this.form.cod_tipo_persona = this.form.cod_tipo_persona.value;
-      this.$refs.methods.createData(
-        "/mretenciones",
-        this.form,
-        "getDataRetenciones",
-        this.axiosConfig
-      );
-      this.resetForm();
-      this.loading = true;
+      if (!this.form.id) {
+        this.$refs.methods.createData(
+          "/mretenciones",
+          this.form,
+          "getDataRetenciones"
+        );
+        this.resetForm();
+        this.loading = true;
+        this.dialog = false;
+      } else {
+        this.$refs.methods.putData(
+          `/mretenciones/${this.form.id}`,
+          this.form,
+          "getDataRetenciones"
+        );
+        this.dialog = false;
+        this.resetForm();
+        this.loading = true;
+      }
     },
-    putData() {
-      this.formEdit.fecha_ini_val = this.formEdit.fecha_ini_val
-        .split("/")
-        .reverse()
-        .join("-");
-
-      this.formEdit.fecha_fin_val = this.formEdit.fecha_fin_val
-        .split("/")
-        .reverse()
-        .join("-");
-      this.formEdit.porc_base = this.formEdit.porc_base
-        .replaceAll(".", "")
-        .replaceAll(",", ".");
-      this.formEdit.porc_retencion = this.formEdit.porc_retencion
-        .replaceAll(".", "")
-        .replaceAll(",", ".");
-      this.formEdit.pago_mayor = this.formEdit.pago_mayor
-        .replaceAll(".", "")
-        .replaceAll(",", ".");
-      this.formEdit.sustraendo = this.formEdit.sustraendo
-        .replaceAll(".", "")
-        .replaceAll(",", ".");
-      this.formEdit.cod_tipo_persona = this.formEdit.cod_tipo_persona.value;
-      this.$refs.methods.putData(
-        `/mretenciones/${this.formEdit.id}`,
-        this.formEdit,
-        "getDataRetenciones",
-        this.axiosConfig
-      );
-      this.edit = false;
-      this.resetFormEdit();
-      this.loading = true;
-    },
-
+    // Metodo para Resetear Carga
     resetForm() {
+      delete this.form.id;
       (this.form.cod_tipo_persona = ""),
         (this.form.cod_tipo_retencion = ""),
         (this.form.nb_tipo_retencion = ""),
@@ -1101,42 +792,49 @@ export default {
         (this.form.cod_seniat = ""),
         (this.form.sustraendo = ""),
         (this.form.fecha_ini_val = ""),
-        (this.form.fecha_fin_val = ""),
-        (this.create = false);
-    },
-    resetFormEdit() {
-      (this.formEdit.id = ""),
-        (this.formEdit.cod_tipo_persona = ""),
-        (this.formEdit.cod_tipo_retencion = ""),
-        (this.formEdit.nb_tipo_retencion = ""),
-        (this.formEdit.porc_base = ""),
-        (this.formEdit.porc_retencion = ""),
-        (this.formEdit.pago_mayor = ""),
-        (this.formEdit.cod_seniat = ""),
-        (this.formEdit.sustraendo = ""),
-        (this.formEdit.fecha_ini_val = ""),
-        (this.formEdit.fecha_fin_val = "");
+        (this.form.fecha_fin_val = "");
     },
   },
 };
 </script>
 
-<style lang="sass">
-.my-sticky-column-table
-  /* specifying max-width so the example can
-    highlight the sticky column on any browser window */
+<style>
+.hide {
+  display: none;
+}
 
+@media screen and (min-width: 600px) {
+  .movilTitle {
+    display: none;
+    margin-bottom: 15px;
+  }
+}
+@media screen and (max-width: 600px) {
+  .movilTitle {
+    display: block;
+  }
+}
 
-  thead tr:first-child th:first-child
-    /* bg color is important for th; just specify one */
-    background-color: #FFFFFF
+@media screen and (min-width: 600px) {
+  .cardMargin {
+    padding-right: 20px !important;
+  }
+}
+@media screen and (min-width: 1024px) {
+  .cardMarginLast {
+    padding-right: 20px !important;
+  }
+}
 
-  td:first-child
-    background-color: #FFFFFF
+@media screen and (max-width: 1024px) {
+  .buttonMargin {
+    margin-bottom: 15px !important;
+  }
+}
 
-  th:first-child,
-  td:first-child
-    position: sticky
-    left: 0
-    z-index: 1
+@media screen and (max-width: 600px) {
+  .selectMobile {
+    margin-bottom: 25px !important;
+  }
+}
 </style>

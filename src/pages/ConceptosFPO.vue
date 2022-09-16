@@ -1,9 +1,9 @@
 <template>
   <q-page class="pagina q-pa-md">
-    <q-dialog v-model="create">
+    <q-dialog v-model="dialog">
       <q-card class="q-pa-md" bordered style="width: 900px; max-width: 80vw">
         <q-card-section>
-          <q-form @submit="createData" class="q-gutter-md">
+          <q-form @submit="sendData" class="q-gutter-md">
             <div class="row">
               <div class="col-md-6 col-xs-12">
                 <q-input
@@ -13,7 +13,7 @@
                   hint=""
                   class="pcform"
                   lazy-rules
-                  :rules="[reglasNotNull6]"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 6, 'Maximo 6 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres')  || ']']"
                   @update:model-value="
                     form.cod_fpo = form.cod_fpo.toUpperCase()
                   "
@@ -33,7 +33,7 @@
                   input-class="text-right"
                   hint=""
                   class="pcform"
-                  :rules="[reglasValor]"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 13, 'Maximo 10 Caracteres') || '']"
                   lazy-rules
                 >
                   <template v-slot:prepend>
@@ -49,7 +49,7 @@
                   label="Descripción"
                   hint=""
                   class="pcform"
-                  :rules="[reglasNotNull40]"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 40, 'Maximo 40 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres')  || ']']"
                   lazy-rules
                   @update:model-value="
                     form.desc_tipo = form.desc_tipo.toUpperCase()
@@ -89,7 +89,7 @@
                         class="pcform"
                         lazy-rules
                         mask="##/##/####"
-                        :rules="[dateValidation]"
+                        :rules="[(val) => this.$refs.rulesVue.checkDate(val, '') || '']"
                       >
                         <template v-slot:append>
                           <q-icon name="event" class="cursor-pointer">
@@ -120,7 +120,7 @@
                         class="pcform"
                         lazy-rules
                         mask="##/##/####"
-                        :rules="[dateValidation]"
+                        :rules="[(val) => this.$refs.rulesVue.checkDate(val, '') || '']"
                       >
                         <template v-slot:append>
                           <q-icon name="event" class="cursor-pointer">
@@ -174,7 +174,7 @@
                         input-class="text-right"
                         class="pcform"
                         lazy-rules
-                        :rules="[reglasAllowNull4]"
+                        :rules="[(val) => this.$refs.rulesVue.isMax(val, 5, 'Maximo 4 Caracteres') || ']']"
                       >
                         <template v-slot:prepend>
                           <q-icon name="scale" />
@@ -191,7 +191,7 @@
                         v-money="money"
                         input-class="text-right"
                         lazy-rules
-                        :rules="[reglasAllowNull4]"
+                        :rules="[(val) => this.$refs.rulesVue.isMax(val, 5, 'Maximo 4 Caracteres') || ']']"
                       >
                         <template v-slot:prepend>
                           <q-icon name="scale" />
@@ -208,7 +208,7 @@
               style="margin-bottom: 10px"
             >
               <q-btn
-                label="Agregar Concepto FPO"
+                label="Enviar"
                 type="submit"
                 color="primary"
                 class="col-md-5 col-sm-5 col-xs-12"
@@ -229,243 +229,17 @@
       </q-card>
     </q-dialog>
 
-    <q-dialog v-model="edit">
-      <q-card class="q-pa-md" bordered style="width: 900px; max-width: 80vw">
-        <q-card-section>
-          <q-form @submit="putData">
-            <div class="row">
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.cod_fpo"
-                  label="Codigo"
-                  hint=""
-                  class="pcform"
-                  lazy-rules
-                  :rules="[reglasNotNull6]"
-                  @update:model-value="
-                    formEdit.cod_fpo = formEdit.cod_fpo.toUpperCase()
-                  "
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="qr_code_2" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.valor"
-                  label="Valor"
-                  hint=""
-                  v-money="money"
-                  input-class="text-right"
-                  :rules="[reglasValorEdit]"
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="sell" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-12 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.desc_tipo"
-                  label="Descripción"
-                  hint=""
-                  class="pcform"
-                  :rules="[reglasNotNull40]"
-                  lazy-rules
-                  @update:model-value="
-                    formEdit.desc_tipo = formEdit.desc_tipo.toUpperCase()
-                  "
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="description" />
-                  </template>
-                </q-input>
-              </div>
-
-              <q-card
-                class="q-pa-md"
-                bordered
-                style="width: 999px; max-width: 80vw; margin-bottom: 20px"
-              >
-                <q-card-section>
-                  <div class="row">
-                    <div
-                      class="col-md-12 col-xs-12"
-                      style="
-                        align-self: center;
-                        text-align: left;
-                        margin-top: -30px;
-                      "
-                    >
-                      <h4 style="font-size: 20px" class="text-secondary">
-                        <strong>FECHAS DE VALIDEZ</strong>
-                      </h4>
-                    </div>
-                    <div class="col-md-6 col-xs-12">
-                      <q-input
-                        outlined
-                        label="Inicial"
-                        hint=""
-                        v-model="formEdit.f_val"
-                        class="pcform"
-                        lazy-rules
-                        mask="##/##/####"
-                        :rules="[dateValidation]"
-                      >
-                        <template v-slot:append>
-                          <q-icon name="event" class="cursor-pointer">
-                            <q-popup-proxy
-                              ref="qDateProxy"
-                              transition-show="scale"
-                              transition-hide="scale"
-                            >
-                              <q-date
-                                v-model="formEdit.f_val"
-                                mask="DD/MM/YYYY"
-                                  @update:model-value="this.$refs.qDateProxy.hide()
-                                   "
-                              ></q-date>
-                            </q-popup-proxy>
-                          </q-icon>
-                        </template>
-                      </q-input>
-                    </div>
-
-                    <div class="col-md-6 col-xs-12">
-                      <q-input
-                        outlined
-                        label="Final"
-                        hint=""
-                        v-model="formEdit.f_anul"
-                        class="pcform"
-                        lazy-rules
-                        mask="##/##/####"
-                        :rules="[dateValidation]"
-                      >
-                        <template v-slot:append>
-                          <q-icon name="event" class="cursor-pointer">
-                            <q-popup-proxy
-                              ref="qDateProxy"
-                              transition-show="scale"
-                              transition-hide="scale"
-                            >
-                              <q-date
-                                v-model="formEdit.f_anul"
-                                mask="DD/MM/YYYY"
-                                  @update:model-value="this.$refs.qDateProxy.hide()
-                                   "
-                              ></q-date>
-                            </q-popup-proxy>
-                          </q-icon>
-                        </template>
-                      </q-input>
-                    </div>
-                  </div>
-                </q-card-section>
-              </q-card>
-
-              <q-card
-                class="q-pa-md"
-                bordered
-                style="width: 999px; max-width: 80vw; margin-bottom: 20px"
-              >
-                <q-card-section>
-                  <div class="row">
-                    <div
-                      class="col-md-12 col-xs-12"
-                      style="
-                        align-self: center;
-                        text-align: left;
-                        margin-top: -30px;
-                      "
-                    >
-                      <h4 style="font-size: 20px" class="text-secondary">
-                        <strong>RANGOS DE PESO</strong>
-                      </h4>
-                    </div>
-                    <div class="col-md-6 col-xs-12">
-                      <q-input
-                        outlined
-                        v-model="formEdit.peso_inicio"
-                        label="Inicial"
-                        hint=""
-                        class="pcform"
-                        v-money="money"
-                        input-class="text-right"
-                        lazy-rules
-                        :rules="[reglasAllowNull4]"
-                      >
-                        <template v-slot:prepend>
-                          <q-icon name="scale" />
-                        </template>
-                      </q-input>
-                    </div>
-
-                    <div class="col-md-6 col-xs-12">
-                      <q-input
-                        outlined
-                        v-model="formEdit.peso_fin"
-                        label="Final"
-                        hint=""
-                        v-money="money"
-                        input-class="text-right"
-                        lazy-rules
-                        :rules="[reglasAllowNull4]"
-                      >
-                        <template v-slot:prepend>
-                          <q-icon name="scale" />
-                        </template>
-                      </q-input>
-                    </div>
-                  </div>
-                </q-card-section>
-              </q-card>
-            </div>
-
-            <div
-              class="full-width row justify-center items-center content-center"
-              style="margin-bottom: 10px"
-            >
-              <q-btn
-                label="Editar Concepto FPO"
-                type="submit"
-                color="primary"
-                class="col-md-5 col-sm-5 col-xs-12"
-                icon="person_add"
-              />
-              <q-btn
-                label="Cerrar"
-                color="primary"
-                flat
-                class="col-md-5 col-sm-5 col-xs-12 btnmovil"
-                icon="close"
-                v-close-popup
-              />
-            </div>
-          </q-form>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
-
-    <div class="row q-pa-sm justify-center">
-      <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
-        <div class="row">
+    <div class="q-pa-sm justify-center">
+        <div class="row q-pa-md justify-end">
           <div
-            class="col-md-4 col-xs-12 text-secondary"
-            style="align-self: center; text-align: center; margin-right: 16px"
+            class="col-md-4 col-xs-12 text-secondary movilTitle"
+            style="align-self: center; text-align: center"
           >
             <h4><strong>CONCEPTOS DE FLANQUEO POSTAL OBLIGATORIO</strong></h4>
           </div>
           <div
-            class="col-md-5 col-sm-7 col-xs-6"
-            style="align-self: center; margin-right: 20px"
+            class="col-md-5 col-sm-7 col-xs-12 cardMargin selectMobile"
+            style="align-self: center"
           >
             <q-input
               v-model="filter"
@@ -481,23 +255,20 @@
             </q-input>
           </div>
           <div
-            class="col-md-2 col-sm-4 col-xs-5"
+            class="col-md-2 col-sm-4 col-xs-12"
             style="text-align: center; align-self: center"
           >
             <q-btn
               label="Insertar Concepto"
               rounded
               color="primary"
-              @click="create = true"
-              @click.capture="resetForm()"
+              @click="dialog = true; this.resetForm()"
               :disabled="this.disabledCreate"
             ></q-btn>
           </div>
         </div>
 
-        <div class="q-pa-md">
-          <div class="q-gutter-y-md">
-            <div bordered flat class="row">
+        <div class="q-pa-md q-gutter-y-md">
               <q-table
                 :rows="datos"
                 row-key="id"
@@ -526,9 +297,9 @@
                         getData(
                           `/fpos/${props.row.id}`,
                           'setDataEdit',
-                          'formEdit'
+                          'form'
                         );
-                        edit = true;
+                        dialog = true;
                       "
                     ></q-btn>
                     <q-btn
@@ -582,9 +353,9 @@
                                 getData(
                                   `/fpos/${props.row.id}`,
                                   'setDataEdit',
-                                  'formEdit'
+                                  'form'
                                 );
-                                edit = true;
+                                dialog = true;
                               "
                             ></q-btn>
                             <q-chip
@@ -628,9 +399,6 @@
               </q-table>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
 
     <q-dialog v-model="deletePopup">
       <q-card style="width: 700px">
@@ -652,44 +420,42 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+
     <methods
       ref="methods"
-      @get-Data-Fpos="getDataFpos('/fpos', 'setData', 'datos')"
+      @get-Data="getData('/fpos', 'setData', 'datos')"
       @set-data="setData"
       @reset-Loading="resetLoading"
       @set-Data-Edit="setDataEdit"
     >
     </methods>
+
     <desactivate-crud ref="desactivateCrud" @desactivar-Crud="desactivarCrud">
     </desactivate-crud>
+
+    <rules-vue
+      ref="rulesVue"
+    ></rules-vue>
+
   </q-page>
 </template>
 
 <script>
 import { ref } from "vue";
-
-import { api } from "boot/axios";
-
 import { useQuasar } from "quasar";
-
 import { date } from "quasar";
-
-import { LocalStorage } from "quasar";
-
 import { VMoney } from "v-money";
-
 import methodsVue from "src/components/methods.vue";
-
 import desactivateCrudVue from "src/components/desactivateCrud.vue";
+import rulesVue from "src/components/rules.vue";
 
 export default {
   directives: { money: VMoney },
   components: {
     "desactivate-crud": desactivateCrudVue,
     methods: methodsVue,
-    VMoney,
+    VMoney, rulesVue
   },
-  name: "Bancos",
   data() {
     return {
       money: {
@@ -767,26 +533,11 @@ export default {
         peso_fin: 0,
       },
       datos: [],
-      formEdit: {
-        id: "",
-        cod_fpo: "",
-        desc_tipo: "",
-        valor: 0,
-        f_anul: "",
-        f_val: "",
-        peso_inicio: 0,
-        peso_fin: 0,
-      },
       selected: [],
       error: "",
       disabledCreate: true,
       disabledEdit: true,
-      disabledDelete: true,
-      axiosConfig: {
-        headers: {
-          Authorization: ``,
-        },
-      },
+      disabledDelete: true
     };
   },
   setup() {
@@ -795,24 +546,22 @@ export default {
       sortBy: "desc",
       descending: false,
       page: 2,
-      rowsPerPage: 4,
+      rowsPerPage: 8,
       // rowsNumber: xx if getting data from a server
     });
     return {
       pagination: ref({
-        rowsPerPage: 10,
+        rowsPerPage: 8,
       }),
       separator: ref("vertical"),
-      create: ref(false),
-      edit: ref(false),
+      dialog: ref(false),
       loading: ref(false),
-      medium: ref(false),
       deletePopup: ref(false),
       filter: ref(""),
     };
   },
   mounted() {
-    this.getDataFpos("/fpos", "setData", "datos");
+    this.getData("/fpos", "setData", "datos");
     this.$refs.desactivateCrud.desactivarCrud(
       "c_concepto_fpo",
       "r_concepto_fpo",
@@ -822,125 +571,9 @@ export default {
     );
   },
   methods: {
-    dateValidation(val) {
-      var fecha = val.split("/")
-      var year =  fecha[2]
-      var month = fecha[1]
-      var day = fecha[0]
-      if (month == "" && day == "" && year == "") {
-        this.$q.notify({
-          message: "Fecha Invalida",
-          color: "red",
-        });
-        return "";
-      } else {
-      fecha = month+ "/" + day + "/" + year
-      if (date.isValid(fecha) == false) {
-        console.log(fecha)
-        this.$q.notify({
-          message: "Fecha Invalida",
-          color: "red",
-        });
-        return "";
-      }}
-    },
     resetLoading() {
       this.loading = false;
     },
-    // Reglas
-    reglasSelect(val) {
-      if (val === null) {
-        return "Debes Seleccionar Algo";
-      }
-      if (val === "") {
-        return "Debes Seleccionar Algo";
-      }
-    },
-    reglasValor(val) {
-      var val = this.form.valor;
-      val = val.replaceAll(".", "").replaceAll(",", ".");
-      if (val === null) {
-        return "Debes Escribir Algo";
-      }
-      if (val === "") {
-        return "Debes Escribir Algo";
-      }
-      if ((val !== null) !== "") {
-        if (val > 9.99) {
-          return "El valor maximo es 9,99";
-        }
-      }
-    },
-    reglasValorEdit(val) {
-      var val = this.formEdit.valor;
-      val = val.replaceAll(".", "").replaceAll(",", ".");
-      if (val === null) {
-        return "Debes Escribir Algo";
-      }
-      if (val === "") {
-        return "Debes Escribir Algo";
-      }
-      if ((val !== null) !== "") {
-        if (val > 9.99) {
-          return "El valor maximo es 9,99";
-        }
-      }
-    },
-    reglasNotNull4(val) {
-      if (val === null) {
-        return "Debes Escribir Algo";
-      }
-      if (val === "") {
-        return "Debes Escribir Algo";
-      }
-      if ((val !== null) !== "") {
-        if (val > 99.99) {
-          return "Monto Maximo";
-        }
-      }
-    },
-    reglasAllowNull4(val) {
-      var val = val;
-      val = val.replaceAll(".", "").replaceAll(",", ".");
-      if ((val !== null) !== "") {
-        if (val > 99.99) {
-          return "Monto Maximo";
-        }
-      }
-    },
-    reglasNotNull6(val) {
-      if (val === null) {
-        return "Debes Escribir Algo";
-      }
-      if (val === "") {
-        return "Debes Escribir Algo";
-      }
-      if ((val !== null) !== "") {
-        if (val.length < 3) {
-          return "Deben ser minimo 3 caracteres";
-        }
-        if (val.length > 5) {
-          return "Deben ser Maximo 6 caracteres";
-        }
-      }
-    },
-    reglasNotNull40(val) {
-      if (val === null) {
-        return "Debes Escribir Algo";
-      }
-      if (val === "") {
-        return "Debes Escribir Algo";
-      }
-      if ((val !== null) !== "") {
-        if (val.length < 3) {
-          return "Deben ser minimo 3 caracteres";
-        }
-        if (val.length > 39) {
-          return "Deben ser Maximo 40 caracteres";
-        }
-      }
-    },
-
     // Desactivar CRUD
     desactivarCrud(createItem, readItem, deleteItem, updateItem) {
       if (readItem == true) {
@@ -955,14 +588,9 @@ export default {
         }
       } else this.$router.push("/error403");
     },
-
     // Metodos CRUD
     getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
-    },
-    getDataFpos(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
-      this.loading = true;
+      this.$refs.methods.getData(url, call, dataRes);
     },
     setData(res, dataRes) {
       this[dataRes] = res;
@@ -970,25 +598,24 @@ export default {
     },
     setDataEdit(res, dataRes) {
       this.loading = false;
-      this.formEdit.id = res.id;
-      this.formEdit.cod_fpo = res.cod_fpo;
-      this.formEdit.desc_tipo = res.desc_tipo;
-      this.formEdit.valor = res.valor;
-      this.formEdit.f_val = res.f_val.split("-").reverse().join("/");
-      this.formEdit.f_anul = res.f_anul.split("-").reverse().join("/");
-      this.formEdit.peso_inicio = res.peso_inicio;
-      this.formEdit.peso_fin = res.peso_fin;
-      this.formEdit.valor = res.valor;
+      this.form.id = res.id;
+      this.form.cod_fpo = res.cod_fpo;
+      this.form.desc_tipo = res.desc_tipo;
+      this.form.valor = res.valor;
+      this.form.f_val = res.f_val.split("-").reverse().join("/");
+      this.form.f_anul = res.f_anul.split("-").reverse().join("/");
+      this.form.peso_inicio = res.peso_inicio;
+      this.form.peso_fin = res.peso_fin;
+      this.form.valor = res.valor;
     },
     deleteData(idpost) {
       this.$refs.methods.deleteData(
         `/fpos/${idpost}`,
-        "getDataFpos",
-        this.axiosConfig
+        "getData"
       );
       this.loading = true;
     },
-    createData() {
+    sendData() {
       this.form.valor = this.form.valor
         .replaceAll(".", "")
         .replaceAll(",", ".");
@@ -1000,80 +627,78 @@ export default {
         .replaceAll(",", ".");
       this.form.f_val = this.form.f_val.split("/").reverse().join("-");
       this.form.f_anul = this.form.f_anul.split("/").reverse().join("-");
+      if (!this.form.id){
       this.$refs.methods.createData(
         "/fpos",
         this.form,
-        "getDataFpos",
-        this.axiosConfig
+        "getData"
       );
       this.resetForm();
       this.loading = true;
-    },
-    putData() {
-      this.formEdit.valor = this.formEdit.valor
-        .replaceAll(".", "")
-        .replaceAll(",", ".");
-      this.formEdit.peso_inicio = this.formEdit.peso_inicio
-        .replaceAll(".", "")
-        .replaceAll(",", ".");
-      this.formEdit.peso_fin = this.formEdit.peso_fin
-        .replaceAll(".", "")
-        .replaceAll(",", ".");
-      this.formEdit.f_val = this.formEdit.f_val.split("/").reverse().join("-");
-      this.formEdit.f_anul = this.formEdit.f_anul
-        .split("/")
-        .reverse()
-        .join("-");
-      this.$refs.methods.putData(
-        `/fpos/${this.formEdit.id}`,
-        this.formEdit,
-        "getDataFpos",
-        this.axiosConfig
+      this.dialog = false} else {
+        this.$refs.methods.putData(
+        `/fpos/${this.form.id}`,
+        this.form,
+        "getData"
       );
       this.edit = false;
-      this.resetFormEdit();
+      this.resetForm();
       this.loading = true;
+      this.dialog = false
+      }
     },
 
     resetForm() {
-      (this.form.cod_fpo = ""),
-        (this.form.desc_tipo = ""),
-        (this.form.valor = ""),
-        (this.form.f_anul = ""),
-        (this.form.f_val = ""),
-        (this.form.peso_inicio = ""),
-        (this.form.peso_fin = ""),
-        (this.create = false);
-    },
-    resetFormEdit() {
-      (this.formEdit.cod_fpo = ""),
-        (this.formEdit.desc_tipo = ""),
-        (this.formEdit.valor = ""),
-        (this.formEdit.f_anul = ""),
-        (this.formEdit.f_val = ""),
-        (this.formEdit.peso_inicio = ""),
-        (this.formEdit.peso_fin = "");
+      delete this.form.id
+      this.form.cod_fpo = "",
+      this.form.desc_tipo = "",
+      this.form.valor = "",
+      this.form.f_anul = "",
+      this.form.f_val = "",
+      this.form.peso_inicio = "",
+      this.form.peso_fin = ""
     },
   },
 };
 </script>
 
-<style lang="sass">
-.my-sticky-column-table
-  /* specifying max-width so the example can
-    highlight the sticky column on any browser window */
-
-
-  thead tr:first-child th:first-child
-    /* bg color is important for th; just specify one */
-    background-color: #FFFFFF
-
-  td:first-child
-    background-color: #FFFFFF
-
-  th:first-child,
-  td:first-child
-    position: sticky
-    left: 0
-    z-index: 1
-</style>
+<style>
+  .hide {
+    display: none;
+  }
+  
+  @media screen and (min-width: 600px) {
+    .movilTitle {
+      display: none;
+    }
+  }
+  @media screen and (max-width: 600px) {
+    .movilTitle {
+      display: block;
+    }
+  }
+  
+  @media screen and (min-width: 600px) {
+    .cardMargin {
+      padding-right: 20px !important;
+    }
+  }
+  @media screen and (min-width: 1024px) {
+    .cardMarginLast {
+      padding-right: 20px !important;
+    }
+  }
+  
+  @media screen and (max-width: 1024px) {
+    .buttonMargin {
+      margin-bottom: 20px !important;
+    }
+  }
+  
+  @media screen and (max-width: 600px) {
+    .selectMobile {
+      margin-bottom: 20px !important;
+    }
+  }
+  </style>
+  
