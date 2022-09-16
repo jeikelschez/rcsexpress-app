@@ -6,18 +6,10 @@
           <q-form @submit="sendData()">
             <div class="row">
               <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="form.nb_cliente"
-                  label="Nombre"
-                  hint=""
-                  class="pcform"
-                  @update:model-value="
-                    form.nb_cliente = form.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 100, 'Maximo 100 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
-                >
+                <q-input outlined v-model="form.nb_cliente" label="Nombre" hint="" class="pcform" @update:model-value="
+                  form.nb_cliente = form.nb_cliente.toUpperCase()
+                " lazy-rules
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 100, 'Maximo 100 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']">
                   <template v-slot:prepend>
                     <q-icon name="badge" />
                   </template>
@@ -25,18 +17,10 @@
               </div>
 
               <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="form.rif_cedula"
-                  label="RIF"
-                  hint=""
-                  class="pcform"
-                  @update:model-value="
-                    form.rif_cedula = form.rif_cedula.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 20, 'Maximo 20 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
-                >
+                <q-input outlined v-model="form.rif_cedula" label="RIF" hint="" class="pcform" @update:model-value="
+                  form.rif_cedula = form.rif_cedula.toUpperCase()
+                " lazy-rules
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 20, 'Maximo 20 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']">
                   <template v-slot:prepend>
                     <q-icon name="badge" />
                   </template>
@@ -44,14 +28,9 @@
               </div>
 
               <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="form.nit"
-                  label="NIT"
-                  hint=""
+                <q-input outlined v-model="form.nit" label="NIT" hint=""
                   @update:model-value="form.nit = form.nit.toUpperCase()"
-                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 200, 'Maximo 200 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
-                >
+                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 200, 'Maximo 200 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']">
                   <template v-slot:prepend>
                     <q-icon name="pin" />
                   </template>
@@ -59,16 +38,9 @@
               </div>
 
               <div class="col-md-4 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="form.tipo_persona"
-                  label="Tipo Persona"
-                  hint=""
-                  class="pcform"
-                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido') || '']"
-                  :options="tipo_persona"
-                  lazy-rules
-                >
+                <q-select outlined v-model="form.tipo_persona" label="Tipo Persona" hint="" class="pcform"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '']" :options="tipo_persona"
+                  lazy-rules>
                   <template v-slot:prepend>
                     <q-icon name="group" />
                   </template>
@@ -76,18 +48,11 @@
               </div>
 
               <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="form.tlf_cliente"
-                  label="Telefono"
-                  hint=""
-                  class="pcform"
+                <q-input outlined v-model="form.tlf_cliente" label="Telefono" hint="" class="pcform"
                   @update:model-value="
                     form.tlf_cliente = form.tlf_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 100, 'Maximo 100 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
-                >
+                  " lazy-rules
+                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 100, 'Maximo 100 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']">
                   <template v-slot:prepend>
                     <q-icon name="phone" />
                   </template>
@@ -95,15 +60,9 @@
               </div>
 
               <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="form.fax"
-                  label="Fax"
-                  hint=""
-                  @update:model-value="form.fax = form.fax.toUpperCase()"
-                  lazy-rules
-                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 65, 'Maximo 65 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
-                >
+                <q-input outlined v-model="form.fax" label="Fax" hint=""
+                  @update:model-value="form.fax = form.fax.toUpperCase()" lazy-rules
+                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 65, 'Maximo 65 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']">
                   <template v-slot:prepend>
                     <q-icon name="fax" />
                   </template>
@@ -111,18 +70,11 @@
               </div>
 
               <div class="col-md-5 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="form.persona_contacto"
-                  label="Persona Contacto"
-                  hint=""
-                  class="pcform"
+                <q-input outlined v-model="form.persona_contacto" label="Persona Contacto" hint="" class="pcform"
                   @update:model-value="
                     form.persona_contacto = form.persona_contacto.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 100, 'Maximo 100 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
-                >
+                  " lazy-rules
+                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 100, 'Maximo 100 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']">
                   <template v-slot:prepend>
                     <q-icon name="person" />
                   </template>
@@ -130,18 +82,11 @@
               </div>
 
               <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="form.dir_fiscal"
-                  label="Direccion Fiscal"
-                  hint=""
-                  class="pcform"
+                <q-input outlined v-model="form.dir_fiscal" label="Direccion Fiscal" hint="" class="pcform"
                   @update:model-value="
                     form.dir_fiscal = form.dir_fiscal.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 100, 'Maximo 100 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
-                >
+                  " lazy-rules
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 100, 'Maximo 100 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']">
                   <template v-slot:prepend>
                     <q-icon name="pin_drop" />
                   </template>
@@ -149,29 +94,16 @@
               </div>
 
               <div class="col-md-3 col-xs-12" style="margin-bottom: 20px">
-                <q-checkbox
-                  size="lg"
-                  v-model="form.cte_decontado"
-                  true-value="1"
-                  false-value="0"
-                  style="font-size: 13px"
-                  label="¿ES CLIENTE PARTICULAR"
-                />
+                <q-checkbox size="lg" v-model="form.cte_decontado" true-value="1" false-value="0"
+                  style="font-size: 13px" label="¿ES CLIENTE PARTICULAR" />
               </div>
 
               <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="form.razon_social"
-                  label="Razon Social"
-                  hint=""
-                  class="pcform"
+                <q-input outlined v-model="form.razon_social" label="Razon Social" hint="" class="pcform"
                   @update:model-value="
                     form.razon_social = form.razon_social.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 100, 'Maximo 100 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
-                >
+                  " lazy-rules
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 100, 'Maximo 100 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']">
                   <template v-slot:prepend>
                     <q-icon name="email" />
                   </template>
@@ -179,18 +111,11 @@
               </div>
 
               <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="form.dir_correo"
-                  label="Direccion Correo"
-                  type="email"
-                  hint=""
+                <q-input outlined v-model="form.dir_correo" label="Direccion Correo" type="email" hint=""
                   @update:model-value="
                     form.dir_correo = form.dir_correo.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 100, 'Maximo 100 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
-                >
+                  " lazy-rules
+                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 100, 'Maximo 100 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']">
                   <template v-slot:prepend>
                     <q-icon name="email" />
                   </template>
@@ -198,16 +123,9 @@
               </div>
 
               <div class="col-md-4 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="form.flag_activo"
-                  label="Estatus"
-                  hint=""
-                  class="pcform"
-                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '']"
-                  :options="estatus"
-                  lazy-rules
-                >
+                <q-select outlined v-model="form.flag_activo" label="Estatus" hint="" class="pcform"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '']" :options="estatus"
+                  lazy-rules>
                   <template v-slot:prepend>
                     <q-icon name="group" />
                   </template>
@@ -215,51 +133,31 @@
               </div>
 
               <div class="col-md-8 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="form.observacion"
-                  label="Observaciones"
-                  hint=""
-                  @update:model-value="
-                    form.observacion = form.observacion.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 100, 'Maximo 100 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
-                >
+                <q-input outlined v-model="form.observacion" label="Observaciones" hint="" @update:model-value="
+                  form.observacion = form.observacion.toUpperCase()
+                " lazy-rules
+                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 100, 'Maximo 100 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']">
                   <template v-slot:prepend>
                     <q-icon name="visibility" />
                   </template>
                 </q-input>
               </div>
 
-              <q-card
-                class="q-pa-md"
-                bordered
-                style="width: 999px; max-width: 80vw; margin-bottom: 20px"
-              >
+              <q-card class="q-pa-md" bordered style="width: 999px; max-width: 80vw; margin-bottom: 20px">
                 <q-card-section>
                   <div class="row">
-                    <div
-                      class="col-md-12 col-xs-12"
-                      style="
+                    <div class="col-md-12 col-xs-12" style="
                         align-self: center;
                         text-align: left;
                         margin-top: -30px;
-                      "
-                    >
+                      ">
                       <h4 style="font-size: 20px" class="text-secondary">
                         <strong>UBICACIÓN GEOGRAFICA</strong>
                       </h4>
                     </div>
                     <div class="col-md-4 col-xs-12">
-                      <q-select
-                        outlined
-                        v-model="pais"
-                        label="Pais"
-                        hint=""
-                        class="pcform"
-                        :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido') || '']"
-                        :options="paisesSelected"
+                      <q-select outlined v-model="pais" label="Pais" hint="" class="pcform"
+                        :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '']" :options="paisesSelected"
                         @filter="
                           (val, update, abort) =>
                             filterArray(
@@ -270,15 +168,8 @@
                               'paises',
                               'desc_pais'
                             )
-                        "
-                        use-input
-                        hide-selected
-                        fill-input
-                        input-debounce="0"
-                        lazy-rules
-                        option-label="desc_pais"
-                        option-value="id"
-                        @update:model-value="
+                        " use-input hide-selected fill-input input-debounce="0" lazy-rules option-label="desc_pais"
+                        option-value="id" @update:model-value="
                           getDataLocalidades('estados', 'setPaginatedData', {
                             headers: {
                               pais: this.pais.id,
@@ -296,8 +187,7 @@
                           this.form.cod_localidad = [];
                           this.form.cod_municipio = [];
                           this.form.cod_parroquia = [];
-                        "
-                        ><template v-slot:no-option>
+                        "><template v-slot:no-option>
                           <q-item>
                             <q-item-section class="text-grey">
                               Sin resultados
@@ -311,14 +201,8 @@
                     </div>
 
                     <div class="col-md-4 col-xs-12">
-                      <q-select
-                        outlined
-                        v-model="estado"
-                        label="Estado"
-                        class="pcform"
-                        hint=""
-                        :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido') || '']"
-                        :options="estadosSelected"
+                      <q-select outlined v-model="estado" label="Estado" class="pcform" hint=""
+                        :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '']" :options="estadosSelected"
                         @filter="
                           (val, update, abort) =>
                             filterArray(
@@ -329,15 +213,8 @@
                               'estados',
                               'desc_estado'
                             )
-                        "
-                        use-input
-                        hide-selected
-                        fill-input
-                        input-debounce="0"
-                        lazy-rules
-                        option-label="desc_estado"
-                        option-value="id"
-                        @update:model-value="
+                        " use-input hide-selected fill-input input-debounce="0" lazy-rules option-label="desc_estado"
+                        option-value="id" @update:model-value="
                           getDataLocalidades('municipios', 'setPaginatedData', {
                             headers: {
                               estado: this.estado.id,
@@ -365,8 +242,7 @@
                           this.ciudad = '';
                           this.form.cod_localidad = [];
                           this.form.cod_localidad = [];
-                        "
-                        ><template v-slot:no-option>
+                        "><template v-slot:no-option>
                           <q-item>
                             <q-item-section class="text-grey">
                               Sin resultados
@@ -380,14 +256,9 @@
                     </div>
 
                     <div class="col-md-4 col-xs-12">
-                      <q-select
-                        outlined
-                        v-model="ciudad"
-                        label="Ciudad"
-                        hint=""
-                        :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido') || '']"
-                        :options="ciudadesSelected"
-                        @filter="
+                      <q-select outlined v-model="ciudad" label="Ciudad" hint=""
+                        :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '']"
+                        :options="ciudadesSelected" @filter="
                           (val, update, abort) =>
                             filterArray(
                               val,
@@ -397,15 +268,8 @@
                               'ciudades',
                               'desc_ciudad'
                             )
-                        "
-                        use-input
-                        hide-selected
-                        fill-input
-                        input-debounce="0"
-                        lazy-rules
-                        option-label="desc_ciudad"
-                        option-value="id"
-                        ><template v-slot:no-option>
+                        " use-input hide-selected fill-input input-debounce="0" lazy-rules option-label="desc_ciudad"
+                        option-value="id"><template v-slot:no-option>
                           <q-item>
                             <q-item-section class="text-grey">
                               Sin resultados
@@ -419,15 +283,9 @@
                     </div>
 
                     <div class="col-md-4 col-xs-12">
-                      <q-select
-                        outlined
-                        v-model="form.cod_municipio"
-                        label="Municipio"
-                        hint=""
-                        class="pcform"
-                        :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido') || '']"
-                        :options="municipiosSelected"
-                        @filter="
+                      <q-select outlined v-model="form.cod_municipio" label="Municipio" hint="" class="pcform"
+                        :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '']"
+                        :options="municipiosSelected" @filter="
                           (val, update, abort) =>
                             filterArray(
                               val,
@@ -437,15 +295,8 @@
                               'municipios',
                               'desc_municipio'
                             )
-                        "
-                        use-input
-                        hide-selected
-                        fill-input
-                        input-debounce="0"
-                        option-label="desc_municipio"
-                        option-value="id"
-                        lazy-rules
-                        @update:model-value="
+                        " use-input hide-selected fill-input input-debounce="0" option-label="desc_municipio"
+                        option-value="id" lazy-rules @update:model-value="
                           getDataLocalidades('parroquias', 'setPaginatedData', {
                             headers: {
                               municipio: this.form.cod_municipio.id,
@@ -453,8 +304,7 @@
                           });
                           this.form.cod_parroquia = [];
                           this.form.cod_parroquia = [];
-                        "
-                        ><template v-slot:no-option>
+                        "><template v-slot:no-option>
                           <q-item>
                             <q-item-section class="text-grey">
                               Sin resultados
@@ -468,15 +318,9 @@
                     </div>
 
                     <div class="col-md-4 col-xs-12">
-                      <q-select
-                        outlined
-                        v-model="form.cod_parroquia"
-                        label="Parroquia"
-                        hint=""
-                        class="pcform"
-                        :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido') || '']"
-                        :options="parroquiasSelected"
-                        @filter="
+                      <q-select outlined v-model="form.cod_parroquia" label="Parroquia" hint="" class="pcform"
+                        :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '']"
+                        :options="parroquiasSelected" @filter="
                           (val, update, abort) =>
                             filterArray(
                               val,
@@ -486,15 +330,8 @@
                               'parroquias',
                               'desc_parroquia'
                             )
-                        "
-                        use-input
-                        hide-selected
-                        fill-input
-                        input-debounce="0"
-                        option-label="desc_parroquia"
-                        option-value="id"
-                        lazy-rules
-                        ><template v-slot:no-option>
+                        " use-input hide-selected fill-input input-debounce="0" option-label="desc_parroquia"
+                        option-value="id" lazy-rules><template v-slot:no-option>
                           <q-item>
                             <q-item-section class="text-grey">
                               Sin resultados
@@ -508,14 +345,9 @@
                     </div>
 
                     <div class="col-md-4 col-xs-12">
-                      <q-select
-                        outlined
-                        v-model="form.cod_localidad"
-                        label="Localidad"
-                        hint=""
-                        :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido') || '']"
-                        :options="localidadesSelected"
-                        @filter="
+                      <q-select outlined v-model="form.cod_localidad" label="Localidad" hint=""
+                        :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '']"
+                        :options="localidadesSelected" @filter="
                           (val, update, abort) =>
                             filterArray(
                               val,
@@ -525,15 +357,8 @@
                               'localidades',
                               'desc_localidad'
                             )
-                        "
-                        use-input
-                        hide-selected
-                        fill-input
-                        input-debounce="0"
-                        option-label="desc_localidad"
-                        option-value="id"
-                        lazy-rules
-                        ><template v-slot:no-option>
+                        " use-input hide-selected fill-input input-debounce="0" option-label="desc_localidad"
+                        option-value="id" lazy-rules><template v-slot:no-option>
                           <q-item>
                             <q-item-section class="text-grey">
                               Sin resultados
@@ -549,37 +374,22 @@
                 </q-card-section>
               </q-card>
 
-              <q-card
-                class="q-pa-md"
-                bordered
-                style="width: 999px; max-width: 80vw; margin-bottom: 32px"
-              >
+              <q-card class="q-pa-md" bordered style="width: 999px; max-width: 80vw; margin-bottom: 32px">
                 <q-card-section>
                   <div class="row">
-                    <div
-                      class="col-md-12 col-xs-12"
-                      style="
+                    <div class="col-md-12 col-xs-12" style="
                         align-self: center;
                         text-align: left;
                         margin-top: -30px;
-                      "
-                    >
+                      ">
                       <h4 style="font-size: 20px" class="text-secondary">
-                        <strong
-                          >INFORMACIÓN RESPECTO A LA EMPRESA DE
-                          ENCOMIENDA</strong
-                        >
+                        <strong>INFORMACIÓN RESPECTO A LA EMPRESA DE
+                          ENCOMIENDA</strong>
                       </h4>
                     </div>
                     <div class="col-md-6 col-xs-12">
-                      <q-select
-                        outlined
-                        v-model="form.cod_agente"
-                        label="Agente de Venta"
-                        hint=""
-                        class="pcform"
-                        :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido') || '']"
-                        :options="agentesSelected"
+                      <q-select outlined v-model="form.cod_agente" label="Agente de Venta" hint="" class="pcform"
+                        :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '']" :options="agentesSelected"
                         @filter="
                           (val, update, abort) =>
                             filterArray(
@@ -590,15 +400,8 @@
                               'agentes',
                               'persona_responsable'
                             )
-                        "
-                        use-input
-                        hide-selected
-                        fill-input
-                        input-debounce="0"
-                        option-label="persona_responsable"
-                        option-value="id"
-                        lazy-rules
-                        ><template v-slot:no-option>
+                        " use-input hide-selected fill-input input-debounce="0" option-label="persona_responsable"
+                        option-value="id" lazy-rules><template v-slot:no-option>
                           <q-item>
                             <q-item-section class="text-grey">
                               Sin resultados
@@ -612,15 +415,9 @@
                     </div>
 
                     <div class="col-md-6 col-xs-12">
-                      <q-select
-                        outlined
-                        v-model="form.modalidad_pago"
-                        label="Modalidad de Pago"
-                        hint=""
-                        :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido') || '']"
-                        :options="modalidad_pago"
-                        lazy-rules
-                      >
+                      <q-select outlined v-model="form.modalidad_pago" label="Modalidad de Pago" hint=""
+                        :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '']" :options="modalidad_pago"
+                        lazy-rules>
                         <template v-slot:prepend>
                           <q-icon name="payments" />
                         </template>
@@ -631,79 +428,42 @@
               </q-card>
             </div>
 
-            <div
-              class="full-width row justify-center items-center content-center"
-              style="margin-bottom: 6px"
-            >
-              <q-btn
-                label="Enviar"
-                type="submit"
-                color="primary"
-                class="col-md-5 col-sm-5 col-xs-12"
-                icon="person_add"
-              />
-              <q-btn
-                label="Cerrar"
-                color="primary"
-                flat
-                class="col-md-5 col-sm-5 col-xs-12 btnmovil"
-                icon="close"
-                v-close-popup
-              />
+            <div class="full-width row justify-center items-center content-center" style="margin-bottom: 6px">
+              <q-btn label="Enviar" type="submit" color="primary" class="col-md-5 col-sm-5 col-xs-12"
+                icon="person_add" />
+              <q-btn label="Cerrar" color="primary" flat class="col-md-5 col-sm-5 col-xs-12 btnmovil" icon="close"
+                v-close-popup />
             </div>
           </q-form>
         </q-card-section>
       </q-card>
     </q-dialog>
 
-    <div
-      class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 q-pa-sm justify-center"
-    >
+    <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 q-pa-sm justify-center">
       <div class="row q-pa-md">
-        <div
-          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
-          style="align-self: center; text-align: center"
-        >
+        <div class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
+          style="align-self: center; text-align: center">
           <p style="font-size: 27px" class="text-secondary">
             <strong>MANTENIMIENTO - CLIENTES</strong>
           </p>
         </div>
 
-        <div
-          class="col-md-5 col-xs-12 col-sm-6 cardMargin selectMobile"
-          style="align-self: center; text-align: center"
-        >
-          <q-select
-            rounded
-            transition-show="flip-up"
-            transition-hide="flip-down"
-            :options="agenciasSelected"
-            @filter="
-              (val, update, abort) =>
-                filterArray(
-                  val,
-                  update,
-                  abort,
-                  'agenciasSelected',
-                  'agencias',
-                  'nb_agencia'
-                )
-            "
-            use-input
-            hide-selected
-            fill-input
-            input-debounce="0"
-            option-label="nb_agencia"
-            option-value="id"
-            v-model="selectedAgencia"
-            outlined
-            standout
-            label="Escoge una Agencia"
-            @update:model-value="
+        <div class="col-md-5 col-xs-12 col-sm-6 cardMargin selectMobile" style="align-self: center; text-align: center">
+          <q-select rounded transition-show="flip-up" transition-hide="flip-down" :options="agenciasSelected" @filter="
+            (val, update, abort) =>
+              filterArray(
+                val,
+                update,
+                abort,
+                'agenciasSelected',
+                'agencias',
+                'nb_agencia'
+              )
+          " use-input hide-selected fill-input input-debounce="0" option-label="nb_agencia" option-value="id"
+            v-model="selectedAgencia" outlined standout label="Escoge una Agencia" @update:model-value="
               getDataClientes(`/clientes`, 'setDataTable', 'clientes');
               getData(`/agentes`, 'setPaginatedData', 'agentes');
-            "
-            ><template v-slot:no-option>
+            "><template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey">
                   Sin resultados
@@ -716,91 +476,43 @@
           </q-select>
         </div>
 
-        <div
-          class="col-md-5 col-xs-12 col-sm-6 cardMarginLast selectMobile"
-          style="align-self: center; text-align: center"
-        >
-          <q-input
-            rounded
-            outlined
-            standout
-            v-model="filter"
-            type="search"
-            label="Búsqueda avanzada"
-          >
+        <div class="col-md-5 col-xs-12 col-sm-6 cardMarginLast selectMobile"
+          style="align-self: center; text-align: center">
+          <q-input rounded outlined standout v-model="filter" type="search" label="Búsqueda avanzada">
             <template v-slot:prepend>
               <q-icon name="search" />
             </template>
           </q-input>
         </div>
 
-        <div
-          class="col-md-2 col-xs-12 col-sm-12"
-          style="text-align: center; align-self: center"
-        >
-          <q-btn
-            label="Insertar Cliente"
-            rounded
-            color="primary"
-            @click="
-              dialog = true;
-              this.resetForm();
-            "
-            :disabled="this.disabledCreate"
-            class="q-px-xl q-py-xs"
-          ></q-btn>
+        <div class="col-md-2 col-xs-12 col-sm-12" style="text-align: center; align-self: center">
+          <q-btn label="Insertar Cliente" rounded color="primary" @click="
+            dialog = true;
+            this.resetForm();
+          " :disabled="this.allowOption(2)" class="q-px-xl q-py-xs"></q-btn>
         </div>
       </div>
 
       <div class="q-pa-md q-gutter-y-md">
-        <q-table
-          :rows="clientes"
-          row-key="id"
-          :columns="columns"
-          binary-state-sort
-          :loading="loading"
-          :rows-per-page-options="[5, 10, 15, 20, 50]"
-          @request="onRequest"
-          :separator="separator"
-          :filter="filter"
-          style="width: 100%"
-          :grid="$q.screen.xs"
-          v-model:pagination="pagination"
-        >
+        <q-table :rows="clientes" row-key="id" :columns="columns" binary-state-sort :loading="loading"
+          :rows-per-page-options="[5, 10, 15, 20, 50]" @request="onRequest" :separator="separator" :filter="filter"
+          style="width: 100%" :grid="$q.screen.xs" v-model:pagination="pagination">
           <template v-slot:loading>
             <q-inner-loading showing color="primary" />
           </template>
           <template v-slot:body-cell-action="props">
             <q-td :props="props">
-              <q-btn
-                dense
-                round
-                flat
-                color="primary"
-                icon="edit"
-                :disabled="this.disabledEdit"
-                @click="
-                  getData(`/clientes/${props.row.id}`, 'setDataEdit', 'form');
-                  dialog = true;
-                "
-              ></q-btn>
-              <q-btn
-                dense
-                round
-                flat
-                color="primary"
-                icon="delete"
-                :disabled="this.disabledDelete"
-                @click="selected = props.row.id"
-                @click.capture="clientesDelete = true"
-              ></q-btn>
+              <q-btn dense round flat color="primary" icon="edit" :disabled="this.allowOption(3)" @click="
+                getData(`/clientes/${props.row.id}`, 'setDataEdit', 'form');
+                dialog = true;
+              "></q-btn>
+              <q-btn dense round flat color="primary" icon="delete" :disabled="this.allowOption(4)"
+                @click="selected = props.row.id" @click.capture="clientesDelete = true"></q-btn>
             </q-td>
           </template>
           <template v-slot:item="props">
-            <div
-              class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
-              :style="props.selected ? 'transform: scale(0.95);' : ''"
-            >
+            <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+              :style="props.selected ? 'transform: scale(0.95);' : ''">
               <q-card :class="props.selected ? 'bg-grey-2' : ''">
                 <q-list dense>
                   <q-item v-for="col in props.cols" :key="col.name">
@@ -808,70 +520,34 @@
                       <q-item-label>{{ col.label }}</q-item-label>
                     </q-item-section>
                     <q-item-section side>
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
-                      <q-btn
-                        v-else-if="col.name === 'action'"
-                        dense
-                        round
-                        flat
-                        color="primary"
-                        icon="edit"
-                        :disabled="this.disabledEdit"
-                        @click="
+                      <q-chip v-if="col.name === 'status'" :color="
+                        props.row.status == 'Active'
+                          ? 'green'
+                          : props.row.status == 'Disable'
+                          ? 'red'
+                          : 'grey'
+                      " text-color="white" dense class="text-weight-bolder" square>{{ col.value }}</q-chip>
+                      <q-btn v-else-if="col.name === 'action'" dense round flat color="primary" icon="edit"
+                        :disabled="this.allowOption(3)" @click="
                           getData(
                             `/clientes/${props.row.id}`,
                             'setDataEdit',
                             'form'
                           );
                           dialog = true;
-                        "
-                      ></q-btn>
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
-                      <q-btn
-                        v-else-if="col.name === 'action'"
-                        dense
-                        round
-                        flat
-                        color="primary"
-                        icon="delete"
-                        :disabled="this.disabledDelete"
-                        @click="selected = props.row.id"
-                        @click.capture="clientesDelete = true"
-                      ></q-btn>
-                      <q-item-label
-                        v-else
-                        caption
-                        :class="col.classes ? col.classes : ''"
-                        >{{ col.value }}</q-item-label
-                      >
+                        "></q-btn>
+                      <q-chip v-if="col.name === 'status'" :color="
+                        props.row.status == 'Active'
+                          ? 'green'
+                          : props.row.status == 'Disable'
+                          ? 'red'
+                          : 'grey'
+                      " text-color="white" dense class="text-weight-bolder" square>{{ col.value }}</q-chip>
+                      <q-btn v-else-if="col.name === 'action'" dense round flat color="primary" icon="delete"
+                        :disabled="this.allowOption(4)" @click="selected = props.row.id"
+                        @click.capture="clientesDelete = true"></q-btn>
+                      <q-item-label v-else caption :class="col.classes ? col.classes : ''">{{ col.value }}
+                      </q-item-label>
                     </q-item-section>
                   </q-item>
                 </q-list>
@@ -892,35 +568,16 @@
 
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="primary" v-close-popup />
-          <q-btn
-            flat
-            label="Aceptar"
-            color="primary"
-            v-close-popup
-            @click="deleteData(selected)"
-          />
+          <q-btn flat label="Aceptar" color="primary" v-close-popup @click="deleteData(selected)" />
         </q-card-actions>
       </q-card>
     </q-dialog>
 
-    <desactive-crud
-      ref="desactivateCrud"
-      @desactivar-Crud="desactivarCrud"
-    ></desactive-crud>
-
-    <methods
-      ref="methods"
-      @get-data-Clientes="
-        getDataClientes(`/clientes`, 'setDataTable', 'clientes')
-      "
-      @reset-Loading="resetLoading"
-      @set-Data-Table="setDataTable"
-      @on-Request="onRequest"
-      @set-Data="setData"
-      @set-Paginated-Data="setPaginatedData"
-      @set-Data-Edit="setDataEdit"
-      @set-Data-Iniciar="setDataIniciar"
-    ></methods>
+    <methods ref="methods" @get-data-Clientes="
+      getDataClientes(`/clientes`, 'setDataTable', 'clientes')
+    " @reset-Loading="resetLoading" @set-Data-Table="setDataTable" @on-Request="onRequest" @set-Data="setData"
+      @set-Paginated-Data="setPaginatedData" @set-Data-Edit="setDataEdit" @set-Data-Init="setDataInit"
+      @set-Data-Permisos="setDataPermisos"></methods>
 
     <rules-vue ref="rulesVue"></rules-vue>
   </q-page>
@@ -928,22 +585,13 @@
 
 <script>
 import { ref } from "vue";
-
 import { api } from "boot/axios";
-
-import { LocalStorage } from "quasar";
-
+import { useQuasar, LocalStorage } from "quasar";
 import rulesVue from "src/components/rules.vue";
-
-import { useQuasar } from "quasar";
-
 import methodsVue from "src/components/methods.vue";
-
-import desactivateCrudVue from "src/components/desactivateCrud.vue";
 
 export default {
   components: {
-    "desactive-crud": desactivateCrudVue,
     methods: methodsVue,
     rulesVue,
   },
@@ -1051,20 +699,17 @@ export default {
         { label: "INACTIVO", value: "0" },
       ],
       error: "",
-      disabledCreate: true,
-      disabledEdit: true,
-      disabledDelete: true,
+      rpermisos: [],
     };
   },
   setup() {
     const $q = useQuasar();
-
     const loading = ref(false);
     const order = ref(false);
     const pagination = ref({
       descending: "",
       page: 1,
-      rowsPerPage: 9,
+      rowsPerPage: 5,
       rowsNumber: "",
     });
     return {
@@ -1085,15 +730,15 @@ export default {
   },
   mounted() {
     this.$emit("changeTitle", "SCEN - Mantenimiento - Clientes", "");
-    this.$refs.methods.getData("/agencias", "setDataIniciar", "agencias");
+    this.$refs.methods.getData("/agencias", "setDataInit", "agencias");
     this.$refs.methods.getData("/paises", "setData", "paises");
-    this.$refs.desactivateCrud.desactivarCrud(
-      "c_clientes",
-      "r_clientes",
-      "u_clientes",
-      "d_clientes",
-      "desactivarCrud"
-    );
+
+    this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
+      headers: {
+        rol: LocalStorage.getItem('tokenTraducido').usuario.roles.id,
+        menu: "clientes"
+      },
+    });
   },
   methods: {
     // Metodo para Actualizar Tabla al Seleccionar opcion de la Misma
@@ -1197,19 +842,15 @@ export default {
     resetLoading() {
       this.loading = false;
     },
-    // Metodo para Validar Permisos
-    desactivarCrud(createItem, readItem, deleteItem, updateItem) {
-      if (readItem == true) {
-        if (createItem == true) {
-          this.disabledCreate = false;
-        }
-        if (deleteItem == true) {
-          this.disabledDelete = false;
-        }
-        if (updateItem == true) {
-          this.disabledEdit = false;
-        }
-      } else this.$router.push("/error403");
+    // Metodo para validar Permisos
+    allowOption(option) {
+      return this.rpermisos.findIndex((item) => item.acciones.accion == option) < 0;
+    },
+    // Metodo para Setear Datos Permisos
+    setDataPermisos(res, dataRes) {
+      this[dataRes] = res;
+      if (this.rpermisos.findIndex((item) => item.acciones.accion == 1) < 0)
+        this.$router.push("/error403");
     },
 
     // METODOS DE PAGINA
@@ -1224,13 +865,13 @@ export default {
         headers: {
           agencia: this.selectedAgencia.id,
           page: 1,
-          limit: 9,
+          limit: 5,
         },
       });
       this.loading = true;
     },
     // Metodo para Setear Datos Iniciales
-    setDataIniciar(res, dataRes) {
+    setDataInit(res, dataRes) {
       this[dataRes] = res.data;
       this.selectedAgencia = this.agencias[0];
       this.$refs.methods.getData(`/paises`, `setData`, `paises`);
@@ -1238,7 +879,7 @@ export default {
         headers: {
           agencia: this.agencias[0].id,
           page: 1,
-          limit: 9,
+          limit: 5,
         },
       });
       this.$refs.methods.getData(`/agentes`, `setPaginatedData`, `agentes`, {
@@ -1439,36 +1080,36 @@ export default {
     // Metodo para Resetear Formulario
     resetForm() {
       delete this.form.id;
-      (this.form.nb_cliente = ""),
-        (this.form.rif_cedula = ""),
-        (this.form.nit = ""),
-        (this.form.dir_correo = ""),
-        (this.form.dir_fiscal = ""),
-        (this.form.email = ""),
-        (this.form.tlf_cliente = ""),
-        (this.form.fax = ""),
-        (this.form.razon_social = ""),
-        (this.form.tipo_persona = ""),
-        (this.form.modalidad_pago = ""),
-        (this.form.persona_contacto = ""),
-        (this.form.observacion = ""),
-        (this.form.cte_decontado = ""),
-        (this.form.tipo_persona_new = ""),
-        (this.form.flag_activo = ""),
-        (this.form.cod_agencia = ""),
-        (this.form.cod_agente = ""),
-        (this.form.cod_municipio = ""),
-        (this.form.cod_parroquia = ""),
-        (this.form.cod_localidad = ""),
-        (this.form.cte_decontado = "0"),
-        (this.municipios = []),
-        (this.parroquias = []),
-        (this.localidades = []),
-        (this.estados = []),
-        (this.ciudades = []),
-        (this.pais = []),
-        (this.estado = []),
-        (this.ciudad = []);
+      this.form.nb_cliente = "";
+      this.form.rif_cedula = "";
+      this.form.nit = "";
+      this.form.dir_correo = "";
+      this.form.dir_fiscal = "";
+      this.form.email = "";
+      this.form.tlf_cliente = "";
+      this.form.fax = "";
+      this.form.razon_social = "";
+      this.form.tipo_persona = "";
+      this.form.modalidad_pago = "";
+      this.form.persona_contacto = "";
+      this.form.observacion = "";
+      this.form.cte_decontado = "";
+      this.form.tipo_persona_new = "";
+      this.form.flag_activo = "";
+      this.form.cod_agencia = "";
+      this.form.cod_agente = "";
+      this.form.cod_municipio = "";
+      this.form.cod_parroquia = "";
+      this.form.cod_localidad = "";
+      this.form.cte_decontado = "0";
+      this.municipios = [];
+      this.parroquias = [];
+      this.localidades = [];
+      this.estados = [];
+      this.ciudades = [];
+      this.pais = [];
+      this.estado = [];
+      this.ciudad = [];
     },
     // Metodo para Get de Localidades
     getDataLocalidades(sub_location, update, axiosConfig) {
@@ -1493,6 +1134,7 @@ export default {
     display: none;
   }
 }
+
 @media screen and (max-width: 600px) {
   .movilTitle {
     display: block;
@@ -1504,6 +1146,7 @@ export default {
     padding-right: 20px !important;
   }
 }
+
 @media screen and (min-width: 1024px) {
   .cardMarginLast {
     padding-right: 20px !important;

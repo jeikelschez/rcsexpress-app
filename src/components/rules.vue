@@ -31,7 +31,6 @@ export default {
     },
 
     isMax(val, max, reason) {
-      console.log(val)
       var ret = true;
       if (val !== "" && val !== null && val.length > max) ret = reason;
       return ret;
