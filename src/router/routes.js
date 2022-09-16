@@ -248,7 +248,7 @@ const routes = [
       {
         path: '/variablecontrol',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('pages/variablecontrol.vue')}]
+        children: [{ path: "", component: () => import('pages/variableControl.vue')}]
       },
       {
         path: '/bancos',
@@ -566,7 +566,7 @@ const routes = [
       {
         path: '/m_variablecontrol',
         component: () => import("layouts/manuallayout.vue"),
-        children: [{ path: "", component: () => import('pages/manuals/m_variablecontrol.vue')}]
+        children: [{ path: "", component: () => import('pages/manuals/m_variableControl.vue')}]
       },
       {
         path: '/m_bancos',
