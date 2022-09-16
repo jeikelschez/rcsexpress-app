@@ -6,17 +6,10 @@
           <q-form @submit="sendData()" class="q-gutter-md">
             <div class="row">
               <div class="col-md-5 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="form.nb_zona"
-                  label="Nombre de la Zona"
-                  hint=""
-                  class="pcform"
+                <q-input outlined v-model="form.nb_zona" label="Nombre de la Zona" hint="" class="pcform"
                   @update:model-value="
                     form.nb_zona = form.nb_zona.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[
+                  " lazy-rules :rules="[
                     (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
                     (val) =>
                       this.$refs.rulesVue.isMax(
@@ -30,8 +23,7 @@
                         3,
                         'Minimo 3 Caracterers'
                       ) || '',
-                  ]"
-                >
+                  ]">
                   <template v-slot:prepend>
                     <q-icon name="drive_file_rename_outline" />
                   </template>
@@ -39,18 +31,10 @@
               </div>
 
               <div class="col-md-7 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="form.tipo_zona"
-                  label="Tipo de Zona"
-                  hint=""
-                  :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
-                  ]"
-                  :options="tipoDeZona"
-                  lazy-rules
-                >
+                <q-select outlined v-model="form.tipo_zona" label="Tipo de Zona" hint="" :rules="[
+                  (val) =>
+                    this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
+                ]" :options="tipoDeZona" lazy-rules>
                   <template v-slot:prepend>
                     <q-icon name="domain" />
                   </template>
@@ -58,75 +42,38 @@
               </div>
             </div>
 
-            <div
-              class="full-width row justify-center items-center content-center"
-              style="margin-bottom: 10px"
-            >
-              <q-btn
-                label="Enviar"
-                type="submit"
-                color="primary"
-                class="col-md-5 col-sm-5 col-xs-12"
-                icon="person_add"
-              />
-              <q-btn
-                label="Cerrar"
-                color="primary"
-                flat
-                class="col-md-5 col-sm-5 col-xs-12 btnmovil"
-                icon="close"
-                v-close-popup
-              />
+            <div class="full-width row justify-center items-center content-center" style="margin-bottom: 10px">
+              <q-btn label="Enviar" type="submit" color="primary" class="col-md-5 col-sm-5 col-xs-12"
+                icon="person_add" />
+              <q-btn label="Cerrar" color="primary" flat class="col-md-5 col-sm-5 col-xs-12 btnmovil" icon="close"
+                v-close-popup />
             </div>
           </q-form>
         </q-card-section>
       </q-card>
     </q-dialog>
 
-    <div
-      class="row justify-center col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
-    >
-      <div
-        class="q-pa-md row col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
-      >
-        <div
-          class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 text-secondary movilTitle"
-          style="align-self: center; text-align: center; font-size: 20px"
-        >
+    <div class="row justify-center col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
+      <div class="q-pa-md row col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
+        <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 text-secondary movilTitle"
+          style="align-self: center; text-align: center; font-size: 20px">
           <p><strong>MANTENIMIENTO - ZONAS POR AGENCIA</strong></p>
         </div>
-        <div
-          class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-6 marginHeader marginHeaderMobile"
-          style="align-self: center; text-align: center"
-        >
-          <q-select
-            rounded
-            transition-show="flip-up"
-            transition-hide="flip-down"
-            :options="agenciasSelected"
-            @filter="
-              (val, update, abort) =>
-                filterArray(
-                  val,
-                  update,
-                  abort,
-                  'agenciasSelected',
-                  'agencias',
-                  'nb_agencia'
-                )
-            "
-            use-input
-            hide-selected
-            fill-input
-            input-debounce="0"
-            option-label="nb_agencia"
-            option-value="id"
-            v-model="selectedAgencia"
-            outlined
-            standout
-            label="Escoge una Agencia"
-            @update:model-value="getDataZonas(`/zonas`, 'setData', 'zonas')"
-            ><template v-slot:no-option>
+        <div class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-6 marginHeader marginHeaderMobile"
+          style="align-self: center; text-align: center">
+          <q-select rounded transition-show="flip-up" transition-hide="flip-down" :options="agenciasSelected" @filter="
+            (val, update, abort) =>
+              filterArray(
+                val,
+                update,
+                abort,
+                'agenciasSelected',
+                'agencias',
+                'nb_agencia'
+              )
+          " use-input hide-selected fill-input input-debounce="0" option-label="nb_agencia" option-value="id"
+            v-model="selectedAgencia" outlined standout label="Escoge una Agencia"
+            @update:model-value="getDataZonas(`/zonas`, 'setData', 'zonas')"><template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey">
                   Sin resultados
@@ -139,90 +86,41 @@
           </q-select>
         </div>
 
-        <div
-          class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-6 marginHeaderFilter"
-          style="align-self: center; text-align: center"
-        >
-          <q-input
-            rounded
-            outlined
-            standout
-            v-model="filterRoles"
-            type="search"
-            label="Búsqueda avanzada"
-          >
+        <div class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-6 marginHeaderFilter"
+          style="align-self: center; text-align: center">
+          <q-input rounded outlined standout v-model="filterRoles" type="search" label="Búsqueda avanzada">
             <template v-slot:prepend>
               <q-icon name="search" />
             </template>
           </q-input>
         </div>
 
-        <div
-          class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
-          style="text-align: center; align-self: center"
-        >
-          <q-btn
-            label="Insertar"
-            rounded
-            color="primary"
-            :disabled="this.disabledCreate"
-            @click="zonasDialog = true"
-            @click.capture="resetForm()"
-            size="16px"
-            class="q-px-xl q-py-xs insertarestadosmovil"
-          ></q-btn>
+        <div class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12" style="text-align: center; align-self: center">
+          <q-btn label="Insertar" rounded color="primary" :disabled="this.allowOption(2)" @click="zonasDialog = true"
+            @click.capture="resetForm()" size="16px" class="q-px-xl q-py-xs insertarestadosmovil"></q-btn>
         </div>
       </div>
 
-      <div
-        class="q-gutter-y-md col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 q-pa-md"
-      >
-        <q-table
-          :rows="zonas"
-          binary-state-sort
-          :loading="loading"
-          row-key="id"
-          :columns="columnsZonas"
-          :separator="separator"
-          :filter="filterRoles"
-          style="width: 100%"
-          :grid="$q.screen.xs"
-          v-model:pagination="pagination"
-        >
+      <div class="q-gutter-y-md col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 q-pa-md">
+        <q-table :rows="zonas" binary-state-sort :loading="loading" row-key="id" :columns="columnsZonas"
+          :separator="separator" :filter="filterRoles" style="width: 100%" :grid="$q.screen.xs"
+          v-model:pagination="pagination">
           <template v-slot:loading>
             <q-inner-loading showing color="primary" />
           </template>
           <template v-slot:body-cell-action="props">
             <q-td :props="props">
-              <q-btn
-                dense
-                round
-                flat
-                color="primary"
-                icon="edit"
-                :disabled="this.disabledEdit"
-                @click="
-                  getData(`/Zonas/${props.row.id}`, 'setDataEdit', 'form');
-                  zonasDialog = true;
-                "
-              ></q-btn>
-              <q-btn
-                dense
-                round
-                flat
-                color="primary"
-                icon="delete"
-                :disabled="this.disabledDelete"
-                @click="selected = props.row.id"
-                @click.capture="deleteDialog = true"
-              ></q-btn>
+              <q-btn dense round flat color="primary" icon="edit" :disabled="this.allowOption(3)" @click="
+                getData(`/Zonas/${props.row.id}`, 'setDataEdit', 'form');
+                zonasDialog = true;
+              "></q-btn>
+              <q-btn dense round flat color="primary" icon="delete" :disabled="this.allowOption(4)"
+                @click="selected = props.row.id" @click.capture="deleteDialog = true"></q-btn>
             </q-td>
           </template>
           <template v-slot:item="props">
-            <div
-              class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
-              :style="props.selected ? 'transform: scale(0.95);' : ''"
-            >
+            <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+              :style="props.selected ? 'transform: scale(0.95);' : ''">
               <q-card :class="props.selected ? 'bg-grey-2' : ''">
                 <q-list dense>
                   <q-item v-for="col in props.cols" :key="col.name">
@@ -230,70 +128,34 @@
                       <q-item-label>{{ col.label }}</q-item-label>
                     </q-item-section>
                     <q-item-section side>
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
-                      <q-btn
-                        v-else-if="col.name === 'action'"
-                        dense
-                        round
-                        flat
-                        color="primary"
-                        icon="edit"
-                        :disabled="this.disabledEdit"
-                        @click="
+                      <q-chip v-if="col.name === 'status'" :color="
+                        props.row.status == 'Active'
+                          ? 'green'
+                          : props.row.status == 'Disable'
+                          ? 'red'
+                          : 'grey'
+                      " text-color="white" dense class="text-weight-bolder" square>{{ col.value }}</q-chip>
+                      <q-btn v-else-if="col.name === 'action'" dense round flat color="primary" icon="edit"
+                        :disabled="this.allowOption(3)" @click="
                           getData(
                             `/zonas/${props.row.id}`,
                             'setDataEdit',
                             'form'
                           );
                           zonasDialog = true;
-                        "
-                      ></q-btn>
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
-                      <q-btn
-                        v-else-if="col.name === 'action'"
-                        dense
-                        round
-                        flat
-                        color="primary"
-                        icon="delete"
-                        :disabled="this.disabledDelete"
-                        @click="selected = props.row.id"
-                        @click.capture="deleteDialog = true"
-                      ></q-btn>
-                      <q-item-label
-                        v-else
-                        caption
-                        :class="col.classes ? col.classes : ''"
-                        >{{ col.value }}</q-item-label
-                      >
+                        "></q-btn>
+                      <q-chip v-if="col.name === 'status'" :color="
+                        props.row.status == 'Active'
+                          ? 'green'
+                          : props.row.status == 'Disable'
+                          ? 'red'
+                          : 'grey'
+                      " text-color="white" dense class="text-weight-bolder" square>{{ col.value }}</q-chip>
+                      <q-btn v-else-if="col.name === 'action'" dense round flat color="primary" icon="delete"
+                        :disabled="this.allowOption(4)" @click="selected = props.row.id"
+                        @click.capture="deleteDialog = true"></q-btn>
+                      <q-item-label v-else caption :class="col.classes ? col.classes : ''">{{ col.value }}
+                      </q-item-label>
                     </q-item-section>
                   </q-item>
                 </q-list>
@@ -314,30 +176,14 @@
 
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="primary" v-close-popup />
-          <q-btn
-            flat
-            label="Aceptar"
-            color="primary"
-            v-close-popup
-            @click="deleteData(selected)"
-          />
+          <q-btn flat label="Aceptar" color="primary" v-close-popup @click="deleteData(selected)" />
         </q-card-actions>
       </q-card>
     </q-dialog>
 
-    <desactivate-crud
-      ref="desactiveCrud"
-      @desactivar-Crud="desactivarCrud"
-    ></desactivate-crud>
-
-    <methods
-      ref="methods"
-      @get-Data-Zonas="getDataZonas(`/zonas`, 'setData', 'zonas')"
-      @set-Data="setData"
-      @reset-Loading="resetLoading"
-      @set-Data-Edit="setDataEdit"
-      @set-Data-Iniciar="setDataIniciar"
-    ></methods>
+    <methods ref="methods" @get-Data-Zonas="getDataZonas(`/zonas`, 'setData', 'zonas')" @set-Data="setData"
+      @reset-Loading="resetLoading" @set-Data-Edit="setDataEdit" @set-Data-Iniciar="setDataIniciar"
+      @set-Data-Permisos="setDataPermisos"></methods>
 
     <rules-vue ref="rulesVue"></rules-vue>
   </q-page>
@@ -350,11 +196,9 @@ import { useQuasar } from "quasar";
 import { LocalStorage } from "quasar";
 import rulesVue from "src/components/rules.vue";
 import methodsVue from "src/components/methods.vue";
-import desactivateCrudVue from "src/components/desactivateCrud.vue";
 
 export default {
   components: {
-    "desactivate-crud": desactivateCrudVue,
     methods: methodsVue,
     rulesVue,
   },
@@ -395,6 +239,7 @@ export default {
         { label: "URBANA", value: "U" },
         { label: "EXTRA URBANA", value: "E" },
       ],
+      rpermisos: [],
       agencias: [],
       zonas: [],
       selected: [],
@@ -402,9 +247,6 @@ export default {
       selectedAgencia: [],
       agenciaRef: "",
       error: "",
-      disabledCreate: true,
-      disabledEdit: true,
-      disabledDelete: true,
     };
   },
   setup() {
@@ -414,12 +256,11 @@ export default {
       descending: false,
       page: 1,
       control: 0,
-      rowsPerPage: 9,
-      // rowsNumber: xx if getting data from a server
+      rowsPerPage: 5,
     });
     return {
       pagination: ref({
-        rowsPerPage: 9,
+        rowsPerPage: 5,
       }),
       loading: ref(false),
       separator: ref("vertical"),
@@ -455,13 +296,13 @@ export default {
   mounted() {
     this.$emit("changeTitle", "SCEN - Mantenimiento - Zonas por Agencia", "");
     this.getData("/agencias", "setDataIniciar", "agencias");
-    this.$refs.desactiveCrud.desactivarCrud(
-      "c_zonas",
-      "r_zonas",
-      "u_zonas",
-      "d_zonas",
-      "desactivarCrud"
-    );
+
+    this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
+      headers: {
+        rol: LocalStorage.getItem('tokenTraducido').usuario.roles.id,
+        menu: "zonasagencia"
+      },
+    });
   },
   methods: {
     // Metodo para Filtrar Selects
@@ -490,23 +331,9 @@ export default {
     resetLoading() {
       this.loading = false;
     },
-    // Metodo para Validar Permisos
-    desactivarCrud(createItem, readItem, deleteItem, updateItem) {
-      console.log(createItem);
-      console.log(readItem);
-      console.log(deleteItem);
-      console.log(updateItem);
-      if (readItem == true) {
-        if (createItem == true) {
-          this.disabledCreate = false;
-        }
-        if (deleteItem == true) {
-          this.disabledDelete = false;
-        }
-        if (updateItem == true) {
-          this.disabledEdit = false;
-        }
-      } else this.$router.push("/error403");
+    // Metodo para validar Permisos
+    allowOption(option) {
+      return this.rpermisos.findIndex((item) => item.acciones.accion == option) < 0;
     },
     // Metodo para hacer Get de Datos
     getData(url, call, dataRes) {
@@ -551,6 +378,12 @@ export default {
       this[dataRes].cod_agencia = this.selectedAgencia;
       this.loading = false;
     },
+    // Metodo para Setear Datos Permisos
+    setDataPermisos(res, dataRes) {
+      this[dataRes] = res;
+      if (this.rpermisos.findIndex((item) => item.acciones.accion == 1) < 0)
+        this.$router.push("/error403");
+    },
     // Metodo para Eliminar Zonas
     deleteData(idpost) {
       this.$refs.methods.deleteData(`/zonas/${idpost}`, "getDataZonas");
@@ -578,9 +411,9 @@ export default {
     resetForm() {
       delete this.form.id;
       this.form.nb_zona = "",
-      this.form.tipo_zona = "",
-      this.form.cod_agencia = "",
-      this.zonasDialog = false;
+        this.form.tipo_zona = "",
+        this.form.cod_agencia = "",
+        this.zonasDialog = false;
     },
   },
 };
@@ -592,32 +425,38 @@ export default {
     display: none;
   }
 }
+
 @media screen and (max-width: 600px) {
   .movilTitle {
     display: block;
   }
 }
+
 @media screen and (min-width: 600px) {
   .marginHeader {
     padding-right: 20px;
   }
 }
+
 @media screen and (min-width: 1024px) {
   .marginHeaderFilter {
     padding-right: 20px;
   }
 }
+
 @media screen and (max-width: 600px) {
   .marginHeaderMobile {
     margin-bottom: 25px;
   }
 }
+
 @media screen and (max-width: 600px) {
   .paddingMobile {
     padding-left: 2px;
     padding-right: 2px;
   }
 }
+
 @media screen and (min-width: 1024px) {
   .marginHeaderPC {
     margin-bottom: 20px;

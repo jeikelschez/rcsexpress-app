@@ -218,7 +218,7 @@ const routes = [
       {
         path: '/zonasagencia',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('pages/zonasagencia.vue')}]
+        children: [{ path: "", component: () => import('pages/zonasAgencia.vue')}]
       },
       {
         path: '/unidadestransporte',
@@ -531,12 +531,12 @@ const routes = [
       {
         path: '/m_paisestadociudad',
         component: () => import("layouts/manuallayout.vue"),
-        children: [{ path: "", component: () => import('pages/manuals/m_Paisestadociudad.vue')}]
+        children: [{ path: "", component: () => import('pages/manuals/m_paisEstadoCiudad.vue')}]
       },
       {
         path: '/m_zonasagencia',
         component: () => import("layouts/manuallayout.vue"),
-        children: [{ path: "", component: () => import('pages/manuals/m_zonasagencia.vue')}]
+        children: [{ path: "", component: () => import('pages/manuals/m_zonasAgencia.vue')}]
       },
       {
         path: '/m_unidadestransporte',
