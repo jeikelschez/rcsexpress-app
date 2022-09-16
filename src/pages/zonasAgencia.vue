@@ -182,7 +182,7 @@
     </q-dialog>
 
     <methods ref="methods" @get-Data-Zonas="getDataZonas(`/zonas`, 'setData', 'zonas')" @set-Data="setData"
-      @reset-Loading="resetLoading" @set-Data-Edit="setDataEdit" @set-Data-Iniciar="setDataIniciar"
+      @reset-Loading="resetLoading" @set-Data-Edit="setDataEdit" @set-Data-Init="setDataInit"
       @set-Data-Permisos="setDataPermisos"></methods>
 
     <rules-vue ref="rulesVue"></rules-vue>
@@ -294,7 +294,7 @@ export default {
   },
   mounted() {
     this.$emit("changeTitle", "SCEN - Mantenimiento - Zonas por Agencia", "");
-    this.getData("/agencias", "setDataIniciar", "agencias");
+    this.getData("/agencias", "setDataInit", "agencias");
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
@@ -348,7 +348,7 @@ export default {
       this.loading = true;
     },
     // Metodo para Setear los Datos al Iniciar
-    setDataIniciar(res, dataRes) {
+    setDataInit(res, dataRes) {
       this[dataRes] = res.data;
       this.agenciaRef = this.agencias[0].id;
       this.selectedAgencia = this.agencias[0];

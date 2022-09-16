@@ -408,7 +408,7 @@
     getData('/agencias', 'setDataTable', 'datos', {
       headers: {
         page: 1,
-        limit: 9,
+        limit: 5,
       },
     })" @set-Data="setData" @set-Data-Paises="setDataPaises" @reset-Loading="resetLoading" @set-Data-Edit="setDataEdit"
       @on-Request="onRequest" @set-Data-Table="setDataTable" @set-Data-Permisos="setDataPermisos"></methods>

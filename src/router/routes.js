@@ -243,7 +243,7 @@ const routes = [
       {
         path: '/controlcorrelativo',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('pages/controlcorrelativo.vue')}]
+        children: [{ path: "", component: () => import('pages/controlCorrelativo.vue')}]
       },
       {
         path: '/variablecontrol',
@@ -561,7 +561,7 @@ const routes = [
       {
         path: '/m_controlcorrelativo',
         component: () => import("layouts/manuallayout.vue"),
-        children: [{ path: "", component: () => import('pages/manuals/m_controlcorrelativo.vue')}]
+        children: [{ path: "", component: () => import('pages/manuals/m_controlCorrelativo.vue')}]
       },
       {
         path: '/m_variablecontrol',
