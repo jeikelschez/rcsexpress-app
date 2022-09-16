@@ -178,8 +178,8 @@
       </q-card>
     </q-dialog>
 
-    <methods ref="methods" @get-Data="getData(`/coperacion`, 'setData', 'datos')" @reset-Loading="resetLoading"
-      @set-Data-Edit="setDataEdit" @set-Data="setData" @set-Data-Tipos="setDataTipos"
+    <methods ref="methods" @get-Data="getData(`/coperacion`, 'setData', 'datos')" 
+      @reset-Loading="resetLoading" @set-Data-Edit="setDataEdit" @set-Data="setData" @set-Data-Tipos="setDataTipos"
       @set-Data-Permisos="setDataPermisos">
     </methods>
 
@@ -328,6 +328,26 @@ export default {
       this[dataRes].tipo = res.tipos.descripcion;
       this[dataRes].id = res.id;
       this[dataRes].desc_concepto = res.desc_concepto;
+      this[dataRes].afecta_estado = res.afecta_estado;
+      var codigo = res.tipos.codigo;
+      if (codigo == "DCO") {
+        var element = document.getElementById("selectEdit");
+        element.classList.remove("displayHide");
+        element.classList.add("displayShow");
+        this.disableEdit = false;
+      }
+      if (codigo == "DGA") {
+        var element = document.getElementById("selectEdit");
+        element.classList.remove("displayHide");
+        element.classList.add("displayShow");
+        this.disableEdit = false;
+      }
+      if (codigo !== "DCO" && codigo !== "DGA") {
+        var element = document.getElementById("selectEdit");
+        element.classList.remove("displayShow");
+        element.classList.add("displayHide");
+        this.disableEdit = true;
+      }
     },
     // Metodo para Eliminar Datos
     deleteData(idpost) {
