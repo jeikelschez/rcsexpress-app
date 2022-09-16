@@ -380,9 +380,8 @@
 
 <script>
 import { ref } from "vue";
-import { LocalStorage } from 'quasar';
 import rulesVue from "src/components/rules.vue";
-import { useQuasar } from "quasar";
+import { useQuasar, LocalStorage } from "quasar";
 import { VMoney } from "v-money";
 import methodsVue from "src/components/methods.vue";
 

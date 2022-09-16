@@ -223,7 +223,7 @@ const routes = [
       {
         path: '/unidadestransporte',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('pages/unidadestransporte.vue')}]
+        children: [{ path: "", component: () => import('pages/unidadesTransporte.vue')}]
       },
       {
         path: '/ayudantes',
@@ -541,7 +541,7 @@ const routes = [
       {
         path: '/m_unidadestransporte',
         component: () => import("layouts/manuallayout.vue"),
-        children: [{ path: "", component: () => import('pages/manuals/m_unidadestransporte.vue')}]
+        children: [{ path: "", component: () => import('pages/manuals/m_unidadesTransporte.vue')}]
       },
       {
         path: '/m_ayudantes',

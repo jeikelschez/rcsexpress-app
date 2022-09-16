@@ -419,10 +419,9 @@
 <script>
 import { ref } from "vue";
 import { api } from "boot/axios";
-import { useQuasar } from "quasar";
+import { useQuasar, LocalStorage } from "quasar";
 import rulesVue from "src/components/rules.vue";
 import methodsVue from "src/components/methods.vue";
-import { LocalStorage } from "quasar";
 
 export default {
   components: {
