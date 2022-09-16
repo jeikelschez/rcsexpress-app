@@ -283,7 +283,7 @@ const routes = [
       {
         path: '/conceptosoperacion',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('pages/conceptosoperacion.vue')}]
+        children: [{ path: "", component: () => import('pages/conceptosOperacion.vue')}]
       },
       {
         path: '/conceptosfacturacion',
@@ -603,7 +603,7 @@ const routes = [
       {
         path: '/m_conceptosoperacion',
         component: () => import("layouts/manuallayout.vue"),
-        children: [{ path: "", component: () => import('pages/manuals/m_conceptosoperacion.vue')}]
+        children: [{ path: "", component: () => import('pages/manuals/m_conceptosOperacion.vue')}]
       },
       {
         path: '/m_conceptosfacturacion',
