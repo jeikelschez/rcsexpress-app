@@ -1,11 +1,11 @@
 <template>
   <q-page class="pagina q-pa-md">
-    <q-dialog v-model="create">
+    <q-dialog v-model="dialog">
       <q-card class="q-pa-md" bordered style="width: 999px; max-width: 80vw">
         <q-card-section>
-          <q-form @submit="createData()" class="q-gutter-md">
+          <q-form @submit="sendData()" class="q-gutter-md">
             <div class="row">
-              <div class="col-md-6 col-xs-12">
+              <div class="col-md-12 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.desc_concepto"
@@ -16,53 +16,12 @@
                     form.desc_concepto = form.desc_concepto.toUpperCase()
                   "
                   lazy-rules
-                  :rules="[reglasInputs]"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 100, 'Maximo 100 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
                 >
                   <template v-slot:prepend>
                     <q-icon name="description" />
                   </template>
                 </q-input>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-select
-                  transition-show="flip-up"
-                  transition-hide="flip-down"
-                  :options="tipoDeOperacionSelected"
-                  @filter="
-                    (val, update, abort) =>
-                      filterArray(
-                        val,
-                        update,
-                        abort,
-                        'tipoDeOperacionSelected',
-                        'tipoDeOperacion',
-                        'descripcion'
-                      )
-                  "
-                  use-input
-                  hide-selected
-                  fill-input
-                  input-debounce="0"
-                  option-label="descripcion"
-                  option-value="id"
-                  v-model="form.tipo"
-                  outlined
-                  standout
-                  :rules="[reglasSelect]"
-                  label="Tipo de Operación"
-                  @update:model-value="validationSelect()"
-                  ><template v-slot:no-option>
-                    <q-item>
-                      <q-item-section class="text-grey">
-                        Sin resultados
-                      </q-item-section>
-                    </q-item>
-                  </template>
-                  <template v-slot:prepend>
-                    <q-icon name="format_list_bulleted" />
-                  </template>
-                </q-select>
               </div>
 
               <div
@@ -71,7 +30,7 @@
                 id="select"
               >
                 <q-field
-                  :rules="[reglasSelect]"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '']"
                   hide-bottom-space
                   borderless
                   dense
@@ -98,7 +57,7 @@
               style="margin-bottom: 10px"
             >
               <q-btn
-                label="Agregar Concepto"
+                label="Enviar"
                 type="submit"
                 color="primary"
                 class="col-md-5 col-sm-5 col-xs-12"
@@ -118,140 +77,20 @@
       </q-card>
     </q-dialog>
 
-    <q-dialog v-model="edit">
-      <q-card class="q-pa-md" bordered style="width: 999px; max-width: 80vw">
-        <q-card-section>
-          <q-form @submit="putData()">
-            <div class="row">
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.desc_concepto"
-                  label="Descripcion de Concepto"
-                  hint=""
-                  class="pcform"
-                  @update:model-value="
-                    formEdit.desc_concepto =
-                      formEdit.desc_concepto.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasInputs]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="description" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-select
-                  transition-show="flip-up"
-                  transition-hide="flip-down"
-                  :options="tipoDeOperacionSelected"
-                  @filter="
-                    (val, update, abort) =>
-                      filterArray(
-                        val,
-                        update,
-                        abort,
-                        'tipoDeOperacionSelected',
-                        'tipoDeOperacion',
-                        'descripcion'
-                      )
-                  "
-                  use-input
-                  hide-selected
-                  fill-input
-                  input-debounce="0"
-                  option-label="descripcion"
-                  option-value="id"
-                  v-model="formEdit.tipo"
-                  outlined
-                  standout
-                  :rules="[reglasSelect]"
-                  label="Tipo de Operación"
-                  @update:model-value="validationSelectEdit()"
-                  ><template v-slot:no-option>
-                    <q-item>
-                      <q-item-section class="text-grey">
-                        Sin resultados
-                      </q-item-section>
-                    </q-item>
-                  </template>
-                  <template v-slot:prepend>
-                    <q-icon name="format_list_bulleted" />
-                  </template>
-                </q-select>
-              </div>
-
-              <div
-                class="col-md-12 col-xs-12 displayHide"
-                style="margin-bottom: 20px"
-                id="selectEdit"
-              >
-                <q-field
-                  :rules="[reglasSelect]"
-                  hide-bottom-space
-                  borderless
-                  dense
-                  v-model="formEdit.afecta_estado"
-                  :disable="disableEdit"
-                >
-                  <template v-slot:control>
-                    <q-checkbox
-                      size="lg"
-                      v-model="formEdit.afecta_estado"
-                      true-value="S"
-                      false-value="N"
-                      style="font-size: 13px"
-                      label="¿AFECTA ESTADO DE GANANCIAS Y PERDIDAS?"
-                      :disable="disableEdit"
-                    />
-                  </template>
-                </q-field>
-              </div>
-            </div>
-
-            <div
-              class="full-width row justify-center items-center content-center"
-              style="margin-bottom: 10px"
-            >
-              <q-btn
-                label="Editar Concepto"
-                type="submit"
-                color="primary"
-                class="col-md-5 col-sm-5 col-xs-12"
-                icon="person_add"
-              />
-              <q-btn
-                label="Cerrar"
-                color="primary"
-                flat
-                class="col-md-5 col-sm-5 col-xs-12 btnmovil"
-                icon="close"
-                v-close-popup
-              />
-            </div>
-          </q-form>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
-
-    <div class="row q-pa-sm justify-center">
-      <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
-        <div class="row">
+    <div class="q-pa-sm justify-center">
+        <div class="row q-pa-md ">
           <div
-            class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 text-secondary"
+            class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 text-secondary movilTitle"
             style="align-self: center; text-align: center"
           >
-            <h4 style="font-size: 30px">
+            <p style="font-size: 30px">
               <strong>CONCEPTOS POR OPERACIÓN</strong>
-            </h4>
+            </p>
           </div>
 
           <div
-            class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-5 inputestadospc"
-            style="align-self: center; text-align: center; margin-right: 16px"
+            class="col-md-5 col-xs-12 col-sm-6 cardMargin selectMobile"
+            style="align-self: center; text-align: center"
           >
             <q-select
               rounded
@@ -280,7 +119,7 @@
               standout
               label="Tipo de Operación"
               @update:model-value="
-                getDataSelect(`/coperacion`, 'setDataConceptos', 'datos')
+                getData(`/coperacion`, 'setData', 'datos')
               "
               ><template v-slot:no-option>
                 <q-item>
@@ -296,8 +135,8 @@
           </div>
 
           <div
-            class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-6 inputestadospc2"
-            style="align-self: center; text-align: center; margin-right: 16px"
+            class="col-md-5 col-xs-12 col-sm-6 cardMarginLast selectMobile"
+            style="align-self: center; text-align: center"
           >
             <q-input
               rounded
@@ -321,15 +160,14 @@
               rounded
               color="primary"
               :disabled="this.disabledCreate"
-              @click="create = true"
-              @click.capture="resetForm()"
+              @click="dialog = true; resetForm()"
               size="16px"
               class="q-px-xl q-py-xs insertarestadosmovil"
             ></q-btn>
           </div>
         </div>
 
-        <div class="q-pa-md" style="margin-top: 20px">
+        <div class="q-pa-md">
           <div class="q-gutter-y-md">
             <div bordered flat class="my-card row">
               <q-table
@@ -360,9 +198,9 @@
                         getData(
                           `/coperacion/${props.row.id}`,
                           'setDataEdit',
-                          'formEdit'
+                          'form'
                         );
-                        edit = true;
+                        dialog = true;
                       "
                     ></q-btn>
                     <q-btn
@@ -416,9 +254,9 @@
                                 getData(
                                   `/coperacion/${props.row.id}`,
                                   'setDataEdit',
-                                  'formRoles'
+                                  'form'
                                 );
-                                edit = true;
+                                dialog = true;
                               "
                             ></q-btn>
                             <q-chip
@@ -464,7 +302,6 @@
           </div>
         </div>
       </div>
-    </div>
 
     <q-dialog v-model="conceptosDelete">
       <q-card style="width: 700px">
@@ -486,38 +323,41 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+
     <desactivate-crud
       ref="desactiveCrud"
       @desactivar-Crud="desactivarCrud"
     ></desactivate-crud>
+
     <methods
       ref="methods"
-      @get-Data="getData(`/coperacion`, 'setDataConceptos', 'datos')"
-      @set-Data-Conceptos="setDataConceptos"
+      @get-Data="getData(`/coperacion`, 'setData', 'datos')"
+      @set-Data-Conceptos="setData"
       @reset-Loading="resetLoading"
-      @set-Data-Iniciar="setDataIniciar"
       @set-Data-Edit="setDataEdit"
+      @set-Data="setData"
       @set-Data-Tipos="setDataTipos"
     ></methods>
+
+    <rules-vue
+      ref="rulesVue"
+    ></rules-vue>
   </q-page>
 </template>
 
 <script>
 import { ref } from "vue";
 
-import { api } from "boot/axios";
-
 import { useQuasar } from "quasar";
 
-import { LocalStorage } from "quasar";
+import rulesVue from "src/components/rules.vue";
 
 import methodsVue from "src/components/methods.vue";
 
 import desactivateCrudVue from "src/components/desactivateCrud.vue";
 
 export default {
-  components: { "desactivate-crud": desactivateCrudVue, methods: methodsVue },
-  name: "Bancos",
+  components: { "desactivate-crud": desactivateCrudVue, methods: methodsVue, rulesVue },
   data() {
     return {
       columns: [
@@ -542,18 +382,11 @@ export default {
         tipo: "",
         afecta_estado: "N",
       },
-      formEdit: {
-        id: "",
-        desc_concepto: "",
-        tipo: "",
-        afecta_estado: "N",
-      },
       tipoDeOperacion: [],
       datos: [],
       selected: [],
       tipoDeOperacionSelected: [],
       selectedTipo: [],
-      tipoRef: "",
       error: "",
       disabledCreate: true,
       disabledEdit: true,
@@ -567,56 +400,27 @@ export default {
       descending: false,
       page: 2,
       control: 0,
-      rowsPerPage: 4,
+      rowsPerPage: 8,
       // rowsNumber: xx if getting data from a server
     });
     return {
-      axiosConfig: {
-        headers: {
-          Authorization: ``,
-          fuente: "OP",
-        },
-      },
       pagination: ref({
-        rowsPerPage: 10,
+        rowsPerPage: 8,
       }),
       separator: ref("vertical"),
-      create: ref(false),
-      edit: ref(false),
+      dialog: ref(false),
       loading: ref(false),
       disable: ref(true),
       disableEdit: ref(true),
-      errorDelServidor() {
-        $q.notify({
-          message: this.error,
-          color: "red",
-        });
-      },
-      añadidoConExito() {
-        $q.notify({
-          message: "Agregado exitosamente",
-          color: "green",
-        });
-      },
-      editadoConExito() {
-        $q.notify({
-          message: "Editado exitosamente",
-          color: "green",
-        });
-      },
-      eliminadoConExito() {
-        $q.notify({
-          message: "Eliminado exitosamente",
-          color: "green",
-        });
-      },
       conceptosDelete: ref(false),
       filter: ref(""),
     };
   },
   mounted() {
+    this.$emit("changeTitle", "SCEN - Mantenimiento - Conceptos de Operación", "");
     this.selectedTipo.id = "1";
-    this.getData("/coperacion", "setDataIniciar", "datos");
+    this.getData("/tipos", "setDataTipos", "tipoDeOperacion");
+    this.getData("/coperacion", "setData", "datos");
     this.$refs.desactiveCrud.desactivarCrud(
       "c_concepto_operacion",
       "r_concepto_operacion",
@@ -626,6 +430,7 @@ export default {
     );
   },
   methods: {
+    // Metodo para Filtrar Selects
     filterArray(val, update, abort, pagina, array, element) {
       if (val === "") {
         update(() => {
@@ -647,36 +452,11 @@ export default {
         }
       });
     },
+    // Metodo para Resetear Carga
     resetLoading() {
       this.loading = false;
     },
-    // Reglas
-    reglasSelect(val) {
-      if (val === null) {
-        return "Debes Seleccionar Algo";
-      }
-      if (val === "") {
-        return "Debes Seleccionar Algo";
-      }
-    },
-    reglasInputs(val) {
-      if (val === "") {
-        return "Debes Escribir Algo";
-      }
-      if (val === null) {
-        return "Debes Escribir Algo";
-      }
-      if (val !== null) {
-        if (val.length > 100) {
-          return "Deben ser máximo 100 caracteres";
-        }
-        if (val.length > 0) {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-        }
-      }
-    },
+    // Metodo para Validar Permisos
     desactivarCrud(createItem, readItem, deleteItem, updateItem) {
       if (readItem == true) {
         if (createItem == true) {
@@ -691,81 +471,29 @@ export default {
       } else this.$router.push("/error403");
     },
 
+    // METODOS DE PAGINA 
+
+    // Metodo para hacer Get de Datos
     getData(url, call, dataRes) {
       this.$refs.methods.getData(url, call, dataRes, {
         headers: {
-          Authorization: ``,
-          tipo: this.selectedTipo.id,
-          fuente: "OP",
-        },
-      });
-    },
-    validationSelect() {
-      if (this.form.tipo.codigo == "DGA") {
-        var element = document.getElementById("select");
-        element.classList.remove("displayHide");
-        element.classList.add("displayShow");
-        this.disable = false;
-      }
-      if (this.form.tipo.codigo == "DCO") {
-        var element = document.getElementById("select");
-        element.classList.remove("displayHide");
-        element.classList.add("displayShow");
-        this.disable = false;
-      }
-      if (this.form.tipo.codigo !== "DGA" && this.form.tipo.codigo !== "DCO") {
-        var element = document.getElementById("select");
-        element.classList.remove("displayShow");
-        element.classList.add("displayHide");
-        this.disable = true;
-      }
-    },
-    validationSelectEdit() {
-      if (this.formEdit.tipo.codigo == "DGA") {
-        var element = document.getElementById("selectEdit");
-        element.classList.remove("displayHide");
-        element.classList.add("displayShow");
-        this.disableEdit = false;
-      }
-      if (this.formEdit.tipo.codigo == "DCO") {
-        var element = document.getElementById("selectEdit");
-        element.classList.remove("displayHide");
-        element.classList.add("displayShow");
-        this.disableEdit = false;
-      }
-      if (
-        this.formEdit.tipo.codigo !== "DGA" &&
-        this.formEdit.tipo.codigo !== "DCO"
-      ) {
-        var element = document.getElementById("selectEdit");
-        element.classList.remove("displayShow");
-        element.classList.add("displayHide");
-        this.disableEdit = true;
-      }
-    },
-    getDataSelect(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, {
-        headers: {
-          Authorization: ``,
           tipo: this.selectedTipo.id,
           fuente: "OP",
         },
       });
       this.loading = true;
     },
-    setDataIniciar(res, dataRes) {
-      this.loading = false;
+    // Metodo para Setear Datos
+    setData(res, dataRes) {
       this[dataRes] = res;
-      this.getData("/tipos", "setDataTipos", "tipoDeOperacion");
+      this.loading = false;
     },
+    // Metodos para Setear Tipos
     setDataTipos(res, dataRes) {
       this[dataRes] = res;
-      this.selectedTipo = res[0].descripcion;
+      this.selectedTipo = res[0];
     },
-    setDataConceptos(res, dataRes) {
-      this[dataRes] = res;
-      this.loading = false;
-    },
+    // Metodo para Setear Datos seleccionados
     setDataEdit(res, dataRes) {
       this[dataRes].tipo = res.tipos.descripcion;
       this[dataRes].id = res.id;
@@ -791,6 +519,7 @@ export default {
         this.disableEdit = true;
       }
     },
+    // Metodo para Eliminar Datos
     deleteData(idpost) {
       this.$refs.methods.deleteData(
         `/coperacion/${idpost}`,
@@ -799,40 +528,77 @@ export default {
       );
       this.loading = true;
     },
-    createData() {
-      this.form.tipo = this.form.tipo.id;
+    // Metodo para Editar y Crear Datos
+    sendData() {
+      this.form.tipo = this.selectedTipo.id
+      if (!this.form.id){
       this.$refs.methods.createData(
         `/coperacion`,
         this.form,
-        "getData",
-        this.axiosConfig
+        "getData"
       );
       this.resetForm();
       this.loading = true;
-    },
-    putData() {
-      this.formEdit.tipo = this.formEdit.tipo.id;
-      this.$refs.methods.putData(
-        `/coperacion/${this.formEdit.id}`,
-        this.formEdit,
-        "getData",
-        this.axiosConfig
+      this.dialog = false} else {
+        this.$refs.methods.putData(
+        `/coperacion/${this.form.id}`,
+        this.form,
+        "getData"
       );
-      this.resetFormEdit();
+      this.resetForm();
       this.loading = true;
+      this.dialog = false
+      }
     },
+    // Metodos para Resetear Datos
     resetForm() {
-      (this.form.desc_concepto = ""),
-        (this.form.afecta_estado = "N"),
-        (this.form.tipo = ""),
-        (this.create = false);
-    },
-    resetFormEdit() {
-      (this.formEdit.desc_concepto = ""),
-        (this.formEdit.afecta_estado = "N"),
-        (this.formEdit.tipo = ""),
-        (this.edit = false);
+      delete this.form.id
+      this.form.desc_concepto = "",
+      this.form.afecta_estado = "N",
+      this.form.tipo = ""
     },
   },
 };
 </script>
+
+<style>
+  .hide {
+    display: none;
+  }
+  
+  @media screen and (min-width: 600px) {
+    .movilTitle {
+      display: none;
+    }
+  }
+  @media screen and (max-width: 600px) {
+    .movilTitle {
+      display: block;
+    }
+  }
+  @media screen and (min-width: 600px) {
+    .cardMargin {
+      padding-right: 20px !important;
+    }
+  }
+  @media screen and (min-width: 1024px) {
+    .cardMarginLast {
+      padding-right: 20px !important;
+    }
+  }
+  @media screen and (min-width: 1024px) {
+    .cardMarginFilter {
+      padding-right: 20px !important;
+    }
+  }
+  @media screen and (max-width: 1024px) {
+    .buttonMargin {
+      margin-bottom: 15px !important;
+    }
+  }
+  @media screen and (max-width: 1024px) {
+    .selectMobile {
+      margin-bottom: 15px !important;
+    }
+  }
+  </style>

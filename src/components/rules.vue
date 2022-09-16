@@ -5,6 +5,8 @@ import { ref } from "vue";
 
 import { useQuasar } from "quasar";
 
+import moment from "moment";
+
 export default {
   name: "rules",
   setup() {
@@ -38,6 +40,14 @@ export default {
     isMin(val, min, reason) {
       var ret = true;
       if (val !== "" && val !== null && val.length < min) return reason;
+      return ret;
+    },
+
+    checkDate(val) {
+      var ret = true;
+      if (moment(val, "DD/MM/YYYY", true)._isValid == false) {
+        ret = false
+      }
       return ret;
     },
   },
