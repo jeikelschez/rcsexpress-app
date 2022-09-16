@@ -258,7 +258,7 @@ const routes = [
       {
         path: '/cuentasbancarias',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('pages/cuentasbancarias.vue')}]
+        children: [{ path: "", component: () => import('pages/cuentasBancarias.vue')}]
       },
       {
         path: '/clientes',
@@ -578,7 +578,7 @@ const routes = [
       {
         path: '/m_cuentasbancarias',
         component: () => import("layouts/manuallayout.vue"),
-        children: [{ path: "", component: () => import('pages/manuals/m_cuentasbancarias.vue')}]
+        children: [{ path: "", component: () => import('pages/manuals/m_cuentasBancarias.vue')}]
       },
       {
         path: '/m_clientes',
