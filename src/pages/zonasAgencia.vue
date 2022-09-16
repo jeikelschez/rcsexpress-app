@@ -192,8 +192,7 @@
 <script>
 import { ref } from "vue";
 import { api } from "boot/axios";
-import { useQuasar } from "quasar";
-import { LocalStorage } from "quasar";
+import { useQuasar, LocalStorage } from "quasar";
 import rulesVue from "src/components/rules.vue";
 import methodsVue from "src/components/methods.vue";
 
@@ -410,10 +409,10 @@ export default {
     // Metodo para Resetear Datos
     resetForm() {
       delete this.form.id;
-      this.form.nb_zona = "",
-        this.form.tipo_zona = "",
-        this.form.cod_agencia = "",
-        this.zonasDialog = false;
+      this.form.nb_zona = "";
+      this.form.tipo_zona = "";
+      this.form.cod_agencia = "";
+      this.zonasDialog = false;
     },
   },
 };

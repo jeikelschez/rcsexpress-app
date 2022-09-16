@@ -95,19 +95,19 @@
                 <q-input outlined v-model="form.dir_agente" label="Dirección" hint="" @update:model-value="
                   form.dir_agente = form.dir_agente.toUpperCase()
                 " lazy-rules :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        100,
-                        'Maximo 100 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
-                  ]">
+                  (val) =>
+                    this.$refs.rulesVue.isMax(
+                      val,
+                      100,
+                      'Maximo 100 Caracteres'
+                    ),
+                  (val) =>
+                    this.$refs.rulesVue.isMin(
+                      val,
+                      3,
+                      'Minimo 3 Caracteres'
+                    ) || '',
+                ]">
                   <template v-slot:prepend>
                     <q-icon name="pin_drop" />
                   </template>
@@ -118,19 +118,19 @@
                 <q-input outlined v-model="form.email_web" label="Email" hint="" type="email" @update:model-value="
                   form.email_web = form.email_web.toUpperCase()
                 " lazy-rules :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        100,
-                        'Maximo 100 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
-                  ]">
+                  (val) =>
+                    this.$refs.rulesVue.isMax(
+                      val,
+                      100,
+                      'Maximo 100 Caracteres'
+                    ),
+                  (val) =>
+                    this.$refs.rulesVue.isMin(
+                      val,
+                      3,
+                      'Minimo 3 Caracteres'
+                    ) || '',
+                ]">
                   <template v-slot:prepend>
                     <q-icon name="email" />
                   </template>
@@ -715,20 +715,20 @@ export default {
     // Metodo para resetear Datos de Agente Creado o Seleccionado
     resetForm() {
       delete this.form.id;
-      this.form.nb_agente = "",
-        this.form.persona_responsable = "",
-        this.form.dir_agente = "",
-        this.form.tlf_agente = "",
-        this.form.email_web = "",
-        this.form.tipo_agente = "",
-        this.form.fax_agente = "",
-        this.form.rif_ci_agente = "",
-        this.form.porc_comision_venta = "",
-        this.form.flag_activo = "",
-        this.form.porc_comision_entrega = "",
-        this.form.porc_comision_seguro = "",
-        this.form.cod_agencia = null,
-        this.formDialog = false
+      this.form.nb_agente = "";
+      this.form.persona_responsable = "";
+      this.form.dir_agente = "";
+      this.form.tlf_agente = "";
+      this.form.email_web = "";
+      this.form.tipo_agente = "";
+      this.form.fax_agente = "";
+      this.form.rif_ci_agente = "";
+      this.form.porc_comision_venta = "";
+      this.form.flag_activo = "";
+      this.form.porc_comision_entrega = "";
+      this.form.porc_comision_seguro = "";
+      this.form.cod_agencia = null;
+      this.formDialog = false;
     },
   },
 };

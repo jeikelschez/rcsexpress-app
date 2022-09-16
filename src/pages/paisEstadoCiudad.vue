@@ -77,13 +77,13 @@
                 <q-input outlined v-model="formEstados.siglas" label="Siglas de Estado" @update:model-value="
                   formEstados.siglas = formEstados.siglas.toUpperCase()
                 " mask="AAAA" hint="" lazy-rules :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        4,
-                        'Maximo 4 Caracteres'
-                      ) || '',
-                  ]">
+                  (val) =>
+                    this.$refs.rulesVue.isMax(
+                      val,
+                      4,
+                      'Maximo 4 Caracteres'
+                    ) || '',
+                ]">
                   <template v-slot:prepend>
                     <q-icon name="text_fields" />
                   </template>
@@ -117,9 +117,9 @@
                       'Minimo 3 Caracteres'
                     ) || '',
                 ]" @update:model-value="
-                    formCiudades.desc_ciudad =
-                      formCiudades.desc_ciudad.toUpperCase()
-                  " hint="" class="pcform" lazy-rules>
+                  formCiudades.desc_ciudad =
+                    formCiudades.desc_ciudad.toUpperCase()
+                " hint="" class="pcform" lazy-rules>
                   <template v-slot:prepend>
                     <q-icon name="south_america" />
                   </template>
@@ -634,8 +634,8 @@
     <methods ref="methods" @get-Data-Paises="getData('/paises', 'setDataPaises', 'paises')" @get-Data-Estados="
       getDataEstados(`/estados`, 'setDataEstados', 'estados')
     " @get-Data-Ciudades="
-        getDataCiudades(`/ciudades`, 'setDataCiudades', 'ciudades')
-      " @on-Request-Estados="onRequestEstados" @on-Request-Ciudades="onRequestCiudades" @set-Data="setData"
+      getDataCiudades(`/ciudades`, 'setDataCiudades', 'ciudades')
+    " @on-Request-Estados="onRequestEstados" @on-Request-Ciudades="onRequestCiudades" @set-Data="setData"
       @set-Data-Iniciar="setDataIniciar" @reset-Loading="resetLoading" @set-Data-Paises="setDataPaises"
       @set-Data-Paises-Edit="setDataPaisesEdit" @set-Data-Estados="setDataEstados"
       @set-Data-Estados-Edit="setDataEstadosEdit" @set-Data-Ciudades="setDataCiudades"
@@ -1116,9 +1116,9 @@ export default {
     },
     // Metodo para Resetear Paises
     resetFormPaises() {
-      this.formPaises.desc_pais = null,
-        this.formPaises.tipo_pais = null,
-        delete this.formPaises.id;
+      this.formPaises.desc_pais = null;
+      this.formPaises.tipo_pais = null;
+      delete this.formPaises.id;
     },
 
     // Metodos para Estados
@@ -1173,9 +1173,9 @@ export default {
     },
     // Metodo para Resetear Estados
     resetFormEstados() {
-      (this.formEstados.desc_estado = ""),
-        (this.formEstados.siglas = ""),
-        (this.estadosDialog = false);
+      this.formEstados.desc_estado = "";
+      this.formEstados.siglas = "";
+      this.estadosDialog = false;
       delete this.formEstados.id;
     },
 
@@ -1237,10 +1237,10 @@ export default {
     // Metodos para Resetear Ciudades
     resetFormCiudades() {
       delete this.formCiudades.id;
-      (this.formCiudades.desc_ciudad = ""),
-        (this.formCiudades.siglas = ""),
-        (this.formCiudades.check_urbano = ""),
-        (this.formCiudades.cod_region = "");
+      this.formCiudades.desc_ciudad = "";
+      this.formCiudades.siglas = "";
+      this.formCiudades.check_urbano = "";
+      this.formCiudades.cod_region = "";
     },
   },
 };

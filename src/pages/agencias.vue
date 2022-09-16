@@ -728,20 +728,20 @@ export default {
     // Metodo para Resetear Datos
     resetForm() {
       delete this.form.id;
-      this.selectedPais = [],
-        this.selectedEstado = [],
-        this.selectedCiudad = [],
-        this.estados = [],
-        this.ciudades = [],
-        this.form.persona_contacto = "",
-        this.form.nb_agencia = "",
-        this.form.dir_agencia = "",
-        this.form.fax_agencia = "",
-        this.form.email_agencia = "",
-        this.form.tlf_agencia = "",
-        this.form.rif_agencia = "",
-        this.form.nit_agencia = "",
-        this.form.estatus = "";
+      this.selectedPais = [];
+      this.selectedEstado = [];
+      this.selectedCiudad = [];
+      this.estados = [];
+      this.ciudades = [];
+      this.form.persona_contacto = "";
+      this.form.nb_agencia = "";
+      this.form.dir_agencia = "";
+      this.form.fax_agencia = "";
+      this.form.email_agencia = "";
+      this.form.tlf_agencia = "";
+      this.form.rif_agencia = "";
+      this.form.nit_agencia = "";
+      this.form.estatus = "";
     },
   },
 };
