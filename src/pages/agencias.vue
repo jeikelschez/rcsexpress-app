@@ -456,7 +456,16 @@
             outlined
             standout
             label="Búsqueda avanzada"
-            :input-class="{ 'text-primary bg-white': true }"
+            @keydown.enter="
+              getData(`/agencias`, 'setDataTable', 'datos', {
+                headers: {
+                  page: 1,
+                  limit: 5,
+                  filter: 'nb_agencia,tlf_agencia',
+                  filter_value: filter,
+                },
+              })
+            "
           >
             <template v-slot:append>
               <q-icon
@@ -491,142 +500,134 @@
         </div>
       </div>
 
-      <div class="q-pa-md">
-        <div class="q-gutter-y-md">
-          <div bordered flat class="row">
-            <q-table
-              :rows="datos"
-              :loading="loading"
-              binary-state-sort
-              row-key="id"
-              :columns="columns"
-              :separator="separator"
-              :rows-per-page-options="[5, 10, 15, 20, 50]"
-              @request="onRequest"
-              style="width: 100%"
-              :grid="$q.screen.xs"
-              v-model:pagination="pagination"
+      <div class="q-pa-md q-gutter-y-md">
+        <q-table
+          :rows="datos"
+          :loading="loading"
+          binary-state-sort
+          row-key="id"
+          :columns="columns"
+          :separator="separator"
+          :rows-per-page-options="[5, 10, 15, 20, 50]"
+          @request="onRequest"
+          style="width: 100%"
+          :grid="$q.screen.xs"
+          v-model:pagination="pagination"
+        >
+          <template v-slot:loading>
+            <q-inner-loading showing color="primary" />
+          </template>
+          <template v-slot:body-cell-action="props">
+            <q-td :props="props">
+              <q-btn
+                dense
+                round
+                flat
+                color="primary"
+                icon="edit"
+                @click.capture="resetForm"
+                :disabled="this.allowOption(3)"
+                @click="
+                  getData(`/agencias/${props.row.id}`, 'setDataEdit', 'form');
+                  agenciasDialog = true;
+                "
+              ></q-btn>
+              <q-btn
+                dense
+                round
+                flat
+                color="primary"
+                icon="delete"
+                :disabled="this.allowOption(4)"
+                @click="selected = props.row.id"
+                @click.capture="deletePopup = true"
+              ></q-btn>
+            </q-td>
+          </template>
+          <template v-slot:item="props">
+            <div
+              class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+              :style="props.selected ? 'transform: scale(0.95);' : ''"
             >
-              <template v-slot:loading>
-                <q-inner-loading showing color="primary" />
-              </template>
-              <template v-slot:body-cell-action="props">
-                <q-td :props="props">
-                  <q-btn
-                    dense
-                    round
-                    flat
-                    color="primary"
-                    icon="edit"
-                    @click.capture="resetForm"
-                    :disabled="this.allowOption(3)"
-                    @click="
-                      getData(
-                        `/agencias/${props.row.id}`,
-                        'setDataEdit',
-                        'form'
-                      );
-                      agenciasDialog = true;
-                    "
-                  ></q-btn>
-                  <q-btn
-                    dense
-                    round
-                    flat
-                    color="primary"
-                    icon="delete"
-                    :disabled="this.allowOption(4)"
-                    @click="selected = props.row.id"
-                    @click.capture="deletePopup = true"
-                  ></q-btn>
-                </q-td>
-              </template>
-              <template v-slot:item="props">
-                <div
-                  class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
-                  :style="props.selected ? 'transform: scale(0.95);' : ''"
-                >
-                  <q-card :class="props.selected ? 'bg-grey-2' : ''">
-                    <q-list dense>
-                      <q-item v-for="col in props.cols" :key="col.name">
-                        <q-item-section>
-                          <q-item-label>{{ col.label }}</q-item-label>
-                        </q-item-section>
-                        <q-item-section side>
-                          <q-chip
-                            v-if="col.name === 'status'"
-                            :color="
-                              props.row.status == 'Active'
-                                ? 'green'
-                                : props.row.status == 'Disable'
-                                ? 'red'
-                                : 'grey'
-                            "
-                            text-color="white"
-                            dense
-                            class="text-weight-bolder"
-                            square
-                            >{{ col.value }}</q-chip
-                          >
-                          <q-btn
-                            v-else-if="col.name === 'action'"
-                            dense
-                            round
-                            flat
-                            color="primary"
-                            icon="edit"
-                            :disabled="this.allowOption(3)"
-                            @click.capture="resetForm"
-                            @click="
-                              getData(
-                                `/agencias/${props.row.id}`,
-                                'setDataEdit',
-                                'form'
-                              );
-                              agenciasDialog = true;
-                            "
-                          ></q-btn>
-                          <q-chip
-                            v-if="col.name === 'status'"
-                            :color="
-                              props.row.status == 'Active'
-                                ? 'green'
-                                : props.row.status == 'Disable'
-                                ? 'red'
-                                : 'grey'
-                            "
-                            text-color="white"
-                            dense
-                            class="text-weight-bolder"
-                            square
-                            >{{ col.value }}</q-chip
-                          >
-                          <q-btn
-                            v-else-if="col.name === 'action'"
-                            dense
-                            round
-                            flat
-                            color="primary"
-                            icon="delete"
-                            :disabled="this.allowOption(4)"
-                            @click="selected = props.row.id"
-                            @click.capture="deletePopup = true"
-                          ></q-btn>
-                          <q-item-label
-                            v-else
-                            caption
-                            :class="col.classes ? col.classes : ''"
-                            >{{ col.value }}
-                          </q-item-label>
-                        </q-item-section>
-                      </q-item>
-                    </q-list>
-                  </q-card>
-                </div>
-              </template>
-            </q-table>
-          </div>
-        </div>
+              <q-card :class="props.selected ? 'bg-grey-2' : ''">
+                <q-list dense>
+                  <q-item v-for="col in props.cols" :key="col.name">
+                    <q-item-section>
+                      <q-item-label>{{ col.label }}</q-item-label>
+                    </q-item-section>
+                    <q-item-section side>
+                      <q-chip
+                        v-if="col.name === 'status'"
+                        :color="
+                          props.row.status == 'Active'
+                            ? 'green'
+                            : props.row.status == 'Disable'
+                            ? 'red'
+                            : 'grey'
+                        "
+                        text-color="white"
+                        dense
+                        class="text-weight-bolder"
+                        square
+                        >{{ col.value }}</q-chip
+                      >
+                      <q-btn
+                        v-else-if="col.name === 'action'"
+                        dense
+                        round
+                        flat
+                        color="primary"
+                        icon="edit"
+                        :disabled="this.allowOption(3)"
+                        @click.capture="resetForm"
+                        @click="
+                          getData(
+                            `/agencias/${props.row.id}`,
+                            'setDataEdit',
+                            'form'
+                          );
+                          agenciasDialog = true;
+                        "
+                      ></q-btn>
+                      <q-chip
+                        v-if="col.name === 'status'"
+                        :color="
+                          props.row.status == 'Active'
+                            ? 'green'
+                            : props.row.status == 'Disable'
+                            ? 'red'
+                            : 'grey'
+                        "
+                        text-color="white"
+                        dense
+                        class="text-weight-bolder"
+                        square
+                        >{{ col.value }}</q-chip
+                      >
+                      <q-btn
+                        v-else-if="col.name === 'action'"
+                        dense
+                        round
+                        flat
+                        color="primary"
+                        icon="delete"
+                        :disabled="this.allowOption(4)"
+                        @click="selected = props.row.id"
+                        @click.capture="deletePopup = true"
+                      ></q-btn>
+                      <q-item-label
+                        v-else
+                        caption
+                        :class="col.classes ? col.classes : ''"
+                        >{{ col.value }}
+                      </q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-card>
+            </div>
+          </template>
+        </q-table>
       </div>
     </div>
 
@@ -650,6 +651,7 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+
     <methods
       ref="methods"
       @get-Data="
@@ -659,6 +661,8 @@
             limit: 5,
             filter: 'nb_agencia,tlf_agencia',
             filter_value: filter,
+            order_direction: orderDirection,
+            order_by: pagination.sortBy,
           },
         })
       "
@@ -670,6 +674,7 @@
       @set-Data-Table="setDataTable"
       @set-Data-Permisos="setDataPermisos"
     ></methods>
+
     <rules-vue ref="rulesVue"></rules-vue>
   </q-page>
 </template>
@@ -766,6 +771,7 @@ export default {
       count: 1,
       currentPage: 1,
       ciudades: [],
+      filter: "",
       datos: [],
       rpermisos: [],
       paisesSelected: [],
@@ -792,7 +798,6 @@ export default {
       separator: ref("vertical"),
       agenciasDialog: ref(false),
       deletePopup: ref(false),
-      filter: ref(""),
     };
   },
   mounted() {
@@ -814,13 +819,23 @@ export default {
   },
   methods: {
     // Metodo para Get de Tabla
-    onRequest(res, dataRes) {
+    onRequest(res) {
       let { page, rowsPerPage, sortBy, descending } = res.pagination;
       if (this.currentPage !== page) descending = "";
 
       const fetchCount =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
       if (!sortBy) sortBy = "";
+
+      if (sortBy == "Ciudades") {
+        sortBy = ""; 
+        descending = ""
+      }
+
+      if (sortBy == "action") {
+          descending = ""
+          sortBy = ""
+      }
 
       if (descending !== "") {
         this.pagination.descending = !this.pagination.descending;
@@ -829,10 +844,9 @@ export default {
         } else this.orderDirection = "ASC";
       }
 
-      if (sortBy) this.pagination.sortBy = sortBy;
+      this.pagination.sortBy = sortBy;
       this.pagination.page = page;
       this.pagination.rowsPerPage = rowsPerPage;
-      if (sortBy == "Ciudades") sortBy = "";
       if (sortBy == "activo_desc") sortBy = "estatus";
 
       this.getData(`/agencias`, "setDataTable", "datos", {
@@ -841,8 +855,8 @@ export default {
           limit: fetchCount,
           order_direction: this.orderDirection,
           order_by: sortBy,
-          filter: 'nb_agencia,tlf_agencia',
-          filter_value: filter,
+          filter: "nb_agencia,tlf_agencia",
+          filter_value: this.filter,
         },
       });
     },
@@ -996,7 +1010,6 @@ export default {
 .hide {
   display: none;
 }
-
 
 @media screen and (min-width: 600px) {
   .movilTitle {

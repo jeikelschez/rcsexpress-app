@@ -5,7 +5,6 @@
 	-webkit-filter: drop-shadow(0px 0px 5px #333);
 	filter: drop-shadow(0px 0px 5px rgba(12, 12, 12, 0.267));
 }
-
   .q-table__top,
   .q-table__bottom,
   thead tr:first-child th
@@ -23,6 +22,9 @@
 @media screen and (max-width: 1023px) {.pcmovil {margin-right: 20px}}
 @media screen and (max-width: 600px) {.btnmovil {margin-top: 14px;margin-bottom: -14px;}}
 
+.q-field__control {
+  padding-left: 20px !important
+}
 
 /* CSS de Paises Estados Ciudades */
 

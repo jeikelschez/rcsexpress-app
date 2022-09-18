@@ -381,6 +381,7 @@
               "
               use-input
               hide-selected
+              dense
               fill-input
               input-debounce="0"
               option-label="nb_agencia"
@@ -411,15 +412,39 @@
             style="align-self: center; text-align: center"
           >
             <q-input
+              v-model="filter"
               rounded
+              dense
               outlined
               standout
-              v-model="filter"
-              type="search"
               label="Búsqueda avanzada"
+              @keydown.enter="
+                getData(`/agentes`, 'setDataTable', 'agentes', {
+                  headers: {
+                    page: 1,
+                    agencia: this.selectedAgencia.id,
+                    limit: 5,
+                    filter: 'nb_agente,persona_responsable',
+                    filter_value: filter,
+                  },
+                })
+              "
             >
-              <template v-slot:prepend>
-                <q-icon name="search" />
+              <template v-slot:append>
+                <q-icon
+                  @click="
+                    getData(`/agentes`, 'setDataTable', 'agentes', {
+                      headers: {
+                        page: 1,
+                        limit: 5,
+                        filter: 'nb_agente,persona_responsable',
+                        filter_value: filter,
+                      },
+                    })
+                  "
+                  class="cursor-pointer"
+                  name="search"
+                />
               </template>
             </q-input>
           </div>
@@ -450,7 +475,6 @@
             :separator="separator"
             :rows-per-page-options="[5, 10, 15, 20, 50]"
             @request="onRequest"
-            :filter="filter"
             style="width: 100%"
             :loading="loading"
             :grid="$q.screen.xs"
@@ -704,6 +728,7 @@ export default {
       rpermisos: [],
       agentes: [],
       selected: [],
+      filter: "",
       selectedAgencia: [],
       error: "",
     };
@@ -725,7 +750,6 @@ export default {
       separator: ref("vertical"),
       formDialog: ref(false),
       agentesDelete: ref(false),
-      filter: ref(""),
     };
   },
   mounted() {
@@ -742,34 +766,43 @@ export default {
   methods: {
     // Metodo para hacer Get de Datos cuando se utilizan controles de Tabla
     onRequest(res, dataRes) {
-        let { page, rowsPerPage, sortBy, descending } = res.pagination;
-        if (this.currentPage !== page) descending = "";
+      let { page, rowsPerPage, sortBy, descending } = res.pagination;
+      if (this.currentPage !== page) descending = "";
 
-        const fetchCount =
-          rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-        if (!sortBy) sortBy = "";
-
-        if (descending !== "") {
-          this.pagination.descending = !this.pagination.descending;
-          if (this.pagination.descending == true) {
-            this.orderDirection = "DESC";
-          } else this.orderDirection = "ASC";
-        }
-
-        if (sortBy) this.pagination.sortBy = sortBy;
-        this.pagination.page = page;
-        this.pagination.rowsPerPage = rowsPerPage;
-        if (sortBy == "tipo_desc") sortBy = "tipo_agente"
-        if (sortBy == "activo_desc") sortBy = "flag_activo"
+      const fetchCount =
+        rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
         
-        this.getData(`/agentes`, "setDataTable", "agentes", {
-          headers: {
-            page: page,
-            limit: fetchCount,
-            order_direction: this.orderDirection,
-            order_by: sortBy,
-          },
-        });
+      if (!sortBy) sortBy = "";
+
+      if (sortBy == "action") {
+          descending = ""
+          sortBy = ""
+      }
+
+      if (descending !== "") {
+        this.pagination.descending = !this.pagination.descending;
+        if (this.pagination.descending == true) {
+          this.orderDirection = "DESC";
+        } else this.orderDirection = "ASC";
+      }
+
+      this.pagination.sortBy = sortBy;
+      this.pagination.page = page;
+      this.pagination.rowsPerPage = rowsPerPage;
+      if (sortBy == "tipo_desc") sortBy = "tipo_agente";
+      if (sortBy == "activo_desc") sortBy = "flag_activo";
+
+      this.getData(`/agentes`, "setDataTable", "agentes", {
+        headers: {
+          page: page,
+          limit: fetchCount,
+          agencia: this.selectedAgencia.id,
+          order_direction: this.orderDirection,
+          order_by: sortBy,
+          filter: "nb_agente,persona_responsable",
+          filter_value: this.filter,
+        },
+      });
     },
     // Metodo para filtrar opciones de Selects
     filterArray(val, update, abort, pagina, array, element) {
@@ -808,8 +841,10 @@ export default {
     },
     // Metodo para validar Permisos
     allowOption(option) {
-      return this.rpermisos.findIndex((item) => item.acciones.accion == option) < 0;
-    },    
+      return (
+        this.rpermisos.findIndex((item) => item.acciones.accion == option) < 0
+      );
+    },
     // Metodo para Setear Datos Permisos
     setDataPermisos(res, dataRes) {
       this[dataRes] = res;
@@ -826,9 +861,11 @@ export default {
 
       this.$refs.methods.getData("/agentes", "setDataTable", "agentes", {
         headers: {
-          agencia: this.agencias[0].id,
+          agencia: this.selectedAgencia.id,
           page: 1,
           limit: 5,
+          filter: "nb_agente,persona_responsable",
+          filter_value: this.filter,
         },
       });
       this.loading = false;
@@ -844,6 +881,10 @@ export default {
           agencia: this.selectedAgencia.id,
           page: 1,
           limit: 5,
+          filter: "nb_agente,persona_responsable",
+          filter_value: this.filter,
+          order_direction: this.orderDirection,
+          order_by: this.pagination.sortBy,
         },
       });
       this.loading = true;

@@ -6,10 +6,17 @@
           <q-form @submit="sendDataPaises()" class="q-gutter-md">
             <div class="row">
               <div class="col-md-5 col-xs-12">
-                <q-input outlined v-model="formPaises.desc_pais" label="País" hint="" class="pcform" lazy-rules
+                <q-input
+                  outlined
+                  v-model="formPaises.desc_pais"
+                  label="País"
+                  hint=""
+                  class="pcform"
+                  lazy-rules
                   @update:model-value="
                     formPaises.desc_pais = formPaises.desc_pais.toUpperCase()
-                  " :rules="[
+                  "
+                  :rules="[
                     (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
                     (val) =>
                       this.$refs.rulesVue.isMin(
@@ -17,7 +24,8 @@
                         3,
                         'Minimo 3 Caracteres'
                       ) || '',
-                  ]">
+                  ]"
+                >
                   <template v-slot:prepend>
                     <q-icon name="south_america" />
                   </template>
@@ -25,11 +33,19 @@
               </div>
 
               <div class="col-md-7 col-xs-12">
-                <q-select outlined :options="tipoDePais" v-model="formPaises.tipo_pais" label="Tipo de País"
-                  input-class="input" hint="" :rules="[
+                <q-select
+                  outlined
+                  :options="tipoDePais"
+                  v-model="formPaises.tipo_pais"
+                  label="Tipo de País"
+                  input-class="input"
+                  hint=""
+                  :rules="[
                     (val) =>
                       this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
-                  ]" lazy-rules>
+                  ]"
+                  lazy-rules
+                >
                   <template v-slot:prepend>
                     <q-icon name="format_list_bulleted" />
                   </template>
@@ -37,11 +53,25 @@
               </div>
             </div>
 
-            <div class="full-width row justify-center items-center content-center" style="margin-bottom: 10px">
-              <q-btn label="Enviar" type="submit" color="primary" class="col-md-5 col-sm-5 col-xs-12"
-                icon="person_add" />
-              <q-btn label="Cerrar" color="primary" flat class="col-md-5 col-sm-5 col-xs-12 btnmovil" icon="close"
-                v-close-popup />
+            <div
+              class="full-width row justify-center items-center content-center"
+              style="margin-bottom: 10px"
+            >
+              <q-btn
+                label="Enviar"
+                type="submit"
+                color="primary"
+                class="col-md-5 col-sm-5 col-xs-12"
+                icon="person_add"
+              />
+              <q-btn
+                label="Cerrar"
+                color="primary"
+                flat
+                class="col-md-5 col-sm-5 col-xs-12 btnmovil"
+                icon="close"
+                v-close-popup
+              />
             </div>
           </q-form>
         </q-card-section>
@@ -54,11 +84,18 @@
           <q-form @submit="sendDataEstados()" class="q-gutter-md">
             <div class="row">
               <div class="col-md-5 col-xs-12">
-                <q-input outlined v-model="formEstados.desc_estado" label="Estado" hint="" class="pcform"
+                <q-input
+                  outlined
+                  v-model="formEstados.desc_estado"
+                  label="Estado"
+                  hint=""
+                  class="pcform"
                   @update:model-value="
                     formEstados.desc_estado =
                       formEstados.desc_estado.toUpperCase()
-                  " lazy-rules :rules="[
+                  "
+                  lazy-rules
+                  :rules="[
                     (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
                     (val) =>
                       this.$refs.rulesVue.isMin(
@@ -66,7 +103,8 @@
                         3,
                         'Minimo 3 Caracteres'
                       ) || '',
-                  ]">
+                  ]"
+                >
                   <template v-slot:prepend>
                     <q-icon name="south_america" />
                   </template>
@@ -74,16 +112,25 @@
               </div>
 
               <div class="col-md-7 col-xs-12">
-                <q-input outlined v-model="formEstados.siglas" label="Siglas de Estado" @update:model-value="
-                  formEstados.siglas = formEstados.siglas.toUpperCase()
-                " mask="AAAA" hint="" lazy-rules :rules="[
-                  (val) =>
-                    this.$refs.rulesVue.isMax(
-                      val,
-                      4,
-                      'Maximo 4 Caracteres'
-                    ) || '',
-                ]">
+                <q-input
+                  outlined
+                  v-model="formEstados.siglas"
+                  label="Siglas de Estado"
+                  @update:model-value="
+                    formEstados.siglas = formEstados.siglas.toUpperCase()
+                  "
+                  mask="AAAA"
+                  hint=""
+                  lazy-rules
+                  :rules="[
+                    (val) =>
+                      this.$refs.rulesVue.isMax(
+                        val,
+                        4,
+                        'Maximo 4 Caracteres'
+                      ) || '',
+                  ]"
+                >
                   <template v-slot:prepend>
                     <q-icon name="text_fields" />
                   </template>
@@ -91,11 +138,25 @@
               </div>
             </div>
 
-            <div class="full-width row justify-center items-center content-center" style="margin-bottom: 10px">
-              <q-btn label="Enviar" type="submit" color="primary" class="col-md-5 col-sm-5 col-xs-12"
-                icon="person_add" />
-              <q-btn label="Cerrar" color="primary" flat class="col-md-5 col-sm-5 col-xs-12 btnmovil" icon="close"
-                v-close-popup />
+            <div
+              class="full-width row justify-center items-center content-center"
+              style="margin-bottom: 10px"
+            >
+              <q-btn
+                label="Enviar"
+                type="submit"
+                color="primary"
+                class="col-md-5 col-sm-5 col-xs-12"
+                icon="person_add"
+              />
+              <q-btn
+                label="Cerrar"
+                color="primary"
+                flat
+                class="col-md-5 col-sm-5 col-xs-12 btnmovil"
+                icon="close"
+                v-close-popup
+              />
             </div>
           </q-form>
         </q-card-section>
@@ -108,18 +169,27 @@
           <q-form @submit="sendDataCiudades()" class="q-gutter-md">
             <div class="row">
               <div class="col-md-5 col-xs-12">
-                <q-input outlined v-model="formCiudades.desc_ciudad" label="Ciudad" :rules="[
-                  (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
-                  (val) =>
-                    this.$refs.rulesVue.isMin(
-                      val,
-                      3,
-                      'Minimo 3 Caracteres'
-                    ) || '',
-                ]" @update:model-value="
-                  formCiudades.desc_ciudad =
-                    formCiudades.desc_ciudad.toUpperCase()
-                " hint="" class="pcform" lazy-rules>
+                <q-input
+                  outlined
+                  v-model="formCiudades.desc_ciudad"
+                  label="Ciudad"
+                  :rules="[
+                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
+                    (val) =>
+                      this.$refs.rulesVue.isMin(
+                        val,
+                        3,
+                        'Minimo 3 Caracteres'
+                      ) || '',
+                  ]"
+                  @update:model-value="
+                    formCiudades.desc_ciudad =
+                      formCiudades.desc_ciudad.toUpperCase()
+                  "
+                  hint=""
+                  class="pcform"
+                  lazy-rules
+                >
                   <template v-slot:prepend>
                     <q-icon name="south_america" />
                   </template>
@@ -127,17 +197,25 @@
               </div>
 
               <div class="col-md-7 col-xs-12">
-                <q-input outlined v-model="formCiudades.siglas" label="Siglas de Ciudad" mask="AAAA"
+                <q-input
+                  outlined
+                  v-model="formCiudades.siglas"
+                  label="Siglas de Ciudad"
+                  mask="AAAA"
                   @update:model-value="
                     formCiudades.siglas = formCiudades.siglas.toUpperCase()
-                  " hint="" lazy-rules :rules="[
+                  "
+                  hint=""
+                  lazy-rules
+                  :rules="[
                     (val) =>
                       this.$refs.rulesVue.isMax(
                         val,
                         4,
                         'Maximo 4 Caracteres'
                       ) || '',
-                  ]">
+                  ]"
+                >
                   <template v-slot:prepend>
                     <q-icon name="text_fields" />
                   </template>
@@ -145,10 +223,19 @@
               </div>
 
               <div class="col-md-5 col-xs-12">
-                <q-select outlined v-model="formCiudades.cod_region" label="Región" hint="" :rules="[
-                  (val) =>
-                    this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
-                ]" :options="tipoDeRegion" class="pcform" lazy-rules>
+                <q-select
+                  outlined
+                  v-model="formCiudades.cod_region"
+                  label="Región"
+                  hint=""
+                  :rules="[
+                    (val) =>
+                      this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
+                  ]"
+                  :options="tipoDeRegion"
+                  class="pcform"
+                  lazy-rules
+                >
                   <template v-slot:prepend>
                     <q-icon name="map" />
                   </template>
@@ -156,10 +243,19 @@
               </div>
 
               <div class="col-md-7 col-xs-12">
-                <q-select outlined v-model="formCiudades.check_urbano" label="Zona Horaria" input-class="input" :rules="[
-                  (val) =>
-                    this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
-                ]" hint="" :options="tipoDeZona" lazy-rules>
+                <q-select
+                  outlined
+                  v-model="formCiudades.check_urbano"
+                  label="Zona Horaria"
+                  input-class="input"
+                  :rules="[
+                    (val) =>
+                      this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
+                  ]"
+                  hint=""
+                  :options="tipoDeZona"
+                  lazy-rules
+                >
                   <template v-slot:prepend>
                     <q-icon name="corporate_fare" />
                   </template>
@@ -167,11 +263,25 @@
               </div>
             </div>
 
-            <div class="full-width row justify-center items-center content-center" style="margin-bottom: 10px">
-              <q-btn label="Enviar" type="submit" color="primary" class="col-md-5 col-sm-5 col-xs-12"
-                icon="person_add" />
-              <q-btn label="Cerrar" color="primary" flat class="col-md-5 col-sm-5 col-xs-12 btnmovil" icon="close"
-                v-close-popup />
+            <div
+              class="full-width row justify-center items-center content-center"
+              style="margin-bottom: 10px"
+            >
+              <q-btn
+                label="Enviar"
+                type="submit"
+                color="primary"
+                class="col-md-5 col-sm-5 col-xs-12"
+                icon="person_add"
+              />
+              <q-btn
+                label="Cerrar"
+                color="primary"
+                flat
+                class="col-md-5 col-sm-5 col-xs-12 btnmovil"
+                icon="close"
+                v-close-popup
+              />
             </div>
           </q-form>
         </q-card-section>
@@ -179,30 +289,68 @@
     </q-dialog>
 
     <div class="row paddingMobile">
-      <q-carousel v-model="slide" transition-prev="scale" transition-next="scale" animated :control-type="controlType"
-        class="rounded-borders col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 justify-center paddingMobile">
-        <q-carousel-slide name="paises"
-          class="flex-center col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 paddingMobile">
+      <q-carousel
+        v-model="slide"
+        transition-prev="scale"
+        transition-next="scale"
+        animated
+        :control-type="controlType"
+        class="rounded-borders col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 justify-center paddingMobile"
+      >
+        <q-carousel-slide
+          name="paises"
+          class="flex-center col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 paddingMobile"
+        >
           <div class="row q-pa-md paddingMobile">
-            <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 text-secondary movilTitle"
-              style="align-self: center; text-align: center; font-size: 20px">
+            <div
+              class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 text-secondary movilTitle"
+              style="align-self: center; text-align: center; font-size: 20px"
+            >
               <p><strong>MANTENIMIENTO - PAÍS, ESTADO, CIUDAD</strong></p>
             </div>
-            <div class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-12 marginHeaderMobile"
-              style="align-self: center; text-align: center; padding-left: 0px">
-              <q-option-group v-model="slide" :options="controlTypeOptions" inline size="45px" class="mobileItem"
-                style="font-size: 17px" />
+            <div
+              class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-12 marginHeaderMobile"
+              style="align-self: center; text-align: center; padding-left: 0px"
+            >
+              <q-option-group
+                v-model="slide"
+                :options="controlTypeOptions"
+                inline
+                size="45px"
+                class="mobileItem"
+                style="font-size: 17px"
+              />
             </div>
-            <div class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-12 marginHeader marginHeaderMobile">
-              <q-input rounded outlined standout v-model="filterPaises" type="search" label="Búsqueda avanzada">
+            <div
+              class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-12 marginHeader marginHeaderMobile"
+            >
+              <q-input
+                rounded
+                outlined
+                standout
+                v-model="filterPaises"
+                type="search"
+                label="Búsqueda avanzada"
+              >
                 <template v-slot:prepend>
                   <q-icon name="search" />
                 </template>
               </q-input>
             </div>
-            <div class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12" style="text-align: center; align-self: center">
-              <q-btn label="Insertar" rounded color="primary" @click="paisesDialog = true"
-                :disabled="this.allowOption(2)" @click.capture="resetFormPaises" size="16px" class="q-px-xl q-py-xs">
+            <div
+              class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
+              style="text-align: center; align-self: center"
+            >
+              <q-btn
+                label="Insertar"
+                rounded
+                color="primary"
+                @click="paisesDialog = true"
+                :disabled="this.allowOption(2)"
+                @click.capture="resetFormPaises"
+                size="16px"
+                class="q-px-xl q-py-xs"
+              >
               </q-btn>
             </div>
           </div>
@@ -210,29 +358,56 @@
           <div class="q-pa-md">
             <div class="q-gutter-y-md">
               <div bordered flat class="my-card row">
-                <q-table :rows="paises" row-key="id" binary-state-sort :loading="loading" :columns="columnsPaises"
-                  :separator="separator" :filter="filterPaises" style="width: 100%" :grid="$q.screen.xs"
-                  v-model:pagination="pagination">
+                <q-table
+                  :rows="paises"
+                  row-key="id"
+                  binary-state-sort
+                  :loading="loading"
+                  :columns="columnsPaises"
+                  :separator="separator"
+                  :filter="filterPaises"
+                  style="width: 100%"
+                  :grid="$q.screen.xs"
+                  v-model:pagination="pagination"
+                >
                   <template v-slot:loading>
                     <q-inner-loading showing color="primary" />
                   </template>
                   <template v-slot:body-cell-action="props">
                     <q-td :props="props">
-                      <q-btn dense round flat color="primary" icon="edit" :disabled="this.allowOption(3)" @click="
-                        getData(
-                          `/paises/${props.row.id}`,
-                          'setDataPaisesEdit',
-                          'formPaises'
-                        );
-                        paisesDialog = true;
-                      "></q-btn>
-                      <q-btn dense round flat color="primary" icon="delete" :disabled="this.allowOption(4)"
-                        @click="selected = props.row.id" @click.capture="paisesDelete = true"></q-btn>
+                      <q-btn
+                        dense
+                        round
+                        flat
+                        color="primary"
+                        icon="edit"
+                        :disabled="this.allowOption(3)"
+                        @click="
+                          getData(
+                            `/paises/${props.row.id}`,
+                            'setDataPaisesEdit',
+                            'formPaises'
+                          );
+                          paisesDialog = true;
+                        "
+                      ></q-btn>
+                      <q-btn
+                        dense
+                        round
+                        flat
+                        color="primary"
+                        icon="delete"
+                        :disabled="this.allowOption(4)"
+                        @click="selected = props.row.id"
+                        @click.capture="paisesDelete = true"
+                      ></q-btn>
                     </q-td>
                   </template>
                   <template v-slot:item="props">
-                    <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
-                      :style="props.selected ? 'transform: scale(0.95);' : ''">
+                    <div
+                      class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+                      :style="props.selected ? 'transform: scale(0.95);' : ''"
+                    >
                       <q-card :class="props.selected ? 'bg-grey-2' : ''">
                         <q-list dense>
                           <q-item v-for="col in props.cols" :key="col.name">
@@ -240,35 +415,69 @@
                               <q-item-label>{{ col.label }}</q-item-label>
                             </q-item-section>
                             <q-item-section side>
-                              <q-chip v-if="col.name === 'status'" :color="
-                                props.row.status == 'Active'
-                                  ? 'green'
-                                  : props.row.status == 'Disable'
-                                  ? 'red'
-                                  : 'grey'
-                              " text-color="white" dense class="text-weight-bolder" square>{{ col.value }}
+                              <q-chip
+                                v-if="col.name === 'status'"
+                                :color="
+                                  props.row.status == 'Active'
+                                    ? 'green'
+                                    : props.row.status == 'Disable'
+                                    ? 'red'
+                                    : 'grey'
+                                "
+                                text-color="white"
+                                dense
+                                class="text-weight-bolder"
+                                square
+                                >{{ col.value }}
                               </q-chip>
-                              <q-btn v-else-if="col.name === 'action'" dense round flat color="primary" icon="edit"
-                                :disabled="this.allowOption(3)" @click="
+                              <q-btn
+                                v-else-if="col.name === 'action'"
+                                dense
+                                round
+                                flat
+                                color="primary"
+                                icon="edit"
+                                :disabled="this.allowOption(3)"
+                                @click="
                                   getData(
                                     `/paises/${props.row.id}`,
                                     'setDataPaisesEdit',
                                     'formPaises'
                                   );
                                   paisesDialog = true;
-                                "></q-btn>
-                              <q-chip v-if="col.name === 'status'" :color="
-                                props.row.status == 'Active'
-                                  ? 'green'
-                                  : props.row.status == 'Disable'
-                                  ? 'red'
-                                  : 'grey'
-                              " text-color="white" dense class="text-weight-bolder" square>{{ col.value }}
+                                "
+                              ></q-btn>
+                              <q-chip
+                                v-if="col.name === 'status'"
+                                :color="
+                                  props.row.status == 'Active'
+                                    ? 'green'
+                                    : props.row.status == 'Disable'
+                                    ? 'red'
+                                    : 'grey'
+                                "
+                                text-color="white"
+                                dense
+                                class="text-weight-bolder"
+                                square
+                                >{{ col.value }}
                               </q-chip>
-                              <q-btn v-else-if="col.name === 'action'" dense round flat color="primary" icon="delete"
-                                :disabled="this.allowOption(4)" @click="selected = props.row.id"
-                                @click.capture="paisesDelete = true"></q-btn>
-                              <q-item-label v-else caption :class="col.classes ? col.classes : ''">{{ col.value }}
+                              <q-btn
+                                v-else-if="col.name === 'action'"
+                                dense
+                                round
+                                flat
+                                color="primary"
+                                icon="delete"
+                                :disabled="this.allowOption(4)"
+                                @click="selected = props.row.id"
+                                @click.capture="paisesDelete = true"
+                              ></q-btn>
+                              <q-item-label
+                                v-else
+                                caption
+                                :class="col.classes ? col.classes : ''"
+                                >{{ col.value }}
                               </q-item-label>
                             </q-item-section>
                           </q-item>
@@ -281,32 +490,62 @@
             </div>
           </div>
         </q-carousel-slide>
-        <q-carousel-slide name="estados" class="col-md-11 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
+        <q-carousel-slide
+          name="estados"
+          class="col-md-11 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
+        >
           <div class="row q-pa-md paddingMobile">
-            <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 text-secondary movilTitle"
-              style="align-self: center; text-align: center; font-size: 20px">
+            <div
+              class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 text-secondary movilTitle"
+              style="align-self: center; text-align: center; font-size: 20px"
+            >
               <p><strong>MANTENIMIENTO - PAÍS, ESTADO, CIUDAD</strong></p>
             </div>
-            <div class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 marginHeader marginHeaderMobile"
-              style="align-self: center; text-align: center; padding-left: 0px">
-              <q-option-group v-model="slide" :options="controlTypeOptions" inline size="45px" class="mobileItem"
-                style="font-size: 17px" />
+            <div
+              class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 marginHeader marginHeaderMobile"
+              style="align-self: center; text-align: center; padding-left: 0px"
+            >
+              <q-option-group
+                v-model="slide"
+                :options="controlTypeOptions"
+                inline
+                size="45px"
+                class="mobileItem"
+                style="font-size: 17px"
+              />
             </div>
             <div
               class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 marginHeader marginSelectMobile marginHeaderMobile"
-              style="text-align: center; align-self: center">
-              <q-select rounded transition-show="flip-up" transition-hide="flip-down" :options="paisesSelected" @filter="
-                (val, update, abort) =>
-                  filterArray(
-                    val,
-                    update,
-                    abort,
-                    'paisesSelected',
-                    'paises',
-                    'desc_pais'
-                  )
-              " use-input hide-selected fill-input input-debounce="0" option-label="desc_pais" option-value="id"
-                v-model="selectedPais" outlined standout label="Escoge un país" @update:model-value="
+              style="text-align: center; align-self: center"
+            >
+              <q-select
+                rounded
+                transition-show="flip-up"
+                transition-hide="flip-down"
+                :options="paisesSelected"
+                @filter="
+                  (val, update, abort) =>
+                    filterArray(
+                      val,
+                      update,
+                      abort,
+                      'paisesSelected',
+                      'paises',
+                      'desc_pais'
+                    )
+                "
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
+                option-label="desc_pais"
+                dense
+                option-value="id"
+                v-model="selectedPais"
+                outlined
+                standout
+                label="Escoge un país"
+                @update:model-value="
                   getData(`/estados`, 'setDataEstados', 'estados', {
                     headers: {
                       pais: this.selectedPais.id,
@@ -314,7 +553,8 @@
                       limit: 9,
                     },
                   })
-                "><template v-slot:no-option>
+                "
+                ><template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey">
                       Sin resultados
@@ -326,17 +566,46 @@
                 </template>
               </q-select>
             </div>
-            <div class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 marginHeader marginHeaderMobile"
-              style="text-align: center; align-self: center">
-              <q-input rounded outlined standout v-model="filterEstados" type="search" label="Búsqueda avanzada">
-                <template v-slot:prepend>
-                  <q-icon name="search" />
+            <div
+              class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 marginHeader marginHeaderMobile"
+              style="text-align: center; align-self: center"
+            >
+              <q-input
+                v-model="filterEstados"
+                rounded
+                dense
+                outlined
+                standout
+                label="Búsqueda avanzada"
+                @keydown.enter="
+                  getDataEstados(`/estados`, 'setDataEstados', 'estados')
+                "
+              >
+                <template v-slot:append>
+                  <q-icon
+                    @click="
+                      getDataEstados(`/estados`, 'setDataEstados', 'estados')
+                    "
+                    class="cursor-pointer"
+                    name="search"
+                  />
                 </template>
               </q-input>
             </div>
-            <div class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12" style="text-align: center; align-self: center">
-              <q-btn label="Insertar" rounded color="primary" :disabled="this.allowOption(2)"
-                @click="estadosDialog = true" @click.capture="resetFormEstados" size="16px" class="q-px-xl q-py-xs">
+            <div
+              class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
+              style="text-align: center; align-self: center"
+            >
+              <q-btn
+                label="Insertar"
+                rounded
+                color="primary"
+                :disabled="this.allowOption(2)"
+                @click="estadosDialog = true"
+                @click.capture="resetFormEstados"
+                size="16px"
+                class="q-px-xl q-py-xs"
+              >
               </q-btn>
             </div>
           </div>
@@ -344,29 +613,57 @@
           <div class="q-pa-md">
             <div class="q-gutter-y-md">
               <div bordered flat class="my-card row">
-                <q-table :rows="estados" row-key="id" binary-state-sort :rows-per-page-options="[5, 10, 15, 20, 50]"
-                  @request="onRequestEstados" :columns="columnsEstados" :separator="separator" :filter="filterEstados"
-                  style="width: 100%" :loading="loading" :grid="$q.screen.xs" v-model:pagination="paginationEstados">
+                <q-table
+                  :rows="estados"
+                  row-key="id"
+                  binary-state-sort
+                  :rows-per-page-options="[5, 10, 15, 20, 50]"
+                  @request="onRequestEstados"
+                  :columns="columnsEstados"
+                  :separator="separator"
+                  style="width: 100%"
+                  :loading="loading"
+                  :grid="$q.screen.xs"
+                  v-model:pagination="paginationEstados"
+                >
                   <template v-slot:loading>
                     <q-inner-loading showing color="primary" />
                   </template>
                   <template v-slot:body-cell-action="props">
                     <q-td :props="props">
-                      <q-btn dense round flat color="primary" icon="edit" :disabled="this.allowOption(3)" @click="
-                        getData(
-                          `/estados/${props.row.id}`,
-                          'SetDataEstadosEdit',
-                          'formEstados'
-                        );
-                        estadosDialog = true;
-                      "></q-btn>
-                      <q-btn dense round flat color="primary" icon="delete" :disabled="this.allowOption(4)"
-                        @click="selected = props.row.id" @click.capture="estadosDelete = true"></q-btn>
+                      <q-btn
+                        dense
+                        round
+                        flat
+                        color="primary"
+                        icon="edit"
+                        :disabled="this.allowOption(3)"
+                        @click="
+                          getData(
+                            `/estados/${props.row.id}`,
+                            'SetDataEstadosEdit',
+                            'formEstados'
+                          );
+                          estadosDialog = true;
+                        "
+                      ></q-btn>
+                      <q-btn
+                        dense
+                        round
+                        flat
+                        color="primary"
+                        icon="delete"
+                        :disabled="this.allowOption(4)"
+                        @click="selected = props.row.id"
+                        @click.capture="estadosDelete = true"
+                      ></q-btn>
                     </q-td>
                   </template>
                   <template v-slot:item="props">
-                    <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
-                      :style="props.selected ? 'transform: scale(0.95);' : ''">
+                    <div
+                      class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+                      :style="props.selected ? 'transform: scale(0.95);' : ''"
+                    >
                       <q-card :class="props.selected ? 'bg-grey-2' : ''">
                         <q-list dense>
                           <q-item v-for="col in props.cols" :key="col.name">
@@ -374,35 +671,69 @@
                               <q-item-label>{{ col.label }}</q-item-label>
                             </q-item-section>
                             <q-item-section side>
-                              <q-chip v-if="col.name === 'status'" :color="
-                                props.row.status == 'Active'
-                                  ? 'green'
-                                  : props.row.status == 'Disable'
-                                  ? 'red'
-                                  : 'grey'
-                              " text-color="white" dense class="text-weight-bolder" square>{{ col.value }}
+                              <q-chip
+                                v-if="col.name === 'status'"
+                                :color="
+                                  props.row.status == 'Active'
+                                    ? 'green'
+                                    : props.row.status == 'Disable'
+                                    ? 'red'
+                                    : 'grey'
+                                "
+                                text-color="white"
+                                dense
+                                class="text-weight-bolder"
+                                square
+                                >{{ col.value }}
                               </q-chip>
-                              <q-btn v-else-if="col.name === 'action'" dense round flat color="primary" icon="edit"
-                                :disabled="this.allowOption(3)" @click="
+                              <q-btn
+                                v-else-if="col.name === 'action'"
+                                dense
+                                round
+                                flat
+                                color="primary"
+                                icon="edit"
+                                :disabled="this.allowOption(3)"
+                                @click="
                                   getData(
                                     `/estados/${props.row.id}`,
                                     'SetDataEstadosEdit',
                                     'formEstados'
                                   );
                                   estadosDialog = true;
-                                "></q-btn>
-                              <q-chip v-if="col.name === 'status'" :color="
-                                props.row.status == 'Active'
-                                  ? 'green'
-                                  : props.row.status == 'Disable'
-                                  ? 'red'
-                                  : 'grey'
-                              " text-color="white" dense class="text-weight-bolder" square>{{ col.value }}
+                                "
+                              ></q-btn>
+                              <q-chip
+                                v-if="col.name === 'status'"
+                                :color="
+                                  props.row.status == 'Active'
+                                    ? 'green'
+                                    : props.row.status == 'Disable'
+                                    ? 'red'
+                                    : 'grey'
+                                "
+                                text-color="white"
+                                dense
+                                class="text-weight-bolder"
+                                square
+                                >{{ col.value }}
                               </q-chip>
-                              <q-btn v-else-if="col.name === 'action'" dense round flat color="primary" icon="delete"
-                                :disabled="this.allowOption(4)" @click="selected = props.row.id"
-                                @click.capture="estadosDelete = true"></q-btn>
-                              <q-item-label v-else caption :class="col.classes ? col.classes : ''">{{ col.value }}
+                              <q-btn
+                                v-else-if="col.name === 'action'"
+                                dense
+                                round
+                                flat
+                                color="primary"
+                                icon="delete"
+                                :disabled="this.allowOption(4)"
+                                @click="selected = props.row.id"
+                                @click.capture="estadosDelete = true"
+                              ></q-btn>
+                              <q-item-label
+                                v-else
+                                caption
+                                :class="col.classes ? col.classes : ''"
+                                >{{ col.value }}
                               </q-item-label>
                             </q-item-section>
                           </q-item>
@@ -415,37 +746,69 @@
             </div>
           </div>
         </q-carousel-slide>
-        <q-carousel-slide name="ciudades" class="flex-center col-md-11 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
+        <q-carousel-slide
+          name="ciudades"
+          class="flex-center col-md-11 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
+        >
           <div class="row q-pa-md paddingMobile">
-            <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 text-secondary movilTitle"
-              style="align-self: center; text-align: center; font-size: 20px">
+            <div
+              class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 text-secondary movilTitle"
+              style="align-self: center; text-align: center; font-size: 20px"
+            >
               <p><strong>MANTENIMIENTO - PAÍS, ESTADO, CIUDAD</strong></p>
             </div>
-            <div class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 marginHeader marginHeaderMobile marginHeaderPC"
-              style="align-self: center; text-align: center; padding-left: 0px">
-              <q-option-group v-model="slide" :options="controlTypeOptions" inline size="45px" class="mobileItem"
-                style="font-size: 17px" />
+            <div
+              class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 marginHeader marginHeaderMobile marginHeaderPC"
+              style="align-self: center; text-align: center; padding-left: 0px"
+            >
+              <q-option-group
+                v-model="slide"
+                :options="controlTypeOptions"
+                inline
+                size="45px"
+                class="mobileItem"
+                style="font-size: 17px"
+              />
             </div>
-            <div class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 marginHeader marginHeaderPC marginHeaderMobile">
-              <q-select rounded transition-show="flip-up" transition-hide="flip-down" :options="paisesSelected" @filter="
-                (val, update, abort) =>
-                  filterArray(
-                    val,
-                    update,
-                    abort,
-                    'paisesSelected',
-                    'paises',
-                    'desc_pais'
-                  )
-              " use-input hide-selected fill-input input-debounce="0" option-label="desc_pais" option-value="id"
-                v-model="selectedPaisCiudades" outlined standout label="Escoge un país" @update:model-value="
+            <div
+              class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 marginHeader marginHeaderPC marginHeaderMobile"
+            >
+              <q-select
+                rounded
+                transition-show="flip-up"
+                transition-hide="flip-down"
+                :options="paisesSelected"
+                dense
+                @filter="
+                  (val, update, abort) =>
+                    filterArray(
+                      val,
+                      update,
+                      abort,
+                      'paisesSelected',
+                      'paises',
+                      'desc_pais'
+                    )
+                "
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
+                option-label="desc_pais"
+                option-value="id"
+                v-model="selectedPaisCiudades"
+                outlined
+                standout
+                label="Escoge un país"
+                @update:model-value="
                   this.selectedEstado = [];
                   getData(`/estados`, 'setData', 'estadosCiudades', {
                     headers: {
                       pais: this.selectedPaisCiudades.id,
                     },
                   });
-                "><template v-slot:no-option>
+                "
+                ><template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey">
                       Sin resultados
@@ -457,8 +820,14 @@
                 </template>
               </q-select>
             </div>
-            <div class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 marginHeaderPC marginHeaderMobile">
-              <q-select rounded transition-show="flip-up" transition-hide="flip-down" :options="estadosCiudadesSelected"
+            <div
+              class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 marginHeaderPC marginHeaderMobile"
+            >
+              <q-select
+                rounded
+                transition-show="flip-up"
+                transition-hide="flip-down"
+                :options="estadosCiudadesSelected"
                 @filter="
                   (val, update, abort) =>
                     filterArray(
@@ -469,8 +838,19 @@
                       'estadosCiudades',
                       'desc_estado'
                     )
-                " use-input hide-selected fill-input input-debounce="0" option-label="desc_estado" option-value="id"
-                v-model="selectedEstado" outlined standout label="Escoge un estado" @update:model-value="
+                "
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
+                option-label="desc_estado"
+                option-value="id"
+                v-model="selectedEstado"
+                dense
+                outlined
+                standout
+                label="Escoge un estado"
+                @update:model-value="
                   getData(`/ciudades`, 'setDataCiudades', 'ciudades', {
                     headers: {
                       estado: this.selectedEstado.id,
@@ -478,7 +858,8 @@
                       limit: 5,
                     },
                   })
-                "><template v-slot:no-option>
+                "
+                ><template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey">
                       Sin resultados
@@ -490,17 +871,50 @@
                 </template>
               </q-select>
             </div>
-            <div class="col-md-9 col-xl-9 col-lg-9 col-xs-12 col-sm-12 marginHeaderMobile"
-              style="text-align: center; align-self: center">
-              <q-input rounded outlined standout v-model="filterCiudades" type="search" label="Búsqueda avanzada">
-                <template v-slot:prepend>
-                  <q-icon name="search" />
+            <div
+              class="col-md-9 col-xl-9 col-lg-9 col-xs-12 col-sm-12 marginHeaderMobile"
+              style="text-align: center; align-self: center"
+            >
+              <q-input
+                v-model="filterCiudades"
+                rounded
+                dense
+                outlined
+                standout
+                label="Búsqueda avanzada"
+                @keydown.enter="
+                  getDataCiudades(`/ciudades`, 'setDataCiudades', 'ciudades')
+                "
+              >
+                <template v-slot:append>
+                  <q-icon
+                    @click="
+                      getDataCiudades(
+                        `/ciudades`,
+                        'setDataCiudades',
+                        'ciudades'
+                      )
+                    "
+                    class="cursor-pointer"
+                    name="search"
+                  />
                 </template>
               </q-input>
             </div>
-            <div class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12" style="text-align: center; align-self: center">
-              <q-btn label="Insertar" rounded color="primary" :disabled="this.allowOption(2)"
-                @click="ciudadesDialog = true" @click.capture="resetFormCiudades" size="16px" class="q-px-xl q-py-xs">
+            <div
+              class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12"
+              style="text-align: center; align-self: center"
+            >
+              <q-btn
+                label="Insertar"
+                rounded
+                color="primary"
+                :disabled="this.allowOption(2)"
+                @click="ciudadesDialog = true"
+                @click.capture="resetFormCiudades"
+                size="16px"
+                class="q-px-xl q-py-xs"
+              >
               </q-btn>
             </div>
           </div>
@@ -508,30 +922,57 @@
           <div class="q-pa-md">
             <div class="q-gutter-y-md">
               <div bordered flat class="my-card row">
-                <q-table :rows="ciudades" binary-state-sort row-key="id" :columns="columnsCiudades"
-                  :separator="separator" :rows-per-page-options="[5, 10, 15, 20, 50]" @request="onRequestCiudades"
-                  :loading="loading" :filter="filterCiudades" style="width: 100%" :grid="$q.screen.xs"
-                  v-model:pagination="paginationCiudades">
+                <q-table
+                  :rows="ciudades"
+                  binary-state-sort
+                  row-key="id"
+                  :columns="columnsCiudades"
+                  :separator="separator"
+                  :rows-per-page-options="[5, 10, 15, 20, 50]"
+                  @request="onRequestCiudades"
+                  :loading="loading"
+                  style="width: 100%"
+                  :grid="$q.screen.xs"
+                  v-model:pagination="paginationCiudades"
+                >
                   <template v-slot:loading>
                     <q-inner-loading showing color="primary" />
                   </template>
                   <template v-slot:body-cell-action="props">
                     <q-td :props="props">
-                      <q-btn dense round flat color="primary" icon="edit" :disabled="this.allowOption(3)" @click="
-                        getData(
-                          `/ciudades/${props.row.id}`,
-                          'setDataCiudadesEdit',
-                          'formCiudades'
-                        );
-                        ciudadesDialog = true;
-                      "></q-btn>
-                      <q-btn dense round flat color="primary" icon="delete" :disabled="this.allowOption(4)"
-                        @click="selected = props.row.id" @click.capture="ciudadesDelete = true"></q-btn>
+                      <q-btn
+                        dense
+                        round
+                        flat
+                        color="primary"
+                        icon="edit"
+                        :disabled="this.allowOption(3)"
+                        @click="
+                          getData(
+                            `/ciudades/${props.row.id}`,
+                            'setDataCiudadesEdit',
+                            'formCiudades'
+                          );
+                          ciudadesDialog = true;
+                        "
+                      ></q-btn>
+                      <q-btn
+                        dense
+                        round
+                        flat
+                        color="primary"
+                        icon="delete"
+                        :disabled="this.allowOption(4)"
+                        @click="selected = props.row.id"
+                        @click.capture="ciudadesDelete = true"
+                      ></q-btn>
                     </q-td>
                   </template>
                   <template v-slot:item="props">
-                    <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
-                      :style="props.selected ? 'transform: scale(0.95);' : ''">
+                    <div
+                      class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+                      :style="props.selected ? 'transform: scale(0.95);' : ''"
+                    >
                       <q-card :class="props.selected ? 'bg-grey-2' : ''">
                         <q-list dense>
                           <q-item v-for="col in props.cols" :key="col.name">
@@ -539,35 +980,69 @@
                               <q-item-label>{{ col.label }}</q-item-label>
                             </q-item-section>
                             <q-item-section side>
-                              <q-chip v-if="col.name === 'status'" :color="
-                                props.row.status == 'Active'
-                                  ? 'green'
-                                  : props.row.status == 'Disable'
-                                  ? 'red'
-                                  : 'grey'
-                              " text-color="white" dense class="text-weight-bolder" square>{{ col.value }}
+                              <q-chip
+                                v-if="col.name === 'status'"
+                                :color="
+                                  props.row.status == 'Active'
+                                    ? 'green'
+                                    : props.row.status == 'Disable'
+                                    ? 'red'
+                                    : 'grey'
+                                "
+                                text-color="white"
+                                dense
+                                class="text-weight-bolder"
+                                square
+                                >{{ col.value }}
                               </q-chip>
-                              <q-btn v-else-if="col.name === 'action'" dense round flat color="primary" icon="edit"
-                                :disabled="this.allowOption(3)" @click="
+                              <q-btn
+                                v-else-if="col.name === 'action'"
+                                dense
+                                round
+                                flat
+                                color="primary"
+                                icon="edit"
+                                :disabled="this.allowOption(3)"
+                                @click="
                                   getData(
                                     `/ciudades/${props.row.id}`,
                                     'setDataCiudadesEdit',
                                     'formCiudades'
                                   );
                                   ciudadesDialog = true;
-                                "></q-btn>
-                              <q-chip v-if="col.name === 'status'" :color="
-                                props.row.status == 'Active'
-                                  ? 'green'
-                                  : props.row.status == 'Disable'
-                                  ? 'red'
-                                  : 'grey'
-                              " text-color="white" dense class="text-weight-bolder" square>{{ col.value }}
+                                "
+                              ></q-btn>
+                              <q-chip
+                                v-if="col.name === 'status'"
+                                :color="
+                                  props.row.status == 'Active'
+                                    ? 'green'
+                                    : props.row.status == 'Disable'
+                                    ? 'red'
+                                    : 'grey'
+                                "
+                                text-color="white"
+                                dense
+                                class="text-weight-bolder"
+                                square
+                                >{{ col.value }}
                               </q-chip>
-                              <q-btn v-else-if="col.name === 'action'" dense round flat color="primary" icon="delete"
-                                :disabled="this.allowOption(4)" @click="selected = props.row.id"
-                                @click.capture="ciudadesDelete = true"></q-btn>
-                              <q-item-label v-else caption :class="col.classes ? col.classes : ''">{{ col.value }}
+                              <q-btn
+                                v-else-if="col.name === 'action'"
+                                dense
+                                round
+                                flat
+                                color="primary"
+                                icon="delete"
+                                :disabled="this.allowOption(4)"
+                                @click="selected = props.row.id"
+                                @click.capture="ciudadesDelete = true"
+                              ></q-btn>
+                              <q-item-label
+                                v-else
+                                caption
+                                :class="col.classes ? col.classes : ''"
+                                >{{ col.value }}
                               </q-item-label>
                             </q-item-section>
                           </q-item>
@@ -593,8 +1068,13 @@
 
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="primary" v-close-popup />
-          <q-btn flat label="Aceptar" color="primary" v-close-popup
-            @click="deleteData(`/paises/${selected}`, 'getDataPaises')" />
+          <q-btn
+            flat
+            label="Aceptar"
+            color="primary"
+            v-close-popup
+            @click="deleteData(`/paises/${selected}`, 'getDataPaises')"
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -609,8 +1089,13 @@
 
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="primary" v-close-popup />
-          <q-btn flat label="Aceptar" color="primary" v-close-popup
-            @click="deleteData(`/estados/${selected}`, 'getDataEstados')" />
+          <q-btn
+            flat
+            label="Aceptar"
+            color="primary"
+            v-close-popup
+            @click="deleteData(`/estados/${selected}`, 'getDataEstados')"
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -625,21 +1110,39 @@
 
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="primary" v-close-popup />
-          <q-btn flat label="Aceptar" color="primary" v-close-popup
-            @click="deleteData(`/ciudades/${selected}`, 'getDataCiudades')" />
+          <q-btn
+            flat
+            label="Aceptar"
+            color="primary"
+            v-close-popup
+            @click="deleteData(`/ciudades/${selected}`, 'getDataCiudades')"
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
 
-    <methods ref="methods" @get-Data-Paises="getData('/paises', 'setDataPaises', 'paises')" @get-Data-Estados="
-      getDataEstados(`/estados`, 'setDataEstados', 'estados')
-    " @get-Data-Ciudades="
-      getDataCiudades(`/ciudades`, 'setDataCiudades', 'ciudades')
-    " @on-Request-Estados="onRequestEstados" @on-Request-Ciudades="onRequestCiudades" @set-Data="setData"
-      @set-Data-Iniciar="setDataIniciar" @reset-Loading="resetLoading" @set-Data-Paises="setDataPaises"
-      @set-Data-Paises-Edit="setDataPaisesEdit" @set-Data-Estados="setDataEstados"
-      @set-Data-Estados-Edit="setDataEstadosEdit" @set-Data-Ciudades="setDataCiudades"
-      @set-Data-Ciudades-Edit="setDataCiudadesEdit" @set-Data-Permisos="setDataPermisos"></methods>
+    <methods
+      ref="methods"
+      @get-Data-Paises="getData('/paises', 'setDataPaises', 'paises')"
+      @get-Data-Estados="
+        getDataEstados(`/estados`, 'setDataEstados', 'estados')
+      "
+      @get-Data-Ciudades="
+        getDataCiudades(`/ciudades`, 'setDataCiudades', 'ciudades')
+      "
+      @on-Request-Estados="onRequestEstados"
+      @on-Request-Ciudades="onRequestCiudades"
+      @set-Data="setData"
+      @set-Data-Iniciar="setDataIniciar"
+      @reset-Loading="resetLoading"
+      @set-Data-Paises="setDataPaises"
+      @set-Data-Paises-Edit="setDataPaisesEdit"
+      @set-Data-Estados="setDataEstados"
+      @set-Data-Estados-Edit="setDataEstadosEdit"
+      @set-Data-Ciudades="setDataCiudades"
+      @set-Data-Ciudades-Edit="setDataCiudadesEdit"
+      @set-Data-Permisos="setDataPermisos"
+    ></methods>
     <rules-vue ref="rulesVue"></rules-vue>
   </q-page>
 </template>
@@ -834,9 +1337,10 @@ export default {
       paisCiudadesRef: "",
       estadoRef: "",
       error: "",
-      countEstados: 1,
+      filterPaises: "",
+      filterEstados: "",
+      filterCiudades: "",
       currentPageEstados: 1,
-      countCiudades: 1,
       currentPageCiudades: 1,
     };
   },
@@ -879,9 +1383,6 @@ export default {
       estadosDelete: ref(false),
       ciudadesDelete: ref(false),
       paisesDelete: ref(false),
-      filterPaises: ref(""),
-      filterEstados: ref(""),
-      filterCiudades: ref(""),
     };
   },
   mounted() {
@@ -890,108 +1391,90 @@ export default {
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
-        rol: LocalStorage.getItem('tokenTraducido').usuario.roles.id,
-        menu: "paisestadociudad"
+        rol: LocalStorage.getItem("tokenTraducido").usuario.roles.id,
+        menu: "paisestadociudad",
       },
     });
   },
   methods: {
     // Metodo para Get luego de Accion en Tabla Estados
     onRequestEstados(res, dataRes) {
-      if (this.countEstados == 1) {
-        this[dataRes] = res.data;
-        this.paginationEstados.rowsNumber = res.total;
-      } else {
-        let { page, rowsPerPage, sortBy, descending } = res.pagination;
-        if (this.currentPageEstados !== page) {
-          descending = "";
-        }
-        const filter = res.filter;
-        const startRow = (page - 1) * rowsPerPage;
-        const fetchCount =
-          rowsPerPage === 0 ? this.paginationEstados.rowsNumber : rowsPerPage;
-        var headerOrder_direction = ""
-        var headerPage = page;
-        var headerLimit = fetchCount;
-        if (sortBy) {
-          var headerOrder_by = sortBy;
-        } else {
-          var headerOrder_by = "";
-        }
-
-        if (descending !== "") {
-          this.paginationEstados.descending =
-            !this.paginationEstados.descending;
-          if (this.paginationEstados.descending == true) {
-            headerOrder_direction = "DESC";
-          } else headerOrder_direction = "ASC";
-        }
-
-        if (sortBy) this.paginationEstados.sortBy = sortBy;
-        this.paginationEstados.page = page;
-        this.paginationEstados.rowsPerPage = rowsPerPage;
-        this.getData(`/estados`, "setDataEstados", "estados", {
-          headers: {
-            page: headerPage,
-            limit: headerLimit,
-            order_direction: headerOrder_direction,
-            order_by: headerOrder_by,
-            pais: this.selectedPais.id,
-          },
-        });
+      let { page, rowsPerPage, sortBy, descending } = res.pagination;
+      if (this.currentPageEstados !== page) {
+        descending = "";
       }
-      this.countEstados = 0;
+      const fetchCount =
+        rowsPerPage === 0 ? this.paginationEstados.rowsNumber : rowsPerPage;
+      if (!sortBy) sortBy = "";
+
+      if (sortBy == "action") {
+        sortBy = "";
+        descending = "";
+      }
+
+      if (descending !== "") {
+        this.paginationEstados.descending = !this.paginationEstados.descending;
+        if (this.paginationEstados.descending == true) {
+          this.orderDirectionEstados = "DESC";
+        } else this.orderDirectionEstados = "ASC";
+      }
+
+      if (sortBy) this.paginationEstados.sortBy = sortBy;
+      this.paginationEstados.page = page;
+      this.paginationEstados.rowsPerPage = rowsPerPage;
+      this.getData(`/estados`, "setDataEstados", "estados", {
+        headers: {
+          page: page,
+          limit: fetchCount,
+          order_direction: this.orderDirectionEstados,
+          order_by: sortBy,
+          pais: this.selectedPais.id,
+          filter: "desc_estado,siglas",
+          filter_value: this.filterEstados,
+        },
+      });
     },
     // Metodo para Get luego de Accion en Tabla Ciudades
     onRequestCiudades(res, dataRes) {
-      if (this.countCiudades == 1) {
-        this[dataRes] = res.data;
-        this.paginationCiudades.rowsNumber = res.total;
-      } else {
-        let { page, rowsPerPage, sortBy, descending } = res.pagination;
-        if (this.currentPageCiudades !== page) {
-          descending = "";
-        }
-        const filter = res.filter;
-        const startRow = (page - 1) * rowsPerPage;
-        const fetchCount =
-          rowsPerPage === 0 ? this.paginationCiudades.rowsNumber : rowsPerPage;
-        var headerOrder_direction = ""
-        var headerPage = page;
-        var headerLimit = fetchCount;
-        if (sortBy) {
-          var headerOrder_by = sortBy;
-        } else {
-          var headerOrder_by = "";
-        }
-        if (headerOrder_by == "check_urbano_desc") {
-          var headerOrder_by = "check_urbano";
-        }
-        if (headerOrder_by == "cod_region_desc") {
-          var headerOrder_by = "cod_region";
-        }
-        if (descending !== "") {
-          this.paginationCiudades.descending =
-            !this.paginationCiudades.descending;
-          if (this.paginationCiudades.descending == true) {
-            headerOrder_direction = "DESC";
-          } else headerOrder_direction = "ASC";
-        }
-
-        if (sortBy) this.paginationCiudades.sortBy = sortBy;
-        this.paginationCiudades.page = page;
-        this.paginationCiudades.rowsPerPage = rowsPerPage;
-        this.getData(`/ciudades`, "setDataCiudades", "ciudades", {
-          headers: {
-            page: headerPage,
-            limit: headerLimit,
-            order_direction: headerOrder_direction,
-            order_by: headerOrder_by,
-            estado: this.selectedEstado.id,
-          },
-        });
+      let { page, rowsPerPage, sortBy, descending } = res.pagination;
+      if (this.currentPageCiudades !== page) {
+        descending = "";
       }
-      this.countCiudades = 0;
+      const fetchCount =
+        rowsPerPage === 0 ? this.paginationCiudades.rowsNumber : rowsPerPage;
+      if (!sortBy) sortBy = "";
+      if (sortBy == "check_urbano_desc") {
+        sortBy = "check_urbano";
+      }
+      if (sortBy == "action") {
+        sortBy = "";
+        descending = "";
+      }
+      if (sortBy == "cod_region_desc") {
+        sortBy = "cod_region";
+      }
+      if (descending !== "") {
+        this.paginationCiudades.descending =
+          !this.paginationCiudades.descending;
+        if (this.paginationCiudades.descending == true) {
+          this.orderDirectionCiudades = "DESC";
+        } else this.orderDirectionCiudades = "ASC";
+      }
+
+      if (sortBy) this.paginationCiudades.sortBy = sortBy;
+      this.paginationCiudades.page = page;
+      this.paginationCiudades.rowsPerPage = rowsPerPage;
+      this.getData(`/ciudades`, "setDataCiudades", "ciudades", {
+        headers: {
+          page: page,
+          limit: fetchCount,
+          order_direction: this.orderDirectionCiudades,
+          order_by: sortBy,
+          estado: this.selectedEstado.id,
+          filter: "desc_ciudad,siglas",
+          filter_value: this.filterCiudades,
+        },
+      });
     },
     // Metodo para filtrar Selects
     filterArray(val, update, abort, pagina, array, element) {
@@ -1042,7 +1525,7 @@ export default {
           },
         })
         .then((res) => {
-          this.onRequestEstados(res.data, "estados");
+          this.setDataEstados(res.data, "estados");
           this.selectedEstado = res.data.data[0];
           this.estadosCiudades = res.data.data;
           this.estadoRef = res.data.data[0].id;
@@ -1056,7 +1539,7 @@ export default {
               },
             })
             .then((res) => {
-              this.onRequestCiudades(res.data, "ciudades");
+              this.setDataCiudades(res.data, "ciudades");
             });
         });
     },
@@ -1071,7 +1554,9 @@ export default {
     },
     // Metodo para validar Permisos
     allowOption(option) {
-      return this.rpermisos.findIndex((item) => item.acciones.accion == option) < 0;
+      return (
+        this.rpermisos.findIndex((item) => item.acciones.accion == option) < 0
+      );
     },
     // Metodo para Setear Datos Permisos
     setDataPermisos(res, dataRes) {
@@ -1133,6 +1618,10 @@ export default {
           pais: this.selectedPais.id,
           page: 1,
           limit: 5,
+          filter: "desc_estado,siglas",
+          filter_value: this.filterEstados,
+          order_direction: this.orderDirectionEstados,
+          order_by: this.paginationEstados.sortBy,
         },
       });
       this.loading = true;
@@ -1191,6 +1680,10 @@ export default {
           estado: this.selectedEstado.id,
           page: 1,
           limit: 5,
+          filter: "desc_ciudad,siglas",
+          filter_value: this.filterCiudades,
+          order_direction: this.orderDirectionCiudades,
+          order_by: this.paginationCiudades.sortBy,
         },
       });
       this.loading = true;
