@@ -502,6 +502,7 @@ export default {
         { label: "ACTIVA", value: "A" },
         { label: "INACTIVA", value: "I" },
       ],
+      orderDirection: "",
       paises: [],
       estados: [],
       count: 1,
@@ -538,7 +539,7 @@ export default {
   },
   mounted() {
     this.$emit("changeTitle", "SCEN - Mantenimiento - Agencias", "");
-    this.getData("/agencias", "onRequest", "datos", {
+    this.getData("/agencias", "setDataTable", "datos", {
       headers: {
         page: 1,
         limit: 5,
@@ -556,52 +557,34 @@ export default {
   methods: {
     // Metodo para Get de Tabla
     onRequest(res, dataRes) {
-      if (this.count == 1) {
-        this[dataRes] = res.data;
-        this.pagination.rowsNumber = res.total;
-      } else {
         let { page, rowsPerPage, sortBy, descending } = res.pagination;
-        if (this.currentPage !== page) {
-          descending = "";
-        }
-        const filter = res.filter;
-        const startRow = (page - 1) * rowsPerPage;
+        if (this.currentPage !== page) descending = "";
+
         const fetchCount =
           rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
+        if (!sortBy) sortBy = "";
 
-        var headerPage = page;
-        var headerOrder_direction = "";
-        var headerLimit = fetchCount;
-        if (sortBy) {
-          var headerOrder_by = sortBy;
-        } else {
-          var headerOrder_by = "";
-        }
         if (descending !== "") {
           this.pagination.descending = !this.pagination.descending;
           if (this.pagination.descending == true) {
-            headerOrder_direction = "DESC";
-          } else headerOrder_direction = "ASC";
+            this.orderDirection = "DESC";
+          } else this.orderDirection = "ASC";
         }
-
-        if (headerOrder_by == "Ciudades") var headerOrder_by = "";
-        if (headerOrder_by == "activo_desc") var headerOrder_by = "estatus";
 
         if (sortBy) this.pagination.sortBy = sortBy;
         this.pagination.page = page;
         this.pagination.rowsPerPage = rowsPerPage;
-        var headerCod_movimiento = this.formEdit.id;
+        if (sortBy == "Ciudades") sortBy = "";
+        if (sortBy == "activo_desc") sortBy = "estatus";
+        
         this.getData(`/agencias`, "setDataTable", "datos", {
           headers: {
-            page: headerPage,
-            limit: headerLimit,
-            order_direction: headerOrder_direction,
-            cod_movimiento: headerCod_movimiento,
-            order_by: headerOrder_by,
+            page: page,
+            limit: fetchCount,
+            order_direction: this.orderDirection,
+            order_by: sortBy,
           },
         });
-      }
-      this.count = 0;
     },
     // Metodo para Filtrar Datos de Selects
     filterArray(val, update, abort, pagina, array, element) {

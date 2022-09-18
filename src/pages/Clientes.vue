@@ -1034,6 +1034,7 @@ export default {
       municipios: [],
       parroquias: [],
       localidades: [],
+      orderDirection: "",
       clientes: [],
       agentes: [],
       selected: [],
@@ -1087,71 +1088,37 @@ export default {
     this.$emit("changeTitle", "SCEN - Mantenimiento - Clientes", "");
     this.$refs.methods.getData("/agencias", "setDataIniciar", "agencias");
     this.$refs.methods.getData("/paises", "setData", "paises");
-    this.$refs.desactivateCrud.desactivarCrud(
-      "c_clientes",
-      "r_clientes",
-      "u_clientes",
-      "d_clientes",
-      "desactivarCrud"
-    );
   },
   methods: {
     // Metodo para Actualizar Tabla al Seleccionar opcion de la Misma
     onRequest(res, dataRes) {
-      if (this.count == 1) {
-        this.loading = false;
-        this[dataRes] = res.data;
-        this.pagination.rowsNumber = res.total;
-        for (var e = 0, len = this.clientes.length; e < len; e++) {
-          if (this.clientes[e].cte_decontado === "1") {
-            this.clientes[e].cte_decontado = "🏴";
-          }
-          if (this.clientes[e].cte_decontado === "0") {
-            this.clientes[e].cte_decontado = "";
-          }
-          if (e == this.clientes.length - 1) break;
-        }
-      } else {
         let { page, rowsPerPage, sortBy, descending } = res.pagination;
-        if (this.currentPage !== page) {
-          descending = "";
-        }
-        const filter = res.filter;
-        const startRow = (page - 1) * rowsPerPage;
+        if (this.currentPage !== page) descending = "";
+
         const fetchCount =
           rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-
-        var headerPage = page;
-        var headerOrder_direction = "";
-        var headerLimit = fetchCount;
-        if (sortBy) {
-          var headerOrder_by = sortBy;
-        } else {
-          var headerOrder_by = "";
-        }
+        if (!sortBy) sortBy = "";
 
         if (descending !== "") {
           this.pagination.descending = !this.pagination.descending;
           if (this.pagination.descending == true) {
-            headerOrder_direction = "DESC";
-          } else headerOrder_direction = "ASC";
+            this.orderDirection = "DESC";
+          } else this.orderDirection = "ASC";
         }
 
         if (sortBy) this.pagination.sortBy = sortBy;
         this.pagination.page = page;
         this.pagination.rowsPerPage = rowsPerPage;
-        var headerCod_movimiento = this.form.id;
+
         this.getData(`/clientes`, "setDataTable", "clientes", {
           headers: {
-            page: headerPage,
-            limit: headerLimit,
-            order_direction: headerOrder_direction,
-            cod_movimiento: headerCod_movimiento,
-            order_by: headerOrder_by,
+            agencia: this.selectedAgencia.id,
+            page: page,
+            limit: fetchCount,
+            order_direction: this.orderDirection,
+            order_by: sortBy,
           },
         });
-      }
-      this.count = 0;
     },
     // Metodo para Setear Datos en Tabla
     setDataTable(res, dataRes) {

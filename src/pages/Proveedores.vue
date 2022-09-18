@@ -713,6 +713,7 @@ export default {
         { label: "INACTIVO", value: "I" },
       ],
       retenciones: [],
+      orderDirection: "",
       count: 1,
       currentPage: 1,
       datos: [],

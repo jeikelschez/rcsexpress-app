@@ -1097,6 +1097,7 @@ export default {
       datos: [],
       agencias: [],
       count: 1,
+      orderDirection: "",
       currentPage: 1,
       clientes: [],
       agentes: [],
@@ -1183,39 +1184,32 @@ export default {
   },
   methods: {
     onRequest(res, dataRes) {
-      if (this.count == 1) {
-        console.log(res)
-        this[dataRes] = res.data;
-        this.pagination.rowsNumber = res.total;
-        this.loading = false;
-      } else {
         let { page, rowsPerPage, sortBy, descending } = res.pagination;
-        if (this.currentPage !== page) {
-          descending = "";
-        }
-        const filter = res.filter;
-        const startRow = (page - 1) * rowsPerPage;
+        if (this.currentPage !== page) descending = "";
+
         const fetchCount =
           rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-
-        this.axiosConfig.headers.page = page;
-        this.axiosConfig.headers.limit = fetchCount;
-        if (sortBy) this.axiosConfig.headers.order_by = sortBy;
+        if (!sortBy) sortBy = "";
 
         if (descending !== "") {
           this.pagination.descending = !this.pagination.descending;
           if (this.pagination.descending == true) {
-            this.axiosConfig.headers.order_direction = "DESC";
-          } else this.axiosConfig.headers.order_direction = "ASC";
+            this.orderDirection = "DESC";
+          } else this.orderDirection = "ASC";
         }
 
         if (sortBy) this.pagination.sortBy = sortBy;
         this.pagination.page = page;
         this.pagination.rowsPerPage = rowsPerPage;
-
-        this.getData(`/cguias`, "setDataTable", "datos");
-      }
-      this.count = 0;
+        
+        this.getData(`/cguias`, "setDataTable", "datos", {
+          headers: {
+            page: page,
+            limit: fetchCount,
+            order_direction: this.orderDirection,
+            order_by: sortBy,
+          },
+        });
     },
     setDataTable(res, dataRes) {
       this[dataRes] = res.data;
@@ -1374,7 +1368,7 @@ export default {
       (this.axiosConfig.headers.limit = 10),
       (this.axiosConfig.headers.order_by = "control_inicio"),
       (this.axiosConfig.headers.order_direction = "DESC"),
-      this.getData(`/cguias`, "onRequest", "datos");
+      this.getData(`/cguias`, "setDataTable", "datos");
     },
     setDataEdit(res, dataRes) {
       this.loading = false;

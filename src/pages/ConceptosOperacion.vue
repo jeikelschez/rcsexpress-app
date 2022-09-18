@@ -499,25 +499,6 @@ export default {
       this[dataRes].id = res.id;
       this[dataRes].desc_concepto = res.desc_concepto;
       this[dataRes].afecta_estado = res.afecta_estado;
-      var codigo = res.tipos.codigo;
-      if (codigo == "DCO") {
-        var element = document.getElementById("selectEdit");
-        element.classList.remove("displayHide");
-        element.classList.add("displayShow");
-        this.disableEdit = false;
-      }
-      if (codigo == "DGA") {
-        var element = document.getElementById("selectEdit");
-        element.classList.remove("displayHide");
-        element.classList.add("displayShow");
-        this.disableEdit = false;
-      }
-      if (codigo !== "DCO" && codigo !== "DGA") {
-        var element = document.getElementById("selectEdit");
-        element.classList.remove("displayShow");
-        element.classList.add("displayHide");
-        this.disableEdit = true;
-      }
     },
     // Metodo para Eliminar Datos
     deleteData(idpost) {

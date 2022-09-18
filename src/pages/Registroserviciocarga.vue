@@ -2803,6 +2803,7 @@ export default {
         normal: "0",
         emergencia: "0",
       },
+      orderDirection: "",
       disabledAgencia: true,
       readonlyAgencia: false,
       disabledInputs: true,

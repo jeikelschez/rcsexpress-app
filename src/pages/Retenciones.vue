@@ -569,6 +569,7 @@ export default {
         fecha_ini_val: "",
         fecha_fin_val: "",
       },
+      orderDirection: "",
       datos: [],
       count: 1,
       currentPage: 1,

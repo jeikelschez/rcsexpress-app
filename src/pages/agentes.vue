@@ -6,10 +6,17 @@
           <q-form @submit="sendData()" class="q-gutter-md">
             <div class="row">
               <div class="col-md-6 col-xs-12">
-                <q-input outlined v-model="form.nb_agente" label="Nombre de Agente" class="pcform" hint=""
+                <q-input
+                  outlined
+                  v-model="form.nb_agente"
+                  label="Nombre de Agente"
+                  class="pcform"
+                  hint=""
                   @update:model-value="
                     form.nb_agente = form.nb_agente.toUpperCase()
-                  " lazy-rules :rules="[
+                  "
+                  lazy-rules
+                  :rules="[
                     (val) => this.$refs.rulesVue.isReq(val, 'Valor Requerido'),
                     (val) =>
                       this.$refs.rulesVue.isMax(
@@ -23,7 +30,8 @@
                         3,
                         'Minimo 3 Caracteres'
                       ) || '',
-                  ]">
+                  ]"
+                >
                   <template v-slot:prepend>
                     <q-icon name="person" />
                   </template>
@@ -31,10 +39,17 @@
               </div>
 
               <div class="col-md-6 col-xs-12">
-                <q-input outlined v-model="form.fax_agente" label="Fax" hint="" mask="#### - ##########"
+                <q-input
+                  outlined
+                  v-model="form.fax_agente"
+                  label="Fax"
+                  hint=""
+                  mask="#### - ##########"
                   @update:model-value="
                     form.fax_agente = form.fax_agente.toUpperCase()
-                  " lazy-rules :rules="[
+                  "
+                  lazy-rules
+                  :rules="[
                     (val) =>
                       this.$refs.rulesVue.isMax(
                         val,
@@ -47,7 +62,8 @@
                         3,
                         'Minimo 3 Caracteres'
                       ) || '',
-                  ]">
+                  ]"
+                >
                   <template v-slot:prepend>
                     <q-icon name="fax" />
                   </template>
@@ -55,11 +71,18 @@
               </div>
 
               <div class="col-md-6 col-xs-12">
-                <q-input outlined v-model="form.persona_responsable" label="Persona Responsable" class="pcform" hint=""
+                <q-input
+                  outlined
+                  v-model="form.persona_responsable"
+                  label="Persona Responsable"
+                  class="pcform"
+                  hint=""
                   @update:model-value="
                     form.persona_responsable =
                       form.persona_responsable.toUpperCase()
-                  " lazy-rules :rules="[
+                  "
+                  lazy-rules
+                  :rules="[
                     (val) =>
                       this.$refs.rulesVue.isMax(
                         val,
@@ -72,7 +95,8 @@
                         3,
                         'Minimo 3 Caracteres'
                       ) || '',
-                  ]">
+                  ]"
+                >
                   <template v-slot:prepend>
                     <q-icon name="contact_phone" />
                   </template>
@@ -80,11 +104,19 @@
               </div>
 
               <div class="col-md-6 col-xs-12">
-                <q-select outlined v-model="form.flag_activo" label="Activo" hint="" :rules="[
-                  (val) =>
-                    this.$refs.rulesVue.isReqSelect(val, 'Valor Requerido') ||
-                    '',
-                ]" :options="estatus" lazy-rules>
+                <q-select
+                  outlined
+                  v-model="form.flag_activo"
+                  label="Activo"
+                  hint=""
+                  :rules="[
+                    (val) =>
+                      this.$refs.rulesVue.isReqSelect(val, 'Valor Requerido') ||
+                      '',
+                  ]"
+                  :options="estatus"
+                  lazy-rules
+                >
                   <template v-slot:prepend>
                     <q-icon name="rule" />
                   </template>
@@ -92,22 +124,30 @@
               </div>
 
               <div class="col-md-12 col-xs-12">
-                <q-input outlined v-model="form.dir_agente" label="Dirección" hint="" @update:model-value="
-                  form.dir_agente = form.dir_agente.toUpperCase()
-                " lazy-rules :rules="[
-                  (val) =>
-                    this.$refs.rulesVue.isMax(
-                      val,
-                      100,
-                      'Maximo 100 Caracteres'
-                    ),
-                  (val) =>
-                    this.$refs.rulesVue.isMin(
-                      val,
-                      3,
-                      'Minimo 3 Caracteres'
-                    ) || '',
-                ]">
+                <q-input
+                  outlined
+                  v-model="form.dir_agente"
+                  label="Dirección"
+                  hint=""
+                  @update:model-value="
+                    form.dir_agente = form.dir_agente.toUpperCase()
+                  "
+                  lazy-rules
+                  :rules="[
+                    (val) =>
+                      this.$refs.rulesVue.isMax(
+                        val,
+                        100,
+                        'Maximo 100 Caracteres'
+                      ),
+                    (val) =>
+                      this.$refs.rulesVue.isMin(
+                        val,
+                        3,
+                        'Minimo 3 Caracteres'
+                      ) || '',
+                  ]"
+                >
                   <template v-slot:prepend>
                     <q-icon name="pin_drop" />
                   </template>
@@ -115,45 +155,68 @@
               </div>
 
               <div class="col-md-12 col-xs-12">
-                <q-input outlined v-model="form.email_web" label="Email" hint="" type="email" @update:model-value="
-                  form.email_web = form.email_web.toUpperCase()
-                " lazy-rules :rules="[
-                  (val) =>
-                    this.$refs.rulesVue.isMax(
-                      val,
-                      100,
-                      'Maximo 100 Caracteres'
-                    ),
-                  (val) =>
-                    this.$refs.rulesVue.isMin(
-                      val,
-                      3,
-                      'Minimo 3 Caracteres'
-                    ) || '',
-                ]">
+                <q-input
+                  outlined
+                  v-model="form.email_web"
+                  label="Email"
+                  hint=""
+                  type="email"
+                  @update:model-value="
+                    form.email_web = form.email_web.toUpperCase()
+                  "
+                  lazy-rules
+                  :rules="[
+                    (val) =>
+                      this.$refs.rulesVue.isMax(
+                        val,
+                        100,
+                        'Maximo 100 Caracteres'
+                      ),
+                    (val) =>
+                      this.$refs.rulesVue.isMin(
+                        val,
+                        3,
+                        'Minimo 3 Caracteres'
+                      ) || '',
+                  ]"
+                >
                   <template v-slot:prepend>
                     <q-icon name="email" />
                   </template>
                 </q-input>
               </div>
 
-              <q-card class="q-pa-md" bordered style="width: 999px; max-width: 80vw; margin-bottom: 20px">
+              <q-card
+                class="q-pa-md"
+                bordered
+                style="width: 999px; max-width: 80vw; margin-bottom: 20px"
+              >
                 <q-card-section>
                   <div class="row">
-                    <div class="col-md-12 col-xs-12" style="
+                    <div
+                      class="col-md-12 col-xs-12"
+                      style="
                         align-self: center;
                         text-align: left;
                         margin-top: -30px;
-                      ">
+                      "
+                    >
                       <h4 style="font-size: 20px" class="text-secondary">
                         <strong>IDENTIFICACIÓN Y COMISIONES</strong>
                       </h4>
                     </div>
                     <div class="col-md-6 col-xs-12">
-                      <q-input outlined v-model="form.rif_ci_agente" label="RIF/CI" hint="" class="pcform"
+                      <q-input
+                        outlined
+                        v-model="form.rif_ci_agente"
+                        label="RIF/CI"
+                        hint=""
+                        class="pcform"
                         @update:model-value="
                           form.rif_ci_agente = form.rif_ci_agente.toUpperCase()
-                        " lazy-rules :rules="[
+                        "
+                        lazy-rules
+                        :rules="[
                           (val) =>
                             this.$refs.rulesVue.isMax(
                               val,
@@ -166,7 +229,8 @@
                               3,
                               'Minimo 3 Caracteres'
                             ) || '',
-                        ]">
+                        ]"
+                      >
                         <template v-slot:prepend>
                           <q-icon name="account_box" />
                         </template>
@@ -174,13 +238,21 @@
                     </div>
 
                     <div class="col-md-6 col-xs-12">
-                      <q-select outlined v-model="form.tipo_agente" label="Tipo de Agente" hint="" :rules="[
-                        (val) =>
-                          this.$refs.rulesVue.isReqSelect(
-                            val,
-                            'Valor Requerido'
-                          ) || '',
-                      ]" :options="tipoDeAgente" lazy-rules>
+                      <q-select
+                        outlined
+                        v-model="form.tipo_agente"
+                        label="Tipo de Agente"
+                        hint=""
+                        :rules="[
+                          (val) =>
+                            this.$refs.rulesVue.isReqSelect(
+                              val,
+                              'Valor Requerido'
+                            ) || '',
+                        ]"
+                        :options="tipoDeAgente"
+                        lazy-rules
+                      >
                         <template v-slot:prepend>
                           <q-icon name="face" />
                         </template>
@@ -188,11 +260,20 @@
                     </div>
 
                     <div class="col-md-4 col-xs-12">
-                      <q-input outlined v-model="form.porc_comision_venta" label="% Comisión por Venta" v-money="money"
-                        input-class="text-right" hint="" class="pcform" @update:model-value="
+                      <q-input
+                        outlined
+                        v-model="form.porc_comision_venta"
+                        label="% Comisión por Venta"
+                        v-money="money"
+                        input-class="text-right"
+                        hint=""
+                        class="pcform"
+                        @update:model-value="
                           form.porc_comision_venta =
                             form.porc_comision_venta.toUpperCase()
-                        " lazy-rules>
+                        "
+                        lazy-rules
+                      >
                         <template v-slot:prepend>
                           <q-icon name="percent" />
                         </template>
@@ -200,12 +281,20 @@
                     </div>
 
                     <div class="col-md-4 col-xs-12">
-                      <q-input outlined class="pcform" v-model="form.porc_comision_entrega"
-                        label="% Comisión por Entrega" v-money="money" input-class="text-right" hint=""
+                      <q-input
+                        outlined
+                        class="pcform"
+                        v-model="form.porc_comision_entrega"
+                        label="% Comisión por Entrega"
+                        v-money="money"
+                        input-class="text-right"
+                        hint=""
                         @update:model-value="
                           form.porc_comision_entrega =
                             form.porc_comision_entrega.toUpperCase()
-                        " lazy-rules>
+                        "
+                        lazy-rules
+                      >
                         <template v-slot:prepend>
                           <q-icon name="percent" />
                         </template>
@@ -213,11 +302,19 @@
                     </div>
 
                     <div class="col-md-4 col-xs-12">
-                      <q-input outlined v-model="form.porc_comision_seguro" label="% Comisión por Seguro"
-                        v-money="money" input-class="text-right" hint="" @update:model-value="
+                      <q-input
+                        outlined
+                        v-model="form.porc_comision_seguro"
+                        label="% Comisión por Seguro"
+                        v-money="money"
+                        input-class="text-right"
+                        hint=""
+                        @update:model-value="
                           form.porc_comision_seguro =
                             form.porc_comision_seguro.toUpperCase()
-                        " lazy-rules>
+                        "
+                        lazy-rules
+                      >
                         <template v-slot:prepend>
                           <q-icon name="percent" />
                         </template>
@@ -228,11 +325,25 @@
               </q-card>
             </div>
 
-            <div class="full-width row justify-center items-center content-center" style="margin-bottom: 10px">
-              <q-btn label="Enviar" type="submit" color="primary" class="col-md-5 col-sm-5 col-xs-12"
-                icon="person_add" />
-              <q-btn label="Cerrar" color="primary" flat class="col-md-5 col-sm-5 col-xs-12 btnmovil" icon="close"
-                v-close-popup />
+            <div
+              class="full-width row justify-center items-center content-center"
+              style="margin-bottom: 10px"
+            >
+              <q-btn
+                label="Enviar"
+                type="submit"
+                color="primary"
+                class="col-md-5 col-sm-5 col-xs-12"
+                icon="person_add"
+              />
+              <q-btn
+                label="Cerrar"
+                color="primary"
+                flat
+                class="col-md-5 col-sm-5 col-xs-12 btnmovil"
+                icon="close"
+                v-close-popup
+              />
             </div>
           </q-form>
         </q-card-section>
@@ -242,26 +353,46 @@
     <div class="row q-pa-sm justify-center">
       <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
         <div class="q-pa-md row" style="margin-top: 2px">
-          <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 text-secondary movilTitle"
-            style="align-self: center; text-align: center; font-size: 20px">
+          <div
+            class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 text-secondary movilTitle"
+            style="align-self: center; text-align: center; font-size: 20px"
+          >
             <p><strong>MANTENIMIENTO - AGENTES</strong></p>
           </div>
-          <div class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-6 cardMargin selectMobile"
-            style="align-self: center; text-align: center">
-            <q-select rounded transition-show="flip-up" transition-hide="flip-down" :options="agenciasSelected" @filter="
-              (val, update, abort) =>
-                filterArray(
-                  val,
-                  update,
-                  abort,
-                  'agenciasSelected',
-                  'agencias',
-                  'nb_agencia'
-                )
-            " use-input hide-selected fill-input input-debounce="0" option-label="nb_agencia" option-value="id"
-              v-model="selectedAgencia" outlined standout label="Escoge una Agencia" @update:model-value="
+          <div
+            class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-6 cardMargin selectMobile"
+            style="align-self: center; text-align: center"
+          >
+            <q-select
+              rounded
+              transition-show="flip-up"
+              transition-hide="flip-down"
+              :options="agenciasSelected"
+              @filter="
+                (val, update, abort) =>
+                  filterArray(
+                    val,
+                    update,
+                    abort,
+                    'agenciasSelected',
+                    'agencias',
+                    'nb_agencia'
+                  )
+              "
+              use-input
+              hide-selected
+              fill-input
+              input-debounce="0"
+              option-label="nb_agencia"
+              option-value="id"
+              v-model="selectedAgencia"
+              outlined
+              standout
+              label="Escoge una Agencia"
+              @update:model-value="
                 getDataTable(`/agentes`, 'setDataTable', 'agentes')
-              ">
+              "
+            >
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
@@ -275,41 +406,90 @@
             </q-select>
           </div>
 
-          <div class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-6 cardMarginFilter"
-            style="align-self: center; text-align: center">
-            <q-input rounded outlined standout v-model="filter" type="search" label="Búsqueda avanzada">
+          <div
+            class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-6 cardMarginFilter"
+            style="align-self: center; text-align: center"
+          >
+            <q-input
+              rounded
+              outlined
+              standout
+              v-model="filter"
+              type="search"
+              label="Búsqueda avanzada"
+            >
               <template v-slot:prepend>
                 <q-icon name="search" />
               </template>
             </q-input>
           </div>
 
-          <div class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12" style="text-align: center; align-self: center">
-            <q-btn label="Insertar" rounded color="primary" :disabled="this.allowOption(2)" @click="formDialog = true"
-              @click.capture="resetForm()" size="16px" class="q-px-xl q-py-xs insertarestadosmovil"></q-btn>
+          <div
+            class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
+            style="text-align: center; align-self: center"
+          >
+            <q-btn
+              label="Insertar"
+              rounded
+              color="primary"
+              :disabled="this.allowOption(2)"
+              @click="formDialog = true"
+              @click.capture="resetForm()"
+              size="16px"
+              class="q-px-xl q-py-xs insertarestadosmovil"
+            ></q-btn>
           </div>
         </div>
 
         <div class="q-pa-md my-card row" bordered flat style="margin-top: 2px">
-          <q-table :rows="agentes" binary-state-sort row-key="id" :columns="columns" :separator="separator"
-            :rows-per-page-options="[5, 10, 15, 20, 50]" @request="onRequest" :filter="filter" style="width: 100%"
-            :loading="loading" :grid="$q.screen.xs" v-model:pagination="pagination">
+          <q-table
+            :rows="agentes"
+            binary-state-sort
+            row-key="id"
+            :columns="columns"
+            :separator="separator"
+            :rows-per-page-options="[5, 10, 15, 20, 50]"
+            @request="onRequest"
+            :filter="filter"
+            style="width: 100%"
+            :loading="loading"
+            :grid="$q.screen.xs"
+            v-model:pagination="pagination"
+          >
             <template v-slot:loading>
               <q-inner-loading showing color="primary" />
             </template>
             <template v-slot:body-cell-action="props">
               <q-td :props="props">
-                <q-btn dense round flat color="primary" icon="edit" :disabled="this.allowOption(3)" @click="
-                  getData(`/agentes/${props.row.id}`, 'setDataEdit', 'form');
-                  formDialog = true;
-                "></q-btn>
-                <q-btn dense round flat color="primary" icon="delete" :disabled="this.allowOption(4)"
-                  @click="selected = props.row.id" @click.capture="agentesDelete = true"></q-btn>
+                <q-btn
+                  dense
+                  round
+                  flat
+                  color="primary"
+                  icon="edit"
+                  :disabled="this.allowOption(3)"
+                  @click="
+                    getData(`/agentes/${props.row.id}`, 'setDataEdit', 'form');
+                    formDialog = true;
+                  "
+                ></q-btn>
+                <q-btn
+                  dense
+                  round
+                  flat
+                  color="primary"
+                  icon="delete"
+                  :disabled="this.allowOption(4)"
+                  @click="selected = props.row.id"
+                  @click.capture="agentesDelete = true"
+                ></q-btn>
               </q-td>
             </template>
             <template v-slot:item="props">
-              <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
-                :style="props.selected ? 'transform: scale(0.95);' : ''">
+              <div
+                class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+                :style="props.selected ? 'transform: scale(0.95);' : ''"
+              >
                 <q-card :class="props.selected ? 'bg-grey-2' : ''">
                   <q-list dense>
                     <q-item v-for="col in props.cols" :key="col.name">
@@ -317,33 +497,69 @@
                         <q-item-label>{{ col.label }}</q-item-label>
                       </q-item-section>
                       <q-item-section side>
-                        <q-chip v-if="col.name === 'status'" :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        " text-color="white" dense class="text-weight-bolder" square>{{ col.value }}</q-chip>
-                        <q-btn v-else-if="col.name === 'action'" dense round flat color="primary" icon="edit"
-                          :disabled="this.allowOption(3)" @click="
+                        <q-chip
+                          v-if="col.name === 'status'"
+                          :color="
+                            props.row.status == 'Active'
+                              ? 'green'
+                              : props.row.status == 'Disable'
+                              ? 'red'
+                              : 'grey'
+                          "
+                          text-color="white"
+                          dense
+                          class="text-weight-bolder"
+                          square
+                          >{{ col.value }}</q-chip
+                        >
+                        <q-btn
+                          v-else-if="col.name === 'action'"
+                          dense
+                          round
+                          flat
+                          color="primary"
+                          icon="edit"
+                          :disabled="this.allowOption(3)"
+                          @click="
                             getData(
                               `/agentes/${props.row.id}`,
                               'setDataEdit',
                               'form'
                             );
                             formDialog = true;
-                          "></q-btn>
-                        <q-chip v-if="col.name === 'status'" :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        " text-color="white" dense class="text-weight-bolder" square>{{ col.value }}</q-chip>
-                        <q-btn v-else-if="col.name === 'action'" dense round flat color="primary" icon="delete"
-                          :disabled="this.allowOption(4)" @click="selected = props.row.id"
-                          @click.capture="agentesDelete = true"></q-btn>
-                        <q-item-label v-else caption :class="col.classes ? col.classes : ''">{{ col.value }}
+                          "
+                        ></q-btn>
+                        <q-chip
+                          v-if="col.name === 'status'"
+                          :color="
+                            props.row.status == 'Active'
+                              ? 'green'
+                              : props.row.status == 'Disable'
+                              ? 'red'
+                              : 'grey'
+                          "
+                          text-color="white"
+                          dense
+                          class="text-weight-bolder"
+                          square
+                          >{{ col.value }}</q-chip
+                        >
+                        <q-btn
+                          v-else-if="col.name === 'action'"
+                          dense
+                          round
+                          flat
+                          color="primary"
+                          icon="delete"
+                          :disabled="this.allowOption(4)"
+                          @click="selected = props.row.id"
+                          @click.capture="agentesDelete = true"
+                        ></q-btn>
+                        <q-item-label
+                          v-else
+                          caption
+                          :class="col.classes ? col.classes : ''"
+                          >{{ col.value }}
                         </q-item-label>
                       </q-item-section>
                     </q-item>
@@ -366,14 +582,27 @@
 
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="primary" v-close-popup />
-          <q-btn flat label="Aceptar" color="primary" v-close-popup @click="deleteData(selected)" />
+          <q-btn
+            flat
+            label="Aceptar"
+            color="primary"
+            v-close-popup
+            @click="deleteData(selected)"
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
 
-    <methods ref="methods" @get-Data-Table="getDataTable(`/agentes`, 'setDataTable', 'agentes')"
-      @set-Data-Table="setDataTable" @on-Request="onRequest" @reset-Loading="resetLoading" @set-Data-Edit="setDataEdit"
-      @set-Data-Init="setDataInit" @set-Data-Permisos="setDataPermisos"></methods>
+    <methods
+      ref="methods"
+      @get-Data-Table="getDataTable(`/agentes`, 'setDataTable', 'agentes')"
+      @set-Data-Table="setDataTable"
+      @on-Request="onRequest"
+      @reset-Loading="resetLoading"
+      @set-Data-Edit="setDataEdit"
+      @set-Data-Init="setDataInit"
+      @set-Data-Permisos="setDataPermisos"
+    ></methods>
     <rules-vue ref="rulesVue"></rules-vue>
   </q-page>
 </template>
@@ -467,6 +696,7 @@ export default {
         { label: "RESPONSABLE DE AGENCIA", value: "RP" },
         { label: "COURIERS", value: "CR" },
       ],
+      orderDirection: "",
       count: 1,
       currentPage: 1,
       agencias: [],
@@ -504,64 +734,42 @@ export default {
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
-        rol: LocalStorage.getItem('tokenTraducido').usuario.roles.id,
-        menu: "agentes"
+        rol: LocalStorage.getItem("tokenTraducido").usuario.roles.id,
+        menu: "agentes",
       },
     });
   },
   methods: {
     // Metodo para hacer Get de Datos cuando se utilizan controles de Tabla
     onRequest(res, dataRes) {
-      if (this.count == 1) {
-        this[dataRes] = res.data;
-        this.pagination.rowsNumber = res.total;
-      } else {
         let { page, rowsPerPage, sortBy, descending } = res.pagination;
-        if (this.currentPage !== page) {
-          descending = "";
-        }
-        const filter = res.filter;
-        const startRow = (page - 1) * rowsPerPage;
+        if (this.currentPage !== page) descending = "";
+
         const fetchCount =
           rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-
-        var headerPage = page;
-        var headerOrder_direction = "";
-        var headerLimit = fetchCount;
-        if (sortBy) {
-          var headerOrder_by = sortBy;
-        } else {
-          var headerOrder_by = "";
-        }
-
-        if (headerOrder_by == "tipo_desc") {
-          var headerOrder_by = "tipo_agente";
-        }
-        if (headerOrder_by == "activo_desc") {
-          var headerOrder_by = "flag_activo";
-        }
+        if (!sortBy) sortBy = "";
 
         if (descending !== "") {
           this.pagination.descending = !this.pagination.descending;
           if (this.pagination.descending == true) {
-            headerOrder_direction = "DESC";
-          } else headerOrder_direction = "ASC";
+            this.orderDirection = "DESC";
+          } else this.orderDirection = "ASC";
         }
 
         if (sortBy) this.pagination.sortBy = sortBy;
         this.pagination.page = page;
         this.pagination.rowsPerPage = rowsPerPage;
+        if (sortBy == "tipo_desc") sortBy = "tipo_agente"
+        if (sortBy == "activo_desc") sortBy = "flag_activo"
+        
         this.getData(`/agentes`, "setDataTable", "agentes", {
           headers: {
-            agencia: this.selectedAgencia.id,
-            page: headerPage,
-            limit: headerLimit,
-            order_direction: headerOrder_direction,
-            order_by: headerOrder_by,
+            page: page,
+            limit: fetchCount,
+            order_direction: this.orderDirection,
+            order_by: sortBy,
           },
         });
-      }
-      this.count = 0;
     },
     // Metodo para filtrar opciones de Selects
     filterArray(val, update, abort, pagina, array, element) {
@@ -600,7 +808,9 @@ export default {
     },
     // Metodo para validar Permisos
     allowOption(option) {
-      return this.rpermisos.findIndex((item) => item.acciones.accion == option) < 0;
+      return (
+        this.rpermisos.findIndex((item) => item.acciones.accion == option) < 0
+      );
     },
 
     // METODOS DE PAGINA
@@ -610,7 +820,7 @@ export default {
       this[dataRes] = res.data;
       this.selectedAgencia = this.agencias[0];
 
-      this.$refs.methods.getData("/agentes", "onRequest", "agentes", {
+      this.$refs.methods.getData("/agentes", "setDataTable", "agentes", {
         headers: {
           agencia: this.agencias[0].id,
           page: 1,
