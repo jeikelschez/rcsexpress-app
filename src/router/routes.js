@@ -283,17 +283,17 @@ const routes = [
       {
         path: '/conceptosoperacion',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('pages/conceptosoperacion.vue')}]
+        children: [{ path: "", component: () => import('pages/conceptosOperacion.vue')}]
       },
       {
         path: '/conceptosfacturacion',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('pages/conceptosfacturacion.vue')}]
+        children: [{ path: "", component: () => import('pages/conceptosFacturacion.vue')}]
       },
       {
         path: '/conceptosfpo',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('pages/conceptosfpo.vue')}]
+        children: [{ path: "", component: () => import('pages/conceptosFpo.vue')}]
       },
       {
         path: '/asignacionguias',
@@ -603,17 +603,17 @@ const routes = [
       {
         path: '/m_conceptosoperacion',
         component: () => import("layouts/manuallayout.vue"),
-        children: [{ path: "", component: () => import('pages/manuals/m_conceptosoperacion.vue')}]
+        children: [{ path: "", component: () => import('pages/manuals/m_conceptosOperacion.vue')}]
       },
       {
         path: '/m_conceptosfacturacion',
         component: () => import("layouts/manuallayout.vue"),
-        children: [{ path: "", component: () => import('pages/manuals/m_conceptosfacturacion.vue')}]
+        children: [{ path: "", component: () => import('pages/manuals/m_conceptosFacturacion.vue')}]
       },
       {
         path: '/m_conceptosfpo',
         component: () => import("layouts/manuallayout.vue"),
-        children: [{ path: "", component: () => import('pages/manuals/m_conceptosfpo.vue')}]
+        children: [{ path: "", component: () => import('pages/manuals/m_conceptosFpo.vue')}]
       },
       {
         path: '/m_asignacionguias',

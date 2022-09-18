@@ -6,16 +6,9 @@
           <q-form @submit="sendData" class="q-gutter-md">
             <div class="row">
               <div class="col-md-3 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="form.cod_tipo_retencion"
-                  label="Codigo"
-                  hint=""
-                  lazy-rules
-                  class="pcform"
+                <q-input outlined v-model="form.cod_tipo_retencion" label="Codigo" hint="" lazy-rules class="pcform"
                   type="number"
-                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 2, 'Maximo 2 Caracteres')|| '']"
-                >
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 2, 'Maximo 2 Caracteres')|| '']">
                   <template v-slot:prepend>
                     <q-icon name="qr_code_2" />
                   </template>
@@ -23,16 +16,9 @@
               </div>
 
               <div class="col-md-4 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="form.cod_tipo_persona"
-                  label="Tipo Persona"
-                  hint=""
-                  class="pcform"
-                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido')|| '']"
-                  :options="tipo_persona"
-                  lazy-rules
-                >
+                <q-select outlined v-model="form.cod_tipo_persona" label="Tipo Persona" hint="" class="pcform"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido')|| '']" :options="tipo_persona"
+                  lazy-rules>
                   <template v-slot:prepend>
                     <q-icon name="group" />
                   </template>
@@ -40,18 +26,12 @@
               </div>
 
               <div class="col-md-5 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="form.nb_tipo_retencion"
-                  label="Descripción"
-                  hint=""
-                  lazy-rules
+                <q-input outlined v-model="form.nb_tipo_retencion" label="Descripción" hint="" lazy-rules
                   :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 50, 'Maximo 50 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
                   @update:model-value="
                     form.nb_tipo_retencion =
                       form.nb_tipo_retencion.toUpperCase()
-                  "
-                >
+                  ">
                   <template v-slot:prepend>
                     <q-icon name="qr_code_2" />
                   </template>
@@ -59,17 +39,9 @@
               </div>
 
               <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="form.porc_base"
-                  label="Porcentaje Base"
-                  hint=""
-                  class="pcform"
-                  v-money="money"
-                  input-class="text-right"
-                  lazy-rules
-                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 12, 'Maximo 12 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
-                >
+                <q-input outlined v-model="form.porc_base" label="Porcentaje Base" hint="" class="pcform"
+                  v-money="money" input-class="text-right" lazy-rules
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 12, 'Maximo 12 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']">
                   <template v-slot:prepend>
                     <q-icon name="qr_code_2" />
                   </template>
@@ -77,17 +49,9 @@
               </div>
 
               <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="form.porc_retencion"
-                  label="Porcentaje Retención"
-                  hint=""
-                  lazy-rules
-                  v-money="money"
-                  input-class="text-right"
-                  class="pcform"
-                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 12, 'Maximo 12 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
-                >
+                <q-input outlined v-model="form.porc_retencion" label="Porcentaje Retención" hint="" lazy-rules
+                  v-money="money" input-class="text-right" class="pcform"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 12, 'Maximo 12 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']">
                   <template v-slot:prepend>
                     <q-icon name="qr_code_2" />
                   </template>
@@ -95,16 +59,9 @@
               </div>
 
               <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="form.pago_mayor"
-                  label="Monto"
-                  hint=""
-                  v-money="money"
-                  input-class="text-right"
-                  lazy-rules
-                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 12, 'Maximo 12 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
-                >
+                <q-input outlined v-model="form.pago_mayor" label="Monto" hint="" v-money="money"
+                  input-class="text-right" lazy-rules
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 12, 'Maximo 12 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']">
                   <template v-slot:prepend>
                     <q-icon name="qr_code_2" />
                   </template>
@@ -112,17 +69,9 @@
               </div>
 
               <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="form.sustraendo"
-                  label="Sustraendo"
-                  hint=""
-                  lazy-rules
-                  class="pcform"
-                  v-money="money"
-                  input-class="text-right"
-                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 12, 'Maximo 12 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']"
-                >
+                <q-input outlined v-model="form.sustraendo" label="Sustraendo" hint="" lazy-rules class="pcform"
+                  v-money="money" input-class="text-right"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 12, 'Maximo 12 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']">
                   <template v-slot:prepend>
                     <q-icon name="qr_code_2" />
                   </template>
@@ -130,17 +79,11 @@
               </div>
 
               <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="form.cod_seniat"
-                  label="Codigo SENIAT"
-                  hint=""
-                  lazy-rules
+                <q-input outlined v-model="form.cod_seniat" label="Codigo SENIAT" hint="" lazy-rules
                   :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 3, 'Maximo 3 Caracteres')|| '']"
                   @update:model-value="
                     form.cod_seniat = form.cod_seniat.toUpperCase()
-                  "
-                >
+                  ">
                   <template v-slot:prepend>
                     <q-icon name="qr_code_2" />
                   </template>
@@ -148,36 +91,16 @@
               </div>
 
               <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  label="Fecha de Validez Inicial"
-                  hint=""
-                  v-model="form.fecha_ini_val"
-                  mask="##/##/####"
-                  :rules="[(val) => this.$refs.rulesVue.checkDate(val, '') || '']"
-                  class="pcform"
-                  lazy-rules
-                >
+                <q-input outlined label="Fecha de Validez Inicial" hint="" v-model="form.fecha_ini_val"
+                  mask="##/##/####" :rules="[(val) => this.$refs.rulesVue.checkDate(val, '') || '']" class="pcform"
+                  lazy-rules>
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy
-                        ref="qDateProxy"
-                        cover
-                        transition-show="scale"
-                        transition-hide="scale"
-                      >
-                        <q-date
-                          v-model="form.fecha_ini_val"
-                          mask="DD/MM/YYYY"
-                          @update:model-value="this.$refs.qDateProxy.hide()"
-                        >
+                      <q-popup-proxy ref="qDateProxy" cover transition-show="scale" transition-hide="scale">
+                        <q-date v-model="form.fecha_ini_val" mask="DD/MM/YYYY"
+                          @update:model-value="this.$refs.qDateProxy.hide()">
                           <div class="row items-center justify-end">
-                            <q-btn
-                              v-close-popup
-                              label="Close"
-                              color="primary"
-                              flat
-                            />
+                            <q-btn v-close-popup label="Close" color="primary" flat />
                           </div>
                         </q-date>
                       </q-popup-proxy>
@@ -187,35 +110,15 @@
               </div>
 
               <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  label="Fecha de Validez Final"
-                  hint=""
-                  v-model="form.fecha_fin_val"
-                  mask="##/##/####"
-                  :rules="[(val) => this.$refs.rulesVue.checkDate(val, '') || '']"
-                  lazy-rules
-                >
+                <q-input outlined label="Fecha de Validez Final" hint="" v-model="form.fecha_fin_val" mask="##/##/####"
+                  :rules="[(val) => this.$refs.rulesVue.checkDate(val, '') || '']" lazy-rules>
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy
-                        ref="qDateProxy"
-                        cover
-                        transition-show="scale"
-                        transition-hide="scale"
-                      >
-                        <q-date
-                          v-model="form.fecha_fin_val"
-                          mask="DD/MM/YYYY"
-                          @update:model-value="this.$refs.qDateProxy.hide()"
-                        >
+                      <q-popup-proxy ref="qDateProxy" cover transition-show="scale" transition-hide="scale">
+                        <q-date v-model="form.fecha_fin_val" mask="DD/MM/YYYY"
+                          @update:model-value="this.$refs.qDateProxy.hide()">
                           <div class="row items-center justify-end">
-                            <q-btn
-                              v-close-popup
-                              label="Close"
-                              color="primary"
-                              flat
-                            />
+                            <q-btn v-close-popup label="Close" color="primary" flat />
                           </div>
                         </q-date>
                       </q-popup-proxy>
@@ -225,25 +128,11 @@
               </div>
             </div>
 
-            <div
-              class="full-width row justify-center items-center content-center"
-              style="margin-bottom: 10px"
-            >
-              <q-btn
-                label="Enviar"
-                type="submit"
-                color="primary"
-                class="col-md-5 col-sm-5 col-xs-12"
-                icon="person_add"
-              />
-              <q-btn
-                label="Cerrar"
-                color="primary"
-                flat
-                class="col-md-5 col-sm-5 col-xs-12 btnmovil"
-                icon="close"
-                v-close-popup
-              />
+            <div class="full-width row justify-center items-center content-center" style="margin-bottom: 10px">
+              <q-btn label="Enviar" type="submit" color="primary" class="col-md-5 col-sm-5 col-xs-12"
+                icon="person_add" />
+              <q-btn label="Cerrar" color="primary" flat class="col-md-5 col-sm-5 col-xs-12 btnmovil" icon="close"
+                v-close-popup />
             </div>
           </q-form>
         </q-card-section>
@@ -252,99 +141,49 @@
 
     <div class="q-pa-sm justify-center">
       <div class="row q-pa-md justify-end">
-        <div
-          class="col-md-4 col-xs-12 text-secondary movilTitle"
-          style="align-self: center; text-align: center; font-size: 20px"
-        >
+        <div class="col-md-4 col-xs-12 text-secondary movilTitle"
+          style="align-self: center; text-align: center; font-size: 20px">
           <p><strong>MANTENIMIENTO - RETENCIONES</strong></p>
         </div>
-        <div
-          class="col-md-5 col-sm-7 col-xs-12 cardMargin selectMobile"
-          style="align-self: center"
-        >
-          <q-input
-            v-model="filter"
-            rounded
-            outlined
-            standout
-            type="search"
-            label="Búsqueda avanzada"
-          >
+        <div class="col-md-5 col-sm-7 col-xs-12 cardMargin selectMobile" style="align-self: center">
+          <q-input v-model="filter" rounded outlined standout type="search" label="Búsqueda avanzada">
             <template v-slot:prepend>
               <q-icon name="search" />
             </template>
           </q-input>
         </div>
-        <div
-          class="col-md-2 col-sm-4 col-xs-12"
-          style="text-align: center; align-self: center"
-        >
-          <q-btn
-            label="Insertar Retención"
-            rounded
-            color="primary"
-            @click="
-              dialog = true;
-              this.resetForm();
-            "
-            :disabled="this.disabledCreate"
-          ></q-btn>
+        <div class="col-md-2 col-sm-4 col-xs-12" style="text-align: center; align-self: center">
+          <q-btn label="Insertar Retención" rounded color="primary" @click="
+            dialog = true;
+            this.resetForm();
+          " :disabled="this.allowOption(2)"></q-btn>
         </div>
       </div>
 
       <div class="q-pa-md q-gutter-y-md">
-        <q-table
-          :rows="datos"
-          binary-state-sort
-          :rows-per-page-options="[5, 10, 15, 20, 50]"
-          @request="onRequest"
-          row-key="id"
-          :loading="loading"
-          :columns="columns"
-          :separator="separator"
-          :filter="filter"
-          style="width: 100%"
-          :grid="$q.screen.xs"
-          v-model:pagination="pagination"
-        >
+        <q-table :rows="datos" binary-state-sort :rows-per-page-options="[5, 10, 15, 20, 50]" @request="onRequest"
+          row-key="id" :loading="loading" :columns="columns" :separator="separator" :filter="filter" style="width: 100%"
+          :grid="$q.screen.xs" v-model:pagination="pagination">
           <template v-slot:loading>
             <q-inner-loading showing color="primary" />
           </template>
           <template v-slot:body-cell-action="props">
             <q-td :props="props">
-              <q-btn
-                dense
-                round
-                flat
-                color="primary"
-                icon="edit"
-                :disabled="this.disabledEdit"
-                @click="
-                  getData(
-                    `/mretenciones/${props.row.id}`,
-                    'setDataEdit',
-                    'form'
-                  );
-                  dialog = true;
-                "
-              ></q-btn>
-              <q-btn
-                dense
-                round
-                flat
-                color="primary"
-                icon="delete"
-                :disabled="this.disabledDelete"
-                @click="selected = props.row.id"
-                @click.capture="deletePopup = true"
-              ></q-btn>
+              <q-btn dense round flat color="primary" icon="edit" :disabled="this.allowOption(3)" @click="
+                getData(
+                  `/mretenciones/${props.row.id}`,
+                  'setDataEdit',
+                  'form'
+                );
+                dialog = true;
+              "></q-btn>
+              <q-btn dense round flat color="primary" icon="delete" :disabled="this.allowOption(4)"
+                @click="selected = props.row.id" @click.capture="deletePopup = true"></q-btn>
             </q-td>
           </template>
           <template v-slot:item="props">
-            <div
-              class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
-              :style="props.selected ? 'transform: scale(0.95);' : ''"
-            >
+            <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+              :style="props.selected ? 'transform: scale(0.95);' : ''">
               <q-card :class="props.selected ? 'bg-grey-2' : ''">
                 <q-list dense>
                   <q-item v-for="col in props.cols" :key="col.name">
@@ -352,70 +191,34 @@
                       <q-item-label>{{ col.label }}</q-item-label>
                     </q-item-section>
                     <q-item-section side>
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
-                      <q-btn
-                        v-else-if="col.name === 'action'"
-                        dense
-                        round
-                        flat
-                        color="primary"
-                        icon="edit"
-                        :disabled="this.disabledEdit"
-                        @click="
+                      <q-chip v-if="col.name === 'status'" :color="
+                        props.row.status == 'Active'
+                          ? 'green'
+                          : props.row.status == 'Disable'
+                          ? 'red'
+                          : 'grey'
+                      " text-color="white" dense class="text-weight-bolder" square>{{ col.value }}</q-chip>
+                      <q-btn v-else-if="col.name === 'action'" dense round flat color="primary" icon="edit"
+                        :disabled="this.allowOption(3)" @click="
                           getData(
                             `/mretenciones/${props.row.id}`,
                             'setDataEdit',
                             'form'
                           );
                           dialog = true;
-                        "
-                      ></q-btn>
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
-                      <q-btn
-                        v-else-if="col.name === 'action'"
-                        dense
-                        round
-                        flat
-                        color="primary"
-                        icon="delete"
-                        :disabled="this.disabledDelete"
-                        @click="selected = props.row.id"
-                        @click.capture="deletePopup = true"
-                      ></q-btn>
-                      <q-item-label
-                        v-else
-                        caption
-                        :class="col.classes ? col.classes : ''"
-                        >{{ col.value }}</q-item-label
-                      >
+                        "></q-btn>
+                      <q-chip v-if="col.name === 'status'" :color="
+                        props.row.status == 'Active'
+                          ? 'green'
+                          : props.row.status == 'Disable'
+                          ? 'red'
+                          : 'grey'
+                      " text-color="white" dense class="text-weight-bolder" square>{{ col.value }}</q-chip>
+                      <q-btn v-else-if="col.name === 'action'" dense round flat color="primary" icon="delete"
+                        :disabled="this.allowOption(4)" @click="selected = props.row.id"
+                        @click.capture="deletePopup = true"></q-btn>
+                      <q-item-label v-else caption :class="col.classes ? col.classes : ''">{{ col.value }}
+                      </q-item-label>
                     </q-item-section>
                   </q-item>
                 </q-list>
@@ -436,31 +239,16 @@
 
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="primary" v-close-popup />
-          <q-btn
-            flat
-            label="Aceptar"
-            color="primary"
-            v-close-popup
-            @click="deleteData(selected)"
-          />
+          <q-btn flat label="Aceptar" color="primary" v-close-popup @click="deleteData(selected)" />
         </q-card-actions>
       </q-card>
     </q-dialog>
 
-    <methods
-      ref="methods"
-      @get-Data-Retenciones="
-        getDataRetenciones('/mretenciones', 'setDataTable', 'datos')
-      "
-      @reset-Loading="resetLoading"
-      @set-Data-Edit="setDataEdit"
-      @set-Data-Table="setDataTable"
-      @on-Request="onRequest"
-    >
+    <methods ref="methods" @get-Data-Retenciones="
+      getDataRetenciones('/mretenciones', 'setDataTable', 'datos')
+    " @reset-Loading="resetLoading" @set-Data-Edit="setDataEdit" @set-Data-Table="setDataTable" @on-Request="onRequest"
+      @set-Data-Permisos="setDataPermisos">
     </methods>
-
-    <desactivate-crud ref="desactivateCrud" @desactivar-Crud="desactivarCrud">
-    </desactivate-crud>
 
     <rules-vue ref="rulesVue"></rules-vue>
   </q-page>
@@ -468,16 +256,14 @@
 
 <script>
 import { ref } from "vue";
-import { useQuasar } from "quasar";
+import { useQuasar, LocalStorage } from "quasar";
 import rulesVue from "src/components/rules.vue";
 import { VMoney } from "v-money";
 import methodsVue from "src/components/methods.vue";
-import desactivateCrudVue from "src/components/desactivateCrud.vue";
 
 export default {
   directives: { money: VMoney },
   components: {
-    "desactivate-crud": desactivateCrudVue,
     methods: methodsVue,
     VMoney,
     rulesVue,
@@ -578,10 +364,8 @@ export default {
         { label: "NATURAL", value: "N" },
       ],
       selected: [],
+      rpermisos: [],
       error: "",
-      disabledCreate: true,
-      disabledEdit: true,
-      disabledDelete: true,
     };
   },
   setup() {
@@ -591,7 +375,7 @@ export default {
     const pagination = ref({
       descending: "",
       page: 1,
-      rowsPerPage: 8,
+      rowsPerPage: 5,
       rowsNumber: "",
     });
     return {
@@ -607,13 +391,13 @@ export default {
   mounted() {
     this.$emit("changeTitle", "SCEN - Mantenimiento - Retenciones", "");
     this.getDataRetenciones("/mretenciones", "onRequest", "datos");
-    this.$refs.desactivateCrud.desactivarCrud(
-      "c_retenciones",
-      "r_retenciones",
-      "u_retenciones",
-      "d_retenciones",
-      "desactivarCrud"
-    );
+
+    this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
+      headers: {
+        rol: LocalStorage.getItem('tokenTraducido').usuario.roles.id,
+        menu: "retenciones"
+      },
+    });
   },
   methods: {
     // Metodo para hacer Get de Datos cuando seleccionas opcion de Tabla
@@ -675,19 +459,15 @@ export default {
     resetLoading() {
       this.loading = false;
     },
-    // Metodo para Validar Permisos
-    desactivarCrud(createItem, readItem, deleteItem, updateItem) {
-      if (readItem == true) {
-        if (createItem == true) {
-          this.disabledCreate = false;
-        }
-        if (deleteItem == true) {
-          this.disabledDelete = false;
-        }
-        if (updateItem == true) {
-          this.disabledEdit = false;
-        }
-      } else this.$router.push("/error403");
+    // Metodo para validar Permisos
+    allowOption(option) {
+      return this.rpermisos.findIndex((item) => item.acciones.accion == option) < 0;
+    },
+    // Metodo para Setear Datos Permisos
+    setDataPermisos(res, dataRes) {
+      this[dataRes] = res;
+      if (this.rpermisos.findIndex((item) => item.acciones.accion == 1) < 0)
+        this.$router.push("/error403");
     },
 
     // METODOS DE PAGINA
@@ -701,7 +481,7 @@ export default {
       this.$refs.methods.getData(url, call, dataRes, {
         headers: {
           page: 1,
-          limit: 8,
+          limit: 5,
         },
       });
       this.loading = true;
@@ -784,16 +564,16 @@ export default {
     // Metodo para Resetear Carga
     resetForm() {
       delete this.form.id;
-      (this.form.cod_tipo_persona = ""),
-        (this.form.cod_tipo_retencion = ""),
-        (this.form.nb_tipo_retencion = ""),
-        (this.form.porc_base = ""),
-        (this.form.porc_retencion = ""),
-        (this.form.pago_mayor = ""),
-        (this.form.cod_seniat = ""),
-        (this.form.sustraendo = ""),
-        (this.form.fecha_ini_val = ""),
-        (this.form.fecha_fin_val = "");
+      this.form.cod_tipo_persona = "";
+      this.form.cod_tipo_retencion = "";
+      this.form.nb_tipo_retencion = "";
+      this.form.porc_base = "";
+      this.form.porc_retencion = "";
+      this.form.pago_mayor = "";
+      this.form.cod_seniat = "";
+      this.form.sustraendo = "";
+      this.form.fecha_ini_val = "";
+      this.form.fecha_fin_val = "";
     },
   },
 };
@@ -810,6 +590,7 @@ export default {
     margin-bottom: 15px;
   }
 }
+
 @media screen and (max-width: 600px) {
   .movilTitle {
     display: block;
@@ -821,6 +602,7 @@ export default {
     padding-right: 20px !important;
   }
 }
+
 @media screen and (min-width: 1024px) {
   .cardMarginLast {
     padding-right: 20px !important;
