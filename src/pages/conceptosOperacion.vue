@@ -15,7 +15,7 @@
                     <q-icon name="description" />
                   </template>
                 </q-input>
-              </div>
+              </div> 
 
               <div class="col-md-12 col-xs-12 displayHide" style="margin-bottom: 7px" id="select">
                 <q-field :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '']" hide-bottom-space
