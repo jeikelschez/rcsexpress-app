@@ -632,6 +632,12 @@ export default {
     // Metodo para validar Permisos
     allowOption(option) {
       return this.rpermisos.findIndex((item) => item.acciones.accion == option) < 0;
+    },    
+    // Metodo para Setear Datos Permisos
+    setDataPermisos(res, dataRes) {
+      this[dataRes] = res;
+      if (this.rpermisos.findIndex((item) => item.acciones.accion == 1) < 0)
+        this.$router.push("/error403");
     },
 
     // METODOS DE PAGINA
@@ -694,12 +700,6 @@ export default {
               this.selectedPais = res.data.data[0].paises.desc_pais;
             });
         });
-    },
-    // Metodo para Setear Datos Permisos
-    setDataPermisos(res, dataRes) {
-      this[dataRes] = res;
-      if (this.rpermisos.findIndex((item) => item.acciones.accion == 1) < 0)
-        this.$router.push("/error403");
     },
     // Metodo para Eliminar Agencia
     deleteData(idpost) {

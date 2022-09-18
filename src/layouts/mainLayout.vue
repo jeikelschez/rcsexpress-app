@@ -176,13 +176,15 @@ export default {
 
     this.getData('/menus', 'setData', 'items', {
       headers: {
-        rol: LocalStorage.getItem('tokenTraducido').usuario.roles.id
+        rol: LocalStorage.getItem('tokenTraducido').usuario.roles.id,
+        read: 'S'
       },
     })
     this.getData('/menus', 'setData', 'directs', {
       headers: {
         rol: LocalStorage.getItem('tokenTraducido').usuario.roles.id,
-        direct: 1
+        direct: 1,
+        read: 'S'
       },
     })
   },
