@@ -31,13 +31,6 @@
                 </q-select>
               </div>
             </div>
-
-            <div class="full-width row justify-center items-center content-center" style="margin-bottom: 10px">
-              <q-btn label="Agregar Permiso" type="submit" color="primary" class="col-md-5 col-sm-5 col-xs-12"
-                icon="person_add" />
-              <q-btn label="Cerrar" color="primary" flat class="col-md-5 col-sm-5 col-xs-12 btnmovil" icon="close"
-                v-close-popup />
-            </div>
           </q-form>
         </q-card-section>
       </q-card>
@@ -101,10 +94,14 @@
                   )
               " use-input hide-selected fill-input input-debounce="0" option-label="descripcion" option-value="id"
               v-model="selectedRol" outlined standout label="Escoge un Rol" @update:model-value="
-                getData(`/permisos`, 'setDataPermisos', 'permisos')
-              "><template v-slot:no-option>
+                            getData(`/menus`, 'setDataMenus', 'menus', {
+                headers: {
+                  rol: this.selectedRol.id,
+                },
+              });                
+              this.menus = [];"><template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
+                  <q-item-section class=" text-grey">
                     Sin resultados
                   </q-item-section>
                 </q-item>
@@ -113,10 +110,6 @@
                 <q-icon name="search" />
               </template>
             </q-select>
-          </div>
-          <div class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12" style="text-align: center; align-self: center">
-            <q-btn label="Insertar" rounded color="primary" size="16px" class="q-px-xl q-py-xs insertarestadosmovil">
-            </q-btn>
           </div>
         </div>
 
@@ -151,7 +144,7 @@
                 </template>
                 <template v-slot:body-cell-action="props">
                   <q-td :props="props">
-                    <q-btn dense round flat color="primary" icon="delete" :disabled="this.allowOption(4)"
+                    <q-btn dense round flat color="primary" icon="delete" :disabled="this.permisosAdicionales(props.row)"
                       @click="selected = props.row.id" @click.capture="permisosDelete = true"></q-btn>
                   </q-td>
                 </template>
@@ -204,8 +197,8 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <methods ref="methods" @set-data="setData" @set-data-Roles="setDataRoles" @reset-Loading="resetLoading"
-      @set-Data-Init="setDataInit" @set-Data-Roles="setDataRoles" @set-Data-Permisos="setDataPermisos"></methods>
+    <methods ref="methods" @set-dData-Roles="setDataRoles" @set-Data-Menus="setDataMenus" @set-Data-Roles="setDataRoles"
+      @reset-Loading="resetLoading" @set-Data-Init="setDataInit" @set-Data-Permisos="setDataPermisos"></methods>
   </q-page>
 </template>
 
@@ -426,29 +419,22 @@ export default {
       }).then((res) => {
         this.selectedRol = res.data[0];
         this.rolesPermisos = res.data;
-        
-        api.get(`/menus`, {
+
+        this.getData("/menus", "setDataMenus", "menus", {
           headers: {
-            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
             rol: res.data[0].id,
           },
-        }).then((res) => {
-          this.menus = res.data;
-          for (let i = 0; i < this.menus.length; i++) {  
-            for (let j = 0; j < this.menus[i].acciones.length; j++) {
-              if (this.menus[i].acciones[j].rpermisos.length > 0) {
-                this.menus[i].acciones[j].rpermisos = true;
-              } else {
-                this.menus[i].acciones[j].rpermisos = false;
-              }
-            }
-          }
         });
       });
       this.loading = false;
     },
-    setData(res, dataRes) {
-      this[dataRes] = res;
+    // Metodo para validar Permisos
+    permisosAdicionales(menu) {
+      if(menu.acciones.length > 4) {
+        return false;
+      } else {
+        return true;
+      }
     },
     // Metodo para Get de Datos
     getData(url, call, dataRes, axiosConfig) {
@@ -458,6 +444,19 @@ export default {
     setDataRoles(res, dataRes) {
       this[dataRes] = res;
       this.selectedRol = this.roles[0];
+    },
+    // Metodos para Setear permisos
+    setDataMenus(res, dataRes) {
+      this[dataRes] = res;
+      for (let i = 0; i < this.menus.length; i++) {
+        for (let j = 0; j < this.menus[i].acciones.length; j++) {
+          if (this.menus[i].acciones[j].rpermisos.length > 0) {
+            this.menus[i].acciones[j].rpermisos = true;
+          } else {
+            this.menus[i].acciones[j].rpermisos = false;
+          }
+        }
+      }
     },
   },
 };
