@@ -456,7 +456,7 @@
             outlined
             standout
             label="Búsqueda avanzada"
-            :input-style="{ margin: 12 }"
+            :input-class="{ 'text-primary bg-white': true }"
           >
             <template v-slot:append>
               <q-icon
