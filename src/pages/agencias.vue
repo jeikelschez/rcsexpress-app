@@ -828,13 +828,13 @@ export default {
       if (!sortBy) sortBy = "";
 
       if (sortBy == "Ciudades") {
-        sortBy = ""; 
-        descending = ""
+        sortBy = "";
+        descending = "";
       }
 
       if (sortBy == "action") {
-          descending = ""
-          sortBy = ""
+        descending = "";
+        sortBy = "";
       }
 
       if (descending !== "") {

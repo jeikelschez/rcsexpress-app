@@ -118,7 +118,7 @@
               class="full-width row justify-center items-center content-center"
             >
               <q-btn
-                label="Agregar Control"
+                label="Enviar"
                 type="submit"
                 color="primary"
                 class="col-md-5 col-sm-5 col-xs-12"
@@ -158,7 +158,7 @@
         class="q-pa-md row col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
       >
         <div
-          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-6 cardMarginFilter cardMarginSm selectMobile"
+          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-6 cardMarginFilter cardMarginSm selectMovil"
         >
           <q-select
             rounded
@@ -166,6 +166,7 @@
             transition-hide="flip-down"
             option-label="nb_agencia"
             option-value="id"
+            dense
             :options="agenciasSelected"
             @filter="
               (val, update, abort) =>
@@ -194,6 +195,9 @@
                   agencia: this.selectedAgencia.id,
                   tipo: this.selectedTipo.id,
                   fuente: 'CR',
+                  filter:
+                    'control_inicio,control_final,serie_doc,ult_doc_referencia',
+                  filter_value: filter,
                 },
               })
             "
@@ -210,10 +214,11 @@
           </q-select>
         </div>
         <div
-          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-6 cardMarginFilter selectMobile"
+          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-6 cardMarginFilter selectMovil"
         >
           <q-select
             rounded
+            dense
             transition-show="flip-up"
             transition-hide="flip-down"
             :options="tiposSelected"
@@ -246,6 +251,9 @@
                   agencia: this.selectedAgencia.id,
                   tipo: this.selectedTipo.id,
                   fuente: 'CR',
+                  filter:
+                    'control_inicio,control_final,serie_doc,ult_doc_referencia',
+                  filter_value: filter,
                 },
               })
             "
@@ -262,18 +270,49 @@
           </q-select>
         </div>
         <div
-          class="col-md-4 col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 cardMarginFilter selectMobile"
+          class="col-md-4 col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 cardMarginFilter selectMovil"
         >
           <q-input
-            rounded
-            outlined
             v-model="filter"
+            rounded
+            dense
+            outlined
             standout
-            type="search"
             label="Búsqueda avanzada"
+            @keydown.enter="
+              getData('/correlativo', 'setData', 'datos', {
+                headers: {
+                  page: 1,
+                  limit: 5,
+                  fuente: 'CR',
+                  agencia: this.selectedAgencia.id,
+                  tipo: this.selectedTipo.id,
+                  filter:
+                    'control_inicio,control_final,serie_doc,ult_doc_referencia',
+                  filter_value: filter,
+                },
+              })
+            "
           >
-            <template v-slot:prepend>
-              <q-icon name="search" />
+            <template v-slot:append>
+              <q-icon
+                @click="
+                  getData('/correlativo', 'setData', 'datos', {
+                    headers: {
+                      page: 1,
+                      limit: 5,
+                      fuente: 'CR',
+                      agencia: this.selectedAgencia.id,
+                      tipo: this.selectedTipo.id,
+                      filter:
+                        'control_inicio,control_final,serie_doc,ult_doc_referencia',
+                      filter_value: filter,
+                    },
+                  })
+                "
+                class="cursor-pointer"
+                name="search"
+              />
             </template>
           </q-input>
         </div>
@@ -304,7 +343,6 @@
           :rows-per-page-options="[5, 10, 15, 20, 50]"
           @request="onRequest"
           :separator="separator"
-          :filter="filter"
           style="width: 100%"
           :grid="$q.screen.xs"
           v-model:pagination="pagination"
@@ -512,9 +550,11 @@
           headers: {
             page: 1,
             limit: 5,
-            agencia: '1',
-            tipo: '16',
             fuente: 'CR',
+            agencia: selectedAgencia.id,
+            tipo: selectedTipo.id,
+            filter: 'control_inicio,control_final,serie_doc,ult_doc_referencia',
+            filter_value: filter,
           },
         })
       "
@@ -606,6 +646,7 @@ export default {
         { label: "ACTIVO", value: "A" },
         { label: "INACTIVO", value: "I" },
       ],
+      filter: "",
       agencias: [],
       count: 1,
       currentPage: 1,
@@ -642,7 +683,6 @@ export default {
         });
       },
       deletePopup: ref(false),
-      filter: ref(""),
     };
   },
   mounted() {
@@ -659,53 +699,49 @@ export default {
   methods: {
     // Metodos para Solicitar Datos al Tocar Opcion de Tabla
     onRequest(res, dataRes) {
-      if (this.count == 1) {
-        this[dataRes] = res.data;
-        this.pagination.rowsNumber = res.total;
-      } else {
-        let { page, rowsPerPage, sortBy, descending } = res.pagination;
-        if (this.currentPage !== page) {
-          descending = "";
-        }
-        const filter = res.filter;
-        const startRow = (page - 1) * rowsPerPage;
-        const fetchCount =
-          rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-
-        var headerPage = page;
-        var headerLimit = fetchCount;
-        if (sortBy) {
-          var headerOrder_by = sortBy;
-        } else {
-          var headerOrder_by = "";
-        }
-
-        if (headerOrder_by == "estatus") {
-          var headerOrder_by = "estatus_lote";
-        }
-
-        var headerOrder_direction = "";
-
-        if (descending !== "") {
-          this.pagination.descending = !this.pagination.descending;
-          if (this.pagination.descending == true) {
-            headerOrder_direction = "DESC";
-          } else headerOrder_direction = "ASC";
-        }
-
-        if (sortBy) this.pagination.sortBy = sortBy;
-        this.pagination.page = page;
-        this.pagination.rowsPerPage = rowsPerPage;
-        this.getData(`/correlativo`, "setDataTable", "datos", {
-          headers: {
-            page: headerPage,
-            limit: headerLimit,
-            order_direction: headerOrder_direction,
-            order_by: headerOrder_by,
-          },
-        });
+      let { page, rowsPerPage, sortBy, descending } = res.pagination;
+      if (this.currentPage !== page) {
+        descending = "";
       }
-      this.count = 0;
+      const fetchCount =
+        rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
+
+      if (!sortBy) sortBy = "";
+
+      var headersortBy = sortBy;
+
+      if (headersortBy == "estatus") {
+        var headersortBy = "estatus_lote";
+      }
+
+      if (headersortBy == "action") {
+        descending = "";
+        headersortBy = "";
+        sortBy = "";
+      }
+
+      if (descending !== "") {
+        this.pagination.descending = !this.pagination.descending;
+        if (this.pagination.descending == true) {
+          this.order_direction = "DESC";
+        } else this.order_direction = "ASC";
+      }
+
+      this.pagination.sortBy = sortBy;
+      this.pagination.page = page;
+      this.pagination.rowsPerPage = rowsPerPage;
+      this.getData(`/correlativo`, "setDataTable", "datos", {
+        headers: {
+          page: page,
+          limit: fetchCount,
+          order_direction: this.order_direction,
+          order_by: headersortBy,
+          agencia: this.selectedAgencia.id,
+          tipo: this.selectedTipo.id,
+          filter: "control_inicio,control_final,serie_doc,ult_doc_referencia",
+          filter_value: filter,
+        },
+      });
     },
     // Metodos para Setear los Datos y Actualizar Paginado
     setDataTable(res, dataRes) {
@@ -764,23 +800,7 @@ export default {
         return "Debes Escribir Algo";
       }
       if ((val !== null) !== "") {
-        if (val < this.form.control_inicio) {
-          return "El Ultimo Correlativo debe ser Mayor al Primero";
-        }
-        if (val.length > 10) {
-          return "Deben ser Maximo 10 caracteres";
-        }
-      }
-    },
-    reglasSegundoCorrelativoEdit(val) {
-      if (val === null) {
-        return "Debes Escribir Algo";
-      }
-      if (val === "") {
-        return "Debes Escribir Algo";
-      }
-      if ((val !== null) !== "") {
-        if (val < this.form.control_inicio) {
+        if (val - this.form.control_inicio < 0) {
           return "El Ultimo Correlativo debe ser Mayor al Primero";
         }
         if (val.length > 10) {
@@ -814,7 +834,7 @@ export default {
         .then((res) => {
           this.tipos = res.data;
           this.selectedTipo = this.tipos[0];
-          this.getData("/correlativo", "onRequest", "datos", {
+          this.getData("/correlativo", "setDataTable", "datos", {
             headers: {
               page: 1,
               limit: 5,
@@ -1000,7 +1020,7 @@ export default {
 }
 
 @media screen and (max-width: 1024px) {
-  .selectMobile {
+  .selectMovil {
     margin-bottom: 15px !important;
   }
 }

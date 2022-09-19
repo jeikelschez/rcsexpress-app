@@ -298,7 +298,7 @@ const routes = [
       {
         path: '/asignacionguias',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('pages/asignacionguias.vue')}]
+        children: [{ path: "", component: () => import('pages/Asignacionguias.vue')}]
       },
       {
         path: '/roles',

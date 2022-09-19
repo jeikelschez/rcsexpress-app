@@ -309,7 +309,7 @@
               <p><strong>MANTENIMIENTO - PAÍS, ESTADO, CIUDAD</strong></p>
             </div>
             <div
-              class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-12 marginHeaderMobile"
+              class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-12 marginHeaderMovil"
               style="align-self: center; text-align: center; padding-left: 0px"
             >
               <q-option-group
@@ -322,7 +322,7 @@
               />
             </div>
             <div
-              class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-12 marginHeader marginHeaderMobile"
+              class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-12 marginHeader marginHeaderMovil"
             >
               <q-input
                 rounded
@@ -502,7 +502,7 @@
               <p><strong>MANTENIMIENTO - PAÍS, ESTADO, CIUDAD</strong></p>
             </div>
             <div
-              class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 marginHeader marginHeaderMobile"
+              class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 marginHeader marginHeaderMovil"
               style="align-self: center; text-align: center; padding-left: 0px"
             >
               <q-option-group
@@ -515,7 +515,7 @@
               />
             </div>
             <div
-              class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 marginHeader marginSelectMobile marginHeaderMobile"
+              class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 marginHeader marginSelectMobile marginHeaderMovil"
               style="text-align: center; align-self: center"
             >
               <q-select
@@ -567,7 +567,7 @@
               </q-select>
             </div>
             <div
-              class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 marginHeader marginHeaderMobile"
+              class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 marginHeader marginHeaderMovil"
               style="text-align: center; align-self: center"
             >
               <q-input
@@ -758,7 +758,7 @@
               <p><strong>MANTENIMIENTO - PAÍS, ESTADO, CIUDAD</strong></p>
             </div>
             <div
-              class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 marginHeader marginHeaderMobile marginHeaderPC"
+              class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 marginHeader marginHeaderMovil marginHeaderPC"
               style="align-self: center; text-align: center; padding-left: 0px"
             >
               <q-option-group
@@ -771,7 +771,7 @@
               />
             </div>
             <div
-              class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 marginHeader marginHeaderPC marginHeaderMobile"
+              class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 marginHeader marginHeaderPC marginHeaderMovil"
             >
               <q-select
                 rounded
@@ -821,7 +821,7 @@
               </q-select>
             </div>
             <div
-              class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 marginHeaderPC marginHeaderMobile"
+              class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 marginHeaderPC marginHeaderMovil"
             >
               <q-select
                 rounded
@@ -872,7 +872,7 @@
               </q-select>
             </div>
             <div
-              class="col-md-9 col-xl-9 col-lg-9 col-xs-12 col-sm-12 marginHeaderMobile"
+              class="col-md-9 col-xl-9 col-lg-9 col-xs-12 col-sm-12 marginHeaderMovil"
               style="text-align: center; align-self: center"
             >
               <q-input
@@ -1443,15 +1443,17 @@ export default {
       const fetchCount =
         rowsPerPage === 0 ? this.paginationCiudades.rowsNumber : rowsPerPage;
       if (!sortBy) sortBy = "";
-      if (sortBy == "check_urbano_desc") {
-        sortBy = "check_urbano";
+      var headersortBy = sortBy;
+      if (headersortBy == "check_urbano_desc") {
+        headersortBy = "check_urbano";
       }
-      if (sortBy == "action") {
+      if (headersortBy == "action") {
+        headersortBy = "";
         sortBy = "";
         descending = "";
       }
-      if (sortBy == "cod_region_desc") {
-        sortBy = "cod_region";
+      if (headersortBy == "cod_region_desc") {
+        headersortBy = "cod_region";
       }
       if (descending !== "") {
         this.paginationCiudades.descending =
@@ -1460,8 +1462,7 @@ export default {
           this.orderDirectionCiudades = "DESC";
         } else this.orderDirectionCiudades = "ASC";
       }
-
-      if (sortBy) this.paginationCiudades.sortBy = sortBy;
+      this.paginationCiudades.sortBy = sortBy;
       this.paginationCiudades.page = page;
       this.paginationCiudades.rowsPerPage = rowsPerPage;
       this.getData(`/ciudades`, "setDataCiudades", "ciudades", {
@@ -1469,7 +1470,7 @@ export default {
           page: page,
           limit: fetchCount,
           order_direction: this.orderDirectionCiudades,
-          order_by: sortBy,
+          order_by: headersortBy,
           estado: this.selectedEstado.id,
           filter: "desc_ciudad,siglas",
           filter_value: this.filterCiudades,
@@ -1762,7 +1763,7 @@ export default {
 }
 
 @media screen and (max-width: 1024px) {
-  .marginHeaderMobile {
+  .marginHeaderMovil {
     margin-bottom: 25px;
   }
 }

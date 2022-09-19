@@ -771,12 +771,15 @@ export default {
 
       const fetchCount =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-        
+
       if (!sortBy) sortBy = "";
 
-      if (sortBy == "action") {
-          descending = ""
-          sortBy = ""
+      var headersortBy = sortBy;
+
+      if (headersortBy == "action") {
+        descending = "";
+        headersortBy = "";
+        sortBy = "";
       }
 
       if (descending !== "") {
@@ -798,7 +801,7 @@ export default {
           limit: fetchCount,
           agencia: this.selectedAgencia.id,
           order_direction: this.orderDirection,
-          order_by: sortBy,
+          order_by: headersortBy,
           filter: "nb_agente,persona_responsable",
           filter_value: this.filter,
         },

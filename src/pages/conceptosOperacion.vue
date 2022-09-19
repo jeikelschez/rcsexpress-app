@@ -106,7 +106,7 @@
         </div>
 
         <div
-          class="col-md-5 col-xs-12 col-sm-6 cardMargin selectMobile"
+          class="col-md-5 col-xs-12 col-sm-6 cardMargin selectMovil"
           style="align-self: center; text-align: center"
         >
           <q-select
@@ -128,6 +128,7 @@
             use-input
             hide-selected
             fill-input
+            dense
             input-debounce="0"
             option-label="descripcion"
             option-value="id"
@@ -150,13 +151,14 @@
         </div>
 
         <div
-          class="col-md-5 col-xs-12 col-sm-6 cardMarginLast selectMobile"
+          class="col-md-5 col-xs-12 col-sm-6 cardMarginLast selectMovil"
           style="align-self: center; text-align: center"
         >
           <q-input
             rounded
             outlined
             standout
+            dense
             v-model="filter"
             type="search"
             label="Búsqueda avanzada"
@@ -501,29 +503,11 @@ export default {
     },
     // Metodo para Setear Datos seleccionados
     setDataEdit(res, dataRes) {
+      this.loading = false;
       this[dataRes].tipo = res.tipos.descripcion;
       this[dataRes].id = res.id;
       this[dataRes].desc_concepto = res.desc_concepto;
       this[dataRes].afecta_estado = res.afecta_estado;
-      var codigo = res.tipos.codigo;
-      if (codigo == "DCO") {
-        var element = document.getElementById("selectEdit");
-        element.classList.remove("displayHide");
-        element.classList.add("displayShow");
-        this.disableEdit = false;
-      }
-      if (codigo == "DGA") {
-        var element = document.getElementById("selectEdit");
-        element.classList.remove("displayHide");
-        element.classList.add("displayShow");
-        this.disableEdit = false;
-      }
-      if (codigo !== "DCO" && codigo !== "DGA") {
-        var element = document.getElementById("selectEdit");
-        element.classList.remove("displayShow");
-        element.classList.add("displayHide");
-        this.disableEdit = true;
-      }
     },
     // Metodo para Eliminar Datos
     deleteData(idpost) {
@@ -606,8 +590,8 @@ export default {
 }
 
 @media screen and (max-width: 1024px) {
-  .selectMobile {
-    margin-bottom: 15px !important;
+  .selectMovil {
+    margin-bottom: 10px !important;
   }
 }
 </style>
