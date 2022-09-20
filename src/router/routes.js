@@ -48,7 +48,7 @@ const routes = [
       {
         path: "/registroserviciocarga",
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import("src/pages/registroserviciocarga.vue") }],
+        children: [{ path: "", component: () => import("src/pages/Registroserviciocarga.vue") }],
       },
       {
         path: '/facturacioncredito',
@@ -298,17 +298,17 @@ const routes = [
       {
         path: '/asignacionguias',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('pages/asignacionguias.vue')}]
+        children: [{ path: "", component: () => import('pages/Asignacionguias.vue')}]
       },
       {
         path: '/roles',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('pages/roles.vue')}]
+        children: [{ path: "", component: () => import('pages/Roles.vue')}]
       },
       {
         path: '/usuarios',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('pages/usuarios.vue')}]
+        children: [{ path: "", component: () => import('pages/Usuarios.vue')}]
       },
       {
         path: '/permisologia',

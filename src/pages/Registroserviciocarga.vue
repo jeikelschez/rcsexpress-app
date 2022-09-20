@@ -1,9 +1,9 @@
 <template>
-  <q-page class="pagina q-pa-md" style="padding-bottom: 0px">
+  <q-page class="pagina q-pa-md" style="padding-bottom: 0px; margin-top: -5px">
     <q-page-sticky
       position="bottom-right"
       class="z-top"
-      style="margin-right: 20px; margin-bottom: 20px"
+      style="margin-right: 20px; margin-bottom: 20px;"
     >
       <q-fab icon="add" direction="up" color="primary">
         <q-fab-action
@@ -1113,7 +1113,13 @@
                     hint=""
                     class="pcform"
                     dense
-                    :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 10, ''), (val) => this.$refs.rulesVue.isMin(val, 3, 'Debe ser Mayor') || '']"
+                    :rules="[
+                      (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
+                      (val) => this.$refs.rulesVue.isMax(val, 10, ''),
+                      (val) =>
+                        this.$refs.rulesVue.isMin(val, 3, 'Debe ser Mayor') ||
+                        '',
+                    ]"
                     hide-bottom-space
                   >
                     <template v-slot:append>
@@ -1665,7 +1671,7 @@
                           label="Agencia"
                           hint=""
                           dense
-                          style="padding-bottom: 20px;"
+                          style="padding-bottom: 20px"
                           use-input
                           hide-selected
                           fill-input
@@ -1727,7 +1733,7 @@
                           :rules="[reglasInputs]"
                           label="Cliente"
                           dense
-                          style="padding-bottom: 20px;"
+                          style="padding-bottom: 20px"
                           hint=""
                           use-input
                           hide-selected
@@ -2559,13 +2565,11 @@
       @set-Data-Estados="setDataEstados"
       @set-Data-Ciudades="setDataCiudades"
       @set-Data-Paises="setDataPaises"
-      @on-Request="onRequest"
       @set-Data-Detalle="setDataDetalle"
+      @set-Data-Permisos="setDataPermisos"
     ></methods>
 
-    <rules-vue
-      ref="rulesVue"
-    ></rules-vue>
+    <rules-vue ref="rulesVue"></rules-vue>
   </q-page>
 </template>
 
@@ -2598,7 +2602,8 @@ export default {
     "desactive-crud": desactivateCrudVue,
     methods: methodsVue,
     WebViewer: WebViewerVue,
-    VMoney, rulesVue
+    VMoney,
+    rulesVue,
   },
   name: "registroServicioCarga",
   data() {
@@ -2803,6 +2808,8 @@ export default {
         normal: "0",
         emergencia: "0",
       },
+      rpermisos: [],
+      orderDirection: "",
       disabledAgencia: true,
       readonlyAgencia: false,
       disabledInputs: true,
@@ -2875,9 +2882,6 @@ export default {
         { label: "PREPAGADA", value: "PP" },
       ],
       error: "",
-      disabledCreate: true,
-      disabledEdit: true,
-      disabledDelete: true,
       axiosConfig: {
         headers: {
           Authorization: ``,
@@ -2930,29 +2934,34 @@ export default {
     };
   },
   mounted() {
-    this.formEdit.modalidad_pago = { label: "", value: null};
-    console.log(this.formEdit.modalidad_pago)
-    console.log(this.formEdit.modalidad_pago.value)
-    document.addEventListener("keydown", this.evento);
-    this.$refs.desactivateCrud.desactivarCrud(
-      "c_roles",
-      "r_roles",
-      "u_roles",
-      "d_roles",
-      "desactivarCrud"
+    this.$emit(
+      "changeTitle",
+      "SCEN - Mantenimiento - Registro Servicio Carga",
+      ""
     );
-    this.$refs.methods.getData(`/clientes`, "setData", "conceptos", {
+    document.addEventListener("keydown", this.evento);
+    this.$refs.methods.getData(`/clientes`, "setData", "conceptos");
+    this.$refs.methods.getData(`/paises`, `setData`, `paises`);
+    this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
-        Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-      },
-    });
-    this.$refs.methods.getData(`/paises`, `setData`, `paises`, {
-      headers: {
-        Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        rol: LocalStorage.getItem("tokenTraducido").usuario.roles.id,
+        menu: "registroserviciocarga",
       },
     });
   },
   methods: {
+    // Metodo para validar Permisos
+    allowOption(option) {
+      return (
+        this.rpermisos.findIndex((item) => item.acciones.accion == option) < 0
+      );
+    },
+    // Metodo para Setear Datos Permisos
+    setDataPermisos(res, dataRes) {
+      this[dataRes] = res;
+      if (this.rpermisos.findIndex((item) => item.acciones.accion == 1) < 0)
+        this.$router.push("/error403");
+    },
     evento(event) {
       if (
         event.ctrlKey &&
@@ -3303,56 +3312,49 @@ export default {
         });
     },
     onRequest(res, dataRes) {
-      if (this.contador == 1) {
-        console.log(res);
-        this[dataRes] = res.data;
-        if (res.data[0]) {
-          this.readonlyAgencia = true;
-        }
-        this.pagination.rowsNumber = res.total;
-      } else {
-        let { page, rowsPerPage, sortBy, descending } = res.pagination;
-        if (this.currentPage !== page) {
-          descending = "";
-        }
-        const filter = res.filter;
-        const startRow = (page - 1) * rowsPerPage;
-        const fetchCount =
-          rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-
-        var headerPage = page;
-        var headerLimit = fetchCount;
-        if (sortBy) {
-          var headerOrder_by = sortBy;
-        } else {
-          var headerOrder_by = "nro_item";
-        }
-
-        if (descending !== "") {
-          this.pagination.descending = !this.pagination.descending;
-          if (this.pagination.descending == true) {
-            this.headerOrder_direction = "DESC";
-          } else this.headerOrder_direction = "ASC";
-        }
-
-        if (sortBy) this.pagination.sortBy = sortBy;
-        this.pagination.page = page;
-        this.pagination.rowsPerPage = rowsPerPage;
-        var headerCod_movimiento = this.formEdit.id;
-        this.getData(`/dmovimientos`, "setDataDetalle", "detalle_movimiento", {
-          headers: {
-            Authorization: ``,
-            page: headerPage,
-            limit: headerLimit,
-            order_direction: this.headerOrder_direction,
-            cod_movimiento: headerCod_movimiento,
-            order_by: headerOrder_by,
-          },
-        });
+      let { page, rowsPerPage, sortBy, descending } = res.pagination;
+      if (this.currentPage !== page) {
+        descending = "";
       }
-      this.contador = 0;
+      const filter = res.filter;
+      const startRow = (page - 1) * rowsPerPage;
+      const fetchCount =
+        rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
+
+      var headerPage = page;
+      var headerLimit = fetchCount;
+      if (sortBy) {
+        var headerOrder_by = sortBy;
+      } else {
+        var headerOrder_by = "nro_item";
+      }
+
+      if (descending !== "") {
+        this.pagination.descending = !this.pagination.descending;
+        if (this.pagination.descending == true) {
+          this.headerOrder_direction = "DESC";
+        } else this.headerOrder_direction = "ASC";
+      }
+
+      if (sortBy) this.pagination.sortBy = sortBy;
+      this.pagination.page = page;
+      this.pagination.rowsPerPage = rowsPerPage;
+      var headerCod_movimiento = this.formEdit.id;
+      this.getData(`/dmovimientos`, "setDataDetalle", "detalle_movimiento", {
+        headers: {
+          Authorization: ``,
+          page: headerPage,
+          limit: headerLimit,
+          order_direction: this.headerOrder_direction,
+          cod_movimiento: headerCod_movimiento,
+          order_by: headerOrder_by,
+        },
+      });
     },
     setDataDetalle(res) {
+      if (res.data[0]) {
+        this.readonlyAgencia = true;
+      }
       this.detalle_movimiento = res.data;
       this.pagination.page = res.currentPage;
       this.currentPage = res.currentPage;
@@ -3443,9 +3445,9 @@ export default {
       this[dataRes] = res;
     },
     setDataEdit(res, dataRes) {
+      console.log(res);
       var res = res[0];
       var dataRes = "formEdit";
-      console.log(res);
       if (res.cod_agencia) this.count += 3;
       if (res.cod_agencia_dest) this.count += 2;
       var cod_agencia = res.cod_agencia;
@@ -3462,7 +3464,7 @@ export default {
       var headerLimit = 10;
       var headerCod_movimiento = this.formEdit.id;
       this.contador = 1;
-      this.getData(`/dmovimientos`, "onRequest", "detalle_movimiento", {
+      this.getData(`/dmovimientos`, "setDataDetalle", "detalle_movimiento", {
         headers: {
           Authorization: ``,
           page: headerPage,
@@ -3513,7 +3515,7 @@ export default {
 
       if (res.tipo_carga == "SB") this.checkbox.sobres = "1";
 
-      this.formEdit.modalidad_pago.value = res.modalidad_pago;
+      this[dataRes].modalidad_pago = res.modalidad_desc;
 
       this[dataRes].id_clte_part_dest = res.id_clte_part_dest;
 
@@ -3550,14 +3552,14 @@ export default {
       this[dataRes].porc_comision = res.porc_comision;
       this[dataRes].porc_descuento = res.porc_descuento;
 
-      api.get(`/agencias`, {
+      api
+        .get(`/agencias`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
           },
         })
         .then((res) => {
           this.objetive++;
-
           this.agencias = res.data.data;
 
           if (cod_agencia) {
@@ -3886,9 +3888,10 @@ export default {
             }
           }
           if (formEdit.estatus_administra.value) {
-            formEdit.estatus_administra = formEdit.estatus_administra.value;} else {
-              formEdit.estatus_administra = null
-            }
+            formEdit.estatus_administra = formEdit.estatus_administra.value;
+          } else {
+            formEdit.estatus_administra = null;
+          }
 
           if (this.reversada !== true) {
             if (

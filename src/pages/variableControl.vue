@@ -6,8 +6,14 @@
           <q-form @submit="sendData" class="q-gutter-md">
             <div class="row">
               <div class="col-md-6 col-xs-12">
-                <q-input outlined v-model="form.nombre" label="Descripción de Variable" hint="" class="pcform"
-                  lazy-rules :rules="[
+                <q-input
+                  outlined
+                  v-model="form.nombre"
+                  label="Descripción de Variable"
+                  hint=""
+                  class="pcform"
+                  lazy-rules
+                  :rules="[
                     (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
                     (val) =>
                       this.$refs.rulesVue.isMax(
@@ -15,7 +21,9 @@
                         50,
                         'Maximo 50 Caracteres'
                       ) || '',
-                  ]" @update:model-value="form.nombre = form.nombre.toUpperCase()">
+                  ]"
+                  @update:model-value="form.nombre = form.nombre.toUpperCase()"
+                >
                   <template v-slot:prepend>
                     <q-icon name="pin_drop" />
                   </template>
@@ -23,8 +31,16 @@
               </div>
 
               <div class="col-md-6 col-xs-12">
-                <q-input upper-case outlined v-model="form.valor" label="Valor de Variable" v-money="money"
-                  input-class="text-right" hint="" lazy-rules>
+                <q-input
+                  upper-case
+                  outlined
+                  v-model="form.valor"
+                  label="Valor de Variable"
+                  v-money="money"
+                  input-class="text-right"
+                  hint=""
+                  lazy-rules
+                >
                   <template v-slot:prepend>
                     <q-icon name="apartment" />
                   </template>
@@ -32,11 +48,18 @@
               </div>
 
               <div class="col-md-12 col-xs-12">
-                <q-select outlined v-model="form.tipo" label="Tipo de Variable" hint="" :options="tipo" lazy-rules
+                <q-select
+                  outlined
+                  v-model="form.tipo"
+                  label="Tipo de Variable"
+                  hint=""
+                  :options="tipo"
+                  lazy-rules
                   :rules="[
                     (val) =>
                       this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
-                  ]">
+                  ]"
+                >
                   <template v-slot:prepend>
                     <q-icon name="done_all" />
                   </template>
@@ -44,11 +67,24 @@
               </div>
             </div>
 
-            <div class="full-width row justify-center items-center content-center">
-              <q-btn label="Enviar" type="submit" color="primary" class="col-md-5 col-sm-5 col-xs-12"
-                icon="person_add" />
-              <q-btn label="Cerrar" color="primary" flat class="col-md-5 col-sm-5 col-xs-12 btnmovil" icon="close"
-                v-close-popup />
+            <div
+              class="full-width row justify-center items-center content-center"
+            >
+              <q-btn
+                label="Enviar"
+                type="submit"
+                color="primary"
+                class="col-md-5 col-sm-5 col-xs-12"
+                icon="person_add"
+              />
+              <q-btn
+                label="Cerrar"
+                color="primary"
+                flat
+                class="col-md-5 col-sm-5 col-xs-12 btnmovil"
+                icon="close"
+                v-close-popup
+              />
             </div>
           </q-form>
         </q-card-section>
@@ -56,64 +92,122 @@
     </q-dialog>
 
     <div class="justify-center" style="margin-top: 7px">
-      <div class="row q-pa-md col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 text-secondary justify-end">
-        <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 movilTitle">
-          <p style="font-size: 25px; align-self: center; text-align: center; margin-top: 15px">
+      <div
+        class="row q-pa-md col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 text-secondary justify-end"
+      >
+        <div
+          class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 movilTitle"
+        >
+          <p
+            style="
+              font-size: 25px;
+              align-self: center;
+              text-align: center;
+              margin-top: 15px;
+            "
+          >
             <strong>MANTENIMIENTO - VARIABLE CONTROL</strong>
           </p>
         </div>
-        <div class="col-md-6 col-sm-7 col-xs-12 cardMargin selectMobile" style="align-self: center; align-self: center">
-          <q-input v-model="filter" rounded outlined standout type="search" label="Búsqueda avanzada">
+        <div
+          class="col-md-6 col-sm-7 col-xs-12 cardMargin selectMobile"
+          style="align-self: center; align-self: center"
+        >
+          <q-input
+            v-model="filter"
+            rounded
+            outlined
+            dense
+            standout
+            type="search"
+            label="Búsqueda avanzada"
+          >
             <template v-slot:prepend>
               <q-icon name="search" />
             </template>
           </q-input>
         </div>
-        <div class="col-md-2 col-xl-3 col-xs-12 col-sm-4" style="text-align: center; align-self: center">
-          <q-btn label="Insertar" rounded style="text-align: center; align-self: center" color="primary"
-            :disabled="this.allowOption(2)" @click="
+        <div
+          class="col-md-2 col-xl-3 col-xs-12 col-sm-4"
+          style="text-align: center; align-self: center"
+        >
+          <q-btn
+            label="Insertar"
+            rounded
+            style="text-align: center; align-self: center"
+            color="primary"
+            :disabled="this.allowOption(2)"
+            @click="
               dialog = true;
               this.resetForm();
-            " size="16px" class="q-px-xl q-py-xs"></q-btn>
+            "
+            size="16px"
+            class="q-px-xl q-py-xs"
+          ></q-btn>
         </div>
       </div>
 
       <div class="q-pa-md q-gutter-y-md">
-        <q-table :rows="datos" row-key="id" binary-state-sort :columns="columns" :separator="separator"
-          :loading="loading" :filter="filter" style="width: 100%" :grid="$q.screen.xs" v-model:pagination="pagination">
+        <q-table
+          :rows="datos"
+          row-key="id"
+          binary-state-sort
+          :columns="columns"
+          :separator="separator"
+          :loading="loading"
+          :filter="filter"
+          style="width: 100%"
+          :grid="$q.screen.xs"
+          v-model:pagination="pagination"
+        >
           <template v-slot:loading>
             <q-inner-loading showing color="primary" />
           </template>
           <template v-slot:body-cell-tipo="props">
             <q-td :props="props">
-              <q-select outlined v-model="props.row.tipo_desc" :options="tipo" @update:model-value="
-                getData(
-                  `/vcontrol/${props.row.id}`,
-                  `putDataSelect`,
-                  'form'
-                );
-                this.form.tipo = props.row.tipo_desc.value;
-              ">
+              <q-select
+                outlined
+                v-model="props.row.tipo_desc"
+                :options="tipo"
+                @update:model-value="
+                  getData(`/vcontrol/${props.row.id}`, `putDataSelect`, 'form');
+                  this.form.tipo = props.row.tipo_desc.value;
+                "
+              >
               </q-select>
             </q-td>
           </template>
           <template v-slot:body-cell-action="props">
             <q-td :props="props">
-              <q-btn dense round flat color="primary" icon="edit" :disabled="this.allowOption(3)" @click="
-                getData(
-                  `/vcontrol/${props.row.id}`,
-                  `setDataEdit`,
-                  'form'
-                );
-                dialog = true;
-              "></q-btn>
-              <q-btn dense round flat color="primary" icon="delete" :disabled="this.allowOption(4)"
-                @click="selected = props.row.id" @click.capture="deletePopup = true"></q-btn>
+              <q-btn
+                dense
+                round
+                flat
+                color="primary"
+                icon="edit"
+                :disabled="this.allowOption(3)"
+                @click="
+                  getData(`/vcontrol/${props.row.id}`, `setDataEdit`, 'form');
+                  dialog = true;
+                "
+              ></q-btn>
+              <q-btn
+                dense
+                round
+                flat
+                color="primary"
+                icon="delete"
+                :disabled="this.allowOption(4)"
+                @click="selected = props.row.id"
+                @click.capture="deletePopup = true"
+              ></q-btn>
             </q-td>
           </template>
           <template v-slot:item="props">
-            <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
-              :style="props.selected ? 'transform: scale(0.95);' : ''">
+            <div
+              class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+              :style="props.selected ? 'transform: scale(0.95);' : ''"
+            >
               <q-card :class="props.selected ? 'bg-grey-2' : ''">
                 <q-list dense>
                   <q-item v-for="col in props.cols" :key="col.name">
@@ -121,42 +215,86 @@
                       <q-item-label>{{ col.label }}</q-item-label>
                     </q-item-section>
                     <q-item-section side>
-                      <q-chip v-if="col.name === 'status'" :color="
-                        props.row.status == 'Active'
-                          ? 'green'
-                          : props.row.status == 'Disable'
-                          ? 'red'
-                          : 'grey'
-                      " text-color="white" dense class="text-weight-bolder" square>{{ col.value }}</q-chip>
-                      <q-btn v-else-if="col.name === 'action'" dense round flat color="primary" icon="edit"
-                        :disabled="this.allowOption(3)" @click="
+                      <q-chip
+                        v-if="col.name === 'status'"
+                        :color="
+                          props.row.status == 'Active'
+                            ? 'green'
+                            : props.row.status == 'Disable'
+                            ? 'red'
+                            : 'grey'
+                        "
+                        text-color="white"
+                        dense
+                        class="text-weight-bolder"
+                        square
+                        >{{ col.value }}</q-chip
+                      >
+                      <q-btn
+                        v-else-if="col.name === 'action'"
+                        dense
+                        round
+                        flat
+                        color="primary"
+                        icon="edit"
+                        :disabled="this.allowOption(3)"
+                        @click="
                           getData(
                             `/vcontrol/${props.row.id}`,
                             `setDataEdit`,
                             'form'
                           );
                           dialog = true;
-                        "></q-btn>
-                      <q-chip v-if="col.name === 'status'" :color="
-                        props.row.status == 'Active'
-                          ? 'green'
-                          : props.row.status == 'Disable'
-                          ? 'red'
-                          : 'grey'
-                      " text-color="white" dense class="text-weight-bolder" square>{{ col.value }}</q-chip>
-                      <q-btn v-else-if="col.name === 'action'" dense round flat color="primary" icon="delete"
-                        :disabled="this.allowOption(4)" @click="selected = props.row.id"
-                        @click.capture="deletePopup = true"></q-btn>
+                        "
+                      ></q-btn>
+                      <q-chip
+                        v-if="col.name === 'status'"
+                        :color="
+                          props.row.status == 'Active'
+                            ? 'green'
+                            : props.row.status == 'Disable'
+                            ? 'red'
+                            : 'grey'
+                        "
+                        text-color="white"
+                        dense
+                        class="text-weight-bolder"
+                        square
+                        >{{ col.value }}</q-chip
+                      >
+                      <q-btn
+                        v-else-if="col.name === 'action'"
+                        dense
+                        round
+                        flat
+                        color="primary"
+                        icon="delete"
+                        :disabled="this.allowOption(4)"
+                        @click="selected = props.row.id"
+                        @click.capture="deletePopup = true"
+                      ></q-btn>
                     </q-item-section>
                     <q-item-section side>
-                      <q-chip v-if="col.name === 'status'" :color="
-                        props.row.status == 'Active'
-                          ? 'green'
-                          : props.row.status == 'Disable'
-                          ? 'red'
-                          : 'grey'
-                      " text-color="white" dense class="text-weight-bolder" square>{{ col.value }}</q-chip>
-                      <q-select v-else-if="col.name === 'tipo'" outlined v-model="props.row.tipo_desc" :options="tipo"
+                      <q-chip
+                        v-if="col.name === 'status'"
+                        :color="
+                          props.row.status == 'Active'
+                            ? 'green'
+                            : props.row.status == 'Disable'
+                            ? 'red'
+                            : 'grey'
+                        "
+                        text-color="white"
+                        dense
+                        class="text-weight-bolder"
+                        square
+                        >{{ col.value }}</q-chip
+                      >
+                      <q-select
+                        v-else-if="col.name === 'tipo'"
+                        outlined
+                        v-model="props.row.tipo_desc"
+                        :options="tipo"
                         @update:model-value="
                           getData(
                             `/vcontrol/${props.row.id}`,
@@ -164,9 +302,14 @@
                             'form'
                           );
                           this.form.tipo = props.row.tipo_desc.value;
-                        ">
+                        "
+                      >
                       </q-select>
-                      <q-item-label v-else caption :class="col.classes ? col.classes : ''">{{ col.value }}
+                      <q-item-label
+                        v-else
+                        caption
+                        :class="col.classes ? col.classes : ''"
+                        >{{ col.value }}
                       </q-item-label>
                     </q-item-section>
                   </q-item>
@@ -188,16 +331,29 @@
 
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="primary" v-close-popup />
-          <q-btn flat label="Aceptar" color="primary" v-close-popup @click="deleteData(selected)" />
+          <q-btn
+            flat
+            label="Aceptar"
+            color="primary"
+            v-close-popup
+            @click="deleteData(selected)"
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
 
-    <methods ref="methods" @get-Data="
-      getData('/vcontrol', 'setData', 'datos');
-      this.loading = true;
-    " @set-Data="setData" @reset-Loading="resetLoading" @set-Data-Edit="setDataEdit" @put-Data-Select="putDataSelect"
-      @set-Data-Permisos="setDataPermisos"></methods>
+    <methods
+      ref="methods"
+      @get-Data="
+        getData('/vcontrol', 'setData', 'datos');
+        this.loading = true;
+      "
+      @set-Data="setData"
+      @reset-Loading="resetLoading"
+      @set-Data-Edit="setDataEdit"
+      @put-Data-Select="putDataSelect"
+      @set-Data-Permisos="setDataPermisos"
+    ></methods>
 
     <rules-vue ref="rulesVue"></rules-vue>
   </q-page>
@@ -303,8 +459,8 @@ export default {
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
-        rol: LocalStorage.getItem('tokenTraducido').usuario.roles.id,
-        menu: "variablecontrol"
+        rol: LocalStorage.getItem("tokenTraducido").usuario.roles.id,
+        menu: "variablecontrol",
       },
     });
   },
@@ -324,7 +480,9 @@ export default {
     },
     // Metodo para validar Permisos
     allowOption(option) {
-      return this.rpermisos.findIndex((item) => item.acciones.accion == option) < 0;
+      return (
+        this.rpermisos.findIndex((item) => item.acciones.accion == option) < 0
+      );
     },
     // Metodo para Setear Datos Permisos
     setDataPermisos(res, dataRes) {

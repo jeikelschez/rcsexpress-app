@@ -6,33 +6,88 @@
           <q-form @submit="sendData()" class="q-gutter-md">
             <div class="row">
               <div class="col-md-12 col-xs-12">
-                <q-input outlined v-model="form.desc_concepto" label="Descripcion de Concepto" hint="" class="pcform"
+                <q-input
+                  outlined
+                  v-model="form.desc_concepto"
+                  label="Descripcion de Concepto"
+                  hint=""
+                  class="pcform"
                   @update:model-value="
                     form.desc_concepto = form.desc_concepto.toUpperCase()
-                  " lazy-rules
-                  :rules="[(val) => this.$refs.rulesVue.isReq(val, 'Requerido'), (val) => this.$refs.rulesVue.isMax(val, 100, 'Maximo 100 Caracteres'), (val) => this.$refs.rulesVue.isMin(val, 3, 'Minimo 3 Caracteres') || '']">
+                  "
+                  lazy-rules
+                  :rules="[
+                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
+                    (val) =>
+                      this.$refs.rulesVue.isMax(
+                        val,
+                        100,
+                        'Maximo 100 Caracteres'
+                      ),
+                    (val) =>
+                      this.$refs.rulesVue.isMin(
+                        val,
+                        3,
+                        'Minimo 3 Caracteres'
+                      ) || '',
+                  ]"
+                >
                   <template v-slot:prepend>
                     <q-icon name="description" />
                   </template>
                 </q-input>
-              </div> 
+              </div>
 
-              <div class="col-md-12 col-xs-12 displayHide" style="margin-bottom: 7px" id="select">
-                <q-field :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '']" hide-bottom-space
-                  borderless dense v-model="form.afecta_estado" :disable="disable">
+              <div
+                class="col-md-12 col-xs-12 displayHide"
+                style="margin-bottom: 7px"
+                id="select"
+              >
+                <q-field
+                  :rules="[
+                    (val) =>
+                      this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
+                  ]"
+                  hide-bottom-space
+                  borderless
+                  dense
+                  v-model="form.afecta_estado"
+                  :disable="disable"
+                >
                   <template v-slot:control>
-                    <q-checkbox size="lg" v-model="form.afecta_estado" true-value="S" false-value="N"
-                      style="font-size: 13px" label="¿AFECTA ESTADO DE GANANCIAS Y PERDIDAS?" :disable="disable" />
+                    <q-checkbox
+                      size="lg"
+                      v-model="form.afecta_estado"
+                      true-value="S"
+                      false-value="N"
+                      style="font-size: 13px"
+                      label="¿AFECTA ESTADO DE GANANCIAS Y PERDIDAS?"
+                      :disable="disable"
+                    />
                   </template>
                 </q-field>
               </div>
             </div>
 
-            <div class="full-width row justify-center items-center content-center" style="margin-bottom: 10px">
-              <q-btn label="Enviar" type="submit" color="primary" class="col-md-5 col-sm-5 col-xs-12"
-                icon="person_add" />
-              <q-btn label="Cerrar" color="primary" flat class="col-md-5 col-sm-5 col-xs-12 btnmovil" icon="close"
-                v-close-popup />
+            <div
+              class="full-width row justify-center items-center content-center"
+              style="margin-bottom: 10px"
+            >
+              <q-btn
+                label="Enviar"
+                type="submit"
+                color="primary"
+                class="col-md-5 col-sm-5 col-xs-12"
+                icon="person_add"
+              />
+              <q-btn
+                label="Cerrar"
+                color="primary"
+                flat
+                class="col-md-5 col-sm-5 col-xs-12 btnmovil"
+                icon="close"
+                v-close-popup
+              />
             </div>
           </q-form>
         </q-card-section>
@@ -40,16 +95,25 @@
     </q-dialog>
 
     <div class="q-pa-sm justify-center">
-      <div class="row q-pa-md ">
-        <div class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 text-secondary movilTitle"
-          style="align-self: center; text-align: center">
+      <div class="row q-pa-md">
+        <div
+          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 text-secondary movilTitle"
+          style="align-self: center; text-align: center"
+        >
           <p style="font-size: 30px">
             <strong>CONCEPTOS POR OPERACIÓN</strong>
           </p>
         </div>
 
-        <div class="col-md-5 col-xs-12 col-sm-6 cardMargin selectMobile" style="align-self: center; text-align: center">
-          <q-select rounded transition-show="flip-up" transition-hide="flip-down" :options="tipoDeOperacionSelected"
+        <div
+          class="col-md-5 col-xs-12 col-sm-6 cardMargin selectMovil"
+          style="align-self: center; text-align: center"
+        >
+          <q-select
+            rounded
+            transition-show="flip-up"
+            transition-hide="flip-down"
+            :options="tipoDeOperacionSelected"
             @filter="
               (val, update, abort) =>
                 filterArray(
@@ -60,10 +124,20 @@
                   'tipoDeOperacion',
                   'descripcion'
                 )
-            " use-input hide-selected fill-input input-debounce="0" option-label="descripcion" option-value="id"
-            v-model="selectedTipo" outlined standout label="Tipo de Operación" @update:model-value="
-              getData(`/coperacion`, 'setData', 'datos')
-            "><template v-slot:no-option>
+            "
+            use-input
+            hide-selected
+            fill-input
+            dense
+            input-debounce="0"
+            option-label="descripcion"
+            option-value="id"
+            v-model="selectedTipo"
+            outlined
+            standout
+            label="Tipo de Operación"
+            @update:model-value="getData(`/coperacion`, 'setData', 'datos')"
+            ><template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey">
                   Sin resultados
@@ -76,46 +150,96 @@
           </q-select>
         </div>
 
-        <div class="col-md-5 col-xs-12 col-sm-6 cardMarginLast selectMobile"
-          style="align-self: center; text-align: center">
-          <q-input rounded outlined standout v-model="filter" type="search" label="Búsqueda avanzada">
+        <div
+          class="col-md-5 col-xs-12 col-sm-6 cardMarginLast selectMovil"
+          style="align-self: center; text-align: center"
+        >
+          <q-input
+            rounded
+            outlined
+            standout
+            dense
+            v-model="filter"
+            type="search"
+            label="Búsqueda avanzada"
+          >
             <template v-slot:prepend>
               <q-icon name="search" />
             </template>
           </q-input>
         </div>
-        <div class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12" style="text-align: center; align-self: center">
-          <q-btn label="Insertar" rounded color="primary" :disabled="this.allowOption(2)"
-            @click="dialog = true; resetForm()" size="16px" class="q-px-xl q-py-xs insertarestadosmovil"></q-btn>
+        <div
+          class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
+          style="text-align: center; align-self: center"
+        >
+          <q-btn
+            label="Insertar"
+            rounded
+            color="primary"
+            :disabled="this.allowOption(2)"
+            @click="
+              dialog = true;
+              resetForm();
+            "
+            size="16px"
+            class="q-px-xl q-py-xs insertarestadosmovil"
+          ></q-btn>
         </div>
       </div>
 
       <div class="q-pa-md">
         <div class="q-gutter-y-md">
           <div bordered flat class="my-card row">
-            <q-table :rows="datos" row-key="id" binary-state-sort :columns="columns" :loading="loading"
-              :separator="separator" :filter="filter" style="width: 100%" :grid="$q.screen.xs"
-              v-model:pagination="pagination">
+            <q-table
+              :rows="datos"
+              row-key="id"
+              binary-state-sort
+              :columns="columns"
+              :loading="loading"
+              :separator="separator"
+              :filter="filter"
+              style="width: 100%"
+              :grid="$q.screen.xs"
+              v-model:pagination="pagination"
+            >
               <template v-slot:loading>
                 <q-inner-loading showing color="primary" />
               </template>
               <template v-slot:body-cell-action="props">
                 <q-td :props="props">
-                  <q-btn dense round flat color="primary" icon="edit" :disabled="this.allowOption(3)" @click="
-                    getData(
-                      `/coperacion/${props.row.id}`,
-                      'setDataEdit',
-                      'form'
-                    );
-                    dialog = true;
-                  "></q-btn>
-                  <q-btn dense round flat color="primary" icon="delete" :disabled="this.allowOption(4)"
-                    @click="selected = props.row.id" @click.capture="conceptosDelete = true"></q-btn>
+                  <q-btn
+                    dense
+                    round
+                    flat
+                    color="primary"
+                    icon="edit"
+                    :disabled="this.allowOption(3)"
+                    @click="
+                      getData(
+                        `/coperacion/${props.row.id}`,
+                        'setDataEdit',
+                        'form'
+                      );
+                      dialog = true;
+                    "
+                  ></q-btn>
+                  <q-btn
+                    dense
+                    round
+                    flat
+                    color="primary"
+                    icon="delete"
+                    :disabled="this.allowOption(4)"
+                    @click="selected = props.row.id"
+                    @click.capture="conceptosDelete = true"
+                  ></q-btn>
                 </q-td>
               </template>
               <template v-slot:item="props">
-                <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
-                  :style="props.selected ? 'transform: scale(0.95);' : ''">
+                <div
+                  class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+                  :style="props.selected ? 'transform: scale(0.95);' : ''"
+                >
                   <q-card :class="props.selected ? 'bg-grey-2' : ''">
                     <q-list dense>
                       <q-item v-for="col in props.cols" :key="col.name">
@@ -123,33 +247,69 @@
                           <q-item-label>{{ col.label }}</q-item-label>
                         </q-item-section>
                         <q-item-section side>
-                          <q-chip v-if="col.name === 'status'" :color="
-                            props.row.status == 'Active'
-                              ? 'green'
-                              : props.row.status == 'Disable'
-                              ? 'red'
-                              : 'grey'
-                          " text-color="white" dense class="text-weight-bolder" square>{{ col.value }}</q-chip>
-                          <q-btn v-else-if="col.name === 'action'" dense round flat color="primary" icon="edit"
-                            :disabled="this.allowOption(3)" @click="
+                          <q-chip
+                            v-if="col.name === 'status'"
+                            :color="
+                              props.row.status == 'Active'
+                                ? 'green'
+                                : props.row.status == 'Disable'
+                                ? 'red'
+                                : 'grey'
+                            "
+                            text-color="white"
+                            dense
+                            class="text-weight-bolder"
+                            square
+                            >{{ col.value }}</q-chip
+                          >
+                          <q-btn
+                            v-else-if="col.name === 'action'"
+                            dense
+                            round
+                            flat
+                            color="primary"
+                            icon="edit"
+                            :disabled="this.allowOption(3)"
+                            @click="
                               getData(
                                 `/coperacion/${props.row.id}`,
                                 'setDataEdit',
                                 'form'
                               );
                               dialog = true;
-                            "></q-btn>
-                          <q-chip v-if="col.name === 'status'" :color="
-                            props.row.status == 'Active'
-                              ? 'green'
-                              : props.row.status == 'Disable'
-                              ? 'red'
-                              : 'grey'
-                          " text-color="white" dense class="text-weight-bolder" square>{{ col.value }}</q-chip>
-                          <q-btn v-else-if="col.name === 'action'" dense round flat color="primary" icon="delete"
-                            :disabled="this.allowOption(4)" @click="selected = props.row.id"
-                            @click.capture="conceptosDelete = true"></q-btn>
-                          <q-item-label v-else caption :class="col.classes ? col.classes : ''">{{ col.value }}
+                            "
+                          ></q-btn>
+                          <q-chip
+                            v-if="col.name === 'status'"
+                            :color="
+                              props.row.status == 'Active'
+                                ? 'green'
+                                : props.row.status == 'Disable'
+                                ? 'red'
+                                : 'grey'
+                            "
+                            text-color="white"
+                            dense
+                            class="text-weight-bolder"
+                            square
+                            >{{ col.value }}</q-chip
+                          >
+                          <q-btn
+                            v-else-if="col.name === 'action'"
+                            dense
+                            round
+                            flat
+                            color="primary"
+                            icon="delete"
+                            :disabled="this.allowOption(4)"
+                            @click="selected = props.row.id"
+                            @click.capture="conceptosDelete = true"
+                          ></q-btn>
+                          <q-item-label
+                            v-else
+                            caption
+                            :class="col.classes ? col.classes : ''"
+                            >{{ col.value }}
                           </q-item-label>
                         </q-item-section>
                       </q-item>
@@ -173,14 +333,26 @@
 
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="primary" v-close-popup />
-          <q-btn flat label="Aceptar" color="primary" v-close-popup @click="deleteData(selected)" />
+          <q-btn
+            flat
+            label="Aceptar"
+            color="primary"
+            v-close-popup
+            @click="deleteData(selected)"
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
 
-    <methods ref="methods" @get-Data="getData(`/coperacion`, 'setData', 'datos')" 
-      @reset-Loading="resetLoading" @set-Data-Edit="setDataEdit" @set-Data="setData" @set-Data-Tipos="setDataTipos"
-      @set-Data-Permisos="setDataPermisos">
+    <methods
+      ref="methods"
+      @get-Data="getData(`/coperacion`, 'setData', 'datos')"
+      @reset-Loading="resetLoading"
+      @set-Data-Edit="setDataEdit"
+      @set-Data="setData"
+      @set-Data-Tipos="setDataTipos"
+      @set-Data-Permisos="setDataPermisos"
+    >
     </methods>
 
     <rules-vue ref="rulesVue"></rules-vue>
@@ -251,15 +423,19 @@ export default {
     };
   },
   mounted() {
-    this.$emit("changeTitle", "SCEN - Mantenimiento - Conceptos de Operación", "");
+    this.$emit(
+      "changeTitle",
+      "SCEN - Mantenimiento - Conceptos de Operación",
+      ""
+    );
     this.selectedTipo.id = "1";
     this.getData("/tipos", "setDataTipos", "tipoDeOperacion");
     this.getData("/coperacion", "setData", "datos");
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
-        rol: LocalStorage.getItem('tokenTraducido').usuario.roles.id,
-        menu: "conceptosoperacion"
+        rol: LocalStorage.getItem("tokenTraducido").usuario.roles.id,
+        menu: "conceptosoperacion",
       },
     });
   },
@@ -292,7 +468,9 @@ export default {
     },
     // Metodo para validar Permisos
     allowOption(option) {
-      return this.rpermisos.findIndex((item) => item.acciones.accion == option) < 0;
+      return (
+        this.rpermisos.findIndex((item) => item.acciones.accion == option) < 0
+      );
     },
     // Metodo para Setear Datos Permisos
     setDataPermisos(res, dataRes) {
@@ -301,7 +479,7 @@ export default {
         this.$router.push("/error403");
     },
 
-    // METODOS DE PAGINA 
+    // METODOS DE PAGINA
 
     // Metodo para hacer Get de Datos
     getData(url, call, dataRes) {
@@ -325,29 +503,11 @@ export default {
     },
     // Metodo para Setear Datos seleccionados
     setDataEdit(res, dataRes) {
+      this.loading = false;
       this[dataRes].tipo = res.tipos.descripcion;
       this[dataRes].id = res.id;
       this[dataRes].desc_concepto = res.desc_concepto;
       this[dataRes].afecta_estado = res.afecta_estado;
-      var codigo = res.tipos.codigo;
-      if (codigo == "DCO") {
-        var element = document.getElementById("selectEdit");
-        element.classList.remove("displayHide");
-        element.classList.add("displayShow");
-        this.disableEdit = false;
-      }
-      if (codigo == "DGA") {
-        var element = document.getElementById("selectEdit");
-        element.classList.remove("displayHide");
-        element.classList.add("displayShow");
-        this.disableEdit = false;
-      }
-      if (codigo !== "DCO" && codigo !== "DGA") {
-        var element = document.getElementById("selectEdit");
-        element.classList.remove("displayShow");
-        element.classList.add("displayHide");
-        this.disableEdit = true;
-      }
     },
     // Metodo para Eliminar Datos
     deleteData(idpost) {
@@ -360,16 +520,12 @@ export default {
     },
     // Metodo para Editar y Crear Datos
     sendData() {
-      this.form.tipo = this.selectedTipo.id
+      this.form.tipo = this.selectedTipo.id;
       if (!this.form.id) {
-        this.$refs.methods.createData(
-          `/coperacion`,
-          this.form,
-          "getData"
-        );
+        this.$refs.methods.createData(`/coperacion`, this.form, "getData");
         this.resetForm();
         this.loading = true;
-        this.dialog = false
+        this.dialog = false;
       } else {
         this.$refs.methods.putData(
           `/coperacion/${this.form.id}`,
@@ -378,7 +534,7 @@ export default {
         );
         this.resetForm();
         this.loading = true;
-        this.dialog = false
+        this.dialog = false;
       }
     },
     // Metodos para Resetear Datos
@@ -434,8 +590,8 @@ export default {
 }
 
 @media screen and (max-width: 1024px) {
-  .selectMobile {
-    margin-bottom: 15px !important;
+  .selectMovil {
+    margin-bottom: 10px !important;
   }
 }
 </style>
