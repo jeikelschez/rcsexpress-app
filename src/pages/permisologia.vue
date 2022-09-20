@@ -615,6 +615,19 @@ export default {
       this[dataRes] = res;
       this.selectedRol = this.roles[0];
     },
+    // Metodos para Setear permisos
+    setDataMenus(res, dataRes) {
+      this[dataRes] = res;
+      for (let i = 0; i < this.menus.length; i++) {
+        for (let j = 0; j < this.menus[i].acciones.length; j++) {
+          if (this.menus[i].acciones[j].rpermisos.length > 0) {
+            this.menus[i].acciones[j].rpermisos = true;
+          } else {
+            this.menus[i].acciones[j].rpermisos = false;
+          }
+        }
+      }
+    },
   },
 };
 </script>
