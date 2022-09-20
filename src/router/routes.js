@@ -298,7 +298,7 @@ const routes = [
       {
         path: '/asignacionguias',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('pages/Asignacionguias.vue')}]
+        children: [{ path: "", component: () => import('pages/asignacionGuias.vue')}]
       },
       {
         path: '/roles',
@@ -618,7 +618,7 @@ const routes = [
       {
         path: '/m_asignacionguias',
         component: () => import("layouts/manuallayout.vue"),
-        children: [{ path: "", component: () => import('pages/manuals/m_asignacionguias.vue')}]
+        children: [{ path: "", component: () => import('pages/manuals/m_asignacionGuias.vue')}]
       },
       {
         path: '/m_roles',

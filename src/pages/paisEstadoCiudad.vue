@@ -322,20 +322,29 @@
               />
             </div>
             <div
-              class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-12 marginHeader marginHeaderMovil"
+              class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-12 cardMarginFilter"
             >
               <q-input
+                v-model="filterPaises"
                 rounded
+                dense
                 outlined
                 standout
-                v-model="filterPaises"
-                type="search"
                 label="Búsqueda avanzada"
+                @keydown.enter="
+                  getDataEstados(`/estados`, 'setDataEstados', 'estados')
+                "
               >
-                <template v-slot:prepend>
-                  <q-icon name="search" />
+                <template v-slot:append>
+                  <q-icon
+                    @click="
+                      getDataEstados(`/paises`, 'setDataPaises', 'paises')
+                    "
+                    class="cursor-pointer"
+                    name="search"
+                  />
                 </template>
-              </q-input>
+              </q-input>              
             </div>
             <div
               class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
@@ -567,7 +576,7 @@
               </q-select>
             </div>
             <div
-              class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 marginHeader marginHeaderMovil"
+              class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 cardMarginFilter"
               style="text-align: center; align-self: center"
             >
               <q-input
@@ -872,7 +881,7 @@
               </q-select>
             </div>
             <div
-              class="col-md-9 col-xl-9 col-lg-9 col-xs-12 col-sm-12 marginHeaderMovil"
+              class="col-md-9 col-xl-9 col-lg-9 col-xs-12 col-sm-12 cardMarginFilter"
               style="text-align: center; align-self: center"
             >
               <q-input

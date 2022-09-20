@@ -118,8 +118,8 @@
 
     <!-- Pie de Pagina -->
     <q-footer elevated bordered>
-      <div v-for="item4 in directs" class="float-left" style="margin-top: 10px; margin-bottom: 10px; margin-left: 15px">
-        <q-btn v-show="item4.direct" dense color="white" round :class="`b${item4.dorder}`" clickable :to=item4.url exact
+      <div v-for="(item4, index) in directs" class="float-left" style="margin-top: 10px; margin-bottom: 10px; margin-left: 15px">
+        <q-btn v-show="item4.direct" dense color="white" round :class="`b${index + 1}`" clickable :to=item4.url exact
           padding="xs" :disable=allowOption(item4)>
           <q-icon size="25px" :name=item4.icon color="primary">
             <q-tooltip transition-show="flip-right" transition-hide="flip-left" class="bg-primary"

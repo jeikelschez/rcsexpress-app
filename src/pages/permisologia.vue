@@ -176,8 +176,8 @@
       </div>
     </div>
 
-    <methods ref="methods" @set-dData-Roles="setDataRoles" @set-Data-Menus="setDataMenus" @set-Data-Roles="setDataRoles"
-      @reset-Loading="resetLoading" @set-Data-Init="setDataInit" @set-Data-Permisos="setDataPermisos"></methods>
+    <methods ref="methods" @set-Data-Menus="setDataMenus" @set-Data-Roles="setDataRoles" @reset-Loading="resetLoading"
+      @set-Data-Init="setDataInit" @set-Data-Permisos="setDataPermisos"></methods>
   </q-page>
 </template>
 
