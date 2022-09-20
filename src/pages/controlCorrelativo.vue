@@ -475,44 +475,6 @@
                         >{{ col.value }}
                       </q-item-label>
                     </q-item-section>
-                    <q-item-section side>
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
-                      <q-select
-                        v-else-if="col.name === 'estatus'"
-                        outlined
-                        v-model="props.row.estatus_desc"
-                        :options="estatus"
-                        @update:model-value="
-                          getData(
-                            `/correlativo/${props.row.id}`,
-                            `putDataSelect`,
-                            'form'
-                          );
-                          this.form.estatus_lote = props.row.estatus_desc.value;
-                        "
-                      >
-                      </q-select>
-                      <q-item-label
-                        v-else
-                        caption
-                        :class="col.classes ? col.classes : ''"
-                        >{{ col.value }}
-                      </q-item-label>
-                    </q-item-section>
                   </q-item>
                 </q-list>
               </q-card>

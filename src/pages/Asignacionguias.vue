@@ -907,6 +907,7 @@ export default {
     };
   },
   mounted() {
+    this.$emit("changeTitle", "SCEN - Mantenimiento - Asignacion de Guias", "");
     this.getData("/agencias", "setDataInit", "agencias");
     this.loading = true;
     this.$refs.methods.getData("/rpermisos", "setData", "rpermisos", {
