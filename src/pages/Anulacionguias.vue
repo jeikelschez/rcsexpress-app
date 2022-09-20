@@ -465,11 +465,6 @@
       </q-card>
     </q-dialog>
 
-    <desactive-crud
-      ref="desactiveCrud"
-      @desactivar-Crud="desactivarCrud"
-    ></desactive-crud>
-
     <methods
       ref="methods"
       @get-Data="getData('/cguias', 'setData', 'datos')"
@@ -486,19 +481,12 @@
 
 <script>
 import { ref, onMounted } from "vue";
-
 import { api } from "boot/axios";
-
 import { useQuasar } from "quasar";
-
 import methodsVue from "src/components/methods.vue";
 
-import { LocalStorage } from "quasar";
-
-import desactivateCrudVue from "src/components/desactivateCrud.vue";
-
 export default {
-  components: { "desactive-crud": desactivateCrudVue, methods: methodsVue },
+  components: { methods: methodsVue },
   name: "AsignacionGuias",
   data() {
     return {

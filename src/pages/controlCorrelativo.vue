@@ -280,7 +280,7 @@
             standout
             label="Búsqueda avanzada"
             @keydown.enter="
-              getData('/correlativo', 'setData', 'datos', {
+              getData('/correlativo', 'setDataTable', 'datos', {
                 headers: {
                   page: 1,
                   limit: 5,
@@ -354,6 +354,7 @@
             <q-td :props="props">
               <q-select
                 outlined
+                dense
                 v-model="props.row.estatus_desc"
                 :options="estatus"
                 @update:model-value="
@@ -658,7 +659,7 @@ export default {
       },
     });
   },
-  methods: {
+  methods: {    
     // Metodos para Solicitar Datos al Tocar Opcion de Tabla
     onRequest(res, dataRes) {
       let { page, rowsPerPage, sortBy, descending } = res.pagination;
@@ -672,13 +673,10 @@ export default {
 
       var headersortBy = sortBy;
 
-      if (headersortBy == "estatus") {
-        var headersortBy = "estatus_lote";
-      }
+      if (sortBy == "estatus") sortBy = "estatus_lote";
 
-      if (headersortBy == "action") {
+      if (sortBy == "action") {
         descending = "";
-        headersortBy = "";
         sortBy = "";
       }
 
@@ -697,11 +695,11 @@ export default {
           page: page,
           limit: fetchCount,
           order_direction: this.order_direction,
-          order_by: headersortBy,
+          order_by: sortBy,
           agencia: this.selectedAgencia.id,
           tipo: this.selectedTipo.id,
           filter: "control_inicio,control_final,serie_doc,ult_doc_referencia",
-          filter_value: filter,
+          filter_value: this.filter,
         },
       });
     },

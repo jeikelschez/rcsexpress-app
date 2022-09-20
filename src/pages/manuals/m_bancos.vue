@@ -287,13 +287,11 @@
 import { ref } from "vue";
 import { LocalStorage } from "quasar";
 import { defineComponent, defineAsyncComponent } from "vue";
-import desactivateCrudVue from "src/components/desactivateCrud.vue";
 import userLogoutVue from "src/components/userLogout.vue";
 
 export default defineComponent({
   name: "Manual",
   components: {
-    "desactivate-crud": desactivateCrudVue,
     "user-logout": userLogoutVue,
   },
   data() {

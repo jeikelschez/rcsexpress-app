@@ -1,11 +1,9 @@
-<template>
-</template>
+<template></template>
     
 <script>
-import { LocalStorage } from "quasar";
+import { useQuasar, LocalStorage } from "quasar";
 import jwt_decode from "jwt-decode";
 import { api } from "boot/axios";
-import { useQuasar } from "quasar";
 
 export default {
   name: "userLogout",
@@ -27,7 +25,6 @@ export default {
       },
     };
   },
-
   setup() {
     const $q = useQuasar();
     return {
@@ -39,8 +36,6 @@ export default {
       },
     };
   },
-  mounted() {
-  },
   methods: {
     login: function () {
       LocalStorage.remove("currentTime");
@@ -50,30 +45,22 @@ export default {
     traducirToken: function () {
       var tokenTraducido = jwt_decode(LocalStorage.getItem("token"));
       LocalStorage.set("tokenTraducido", tokenTraducido);
-      console.log(LocalStorage.getItem("token"))
     },
     refreshToken() {
       if (LocalStorage.getItem("user") === true) {
         this.form.username = LocalStorage.getItem("usuario");
         this.form.token = LocalStorage.getItem("refreshToken");
-        api
-          .post(`/usuarios/refresh`, this.form)
-          .then((res) => {
-            if ((res.status = 201)) {
-              LocalStorage.set("token", `${res.data.data.accessToken}`),
-              LocalStorage.set("user", true),
-              this.traducirToken();
-              this.setRefreshTimer();
-            }
-          })
-          .catch((err) => {
-            if (err.response) {
-              this.error = err.response.data.statusCode;
-            }
-            if ((this.error = "404")) {
-              this.errorDelServidor();
-            }
-          });
+        api.post(`/usuarios/refresh`, this.form).then((res) => {
+          if ((res.status = 201)) {
+            LocalStorage.set("token", `${res.data.data.accessToken}`),
+            LocalStorage.set("user", true),
+            this.traducirToken();
+            this.setRefreshTimer();
+          }
+        }).catch((err) => {
+          if (err.response) this.error = err.response.data.statusCode;
+          if ((this.error = "404")) this.errorDelServidor();
+        });
       }
     },
     logoutUser: function () {

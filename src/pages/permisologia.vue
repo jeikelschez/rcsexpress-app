@@ -3,33 +3,22 @@
     <q-dialog v-model="permisosForm">
       <q-card class="q-pa-md" bordered style="width: 900px; max-width: 80vw">
         <q-card-section>
-          <q-form @submit="sendData()" class="q-gutter-md">
-            <div class="row items-center">
-              <div class="col-md-10 col-sm-10 col-xs-9" v-if="this.form.acciones[4]">
-                <p class="titleCheckbox">
-                  {{ this.form.acciones[4].descripcion }}
-                </p>
-              </div>
-              <div class="col-md-2 col-sm-2 col-xs-3" style="text-align: center" v-if="this.form.acciones[4]">
-                <q-checkbox v-model="this.form.acciones[4].rpermisos" class="checkboxItem" />
-              </div>
-              <div class="col-md-10 col-sm-10 col-xs-9" v-if="this.form.acciones[5]">
-                <p class="titleCheckbox">
-                  {{ this.form.acciones[5].descripcion }}
-                </p>
-              </div>
-              <div class="col-md-2 col-sm-2 col-xs-3" style="text-align: center" v-if="this.form.acciones[5]">
-                <q-checkbox v-model="this.form.acciones[5].rpermisos" class="checkboxItem" />
-              </div>
+          <div class="row items-center" v-for="(accion, index) in this.form.acciones">
+            <div class="col-md-9 col-sm-10 col-xs-9" v-if="index > 3">
+              <p class="titleCheckbox">
+                {{ accion.descripcion }}
+              </p>
             </div>
-
-            <div class="row justify-center items-center" style="margin-bottom: 10px; margin-top: 40px">
-              <q-btn label="Enviar" type="submit" color="primary" class="col-md-5 col-sm-5 col-xs-12"
-                icon="person_add" />
-              <q-btn label="Cerrar" color="primary" flat class="col-md-5 col-sm-5 col-xs-12" icon="close"
-                v-close-popup />
+            <div class="col-md-2 col-sm-2 col-xs-3" style="text-align: right" v-if="index > 3">
+              <q-checkbox v-model="accion.bpermisos" class="checkboxItem" :disable="this.allowOption(2)"
+                @update:model-value="
+                  updatePermisos(accion);
+                " />
             </div>
-          </q-form>
+          </div>
+          <div class="row justify-center items-center" style="margin-bottom: 10px; margin-top: 40px">
+            <q-btn label="Cerrar" color="primary" class="col-md-5 col-sm-5 col-xs-12" icon="close" v-close-popup />
+          </div>
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -55,7 +44,7 @@
                 'agencias',
                 'nb_agencia'
               )
-          " use-input hide-selected fill-input input-debounce="0" option-label="nb_agencia" option-value="id"
+          " use-input hide-selected fill-input dense input-debounce="0" option-label="nb_agencia" option-value="id"
             v-model="selectedAgencia" outlined standout label="Escoge una Agencia" @update:model-value="
               getData(`/roles`, 'setDataRoles', 'rolesPermisos', {
                 headers: {
@@ -89,7 +78,7 @@
                   'rolesPermisos',
                   'descripcion'
                 )
-            " use-input hide-selected fill-input input-debounce="0" option-label="descripcion" option-value="id"
+            " use-input hide-selected fill-input dense input-debounce="0" option-label="descripcion" option-value="id"
             v-model="selectedRol" outlined standout label="Escoge un Rol" @update:model-value="
                           getData(`/menus`, 'setDataMenus', 'menus', {
               headers: {
@@ -119,22 +108,34 @@
           </template>
           <template v-slot:body-cell-leer="props">
             <q-td :props="props">
-              <q-checkbox v-model="props.row.acciones[0].rpermisos" />
+              <q-checkbox dense v-model="props.row.acciones[0].bpermisos" :disable="this.allowOption(2)"
+                @update:model-value="
+                  updatePermisos(props.row.acciones[0]);
+                " />
             </q-td>
           </template>
           <template v-slot:body-cell-crear="props">
             <q-td :props="props">
-              <q-checkbox v-model="props.row.acciones[1].rpermisos" />
+              <q-checkbox dense v-model="props.row.acciones[1].bpermisos" :disable="this.allowOption(2)"
+                @update:model-value="
+                  updatePermisos(props.row,acciones[1]);
+                " />
             </q-td>
           </template>
           <template v-slot:body-cell-editar="props">
             <q-td :props="props">
-              <q-checkbox v-model="props.row.acciones[2].rpermisos" />
+              <q-checkbox dense v-model="props.row.acciones[2].bpermisos" :disable="this.allowOption(2)"
+                @update:model-value="
+                  updatePermisos(props.row,acciones[2]);
+                " />
             </q-td>
           </template>
           <template v-slot:body-cell-eliminar="props">
             <q-td :props="props">
-              <q-checkbox v-model="props.row.acciones[3].rpermisos" />
+              <q-checkbox dense v-model="props.row.acciones[3].bpermisos" :disable="this.allowOption(2)"
+                @update:model-value="
+                  updatePermisos(props.row,acciones[3]);
+                " />
             </q-td>
           </template>
           <template v-slot:body-cell-action="props">
@@ -156,16 +157,33 @@
                       <q-item-label v-if="col.name === 'label'">{{ props.row.label }}</q-item-label>
                     </q-item-section>
                     <q-item-section side>
-                      <q-checkbox v-if="col.name === 'leer'" v-model="props.row.acciones[0].rpermisos" />
+                      <q-checkbox dense v-if="col.name === 'leer'" v-model="props.row.acciones[0].bpermisos"
+                        :disable="this.allowOption(2)" @update:model-value="
+                          props.row,acciones[0];
+                        " />
                     </q-item-section>
                     <q-item-section side>
-                      <q-checkbox v-if="col.name === 'crear'" v-model="props.row.acciones[1].rpermisos" />
+                      <q-checkbox dense v-if="col.name === 'crear'" v-model="props.row.acciones[1].bpermisos"
+                        :disable="this.allowOption(2)" @update:model-value="
+                          props.row,acciones[1];
+                        " />
                     </q-item-section>
                     <q-item-section side>
-                      <q-checkbox v-if="col.name === 'editar'" v-model="props.row.acciones[2].rpermisos" />
+                      <q-checkbox dense v-if="col.name === 'editar'" v-model="props.row.acciones[2].bpermisos"
+                        :disable="this.allowOption(2)" @update:model-value="
+                          props.row,acciones[2];
+                        " />
                     </q-item-section>
                     <q-item-section side>
-                      <q-checkbox v-if="col.name === 'eliminar'" v-model="props.row.acciones[2].rpermisos" />
+                      <q-checkbox dense v-if="col.name === 'eliminar'" v-model="props.row.acciones[3].bpermisos"
+                        :disable="this.allowOption(2)" @update:model-value="
+                          props.row,acciones[3];
+                        " />
+                    </q-item-section>
+                    <q-item-section side>
+                      <q-btn dense round flat color="primary" icon="settings"
+                        v-if="col.name === 'action' && props.row.acciones[4]"
+                        @click="this.form.acciones = props.row.acciones; this.permisosForm = true;"></q-btn>
                     </q-item-section>
                   </q-item>
                 </q-list>
@@ -342,37 +360,20 @@ export default {
       this[dataRes] = res.data;
       this.selectedAgencia = this.agencias[0];
 
-      api
-        .get(`/roles`, {
+      api.get(`/roles`, {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          agencia: this.agencias[0].id,
+        },
+      }).then((res) => {
+        this.selectedRol = res.data[0];
+        this.rolesPermisos = res.data;
+        this.getData(`/menus`, 'setDataMenus', 'menus', {
           headers: {
-            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            agencia: this.agencias[0].id,
-          },
-        })
-        .then((res) => {
-          this.selectedRol = res.data[0];
-          this.rolesPermisos = res.data;
-
-          api
-            .get(`/menus`, {
-              headers: {
-                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                rol: res.data[0].id,
-              },
-            })
-            .then((res) => {
-              this.menus = res.data;
-              for (let i = 0; i < this.menus.length; i++) {
-                for (let j = 0; j < this.menus[i].acciones.length; j++) {
-                  if (this.menus[i].acciones[j].rpermisos.length > 0) {
-                    this.menus[i].acciones[j].rpermisos = true;
-                  } else {
-                    this.menus[i].acciones[j].rpermisos = false;
-                  }
-                }
-              }
-            });
+            rol: this.selectedRol.id
+          }
         });
+      });
       this.loading = false;
     },
     // Metodo para Setear Datos
@@ -394,11 +395,35 @@ export default {
       for (let i = 0; i < this.menus.length; i++) {
         for (let j = 0; j < this.menus[i].acciones.length; j++) {
           if (this.menus[i].acciones[j].rpermisos.length > 0) {
-            this.menus[i].acciones[j].rpermisos = true;
+            this.menus[i].acciones[j].bpermisos = true;
           } else {
-            this.menus[i].acciones[j].rpermisos = false;
+            this.menus[i].acciones[j].bpermisos = false;
           }
         }
+      }
+    },
+    // Metodos para Actualizar permisos
+    updatePermisos(action) {
+      if (action.bpermisos) {
+        api.post(`/rpermisos`,
+          {
+            "cod_rol": this.selectedRol.id,
+            "cod_menu_accion": action.id
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`
+            }
+          }
+        ).then((res) => {
+          this.$q.notify({
+            message: "Agregado exitosamente",
+            color: "green",
+          });
+          action.rpermisos[0] = res.data;
+        });
+      } else {
+        this.$refs.methods.deleteData(`/rpermisos/${action.rpermisos[0].id}`, "getData");
       }
     },
   },

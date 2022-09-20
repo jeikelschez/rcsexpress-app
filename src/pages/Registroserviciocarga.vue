@@ -1091,7 +1091,7 @@
 
     <q-dialog v-model="pdfView" @show="this.pdfview()">
       <div style="width: 100%; max-width: 80vw">
-        <WebViewer ref="webviewer"></WebViewer>
+        <webViewer ref="webViewer"></webViewer>
       </div>
     </q-dialog>
 
@@ -2549,11 +2549,6 @@
       </q-card>
     </q-dialog>
 
-    <desactive-crud
-      ref="desactivateCrud"
-      @desactivar-Crud="desactivarCrud"
-    ></desactive-crud>
-
     <methods
       ref="methods"
       @set-Data="setData"
@@ -2575,33 +2570,19 @@
 
 <script>
 import { ref } from "vue";
-
 import moment from "moment";
-
 import { api } from "boot/axios";
-
-import { useQuasar } from "quasar";
-
+import { useQuasar, LocalStorage } from "quasar";
 import { VMoney } from "v-money";
-
-import { LocalStorage } from "quasar";
-
-import { date } from "quasar";
-
 import methodsVue from "src/components/methods.vue";
-
-import desactivateCrudVue from "src/components/desactivateCrud.vue";
-
-import WebViewerVue from "src/components/WebViewer.vue";
-
+import webViewerVue from "src/components/webViewer.vue";
 import rulesVue from "src/components/rules.vue";
 
 export default {
   directives: { money: VMoney },
   components: {
-    "desactive-crud": desactivateCrudVue,
     methods: methodsVue,
-    WebViewer: WebViewerVue,
+    webViewer: webViewerVue,
     VMoney,
     rulesVue,
   },
@@ -2978,9 +2959,9 @@ export default {
     pdfview() {
       // this.headers.pdf = this.agenciasSelected.id
       // api.get(`/pdf`, this.axiosConfig).then((res) => {
-      //  this.$refs.WebViewer.pdfView(res.data.base_64);
+      //  this.$refs.webViewer.pdfView(res.data.base_64);
       // });
-      this.$refs.webviewer.showpdf(this.base64);
+      this.$refs.webViewer.showpdf(this.base64);
     },
     validacionDetalle() {
       if (this.agencias[0]) {

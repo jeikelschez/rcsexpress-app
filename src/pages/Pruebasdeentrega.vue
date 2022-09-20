@@ -2388,10 +2388,6 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <desactive-crud
-      ref="desactivateCrud"
-      @desactivar-Crud="desactivarCrud"
-    ></desactive-crud>
     <methods
       ref="methods"
       @get-data="
@@ -2415,19 +2411,12 @@
 
 <script>
 import { ref } from "vue";
-
 import { api } from "boot/axios";
-
 import { useQuasar } from "quasar";
-
-import { LocalStorage } from "quasar";
-
 import methodsVue from "src/components/methods.vue";
 
-import desactivateCrudVue from "src/components/desactivateCrud.vue";
-
 export default {
-  components: { "desactive-crud": desactivateCrudVue, methods: methodsVue },
+  components: { methods: methodsVue },
   name: "Clientes",
   data() {
     return {
@@ -2753,13 +2742,6 @@ export default {
       "setDataIniciar",
       "agencias",
       this.axiosConfig
-    );
-    this.$refs.desactivateCrud.desactivarCrud(
-      "c_roles",
-      "r_roles",
-      "u_roles",
-      "d_roles",
-      "desactivarCrud"
     );
   },
   methods: {

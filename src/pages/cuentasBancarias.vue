@@ -617,7 +617,8 @@ export default {
     },
     // Metodo para Resetear Datos
     resetForm() {
-      delete this.form.id, (this.form.nro_cuenta = "");
+      delete this.form.id
+      this.form.nro_cuenta = "";
       this.form.flag_activa = "";
       this.form.tipo_cuenta = "";
       this.form.firma_autorizada = "";

@@ -19,7 +19,6 @@ export default {
   },
   methods: {
     showpdf(pdf) {
-      console.log('asdasd')
       const path = `${process.env.publicPath}/webViewer`;
       WebViewer({ path }, this.viewer).then((instance) => {
         instance.UI.disableElements(["ribbons"]);
