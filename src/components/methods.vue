@@ -38,7 +38,7 @@ export default {
   },
 
   methods: {
-    getData: function (url, llamada, dataRes, header = { headers: {Authorization: `Bearer ${LocalStorage.getItem("token")}`}}) {
+    getData: function (url, llamada, dataRes, header = { headers: {}}) {
       header.headers.Authorization = `Bearer ${LocalStorage.getItem("token")}`;
       api.get(url, header).then((res) => {
         this.$emit(llamada, res.data, dataRes)
@@ -48,7 +48,7 @@ export default {
         this.$emit('resetLoading')
       });
     },    
-    createData: function (url, form, llamada, header = { headers: {Authorization: `Bearer ${LocalStorage.getItem("token")}`}}) {
+    createData: function (url, form, llamada, header = { headers: {}}) {
       header.headers.Authorization = `Bearer ${LocalStorage.getItem("token")}`;
       api.post(url, form, header).then((res) => {
         if ((res.status = 200)) {
@@ -61,7 +61,7 @@ export default {
         this.$emit('resetLoading')
       });
     },
-    putData: function (url, form, llamada, header = { headers: {Authorization: `Bearer ${LocalStorage.getItem("token")}`}}) {
+    putData: function (url, form, llamada, header = { headers: {}}) {
       header.headers.Authorization = `Bearer ${LocalStorage.getItem("token")}`;
       api.put(url, form, header).then((res) => {
         if ((res.status = 200)) {
@@ -73,7 +73,7 @@ export default {
         this.errorDelServidor();
       });
     },
-    deleteData: function (url, llamada, header = { headers: {Authorization: `Bearer ${LocalStorage.getItem("token")}`}}) {
+    deleteData: function (url, llamada, header = { headers: {}}) {
       header.headers.Authorization = `Bearer ${LocalStorage.getItem("token")}`;
       api.delete(url, header).then((res) => {
         if ((res.status = 200)) {
@@ -86,7 +86,7 @@ export default {
         this.$emit('resetLoading')
       });
     },
-    login: function (url, form, llamada, header = { headers: {Authorization: `Bearer ${LocalStorage.getItem("token")}`}}) {
+    login: function (url, form, llamada, header = { headers: {}}) {
       header.headers.Authorization = `Bearer ${LocalStorage.getItem("token")}`;
       api.post(url, form, header).then((res) => {
         if ((res.status = 200)) this.$emit(llamada, res.data)
