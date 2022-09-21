@@ -1,12 +1,12 @@
 <template>
-  <div id="webviewer" ref="viewer"></div>
+  <div id="webViewer" ref="viewer"></div>
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
-import WebViewer from "@pdftron/webviewer";
+import { ref } from "vue";
+import webViewer from "@pdftron/webviewer";
 export default {
-  name: "WebViewer",
+  name: "webViewer",
   data: function() {
       return {
       }
@@ -20,7 +20,7 @@ export default {
   methods: {
     showpdf(pdf) {
       const path = `${process.env.publicPath}/webViewer`;
-      WebViewer({ path }, this.viewer).then((instance) => {
+      webViewer({ path }, this.viewer).then((instance) => {
         instance.UI.disableElements(["ribbons"]);
         instance.UI.disableElements(["toolsHeader"]);
         instance.UI.setLanguage("es");

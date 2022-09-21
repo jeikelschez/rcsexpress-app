@@ -1687,7 +1687,7 @@
                         minWidth: '30px',
                       }"
                       @update:model-value="
-                        getDataEdit(props.row.id, 'putDatoSelect');
+                        getData(props.row.id, 'putDatoSelect');
                         this.formEdit.estatus_lote = props.row.rif_cedula.value;
                       "
                     >
@@ -1969,7 +1969,7 @@
                               :options="estatus"
                               label="Estatus"
                               @update:model-value="
-                                getDataEdit(props.row.id, 'putDatoSelect');
+                                getData(props.row.id, 'putDatoSelect');
                                 this.formEdit.estatus_lote =
                                   props.row.estatus_desc.value;
                               "
@@ -2000,7 +2000,7 @@
                               :options="estatus"
                               label="Persona que Recibio"
                               @update:model-value="
-                                getDataEdit(props.row.id, 'putDatoSelect');
+                                getData(props.row.id, 'putDatoSelect');
                                 this.formEdit.estatus_lote =
                                   props.row.estatus_desc.value;
                               "
@@ -2031,7 +2031,7 @@
                               :options="estatus"
                               label="C.I."
                               @update:model-value="
-                                getDataEdit(props.row.id, 'putDatoSelect');
+                                getData(props.row.id, 'putDatoSelect');
                                 this.formEdit.estatus_lote =
                                   props.row.estatus_desc.value;
                               "
@@ -2114,7 +2114,7 @@
                               :options="estatus"
                               label="Agente Entrega"
                               @update:model-value="
-                                getDataEdit(props.row.id, 'putDatoSelect');
+                                getData(props.row.id, 'putDatoSelect');
                                 this.formEdit.estatus_lote =
                                   props.row.estatus_desc.value;
                               "
@@ -2145,7 +2145,7 @@
                               :options="estatus"
                               label="Dias de Entrega"
                               @update:model-value="
-                                getDataEdit(props.row.id, 'putDatoSelect');
+                                getData(props.row.id, 'putDatoSelect');
                                 this.formEdit.estatus_lote =
                                   props.row.estatus_desc.value;
                               "
@@ -2177,7 +2177,7 @@
                               :options="estatus"
                               label="Motivo de Retraso"
                               @update:model-value="
-                                getDataEdit(props.row.id, 'putDatoSelect');
+                                getData(props.row.id, 'putDatoSelect');
                                 this.formEdit.estatus_lote =
                                   props.row.estatus_desc.value;
                               "
@@ -2209,7 +2209,7 @@
                               :options="estatus"
                               label="Agencia Transito"
                               @update:model-value="
-                                getDataEdit(props.row.id, 'putDatoSelect');
+                                getData(props.row.id, 'putDatoSelect');
                                 this.formEdit.estatus_lote =
                                   props.row.estatus_desc.value;
                               "
@@ -2349,7 +2349,7 @@
                               :options="estatus"
                               label="Observacion"
                               @update:model-value="
-                                getDataEdit(props.row.id, 'putDatoSelect');
+                                getData(props.row.id, 'putDatoSelect');
                                 this.formEdit.estatus_lote =
                                   props.row.estatus_desc.value;
                               "

@@ -1,7 +1,6 @@
 <template></template>
 
 <script>
-import { ref } from "vue";
 import { useQuasar } from "quasar";
 import moment from "moment";
 
@@ -18,14 +17,12 @@ export default {
       if (ret !== true && reason == "") ret == "";
       return ret;
     },
-
     isReqSelect(val, reason) {
       var ret = true;
       if (val == null || val == [] || val == "") ret = `Valor Requerido`;
       if (ret !== true && reason == "") ret == "";
       return ret;
     },
-
     isMax(val, max, reason) {
       if (val !== null) {
         val = val.replace(".", "");
@@ -36,7 +33,6 @@ export default {
         return ret;
       }
     },
-
     isMin(val, min, reason) {
       if (val !== null) {
         val = val.replace(".", "");
@@ -47,7 +43,6 @@ export default {
         return ret;
       }
     },
-
     checkDate(val, reason) {
       var ret = true;
       if (moment(val, "DD/MM/YYYY", true)._isValid == false) ret = "Fecha Invalida";

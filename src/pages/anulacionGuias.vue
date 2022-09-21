@@ -738,7 +738,7 @@ export default {
       this.loading = true;
     },
     getDataEdit(id) {
-      this.$refs.methods.getDataEdit(
+      this.$refs.methods.getData(
         `/cguias/${id}`,
         `setDataEdit`,
         "formEdit",

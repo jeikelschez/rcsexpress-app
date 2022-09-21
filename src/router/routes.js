@@ -43,12 +43,12 @@ const routes = [
       {
         path: '/pruebasentrega',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('pages/pruebasdeentrega.vue')}]
+        children: [{ path: "", component: () => import('pages/pruebasEntrega.vue')}]
       },
       {
         path: "/registroserviciocarga",
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import("src/pages/Registroserviciocarga.vue") }],
+        children: [{ path: "", component: () => import("src/pages/registroServicioCarga.vue") }],
       },
       {
         path: '/facturacioncredito',
@@ -58,7 +58,7 @@ const routes = [
       {
         path: '/anulacionguias',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('pages/anulacionguias.vue')}]
+        children: [{ path: "", component: () => import('pages/anulacionGuias.vue')}]
       },
       {
         path: '/emitircarta',
@@ -361,12 +361,12 @@ const routes = [
       {
         path: '/m_pruebasentrega',
         component: () => import("layouts/manuallayout.vue"),
-        children: [{ path: "", component: () => import('pages/manuals/m_pruebasdeentrega.vue')}]
+        children: [{ path: "", component: () => import('pages/manuals/m_pruebasEntrega.vue')}]
       },
       {
         path: '/m_registroserviciocarga',
         component: () => import("layouts/manuallayout.vue"),
-        children: [{ path: "", component: () => import('pages/manuals/m_registroserviciocarga.vue')}]
+        children: [{ path: "", component: () => import('pages/manuals/m_registroServicioCarga.vue')}]
       },
       {
         path: '/m_facturacioncredito',
@@ -376,7 +376,7 @@ const routes = [
       {
         path: '/m_anulacionguias',
         component: () => import("layouts/manuallayout.vue"),
-        children: [{ path: "", component: () => import('pages/manuals/m_anulacionguias.vue')}]
+        children: [{ path: "", component: () => import('pages/manuals/m_anulacionGuias.vue')}]
       },
       {
         path: '/m_emitircarta',

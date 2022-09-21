@@ -47,15 +47,30 @@ export default {
         this.errorDelServidor();
         this.$emit('resetLoading')
       });
-    },
-    getDataEdit: function (url, llamada, dataRes, header = { headers: {Authorization: `Bearer ${LocalStorage.getItem("token")}`}}) {
+    },    
+    createData: function (url, form, llamada, header = { headers: {Authorization: `Bearer ${LocalStorage.getItem("token")}`}}) {
       header.headers.Authorization = `Bearer ${LocalStorage.getItem("token")}`;
-      api.get(url, header).then((res) => {
-        this.$emit(llamada, res.data, dataRes)
+      api.post(url, form, header).then((res) => {
+        if ((res.status = 200)) {
+          this.$emit(llamada)
+          this.añadidoConExito();
+        }
       }).catch((err) => {
         if (err.response) this.error = err.response.data.message;
         this.errorDelServidor();
         this.$emit('resetLoading')
+      });
+    },
+    putData: function (url, form, llamada, header = { headers: {Authorization: `Bearer ${LocalStorage.getItem("token")}`}}) {
+      header.headers.Authorization = `Bearer ${LocalStorage.getItem("token")}`;
+      api.put(url, form, header).then((res) => {
+        if ((res.status = 200)) {
+          this.$emit(llamada)
+          this.editadoConExito();
+        }
+      }).catch((err) => {
+        if (err.response) this.error = err.response.data.message;
+        this.errorDelServidor();
       });
     },
     deleteData: function (url, llamada, header = { headers: {Authorization: `Bearer ${LocalStorage.getItem("token")}`}}) {
@@ -71,19 +86,6 @@ export default {
         this.$emit('resetLoading')
       });
     },
-    createData: function (url, form, llamada, header = { headers: {Authorization: `Bearer ${LocalStorage.getItem("token")}`}}) {
-      header.headers.Authorization = `Bearer ${LocalStorage.getItem("token")}`;
-      api.post(url, form, header).then((res) => {
-        if ((res.status = 200)) {
-          this.$emit(llamada)
-          this.añadidoConExito();
-        }
-      }).catch((err) => {
-        if (err.response) this.error = err.response.data.message;
-        this.errorDelServidor();
-        this.$emit('resetLoading')
-      });
-    },
     login: function (url, form, llamada, header = { headers: {Authorization: `Bearer ${LocalStorage.getItem("token")}`}}) {
       header.headers.Authorization = `Bearer ${LocalStorage.getItem("token")}`;
       api.post(url, form, header).then((res) => {
@@ -92,19 +94,7 @@ export default {
         if (err.response) this.error = err.response.data.message;
         this.errorDelServidor();
       });
-    },
-    putData: function (url, form, llamada, header = { headers: {Authorization: `Bearer ${LocalStorage.getItem("token")}`}}) {
-      header.headers.Authorization = `Bearer ${LocalStorage.getItem("token")}`;
-      api.put(url, form, header).then((res) => {
-        if ((res.status = 200)) {
-          this.$emit(llamada)
-          this.editadoConExito();
-        }
-      }).catch((err) => {
-        if (err.response) this.error = err.response.data.message;
-        this.errorDelServidor();
-      });
-    },
+    },    
   },
 };
 </script>

@@ -1,124 +1,33 @@
 <template>
   <q-page class="pagina q-pa-md" style="padding-bottom: 0px; margin-top: -5px">
-    <q-page-sticky
-      position="bottom-right"
-      class="z-top"
-      style="margin-right: 20px; margin-bottom: 20px;"
-    >
+    <q-page-sticky position="bottom-right" class="z-top" style="margin-right: 20px; margin-bottom: 20px;">
       <q-fab icon="add" direction="up" color="primary">
-        <q-fab-action
-          color="primary"
-          style="margin-top: 15px"
-          icon="save"
-          class="z-top"
-          @click="putData()"
-        >
-          <q-tooltip
-            ref="fabtp"
-            class="bg-primary"
-            style="max-height: 30px"
-            transition-show="scale"
-            transition-hide="scale"
-            anchor="center left"
-            self="center right"
-            :offset="[5, 10]"
-            >Guardar Guia</q-tooltip
-          >
+        <q-fab-action color="primary" style="margin-top: 15px" icon="save" class="z-top" @click="putData()">
+          <q-tooltip ref="fabtp" class="bg-primary" style="max-height: 30px" transition-show="scale"
+            transition-hide="scale" anchor="center left" self="center right" :offset="[5, 10]">Guardar Guia</q-tooltip>
         </q-fab-action>
-        <q-fab-action
-          color="primary"
-          style="margin-top: 15px"
-          icon="filter_alt_off"
-          class="z-top"
-          @click="resetFormEdit()"
-        >
-          <q-tooltip
-            class="bg-primary"
-            style="max-height: 30px"
-            transition-show="scale"
-            transition-hide="scale"
-            anchor="center left"
-            self="center right"
-            :offset="[5, 10]"
-            color="primary"
-            >Limpiar Guia</q-tooltip
-          >
+        <q-fab-action color="primary" style="margin-top: 15px" icon="filter_alt_off" class="z-top"
+          @click="resetFormEdit()">
+          <q-tooltip class="bg-primary" style="max-height: 30px" transition-show="scale" transition-hide="scale"
+            anchor="center left" self="center right" :offset="[5, 10]" color="primary">Limpiar Guia</q-tooltip>
         </q-fab-action>
-        <q-fab-action
-          color="primary"
-          icon="print"
-          class="z-top"
-          style="margin-top: 15px"
-          @click="this.pdfView = true"
-        >
-          <q-tooltip
-            style="max-height: 30px"
-            class="bg-primary"
-            transition-show="scale"
-            transition-hide="scale"
-            anchor="center left"
-            self="center right"
-            :offset="[5, 10]"
-            color="primary"
-            >Imprimir Guia</q-tooltip
-          >
+        <q-fab-action color="primary" icon="print" class="z-top" style="margin-top: 15px" @click="this.pdfView = true">
+          <q-tooltip style="max-height: 30px" class="bg-primary" transition-show="scale" transition-hide="scale"
+            anchor="center left" self="center right" :offset="[5, 10]" color="primary">Imprimir Guia</q-tooltip>
         </q-fab-action>
-        <q-fab-action
-          color="primary"
-          icon="close"
-          class="z-top"
-          style="margin-top: 15px"
-          @click="this.reversar()"
-        >
-          <q-tooltip
-            class="bg-primary"
-            style="max-height: 30px"
-            transition-show="scale"
-            anchor="center left"
-            self="center right"
-            :offset="[5, 10]"
-            transition-hide="scale"
-            color="primary"
-            >Reversar Guia</q-tooltip
-          >
+        <q-fab-action color="primary" icon="close" class="z-top" style="margin-top: 15px" @click="this.reversar()">
+          <q-tooltip class="bg-primary" style="max-height: 30px" transition-show="scale" anchor="center left"
+            self="center right" :offset="[5, 10]" transition-hide="scale" color="primary">Reversar Guia</q-tooltip>
         </q-fab-action>
-        <q-fab-action
-          color="primary"
-          icon="money"
-          class="z-top"
-          @click="this.tarificar()"
-          style="margin-top: 15px"
-        >
-          <q-tooltip
-            class="bg-primary"
-            style="max-height: 30px"
-            transition-show="scale"
-            transition-hide="scale"
-            anchor="center left"
-            self="center right"
-            :offset="[5, 10]"
-            color="primary"
-            >Tarifear</q-tooltip
-          >
+        <q-fab-action color="primary" icon="money" class="z-top" @click="this.tarificar()" style="margin-top: 15px">
+          <q-tooltip class="bg-primary" style="max-height: 30px" transition-show="scale" transition-hide="scale"
+            anchor="center left" self="center right" :offset="[5, 10]" color="primary">Tarifear</q-tooltip>
         </q-fab-action>
-        <q-fab-action
-          color="primary"
-          style="margin-top: 15px"
-          icon="description"
-          class="z-top"
-          @click="validacionDetalle()"
-        >
-          <q-tooltip
-            class="bg-primary"
-            style="max-height: 30px"
-            transition-show="scale"
-            anchor="center left"
-            self="center right"
-            :offset="[5, 10]"
-            transition-hide="scale"
-            color="primary"
-            >Detalle del Documento</q-tooltip
-          >
+        <q-fab-action color="primary" style="margin-top: 15px" icon="description" class="z-top"
+          @click="validacionDetalle()">
+          <q-tooltip class="bg-primary" style="max-height: 30px" transition-show="scale" anchor="center left"
+            self="center right" :offset="[5, 10]" transition-hide="scale" color="primary">Detalle del Documento
+          </q-tooltip>
         </q-fab-action>
       </q-fab>
     </q-page-sticky>
@@ -128,34 +37,21 @@
         <q-card-section>
           <q-form @submit="putDataClientes()">
             <div class="row">
-              <div
-                class="col-md-12 col-xs-12"
-                v-if="this.cliente == true"
-                style="align-self: center; text-align: left; margin-top: -30px"
-              >
+              <div class="col-md-12 col-xs-12" v-if="this.cliente == true"
+                style="align-self: center; text-align: left; margin-top: -30px">
                 <h4 style="font-size: 20px" class="text-secondary">
                   <strong>UBICACIÓN GEOGRAFICA DE CLIENTE DESTINO</strong>
                 </h4>
               </div>
-              <div
-                class="col-md-12 col-xs-12"
-                v-if="this.cliente == false"
-                style="align-self: center; text-align: left; margin-top: -30px"
-              >
+              <div class="col-md-12 col-xs-12" v-if="this.cliente == false"
+                style="align-self: center; text-align: left; margin-top: -30px">
                 <h4 style="font-size: 20px" class="text-secondary">
                   <strong>UBICACIÓN GEOGRAFICA DE CLIENTE ORIGEN</strong>
                 </h4>
               </div>
               <div class="col-md-4 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="pais"
-                  label="Pais"
-                  hint=""
-                  class="pcform"
-                  :rules="[reglasInputs]"
-                  :options="paisesSelected"
-                  @filter="
+                <q-select outlined v-model="pais" label="Pais" hint="" class="pcform" :rules="[reglasInputs]"
+                  :options="paisesSelected" @filter="
                     (val, update, abort) =>
                       filterArray(
                         val,
@@ -165,23 +61,15 @@
                         'paises',
                         'desc_pais'
                       )
-                  "
-                  use-input
-                  hide-selected
-                  fill-input
-                  input-debounce="0"
-                  lazy-rules
-                  option-label="desc_pais"
-                  option-value="id"
-                  @update:model-value="
+                  " use-input hide-selected fill-input input-debounce="0" lazy-rules option-label="desc_pais"
+                  option-value="id" @update:model-value="
                     getDataLocalidades('estados', 'setDataEstados', {
                       headers: {
                         Authorization: ``,
                         pais: this.pais.id,
                       },
                     })
-                  "
-                  ><template v-slot:no-option>
+                  "><template v-slot:no-option>
                     <q-item>
                       <q-item-section class="text-grey">
                         Sin resultados
@@ -195,15 +83,8 @@
               </div>
 
               <div class="col-md-4 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="estado"
-                  label="Estado"
-                  class="pcform"
-                  hint=""
-                  :rules="[reglasInputs]"
-                  :options="estadosSelected"
-                  @filter="
+                <q-select outlined v-model="estado" label="Estado" class="pcform" hint="" :rules="[reglasInputs]"
+                  :options="estadosSelected" @filter="
                     (val, update, abort) =>
                       filterArray(
                         val,
@@ -213,15 +94,8 @@
                         'estados',
                         'desc_estado'
                       )
-                  "
-                  use-input
-                  hide-selected
-                  fill-input
-                  input-debounce="0"
-                  lazy-rules
-                  option-label="desc_estado"
-                  option-value="id"
-                  @update:model-value="
+                  " use-input hide-selected fill-input input-debounce="0" lazy-rules option-label="desc_estado"
+                  option-value="id" @update:model-value="
                     var axiosConfig = getDataLocalidades(
                       'municipios',
                       'setDataMunicipios',
@@ -244,8 +118,7 @@
                         estado: this.estado.id,
                       },
                     });
-                  "
-                  ><template v-slot:no-option>
+                  "><template v-slot:no-option>
                     <q-item>
                       <q-item-section class="text-grey">
                         Sin resultados
@@ -259,14 +132,8 @@
               </div>
 
               <div class="col-md-4 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="ciudad"
-                  label="Ciudad"
-                  hint=""
-                  :rules="[reglasInputs]"
-                  :options="ciudadesSelected"
-                  @filter="
+                <q-select outlined v-model="ciudad" label="Ciudad" hint="" :rules="[reglasInputs]"
+                  :options="ciudadesSelected" @filter="
                     (val, update, abort) =>
                       filterArray(
                         val,
@@ -276,15 +143,8 @@
                         'ciudades',
                         'desc_ciudad'
                       )
-                  "
-                  use-input
-                  hide-selected
-                  fill-input
-                  input-debounce="0"
-                  lazy-rules
-                  option-label="desc_ciudad"
-                  option-value="id"
-                  ><template v-slot:no-option>
+                  " use-input hide-selected fill-input input-debounce="0" lazy-rules option-label="desc_ciudad"
+                  option-value="id"><template v-slot:no-option>
                     <q-item>
                       <q-item-section class="text-grey">
                         Sin resultados
@@ -298,15 +158,8 @@
               </div>
 
               <div class="col-md-4 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="formClientes.cod_municipio"
-                  label="Municipio"
-                  hint=""
-                  class="pcform"
-                  :rules="[reglasInputs]"
-                  :options="municipiosSelected"
-                  @filter="
+                <q-select outlined v-model="formClientes.cod_municipio" label="Municipio" hint="" class="pcform"
+                  :rules="[reglasInputs]" :options="municipiosSelected" @filter="
                     (val, update, abort) =>
                       filterArray(
                         val,
@@ -316,23 +169,15 @@
                         'municipios',
                         'desc_municipio'
                       )
-                  "
-                  use-input
-                  hide-selected
-                  fill-input
-                  input-debounce="0"
-                  option-label="desc_municipio"
-                  option-value="id"
-                  lazy-rules
-                  @update:model-value="
+                  " use-input hide-selected fill-input input-debounce="0" option-label="desc_municipio"
+                  option-value="id" lazy-rules @update:model-value="
                     getDataLocalidades('parroquias', 'setDataParroquias', {
                       headers: {
                         Authorization: ``,
                         municipio: this.formClientes.cod_municipio.id,
                       },
                     })
-                  "
-                  ><template v-slot:no-option>
+                  "><template v-slot:no-option>
                     <q-item>
                       <q-item-section class="text-grey">
                         Sin resultados
@@ -346,15 +191,8 @@
               </div>
 
               <div class="col-md-4 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="formClientes.cod_parroquia"
-                  label="Parroquia"
-                  hint=""
-                  class="pcform"
-                  :rules="[reglasInputs]"
-                  :options="parroquiasSelected"
-                  @filter="
+                <q-select outlined v-model="formClientes.cod_parroquia" label="Parroquia" hint="" class="pcform"
+                  :rules="[reglasInputs]" :options="parroquiasSelected" @filter="
                     (val, update, abort) =>
                       filterArray(
                         val,
@@ -364,15 +202,8 @@
                         'parroquias',
                         'desc_parroquia'
                       )
-                  "
-                  use-input
-                  hide-selected
-                  fill-input
-                  input-debounce="0"
-                  option-label="desc_parroquia"
-                  option-value="id"
-                  lazy-rules
-                  ><template v-slot:no-option>
+                  " use-input hide-selected fill-input input-debounce="0" option-label="desc_parroquia"
+                  option-value="id" lazy-rules><template v-slot:no-option>
                     <q-item>
                       <q-item-section class="text-grey">
                         Sin resultados
@@ -386,14 +217,8 @@
               </div>
 
               <div class="col-md-4 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="formClientes.cod_localidad"
-                  label="Localidad"
-                  hint=""
-                  :rules="[reglasInputs]"
-                  :options="localidadesSelected"
-                  @filter="
+                <q-select outlined v-model="formClientes.cod_localidad" label="Localidad" hint=""
+                  :rules="[reglasInputs]" :options="localidadesSelected" @filter="
                     (val, update, abort) =>
                       filterArray(
                         val,
@@ -403,15 +228,8 @@
                         'localidades',
                         'desc_localidad'
                       )
-                  "
-                  use-input
-                  hide-selected
-                  fill-input
-                  input-debounce="0"
-                  option-label="desc_localidad"
-                  option-value="id"
-                  lazy-rules
-                  ><template v-slot:no-option>
+                  " use-input hide-selected fill-input input-debounce="0" option-label="desc_localidad"
+                  option-value="id" lazy-rules><template v-slot:no-option>
                     <q-item>
                       <q-item-section class="text-grey">
                         Sin resultados
@@ -425,25 +243,12 @@
               </div>
             </div>
 
-            <div
-              class="full-width row justify-center items-center content-center"
-              style="margin-bottom: 6px; margin-top: 10px"
-            >
-              <q-btn
-                label="Actualizar Cliente"
-                type="submit"
-                color="primary"
-                class="col-md-5 col-sm-5 col-xs-12"
-                icon="person_add"
-              />
-              <q-btn
-                label="Cerrar"
-                color="primary"
-                flat
-                class="col-md-5 col-sm-5 col-xs-12 btnmovil"
-                icon="close"
-                v-close-popup
-              />
+            <div class="full-width row justify-center items-center content-center"
+              style="margin-bottom: 6px; margin-top: 10px">
+              <q-btn label="Actualizar Cliente" type="submit" color="primary" class="col-md-5 col-sm-5 col-xs-12"
+                icon="person_add" />
+              <q-btn label="Cerrar" color="primary" flat class="col-md-5 col-sm-5 col-xs-12 btnmovil" icon="close"
+                v-close-popup />
             </div>
           </q-form>
         </q-card-section>
@@ -451,168 +256,72 @@
     </q-dialog>
 
     <q-dialog v-model="detalle">
-      <q-card
-        class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
-        style="width: 800px; max-width: 80vw"
-      >
-        <q-table
-          :rows="detalle_movimiento"
-          row-key="id"
-          :columns="columnsConceptos"
-          binary-state-sort
-          :separator="separator"
-          :filter="filter"
-          :rows-per-page-options="[5, 10, 15, 20, 50]"
-          @request="onRequest"
-          style="width: 100%"
-          :grid="$q.screen.xs"
-          v-model:pagination="pagination"
-        >
+      <q-card class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12" style="width: 800px; max-width: 80vw">
+        <q-table :rows="detalle_movimiento" row-key="id" :columns="columnsConceptos" binary-state-sort
+          :separator="separator" :filter="filter" :rows-per-page-options="[5, 10, 15, 20, 50]" @request="onRequest"
+          style="width: 100%" :grid="$q.screen.xs" v-model:pagination="pagination">
           <template v-slot:top="">
             <div class="col-4 q-table__title">
-              <h4
-                style="font-size: 19px; margin-top: 10px; margin-bottom: 10px"
-                class="text-secondary"
-              >
+              <h4 style="font-size: 19px; margin-top: 10px; margin-bottom: 10px" class="text-secondary">
                 <strong>DETALLE DEL DOCUMENTO</strong>
               </h4>
             </div>
             <q-space />
-            <q-btn
-              flat
-              round
-              dense
-              icon="close"
-              @click="this.detalle = false"
-              class="q-ml-md"
-            />
+            <q-btn flat round dense icon="close" @click="this.detalle = false" class="q-ml-md" />
           </template>
         </q-table>
-        <div
-          class="row col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
-          style="
+        <div class="row col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12" style="
             align-self: center;
             text-align: center;
             padding-left: 30px;
             padding-right: 30px;
             padding-top: 30px;
-          "
-        >
+          ">
           <div class="col-md-3 col-xs-12">
-            <q-input
-              outlined
-              v-model="formEdit.carga_neta"
-              label="Valor COD"
-              dense
-              v-money="money"
-              input-class="text-right"
-              class="pcform"
-              hint=""
-              lazy-rules
-            >
+            <q-input outlined v-model="formEdit.carga_neta" label="Valor COD" dense v-money="money"
+              input-class="text-right" class="pcform" hint="" lazy-rules>
             </q-input>
           </div>
 
           <div class="col-md-3 col-xs-12">
-            <q-input
-              outlined
-              v-model="formEdit.carga_neta"
-              label="Valor Seguro"
-              dense
-              class="pcform"
-              v-money="money"
-              input-class="text-right"
-              lazy-rules
-              hint=""
-            >
+            <q-input outlined v-model="formEdit.carga_neta" label="Valor Seguro" dense class="pcform" v-money="money"
+              input-class="text-right" lazy-rules hint="">
             </q-input>
           </div>
 
           <div class="col-md-3 col-xs-12">
-            <q-input
-              outlined
-              v-model="formEdit.carga_neta"
-              label="Porcentaje"
-              v-money="money"
-              input-class="text-right"
-              class="pcform"
-              lazy-rules
-              dense
-              hint=""
-            >
+            <q-input outlined v-model="formEdit.carga_neta" label="Porcentaje" v-money="money" input-class="text-right"
+              class="pcform" lazy-rules dense hint="">
             </q-input>
           </div>
 
           <div class="col-md-3 col-xs-12">
-            <q-input
-              outlined
-              dense
-              v-model="formEdit.carga_neta"
-              v-money="money"
-              input-class="text-right"
-              label="Sub Total:"
-              lazy-rules
-              hint=""
-            >
+            <q-input outlined dense v-model="formEdit.carga_neta" v-money="money" input-class="text-right"
+              label="Sub Total:" lazy-rules hint="">
             </q-input>
           </div>
 
           <div class="col-md-3 col-xs-12">
-            <q-input
-              outlined
-              dense
-              v-model="formEdit.carga_neta"
-              v-money="money"
-              input-class="text-right"
-              label="Monto Base:"
-              class="pcform"
-              lazy-rules
-              hint=""
-            >
+            <q-input outlined dense v-model="formEdit.carga_neta" v-money="money" input-class="text-right"
+              label="Monto Base:" class="pcform" lazy-rules hint="">
             </q-input>
           </div>
 
           <div class="col-md-3 col-xs-12">
-            <q-input
-              outlined
-              dense
-              v-model="formEdit.carga_neta"
-              label="Impuesto:"
-              v-money="money"
-              input-class="text-right"
-              class="pcform"
-              lazy-rules
-              hint=""
-            >
+            <q-input outlined dense v-model="formEdit.carga_neta" label="Impuesto:" v-money="money"
+              input-class="text-right" class="pcform" lazy-rules hint="">
             </q-input>
           </div>
 
           <div class="col-md-3 col-xs-12">
-            <q-input
-              outlined
-              dense
-              v-model="formEdit.carga_neta"
-              v-money="money"
-              input-class="text-right"
-              label="Total"
-              class="pcform"
-              lazy-rules
-              hint=""
-            >
+            <q-input outlined dense v-model="formEdit.carga_neta" v-money="money" input-class="text-right" label="Total"
+              class="pcform" lazy-rules hint="">
             </q-input>
           </div>
 
           <div class="col-md-3 col-xs-12">
-            <q-input
-              outlined
-              v-model="formEdit.carga_neta"
-              label="Monto Ref. Cliente sin IVA"
-              v-money="money"
-              input-class="text-right"
-              lazy-rules
-              dense
-              hint=""
-            >
+            <q-input outlined v-model="formEdit.carga_neta" label="Monto Ref. Cliente sin IVA" v-money="money"
+              input-class="text-right" lazy-rules dense hint="">
             </q-input>
           </div>
         </div>
@@ -620,62 +329,35 @@
     </q-dialog>
 
     <q-dialog v-model="clienteParticularBox">
-      <q-card
-        class="q-pa-md"
-        bordered
-        style="width: 999px; max-width: 80vw; padding-bottom: 0px"
-      >
+      <q-card class="q-pa-md" bordered style="width: 999px; max-width: 80vw; padding-bottom: 0px">
         <q-card-section>
           <q-form @submit="putDataClientesParticulares()">
             <div class="row">
-              <div
-                class="col-md-12 col-xs-12"
-                v-if="this.particular == true"
-                style="align-self: center; text-align: left; margin-top: -30px"
-              >
+              <div class="col-md-12 col-xs-12" v-if="this.particular == true"
+                style="align-self: center; text-align: left; margin-top: -30px">
                 <h4 style="font-size: 20px" class="text-secondary">
                   <strong>CLIENTE PARTICULAR DESTINO</strong>
                 </h4>
               </div>
-              <div
-                class="col-md-12 col-xs-12"
-                v-if="this.particular == false"
-                style="align-self: center; text-align: left; margin-top: -30px"
-              >
+              <div class="col-md-12 col-xs-12" v-if="this.particular == false"
+                style="align-self: center; text-align: left; margin-top: -30px">
                 <h4 style="font-size: 20px" class="text-secondary">
                   <strong>CLIENTE PARTICULAR ORIGEN</strong>
                 </h4>
               </div>
               <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientesParticulares.rif_ci"
-                  label="RIF/CI"
-                  dense
-                  :rules="[reglasAllowMin3]"
-                  :readonly="this.disabledRif"
-                  @blur="this.validateClient()"
-                  hint=""
-                  lazy-rules
-                  class="pcform"
-                >
+                <q-input outlined v-model="formClientesParticulares.rif_ci" label="RIF/CI" dense
+                  :rules="[reglasAllowMin3]" :readonly="this.disabledRif" @blur="this.validateClient()" hint=""
+                  lazy-rules class="pcform">
                   <template v-slot:prepend>
                     <q-icon name="person" />
                   </template>
                 </q-input>
               </div>
               <div class="col-md-4 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="formClientesParticulares.cod_agencia"
-                  label="Agencia"
-                  :readonly="this.disabledAgencia"
-                  hint=""
-                  dense
-                  class="pcform"
-                  :rules="[reglasInputs]"
-                  :options="agenciasSelected"
-                  @filter="
+                <q-select outlined v-model="formClientesParticulares.cod_agencia" label="Agencia"
+                  :readonly="this.disabledAgencia" hint="" dense class="pcform" :rules="[reglasInputs]"
+                  :options="agenciasSelected" @filter="
                     (val, update, abort) =>
                       filterArray(
                         val,
@@ -685,15 +367,8 @@
                         'agencias',
                         'nb_agencia'
                       )
-                  "
-                  use-input
-                  hide-selected
-                  fill-input
-                  input-debounce="0"
-                  lazy-rules
-                  option-label="nb_agencia"
-                  option-value="id"
-                  ><template v-slot:no-option>
+                  " use-input hide-selected fill-input input-debounce="0" lazy-rules option-label="nb_agencia"
+                  option-value="id"><template v-slot:no-option>
                     <q-item>
                       <q-item-section class="text-grey">
                         Sin resultados
@@ -707,16 +382,8 @@
               </div>
 
               <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientesParticulares.nb_cliente"
-                  label="Cliente"
-                  :readonly="this.disabledCliente"
-                  dense
-                  :rules="[reglasAllowMin3]"
-                  lazy-rules
-                  hint=""
-                >
+                <q-input outlined v-model="formClientesParticulares.nb_cliente" label="Cliente"
+                  :readonly="this.disabledCliente" dense :rules="[reglasAllowMin3]" lazy-rules hint="">
                   <template v-slot:prepend>
                     <q-icon name="person" />
                   </template>
@@ -724,17 +391,8 @@
               </div>
 
               <div class="col-md-4 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="pais"
-                  label="Pais"
-                  :readonly="this.disabledInputs"
-                  hint=""
-                  dense
-                  class="pcform"
-                  :rules="[reglasInputs]"
-                  :options="paisesSelected"
-                  @filter="
+                <q-select outlined v-model="pais" label="Pais" :readonly="this.disabledInputs" hint="" dense
+                  class="pcform" :rules="[reglasInputs]" :options="paisesSelected" @filter="
                     (val, update, abort) =>
                       filterArray(
                         val,
@@ -744,23 +402,15 @@
                         'paises',
                         'desc_pais'
                       )
-                  "
-                  use-input
-                  hide-selected
-                  fill-input
-                  input-debounce="0"
-                  lazy-rules
-                  option-label="desc_pais"
-                  option-value="id"
-                  @update:model-value="
+                  " use-input hide-selected fill-input input-debounce="0" lazy-rules option-label="desc_pais"
+                  option-value="id" @update:model-value="
                     getDataLocalidades('estados', 'setDataEstados', {
                       headers: {
                         Authorization: ``,
                         pais: this.pais.id,
                       },
                     })
-                  "
-                  ><template v-slot:no-option>
+                  "><template v-slot:no-option>
                     <q-item>
                       <q-item-section class="text-grey">
                         Sin resultados
@@ -774,17 +424,8 @@
               </div>
 
               <div class="col-md-4 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="estado"
-                  dense
-                  label="Estado"
-                  class="pcform"
-                  hint=""
-                  :readonly="this.disabledInputs"
-                  :rules="[reglasInputs]"
-                  :options="estadosSelected"
-                  @filter="
+                <q-select outlined v-model="estado" dense label="Estado" class="pcform" hint=""
+                  :readonly="this.disabledInputs" :rules="[reglasInputs]" :options="estadosSelected" @filter="
                     (val, update, abort) =>
                       filterArray(
                         val,
@@ -794,15 +435,8 @@
                         'estados',
                         'desc_estado'
                       )
-                  "
-                  use-input
-                  hide-selected
-                  fill-input
-                  input-debounce="0"
-                  lazy-rules
-                  option-label="desc_estado"
-                  option-value="id"
-                  @update:model-value="
+                  " use-input hide-selected fill-input input-debounce="0" lazy-rules option-label="desc_estado"
+                  option-value="id" @update:model-value="
                     getDataLocalidades('municipios', 'setDataMunicipios', {
                       headers: {
                         Authorization: ``,
@@ -821,8 +455,7 @@
                         estado: this.estado.id,
                       },
                     });
-                  "
-                  ><template v-slot:no-option>
+                  "><template v-slot:no-option>
                     <q-item>
                       <q-item-section class="text-grey">
                         Sin resultados
@@ -836,16 +469,8 @@
               </div>
 
               <div class="col-md-4 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="ciudad"
-                  label="Ciudad"
-                  dense
-                  hint=""
-                  :readonly="this.disabledInputs"
-                  :rules="[reglasInputs]"
-                  :options="ciudadesSelected"
-                  @filter="
+                <q-select outlined v-model="ciudad" label="Ciudad" dense hint="" :readonly="this.disabledInputs"
+                  :rules="[reglasInputs]" :options="ciudadesSelected" @filter="
                     (val, update, abort) =>
                       filterArray(
                         val,
@@ -855,15 +480,8 @@
                         'ciudades',
                         'desc_ciudad'
                       )
-                  "
-                  use-input
-                  hide-selected
-                  fill-input
-                  input-debounce="0"
-                  lazy-rules
-                  option-label="desc_ciudad"
-                  option-value="id"
-                  ><template v-slot:no-option>
+                  " use-input hide-selected fill-input input-debounce="0" lazy-rules option-label="desc_ciudad"
+                  option-value="id"><template v-slot:no-option>
                     <q-item>
                       <q-item-section class="text-grey">
                         Sin resultados
@@ -877,17 +495,9 @@
               </div>
 
               <div class="col-md-4 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="formClientesParticulares.cod_municipio"
-                  label="Municipio"
-                  hint=""
-                  class="pcform"
-                  :readonly="this.disabledInputs"
-                  dense
-                  :rules="[reglasInputs]"
-                  :options="municipiosSelected"
-                  @filter="
+                <q-select outlined v-model="formClientesParticulares.cod_municipio" label="Municipio" hint=""
+                  class="pcform" :readonly="this.disabledInputs" dense :rules="[reglasInputs]"
+                  :options="municipiosSelected" @filter="
                     (val, update, abort) =>
                       filterArray(
                         val,
@@ -897,15 +507,8 @@
                         'municipios',
                         'desc_municipio'
                       )
-                  "
-                  use-input
-                  hide-selected
-                  fill-input
-                  input-debounce="0"
-                  option-label="desc_municipio"
-                  option-value="id"
-                  lazy-rules
-                  @update:model-value="
+                  " use-input hide-selected fill-input input-debounce="0" option-label="desc_municipio"
+                  option-value="id" lazy-rules @update:model-value="
                     getDataLocalidades('parroquias', 'setDataParroquias', {
                       headers: {
                         Authorization: ``,
@@ -913,8 +516,7 @@
                           this.formClientesParticulares.cod_municipio.id,
                       },
                     })
-                  "
-                  ><template v-slot:no-option>
+                  "><template v-slot:no-option>
                     <q-item>
                       <q-item-section class="text-grey">
                         Sin resultados
@@ -928,17 +530,9 @@
               </div>
 
               <div class="col-md-4 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="formClientesParticulares.cod_parroquia"
-                  label="Parroquia"
-                  :readonly="this.disabledInputs"
-                  hint=""
-                  class="pcform"
-                  dense
-                  :rules="[reglasInputs]"
-                  :options="parroquiasSelected"
-                  @filter="
+                <q-select outlined v-model="formClientesParticulares.cod_parroquia" label="Parroquia"
+                  :readonly="this.disabledInputs" hint="" class="pcform" dense :rules="[reglasInputs]"
+                  :options="parroquiasSelected" @filter="
                     (val, update, abort) =>
                       filterArray(
                         val,
@@ -948,15 +542,8 @@
                         'parroquias',
                         'desc_parroquia'
                       )
-                  "
-                  use-input
-                  hide-selected
-                  fill-input
-                  input-debounce="0"
-                  option-label="desc_parroquia"
-                  option-value="id"
-                  lazy-rules
-                  ><template v-slot:no-option>
+                  " use-input hide-selected fill-input input-debounce="0" option-label="desc_parroquia"
+                  option-value="id" lazy-rules><template v-slot:no-option>
                     <q-item>
                       <q-item-section class="text-grey">
                         Sin resultados
@@ -970,16 +557,8 @@
               </div>
 
               <div class="col-md-4 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="formClientesParticulares.cod_localidad"
-                  label="Localidad"
-                  hint=""
-                  :readonly="this.disabledInputs"
-                  dense
-                  :rules="[reglasInputs]"
-                  :options="localidadesSelected"
-                  @filter="
+                <q-select outlined v-model="formClientesParticulares.cod_localidad" label="Localidad" hint=""
+                  :readonly="this.disabledInputs" dense :rules="[reglasInputs]" :options="localidadesSelected" @filter="
                     (val, update, abort) =>
                       filterArray(
                         val,
@@ -989,15 +568,8 @@
                         'localidades',
                         'desc_localidad'
                       )
-                  "
-                  use-input
-                  hide-selected
-                  fill-input
-                  input-debounce="0"
-                  option-label="desc_localidad"
-                  option-value="id"
-                  lazy-rules
-                  ><template v-slot:no-option>
+                  " use-input hide-selected fill-input input-debounce="0" option-label="desc_localidad"
+                  option-value="id" lazy-rules><template v-slot:no-option>
                     <q-item>
                       <q-item-section class="text-grey">
                         Sin resultados
@@ -1011,17 +583,8 @@
               </div>
 
               <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientesParticulares.telefonos"
-                  label="Telefono"
-                  :rules="[reglasAllowMin3]"
-                  :readonly="this.disabledInputs"
-                  class="pcform"
-                  dense
-                  hint=""
-                  lazy-rules
-                >
+                <q-input outlined v-model="formClientesParticulares.telefonos" label="Telefono"
+                  :rules="[reglasAllowMin3]" :readonly="this.disabledInputs" class="pcform" dense hint="" lazy-rules>
                   <template v-slot:prepend>
                     <q-icon name="person" />
                   </template>
@@ -1029,16 +592,8 @@
               </div>
 
               <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientesParticulares.fax"
-                  :readonly="this.disabledInputs"
-                  label="Fax"
-                  dense
-                  hint=""
-                  :rules="[reglasAllowMin3]"
-                  lazy-rules
-                >
+                <q-input outlined v-model="formClientesParticulares.fax" :readonly="this.disabledInputs" label="Fax"
+                  dense hint="" :rules="[reglasAllowMin3]" lazy-rules>
                   <template v-slot:prepend>
                     <q-icon name="person" />
                   </template>
@@ -1046,16 +601,8 @@
               </div>
 
               <div class="col-md-12 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientesParticulares.direccion"
-                  label="Direccion"
-                  :readonly="this.disabledInputs"
-                  :rules="[reglasAllowMin3]"
-                  dense
-                  hint=""
-                  lazy-rules
-                >
+                <q-input outlined v-model="formClientesParticulares.direccion" label="Direccion"
+                  :readonly="this.disabledInputs" :rules="[reglasAllowMin3]" dense hint="" lazy-rules>
                   <template v-slot:prepend>
                     <q-icon name="person" />
                   </template>
@@ -1063,26 +610,12 @@
               </div>
             </div>
 
-            <div
-              class="full-width row justify-center items-center content-center"
-              style="margin-bottom: 6px; margin-top: 10px"
-            >
-              <q-btn
-                label="Actualizar Cliente"
-                :disable="this.disabledInputs"
-                type="submit"
-                color="primary"
-                class="col-md-5 col-sm-5 col-xs-12"
-                icon="person_add"
-              />
-              <q-btn
-                label="Cerrar"
-                color="primary"
-                flat
-                class="col-md-5 col-sm-5 col-xs-12 btnmovil"
-                icon="close"
-                v-close-popup
-              />
+            <div class="full-width row justify-center items-center content-center"
+              style="margin-bottom: 6px; margin-top: 10px">
+              <q-btn label="Actualizar Cliente" :disable="this.disabledInputs" type="submit" color="primary"
+                class="col-md-5 col-sm-5 col-xs-12" icon="person_add" />
+              <q-btn label="Cerrar" color="primary" flat class="col-md-5 col-sm-5 col-xs-12 btnmovil" icon="close"
+                v-close-popup />
             </div>
           </q-form>
         </q-card-section>
@@ -1100,126 +633,69 @@
         <div class="row">
           <q-form ref="formData">
             <div class="row items-center pageStyle">
-              <div
-                class="col-md-2 col-xs-12 cardMenus marginMenu boxStyle"
-                style="margin-bottom: 5px"
-              >
+              <div class="col-md-2 col-xs-12 cardMenus marginMenu boxStyle" style="margin-bottom: 5px">
                 <div class="col-md-12 col-xs-6">
-                  <q-input
-                    outlined
-                    v-model="formEdit.nro_documento"
-                    :error="errors.nro_documento"
-                    label="NRO. Documento"
-                    hint=""
-                    class="pcform"
-                    dense
-                    :rules="[
+                  <q-input outlined v-model="formEdit.nro_documento" :error="errors.nro_documento"
+                    label="NRO. Documento" hint="" class="pcform" dense :rules="[
                       (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
                       (val) => this.$refs.rulesVue.isMax(val, 10, ''),
                       (val) =>
                         this.$refs.rulesVue.isMin(val, 3, 'Debe ser Mayor') ||
                         '',
-                    ]"
-                    hide-bottom-space
-                  >
+                    ]" hide-bottom-space>
                     <template v-slot:append>
-                      <q-icon
-                        @click="
-                          if (formEdit.nro_documento !== '') {
-                            this.resetFormEdit();
-                            this.showTextLoading();
-                            this.getDataGuia();
-                          }
-                        "
-                        class="cursor-pointer"
-                        name="search"
-                      />
+                      <q-icon @click="
+                        if (formEdit.nro_documento !== '') {
+                          this.resetFormEdit();
+                          this.showTextLoading();
+                          this.getDataGuia();
+                        }
+                      " class="cursor-pointer" name="search" />
                     </template>
                   </q-input>
                 </div>
 
                 <div class="col-md-12 col-xs-6">
-                  <q-input
-                    outlined
-                    label="NRO. Factura"
-                    hint=""
-                    class="pcform"
-                    hide-bottom-space
-                    dense
+                  <q-input outlined label="NRO. Factura" hint="" class="pcform" hide-bottom-space dense
                     @update:model-value="
                       formEdit.nro_documento =
                         formEdit.nro_documento.toUpperCase()
-                    "
-                    lazy-rules
-                  >
+                    " lazy-rules>
                   </q-input>
                 </div>
               </div>
 
-              <div
-                class="col-md-4 col-xs-12 boxStyle"
-                style="margin-bottom: 5px; padding-top: 5px"
-              >
-                <q-card
-                  class="q-pa-md col-md-4 col-xs-12 cardMenus"
-                  bordered
-                  style="padding: 5px"
-                >
-                  <q-card-section
-                    style="
+              <div class="col-md-4 col-xs-12 boxStyle" style="margin-bottom: 5px; padding-top: 5px">
+                <q-card class="q-pa-md col-md-4 col-xs-12 cardMenus" bordered style="padding: 5px">
+                  <q-card-section style="
                       padding-bottom: 0px;
                       padding-left: 10px;
                       padding-right: 10px;
                       padding-top: 13px;
-                    "
-                  >
+                    ">
                     <div class="row">
-                      <div
-                        class="col-md-12 col-xs-12"
-                        style="
+                      <div class="col-md-12 col-xs-12" style="
                           align-self: center;
                           text-align: left;
                           margin-top: -30px;
-                        "
-                      >
-                        <h4
-                          style="
+                        ">
+                        <h4 style="
                             font-size: 16px;
                             margin-bottom: 10px;
                             margin-top: 25px;
-                          "
-                          class="text-secondary"
-                        >
+                          " class="text-secondary">
                           <strong>Fechas</strong>
                         </h4>
                       </div>
                       <div class="col-md-6 col-xs-6">
-                        <q-input
-                          outlined
-                          label="Emision"
-                          hint=""
-                          v-model="formEdit.fecha_emision"
-                          lazy-rules
-                          dense
-                          style="padding-bottom: 10px"
-                          class="pcform pcmovil"
-                          :rules="[checkDate]"
-                          mask="##/##/####"
-                        >
+                        <q-input outlined label="Emision" hint="" v-model="formEdit.fecha_emision" lazy-rules dense
+                          style="padding-bottom: 10px" class="pcform pcmovil" :rules="[checkDate]" mask="##/##/####">
                           <template v-slot:append>
                             <q-icon name="event" class="cursor-pointer">
-                              <q-popup-proxy
-                                ref="qDateProxy"
-                                transition-show="scale"
-                                transition-hide="scale"
-                              >
-                                <q-date
-                                  v-model="formEdit.fecha_emision"
-                                  mask="DD/MM/YYYY"
-                                  @update:model-value="
-                                    this.$refs.qDateProxy.hide()
-                                  "
-                                ></q-date>
+                              <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                                <q-date v-model="formEdit.fecha_emision" mask="DD/MM/YYYY" @update:model-value="
+                                  this.$refs.qDateProxy.hide()
+                                "></q-date>
                               </q-popup-proxy>
                             </q-icon>
                           </template>
@@ -1227,30 +703,14 @@
                       </div>
 
                       <div class="col-md-6 col-xs-6">
-                        <q-input
-                          outlined
-                          label="Envio"
-                          hint=""
-                          dense
-                          style="padding-bottom: 10px"
-                          v-model="formEdit.fecha_envio"
-                          lazy-rules
-                          :rules="[checkDate]"
-                        >
+                        <q-input outlined label="Envio" hint="" dense style="padding-bottom: 10px"
+                          v-model="formEdit.fecha_envio" lazy-rules :rules="[checkDate]">
                           <template v-slot:append>
                             <q-icon name="event" class="cursor-pointer">
-                              <q-popup-proxy
-                                ref="qDateProxy"
-                                transition-show="scale"
-                                transition-hide="scale"
-                              >
-                                <q-date
-                                  v-model="formEdit.fecha_envio"
-                                  mask="DD/MM/YYYY"
-                                  @update:model-value="
-                                    this.$refs.qDateProxy.hide()
-                                  "
-                                ></q-date>
+                              <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                                <q-date v-model="formEdit.fecha_envio" mask="DD/MM/YYYY" @update:model-value="
+                                  this.$refs.qDateProxy.hide()
+                                "></q-date>
                               </q-popup-proxy>
                             </q-icon>
                           </template>
@@ -1258,30 +718,14 @@
                       </div>
 
                       <div class="col-md-12 col-xs-12">
-                        <q-input
-                          outlined
-                          label="Aplicación"
-                          hint=""
-                          dense
-                          style="padding-bottom: 10px"
-                          v-model="formEdit.fecha_aplicacion"
-                          lazy-rules
-                          :rules="[checkDate]"
-                        >
+                        <q-input outlined label="Aplicación" hint="" dense style="padding-bottom: 10px"
+                          v-model="formEdit.fecha_aplicacion" lazy-rules :rules="[checkDate]">
                           <template v-slot:append>
                             <q-icon name="event" class="cursor-pointer">
-                              <q-popup-proxy
-                                ref="qDateProxy"
-                                transition-show="scale"
-                                transition-hide="scale"
-                              >
-                                <q-date
-                                  v-model="formEdit.fecha_aplicacion"
-                                  mask="DD/MM/YYYY"
-                                  @update:model-value="
-                                    this.$refs.qDateProxy.hide()
-                                  "
-                                ></q-date>
+                              <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                                <q-date v-model="formEdit.fecha_aplicacion" mask="DD/MM/YYYY" @update:model-value="
+                                  this.$refs.qDateProxy.hide()
+                                "></q-date>
                               </q-popup-proxy>
                             </q-icon>
                           </template>
@@ -1292,167 +736,87 @@
                 </q-card>
               </div>
 
-              <div
-                class="col-md-3 col-xs-12 boxStyle"
-                style="margin-bottom: 5px; padding-top: 5px"
-              >
-                <q-card
-                  class="q-pa-md col-md-4 col-xs-12 cardMenus"
-                  bordered
-                  style="padding: 5px; padding-top: 10px"
-                >
-                  <q-card-section
-                    style="
+              <div class="col-md-3 col-xs-12 boxStyle" style="margin-bottom: 5px; padding-top: 5px">
+                <q-card class="q-pa-md col-md-4 col-xs-12 cardMenus" bordered style="padding: 5px; padding-top: 10px">
+                  <q-card-section style="
                       padding-bottom: 0px;
                       padding-left: 10px;
                       padding-right: 10px;
                       padding-top: 10px;
-                    "
-                  >
+                    ">
                     <div class="row">
-                      <div
-                        class="col-md-12 col-xs-12"
-                        style="
+                      <div class="col-md-12 col-xs-12" style="
                           align-self: center;
                           text-align: left;
                           margin-top: -30px;
-                        "
-                      >
-                        <h4
-                          style="font-size: 16px; margin-bottom: 10px"
-                          class="text-secondary"
-                        >
+                        ">
+                        <h4 style="font-size: 16px; margin-bottom: 10px" class="text-secondary">
                           <strong>Información de Carga</strong>
                         </h4>
                       </div>
                       <div class="col-md-6 col-xs-6">
-                        <q-input
-                          outlined
-                          dense
-                          style="padding-bottom: 10px"
-                          v-model="formEdit.nro_piezas"
-                          label="Piezas"
-                          v-money="moneyNotDecimal"
-                          input-class="text-right"
-                          :rules="[reglasNotNull3]"
-                          hide-buttom-space
-                          class="pcform pcmovil"
-                          lazy-rules
-                        >
+                        <q-input outlined dense style="padding-bottom: 10px" v-model="formEdit.nro_piezas"
+                          label="Piezas" v-money="moneyNotDecimal" input-class="text-right" :rules="[reglasNotNull3]"
+                          hide-buttom-space class="pcform pcmovil" lazy-rules>
                         </q-input>
                       </div>
 
                       <div class="col-md-6 col-xs-6">
-                        <q-input
-                          outlined
-                          v-model="formEdit.peso_kgs"
-                          label="Peso KGS"
-                          :rules="[reglasNotNull6]"
-                          v-money="money"
-                          input-class="text-right"
-                          dense
-                          style="padding-bottom: 10px"
-                          hide-buttom-space
-                          lazy-rules
-                        >
+                        <q-input outlined v-model="formEdit.peso_kgs" label="Peso KGS" :rules="[reglasNotNull6]"
+                          v-money="money" input-class="text-right" dense style="padding-bottom: 10px" hide-buttom-space
+                          lazy-rules>
                         </q-input>
                       </div>
 
                       <div class="col-md-6 col-xs-6">
-                        <q-checkbox
-                          size="lg"
-                          v-model="checkbox.paquetes"
-                          true-value="1"
-                          false-value="0"
-                          style="font-size: 13px"
-                          label="Paquetes"
-                          @update:model-value="
+                        <q-checkbox size="lg" v-model="checkbox.paquetes" true-value="1" false-value="0"
+                          style="font-size: 13px" label="Paquetes" @update:model-value="
                             if (this.checkbox.paquetes == '1') {
                               this.checkbox.sobres = '0';
                             }
-                          "
-                        />
+                          " />
                       </div>
 
                       <div class="col-md-6 col-xs-6">
-                        <q-checkbox
-                          size="lg"
-                          v-model="checkbox.sobres"
-                          true-value="1"
-                          false-value="0"
-                          style="font-size: 13px"
-                          label="Sobres"
-                          @update:model-value="
+                        <q-checkbox size="lg" v-model="checkbox.sobres" true-value="1" false-value="0"
+                          style="font-size: 13px" label="Sobres" @update:model-value="
                             if (this.checkbox.sobres == '1') {
                               this.checkbox.paquetes = '0';
                             }
-                          "
-                        />
+                          " />
                       </div>
                     </div>
                   </q-card-section>
                 </q-card>
               </div>
 
-              <div
-                class="col-md-3 col-xs-12 boxStyle"
-                style="margin-bottom: 11px; padding-top: 10px"
-              >
-                <q-card
-                  class="q-pa-md col-md-4 col-xs-12"
-                  bordered
-                  style="padding: 5px"
-                >
-                  <q-card-section
-                    style="
+              <div class="col-md-3 col-xs-12 boxStyle" style="margin-bottom: 11px; padding-top: 10px">
+                <q-card class="q-pa-md col-md-4 col-xs-12" bordered style="padding: 5px">
+                  <q-card-section style="
                       padding-bottom: 3px;
                       padding-left: 10px;
                       padding-right: 10px;
-                    "
-                  >
+                    ">
                     <div class="row">
-                      <div
-                        class="col-md-12 col-xs-12"
-                        style="
+                      <div class="col-md-12 col-xs-12" style="
                           align-self: center;
                           text-align: left;
                           margin-top: -30px;
-                        "
-                      >
-                        <h4
-                          style="font-size: 16px; margin-bottom: 8px"
-                          class="text-secondary"
-                        >
+                        ">
+                        <h4 style="font-size: 16px; margin-bottom: 8px" class="text-secondary">
                           <strong>Información de Pago</strong>
                         </h4>
                       </div>
                       <div class="col-md-12 col-xs-12">
-                        <q-select
-                          outlined
-                          v-model="formEdit.modalidad_pago"
-                          label="Modalidad Pago"
-                          hint=""
-                          :rules="[reglasInputs]"
-                          dense
-                          style="padding-bottom: 10px"
-                          :options="modalidad_pago"
-                          lazy-rules
-                        >
+                        <q-select outlined v-model="formEdit.modalidad_pago" label="Modalidad Pago" hint=""
+                          :rules="[reglasInputs]" dense style="padding-bottom: 10px" :options="modalidad_pago"
+                          lazy-rules>
                         </q-select>
                       </div>
 
                       <div class="col-md-12 col-xs-12">
-                        <q-select
-                          outlined
-                          v-model="formEdit.pagado_en"
-                          label="Pagado En"
-                          hint=""
-                          :rules="[reglasInputs]"
-                          dense
-                          style="padding-bottom: 10px"
-                          :options="pagado_en"
-                          lazy-rules
-                        >
+                        <q-select outlined v-model="formEdit.pagado_en" label="Pagado En" hint=""
+                          :rules="[reglasInputs]" dense style="padding-bottom: 10px" :options="pagado_en" lazy-rules>
                         </q-select>
                       </div>
                     </div>
@@ -1460,55 +824,32 @@
                 </q-card>
               </div>
 
-              <div
-                class="col-md-3 col-xs-12 boxStyle"
-                style="margin-bottom: 5px; padding-right: 7px"
-              >
-                <q-card
-                  class="q-pa-md col-md-4 col-xs-12 cardMenus"
-                  bordered
-                  style="padding: 5px"
-                >
-                  <q-card-section
-                    style="
+              <div class="col-md-3 col-xs-12 boxStyle" style="margin-bottom: 5px; padding-right: 7px">
+                <q-card class="q-pa-md col-md-4 col-xs-12 cardMenus" bordered style="padding: 5px">
+                  <q-card-section style="
                       padding-bottom: 5px;
                       padding-left: 10px;
                       padding-right: 10px;
-                    "
-                  >
+                    ">
                     <div class="row">
-                      <div
-                        class="col-md-12 col-xs-12"
-                        style="
+                      <div class="col-md-12 col-xs-12" style="
                           align-self: center;
                           text-align: left;
                           margin-top: -30px;
-                        "
-                      >
-                        <h4
-                          style="font-size: 16px; margin-bottom: 10px"
-                          class="text-secondary"
-                        >
+                        ">
+                        <h4 style="font-size: 16px; margin-bottom: 10px" class="text-secondary">
                           <strong>Origen</strong>
                         </h4>
                       </div>
                       <div class="col-md-12 col-xs-6">
-                        <q-select
-                          outlined
-                          v-model="formEdit.cod_agencia"
-                          label="Agencia"
-                          dense
-                          style="padding-bottom: 20px"
-                          :readonly="readonlyAgencia"
-                          @click="
+                        <q-select outlined v-model="formEdit.cod_agencia" label="Agencia" dense
+                          style="padding-bottom: 20px" :readonly="readonlyAgencia" @click="
                             this.$q.notify({
                               message:
                                 'No es posible modificar la agencia origen. Pues la guía tiene detalle asociado',
                               color: 'red',
                             })
-                          "
-                          :rules="[reglasInputs]"
-                          @filter="
+                          " :rules="[reglasInputs]" @filter="
                             (val, update, abort) =>
                               filterArray(
                                 val,
@@ -1518,16 +859,8 @@
                                 'agencias',
                                 'nb_agencia'
                               )
-                          "
-                          use-input
-                          hide-selected
-                          fill-input
-                          input-debounce="0"
-                          class="pcmovil"
-                          hint=""
-                          :options="agenciasSelected"
-                          lazy-rules
-                          @update:model-value="
+                          " use-input hide-selected fill-input input-debounce="0" class="pcmovil" hint=""
+                          :options="agenciasSelected" lazy-rules @update:model-value="
                             this.clientes_origen = [];
                             this.agentes = [];
                             this.proveedores = [];
@@ -1563,10 +896,7 @@
                               }
                             );
                             this.formEdit.cod_cliente_org = '';
-                          "
-                          option-label="nb_agencia"
-                          option-value="id"
-                        >
+                          " option-label="nb_agencia" option-value="id">
                           <template v-slot:no-option>
                             <q-item>
                               <q-item-section class="text-grey">
@@ -1577,19 +907,9 @@
                         </q-select>
                       </div>
                       <div class="col-md-12 col-xs-6">
-                        <q-select
-                          outlined
-                          v-model="formEdit.cod_cliente_org"
-                          label="Cliente"
-                          :rules="[reglasInputs]"
-                          hint=""
-                          use-input
-                          hide-selected
-                          fill-input
-                          input-debounce="0"
-                          dense
-                          style="padding-bottom: 15px"
-                          @filter="
+                        <q-select outlined v-model="formEdit.cod_cliente_org" label="Cliente" :rules="[reglasInputs]"
+                          hint="" use-input hide-selected fill-input input-debounce="0" dense
+                          style="padding-bottom: 15px" @filter="
                             (val, update, abort) =>
                               filterArray(
                                 val,
@@ -1599,12 +919,7 @@
                                 'clientes_origen',
                                 'nb_cliente'
                               )
-                          "
-                          :options="clientes_origenSelected"
-                          option-label="nb_cliente"
-                          option-value="id"
-                          lazy-rules
-                        >
+                          " :options="clientes_origenSelected" option-label="nb_cliente" option-value="id" lazy-rules>
                           <template v-slot:no-option>
                             <q-item>
                               <q-item-section class="text-grey">
@@ -1612,17 +927,11 @@
                               </q-item-section>
                             </q-item>
                           </template>
-                          <template
-                            v-slot:append
-                            v-if="
-                              this.formEdit.cod_cliente_org.cte_decontado == 1
-                            "
-                          >
-                            <q-icon
-                              @click.stop.prevent="this.clienteClick(false)"
-                              class="cursor-pointer"
-                              name="settings"
-                            />
+                          <template v-slot:append v-if="
+                            this.formEdit.cod_cliente_org.cte_decontado == 1
+                          ">
+                            <q-icon @click.stop.prevent="this.clienteClick(false)" class="cursor-pointer"
+                              name="settings" />
                           </template>
                         </q-select>
                       </div>
@@ -1631,53 +940,28 @@
                 </q-card>
               </div>
 
-              <div
-                class="col-md-5 col-xs-12 boxStyle"
-                style="margin-bottom: 5px"
-              >
-                <q-card
-                  class="q-pa-md col-md-4 col-xs-12 cardMenus"
-                  bordered
-                  style="padding: 5px"
-                >
-                  <q-card-section
-                    style="
+              <div class="col-md-5 col-xs-12 boxStyle" style="margin-bottom: 5px">
+                <q-card class="q-pa-md col-md-4 col-xs-12 cardMenus" bordered style="padding: 5px">
+                  <q-card-section style="
                       padding-top: 15px;
                       padding-bottom: 0px;
                       padding-left: 10px;
                       padding-right: 10px;
-                    "
-                  >
+                    ">
                     <div class="row">
-                      <div
-                        class="col-md-12 col-xs-12"
-                        style="
+                      <div class="col-md-12 col-xs-12" style="
                           align-self: center;
                           text-align: left;
                           margin-top: -30px;
-                        "
-                      >
-                        <h4
-                          style="font-size: 16px; margin-bottom: 10px"
-                          class="text-secondary"
-                        >
+                        ">
+                        <h4 style="font-size: 16px; margin-bottom: 10px" class="text-secondary">
                           <strong>Destino</strong>
                         </h4>
                       </div>
                       <div class="col-md-6 col-xs-6">
-                        <q-select
-                          outlined
-                          v-model="formEdit.cod_agencia_dest"
-                          label="Agencia"
-                          hint=""
-                          dense
-                          style="padding-bottom: 20px"
-                          use-input
-                          hide-selected
-                          fill-input
-                          :rules="[reglasInputs]"
-                          input-debounce="0"
-                          @filter="
+                        <q-select outlined v-model="formEdit.cod_agencia_dest" label="Agencia" hint="" dense
+                          style="padding-bottom: 20px" use-input hide-selected fill-input :rules="[reglasInputs]"
+                          input-debounce="0" @filter="
                             (val, update, abort) =>
                               filterArray(
                                 val,
@@ -1687,13 +971,8 @@
                                 'agencias',
                                 'nb_agencia'
                               )
-                          "
-                          class="pcform pcmovil"
-                          :options="agenciasDestSelected"
-                          lazy-rules
-                          option-label="nb_agencia"
-                          option-value="id"
-                          @update:model-value="
+                          " class="pcform pcmovil" :options="agenciasDestSelected" lazy-rules option-label="nb_agencia"
+                          option-value="id" @update:model-value="
                             this.formEdit.id_clte_part_dest = '';
                             this.clientes_destino = [];
                             this.zonas_destino = [];
@@ -1716,8 +995,7 @@
                             });
                             this.formEdit.cod_cliente_dest = '';
                             this.formEdit.cod_zona_dest = '';
-                          "
-                          ><template v-slot:no-option>
+                          "><template v-slot:no-option>
                             <q-item>
                               <q-item-section class="text-grey">
                                 Sin resultados
@@ -1727,19 +1005,9 @@
                         </q-select>
                       </div>
                       <div class="col-md-6 col-xs-6">
-                        <q-select
-                          outlined
-                          v-model="formEdit.cod_cliente_dest"
-                          :rules="[reglasInputs]"
-                          label="Cliente"
-                          dense
-                          style="padding-bottom: 20px"
-                          hint=""
-                          use-input
-                          hide-selected
-                          fill-input
-                          input-debounce="0"
-                          @filter="
+                        <q-select outlined v-model="formEdit.cod_cliente_dest" :rules="[reglasInputs]" label="Cliente"
+                          dense style="padding-bottom: 20px" hint="" use-input hide-selected fill-input
+                          input-debounce="0" @filter="
                             (val, update, abort) =>
                               filterArray(
                                 val,
@@ -1749,44 +1017,25 @@
                                 'clientes_destino',
                                 'nb_cliente'
                               )
-                          "
-                          :options="clientesDestSelected"
-                          lazy-rules
-                          option-label="nb_cliente"
-                          option-value="id"
-                          ><template v-slot:no-option>
+                          " :options="clientesDestSelected" lazy-rules option-label="nb_cliente" option-value="id">
+                          <template v-slot:no-option>
                             <q-item>
                               <q-item-section class="text-grey">
                                 Sin resultados
                               </q-item-section>
                             </q-item>
                           </template>
-                          <template
-                            v-slot:append
-                            v-if="
-                              this.formEdit.cod_cliente_dest.cte_decontado == 1
-                            "
-                          >
-                            <q-icon
-                              @click.stop.prevent="this.clienteClick(true)"
-                              class="cursor-pointer"
-                              name="settings"
-                            />
+                          <template v-slot:append v-if="
+                            this.formEdit.cod_cliente_dest.cte_decontado == 1
+                          ">
+                            <q-icon @click.stop.prevent="this.clienteClick(true)" class="cursor-pointer"
+                              name="settings" />
                           </template>
                         </q-select>
                       </div>
                       <div class="col-md-10 col-xs-10">
-                        <q-select
-                          outlined
-                          v-model="formEdit.cod_zona_dest"
-                          label="Zona"
-                          dense
-                          use-input
-                          hide-bottom-space
-                          hide-selected
-                          fill-input
-                          input-debounce="0"
-                          @filter="
+                        <q-select outlined v-model="formEdit.cod_zona_dest" label="Zona" dense use-input
+                          hide-bottom-space hide-selected fill-input input-debounce="0" @filter="
                             (val, update, abort) =>
                               filterArray(
                                 val,
@@ -1796,22 +1045,15 @@
                                 'zonas_destino',
                                 'nb_zona'
                               )
-                          "
-                          hint=""
-                          @popup-show="
+                          " hint="" @popup-show="
                             this.getData(`/zonas`, 'setData', 'zonas_destino', {
                               headers: {
                                 Authorization: ``,
                                 agencia: this.formEdit.cod_agencia_dest.id,
                               },
                             })
-                          "
-                          behavior="dialog"
-                          :options="zonasSelected"
-                          lazy-rules
-                          option-label="nb_zona"
-                          option-value="id"
-                          ><template v-slot:no-option>
+                          " behavior="dialog" :options="zonasSelected" lazy-rules option-label="nb_zona"
+                          option-value="id"><template v-slot:no-option>
                             <q-item>
                               <q-item-section class="text-grey">
                                 Sin resultados
@@ -1821,28 +1063,13 @@
                         </q-select>
                       </div>
 
-                      <div
-                        class="col-md-2 col-xs-2 items-start"
-                        style="text-align: center"
-                      >
-                        <q-btn
-                          dense
-                          color="primary"
-                          round
-                          @click="pushToWindow('/zonasagencia')"
-                          padding="sm"
-                          style="margin-left: 15px"
-                        >
+                      <div class="col-md-2 col-xs-2 items-start" style="text-align: center">
+                        <q-btn dense color="primary" round @click="pushToWindow('/zonasagencia')" padding="sm"
+                          style="margin-left: 15px">
                           <q-icon size="25px" name="settings" color="white">
                           </q-icon>
-                          <q-tooltip
-                            class="bg-primary"
-                            style="max-height: 30px"
-                            transition-show="scale"
-                            transition-hide="scale"
-                            color="primary"
-                            >Modificar Zonas</q-tooltip
-                          >
+                          <q-tooltip class="bg-primary" style="max-height: 30px" transition-show="scale"
+                            transition-hide="scale" color="primary">Modificar Zonas</q-tooltip>
                         </q-btn>
                       </div>
                     </div>
@@ -1850,276 +1077,147 @@
                 </q-card>
               </div>
 
-              <div
-                class="col-md-4 col-xs-12 boxStyle"
-                style="margin-bottom: 0px; padding-bottom: 5px"
-              >
-                <q-card
-                  class="q-pa-md col-md-12 col-xs-12"
-                  bordered
-                  style="
+              <div class="col-md-4 col-xs-12 boxStyle" style="margin-bottom: 0px; padding-bottom: 5px">
+                <q-card class="q-pa-md col-md-12 col-xs-12" bordered style="
                     padding-top: 5px;
                     padding-bottom: 5px;
                     padding-left: 6px;
                     padding-right: 0px;
-                  "
-                >
-                  <q-card-section
-                    class="row col-md-12 col-xs-12"
-                    style="
+                  ">
+                  <q-card-section class="row col-md-12 col-xs-12" style="
                       padding-bottom: 2px;
                       padding-top: 2px;
                       padding-left: 10px;
-                    "
-                  >
-                    <div
-                      class="col-md-2 col-xs-12 items-center"
-                      style="align-self: center; text-align: left"
-                    >
-                      <h4
-                        style="
+                    ">
+                    <div class="col-md-2 col-xs-12 items-center" style="align-self: center; text-align: left">
+                      <h4 style="
                           font-size: 16px;
                           margin-top: 0px;
                           margin-bottom: 0px;
-                        "
-                        class="text-secondary inputServicio"
-                      >
+                        " class="text-secondary inputServicio">
                         <strong>Servicio</strong>
                       </h4>
                     </div>
 
-                    <div
-                      class="col-md-5 col-xs-6 checkboxForaneo"
-                      style="margin-bottom: 6px"
-                    >
-                      <q-checkbox
-                        size="lg"
-                        v-model="checkbox.nacional"
-                        true-value="1"
-                        false-value="0"
-                        style="font-size: 13px; padding-left: 10px"
-                        label="Nacional"
-                        @update:model-value="
+                    <div class="col-md-5 col-xs-6 checkboxForaneo" style="margin-bottom: 6px">
+                      <q-checkbox size="lg" v-model="checkbox.nacional" true-value="1" false-value="0"
+                        style="font-size: 13px; padding-left: 10px" label="Nacional" @update:model-value="
                           if (this.checkbox.nacional == '1') {
                             this.checkbox.internacional = '0';
                           }
-                        "
-                      />
+                        " />
                     </div>
 
                     <div class="col-md-5 col-xs-6" style="margin-bottom: 6px">
-                      <q-checkbox
-                        size="lg"
-                        v-model="checkbox.internacional"
-                        true-value="1"
-                        false-value="0"
-                        style="font-size: 13px"
-                        label="Internacional"
-                        @update:model-value="
+                      <q-checkbox size="lg" v-model="checkbox.internacional" true-value="1" false-value="0"
+                        style="font-size: 13px" label="Internacional" @update:model-value="
                           if (this.checkbox.internacional == '1') {
                             this.checkbox.nacional = '0';
                           }
-                        "
-                      />
+                        " />
                     </div>
 
-                    <div
-                      class="col-md-2 col-xs-12 items-center"
-                      style="align-self: center; text-align: left"
-                    >
-                      <h4
-                        style="
+                    <div class="col-md-2 col-xs-12 items-center" style="align-self: center; text-align: left">
+                      <h4 style="
                           font-size: 16px;
                           margin-top: 0px;
                           margin-bottom: 0px;
-                        "
-                        class="text-secondary"
-                      >
+                        " class="text-secondary">
                         <strong>Ubicación</strong>
                       </h4>
                     </div>
 
-                    <div
-                      class="col-md-5 col-xs-6 checkboxForaneo"
-                      style="margin-bottom: 6px"
-                    >
-                      <q-checkbox
-                        size="lg"
-                        v-model="checkbox.urbano"
-                        true-value="1"
-                        false-value="0"
-                        style="font-size: 13px; padding-left: 10px"
-                        label="Urbano"
-                        @update:model-value="
+                    <div class="col-md-5 col-xs-6 checkboxForaneo" style="margin-bottom: 6px">
+                      <q-checkbox size="lg" v-model="checkbox.urbano" true-value="1" false-value="0"
+                        style="font-size: 13px; padding-left: 10px" label="Urbano" @update:model-value="
                           if (this.checkbox.urbano == '1') {
                             this.checkbox.extra_urbano = '0';
                           }
-                        "
-                      />
+                        " />
                     </div>
 
                     <div class="col-md-5 col-xs-6" style="margin-bottom: 6px">
-                      <q-checkbox
-                        size="lg"
-                        v-model="checkbox.extra_urbano"
-                        true-value="1"
-                        false-value="0"
-                        style="font-size: 13px"
-                        label="Extra-Urbano"
-                        @update:model-value="
+                      <q-checkbox size="lg" v-model="checkbox.extra_urbano" true-value="1" false-value="0"
+                        style="font-size: 13px" label="Extra-Urbano" @update:model-value="
                           if (this.checkbox.extra_urbano == '1') {
                             this.checkbox.urbano = '0';
                           }
-                        "
-                      />
+                        " />
                     </div>
 
-                    <div
-                      class="col-md-2 col-xs-12 items-center"
-                      style="align-self: center; text-align: left"
-                    >
-                      <h4
-                        style="
+                    <div class="col-md-2 col-xs-12 items-center" style="align-self: center; text-align: left">
+                      <h4 style="
                           font-size: 16px;
                           margin-top: 0px;
                           margin-bottom: 0px;
-                        "
-                        class="text-secondary"
-                      >
+                        " class="text-secondary">
                         <strong>Urgencia</strong>
                       </h4>
                     </div>
 
                     <div class="col-md-5 col-xs-6 checkboxForaneo">
-                      <q-checkbox
-                        size="lg"
-                        v-model="checkbox.normal"
-                        true-value="1"
-                        false-value="0"
-                        style="font-size: 13px; padding-left: 10px"
-                        label="Normal"
-                        @update:model-value="
+                      <q-checkbox size="lg" v-model="checkbox.normal" true-value="1" false-value="0"
+                        style="font-size: 13px; padding-left: 10px" label="Normal" @update:model-value="
                           if (this.checkbox.normal == '1') {
                             this.checkbox.emergencia = '0';
                           }
-                        "
-                      />
+                        " />
                     </div>
 
                     <div class="col-md-5 col-xs-6">
-                      <q-checkbox
-                        size="lg"
-                        v-model="checkbox.emergencia"
-                        true-value="1"
-                        false-value="0"
-                        style="font-size: 13px"
-                        label="Emergencia"
-                        @update:model-value="
+                      <q-checkbox size="lg" v-model="checkbox.emergencia" true-value="1" false-value="0"
+                        style="font-size: 13px" label="Emergencia" @update:model-value="
                           if (this.checkbox.emergencia == '1') {
                             this.checkbox.normal = '0';
                           }
-                        "
-                      />
+                        " />
                     </div>
                   </q-card-section>
                 </q-card>
               </div>
 
-              <div
-                class="col-md-6 col-xs-12 lastboxStyle"
-                style="margin-bottom: 5px"
-              >
-                <q-card
-                  class="q-pa-md col-md-12 col-xs-12 cardMenus"
-                  bordered
-                  style="padding: 5px"
-                >
-                  <q-card-section
-                    style="
+              <div class="col-md-6 col-xs-12 lastboxStyle" style="margin-bottom: 5px">
+                <q-card class="q-pa-md col-md-12 col-xs-12 cardMenus" bordered style="padding: 5px">
+                  <q-card-section style="
                       padding-bottom: 0px;
                       padding-left: 10px;
                       padding-right: 10px;
-                    "
-                  >
+                    ">
                     <div class="row">
-                      <div
-                        class="col-md-12 col-xs-12"
-                        style="
+                      <div class="col-md-12 col-xs-12" style="
                           align-self: center;
                           text-align: left;
                           margin-top: -30px;
-                        "
-                      >
-                        <h4
-                          style="font-size: 16px; margin-bottom: 5px"
-                          class="text-secondary"
-                        >
+                        ">
+                        <h4 style="font-size: 16px; margin-bottom: 5px" class="text-secondary">
                           <strong>Totales</strong>
                         </h4>
                       </div>
                       <div class="col-md-6 col-xs-12">
-                        <q-input
-                          outlined
-                          v-model="formEdit.monto_subtotal"
-                          label="Monto Subtotal"
-                          hint=""
-                          dense
-                          v-money="money"
-                          input-class="text-right"
-                          style="padding-bottom: 10px"
-                          class="pcform"
-                          :rules="[reglasAllowNull12]"
-                          lazy-rules
-                        >
+                        <q-input outlined v-model="formEdit.monto_subtotal" label="Monto Subtotal" hint="" dense
+                          v-money="money" input-class="text-right" style="padding-bottom: 10px" class="pcform"
+                          :rules="[reglasAllowNull12]" lazy-rules>
                         </q-input>
                       </div>
 
                       <div class="col-md-6 col-xs-12">
-                        <q-input
-                          outlined
-                          v-model="formEdit.monto_impuesto"
-                          label="Monto Impuesto"
-                          hint=""
-                          :rules="[reglasAllowNull12]"
-                          dense
-                          v-money="money"
-                          input-class="text-right"
-                          style="padding-bottom: 10px"
-                          lazy-rules
-                        >
+                        <q-input outlined v-model="formEdit.monto_impuesto" label="Monto Impuesto" hint=""
+                          :rules="[reglasAllowNull12]" dense v-money="money" input-class="text-right"
+                          style="padding-bottom: 10px" lazy-rules>
                         </q-input>
                       </div>
 
                       <div class="col-md-6 col-xs-12">
-                        <q-input
-                          outlined
-                          v-model="formEdit.monto_base"
-                          label="Monto Base"
-                          v-money="money"
-                          input-class="text-right"
-                          hint=""
-                          :rules="[reglasAllowNull12]"
-                          dense
-                          style="padding-bottom: 10px"
-                          class="pcform"
-                          lazy-rules
-                        >
+                        <q-input outlined v-model="formEdit.monto_base" label="Monto Base" v-money="money"
+                          input-class="text-right" hint="" :rules="[reglasAllowNull12]" dense
+                          style="padding-bottom: 10px" class="pcform" lazy-rules>
                         </q-input>
                       </div>
 
                       <div class="col-md-6 col-xs-12">
-                        <q-input
-                          outlined
-                          v-model="formEdit.monto_total"
-                          label="Monto Total"
-                          v-money="money"
-                          input-class="text-right"
-                          hint=""
-                          :rules="[reglasAllowNull12]"
-                          dense
-                          style="padding-bottom: 10px"
-                          lazy-rules
-                        >
+                        <q-input outlined v-model="formEdit.monto_total" label="Monto Total" v-money="money"
+                          input-class="text-right" hint="" :rules="[reglasAllowNull12]" dense
+                          style="padding-bottom: 10px" lazy-rules>
                         </q-input>
                       </div>
                     </div>
@@ -2130,20 +1228,9 @@
               <div class="row col-md-6 col-xs-12">
                 <div class="row col-md-12 col-xs-12 inputsCard">
                   <div class="col-md-6 col-xs-12">
-                    <q-select
-                      outlined
-                      v-model="formEdit.cod_agente_venta"
-                      label="Recolectado Por:"
-                      :rules="[reglasInputs]"
-                      hint=""
-                      class="pcform"
-                      use-input
-                      hide-selected
-                      fill-input
-                      input-debounce="0"
-                      :options="agentesSelected"
-                      style="padding-bottom: 10px"
-                      @filter="
+                    <q-select outlined v-model="formEdit.cod_agente_venta" label="Recolectado Por:"
+                      :rules="[reglasInputs]" hint="" class="pcform" use-input hide-selected fill-input
+                      input-debounce="0" :options="agentesSelected" style="padding-bottom: 10px" @filter="
                         (val, update, abort) =>
                           filterArray(
                             val,
@@ -2153,12 +1240,8 @@
                             'agentes',
                             'persona_responsable'
                           )
-                      "
-                      dense
-                      lazy-rules
-                      option-label="persona_responsable"
-                      option-value="id"
-                      ><template v-slot:no-option>
+                      " dense lazy-rules option-label="persona_responsable" option-value="id"><template
+                        v-slot:no-option>
                         <q-item>
                           <q-item-section class="text-grey">
                             Sin resultados
@@ -2169,17 +1252,8 @@
                   </div>
 
                   <div class="col-md-6 col-xs-12">
-                    <q-select
-                      outlined
-                      v-model="formEdit.cod_proveedor"
-                      label="Proveedor del Transporte"
-                      hint=""
-                      use-input
-                      hide-selected
-                      style="padding-bottom: 10px"
-                      fill-input
-                      input-debounce="0"
-                      @filter="
+                    <q-select outlined v-model="formEdit.cod_proveedor" label="Proveedor del Transporte" hint=""
+                      use-input hide-selected style="padding-bottom: 10px" fill-input input-debounce="0" @filter="
                         (val, update, abort) =>
                           filterArray(
                             val,
@@ -2189,13 +1263,8 @@
                             'proveedores',
                             'nb_proveedor'
                           )
-                      "
-                      dense
-                      :options="proveedores"
-                      option-label="nb_proveedor"
-                      option-value="id"
-                      lazy-rules
-                      ><template v-slot:no-option>
+                      " dense :options="proveedores" option-label="nb_proveedor" option-value="id" lazy-rules><template
+                        v-slot:no-option>
                         <q-item>
                           <q-item-section class="text-grey">
                             Sin resultados
@@ -2208,115 +1277,60 @@
 
                 <div class="row col-md-12 col-xs-12">
                   <div class="col-md-6 col-xs-6">
-                    <q-input
-                      outlined
-                      v-model="formEdit.dimensiones"
-                      label="Dimensiones"
-                      dense
-                      style="padding-bottom: 10px"
-                      hint=""
-                      class="pcform pcmovil"
-                      @update:model-value="
+                    <q-input outlined v-model="formEdit.dimensiones" label="Dimensiones" dense
+                      style="padding-bottom: 10px" hint="" class="pcform pcmovil" @update:model-value="
                         formEdit.dimensiones =
                           formEdit.dimensiones.toUpperCase()
-                      "
-                      lazy-rules
-                    >
+                      " lazy-rules>
                     </q-input>
                   </div>
 
                   <div class="col-md-6 col-xs-6">
-                    <q-input
-                      outlined
-                      v-model="formEdit.desc_contenido"
-                      label="Contenido"
-                      dense
-                      style="padding-bottom: 10px"
-                      hint=""
-                      @update:model-value="
+                    <q-input outlined v-model="formEdit.desc_contenido" label="Contenido" dense
+                      style="padding-bottom: 10px" hint="" @update:model-value="
                         formEdit.desc_contenido =
                           formEdit.desc_contenido.toUpperCase()
-                      "
-                      lazy-rules
-                    >
+                      " lazy-rules>
                     </q-input>
                   </div>
                 </div>
 
                 <div class="row col-md-12 col-xs-12">
                   <div class="col-md-6 col-xs-12">
-                    <q-input
-                      outlined
-                      v-model="formEdit.carga_neta"
-                      label="Carga Neta"
-                      hint=""
-                      dense
-                      style="padding-bottom: 10px"
-                      v-money="money"
-                      input-class="text-right"
-                      :rules="[reglasNotNull6]"
-                      class="pcform"
-                      lazy-rules
-                    >
+                    <q-input outlined v-model="formEdit.carga_neta" label="Carga Neta" hint="" dense
+                      style="padding-bottom: 10px" v-money="money" input-class="text-right" :rules="[reglasNotNull6]"
+                      class="pcform" lazy-rules>
                     </q-input>
                   </div>
 
                   <div class="col-md-6 col-xs-12">
-                    <q-input
-                      outlined
-                      v-model="formEdit.valor_declarado_cod"
-                      label="COD - Valor Declarado"
-                      hint=""
-                      :rules="[reglasAllowNull12]"
-                      dense
-                      style="padding-bottom: 10px"
-                      @update:model-value="
+                    <q-input outlined v-model="formEdit.valor_declarado_cod" label="COD - Valor Declarado" hint=""
+                      :rules="[reglasAllowNull12]" dense style="padding-bottom: 10px" @update:model-value="
                         formEdit.valor_declarado_cod =
                           formEdit.valor_declarado_cod.toUpperCase()
-                      "
-                      lazy-rules
-                    >
+                      " lazy-rules>
                     </q-input>
                   </div>
                 </div>
               </div>
 
               <div class="col-md-2 col-xs-9">
-                <q-input
-                  outlined
-                  v-model="formEdit.valor_declarado_seg"
-                  label="Seguro"
-                  hint=""
-                  :rules="[reglasAllowNull14]"
-                  dense
-                  style="padding-bottom: 10px"
-                  class="pcform pcmovil"
+                <q-input outlined v-model="formEdit.valor_declarado_seg" label="Seguro" hint=""
+                  :rules="[reglasAllowNull14]" dense style="padding-bottom: 10px" class="pcform pcmovil"
                   @update:model-value="
                     formEdit.valor_declarado_seg =
                       formEdit.valor_declarado_seg.toUpperCase()
-                  "
-                  lazy-rules
-                >
+                  " lazy-rules>
                 </q-input>
               </div>
 
               <div class="col-md-2 col-xs-3">
-                <q-input
-                  outlined
-                  v-model="formEdit.porc_apl_seguro"
-                  hint=""
-                  :rules="[reglasAllowNull6]"
-                  dense
-                  v-money="money"
-                  input-class="text-right"
-                  style="padding-bottom: 10px"
-                  class="pcform"
+                <q-input outlined v-model="formEdit.porc_apl_seguro" hint="" :rules="[reglasAllowNull6]" dense
+                  v-money="money" input-class="text-right" style="padding-bottom: 10px" class="pcform"
                   @update:model-value="
                     formEdit.porc_apl_seguro =
                       formEdit.porc_apl_seguro.toUpperCase()
-                  "
-                  lazy-rules
-                >
+                  " lazy-rules>
                   <template v-slot:prepend>
                     <q-icon name="percent" />
                   </template>
@@ -2324,17 +1338,8 @@
               </div>
 
               <div class="col-md-3 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="formEdit.cod_agencia_transito"
-                  label="Agencia Transito"
-                  hint=""
-                  use-input
-                  :rules="[reglasInputs]"
-                  hide-selected
-                  fill-input
-                  input-debounce="0"
-                  @filter="
+                <q-select outlined v-model="formEdit.cod_agencia_transito" label="Agencia Transito" hint="" use-input
+                  :rules="[reglasInputs]" hide-selected fill-input input-debounce="0" @filter="
                     (val, update, abort) =>
                       filterArray(
                         val,
@@ -2344,15 +1349,8 @@
                         'agencias',
                         'nb_agencia'
                       )
-                  "
-                  :options="agenciasTransitoSelected"
-                  class="pcform"
-                  option-label="nb_agencia"
-                  option-value="id"
-                  dense
-                  style="padding-bottom: 10px"
-                  lazy-rules
-                  ><template v-slot:no-option>
+                  " :options="agenciasTransitoSelected" class="pcform" option-label="nb_agencia" option-value="id"
+                  dense style="padding-bottom: 10px" lazy-rules><template v-slot:no-option>
                     <q-item>
                       <q-item-section class="text-grey">
                         Sin resultados
@@ -2363,95 +1361,42 @@
               </div>
 
               <div class="col-md-3 col-xs-12">
-                <q-input
-                  outlined
-                  label="Fecha Llegada Transito"
-                  hint=""
-                  dense
-                  style="padding-bottom: 10px"
-                  v-model="formEdit.fecha_llega_transito"
-                  lazy-rules
-                  class="pcform"
-                  :rules="[checkDate]"
-                >
+                <q-input outlined label="Fecha Llegada Transito" hint="" dense style="padding-bottom: 10px"
+                  v-model="formEdit.fecha_llega_transito" lazy-rules class="pcform" :rules="[checkDate]">
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy
-                        ref="qDateProxy"
-                        transition-show="scale"
-                        transition-hide="scale"
-                      >
-                        <q-date
-                          v-model="formEdit.fecha_llega_transito"
-                          mask="DD/MM/YYYY"
-                          @update:model-value="this.$refs.qDateProxy.hide()"
-                        ></q-date>
+                      <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                        <q-date v-model="formEdit.fecha_llega_transito" mask="DD/MM/YYYY"
+                          @update:model-value="this.$refs.qDateProxy.hide()"></q-date>
                       </q-popup-proxy>
                     </q-icon>
                   </template>
                 </q-input>
               </div>
 
-              <div
-                class="col-md-2 col-xs-12 margin_bottom"
-                style="padding-right: 10px"
-              >
-                <q-checkbox
-                  size="lg"
-                  v-model="formEdit.check_transito"
-                  true-value="1"
-                  false-value="0"
-                  style="font-size: 13px"
-                  label="PASEO POR TRANSITO"
-                />
+              <div class="col-md-2 col-xs-12 margin_bottom" style="padding-right: 10px">
+                <q-checkbox size="lg" v-model="formEdit.check_transito" true-value="1" false-value="0"
+                  style="font-size: 13px" label="PASEO POR TRANSITO" />
               </div>
 
               <div class="col-md-3 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="formEdit.estatus_operativo"
-                  label="Estatus Operacional"
-                  hint=""
-                  dense
-                  class="pcform"
-                  :options="estatus_operativo"
-                  hide-bottom-space
-                  lazy-rules
-                >
+                <q-select outlined v-model="formEdit.estatus_operativo" label="Estatus Operacional" hint="" dense
+                  class="pcform" :options="estatus_operativo" hide-bottom-space lazy-rules>
                 </q-select>
               </div>
 
               <div class="col-md-3 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="formEdit.estatus_administra"
-                  label="Estatus Administrativo"
-                  hint=""
-                  :options="estatus_administrativo"
-                  hide-bottom-space
-                  class="pcform"
-                  dense
-                  lazy-rules
-                >
+                <q-select outlined v-model="formEdit.estatus_administra" label="Estatus Administrativo" hint=""
+                  :options="estatus_administrativo" hide-bottom-space class="pcform" dense lazy-rules>
                 </q-select>
               </div>
 
               <div class="col-md-3 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formEdit.monto_ref_cte_sin_imp"
-                  label="Monto Referencia Cliente"
-                  dense
-                  hint=""
-                  :rules="[reglasAllowNull14]"
-                  class="pcform"
-                  type="number"
-                  @update:model-value="
+                <q-input outlined v-model="formEdit.monto_ref_cte_sin_imp" label="Monto Referencia Cliente" dense
+                  hint="" :rules="[reglasAllowNull14]" class="pcform" type="number" @update:model-value="
                     formEdit.monto_ref_cte_sin_imp =
                       formEdit.monto_ref_cte_sin_imp.toUpperCase()
-                  "
-                  lazy-rules
-                >
+                  " lazy-rules>
                   <template v-slot:append>
                     <q-btn round dense flat icon="input" />
                   </template>
@@ -2459,40 +1404,21 @@
               </div>
 
               <div class="col-md-1 col-xs-5">
-                <q-input
-                  outlined
-                  v-model="formEdit.porc_descuento"
-                  label="% Desc"
-                  v-money="money"
-                  input-class="text-right"
-                  hint=""
-                  :rules="[reglasAllowNull6]"
-                  class="pcform pcmovil"
-                  dense
+                <q-input outlined v-model="formEdit.porc_descuento" label="% Desc" v-money="money"
+                  input-class="text-right" hint="" :rules="[reglasAllowNull6]" class="pcform pcmovil" dense
                   @update:model-value="
                     formEdit.porc_descuento =
                       formEdit.porc_descuento.toUpperCase()
-                  "
-                  lazy-rules
-                >
+                  " lazy-rules>
                 </q-input>
               </div>
 
               <div class="col-md-1 col-xs-4">
-                <q-input
-                  outlined
-                  v-model="formEdit.porc_comision"
-                  label="% X Zona"
-                  v-money="money"
-                  input-class="text-right"
-                  hint=""
-                  dense
-                  @update:model-value="
+                <q-input outlined v-model="formEdit.porc_comision" label="% X Zona" v-money="money"
+                  input-class="text-right" hint="" dense @update:model-value="
                     formEdit.porc_comision =
                       formEdit.porc_comision.toUpperCase()
-                  "
-                  lazy-rules
-                >
+                  " lazy-rules>
                 </q-input>
               </div>
               <q-inner-loading :showing="visible">
@@ -2514,13 +1440,7 @@
 
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="primary" v-close-popup />
-          <q-btn
-            flat
-            label="Aceptar"
-            color="primary"
-            v-close-popup
-            @click="deleteData(selected)"
-          />
+          <q-btn flat label="Aceptar" color="primary" v-close-popup @click="deleteData(selected)" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -2535,34 +1455,19 @@
 
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="primary" v-close-popup />
-          <q-btn
-            flat
-            label="Reversar"
-            color="primary"
-            v-close-popup
-            @click="
-              this.reversada = true;
-              this.putData();
-            "
-          />
+          <q-btn flat label="Reversar" color="primary" v-close-popup @click="
+            this.reversada = true;
+            this.putData();
+          " />
         </q-card-actions>
       </q-card>
     </q-dialog>
 
-    <methods
-      ref="methods"
-      @set-Data="setData"
-      @set-Data-Edit="setDataEdit"
-      @reset-Loading="resetLoading"
-      @set-Data-Localidades="setDataLocalidades"
-      @set-Data-Municipios="setDataMunicipios"
-      @set-Data-Parroquias="setDataParroquias"
-      @set-Data-Estados="setDataEstados"
-      @set-Data-Ciudades="setDataCiudades"
-      @set-Data-Paises="setDataPaises"
-      @set-Data-Detalle="setDataDetalle"
-      @set-Data-Permisos="setDataPermisos"
-    ></methods>
+    <methods ref="methods" @set-Data="setData" @set-Data-Edit="setDataEdit" @reset-Loading="resetLoading"
+      @set-Data-Localidades="setDataLocalidades" @set-Data-Municipios="setDataMunicipios"
+      @set-Data-Parroquias="setDataParroquias" @set-Data-Estados="setDataEstados" @set-Data-Ciudades="setDataCiudades"
+      @set-Data-Paises="setDataPaises" @set-Data-Detalle="setDataDetalle" @set-Data-Permisos="setDataPermisos">
+    </methods>
 
     <rules-vue ref="rulesVue"></rules-vue>
   </q-page>
@@ -4676,62 +3581,74 @@ export default {
     padding-top: 5px !important;
   }
 }
+
 @media screen and (min-width: 1024px) {
   .marginCard {
     padding-top: 11px;
   }
 }
+
 @media screen and (min-width: 1024px) {
   .inputsCard {
     padding-top: 15px;
   }
 }
+
 @media screen and (min-width: 1024px) {
   .margin_bottom {
     margin-bottom: 13px;
   }
 }
+
 @media screen and (max-width: 1024px) {
   .margin_bottom {
     margin-bottom: 10px;
   }
 }
+
 @media screen and (min-width: 1024px) {
   .marginMenu {
     margin-bottom: 10px;
     margin-top: 54px;
   }
 }
+
 @media screen and (min-width: 1024px) {
   .inputMenuGuias {
     margin-right: 20px;
   }
 }
+
 @media screen and (min-width: 1024px) {
   .cardForm {
     margin-right: 70px;
   }
 }
+
 @media screen and (min-width: 1024px) {
   .checkboxForaneo {
     padding-left: 10px;
   }
 }
+
 @media screen and (max-width: 1024px) {
   .botonesGuias {
     margin-top: 30px;
   }
 }
+
 @media screen and (max-width: 600px) {
   .selectmovil {
     margin-bottom: 20px;
   }
 }
+
 @media screen and (max-width: 600px) {
   .selectmovil2 {
     margin-bottom: 20px;
   }
 }
+
 @media screen and (min-width: 600px) {
   .btnCard {
     margin-right: 25px;
@@ -4739,16 +3656,19 @@ export default {
     text-align: center;
   }
 }
+
 @media screen and (max-width: 600px) {
   .btnCard {
     margin-left: 25px;
   }
 }
+
 @media screen and (min-width: 1024px) {
   .cardMenus {
     width: 96%;
   }
 }
+
 @media screen and (max-width: 1024px) {
   .boxStyle {
     padding-bottom: 5px !important;
@@ -4758,6 +3678,7 @@ export default {
     margin-bottom: 5px !important;
   }
 }
+
 @media screen and (max-width: 1024px) {
   .lastboxStyle {
     padding-bottom: 10px !important;
@@ -4766,36 +3687,43 @@ export default {
     padding-top: 0px !important;
   }
 }
+
 @media screen and (min-width: 600px) {
   .selectmovil {
     margin-right: 20px;
   }
 }
+
 @media screen and (min-width: 600px) {
   .selectmovil2 {
     margin-right: 35px;
   }
 }
+
 @media screen and (min-width: 1200px) {
   .separationMobile {
     margin-left: 10px;
   }
 }
+
 @media screen and (max-width: 1024px) {
   .espaciadoGuias {
     margin-top: 20px;
   }
 }
+
 @media screen and (max-width: 600px) {
   .titleMenu {
     margin-top: 15px;
   }
 }
+
 @media screen and (max-width: 1024px) {
   .inputMovil {
     margin-top: 25px;
   }
 }
+
 @media screen and (max-width: 1024px) {
   .pageStyle {
     margin-top: 20px;
