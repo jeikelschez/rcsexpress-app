@@ -383,7 +383,7 @@
           style="text-align: center; align-self: center"
         >
           <q-btn
-            label="Insertar Agencia"
+            label="Insertar"
             rounded
             color="primary"
             :disabled="this.allowOption(2)"
@@ -408,7 +408,7 @@
           v-model:pagination="pagination"
         >
           <template v-slot:loading>
-            <q-inner-loading showing color="primary" />
+            <q-inner-loading showing color="primary" class="loading" />
           </template>
           <template v-slot:body-cell-action="props">
             <q-td :props="props">
@@ -688,6 +688,7 @@ export default {
 
     // Metodo para Extraer Datos de Tabla
     getDataTable(props) {
+      this.loading = true;
       if (props) this.pagination = props.pagination;
       this.$refs.methods.getData(`/agencias`, "setDataTable", "datos", {
         headers: {
@@ -753,7 +754,6 @@ export default {
     // Metodo para Eliminar Agencia
     deleteData(idpost) {
       this.$refs.methods.deleteData(`/agencias/${idpost}`, "getDataTable");
-      this.loading = true;
     },
     // Metodo para Editar o Crear Agencia
     sendData() {
@@ -761,7 +761,6 @@ export default {
       this.form.estatus = this.form.estatus.value;
       if (!this.form.id) {
         this.$refs.methods.createData("/agencias", this.form, "getDataTable");
-        this.loading = true;
         this.agenciasDialog = false;
         this.resetForm();
       } else {
