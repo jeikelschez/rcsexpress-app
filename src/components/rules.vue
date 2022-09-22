@@ -10,44 +10,25 @@ export default {
     const $q = useQuasar();
   },
   methods: {
-    // Reglas
-    isReq(val, reason) {
-      var ret = true;
-      if (val == null || val.trim() == "") ret = `Valor Requerido`;
-      if (ret !== true && reason == "") ret == "";
-      return ret;
+    isReq(val, ret = false) {
+      if (val == null || val.trim() == "")
+        return ret !== false ? ret : `Valor Requerido`;
     },
-    isReqSelect(val, reason) {
-      var ret = true;
-      if (val == null || val == [] || val == "") ret = `Valor Requerido`;
-      if (ret !== true && reason == "") ret == "";
-      return ret;
+    isReqSelect(val, ret = false) {
+      if (val == null || val == [] || val == "")
+        return ret !== false ? ret : `Valor Requerido`;
     },
-    isMax(val, max, reason) {
-      if (val !== null) {
-        val = val.replace(".", "");
-        val = val.replace(",", "");
-        var ret = true;
-        if (val !== "" && val !== null && val.length > max) ret = `Maximo ${max} Caracteres`;
-        if (ret !== true && reason == "") ret == "";
-        return ret;
-      }
+    isMax(val, max, ret = false) {
+      if (val !== null && val !== "" && val.length > max)
+        return ret !== false ? ret : `Maximo ${min} Caracteres`;
     },
-    isMin(val, min, reason) {
-      if (val !== null) {
-        val = val.replace(".", "");
-        val = val.replace(",", "");
-        var ret = true;
-        if (val !== "" && val !== null && val.length < min) return `Minimo ${min} Caracteres`;
-        if (ret !== true && reason == "") ret == "";
-        return ret;
-      }
+    isMin(val, min, ret = false) {
+      if (val !== null && val !== "" && val.length < min)
+        return ret !== false ? ret : `Minimo ${min} Caracteres`;
     },
-    checkDate(val, reason) {
-      var ret = true;
-      if (moment(val, "DD/MM/YYYY", true)._isValid == false) ret = "Fecha Invalida";
-      if (ret !== true && reason == "") ret == "";
-      return ret;
+    checkDate(val, ret = false) {
+      if (moment(val, "DD/MM/YYYY", true)._isValid == false)
+        return ret !== false ? ret : `Fecha Invalida`;
     },
   },
 };
