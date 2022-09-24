@@ -156,15 +156,15 @@
                   label="Pais"
                   hint=""
                   class="pcform"
-                  :rules="[reglasInputs]"
-                  :options="paisesSelected"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, '')]"
+                  :options="paisesFiltered"
                   @filter="
                     (val, update, abort) =>
                       filterArray(
                         val,
                         update,
                         abort,
-                        'paisesSelected',
+                        'paisesFiltered',
                         'paises',
                         'desc_pais'
                       )
@@ -218,15 +218,15 @@
                   label="Estado"
                   class="pcform"
                   hint=""
-                  :rules="[reglasInputs]"
-                  :options="estadosSelected"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, '')]"
+                  :options="estadosFiltered"
                   @filter="
                     (val, update, abort) =>
                       filterArray(
                         val,
                         update,
                         abort,
-                        'estadosSelected',
+                        'estadosFiltered',
                         'estados',
                         'desc_estado'
                       )
@@ -297,15 +297,15 @@
                   v-model="ciudad"
                   label="Ciudad"
                   hint=""
-                  :rules="[reglasInputs]"
-                  :options="ciudadesSelected"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, '')]"
+                  :options="ciudadesFiltered"
                   @filter="
                     (val, update, abort) =>
                       filterArray(
                         val,
                         update,
                         abort,
-                        'ciudadesSelected',
+                        'ciudadesFiltered',
                         'ciudades',
                         'desc_ciudad'
                       )
@@ -337,15 +337,15 @@
                   label="Municipio"
                   hint=""
                   class="pcform"
-                  :rules="[reglasInputs]"
-                  :options="municipiosSelected"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, '')]"
+                  :options="municipiosFiltered"
                   @filter="
                     (val, update, abort) =>
                       filterArray(
                         val,
                         update,
                         abort,
-                        'municipiosSelected',
+                        'municipiosFiltered',
                         'municipios',
                         'desc_municipio'
                       )
@@ -390,15 +390,15 @@
                   label="Parroquia"
                   hint=""
                   class="pcform"
-                  :rules="[reglasInputs]"
-                  :options="parroquiasSelected"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, '')]"
+                  :options="parroquiasFiltered"
                   @filter="
                     (val, update, abort) =>
                       filterArray(
                         val,
                         update,
                         abort,
-                        'parroquiasSelected',
+                        'parroquiasFiltered',
                         'parroquias',
                         'desc_parroquia'
                       )
@@ -429,15 +429,15 @@
                   v-model="formClientes.cod_localidad"
                   label="Localidad"
                   hint=""
-                  :rules="[reglasInputs]"
-                  :options="localidadesSelected"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, '')]"
+                  :options="localidadesFiltered"
                   @filter="
                     (val, update, abort) =>
                       filterArray(
                         val,
                         update,
                         abort,
-                        'localidadesSelected',
+                        'localidadesFiltered',
                         'localidades',
                         'desc_localidad'
                       )
@@ -690,7 +690,7 @@
                   v-model="formClientesParticulares.rif_ci"
                   label="RIF/CI"
                   dense
-                  :rules="[reglasAllowMin3]"
+                  :rules="[(val) => this.$refs.rulesVue.isMin(val, 3, '')]"
                   :readonly="this.disabledRif"
                   @blur="this.validateExistingClient()"
                   hint=""
@@ -711,15 +711,15 @@
                   hint=""
                   dense
                   class="pcform"
-                  :rules="[reglasInputs]"
-                  :options="agenciasSelected"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, '')]"
+                  :options="agenciasFiltered"
                   @filter="
                     (val, update, abort) =>
                       filterArray(
                         val,
                         update,
                         abort,
-                        'agenciasSelected',
+                        'agenciasFiltered',
                         'agencias',
                         'nb_agencia'
                       )
@@ -751,7 +751,7 @@
                   label="Cliente"
                   :readonly="this.disabledCliente"
                   dense
-                  :rules="[reglasAllowMin3]"
+                  :rules="[(val) => this.$refs.rulesVue.isMin(val, 3, '')]"
                   lazy-rules
                   hint=""
                 >
@@ -770,15 +770,15 @@
                   hint=""
                   dense
                   class="pcform"
-                  :rules="[reglasInputs]"
-                  :options="paisesSelected"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, '')]"
+                  :options="paisesFiltered"
                   @filter="
                     (val, update, abort) =>
                       filterArray(
                         val,
                         update,
                         abort,
-                        'paisesSelected',
+                        'paisesFiltered',
                         'paises',
                         'desc_pais'
                       )
@@ -833,15 +833,15 @@
                   class="pcform"
                   hint=""
                   :readonly="this.disabledInputs"
-                  :rules="[reglasInputs]"
-                  :options="estadosSelected"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, '')]"
+                  :options="estadosFiltered"
                   @filter="
                     (val, update, abort) =>
                       filterArray(
                         val,
                         update,
                         abort,
-                        'estadosSelected',
+                        'estadosFiltered',
                         'estados',
                         'desc_estado'
                       )
@@ -914,15 +914,15 @@
                   dense
                   hint=""
                   :readonly="this.disabledInputs"
-                  :rules="[reglasInputs]"
-                  :options="ciudadesSelected"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, '')]"
+                  :options="ciudadesFiltered"
                   @filter="
                     (val, update, abort) =>
                       filterArray(
                         val,
                         update,
                         abort,
-                        'ciudadesSelected',
+                        'ciudadesFiltered',
                         'ciudades',
                         'desc_ciudad'
                       )
@@ -956,15 +956,15 @@
                   class="pcform"
                   :readonly="this.disabledInputs"
                   dense
-                  :rules="[reglasInputs]"
-                  :options="municipiosSelected"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, '')]"
+                  :options="municipiosFiltered"
                   @filter="
                     (val, update, abort) =>
                       filterArray(
                         val,
                         update,
                         abort,
-                        'municipiosSelected',
+                        'municipiosFiltered',
                         'municipios',
                         'desc_municipio'
                       )
@@ -1013,15 +1013,15 @@
                   hint=""
                   class="pcform"
                   dense
-                  :rules="[reglasInputs]"
-                  :options="parroquiasSelected"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, '')]"
+                  :options="parroquiasFiltered"
                   @filter="
                     (val, update, abort) =>
                       filterArray(
                         val,
                         update,
                         abort,
-                        'parroquiasSelected',
+                        'parroquiasFiltered',
                         'parroquias',
                         'desc_parroquia'
                       )
@@ -1054,15 +1054,15 @@
                   hint=""
                   :readonly="this.disabledInputs"
                   dense
-                  :rules="[reglasInputs]"
-                  :options="localidadesSelected"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, '')]"
+                  :options="localidadesFiltered"
                   @filter="
                     (val, update, abort) =>
                       filterArray(
                         val,
                         update,
                         abort,
-                        'localidadesSelected',
+                        'localidadesFiltered',
                         'localidades',
                         'desc_localidad'
                       )
@@ -1092,7 +1092,7 @@
                   outlined
                   v-model="formClientesParticulares.telefonos"
                   label="Telefono"
-                  :rules="[reglasAllowMin3]"
+                  :rules="[(val) => this.$refs.rulesVue.isMin(val, 3, '')]"
                   :readonly="this.disabledInputs"
                   class="pcform"
                   dense
@@ -1113,7 +1113,7 @@
                   label="Fax"
                   dense
                   hint=""
-                  :rules="[reglasAllowMin3]"
+                  :rules="[(val) => this.$refs.rulesVue.isMin(val, 3, '')]"
                   lazy-rules
                 >
                   <template v-slot:prepend>
@@ -1128,7 +1128,7 @@
                   v-model="formClientesParticulares.direccion"
                   label="Direccion"
                   :readonly="this.disabledInputs"
-                  :rules="[reglasAllowMin3]"
+                  :rules="[(val) => this.$refs.rulesVue.isMin(val, 3, '')]"
                   dense
                   hint=""
                   lazy-rules
@@ -1188,10 +1188,9 @@
                 class="pcform"
                 dense
                 :rules="[
-                  (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
+                  (val) => this.$refs.rulesVue.isReq(val, ''),
                   (val) => this.$refs.rulesVue.isMax(val, 10, ''),
-                  (val) =>
-                    this.$refs.rulesVue.isMin(val, 3, 'Debe ser Mayor') || '',
+                  (val) => this.$refs.rulesVue.isMin(val, 3, ''),
                 ]"
                 hide-bottom-space
               >
@@ -1201,7 +1200,7 @@
                       if (form.nro_documento !== '') {
                         this.resetFormEdit();
                         this.showTextLoading();
-                        this.getDataGuia();
+                        this.validationGetGuia();
                       }
                     "
                     class="cursor-pointer"
@@ -1275,7 +1274,7 @@
                       dense
                       style="padding-bottom: 10px"
                       class="pcform pcmovil"
-                      :rules="[checkDate]"
+                      :rules="[(val) => this.$refs.rulesVue.checkDate(val, '')]"
                       mask="##/##/####"
                     >
                       <template v-slot:append>
@@ -1305,7 +1304,7 @@
                       style="padding-bottom: 10px"
                       v-model="form.fecha_envio"
                       lazy-rules
-                      :rules="[checkDate]"
+                      :rules="[(val) => this.$refs.rulesVue.checkDate(val, '')]"
                     >
                       <template v-slot:append>
                         <q-icon name="event" class="cursor-pointer">
@@ -1334,7 +1333,7 @@
                       style="padding-bottom: 10px"
                       v-model="form.fecha_aplicacion"
                       lazy-rules
-                      :rules="[checkDate]"
+                      :rules="[(val) => this.$refs.rulesVue.checkDate(val, '')]"
                     >
                       <template v-slot:append>
                         <q-icon name="event" class="cursor-pointer">
@@ -1400,7 +1399,10 @@
                       label="Piezas"
                       v-money="moneyNotDecimal"
                       input-class="text-right"
-                      :rules="[reglasNotNull3]"
+                      :rules="[
+                        (val) => this.$refs.rulesVue.isReq(val, ''),
+                        (val) => this.$refs.rulesVue.isMax(val, 3, ''),
+                      ]"
                       hide-buttom-space
                       class="pcform pcmovil"
                       lazy-rules
@@ -1412,8 +1414,12 @@
                     <q-input
                       outlined
                       v-model="form.peso_kgs"
+                      ref="formKGS"
                       label="Peso KGS"
-                      :rules="[reglasNotNull6]"
+                      :rules="[
+                        (val) => this.$refs.rulesVue.isReq(val, ''),
+                        (val) => this.$refs.rulesVue.isMax(val, 9, ''),
+                      ]"
                       v-money="money"
                       input-class="text-right"
                       dense
@@ -1496,9 +1502,12 @@
                     <q-select
                       outlined
                       v-model="form.modalidad_pago"
+                      ref="formModalidadPago"
                       label="Modalidad Pago"
                       hint=""
-                      :rules="[reglasInputs]"
+                      :rules="[
+                        (val) => this.$refs.rulesVue.isReqSelect(val, ''),
+                      ]"
                       dense
                       style="padding-bottom: 10px"
                       :options="modalidad_pago"
@@ -1511,9 +1520,12 @@
                     <q-select
                       outlined
                       v-model="form.pagado_en"
+                      ref="formPagado"
                       label="Pagado En"
                       hint=""
-                      :rules="[reglasInputs]"
+                      :rules="[
+                        (val) => this.$refs.rulesVue.isReqSelect(val, ''),
+                      ]"
                       dense
                       style="padding-bottom: 10px"
                       :options="pagado_en"
@@ -1563,6 +1575,7 @@
                       outlined
                       v-model="form.cod_agencia"
                       label="Agencia"
+                      ref="formAgencia"
                       dense
                       style="padding-bottom: 20px"
                       :readonly="readonlyAgencia"
@@ -1573,14 +1586,16 @@
                           color: 'red',
                         })
                       "
-                      :rules="[reglasInputs]"
+                      :rules="[
+                        (val) => this.$refs.rulesVue.isReqSelect(val, ''),
+                      ]"
                       @filter="
                         (val, update, abort) =>
                           filterArray(
                             val,
                             update,
                             abort,
-                            'agenciasSelected',
+                            'agenciasFiltered',
                             'agencias',
                             'nb_agencia'
                           )
@@ -1591,7 +1606,7 @@
                       input-debounce="0"
                       class="pcmovil"
                       hint=""
-                      :options="agenciasSelected"
+                      :options="agenciasFiltered"
                       lazy-rules
                       @update:model-value="
                         this.clientes_origen = [];
@@ -1642,7 +1657,10 @@
                       outlined
                       v-model="form.cod_cliente_org"
                       label="Cliente"
-                      :rules="[reglasInputs]"
+                      ref="formClienteDestino"
+                      :rules="[
+                        (val) => this.$refs.rulesVue.isReqSelect(val, ''),
+                      ]"
                       hint=""
                       use-input
                       hide-selected
@@ -1656,12 +1674,12 @@
                             val,
                             update,
                             abort,
-                            'clientes_origenSelected',
+                            'clientes_origenFiltered',
                             'clientes_origen',
                             'nb_cliente'
                           )
                       "
-                      :options="clientes_origenSelected"
+                      :options="clientes_origenFiltered"
                       option-label="nb_cliente"
                       option-value="id"
                       lazy-rules
@@ -1724,6 +1742,7 @@
                     <q-select
                       outlined
                       v-model="form.cod_agencia_dest"
+                      ref="formAgenciaDestino"
                       label="Agencia"
                       hint=""
                       dense
@@ -1731,7 +1750,9 @@
                       use-input
                       hide-selected
                       fill-input
-                      :rules="[reglasInputs]"
+                      :rules="[
+                        (val) => this.$refs.rulesVue.isReqSelect(val, ''),
+                      ]"
                       input-debounce="0"
                       @filter="
                         (val, update, abort) =>
@@ -1739,13 +1760,13 @@
                             val,
                             update,
                             abort,
-                            'agenciasDestSelected',
+                            'agenciasDestFiltered',
                             'agencias',
                             'nb_agencia'
                           )
                       "
                       class="pcform pcmovil"
-                      :options="agenciasDestSelected"
+                      :options="agenciasDestFiltered"
                       lazy-rules
                       option-label="nb_agencia"
                       option-value="id"
@@ -1786,7 +1807,10 @@
                     <q-select
                       outlined
                       v-model="form.cod_cliente_dest"
-                      :rules="[reglasInputs]"
+                      ref="formClienteDestino"
+                      :rules="[
+                        (val) => this.$refs.rulesVue.isReqSelect(val, ''),
+                      ]"
                       label="Cliente"
                       dense
                       style="padding-bottom: 20px"
@@ -1801,12 +1825,12 @@
                             val,
                             update,
                             abort,
-                            'clientesDestSelected',
+                            'clientesDestFiltered',
                             'clientes_destino',
                             'nb_cliente'
                           )
                       "
-                      :options="clientesDestSelected"
+                      :options="clientesDestFiltered"
                       lazy-rules
                       option-label="nb_cliente"
                       option-value="id"
@@ -1847,7 +1871,7 @@
                             val,
                             update,
                             abort,
-                            'zonasSelected',
+                            'zonasFiltered',
                             'zonas_destino',
                             'nb_zona'
                           )
@@ -1862,7 +1886,7 @@
                         })
                       "
                       behavior="dialog"
-                      :options="zonasSelected"
+                      :options="zonasFiltered"
                       lazy-rules
                       option-label="nb_zona"
                       option-value="id"
@@ -2111,7 +2135,7 @@
                       input-class="text-right"
                       style="padding-bottom: 10px"
                       class="pcform"
-                      :rules="[reglasAllowNull12]"
+                      :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
                       lazy-rules
                     >
                     </q-input>
@@ -2123,7 +2147,7 @@
                       v-model="form.monto_impuesto"
                       label="Monto Impuesto"
                       hint=""
-                      :rules="[reglasAllowNull12]"
+                      :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
                       dense
                       v-money="money"
                       input-class="text-right"
@@ -2141,7 +2165,7 @@
                       v-money="money"
                       input-class="text-right"
                       hint=""
-                      :rules="[reglasAllowNull12]"
+                      :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
                       dense
                       style="padding-bottom: 10px"
                       class="pcform"
@@ -2158,7 +2182,7 @@
                       v-money="money"
                       input-class="text-right"
                       hint=""
-                      :rules="[reglasAllowNull12]"
+                      :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
                       dense
                       style="padding-bottom: 10px"
                       lazy-rules
@@ -2177,14 +2201,14 @@
                   outlined
                   v-model="form.cod_agente_venta"
                   label="Recolectado Por:"
-                  :rules="[reglasInputs]"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, '')]"
                   hint=""
                   class="pcform"
                   use-input
                   hide-selected
                   fill-input
                   input-debounce="0"
-                  :options="agentesSelected"
+                  :options="agentesFiltered"
                   style="padding-bottom: 10px"
                   @filter="
                     (val, update, abort) =>
@@ -2192,7 +2216,7 @@
                         val,
                         update,
                         abort,
-                        'agentesSelected',
+                        'agentesFiltered',
                         'agentes',
                         'persona_responsable'
                       )
@@ -2228,7 +2252,7 @@
                         val,
                         update,
                         abort,
-                        'proveedoresSelected',
+                        'proveedoresFiltered',
                         'proveedores',
                         'nb_proveedor'
                       )
@@ -2295,7 +2319,10 @@
                   style="padding-bottom: 10px"
                   v-money="money"
                   input-class="text-right"
-                  :rules="[reglasNotNull6]"
+                  :rules="[
+                    (val) => this.$refs.rulesVue.isReq(val, ''),
+                    (val) => this.$refs.rulesVue.isMax(val, 9, ''),
+                  ]"
                   class="pcform"
                   lazy-rules
                 >
@@ -2308,7 +2335,7 @@
                   v-model="form.valor_declarado_cod"
                   label="COD - Valor Declarado"
                   hint=""
-                  :rules="[reglasAllowNull12]"
+                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
                   dense
                   style="padding-bottom: 10px"
                   @update:model-value="
@@ -2328,7 +2355,7 @@
               v-model="form.valor_declarado_seg"
               label="Seguro"
               hint=""
-              :rules="[reglasAllowNull14]"
+              :rules="[(val) => this.$refs.rulesVue.isMax(val, 17, '')]"
               dense
               style="padding-bottom: 10px"
               class="pcform pcmovil"
@@ -2346,7 +2373,7 @@
               outlined
               v-model="form.porc_apl_seguro"
               hint=""
-              :rules="[reglasAllowNull6]"
+              :rules="[(val) => this.$refs.rulesVue.isMax(val, 7, '')]"
               dense
               v-money="money"
               input-class="text-right"
@@ -2370,7 +2397,7 @@
               label="Agencia Transito"
               hint=""
               use-input
-              :rules="[reglasInputs]"
+              :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, '')]"
               hide-selected
               fill-input
               input-debounce="0"
@@ -2380,12 +2407,12 @@
                     val,
                     update,
                     abort,
-                    'agenciasTransitoSelected',
+                    'agenciasTransitoFiltered',
                     'agencias',
                     'nb_agencia'
                   )
               "
-              :options="agenciasTransitoSelected"
+              :options="agenciasTransitoFiltered"
               class="pcform"
               option-label="nb_agencia"
               option-value="id"
@@ -2412,7 +2439,7 @@
               v-model="form.fecha_llega_transito"
               lazy-rules
               class="pcform"
-              :rules="[checkDate]"
+              :rules="[(val) => this.$refs.rulesVue.checkDate(val, '')]"
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
@@ -2483,7 +2510,7 @@
               label="Monto Referencia Cliente"
               dense
               hint=""
-              :rules="[reglasAllowNull14]"
+              :rules="[(val) => this.$refs.rulesVue.isMax(val, 17, '')]"
               class="pcform"
               type="number"
               @update:model-value="
@@ -2506,7 +2533,7 @@
               v-money="money"
               input-class="text-right"
               hint=""
-              :rules="[reglasAllowNull6]"
+              :rules="[(val) => this.$refs.rulesVue.isMax(val, 7, '')]"
               class="pcform pcmovil"
               dense
               @update:model-value="
@@ -2589,7 +2616,7 @@
     <methods
       ref="methods"
       @set-Data="setData"
-      @set-Data-Edit="setDataEdit"
+      @set-Data-Guia="setDataGuia"
       @reset-Loading="resetLoading"
       @set-Data-Detalle="setDataDetalle"
       @set-Data-Permisos="setDataPermisos"
@@ -2604,7 +2631,7 @@
 import { ref } from "vue";
 import moment from "moment";
 import { api } from "boot/axios";
-import VMoney from "v-money";
+import { VMoney } from "v-money";
 import methodsVue from "src/components/methods.vue";
 import webViewerVue from "src/components/webViewer.vue";
 import rulesVue from "src/components/rules.vue";
@@ -2812,6 +2839,7 @@ export default {
       agentes: [],
       proveedores: [],
       proveedoresFiltered: [],
+      agenciasDestFiltered: [],
       clientesDestFiltered: [],
       agentesFiltered: [],
       zonasFiltered: [],
@@ -2864,6 +2892,12 @@ export default {
     });
     return {
       formData: null,
+      formAgencia: null,
+      formAgenciaDestino: null,
+      formClienteDestino: null,
+      formKGS: null,
+      formPagado: null,
+      formModalidadPago: null,
       visible,
       showSimulatedReturnData,
       showTextLoading() {
@@ -2976,8 +3010,7 @@ export default {
     // Metodo para validar por RIF si un cliente ya existe
     validateExistingClient() {
       if (this.formClientesParticulares.rif_ci !== "") {
-        api
-          .get(`/cparticulares`, {
+        api.get(`/cparticulares`, {
             headers: {
               Authorization: `Bearer ${LocalStorage.getItem("token")}`,
               agencia: this.form.cod_agencia_dest.id,
@@ -3005,13 +3038,12 @@ export default {
     },
     // Metodo para reversar una Guía
     reversar() {
-      if (this.form.id) {
+      if (this.form.nro_documento) {
         if (
           this.form.estatus_administra.value == "F" ||
           this.form.estatus_administra.value == "P"
         ) {
-          api
-            .get("/rpermisos", {
+          api.get("/rpermisos", {
               headers: {
                 Authorization: `Bearer ${LocalStorage.getItem("token")}`,
                 rol: LocalStorage.getItem("tokenTraducido").usuario.roles.id,
@@ -3052,24 +3084,89 @@ export default {
         });
       }
     },
-
+    // Metodo para Buscar Item en Array de Objetos y Setear un Valor al conseguirlo
+    filterAndSet(array, codigo, searched, selectedOption, selectedOptionValue) {
+      var find = this[array].findIndex((item) => item[codigo] == searched);
+      if (find >= 0) {
+        this[selectedOption][selectedOptionValue] = this[array][find];
+      } else {
+        this[selectedOption][selectedOptionValue] = { label: "", value: null };
+      }
+    },
+    // Metodo para Buscar Item en Array de Objetos, retornar True al conseguirlo y False al no encontrarlo
+    filterAndReturn(array, codigo, searched) {
+      return this[array].findIndex((item) => item[codigo] == searched);
+    },
+    // Metodo para Buscar Item en Array de Objetos, retornar True al conseguirlo y False al no encontrarlo
+    validateRules(form, error) {
+      if (this.$refs[form].validate()) {
+        return true;
+      } else {
+        this.$q.notify({
+          message: error,
+          color: "red",
+        });
+        return false;
+      }
+    },
+    // Metodo para Tarificar una Guía
     tarificar() {
-      if (this.form.id !== "") {
+      if (this.form.nro_documento) {
         if (this.detalle_movimiento !== []) {
-          if (
-            this.form.estatus_administra.value == "A" ||
-            this.form.estatus_administra == "Anulada"
-          ) {
+          if (this.form.estatus_administra.value == "A") {
             this.$q.notify({
               message:
                 "La Guía no puede ser tarifeada cuando se encuentra anulada",
               color: "red",
             });
           } else {
-            this.$q.notify({
-              message: "Guía Tarifeada",
-              color: "green",
-            });
+            if (
+              this.validateRules(
+                "formAgencia",
+                "Debe ingresar la Agencia Origen antes de tarifear"
+              ) &&
+              this.validateRules(
+                "formAgenciaDestino",
+                "Debe ingresar la Agencia Destino antes de tarifear"
+              ) &&
+              this.validateRules(
+                "formClienteDestino",
+                "Debe ingresar el Cliente Destino antes de tarifear"
+              ) &&
+              this.validateRules(
+                "formKGS",
+                "Debe ingresar la cantidad de KG antes de tarifear"
+              ) &&
+              this.validateRules(
+                "formModalidadPago",
+                "Debe ingresar la modalidad de pago antes de tarifear"
+              ) &&
+              this.validateRules(
+                "formPagado",
+                "Debe ingresar donde será pagada la guía antes de tarifear"
+              ) &&
+              (this.checkbox.extra_urbano !== "0" || this.checkbox.urbano !== "0") &&
+              (this.checkbox.emergencia !== "0" || this.checkbox.normal !== "0")
+            ) {
+              this.$q.notify({
+                message: "PUEDES TARIFEAR",
+                color: "green",
+              });
+            } else {
+              if (this.checkbox.extra_urbano == "0" || this.checkbox.urbano == "0")
+                this.$q.notify({
+                  message:
+                    "Debe ingresar el tipo de ubicación antes de tarifear",
+                  color: "red",
+                });
+              if (this.checkbox.emergencia == "0" || this.checkbox.normal == "0")
+                this.$q.notify({
+                  message:
+                    "Debe ingresar el tipo de urgencia antes de tarifear",
+                  color: "red",
+                });
+              return;
+            }
           }
         } else {
           this.$q.notify({
@@ -3084,9 +3181,9 @@ export default {
         });
       }
     },
-    getDataGuia() {
-      api
-        .get(`/mmovimientos`, {
+    // Metodo para Validar si Guia Existe y hacer Get de la Misma
+    validationGetGuia() {
+      api.get(`/mmovimientos`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
             nro_documento: this.form.nro_documento,
@@ -3094,12 +3191,9 @@ export default {
         })
         .then((res) => {
           if (res.data.data[0]) {
-            console.log("Consiguio la Guia y Procede a pintarla");
-            this.setDataEdit(res.data.data);
+            this.setDataGuia(res.data.data);
           } else {
-            console.log("No consiguio la Guia y hago get de Cguias");
-            api
-              .get(`/cguias`, {
+            api.get(`/cguias`, {
                 headers: {
                   Authorization: `Bearer ${LocalStorage.getItem("token")}`,
                   desde: this.form.nro_documento,
@@ -3111,29 +3205,21 @@ export default {
               .then((res) => {
                 if (res.data.data[0]) {
                   var cod_agencia = res.data.data[0].cod_agencia;
-                  if (cod_agencia) this.count += 3;
                   var cod_cliente = res.data.data[0].cod_cliente;
                   var cod_agente = res.data.data[0].cod_agente;
-                  console.log(
-                    "Cguias trajo datos entonces hago get de ginutilizadas"
-                  );
-                  var agenciaHeader = res.data.data[0].cod_agencia;
-                  api
-                    .get(`/ginutilizadas`, {
+                  if (cod_agencia) this.count += 3;
+                  api.get(`/ginutilizadas`, {
                       headers: {
                         Authorization: `Bearer ${LocalStorage.getItem(
                           "token"
                         )}`,
-                        agencia: agenciaHeader,
+                        agencia: cod_agencia,
                         nro_guia: this.form.nro_documento,
                       },
                     })
                     .then((res) => {
                       if (res.data.data[0]) {
                         this.count = 1;
-                        console.log(
-                          "ginutilizadas trajo datos entonces no se puede seleccionar la Guía, ya que la misma está Inutilizada...!"
-                        );
                         this.objetive = 1;
                         this.$q.notify({
                           message:
@@ -3142,11 +3228,7 @@ export default {
                         });
                         return;
                       } else {
-                        console.log(
-                          "ginutilizadas no trajo datos entonces pinta datos definidos en tabla"
-                        );
-                        api
-                          .get(`/agencias`, {
+                        api.get(`/agencias`, {
                             headers: {
                               Authorization: `Bearer ${LocalStorage.getItem(
                                 "token"
@@ -3156,83 +3238,93 @@ export default {
                           .then((res) => {
                             this.agencias = res.data.data;
                             this.objetive += 1;
-                            for (
-                              var i = 0;
-                              i <= this.agencias.length - 1;
-                              i++
+                            if (
+                              this.filterAndReturn(
+                                "agencias",
+                                "id",
+                                cod_agencia
+                              ) >= 0
                             ) {
-                              if (this.agencias[i].id == cod_agencia) {
-                                this.form.cod_agencia = this.agencias[i];
-                                api
-                                  .get(`/clientes`, {
-                                    headers: {
-                                      Authorization: `Bearer ${LocalStorage.getItem(
-                                        "token"
-                                      )}`,
-                                      agencia: this.agencias[i].id,
-                                    },
-                                  })
-                                  .then((res) => {
-                                    this.clientes_origen = res.data.data;
-                                    this.objetive += 1;
-                                    for (
-                                      var i = 0;
-                                      i <= this.clientes_origen.length - 1;
-                                      i++
-                                    ) {
-                                      if (
-                                        this.clientes_origen[i].id ==
-                                        cod_cliente
-                                      ) {
-                                        this.form.cod_cliente_org =
-                                          this.clientes_origen[i];
-                                      }
-                                    }
-                                  });
-                                api
-                                  .get(`/agentes`, {
-                                    headers: {
-                                      Authorization: `Bearer ${LocalStorage.getItem(
-                                        "token"
-                                      )}`,
-                                      agencia: this.agencias[i].id,
-                                    },
-                                  })
-                                  .then((res) => {
-                                    this.agentes = res.data.data;
-                                    this.objetive += 1;
-                                    for (
-                                      var i = 0;
-                                      i <= this.agentes.length - 1;
-                                      i++
-                                    ) {
-                                      if (this.agentes[i].id == cod_agente) {
-                                        this.form.cod_agente_venta =
-                                          this.agentes[i];
-                                      }
-                                    }
-                                  });
-                                api
-                                  .get(`/proveedores`, {
-                                    headers: {
-                                      Authorization: `Bearer ${LocalStorage.getItem(
-                                        "token"
-                                      )}`,
-                                      agencia: this.agencias[i].id,
-                                    },
-                                  })
-                                  .then((res) => {
-                                    this.proveedores = res.data.data;
-                                    this.objetive += 1;
-                                  });
-                              }
+                              var agencia = this.filterAndReturn(
+                                "agencias",
+                                "id",
+                                cod_agencia
+                              );
+                              this.form.cod_agencia = this.agencias[agencia];
+                              api.get(`/clientes`, {
+                                  headers: {
+                                    Authorization: `Bearer ${LocalStorage.getItem(
+                                      "token"
+                                    )}`,
+                                    agencia: this.form.cod_agencia.id,
+                                  },
+                                })
+                                .then((res) => {
+                                  this.clientes_origen = res.data.data;
+                                  this.objetive++;
+                                  if (
+                                    this.filterAndReturn(
+                                      "clientes",
+                                      "id",
+                                      cod_cliente
+                                    ) !== false
+                                  )
+                                    this.form.cod_cliente_org = this.clientes_origen[
+                                        this.filterAndReturn(
+                                          "clientes",
+                                          "id",
+                                          cod_cliente
+                                        )
+                                      ];
+                                });
+                              api.get(`/agentes`, {
+                                  headers: {
+                                    Authorization: `Bearer ${LocalStorage.getItem(
+                                      "token"
+                                    )}`,
+                                    agencia: this.form.cod_agencia.id,
+                                  },
+                                })
+                                .then((res) => {
+                                  this.agentes = res.data.data;
+                                  this.objetive += 1;
+                                  if (
+                                    this.filterAndReturn(
+                                      "agentes",
+                                      "id",
+                                      cod_agente
+                                    ) !== false
+                                  )
+                                    this.form.cod_agente_venta =
+                                      this.agentes[
+                                        this.filterAndReturn(
+                                          "agentes",
+                                          "id",
+                                          cod_agente
+                                        )
+                                      ];
+                                });
+                              api
+                                .get(`/proveedores`, {
+                                  headers: {
+                                    Authorization: `Bearer ${LocalStorage.getItem(
+                                      "token"
+                                    )}`,
+                                    agencia: this.form.cod_agencia.id,
+                                  },
+                                })
+                                .then((res) => {
+                                  this.proveedores = res.data.data;
+
+                                  this.objetive += 1;
+                                });
                             }
                           });
                         this.form.tipo_servicio = "N";
                         this.form.tipo_ubicacion = "U";
                         this.form.tipo_urgencia = "N";
                         this.form.check_transito = 0;
-                        this.form.estatus_operativo = "EN PROCESO DE ENVIÓ";
+                        this.form.estatus_operativo = this.estatus_operativo[0];
                         this.form.check_pe = 1;
                         moment.locale("es");
                         var date = moment().format("L");
@@ -3240,7 +3332,7 @@ export default {
                         this.form.fecha_elab = date;
                         this.form.fecha_emision = date;
                         this.form.fecha_envio = date;
-                        this.form.estatus_administra = "EN ELABORACIÓN";
+                        this.form.estatus_administra = this.estatus_administrativo[0];
                         this.checkbox.nacional = "1";
                         this.checkbox.urbano = "1";
                         this.checkbox.normal = "1";
@@ -3256,9 +3348,6 @@ export default {
                       this.errorDelServidor();
                     });
                 } else {
-                  console.log(
-                    "Cguias no trajo datos entonces el numero de guía no se encuentra en inventario"
-                  );
                   this.objetive = 1;
                   this.count = 1;
                   this.$q.notify({
@@ -3284,6 +3373,7 @@ export default {
           this.errorDelServidor();
         });
     },
+
     onRequest(res, dataRes) {
       let { page, rowsPerPage, sortBy, descending } = res.pagination;
       if (this.currentPage !== page) {
@@ -3336,78 +3426,13 @@ export default {
       this.loading = false;
     },
 
-    reglasNotNull3(val) {
-      var val = val;
-      val = val.replaceAll(".", "").replaceAll(",", ".");
-      if (val == null) {
-        return "";
-      }
-      if (val == "") {
-        return "";
-      }
-      if (val !== null && val !== "") {
-        if (val > 999) {
-          return "";
-        }
-      }
-    },
-    reglasAllowNull12(val) {
-      if (val !== null && val !== "") {
-        if (val > 999999999999.99) {
-          return "";
-        }
-      }
-    },
-    reglasNotNull6(val) {
-      var val = val;
-      val = val.replaceAll(".", "").replaceAll(",", ".");
-      if (val == null) {
-        return "";
-      }
-      if (val == "") {
-        return "";
-      }
-      if (val !== null && val !== "") {
-        if (val > 999999.99) {
-          return "";
-        }
-      }
-    },
-    reglasAllowNull14(val) {
-      if (val !== null && val !== "") {
-        if (val > 99999999999999.99) {
-          return "";
-        }
-      }
-    },
-    reglasAllowNull3(val) {
-      if (val !== null && val !== "") {
-        if (val > 999) {
-          return "";
-        }
-      }
-    },
-    reglasAllowMin3(val) {
-      if (val !== null && val !== "") {
-        if (val.length < 3) {
-          return "";
-        }
-      }
-    },
-    checkDate(val) {
-      if (moment(val, "DD/MM/YYYY", true)._isValid == false) {
-        return "";
-      }
-    },
-
     getData(url, call, dataRes, axiosConfig) {
       this.$refs.methods.getData(url, call, dataRes, axiosConfig);
     },
     setData(res, dataRes) {
       this[dataRes] = res.data ? res.data : res;
     },
-    setDataEdit(res, dataRes) {
-      console.log(res);
+    setDataGuia(res, dataRes) {
       var res = res[0];
       var dataRes = "form";
       if (res.cod_agencia) this.count += 3;
@@ -3520,7 +3545,6 @@ export default {
         .then((res) => {
           this.objetive++;
           this.agencias = res.data.data;
-
           if (cod_agencia) {
             for (var i = 0; i <= this.agencias.length - 1; i++) {
               if (this.agencias[i].id == cod_agencia) {
@@ -3663,7 +3687,6 @@ export default {
             }
           }
         });
-      console.log(res);
     },
 
     async putData() {
@@ -4314,50 +4337,50 @@ export default {
       });
     },
     resetFormClientes() {
-      delete this.formClientes.id
-      this.disabledAgencia = true,
-      this.disabledRif = true,
-      this.disabledCliente = true,
-      this.disabledInputs = true,
-      this.formClientes.id = "",
-      this.formClientes.nb_cliente = "",
-      this.formClientes.rif_cedula = "",
-      this.formClientes.nit = "",
-      this.formClientes.dir_correo = "",
-      this.formClientes.dir_fiscal = "",
-      this.formClientes.email = "",
-      this.formClientes.tlf_cliente = "",
-      this.formClientes.fax = "",
-      this.formClientes.razon_social = "",
-      this.formClientes.tipo_persona = "",
-      this.formClientes.modalidad_pago = "",
-      this.formClientes.persona_contacto = "",
-      this.formClientes.observacion = "",
-      this.formClientes.cte_decontado = "",
-      this.formClientes.tipo_persona_new = "",
-      this.formClientes.flag_activo = "",
-      this.formClientes.cod_agencia = "",
-      this.formClientes.cod_agente = "",
-      this.formClientes.cod_municipio = "",
-      this.formClientes.cod_parroquia = "",
-      this.formClientes.cod_localidad = "",
-      this.formClientes.cte_decontado = "0",
-      this.pais = "",
-      this.estado = "",
-      this.ciudad = "",
-      this.formClientesParticulares.id = "",
-      this.formClientesParticulares.cod_agencia = [],
-      this.formClientesParticulares.cod_ciudad = [],
-      this.formClientesParticulares.cod_localidad = [],
-      this.formClientesParticulares.cod_municipio = [],
-      this.formClientesParticulares.cod_parroquia = [],
-      this.formClientesParticulares.direccion = "",
-      this.formClientesParticulares.estatus = "",
-      this.formClientesParticulares.fax = "",
-      this.formClientesParticulares.id = "",
-      this.formClientesParticulares.nb_cliente = "",
-      this.formClientesParticulares.rif_ci = "",
-      this.formClientesParticulares.telefonos = ""
+      delete this.formClientes.id;
+      (this.disabledAgencia = true),
+        (this.disabledRif = true),
+        (this.disabledCliente = true),
+        (this.disabledInputs = true),
+        (this.formClientes.id = ""),
+        (this.formClientes.nb_cliente = ""),
+        (this.formClientes.rif_cedula = ""),
+        (this.formClientes.nit = ""),
+        (this.formClientes.dir_correo = ""),
+        (this.formClientes.dir_fiscal = ""),
+        (this.formClientes.email = ""),
+        (this.formClientes.tlf_cliente = ""),
+        (this.formClientes.fax = ""),
+        (this.formClientes.razon_social = ""),
+        (this.formClientes.tipo_persona = ""),
+        (this.formClientes.modalidad_pago = ""),
+        (this.formClientes.persona_contacto = ""),
+        (this.formClientes.observacion = ""),
+        (this.formClientes.cte_decontado = ""),
+        (this.formClientes.tipo_persona_new = ""),
+        (this.formClientes.flag_activo = ""),
+        (this.formClientes.cod_agencia = ""),
+        (this.formClientes.cod_agente = ""),
+        (this.formClientes.cod_municipio = ""),
+        (this.formClientes.cod_parroquia = ""),
+        (this.formClientes.cod_localidad = ""),
+        (this.formClientes.cte_decontado = "0"),
+        (this.pais = ""),
+        (this.estado = ""),
+        (this.ciudad = ""),
+        (this.formClientesParticulares.id = ""),
+        (this.formClientesParticulares.cod_agencia = []),
+        (this.formClientesParticulares.cod_ciudad = []),
+        (this.formClientesParticulares.cod_localidad = []),
+        (this.formClientesParticulares.cod_municipio = []),
+        (this.formClientesParticulares.cod_parroquia = []),
+        (this.formClientesParticulares.direccion = ""),
+        (this.formClientesParticulares.estatus = ""),
+        (this.formClientesParticulares.fax = ""),
+        (this.formClientesParticulares.id = ""),
+        (this.formClientesParticulares.nb_cliente = ""),
+        (this.formClientesParticulares.rif_ci = ""),
+        (this.formClientesParticulares.telefonos = "");
     },
 
     setDataClientesParticulares(res) {
@@ -4502,7 +4525,7 @@ export default {
       }
     },
     resetFormEdit() {
-      (this.readonlyAgencia = false),
+        (this.readonlyAgencia = false),
         (this.reversada = false),
         (this.particular = false),
         (this.cliente = false),
