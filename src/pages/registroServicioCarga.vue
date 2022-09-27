@@ -500,11 +500,11 @@
           binary-state-sort
           :separator="separator"
           :filter="filter"
-          :rows-per-page-options="[5, 10, 15, 20, 50]"
+          v-model:pagination="pagination"
           @request="getDataDetalles"
           style="width: 100%"
           :grid="$q.screen.xs"
-          v-model:pagination="pagination"
+          hide-bottom
         >
           <template v-slot:top="">
             <div class="col-4 q-table__title">
@@ -2656,7 +2656,6 @@ import methodsVue from "src/components/methods.vue";
 import webViewerVue from "src/components/webViewer.vue";
 import rulesVue from "src/components/rules.vue";
 import { useQuasar, LocalStorage } from "quasar";
-import { emit } from "process";
 
 export default {
   directives: { money: VMoney },
@@ -2691,7 +2690,6 @@ export default {
           field: (row) => row.conceptos.desc_concepto,
           name: "cod_concepto",
           align: "left",
-          sortable: true,
           required: true,
         },
         {
@@ -2699,7 +2697,6 @@ export default {
           label: "Cantidad",
           field: "cantidad",
           align: "right",
-          sortable: true,
           required: true,
         },
         {
@@ -2707,7 +2704,6 @@ export default {
           label: "Precio Unitario",
           field: "precio_unitario",
           align: "right",
-          sortable: true,
           required: true,
         },
         {
@@ -2715,7 +2711,6 @@ export default {
           label: "Importe Renglon",
           field: "importe_renglon",
           align: "right",
-          sortable: true,
           required: true,
         },
       ],
@@ -2893,13 +2888,8 @@ export default {
         { label: "PREPAGADA", value: "PP" },
       ],
       pagination: {
-        page: 1,
-        rowsPerPage: 5,
-        sortBy: "cod_concepto",
-        descending: false,
-        rowsNumber: "",
+        rowsPerPage: 10,
       },
-      detallesTarificados: {},
       error: "",
     };
   },
@@ -2907,14 +2897,6 @@ export default {
     objetive(newValue) {
       if (newValue == this.count) {
         this.resetLoading();
-      }
-    },
-    objetivetarificar(detallesTarificados) {
-      if (this.objetivetarificar == 6) {
-        this.detalle_movimiento.push(this.detallesTarificados[0]);
-        this.detalle_movimiento.push(this.detallesTarificados[1]);
-        console.log(this.detallesTarificados);
-        this.detallesTarificados = {};
       }
     },
   },
@@ -2995,6 +2977,7 @@ export default {
     },
     // Metodo para validar si el Detalle de Documento puede ser mostrado
     validacionDetalle() {
+      console.log(this.detalle_movimiento);
       if (!this.agencias[0]) {
         this.$q.notify({
           message: "Debe Cargar una Guía",
@@ -3136,6 +3119,29 @@ export default {
     },
     // Metodo para Tarificar una Guía
     tarificar() {
+      var form = this.form;
+      var monto_basico = 0;
+      var check_comision = 0;
+      var check_impuesto;
+      var kgr_minimos;
+      var kgs_adicionales;
+      var monto_kg_ad;
+      var monto_kg_adicional;
+      var dif_comision;
+      var comision;
+      var porc_otros;
+      var val_declarado_otros;
+      if (this.checkbox.guia_factura == "1") form.t_de_documento = "GF";
+      if (this.checkbox.guia_carga == "1") form.t_de_documento = "GC";
+      if (this.checkbox.paquetes == "1") form.tipo_carga = "PM";
+      if (this.checkbox.sobres == "1") form.tipo_carga = "SB";
+      if (this.checkbox.nacional == "1") form.tipo_servicio = "N";
+      if (this.checkbox.internacional == "1") form.tipo_servicio = "I";
+      if (this.checkbox.urbano == "1") form.tipo_ubicacion = "U";
+      if (this.checkbox.extra_urbano == "1") form.tipo_ubicacion = "E";
+      if (this.checkbox.foraneo == "1") form.tipo_ubicacion = "F";
+      if (this.checkbox.normal == "1") form.tipo_urgencia = "N";
+      if (this.checkbox.emergencia == "1") form.tipo_urgencia = "E";
       if (!this.form.nro_documento) {
         this.$q.notify({
           message: "Debe Cargar una Guia",
@@ -3215,27 +3221,35 @@ export default {
         });
         return;
       }
-      var form = this.form;
-      var monto_basico = 0;
-      var check_comision;
-      var check_impuesto;
-      var kgr_minimos = 0;
-      var kgs_adicionales = 0;
-      var monto_kg_ad = 0;
-      var monto_kg_adicional = 0;
-      this.detallesTarificados[0] = {};
-      this.detallesTarificados[0].cod_movimiento = this.form.id;
+      if (!(this.checkbox.paquetes !== "0" || this.checkbox.sobres !== "0")) {
+        this.$q.notify({
+          message: "Debe ingresar el tipo de carga antes de tarifear",
+          color: "red",
+        });
+        return;
+      }
 
-      api
-        .get(`/vcontrol/4`, {
+      this.detalle_movimiento[0] = {
+        id: 0,
+        cod_movimiento: this.form.id,
+        nro_item: 1,
+        conceptos: {
+          desc_concepto: "",
+        },
+        cod_concepto: null,
+        precio_unitario: null,
+        cantidad: null,
+        importe_renglon: null,
+        cod_concepto_oper: null,
+      };
+
+      api.get(`/vcontrol/4`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
           },
         })
         .then((res) => {
-          this.detallesTarificados[0].cod_concepto = res.data.valor;
-          this.detallesTarificados[0].id = 0;
-          this.objetivetarificar++;
+          this.detalle_movimiento[0].cod_concepto = res.data.valor;
           api
             .get(`/cfacturacion/${res.data.valor}`, {
               headers: {
@@ -3245,25 +3259,13 @@ export default {
             .then((res) => {
               check_comision = res.data.check_comision;
               check_impuesto = res.data.check_impuesto;
-              this.detallesTarificados[0].conceptos = res.data.conceptos;
-              this.detallesTarificados[0].cod_concepto_oper =
+              this.detalle_movimiento[0].conceptos.desc_concepto =
+                res.data.desc_concepto;
+              this.detalle_movimiento[0].cod_concepto_oper =
                 res.data.cod_concepto;
-              this.objetivetarificar++;
             });
         });
-      if (this.checkbox.guia_factura == "1") form.t_de_documento = "GF";
-      if (this.checkbox.guia_carga == "1") form.t_de_documento = "GC";
-      if (this.checkbox.paquetes == "1") form.tipo_carga = "PM";
-      if (this.checkbox.sobres == "1") form.tipo_carga;
-      if (this.checkbox.nacional == "1") form.tipo_servicio = "N";
-      if (this.checkbox.internacional == "1") form.tipo_servicio = "I";
-      if (this.checkbox.urbano == "1") form.tipo_ubicacion = "U";
-      if (this.checkbox.extra_urbano == "1") form.tipo_ubicacion = "E";
-      if (this.checkbox.foraneo == "1") form.tipo_ubicacion = "F";
-      if (this.checkbox.normal == "1") form.tipo_urgencia = "N";
-      if (this.checkbox.emergencia == "1") form.tipo_urgencia = "E";
-      api
-        .get(`/tarifas`, {
+      api.get(`/tarifas`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
             tipo_tarifa: "BA",
@@ -3273,54 +3275,78 @@ export default {
           },
         })
         .then((res) => {
-          if (res.data[0]) {
-            // if (res.monto_tarifa == null || res.monto_tarifa == "" || res.monto_tarifa == 0) {
-            //   objetive = 0
-            //   this.$q.notify({
-            //     message:
-            //       "Problemas al ubicar el monto de la tarifa básica. Revisar mantenimiento de tarifas",
-            //     color: "red",
-            //     });
-            //     return
-            // }
-            // if (res.kgr_hasta == null || res.kgr_hasta == "" || res.kgr_hasta == 0) {
-            //   objetive = 0
-            //   this.$q.notify({
-            //     message:
-            //       "Problemas al ubicar los Kgs. minimos de la tarifa básica. Revisar mantenimiento de tarifas",
-            //     color: "red",
-            //     });
-            //     return
-            // }
-            if (this.form.peso_kgs > 30) {
-              var val_declarado_otros = this.form.monto_ref_cte_sin_imp;
-              var porc_otros = this.form.porc_comision;
-              var comision = (val_declarado_otros * porc_otros) / 100;
-              var dif_comision = comision - monto_basico;
-
-              if (dif_comision >= 0) {
-                monto_basico = monto_basico + dif_comision;
-              }
-            }
-            this.detallesTarificados[0].importe_renglon = monto_basico;
-            this.detallesTarificados[0].cantidad = res.data[0].kgr_hasta;
-            kgr_minimos = res.data[0].kgr_hasta;
-            this.detallesTarificados[0].precio_unitario =
-              monto_basico / kgr_minimos;
+          if (!res.data[0]) {
+            this.$q.notify({
+              message:
+                "Problemas al ubicar la tarifa básica. Revisar mantenimiento de tarifas",
+              color: "red",
+            });
+            return;
           }
-          this.objetivetarificar++;
+          if (
+            res.data[0].monto_tarifa == null ||
+            res.data[0].monto_tarifa == "" ||
+            res.data[0].monto_tarifa == 0
+          ) {
+            this.$q.notify({
+              message:
+                "Problemas al ubicar el monto de la tarifa básica. Revisar mantenimiento de tarifas",
+              color: "red",
+            });
+            return;
+          }
+          if (
+            res.data[0].kgr_hasta == null ||
+            res.data[0].kgr_hasta == "" ||
+            res.data[0].kgr_hasta == 0
+          ) {
+            this.$q.notify({
+              message:
+                "Problemas al ubicar los Kgs. minimos de la tarifa básica. Revisar mantenimiento de tarifas",
+              color: "red",
+            });
+            return;
+          }
+          monto_basico = res.data[0].monto_tarifa;
+          kgr_minimos = res.data[0].kgr_hasta;
+          this.detalle_movimiento[0].importe_renglon = monto_basico;
+          this.detalle_movimiento[0].cantidad = kgr_minimos;
+          this.detalle_movimiento[0].precio_unitario =
+            monto_basico / kgr_minimos;
+          if (this.form.peso_kgs.replaceAll(",", ".") > 30) {
+            val_declarado_otros = this.form.monto_ref_cte_sin_imp.replaceAll(
+              ",",
+              "."
+            );
+            porc_otros = this.form.porc_comision.replaceAll(",", ".");
+            comision = (val_declarado_otros * porc_otros) / 100;
+            dif_comision = comision - monto_basico;
+
+            if (dif_comision >= 0) {
+              monto_basico = monto_basico + dif_comision;
+            }
+          }
         });
-      this.detallesTarificados[1] = {};
-      api
-        .get(`/vcontrol/5`, {
+      this.detalle_movimiento[1] = {
+        id: 0,
+        cod_movimiento: this.form.id,
+        nro_item: 2,
+        conceptos: {
+          desc_concepto: "",
+        },
+        cod_concepto: null,
+        precio_unitario: null,
+        cantidad: null,
+        importe_renglon: null,
+        cod_concepto_oper: null,
+      };
+      api.get(`/vcontrol/5`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
           },
         })
         .then((res) => {
-          this.detallesTarificados[1].cod_concepto = res.data.valor;
-          this.detallesTarificados[1].id = 0;
-          this.objetivetarificar++;
+          this.detalle_movimiento[1].cod_concepto = res.data.valor;
           api
             .get(`/cfacturacion/${res.data.valor}`, {
               headers: {
@@ -3328,10 +3354,10 @@ export default {
               },
             })
             .then((res) => {
-              this.detallesTarificados[1].conceptos = res.data.conceptos;
-              this.detallesTarificados[1].cod_concepto_oper =
+              this.detalle_movimiento[1].conceptos.desc_concepto =
+                res.data.desc_concepto;
+              this.detalle_movimiento[1].cod_concepto_oper =
                 res.data.cod_concepto;
-              this.objetivetarificar++;
             });
         });
       var axiosConfig;
@@ -3347,8 +3373,8 @@ export default {
             modalidad_pago: "CO",
             tipo_tarifa: "KA",
             tipo_urgencia: this.form.tipo_urgencia,
-            region_origen: this.form.cod_agencia.id,
-            region_destino: this.form.cod_agencia_dest.id,
+            region_origen: this.form.cod_agencia.ciudades.cod_region,
+            region_destino: this.form.cod_agencia_dest.ciudades.cod_region,
             mix_region: "S",
           },
         };
@@ -3360,12 +3386,12 @@ export default {
         axiosConfig = {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            tipo_ubicacion: "E",
+            tipo_ubicacion: this.form.tipo_ubicacion,
             tipo_tarifa: "KA",
             modalidad_pago: "CR",
             tipo_urgencia: this.form.tipo_urgencia,
-            region_origen: this.form.cod_agencia.id,
-            region_destino: this.form.cod_agencia_dest.id,
+            region_origen: this.form.cod_agencia.ciudades.cod_region,
+            region_destino: this.form.cod_agencia_dest.ciudades.cod_region,
             mix_region: "S",
           },
         };
@@ -3374,46 +3400,64 @@ export default {
         axiosConfig = {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            tipo_ubicacion: this.form.tipo_ubicacion,
-            modalidad_pago: "CR",
+            tipo_ubicacion: "E",
             tipo_tarifa: "KA",
             tipo_urgencia: this.form.tipo_urgencia,
-            region_origen: this.form.cod_agencia.id,
-            region_destino: this.form.cod_agencia_dest.id,
+            region_origen: this.form.cod_agencia.ciudades.cod_region,
+            region_destino: this.form.cod_agencia_dest.ciudades.cod_region,
             mix_region: "S",
           },
         };
       }
       api.get(`/tarifas`, axiosConfig).then((res) => {
-        this.objetivetarificar++;
-        // if (res.kgr_hasta == null || res.kgr_hasta == "" || res.kgr_hasta == 0) {
-        //   objetive = 0
-        //   this.$q.notify({
-        //     message:
-        //       "Problemas al ubicar los Kgs. minimos de la tarifa adicionales. Revisar mantenimiento de tarifas",
-        //     color: "red",
-        //     });
-        //     return
-        // }
-        if (res.data[0]) {
-          kgs_adicionales = res.data[0].kgr_hasta;
-          if (this.form.peso_kgs > kgr_minimos) {
-            kgs_adicionales = this.form.peso_kgs - kgr_minimos;
-          } else {
-            kgs_adicionales = 0;
-          }
-          if (this.form.peso_kgs > 30) {
-            monto_kg_ad = 0;
-          } else {
-            monto_kg_ad = kgs_adicionales * monto_kg_adicional;
-          }
-          this.detallesTarificados[1].cantidad = kgs_adicionales;
-          this.detallesTarificados[1].importe_renglon = monto_kg_ad;
+        if (!res.data[0]) {
+          this.$q.notify({
+            message:
+              "Problemas al ubicar la tarifa de Kgs. Adicionales. Revisar mantenimiento de tarifas",
+            color: "red",
+          });
+          return;
         }
+        if (
+          res.data[0].monto_tarifa == null ||
+          res.data[0].monto_tarifa == "" ||
+          res.data[0].monto_tarifa == 0
+        ) {
+          this.$q.notify({
+            message:
+              "Problemas al ubicar el monto de los Kgs. adicionales. Revisar mantenimiento de tarifas",
+            color: "red",
+          });
+          return;
+        }
+        if (this.form.peso_kgs.replaceAll(",", ".") - kgr_minimos >= 0) {
+          kgs_adicionales =
+            this.form.peso_kgs.replaceAll(",", ".") - kgr_minimos;
+        } else {
+          kgs_adicionales = 0;
+        }
+        if (this.form.peso_kgs.replaceAll(",", ".") > 30) {
+          monto_kg_ad = 0;
+        } else {
+          monto_kg_ad = kgs_adicionales * res.data[0].monto_tarifa;
+        }
+        this.detalle_movimiento[1].cantidad = kgs_adicionales;
+        this.detalle_movimiento[1].importe_renglon = monto_kg_ad;
+        this.detalle_movimiento[1].precio_unitario = res.data[0].monto_tarifa;
       });
-      this.detallesTarificados[1].importe_renglon = monto_kg_ad;
-      this.detallesTarificados[1].nro_item = 2;
-      this.detallesTarificados[1].cod_movimiento = this.form.id;
+      this.detalle_movimiento[2] = {
+        id: 0,
+        cod_movimiento: this.form.id,
+        nro_item: 3,
+        conceptos: {
+          desc_concepto: "",
+        },
+        cod_concepto: null,
+        precio_unitario: null,
+        cantidad: null,
+        importe_renglon: null,
+        cod_concepto_oper: null,
+      };
     },
     // Metodo para Validar si Guia Existe y hacer Get de la Misma
     validationGetGuia() {
@@ -3616,19 +3660,14 @@ export default {
         });
     },
     // Metodo para Extraer Datos de Tabla de Detalles de Movimiento
-    getDataDetalles(props) {
+    getDataDetalles() {
       this.loading = true;
-      if (props) this.pagination = props.pagination;
       this.$refs.methods.getData(
         `/dmovimientos`,
         "setDataDetalle",
         "detalle_movimiento",
         {
           headers: {
-            page: this.pagination.page,
-            limit: this.pagination.rowsPerPage,
-            order_by: this.pagination.sortBy,
-            order_direction: this.pagination.descending ? "DESC" : "ASC",
             cod_movimiento: this.form.id,
           },
         }
@@ -3640,10 +3679,6 @@ export default {
         this.readonlyAgencia = true;
       }
       this.detalle_movimiento = res.data;
-      this.pagination.page = res.currentPage;
-      this.currentPage = res.currentPage;
-      this.pagination.rowsNumber = res.total;
-      this.pagination.rowsPerPage = res.limit;
       this.loading = false;
     },
     // Metodo para Setear Datos
@@ -4029,7 +4064,7 @@ export default {
         if (this.checkbox.guia_factura == "1") form.t_de_documento = "GF";
         if (this.checkbox.guia_carga == "1") form.t_de_documento = "GC";
         if (this.checkbox.paquetes == "1") form.tipo_carga = "PM";
-        if (this.checkbox.sobres == "1") form.tipo_carga;
+        if (this.checkbox.sobres == "1") form.tipo_carga = "SB";
         if (this.checkbox.nacional == "1") form.tipo_servicio = "N";
         if (this.checkbox.internacional == "1") form.tipo_servicio = "I";
         if (this.checkbox.urbano == "1") form.tipo_ubicacion = "U";
