@@ -2977,7 +2977,6 @@ export default {
     },
     // Metodo para validar si el Detalle de Documento puede ser mostrado
     validacionDetalle() {
-      console.log(this.detalle_movimiento);
       if (!this.agencias[0]) {
         this.$q.notify({
           message: "Debe Cargar una Guía",
@@ -3118,19 +3117,51 @@ export default {
       }
     },
     // Metodo para Tarificar una Guía
-    tarificar() {
+    async tarificar() {
+      try {
       var form = this.form;
-      var monto_basico = 0;
-      var check_comision = 0;
-      var check_impuesto;
+      form.nro_piezas = form.nro_piezas
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
+      form.peso_kgs = form.peso_kgs.replaceAll(".", "").replaceAll(",", ".");
+      form.monto_subtotal = form.monto_subtotal
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
+      form.monto_impuesto = form.monto_impuesto
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
+      form.monto_total = form.monto_total
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
+      form.monto_base = form.monto_base
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
+      form.porc_apl_seguro = form.porc_apl_seguro
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
+      form.porc_descuento = form.porc_descuento
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
+      form.carga_neta = form.carga_neta
+        .replaceAll(".", "")
+        .replaceAll(",", ".");
+      var monto_basico;
       var kgr_minimos;
       var kgs_adicionales;
       var monto_kg_ad;
-      var monto_kg_adicional;
       var dif_comision;
       var comision;
       var porc_otros;
       var val_declarado_otros;
+      var monto_otros;
+      var monto_base;
+      var monto_seguro;
+      var val_porc_seg;
+      var val_declarado_seg;
+      var val_declarado_cod;
+      var porc_cod;
+      var monto_cod;
+      var iva;
       if (this.checkbox.guia_factura == "1") form.t_de_documento = "GF";
       if (this.checkbox.guia_carga == "1") form.t_de_documento = "GC";
       if (this.checkbox.paquetes == "1") form.tipo_carga = "PM";
@@ -3241,31 +3272,31 @@ export default {
         cantidad: null,
         importe_renglon: null,
         cod_concepto_oper: null,
+        check_impuesto: null,
+        check_comision: null,
       };
 
-      api.get(`/vcontrol/4`, {
+      await api.get(`/vcontrol/4`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
           },
         })
         .then((res) => {
           this.detalle_movimiento[0].cod_concepto = res.data.valor;
-          api
-            .get(`/cfacturacion/${res.data.valor}`, {
-              headers: {
-                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-              },
-            })
-            .then((res) => {
-              check_comision = res.data.check_comision;
-              check_impuesto = res.data.check_impuesto;
-              this.detalle_movimiento[0].conceptos.desc_concepto =
-                res.data.desc_concepto;
-              this.detalle_movimiento[0].cod_concepto_oper =
-                res.data.cod_concepto;
-            });
         });
-      api.get(`/tarifas`, {
+      await api.get(`/cfacturacion/${this.detalle_movimiento[0].cod_concepto}`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => {
+          this.detalle_movimiento[0].check_comision = res.data.check_comision;
+          this.detalle_movimiento[0].check_impuesto = res.data.check_impuesto;
+          this.detalle_movimiento[0].conceptos.desc_concepto =
+            res.data.desc_concepto;
+          this.detalle_movimiento[0].cod_concepto_oper = res.data.cod_concepto;
+        });
+      await api.get(`/tarifas`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
             tipo_tarifa: "BA",
@@ -3305,20 +3336,14 @@ export default {
                 "Problemas al ubicar los Kgs. minimos de la tarifa básica. Revisar mantenimiento de tarifas",
               color: "red",
             });
-            return;
+            this.detalle_movimiento = [];
+            return error;
           }
           monto_basico = res.data[0].monto_tarifa;
           kgr_minimos = res.data[0].kgr_hasta;
-          this.detalle_movimiento[0].importe_renglon = monto_basico;
-          this.detalle_movimiento[0].cantidad = kgr_minimos;
-          this.detalle_movimiento[0].precio_unitario =
-            monto_basico / kgr_minimos;
-          if (this.form.peso_kgs.replaceAll(",", ".") > 30) {
-            val_declarado_otros = this.form.monto_ref_cte_sin_imp.replaceAll(
-              ",",
-              "."
-            );
-            porc_otros = this.form.porc_comision.replaceAll(",", ".");
+          if (form.peso_kgs > 30) {
+            val_declarado_otros = form.monto_ref_cte_sin_imp;
+            porc_otros = form.porc_comision;
             comision = (val_declarado_otros * porc_otros) / 100;
             dif_comision = comision - monto_basico;
 
@@ -3326,7 +3351,12 @@ export default {
               monto_basico = monto_basico + dif_comision;
             }
           }
+          this.detalle_movimiento[0].importe_renglon = monto_basico;
+          this.detalle_movimiento[0].cantidad = kgr_minimos;
+          this.detalle_movimiento[0].precio_unitario =
+            monto_basico / kgr_minimos;
         });
+
       this.detalle_movimiento[1] = {
         id: 0,
         cod_movimiento: this.form.id,
@@ -3339,27 +3369,32 @@ export default {
         cantidad: null,
         importe_renglon: null,
         cod_concepto_oper: null,
+        check_impuesto: null,
+        check_comision: null,
       };
-      api.get(`/vcontrol/5`, {
+
+      await api.get(`/vcontrol/5`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
           },
         })
         .then((res) => {
           this.detalle_movimiento[1].cod_concepto = res.data.valor;
-          api
-            .get(`/cfacturacion/${res.data.valor}`, {
-              headers: {
-                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-              },
-            })
-            .then((res) => {
-              this.detalle_movimiento[1].conceptos.desc_concepto =
-                res.data.desc_concepto;
-              this.detalle_movimiento[1].cod_concepto_oper =
-                res.data.cod_concepto;
-            });
         });
+
+      await api.get(`/cfacturacion/${this.detalle_movimiento[1].cod_concepto}`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => {
+          this.detalle_movimiento[1].check_comision = res.data.check_comision;
+          this.detalle_movimiento[1].check_impuesto = res.data.check_impuesto;
+          this.detalle_movimiento[1].conceptos.desc_concepto =
+            res.data.desc_concepto;
+          this.detalle_movimiento[1].cod_concepto_oper = res.data.cod_concepto;
+        });
+
       var axiosConfig;
       if (
         this.form.tipo_ubicacion == "U" &&
@@ -3409,14 +3444,16 @@ export default {
           },
         };
       }
-      api.get(`/tarifas`, axiosConfig).then((res) => {
+
+      await api.get(`/tarifas`, axiosConfig).then((res) => {
         if (!res.data[0]) {
           this.$q.notify({
             message:
               "Problemas al ubicar la tarifa de Kgs. Adicionales. Revisar mantenimiento de tarifas",
             color: "red",
           });
-          return;
+          this.detalle_movimiento = [];
+          return error;
         }
         if (
           res.data[0].monto_tarifa == null ||
@@ -3430,13 +3467,12 @@ export default {
           });
           return;
         }
-        if (this.form.peso_kgs.replaceAll(",", ".") - kgr_minimos >= 0) {
-          kgs_adicionales =
-            this.form.peso_kgs.replaceAll(",", ".") - kgr_minimos;
+        if (form.peso_kgs - kgr_minimos >= 0) {
+          kgs_adicionales = form.peso_kgs - kgr_minimos;
         } else {
           kgs_adicionales = 0;
         }
-        if (this.form.peso_kgs.replaceAll(",", ".") > 30) {
+        if (form.peso_kgs > 30) {
           monto_kg_ad = 0;
         } else {
           monto_kg_ad = kgs_adicionales * res.data[0].monto_tarifa;
@@ -3445,6 +3481,7 @@ export default {
         this.detalle_movimiento[1].importe_renglon = monto_kg_ad;
         this.detalle_movimiento[1].precio_unitario = res.data[0].monto_tarifa;
       });
+
       this.detalle_movimiento[2] = {
         id: 0,
         cod_movimiento: this.form.id,
@@ -3454,10 +3491,250 @@ export default {
         },
         cod_concepto: null,
         precio_unitario: null,
-        cantidad: null,
+        cantidad: 1,
         importe_renglon: null,
         cod_concepto_oper: null,
+        check_impuesto: null,
+        check_comision: null,
       };
+
+      await api.get(`/vcontrol/6`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => {
+          this.detalle_movimiento[2].cod_concepto = res.data.valor;
+        });
+
+      await api.get(`/cfacturacion/${this.detalle_movimiento[2].cod_concepto}`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => {
+          this.detalle_movimiento[2].check_comision = res.data.check_comision;
+          this.detalle_movimiento[2].check_impuesto = res.data.check_impuesto;
+          this.detalle_movimiento[2].conceptos.desc_concepto =
+            res.data.desc_concepto;
+          this.detalle_movimiento[2].cod_concepto_oper = res.data.cod_concepto;
+        });
+
+      await api.get(`/tarifas`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            tipo_urgencia: "B",
+            tipo_ubicacion: form.tipo_ubicacion,
+            region_origen: form.cod_agencia.ciudades.cod_region,
+            region_destino: form.cod_agencia_dest.ciudades.cod_region,
+            mix_region: "S",
+          },
+        })
+        .then((res) => {
+          if (!res.data[0]) {
+            this.$q.notify({
+              message:
+                "Problemas al ubicar la tarifa especial. Revisar mantenimiento de tarifas",
+              color: "red",
+            });
+            this.detalle_movimiento = [];
+            return error;
+          }
+          if (form.peso_kgs > 30) {
+            monto_otros = 0;
+            if (
+              res.data[0].monto_tarifa > 0 &&
+              monto_basico < res.data[0].monto_tarifa
+            ) {
+              monto_otros = res.data[0].monto_tarifa - monto_basico;
+            }
+          } else {
+            val_declarado_otros = form.monto_ref_cte_sin_imp;
+            porc_otros = form.porc_comision;
+            comision = (val_declarado_otros * porc_otros) / 100;
+            monto_base = monto_basico + monto_kg_ad;
+            dif_comision = monto_base - comision;
+            if (dif_comision >= 0) {
+              monto_otros = 0;
+            } else {
+              monto_otros = comision - monto_base;
+            }
+          }
+          if (
+            res.data[0].monto_tarifa > 0 &&
+            comision < res.data[0].monto_tarifa &&
+            res.data[0].monto_tarifa - monto_base > 0
+          ) {
+            monto_otros = res.data[0].monto_tarifa - monto_base;
+          }
+          if (monto_otros == null || monto_otros == "") monto_otros = 0;
+          this.detalle_movimiento[2].importe_renglon = monto_otros;
+          this.detalle_movimiento[2].precio_unitario = monto_otros;
+        });
+
+      this.detalle_movimiento[3] = {
+        id: 0,
+        cod_movimiento: this.form.id,
+        nro_item: 4,
+        conceptos: {
+          desc_concepto: "",
+        },
+        cod_concepto: null,
+        precio_unitario: null,
+        cantidad: 1,
+        importe_renglon: null,
+        cod_concepto_oper: null,
+        check_impuesto: null,
+        check_comision: null,
+      };
+      await api.get(`/vcontrol/9`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => {
+          this.detalle_movimiento[3].cod_concepto = res.data.valor;
+        });
+
+      await api.get(`/cfacturacion/${this.detalle_movimiento[3].cod_concepto}`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => {
+          this.detalle_movimiento[3].check_comision = res.data.check_comision;
+          this.detalle_movimiento[3].check_impuesto = res.data.check_impuesto;
+          this.detalle_movimiento[3].conceptos.desc_concepto =
+            res.data.desc_concepto;
+          this.detalle_movimiento[3].cod_concepto_oper = res.data.cod_concepto;
+        });
+
+      val_declarado_seg = form.valor_declarado_seg;
+      val_porc_seg = form.porc_apl_seguro;
+      monto_seguro = (val_declarado_seg * val_porc_seg) / 100;
+      if (monto_seguro == null || monto_seguro == "") monto_seguro = 0;
+      this.detalle_movimiento[3].precio_unitario = monto_seguro;
+      this.detalle_movimiento[3].importe_renglon = monto_seguro;
+
+      this.detalle_movimiento[4] = {
+        id: 0,
+        cod_movimiento: this.form.id,
+        nro_item: 5,
+        conceptos: {
+          desc_concepto: "",
+        },
+        cod_concepto: null,
+        precio_unitario: null,
+        cantidad: 1,
+        importe_renglon: null,
+        cod_concepto_oper: null,
+        check_impuesto: null,
+        check_comision: null,
+      };
+      await api.get(`/vcontrol/8`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => {
+          this.detalle_movimiento[4].cod_concepto = res.data.valor;
+        });
+
+      await api
+        .get(`/cfacturacion/${this.detalle_movimiento[4].cod_concepto}`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => {
+          this.detalle_movimiento[4].check_comision = res.data.check_comision;
+          this.detalle_movimiento[4].check_impuesto = res.data.check_impuesto;
+          this.detalle_movimiento[4].conceptos.desc_concepto =
+            res.data.desc_concepto;
+          this.detalle_movimiento[4].cod_concepto_oper = res.data.cod_concepto;
+        });
+
+      await api.get(`/vcontrol/10`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => {
+          val_declarado_cod = form.valor_declarado_seg;
+          porc_cod = res.data.valor;
+          monto_cod = (val_declarado_cod * porc_cod) / 100;
+          if (monto_cod == null || monto_cod == "") monto_cod = 0;
+          this.detalle_movimiento[4].precio_unitario = monto_cod;
+          this.detalle_movimiento[4].importe_renglon = monto_cod;
+        });
+
+      this.detalle_movimiento[5] = {
+        id: 0,
+        cod_movimiento: this.form.id,
+        nro_item: 6,
+        conceptos: {
+          desc_concepto: "",
+        },
+        cod_concepto: null,
+        precio_unitario: 0,
+        cantidad: 1,
+        importe_renglon: 0,
+        cod_concepto_oper: null,
+        check_impuesto: null,
+        check_comision: null,
+      };
+      await api.get(`/vcontrol/18`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => {
+          this.detalle_movimiento[5].cod_concepto = res.data.valor;
+        });
+
+      await api.get(`/cfacturacion/${this.detalle_movimiento[5].cod_concepto}`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => {
+          this.detalle_movimiento[5].check_comision = res.data.check_comision;
+          this.detalle_movimiento[5].check_impuesto = res.data.check_impuesto;
+          this.detalle_movimiento[5].conceptos.desc_concepto =
+            res.data.desc_concepto;
+          this.detalle_movimiento[5].cod_concepto_oper = res.data.cod_concepto;
+        });
+
+      await api.get(`/vcontrol/1`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => {
+          iva = res.data.valor;
+        });
+      
+      console.log("Sin errores");
+      console.log("terminaron los procesos");
+      console.log(this.detalle_movimiento);
+      for (var i = 0; i <= this.detalle_movimiento.length - 1; i++) {
+        this.form.monto_subtotal += this.detalle_movimiento[i].importe_renglon;
+        if (this.detalle_movimiento[i].check_impuesto == 1) {
+          this.form.monto_base += this.detalle_movimiento[i].importe_renglon
+        }
+        if (i == this.detalle_movimiento.lenght) {
+          this.form.monto_impuesto = (this.form.monto_base * iva)/100
+          this.form.monto_total = (this.form.monto_subtotal + this.form.monto_impuesto)
+          this.form.porc_impuesto = iva
+          this.form.saldo = this.form.monto_total
+        }
+      }
+      this.$q.notify({
+        message: "Guia Tarificada",
+        color: "green",
+      });
+      this.detalle = true;
+      } catch (error) {console.log('hubo un error')}
     },
     // Metodo para Validar si Guia Existe y hacer Get de la Misma
     validationGetGuia() {
@@ -4051,6 +4328,7 @@ export default {
           });
           return;
         }
+
         form.estatus_administra = form.estatus_administra.value;
         form.estatus_operativo = form.estatus_operativo.value;
         form.cod_agencia = form.cod_agencia.id;
@@ -4074,7 +4352,8 @@ export default {
         if (this.checkbox.emergencia == "1") form.tipo_urgencia = "E";
         form.modalidad_pago = form.modalidad_pago.value;
         form.pagado_en = form.pagado_en.value;
-        form.fecha_envio = form.fecha_envio.split("/").reverse().join("-");
+        if (form.fecha_envio)
+          form.fecha_envio = form.fecha_envio.split("/").reverse().join("-");
         form.nro_piezas = form.nro_piezas
           .replaceAll(".", "")
           .replaceAll(",", ".");
@@ -4100,41 +4379,210 @@ export default {
         form.carga_neta = form.carga_neta
           .replaceAll(".", "")
           .replaceAll(",", ".");
-        form.fecha_aplicacion = form.fecha_aplicacion
-          .split("/")
-          .reverse()
-          .join("-");
-        form.fecha_emision = form.fecha_emision.split("/").reverse().join("-");
-        form.fecha_llega_transito = form.fecha_llega_transito
-          .split("/")
-          .reverse()
-          .join("-");
-        form.fecha_pe = form.fecha_pe.split("/").reverse().join("-");
-        form.fecha_elab = form.fecha_elab.split("/").reverse().join("-");
+        if (form.fecha_aplicacion)
+          form.fecha_aplicacion = form.fecha_aplicacion
+            .split("/")
+            .reverse()
+            .join("-");
+        if (form.fecha_emision)
+          form.fecha_emision = form.fecha_emision
+            .split("/")
+            .reverse()
+            .join("-");
+        if (form.fecha_llega_transito)
+          form.fecha_llega_transito = form.fecha_llega_transito
+            .split("/")
+            .reverse()
+            .join("-");
+        if (form.fecha_pe)
+          form.fecha_pe = form.fecha_pe.split("/").reverse().join("-");
+        if (form.fecha_elab)
+          form.fecha_elab = form.fecha_elab.split("/").reverse().join("-");
 
-        if (form.id !== "") {
+        if (this.detalle_movimiento[0]) {
+          var detalle;
+          for (var i = 0; i <= this.detalle_movimiento.length - 1; i++) {
+            if (this.detalle_movimiento[i].id == 0) {
+              detalle = this.detalle_movimiento[i];
+              delete detalle.conceptos;
+              api
+                .post(`/dmovimientos`, detalle, {
+                  headers: {
+                    Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                  },
+                })
+                .catch((err) => {
+                  this.$q.notify({
+                    message: "Error al Guardar Detalles",
+                    color: "red",
+                  });
+                  return;
+                });
+            } else {
+              detalle = this.detalle_movimiento[i];
+              delete detalle.conceptos;
+              api
+                .put(`/dmovimientos/${detalle.id}`, detalle, {
+                  headers: {
+                    Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                  },
+                })
+                .catch((err) => {
+                  this.$q.notify({
+                    message: "Error al Guardar Detalles",
+                    color: "red",
+                  });
+                  return;
+                });
+            }
+            if (i == this.detalles_movimiento.length) {
+              if (form.id !== "") {
+                delete form.porc_comision;
+                if (form.id_clte_part_dest == "") delete form.id_clte_part_dest;
+                if (form.id_clte_part_orig == "") delete form.id_clte_part_orig;
+                if (this.reversada == true) {
+                  form.estatus_administra = "E";
+                  form.check_elab = 1;
+                  moment.locale("es");
+                  form.fecha_emision = moment().format("L");
+                  form.fecha_emision = form.fecha_emision
+                    .split("/")
+                    .reverse()
+                    .join("-");
+                }
+                api
+                  .put(`/mmovimientos/${form.id}`, form, {
+                    headers: {
+                      Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                    },
+                  })
+                  .then((res) => {
+                    this.$q.notify({
+                      message: "Guia Actualizada",
+                      color: "green",
+                    });
+                    this.reversada = false;
+                    this.destino = false;
+                    this.cliente = false;
+                    this.count = 1;
+                    this.objetive = 0;
+                    return;
+                  })
+                  .catch((err) => {
+                    this.$q.notify({
+                      message: "Error al Actualizar Guia",
+                      color: "red",
+                    });
+                    this.reversada = false;
+                    this.destino = false;
+                    this.cliente = false;
+                    this.count = 1;
+                    this.objetive = 0;
+                    return;
+                  });
+                return;
+              }
+              delete form.id;
+              delete form.porc_comision;
+              if (form.id_clte_part_dest == "") delete form.id_clte_part_dest;
+              if (form.id_clte_part_orig == "") delete form.id_clte_part_orig;
+              delete form.porc_comision;
+              api
+                .post(`/mmovimientos`, form, {
+                  headers: {
+                    Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                  },
+                })
+                .then((res) => {
+                  this.form.id = res.data.id;
+                  this.$q.notify({
+                    message: "Guia Creada",
+                    color: "green",
+                  });
+                  this.reversada = false;
+                  this.destino = false;
+                  this.cliente = false;
+                  this.count = 1;
+                  this.objetive = 0;
+                  return;
+                })
+                .catch((err) => {
+                  this.$q.notify({
+                    message: "Error al Crear Guia",
+                    color: "red",
+                  });
+                  this.readonlyAgencia = false;
+                  this.reversada = false;
+                  this.destino = false;
+                  this.cliente = false;
+                  this.count = 1;
+                  this.objetive = 0;
+                  return;
+                });
+            }
+          }
+        } else {
+          if (form.id !== "") {
+            delete form.porc_comision;
+            if (form.id_clte_part_dest == "") delete form.id_clte_part_dest;
+            if (form.id_clte_part_orig == "") delete form.id_clte_part_orig;
+            if (this.reversada == true) {
+              form.estatus_administra = "E";
+              form.check_elab = 1;
+              moment.locale("es");
+              form.fecha_emision = moment().format("L");
+              form.fecha_emision = form.fecha_emision
+                .split("/")
+                .reverse()
+                .join("-");
+            }
+            api
+              .put(`/mmovimientos/${form.id}`, form, {
+                headers: {
+                  Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                },
+              })
+              .then((res) => {
+                this.$q.notify({
+                  message: "Guia Actualizada",
+                  color: "green",
+                });
+                this.reversada = false;
+                this.destino = false;
+                this.cliente = false;
+                this.count = 1;
+                this.objetive = 0;
+                return;
+              })
+              .catch((err) => {
+                this.$q.notify({
+                  message: "Error al Actualizar Guia",
+                  color: "red",
+                });
+                this.reversada = false;
+                this.destino = false;
+                this.cliente = false;
+                this.count = 1;
+                this.objetive = 0;
+                return;
+              });
+            return;
+          }
+          delete form.id;
           delete form.porc_comision;
           if (form.id_clte_part_dest == "") delete form.id_clte_part_dest;
           if (form.id_clte_part_orig == "") delete form.id_clte_part_orig;
-          if (this.reversada == true) {
-            form.estatus_administra = "E";
-            form.check_elab = 1;
-            moment.locale("es");
-            form.fecha_emision = moment().format("L");
-            form.fecha_emision = form.fecha_emision
-              .split("/")
-              .reverse()
-              .join("-");
-          }
+          delete form.porc_comision;
           api
-            .put(`/mmovimientos/${form.id}`, form, {
+            .post(`/mmovimientos`, form, {
               headers: {
                 Authorization: `Bearer ${LocalStorage.getItem("token")}`,
               },
             })
             .then((res) => {
+              this.form.id = res.data.id;
               this.$q.notify({
-                message: "Guia Actualizada",
+                message: "Guia Creada",
                 color: "green",
               });
               this.reversada = false;
@@ -4146,9 +4594,10 @@ export default {
             })
             .catch((err) => {
               this.$q.notify({
-                message: "Error al Actualizar Guia",
+                message: "Error al Crear Guia",
                 color: "red",
               });
+              this.readonlyAgencia = false;
               this.reversada = false;
               this.destino = false;
               this.cliente = false;
@@ -4156,45 +4605,7 @@ export default {
               this.objetive = 0;
               return;
             });
-          return;
         }
-        delete form.id;
-        delete form.porc_comision;
-        if (form.id_clte_part_dest == "") delete form.id_clte_part_dest;
-        if (form.id_clte_part_orig == "") delete form.id_clte_part_orig;
-        delete form.porc_comision;
-        api
-          .post(`/mmovimientos`, form, {
-            headers: {
-              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            },
-          })
-          .then((res) => {
-            this.form.id = res.data.id;
-            this.$q.notify({
-              message: "Guia Creada",
-              color: "green",
-            });
-            this.reversada = false;
-            this.destino = false;
-            this.cliente = false;
-            this.count = 1;
-            this.objetive = 0;
-            return;
-          })
-          .catch((err) => {
-            this.$q.notify({
-              message: "Error al Crear Guia",
-              color: "red",
-            });
-            this.readonlyAgencia = false;
-            this.reversada = false;
-            this.destino = false;
-            this.cliente = false;
-            this.count = 1;
-            this.objetive = 0;
-            return;
-          });
       });
     },
     // Metodo para mostrar PopUp de Cliente Particular al hacer Click en Boton
