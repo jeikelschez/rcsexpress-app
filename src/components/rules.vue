@@ -20,7 +20,7 @@ export default {
     },
     isMax(val, max, ret = false) {
       if (val !== null && val !== "" && val.length > max)
-        return ret !== false ? ret : `Maximo ${min} Caracteres`;
+        return ret !== false ? ret : `Maximo ${max} Caracteres`;
     },
     isMin(val, min, ret = false) {
       if (val !== null && val !== "" && val.length < min)

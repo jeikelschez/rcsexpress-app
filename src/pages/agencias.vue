@@ -16,11 +16,10 @@
                   hint=""
                   :options="paisesSelected"
                   @filter="
-                    (val, update, abort) =>
+                    (val, update) =>
                       filterArray(
                         val,
                         update,
-                        abort,
                         'paisesSelected',
                         'paises',
                         'desc_pais'
@@ -38,11 +37,16 @@
                     this.selectedCiudad = [];
                     this.estados = [];
                     this.ciudades = [];
-                    this.$refs.methods.getData(`/estados`, 'setData', 'estados', {
-                      headers: {
-                        pais: this.selectedPais.id,
-                      },
-                    });
+                    this.$refs.methods.getData(
+                      `/estados`,
+                      'setData',
+                      'estados',
+                      {
+                        headers: {
+                          pais: this.selectedPais.id,
+                        },
+                      }
+                    );
                   "
                 >
                   <template v-slot:no-option>
@@ -68,11 +72,10 @@
                   class="pcform"
                   :options="estadosSelected"
                   @filter="
-                    (val, update, abort) =>
+                    (val, update) =>
                       filterArray(
                         val,
                         update,
-                        abort,
                         'estadosSelected',
                         'estados',
                         'desc_estado'
@@ -88,11 +91,16 @@
                   @update:model-value="
                     this.selectedCiudad = [];
                     this.ciudades = [];
-                    this.$refs.methods.getData(`/ciudades`, 'setData', 'ciudades', {
-                      headers: {
-                        estado: this.selectedEstado.id,
-                      },
-                    });
+                    this.$refs.methods.getData(
+                      `/ciudades`,
+                      'setData',
+                      'ciudades',
+                      {
+                        headers: {
+                          estado: this.selectedEstado.id,
+                        },
+                      }
+                    );
                   "
                 >
                   <template v-slot:no-option>
@@ -117,11 +125,10 @@
                   hint=""
                   :options="ciudadesSelected"
                   @filter="
-                    (val, update, abort) =>
+                    (val, update) =>
                       filterArray(
                         val,
                         update,
-                        abort,
                         'ciudadesSelected',
                         'ciudades',
                         'desc_ciudad'
@@ -410,6 +417,11 @@
           <template v-slot:loading>
             <q-inner-loading showing color="primary" class="loading" />
           </template>
+          <template v-slot:body-cell-estatus="props">
+            <q-td :props="props">
+              {{ filterDesc("estatus", props.row.estatus) }}
+            </q-td>
+          </template>
           <template v-slot:body-cell-action="props">
             <q-td :props="props">
               <q-btn
@@ -421,7 +433,11 @@
                 @click.capture="resetForm"
                 :disabled="this.allowOption(3)"
                 @click="
-                  this.$refs.methods.getData(`/agencias/${props.row.id}`, 'setDataEdit', 'form');
+                  this.$refs.methods.getData(
+                    `/agencias/${props.row.id}`,
+                    'setDataEdit',
+                    'form'
+                  );
                   agenciasDialog = true;
                 "
               ></q-btn>
@@ -517,7 +533,6 @@
     <methods
       ref="methods"
       @set-Data="setData"
-      @reset-Loading="resetLoading"
       @set-Data-Edit="setDataEdit"
       @get-Data-Table="getDataTable"
       @set-Data-Table="setDataTable"
@@ -549,7 +564,6 @@ export default {
           label: "Ciudad",
           field: (row) => row.ciudades.desc_ciudad,
           align: "left",
-          required: true,
         },
         {
           name: "nb_agencia",
@@ -557,7 +571,6 @@ export default {
           field: "nb_agencia",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
           name: "tlf_agencia",
@@ -565,22 +578,18 @@ export default {
           field: "tlf_agencia",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
           name: "estatus",
           label: "Estatus",
-          field: "activo_desc",
+          field: "estatus",
           align: "left",
-          type: "string",
           sortable: true,
-          required: true,
         },
         {
           name: "action",
           label: "Acciones",
           align: "center",
-          required: true,
         },
       ],
       form: {
@@ -646,7 +655,7 @@ export default {
   },
   methods: {
     // Metodo para Filtrar Datos de Selects
-    filterArray(val, update, abort, pagina, array, element) {
+    filterArray(val, update, pagina, array, element) {
       if (val === "") {
         update(() => {
           this[pagina] = this[array];
@@ -667,9 +676,10 @@ export default {
         }
       });
     },
-    // Metodo para Resetear Carga
-    resetLoading() {
-      this.loading = false;
+    // Metodo para traer el value de los Selects y Columns
+    filterDesc(array, value) {
+      var find = this[array].findIndex((item) => item.value == value);
+      return find >= 0 ? this[array][find].label : null;
     },
     // Metodo para validar Permisos
     allowOption(option) {
@@ -725,7 +735,7 @@ export default {
       this[dataRes].tlf_agencia = res.tlf_agencia;
       this[dataRes].rif_agencia = res.rif_agencia;
       this[dataRes].nit_agencia = res.nit_agencia;
-      this[dataRes].estatus = res.activo_desc;
+      this[dataRes].estatus = this.filterDesc("estatus", res.estatus);
       this.selectedCiudad = res.ciudades;
       this.ciudadEdit = res.ciudades.id;
       api

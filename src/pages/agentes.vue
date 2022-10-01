@@ -17,19 +17,9 @@
                   "
                   lazy-rules
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Valor Requerido'),
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        25,
-                        'Maximo 25 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 25),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                 >
                   <template v-slot:prepend>
@@ -37,7 +27,6 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
@@ -50,18 +39,8 @@
                   "
                   lazy-rules
                   :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        50,
-                        'Maximo 50 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isMax(val, 50),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                 >
                   <template v-slot:prepend>
@@ -69,7 +48,6 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
@@ -83,18 +61,8 @@
                   "
                   lazy-rules
                   :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        50,
-                        'Maximo 50 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isMax(val, 50),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                 >
                   <template v-slot:prepend>
@@ -102,18 +70,13 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-6 col-xs-12">
                 <q-select
                   outlined
                   v-model="form.flag_activo"
                   label="Activo"
                   hint=""
-                  :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isReqSelect(val, 'Valor Requerido') ||
-                      '',
-                  ]"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
                   :options="estatus"
                   lazy-rules
                 >
@@ -122,7 +85,6 @@
                   </template>
                 </q-select>
               </div>
-
               <div class="col-md-12 col-xs-12">
                 <q-input
                   outlined
@@ -134,18 +96,8 @@
                   "
                   lazy-rules
                   :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        100,
-                        'Maximo 100 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isMax(val, 100),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                 >
                   <template v-slot:prepend>
@@ -153,7 +105,6 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-12 col-xs-12">
                 <q-input
                   outlined
@@ -166,18 +117,8 @@
                   "
                   lazy-rules
                   :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        100,
-                        'Maximo 100 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isMax(val, 100),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                 >
                   <template v-slot:prepend>
@@ -185,7 +126,6 @@
                   </template>
                 </q-input>
               </div>
-
               <q-card
                 class="q-pa-md"
                 bordered
@@ -217,18 +157,8 @@
                         "
                         lazy-rules
                         :rules="[
-                          (val) =>
-                            this.$refs.rulesVue.isMax(
-                              val,
-                              20,
-                              'Maximo 20 Caracteres'
-                            ),
-                          (val) =>
-                            this.$refs.rulesVue.isMin(
-                              val,
-                              3,
-                              'Minimo 3 Caracteres'
-                            ) || '',
+                          (val) => this.$refs.rulesVue.isMax(val, 20),
+                          (val) => this.$refs.rulesVue.isMin(val, 3),
                         ]"
                       >
                         <template v-slot:prepend>
@@ -236,21 +166,14 @@
                         </template>
                       </q-input>
                     </div>
-
                     <div class="col-md-6 col-xs-12">
                       <q-select
                         outlined
                         v-model="form.tipo_agente"
                         label="Tipo de Agente"
                         hint=""
-                        :rules="[
-                          (val) =>
-                            this.$refs.rulesVue.isReqSelect(
-                              val,
-                              'Valor Requerido'
-                            ) || '',
-                        ]"
-                        :options="tipoDeAgente"
+                        :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
+                        :options="tipoAgente"
                         lazy-rules
                       >
                         <template v-slot:prepend>
@@ -258,7 +181,6 @@
                         </template>
                       </q-select>
                     </div>
-
                     <div class="col-md-4 col-xs-12">
                       <q-input
                         outlined
@@ -268,10 +190,7 @@
                         input-class="text-right"
                         hint=""
                         class="pcform"
-                        @update:model-value="
-                          form.porc_comision_venta =
-                            form.porc_comision_venta.toUpperCase()
-                        "
+                        :rules="[(val) => this.$refs.rulesVue.isMax(val, 7)]"
                         lazy-rules
                       >
                         <template v-slot:prepend>
@@ -279,7 +198,6 @@
                         </template>
                       </q-input>
                     </div>
-
                     <div class="col-md-4 col-xs-12">
                       <q-input
                         outlined
@@ -289,10 +207,7 @@
                         v-money="money"
                         input-class="text-right"
                         hint=""
-                        @update:model-value="
-                          form.porc_comision_entrega =
-                            form.porc_comision_entrega.toUpperCase()
-                        "
+                        :rules="[(val) => this.$refs.rulesVue.isMax(val, 7)]"
                         lazy-rules
                       >
                         <template v-slot:prepend>
@@ -300,7 +215,6 @@
                         </template>
                       </q-input>
                     </div>
-
                     <div class="col-md-4 col-xs-12">
                       <q-input
                         outlined
@@ -309,10 +223,7 @@
                         v-money="money"
                         input-class="text-right"
                         hint=""
-                        @update:model-value="
-                          form.porc_comision_seguro =
-                            form.porc_comision_seguro.toUpperCase()
-                        "
+                        :rules="[(val) => this.$refs.rulesVue.isMax(val, 7)]"
                         lazy-rules
                       >
                         <template v-slot:prepend>
@@ -324,7 +235,6 @@
                 </q-card-section>
               </q-card>
             </div>
-
             <div
               class="full-width row justify-center items-center content-center"
               style="margin-bottom: 10px"
@@ -369,11 +279,10 @@
               transition-hide="flip-down"
               :options="agenciasSelected"
               @filter="
-                (val, update, abort) =>
+                (val, update) =>
                   filterArray(
                     val,
                     update,
-                    abort,
                     'agenciasSelected',
                     'agencias',
                     'nb_agencia'
@@ -390,9 +299,7 @@
               outlined
               standout
               label="Escoge una Agencia"
-              @update:model-value="
-                getDataTable(`/agentes`, 'setDataTable', 'agentes')
-              "
+              @update:model-value="getDataTable()"
             >
               <template v-slot:no-option>
                 <q-item>
@@ -412,36 +319,17 @@
             style="align-self: center; text-align: center"
           >
             <q-input
-              v-model="filter"
+              v-model="this.pagination.filterValue"
               rounded
               dense
               outlined
               standout
               label="Búsqueda avanzada"
-              @keydown.enter="
-                getData(`/agentes`, 'setDataTable', 'agentes', {
-                  headers: {
-                    page: 1,
-                    agencia: this.selectedAgencia.id,
-                    limit: 5,
-                    filter: 'nb_agente,persona_responsable',
-                    filter_value: filter,
-                  },
-                })
-              "
+              @keydown.enter="getDataTable()"
             >
               <template v-slot:append>
                 <q-icon
-                  @click="
-                    getData(`/agentes`, 'setDataTable', 'agentes', {
-                      headers: {
-                        page: 1,
-                        limit: 5,
-                        filter: 'nb_agente,persona_responsable',
-                        filter_value: filter,
-                      },
-                    })
-                  "
+                  @click="getDataTable()"
                   class="cursor-pointer"
                   name="search"
                 />
@@ -468,20 +356,30 @@
 
         <div class="q-pa-md my-card row" bordered flat style="margin-top: 2px">
           <q-table
-            :rows="agentes"
+            :rows="datos"
             binary-state-sort
             row-key="id"
             :columns="columns"
             :separator="separator"
             :rows-per-page-options="[5, 10, 15, 20, 50]"
-            @request="onRequest"
+            @request="getDataTable"
             style="width: 100%"
             :loading="loading"
             :grid="$q.screen.xs"
             v-model:pagination="pagination"
           >
             <template v-slot:loading>
-              <q-inner-loading showing color="primary" />
+              <q-inner-loading showing color="primary" class="loading" />
+            </template>
+            <template v-slot:body-cell-tipo_agente="props">
+              <q-td :props="props">
+                {{ filterDesc("tipoAgente", props.row.tipo_agente) }}
+              </q-td>
+            </template>
+            <template v-slot:body-cell-flag_activo="props">
+              <q-td :props="props">
+                {{ filterDesc("estatus", props.row.flag_activo) }}
+              </q-td>
             </template>
             <template v-slot:body-cell-action="props">
               <q-td :props="props">
@@ -493,7 +391,11 @@
                   icon="edit"
                   :disabled="this.allowOption(3)"
                   @click="
-                    getData(`/agentes/${props.row.id}`, 'setDataEdit', 'form');
+                    this.$refs.methods.getData(
+                      `/agentes/${props.row.id}`,
+                      'setDataEdit',
+                      'form'
+                    );
                     formDialog = true;
                   "
                 ></q-btn>
@@ -521,23 +423,8 @@
                         <q-item-label>{{ col.label }}</q-item-label>
                       </q-item-section>
                       <q-item-section side>
-                        <q-chip
-                          v-if="col.name === 'status'"
-                          :color="
-                            props.row.status == 'Active'
-                              ? 'green'
-                              : props.row.status == 'Disable'
-                              ? 'red'
-                              : 'grey'
-                          "
-                          text-color="white"
-                          dense
-                          class="text-weight-bolder"
-                          square
-                          >{{ col.value }}</q-chip
-                        >
                         <q-btn
-                          v-else-if="col.name === 'action'"
+                          v-if="col.name === 'action'"
                           dense
                           round
                           flat
@@ -545,7 +432,7 @@
                           icon="edit"
                           :disabled="this.allowOption(3)"
                           @click="
-                            getData(
+                            this.$refs.methods.getData(
                               `/agentes/${props.row.id}`,
                               'setDataEdit',
                               'form'
@@ -553,23 +440,8 @@
                             formDialog = true;
                           "
                         ></q-btn>
-                        <q-chip
-                          v-if="col.name === 'status'"
-                          :color="
-                            props.row.status == 'Active'
-                              ? 'green'
-                              : props.row.status == 'Disable'
-                              ? 'red'
-                              : 'grey'
-                          "
-                          text-color="white"
-                          dense
-                          class="text-weight-bolder"
-                          square
-                          >{{ col.value }}</q-chip
-                        >
                         <q-btn
-                          v-else-if="col.name === 'action'"
+                          v-if="col.name === 'action'"
                           dense
                           round
                           flat
@@ -619,12 +491,10 @@
 
     <methods
       ref="methods"
-      @get-Data-Table="getDataTable(`/agentes`, 'setDataTable', 'agentes')"
-      @set-Data-Table="setDataTable"
-      @on-Request="onRequest"
-      @reset-Loading="resetLoading"
+      @set-Data="setData"
       @set-Data-Edit="setDataEdit"
-      @set-Data-Init="setDataInit"
+      @get-Data-Table="getDataTable"
+      @set-Data-Table="setDataTable"
       @set-Data-Permisos="setDataPermisos"
     ></methods>
     <rules-vue ref="rulesVue"></rules-vue>
@@ -633,8 +503,9 @@
 
 <script>
 import { ref } from "vue";
+import { api } from "boot/axios";
+import { LocalStorage } from "quasar";
 import rulesVue from "src/components/rules.vue";
-import { useQuasar, LocalStorage } from "quasar";
 import { VMoney } from "v-money";
 import methodsVue from "src/components/methods.vue";
 
@@ -663,7 +534,6 @@ export default {
           field: "nb_agente",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
           name: "persona_responsable",
@@ -671,30 +541,25 @@ export default {
           field: "persona_responsable",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
-          name: "tipo_desc",
+          name: "tipo_agente",
           label: "Tipo de Agente",
-          field: "tipo_desc",
+          field: "tipo_agente",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
-          name: "activo_desc",
+          name: "flag_activo",
           label: "Estatus",
-          field: "activo_desc",
+          field: "flag_activo",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
           name: "action",
           label: "Acciones",
           align: "center",
-          sortable: true,
-          required: true,
         },
       ],
       form: {
@@ -716,17 +581,26 @@ export default {
         { label: "ACTIVO", value: "1" },
         { label: "INACTIVO", value: "0" },
       ],
-      tipoDeAgente: [
+      tipoAgente: [
         { label: "RESPONSABLE DE AGENCIA", value: "RP" },
         { label: "COURIERS", value: "CR" },
       ],
+      pagination: {
+        page: 1,
+        rowsPerPage: 5,
+        sortBy: "persona_responsable",
+        descending: false,
+        filter: "nb_agente,persona_responsable",
+        filterValue: "",
+        rowsNumber: "",
+      },
       orderDirection: "",
       count: 1,
       currentPage: 1,
       agencias: [],
       agenciasSelected: [],
       rpermisos: [],
-      agentes: [],
+      datos: [],
       selected: [],
       filter: "",
       selectedAgencia: [],
@@ -734,27 +608,26 @@ export default {
     };
   },
   setup() {
-    const $q = useQuasar();
-    const loading = ref(false);
-    const order = ref(false);
-    const pagination = ref({
-      descending: "",
-      page: 1,
-      rowsPerPage: 5,
-      rowsNumber: "",
-    });
     return {
-      pagination,
-      anulate: ref(false),
       loading: ref(false),
       separator: ref("vertical"),
-      formDialog: ref(false),
       agentesDelete: ref(false),
+      formDialog: ref(false),
     };
   },
   mounted() {
     this.$emit("changeTitle", "SCEN - Mantenimiento - Agentes", "");
-    this.getData("/agencias", "setDataInit", "agencias");
+    api
+      .get(`/agencias`, {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        },
+      })
+      .then((res) => {
+        this.agencias = res.data.data;
+        this.selectedAgencia = this.agencias[0];
+        this.getDataTable();
+      });
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
@@ -764,51 +637,8 @@ export default {
     });
   },
   methods: {
-    // Metodo para hacer Get de Datos cuando se utilizan controles de Tabla
-    onRequest(res, dataRes) {
-      let { page, rowsPerPage, sortBy, descending } = res.pagination;
-      if (this.currentPage !== page) descending = "";
-
-      const fetchCount =
-        rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-
-      if (!sortBy) sortBy = "";
-
-      var headersortBy = sortBy;
-
-      if (headersortBy == "action") {
-        descending = "";
-        headersortBy = "";
-        sortBy = "";
-      }
-
-      if (descending !== "") {
-        this.pagination.descending = !this.pagination.descending;
-        if (this.pagination.descending == true) {
-          this.orderDirection = "DESC";
-        } else this.orderDirection = "ASC";
-      }
-
-      this.pagination.sortBy = sortBy;
-      this.pagination.page = page;
-      this.pagination.rowsPerPage = rowsPerPage;
-      if (sortBy == "tipo_desc") sortBy = "tipo_agente";
-      if (sortBy == "activo_desc") sortBy = "flag_activo";
-
-      this.getData(`/agentes`, "setDataTable", "agentes", {
-        headers: {
-          page: page,
-          limit: fetchCount,
-          agencia: this.selectedAgencia.id,
-          order_direction: this.orderDirection,
-          order_by: headersortBy,
-          filter: "nb_agente,persona_responsable",
-          filter_value: this.filter,
-        },
-      });
-    },
     // Metodo para filtrar opciones de Selects
-    filterArray(val, update, abort, pagina, array, element) {
+    filterArray(val, update, pagina, array, element) {
       if (val === "") {
         update(() => {
           this[pagina] = this[array];
@@ -829,18 +659,10 @@ export default {
         }
       });
     },
-    // Metodo para desactivar Icono de Carga
-    resetLoading() {
-      this.loading = false;
-    },
-    // Metodo para buscar y Setear Datos en Selects
-    filterSelect(array, codigo, searched, selectedOption, selectedOptionValue) {
-      var find = this[array].findIndex((item) => item[codigo] == searched);
-      if (find >= 0) {
-        this[selectedOption][selectedOptionValue] = this[array][find];
-      } else {
-        this[selectedOption][selectedOptionValue] = { label: "", value: null };
-      }
+    // Metodo para traer el value de los Selects y Columns
+    filterDesc(array, value) {
+      var find = this[array].findIndex((item) => item.value == value);
+      return find >= 0 ? this[array][find].label : null;
     },
     // Metodo para validar Permisos
     allowOption(option) {
@@ -857,42 +679,23 @@ export default {
 
     // METODOS DE PAGINA
 
-    // Metodo para Setear Datos al iniciar
-    setDataInit(res, dataRes) {
-      this[dataRes] = res.data;
-      this.selectedAgencia = this.agencias[0];
-
-      this.$refs.methods.getData("/agentes", "setDataTable", "agentes", {
-        headers: {
-          agencia: this.selectedAgencia.id,
-          page: 1,
-          limit: 5,
-          filter: "nb_agente,persona_responsable",
-          filter_value: this.filter,
-        },
-      });
-      this.loading = false;
-    },
-    // Metodo para Get de Datos
-    getData(url, call, dataRes, axiosConfig) {
-      this.$refs.methods.getData(url, call, dataRes, axiosConfig);
-    },
-    // Metodo para Get de Agentes
-    getDataTable(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, {
-        headers: {
-          agencia: this.selectedAgencia.id,
-          page: 1,
-          limit: 5,
-          filter: "nb_agente,persona_responsable",
-          filter_value: this.filter,
-          order_direction: this.orderDirection,
-          order_by: this.pagination.sortBy,
-        },
-      });
+    // Metodo para Extraer Datos de Tabla
+    getDataTable(props) {
       this.loading = true;
+      if (props) this.pagination = props.pagination;
+      this.$refs.methods.getData(`/agentes`, "setDataTable", "datos", {
+        headers: {
+          agencia: this.selectedAgencia.id,
+          page: this.pagination.page,
+          limit: this.pagination.rowsPerPage,
+          order_by: this.pagination.sortBy,
+          order_direction: this.pagination.descending ? "DESC" : "ASC",
+          filter: this.pagination.filter,
+          filter_value: this.pagination.filterValue,
+        },
+      });
     },
-    // Metodo para Setear Datos en Tabla al hacer Get
+    // Metodo para Setear Datos de Tabla
     setDataTable(res, dataRes) {
       this[dataRes] = res.data;
       this.pagination.page = res.currentPage;
@@ -901,16 +704,14 @@ export default {
       this.pagination.rowsPerPage = res.limit;
       this.loading = false;
     },
+    // Metodo para Setear Datos Generales
+    setData(res, dataRes) {
+      this[dataRes] = res.data ? res.data : res;
+    },
     // Metodo para Setear Datos de un Agente Existente
     setDataEdit(res, dataRes) {
       this[dataRes].id = res.id;
-      this.filterSelect(
-        "estatus",
-        "value",
-        res.flag_activo,
-        "form",
-        "flag_activo"
-      );
+      this[dataRes].cod_agencia = res.cod_agencia;
       this[dataRes].nb_agente = res.nb_agente;
       this[dataRes].persona_responsable = res.persona_responsable;
       this[dataRes].dir_agente = res.dir_agente;
@@ -921,20 +722,11 @@ export default {
       this[dataRes].porc_comision_venta = res.porc_comision_venta;
       this[dataRes].porc_comision_seguro = res.porc_comision_seguro;
       this[dataRes].porc_comision_entrega = res.porc_comision_entrega;
-      this.filterSelect(
-        "tipoDeAgente",
-        "value",
-        res.tipo_agente,
-        "form",
-        "tipo_agente"
+      this[dataRes].tipo_agente = this.filterDesc(
+        "tipoAgente",
+        res.tipo_agente
       );
-      this[dataRes].cod_agencia = res.cod_agencia;
-      this.loading = false;
-    },
-    // Metodo para Eliminar Agente
-    deleteData(idpost) {
-      this.$refs.methods.deleteData(`/agentes/${idpost}`, "getDataTable");
-      this.loading = true;
+      this[dataRes].flag_activo = this.filterDesc("estatus", res.flag_activo);
     },
     // Metodo para Actualizar o Crear Agente
     sendData() {
@@ -960,9 +752,12 @@ export default {
           this.form,
           "getDataTable"
         );
-        this.loading = true;
         this.resetForm();
       }
+    },
+    // Metodo para Eliminar Agente
+    deleteData(idpost) {
+      this.$refs.methods.deleteData(`/agentes/${idpost}`, "getDataTable");
     },
     // Metodo para resetear Datos de Agente Creado o Seleccionado
     resetForm() {
