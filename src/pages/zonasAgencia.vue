@@ -1,6 +1,6 @@
 <template>
   <q-page class="pagina q-pa-md">
-    <q-dialog v-model="zonasDialog">
+    <q-dialog v-model="dialog">
       <q-card class="q-pa-md" bordered style="width: 999px; max-width: 80vw">
         <q-card-section>
           <q-form @submit="sendData()" class="q-gutter-md">
@@ -129,7 +129,7 @@
               outlined
               dense
               standout
-              v-model="filterZonas"
+              v-model="filter"
               type="search"
               label="Búsqueda avanzada"
             >
@@ -147,10 +147,8 @@
               rounded
               color="primary"
               :disabled="this.allowOption(2)"
-              @click="zonasDialog = true"
+              @click="dialog = true"
               @click.capture="resetForm()"
-              size="16px"
-              class="q-px-xl q-py-xs insertarestadosmovil"
             ></q-btn>
           </div>
         </div>
@@ -162,7 +160,8 @@
             :loading="loading"
             :columns="columnsZonas"
             :separator="separator"
-            :filter="filterZonas"
+            :rows-per-page-options="[5, 10, 15, 20, 50]"
+            :filter="filter"
             style="width: 100%"
             :grid="$q.screen.xs"
             v-model:pagination="pagination"
@@ -190,7 +189,7 @@
                       'setDataEdit',
                       'form'
                     );
-                    zonasDialog = true;
+                    dialog = true;
                   "
                 ></q-btn>
                 <q-btn
@@ -201,7 +200,7 @@
                   icon="delete"
                   :disabled="this.allowOption(4)"
                   @click="selected = props.row.id"
-                  @click.capture="zonasDelete = true"
+                  @click.capture="deletePopup = true"
                 ></q-btn>
               </q-td>
             </template>
@@ -234,7 +233,7 @@
                               'setDataEdit',
                               'form'
                             );
-                            zonasDialog = true;
+                            dialog = true;
                           "
                         ></q-btn>
                         <q-btn
@@ -246,7 +245,7 @@
                           icon="delete"
                           :disabled="this.allowOption(4)"
                           @click="selected = props.row.id"
-                          @click.capture="zonasDelete = true"
+                          @click.capture="deletePopup = true"
                         ></q-btn>
                         <q-item-label v-if="col.name != 'tipo_zona'">
                           {{ col.value }}
@@ -262,7 +261,7 @@
       </div>
     </div>
 
-    <q-dialog v-model="zonasDelete">
+    <q-dialog v-model="deletePopup">
       <q-card style="width: 700px">
         <q-card-section>
           <div class="text-h5" style="font-size: 18px">
@@ -302,8 +301,7 @@
 
 <script>
 import { ref } from "vue";
-import { api } from "boot/axios";
-import { useQuasar, LocalStorage } from "quasar";
+import { LocalStorage } from "quasar";
 import rulesVue from "src/components/rules.vue";
 import methodsVue from "src/components/methods.vue";
 
@@ -354,15 +352,15 @@ export default {
       selected: [],
       agenciasSelected: [],
       selectedAgencia: [],
-      filterZonas: "",
+      filter: "",
     };
   },
   setup() {
     return {
       loading: ref(false),
       separator: ref("vertical"),
-      zonasDialog: ref(false),
-      zonasDelete: ref(false),
+      dialog: ref(false),
+      deletePopup: ref(false),
     };
   },
   mounted() {
@@ -459,7 +457,7 @@ export default {
           "getDataTable"
         );
       }
-      this.zonasDialog = false;
+      this.dialog = false;
       this.resetForm();
     },
     // Metodo para Resetear Datos
@@ -468,7 +466,7 @@ export default {
       this.form.nb_zona = "";
       this.form.tipo_zona = "";
       this.form.cod_agencia = "";
-      this.zonasDialog = false;
+      this.dialog = false;
     },
   },
 };

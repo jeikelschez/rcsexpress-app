@@ -18,6 +18,7 @@
                   "
                   :rules="[
                     (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 50),
                     (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                 >
@@ -87,6 +88,7 @@
                   lazy-rules
                   :rules="[
                     (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 50),
                     (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                 >
@@ -151,6 +153,7 @@
                   label="Ciudad"
                   :rules="[
                     (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 50),
                     (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   @update:model-value="
@@ -217,7 +220,6 @@
                 </q-select>
               </div>
             </div>
-
             <div
               class="full-width row justify-center items-center content-center"
               style="margin-bottom: 10px"
@@ -308,8 +310,6 @@
                 @click="paisesDialog = true"
                 :disabled="this.allowOption(2)"
                 @click.capture="resetFormPaises"
-                size="16px"
-                class="q-px-xl q-py-xs"
               >
               </q-btn>
             </div>
@@ -526,8 +526,6 @@
                 :disabled="this.allowOption(2)"
                 @click="estadosDialog = true"
                 @click.capture="resetFormEstados"
-                size="16px"
-                class="q-px-xl q-py-xs"
               >
               </q-btn>
             </div>
@@ -780,8 +778,6 @@
                 :disabled="this.allowOption(2)"
                 @click="ciudadesDialog = true"
                 @click.capture="resetFormCiudades"
-                size="16px"
-                class="q-px-xl q-py-xs"
               >
               </q-btn>
             </div>
@@ -1219,8 +1215,8 @@ export default {
       paisesDialog: ref(false),
       estadosDialog: ref(false),
       ciudadesDialog: ref(false),
-      estadosDelete: ref(false),
       paisesDelete: ref(false),
+      estadosDelete: ref(false),
       ciudadesDelete: ref(false),
     };
   },

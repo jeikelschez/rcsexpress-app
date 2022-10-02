@@ -14,18 +14,9 @@
                   class="pcform"
                   lazy-rules
                   :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        50,
-                        'Maximo 50 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 50),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   @update:model-value="
                     form.nb_ayudante = form.nb_ayudante.toUpperCase()
@@ -36,36 +27,24 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.tlf_ayudante"
                   label="Teléfono"
                   :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        50,
-                        'Maximo 50 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isMax(val, 50),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   hint=""
                   lazy-rules
-                  mask="### - ### - ##########"
+                  mask="(####) ### - ####"
                 >
                   <template v-slot:prepend>
                     <q-icon name="phone" />
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-12 col-xs-12">
                 <q-input
                   outlined
@@ -73,18 +52,8 @@
                   label="Direccion"
                   hint=""
                   :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        100,
-                        'Maximo 100 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isMax(val, 100),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   lazy-rules
                   @update:model-value="
@@ -96,18 +65,14 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-12 col-xs-12">
                 <q-select
                   outlined
                   v-model="form.flag_activo"
-                  label="Vigente"
+                  label="Estatus"
                   hint=""
-                  :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
-                  ]"
-                  :options="vigente"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
+                  :options="estatus"
                   lazy-rules
                 >
                   <template v-slot:prepend>
@@ -116,7 +81,6 @@
                 </q-select>
               </div>
             </div>
-
             <div
               class="full-width row justify-center items-center content-center"
               style="margin-bottom: 10px"
@@ -175,7 +139,7 @@
           style="text-align: center; align-self: center"
         >
           <q-btn
-            label="Insertar Ayudante"
+            label="Insertar"
             rounded
             color="primary"
             @click="
@@ -186,15 +150,15 @@
           ></q-btn>
         </div>
       </div>
-
       <div class="row q-pa-md q-gutter-y-md">
         <q-table
-          :rows="datos"
+          :rows="ayudantes"
           binary-state-sort
           row-key="id"
           :loading="loading"
           :columns="columns"
           :separator="separator"
+          :rows-per-page-options="[5, 10, 15, 20, 50]"
           :filter="filter"
           style="width: 100%"
           :grid="$q.screen.xs"
@@ -202,6 +166,11 @@
         >
           <template v-slot:loading>
             <q-inner-loading showing color="primary" />
+          </template>
+          <template v-slot:body-cell-flag_activo="props">
+            <q-td :props="props">
+              {{ filterDesc("estatus", props.row.flag_activo) }}
+            </q-td>
           </template>
           <template v-slot:body-cell-action="props">
             <q-td :props="props">
@@ -213,8 +182,11 @@
                 icon="edit"
                 :disabled="this.allowOption(3)"
                 @click="
-                  getData(`/ayudantes/${props.row.id}`, 'setDataEdit', 'form');
-                  this.resetForm();
+                  this.$refs.methods.getData(
+                    `/ayudantes/${props.row.id}`,
+                    'setDataEdit',
+                    'form'
+                  );
                   dialog = true;
                 "
               ></q-btn>
@@ -242,23 +214,11 @@
                       <q-item-label>{{ col.label }}</q-item-label>
                     </q-item-section>
                     <q-item-section side>
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
+                      <q-item-label v-if="col.name === 'flag_activo'">
+                        {{ filterDesc("estatus", props.row.flag_activo) }}
+                      </q-item-label>
                       <q-btn
-                        v-else-if="col.name === 'action'"
+                        v-if="col.name === 'action'"
                         dense
                         round
                         flat
@@ -271,27 +231,11 @@
                             'setDataEdit',
                             'form'
                           );
-                          this.resetFormEdit();
-                          edit = true;
+                          dialog = true;
                         "
                       ></q-btn>
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
                       <q-btn
-                        v-else-if="col.name === 'action'"
+                        v-if="col.name === 'action'"
                         dense
                         round
                         flat
@@ -301,11 +245,8 @@
                         @click="selected = props.row.id"
                         @click.capture="deletePopup = true"
                       ></q-btn>
-                      <q-item-label
-                        v-else
-                        caption
-                        :class="col.classes ? col.classes : ''"
-                        >{{ col.value }}
+                      <q-item-label v-if="col.name != 'flag_activo'">
+                        {{ col.value }}
                       </q-item-label>
                     </q-item-section>
                   </q-item>
@@ -332,7 +273,9 @@
             label="Aceptar"
             color="primary"
             v-close-popup
-            @click="deleteData(selected)"
+            @click="
+              this.$refs.methods.deleteData(`/ayudantes/${selected}`, 'getDataTable')
+            "
           />
         </q-card-actions>
       </q-card>
@@ -340,13 +283,9 @@
 
     <methods
       ref="methods"
-      @get-Data="
-        getData('/ayudantes', 'setData', 'datos');
-        this.loading = true;
-      "
-      @set-Data="setData"
-      @reset-Loading="resetLoading"
-      @set-data-Edit="setDataEdit"
+      @set-Data-Edit="setDataEdit"
+      @get-Data-Table="getDataTable"
+      @set-Data-Table="setDataTable"
       @set-Data-Permisos="setDataPermisos"
     >
     </methods>
@@ -376,15 +315,13 @@ export default {
           field: "nb_ayudante",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
-          name: "activo_desc",
+          name: "flag_activo",
           label: "Estatus",
-          field: "activo_desc",
+          field: "flag_activo",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
           name: "dir_ayudante",
@@ -392,7 +329,6 @@ export default {
           field: "dir_ayudante",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
           name: "tlf_ayudante",
@@ -400,14 +336,11 @@ export default {
           field: "tlf_ayudante",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
           name: "action",
           label: "Acciones",
           align: "center",
-          sortable: true,
-          required: true,
         },
       ],
       form: {
@@ -416,39 +349,30 @@ export default {
         tlf_ayudante: "",
         flag_activo: "",
       },
-      vigente: [
+      estatus: [
         { label: "ACTIVO", value: "1" },
         { label: "INACTIVO", value: "0" },
       ],
-      datos: [],
+      pagination: {
+        rowsPerPage: 5,
+      },
+      ayudantes: [],
       selected: [],
       rpermisos: [],
-      error: "",
+      filter: "",
     };
   },
   setup() {
-    const $q = useQuasar();
-    const pagination = ref({
-      sortBy: "desc",
-      descending: false,
-      page: 1,
-      rowsPerPage: 5,
-    });
     return {
-      pagination: ref({
-        rowsPerPage: 5,
-      }),
-      separator: ref("vertical"),
       loading: ref(false),
+      separator: ref("vertical"),
       dialog: ref(false),
       deletePopup: ref(false),
-      filter: ref(""),
     };
   },
   mounted() {
     this.$emit("changeTitle", "SCEN - Mantenimiento - Ayudantes", "");
-    this.getData("/ayudantes", "setData", "datos");
-    this.loading = true;
+    this.getDataTable();
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
@@ -458,9 +382,10 @@ export default {
     });
   },
   methods: {
-    // Metodo para Resetear Carga
-    resetLoading() {
-      this.loading = false;
+    // Metodo para traer el value de los Selects y Columns
+    filterDesc(array, value) {
+      var find = this[array].findIndex((item) => item.value == value);
+      return find >= 0 ? this[array][find].label : null;
     },
     // Metodo para validar Permisos
     allowOption(option) {
@@ -477,47 +402,39 @@ export default {
 
     // METODOS DE PAGINAS
 
-    // Metodo para Hacer Get de Datos
-    getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes);
+    // Metodo para Extraer Datos de Tabla
+    getDataTable() {
+      this.loading = true;
+      this.$refs.methods.getData("/ayudantes", "setDataTable", "ayudantes");
     },
-    // Metodo para Setear Datos
-    setData(res, dataRes) {
-      this[dataRes] = res;
+    // Metodo para Setear Datos de Tabla
+    setDataTable(res, dataRes) {
+      this[dataRes] = res.data ? res.data : res;
       this.loading = false;
     },
-    // Metodo para Setear Datos de Ayudante Seleccionado
+    // Metodo para Setear Datos
     setDataEdit(res, dataRes) {
       this[dataRes].id = res.id;
       this[dataRes].nb_ayudante = res.nb_ayudante;
       this[dataRes].dir_ayudante = res.dir_ayudante;
       this[dataRes].tlf_ayudante = res.tlf_ayudante;
-      this[dataRes].flag_activo = res.activo_desc;
+      this[dataRes].flag_activo = this.filterDesc("estatus", res.flag_activo);
       this.loading = false;
-    },
-    // Metodo para Eliminar Datos
-    deleteData(idpost) {
-      this.$refs.methods.deleteData(`/ayudantes/${idpost}`, "getData");
-      this.loading = true;
     },
     // Metodo para Editar o Crear Datos
     sendData() {
       this.form.flag_activo = this.form.flag_activo.value;
       if (!this.form.id) {
-        this.$refs.methods.createData("/ayudantes", this.form);
-        this.resetForm();
-        this.dialog = false;
-        this.loading = true;
+        this.$refs.methods.createData("/ayudantes", this.form, "getDataTable");
       } else {
         this.$refs.methods.putData(
           `/ayudantes/${this.form.id}`,
           this.form,
-          "getData"
+          "getDataTable"
         );
-        this.resetForm();
-        this.dialog = false;
-        this.loading = true;
       }
+      this.dialog = false;
+      this.resetForm();
     },
     // Metodo para Resetear Datos
     resetForm() {

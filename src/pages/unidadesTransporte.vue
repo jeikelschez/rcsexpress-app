@@ -1,6 +1,6 @@
 <template>
   <q-page class="pagina q-pa-md">
-    <q-dialog v-model="unidadesDialog">
+    <q-dialog v-model="dialog">
       <q-card class="q-pa-md" bordered style="width: 900px; max-width: 80vw">
         <q-card-section>
           <q-form @submit="sendData" class="q-gutter-md">
@@ -12,19 +12,9 @@
                   label="Placa Vehículo"
                   class="pcform"
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        10,
-                        'Maximo 10 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 10),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   hint=""
                   lazy-rules
@@ -42,18 +32,8 @@
                   v-model="form.chofer"
                   label="Chofer"
                   :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        20,
-                        'Maximo 30 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracterers'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isMax(val, 30),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   hint=""
                   lazy-rules
@@ -64,26 +44,15 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-12 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.descripcion"
                   label="Descripción"
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        100,
-                        'Maximo 100 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 100),
+                    (val) => this.$refs.rulesVue.isMin(val),
                   ]"
                   hint=""
                   lazy-rules
@@ -97,7 +66,6 @@
                 </q-input>
               </div>
             </div>
-
             <div
               class="full-width row justify-center items-center content-center"
               style="margin-bottom: 10px"
@@ -156,24 +124,24 @@
           style="text-align: center; align-self: center"
         >
           <q-btn
-            label="Insertar Unidad"
+            label="Insertar"
             rounded
             color="primary"
-            @click="unidadesDialog = true"
+            @click="dialog = true"
             @click.capture="resetForm()"
             :disabled="this.allowOption(2)"
           ></q-btn>
         </div>
       </div>
-
       <div class="q-pa-md">
         <q-table
-          :rows="datos"
+          :rows="unidades"
           binary-state-sort
           row-key="id"
           :columns="columns"
           :loading="loading"
           :separator="separator"
+          :rows-per-page-options="[5, 10, 15, 20, 50]"
           :filter="filter"
           style="width: 100%"
           :grid="$q.screen.xs"
@@ -192,8 +160,12 @@
                 icon="edit"
                 :disabled="this.allowOption(3)"
                 @click="
-                  getData(`/unidades/${props.row.id}`, 'setDataEdit', 'form');
-                  unidadesDialog = true;
+                  this.$refs.methods.getData(
+                    `/unidades/${props.row.id}`,
+                    'setDataEdit',
+                    'form'
+                  );
+                  dialog = true;
                 "
               ></q-btn>
               <q-btn
@@ -220,23 +192,8 @@
                       <q-item-label>{{ col.label }}</q-item-label>
                     </q-item-section>
                     <q-item-section side>
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
                       <q-btn
-                        v-else-if="col.name === 'action'"
+                        v-if="col.name === 'action'"
                         dense
                         round
                         flat
@@ -244,31 +201,16 @@
                         icon="edit"
                         :disabled="this.allowOption(3)"
                         @click="
-                          getData(
+                          this.$refs.methods.getData(
                             `/unidades/${props.row.id}`,
                             'setDataEdit',
                             'form'
                           );
-                          unidadesDialog = true;
+                          dialog = true;
                         "
                       ></q-btn>
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
                       <q-btn
-                        v-else-if="col.name === 'action'"
+                        v-if="col.name === 'action'"
                         dense
                         round
                         flat
@@ -278,12 +220,7 @@
                         @click="selected = props.row.id"
                         @click.capture="deletePopup = true"
                       ></q-btn>
-                      <q-item-label
-                        v-else
-                        caption
-                        :class="col.classes ? col.classes : ''"
-                        >{{ col.value }}
-                      </q-item-label>
+                      <q-item-label> {{ col.value }} </q-item-label>
                     </q-item-section>
                   </q-item>
                 </q-list>
@@ -301,7 +238,6 @@
             ¿Estas seguro que quieres eliminar este elemento?
           </div>
         </q-card-section>
-
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="primary" v-close-popup />
           <q-btn
@@ -309,7 +245,12 @@
             label="Aceptar"
             color="primary"
             v-close-popup
-            @click="deleteData(selected)"
+            @click="
+              this.$refs.methods.deleteData(
+                `/unidades/${selected}`,
+                'getDataTable'
+              )
+            "
           />
         </q-card-actions>
       </q-card>
@@ -317,13 +258,9 @@
 
     <methods
       ref="methods"
-      @get-Data="
-        getData('/unidades', 'setData', 'datos');
-        this.loading = true;
-      "
-      @set-data="setData"
-      @reset-Loading="resetLoading"
       @set-Data-Edit="setDataEdit"
+      @get-Data-Table="getDataTable"
+      @set-Data-Table="setDataTable"
       @set-Data-Permisos="setDataPermisos"
     >
     </methods>
@@ -334,7 +271,7 @@
 
 <script>
 import { ref } from "vue";
-import { useQuasar, LocalStorage } from "quasar";
+import { LocalStorage } from "quasar";
 import methodsVue from "src/components/methods.vue";
 import rulesVue from "src/components/rules.vue";
 
@@ -352,7 +289,6 @@ export default {
           field: "placas",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
           name: "chofer",
@@ -360,7 +296,6 @@ export default {
           field: "chofer",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
           name: "descripcion",
@@ -368,51 +303,34 @@ export default {
           field: "descripcion",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
           name: "action",
           label: "Acciones",
           align: "center",
-          sortable: true,
-          required: true,
         },
       ],
-      form: {
-        placas: "",
-        chofer: "",
-        descripcion: "",
-      },
       form: {
         id: "",
         placas: "",
         chofer: "",
         descripcion: "",
       },
-      datos: [],
+      pagination: {
+        rowsPerPage: 5,
+      },
+      unidades: [],
       selected: [],
       rpermisos: [],
-      error: "",
+      filter: "",
     };
   },
   setup() {
-    const $q = useQuasar();
-    const pagination = ref({
-      sortBy: "desc",
-      descending: false,
-      page: 1,
-      rowsPerPage: 5,
-    });
     return {
-      pagination: ref({
-        rowsPerPage: 5,
-      }),
       loading: ref(false),
       separator: ref("vertical"),
-      unidadesDialog: ref(false),
-      medium: ref(false),
+      dialog: ref(false),
       deletePopup: ref(false),
-      filter: ref(""),
     };
   },
   mounted() {
@@ -421,8 +339,7 @@ export default {
       "SCEN - Mantenimiento - Unidades de Transporte",
       ""
     );
-    this.getData("/unidades", "setData", "datos");
-    this.loading = true;
+    this.getDataTable();
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
@@ -432,10 +349,6 @@ export default {
     });
   },
   methods: {
-    // Metodo para Resetear Carga
-    resetLoading() {
-      this.loading = false;
-    },
     // Metodo para validar Permisos
     allowOption(option) {
       return (
@@ -451,46 +364,36 @@ export default {
 
     // METODOS DE PAGINA
 
-    // Metodo para Get de Datos
-    getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes);
+    // Metodo para Extraer Datos de Tabla
+    getDataTable() {
+      this.loading = true;
+      this.$refs.methods.getData("/unidades", "setDataTable", "unidades");
     },
-    // Metodo para Setear Datos
-    setData(res, dataRes) {
-      this[dataRes] = res;
+    // Metodo para Setear Datos de Tabla
+    setDataTable(res, dataRes) {
+      this[dataRes] = res.data ? res.data : res;
       this.loading = false;
     },
     // Metodo para Setear Datos Seleccionados
     setDataEdit(res, dataRes) {
-      this.resetForm();
       this.form.id = res.id;
       this.form.descripcion = res.descripcion;
       this.form.placas = res.placas;
       this.form.chofer = res.chofer;
-      this.loading = false;
-    },
-    // Metodo para Eliminar Datos
-    deleteData(idpost) {
-      this.$refs.methods.deleteData(`/unidades/${idpost}`, "getData");
-      this.loading = true;
     },
     // Metodo para Crear y Editar Datos
     sendData() {
       if (!this.form.id) {
-        this.$refs.methods.createData("/unidades", this.form, "getData");
-        this.resetForm();
-        this.unidadesDialog = false;
-        this.loading = true;
+        this.$refs.methods.createData("/unidades", this.form, "getDataTable");
       } else {
         this.$refs.methods.putData(
           `/unidades/${this.form.id}`,
           this.form,
-          "getData"
+          "getDataTable"
         );
-        this.unidadesDialog = false;
-        this.resetForm();
-        this.loading = true;
       }
+      this.dialog = false;
+      this.resetForm();
     },
     // Metodo para Resetear Datos
     resetForm() {

@@ -1,6 +1,6 @@
 <template>
   <q-page class="pagina q-pa-md">
-    <q-dialog v-model="agentesDialog">
+    <q-dialog v-model="dialog">
       <q-card class="q-pa-md" bordered style="width: 900px; max-width: 90vw">
         <q-card-section>
           <q-form @submit="sendData()" class="q-gutter-md">
@@ -18,7 +18,7 @@
                   lazy-rules
                   :rules="[
                     (val) => this.$refs.rulesVue.isReq(val),
-                    (val) => this.$refs.rulesVue.isMax(val, 25),
+                    (val) => this.$refs.rulesVue.isMax(val, 100),
                     (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                 >
@@ -33,7 +33,7 @@
                   v-model="form.fax_agente"
                   label="Fax"
                   hint=""
-                  mask="#### - ##########"
+                  mask="(####) ### - ####"
                   @update:model-value="
                     form.fax_agente = form.fax_agente.toUpperCase()
                   "
@@ -76,6 +76,7 @@
                   v-model="form.flag_activo"
                   label="Activo"
                   hint=""
+                  mask="(####) ### - ####"
                   :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
                   :options="estatus"
                   lazy-rules
@@ -344,10 +345,8 @@
               rounded
               color="primary"
               :disabled="this.allowOption(2)"
-              @click="agentesDialog = true"
+              @click="dialog = true"
               @click.capture="resetForm()"
-              size="16px"
-              class="q-px-xl q-py-xs insertarestadosmovil"
             ></q-btn>
           </div>
         </div>
@@ -393,7 +392,7 @@
                       'setDataEdit',
                       'form'
                     );
-                    agentesDialog = true;
+                    dialog = true;
                   "
                 ></q-btn>
                 <q-btn
@@ -404,7 +403,7 @@
                   icon="delete"
                   :disabled="this.allowOption(4)"
                   @click="selected = props.row.id"
-                  @click.capture="agentesDelete = true"
+                  @click.capture="deletePopup = true"
                 ></q-btn>
               </q-td>
             </template>
@@ -437,7 +436,7 @@
                               'setDataEdit',
                               'form'
                             );
-                            agentesDialog = true;
+                            dialog = true;
                           "
                         ></q-btn>
                         <q-btn
@@ -449,7 +448,7 @@
                           icon="delete"
                           :disabled="this.allowOption(4)"
                           @click="selected = props.row.id"
-                          @click.capture="agentesDelete = true"
+                          @click.capture="deletePopup = true"
                         ></q-btn>
                         <q-item-label v-if="col.name != 'flag_activo'"
                           >{{ col.value }}
@@ -465,7 +464,7 @@
       </div>
     </div>
 
-    <q-dialog v-model="agentesDelete">
+    <q-dialog v-model="deletePopup">
       <q-card style="width: 700px">
         <q-card-section>
           <div class="text-h5" style="font-size: 18px">
@@ -607,8 +606,8 @@ export default {
     return {
       loading: ref(false),
       separator: ref("vertical"),
-      agentesDelete: ref(false),
-      agentesDialog: ref(false),
+      deletePopup: ref(false),
+      dialog: ref(false),
     };
   },
   mounted() {
@@ -739,7 +738,7 @@ export default {
           "getDataTable"
         );
       }
-      this.agentesDialog = false;
+      this.dialog = false;
       this.resetForm();
     },
     // Metodo para resetear Datos de Formulario
@@ -758,7 +757,7 @@ export default {
       this.form.porc_comision_entrega = "";
       this.form.porc_comision_seguro = "";
       this.form.cod_agencia = null;
-      this.agentesDialog = false;
+      this.dialog = false;
     },
   },
 };

@@ -1,6 +1,6 @@
 <template>
   <q-page class="pagina q-pa-md">
-    <q-dialog v-model="agenciasDialog">
+    <q-dialog v-model="dialog">
       <q-card class="q-pa-md" bordered style="width: 900px; max-width: 80vw">
         <q-card-section>
           <q-form @submit="sendData" class="q-gutter-md">
@@ -159,12 +159,13 @@
                   upper-case
                   outlined
                   v-model="form.nb_agencia"
-                  label="Agencia"
+                  label="Nombre Agencia"
                   class="pcform"
                   hint=""
                   lazy-rules
                   :rules="[
                     (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 50),
                     (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   @update:model-value="
@@ -182,7 +183,7 @@
                   v-model="form.persona_contacto"
                   label="Nombre"
                   :rules="[
-                    (val) => this.$refs.rulesVue.isMax(val, 200),
+                    (val) => this.$refs.rulesVue.isMax(val, 50),
                     (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   hint=""
@@ -224,7 +225,7 @@
                   label="Rif"
                   hint=""
                   :rules="[
-                    (val) => this.$refs.rulesVue.isMax(val, 200),
+                    (val) => this.$refs.rulesVue.isMax(val, 20),
                     (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   lazy-rules
@@ -243,7 +244,7 @@
                   v-model="form.nit_agencia"
                   label="NIT Agencia"
                   :rules="[
-                    (val) => this.$refs.rulesVue.isMax(val, 200),
+                    (val) => this.$refs.rulesVue.isMax(val, 20),
                     (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   hint=""
@@ -267,10 +268,10 @@
                   hint=""
                   lazy-rules
                   :rules="[
-                    (val) => this.$refs.rulesVue.isMax(val, 200),
+                    (val) => this.$refs.rulesVue.isMax(val, 50),
                     (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
-                  mask="####-#####"
+                  mask="(####) ### - ####"
                 >
                   <template v-slot:prepend>
                     <q-icon name="fax" />
@@ -285,10 +286,10 @@
                   hint=""
                   lazy-rules
                   :rules="[
-                    (val) => this.$refs.rulesVue.isMax(val, 200),
+                    (val) => this.$refs.rulesVue.isMax(val, 50),
                     (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
-                  mask="(###) ### - ####"
+                  mask="(####) ### - ####"
                 >
                   <template v-slot:prepend>
                     <q-icon name="phone" />
@@ -319,6 +320,10 @@
                   hint=""
                   type="email"
                   lazy-rules
+                  :rules="[
+                    (val) => this.$refs.rulesVue.isMax(val, 50),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
+                  ]"
                   @update:model-value="
                     form.email_agencia = form.email_agencia.toUpperCase()
                   "
@@ -394,7 +399,7 @@
             rounded
             color="primary"
             :disabled="this.allowOption(2)"
-            @click="agenciasDialog = true"
+            @click="dialog = true"
             @click.capture="this.resetForm()"
           ></q-btn>
         </div>
@@ -438,7 +443,7 @@
                     'setDataEdit',
                     'form'
                   );
-                  agenciasDialog = true;
+                  dialog = true;
                 "
               ></q-btn>
               <q-btn
@@ -449,7 +454,7 @@
                 icon="delete"
                 :disabled="this.allowOption(4)"
                 @click="selected = props.row.id"
-                @click.capture="agenciasDelete = true"
+                @click.capture="deletePopup = true"
               ></q-btn>
             </q-td>
           </template>
@@ -483,7 +488,7 @@
                             'setDataEdit',
                             'form'
                           );
-                          agenciasDialog = true;
+                          dialog = true;
                         "
                       ></q-btn>
                       <q-btn
@@ -495,7 +500,7 @@
                         icon="delete"
                         :disabled="this.allowOption(4)"
                         @click="selected = props.row.id"
-                        @click.capture="agenciasDelete = true"
+                        @click.capture="deletePopup = true"
                       ></q-btn>
                       <q-item-label v-if="col.name != 'estatus'"
                         >{{ col.value }}
@@ -510,7 +515,7 @@
       </div>
     </div>
 
-    <q-dialog v-model="agenciasDelete">
+    <q-dialog v-model="deletePopup">
       <q-card style="width: 700px">
         <q-card-section>
           <div class="text-h5" style="font-size: 18px">
@@ -635,8 +640,8 @@ export default {
     return {
       loading: ref(false),
       separator: ref("vertical"),
-      agenciasDelete: ref(false),
-      agenciasDialog: ref(false),
+      deletePopup: ref(false),
+      dialog: ref(false),
     };
   },
   mounted() {
@@ -772,7 +777,7 @@ export default {
           "getDataTable"
         );
       }
-      this.agenciasDialog = false;
+      this.dialog = false;
       this.resetForm();
     },
     // Metodo para Resetear Datos
@@ -792,7 +797,7 @@ export default {
       this.form.rif_agencia = "";
       this.form.nit_agencia = "";
       this.form.estatus = "";
-      this.agenciasDialog = false;
+      this.dialog = false;
     },
   },
 };
