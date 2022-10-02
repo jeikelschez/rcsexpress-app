@@ -402,7 +402,7 @@
 
       <div class="q-pa-md q-gutter-y-md">
         <q-table
-          :rows="datos"
+          :rows="agencias"
           :loading="loading"
           binary-state-sort
           row-key="id"
@@ -465,6 +465,9 @@
                       <q-item-label>{{ col.label }}</q-item-label>
                     </q-item-section>
                     <q-item-section side>
+                      <q-item-label v-if="col.name === 'estatus'">
+                        {{ filterDesc("estatus", props.row.estatus) }}
+                      </q-item-label>
                       <q-btn
                         v-if="col.name === 'action'"
                         dense
@@ -494,10 +497,7 @@
                         @click="selected = props.row.id"
                         @click.capture="deletePopup = true"
                       ></q-btn>
-                      <q-item-label
-                        v-else
-                        caption
-                        :class="col.classes ? col.classes : ''"
+                      <q-item-label v-if="col.name != 'estatus'"
                         >{{ col.value }}
                       </q-item-label>
                     </q-item-section>
@@ -623,7 +623,7 @@ export default {
       count: 1,
       currentPage: 1,
       ciudades: [],
-      datos: [],
+      agencias: [],
       rpermisos: [],
       paisesSelected: [],
       estadosSelected: [],
@@ -696,11 +696,19 @@ export default {
 
     // METODOS DE PAGINA
 
+    // Metodo para Setear Datos Generales
+    setData(res, dataRes) {
+      this[dataRes] = res.data ? res.data : res;
+    },
+    // Metodo para Eliminar Datos en Tabla
+    deleteData(idpost) {
+      this.$refs.methods.deleteData(`/agencias/${idpost}`, "getDataTable");
+    },
     // Metodo para Extraer Datos de Tabla
     getDataTable(props) {
       this.loading = true;
       if (props) this.pagination = props.pagination;
-      this.$refs.methods.getData(`/agencias`, "setDataTable", "datos", {
+      this.$refs.methods.getData(`/agencias`, "setDataTable", "agencias", {
         headers: {
           page: this.pagination.page,
           limit: this.pagination.rowsPerPage,
@@ -719,10 +727,6 @@ export default {
       this.pagination.rowsNumber = res.total;
       this.pagination.rowsPerPage = res.limit;
       this.loading = false;
-    },
-    // Metodo para Setear Datos Generales
-    setData(res, dataRes) {
-      this[dataRes] = res.data ? res.data : res;
     },
     // Metodo para Setear Datos de Agencia Seleccionada
     setDataEdit(res, dataRes) {
@@ -761,26 +765,21 @@ export default {
             });
         });
     },
-    // Metodo para Eliminar Agencia
-    deleteData(idpost) {
-      this.$refs.methods.deleteData(`/agencias/${idpost}`, "getDataTable");
-    },
     // Metodo para Editar o Crear Agencia
     sendData() {
       this.form.cod_ciudad = this.selectedCiudad.id;
       this.form.estatus = this.form.estatus.value;
       if (!this.form.id) {
         this.$refs.methods.createData("/agencias", this.form, "getDataTable");
-        this.agenciasDialog = false;
-        this.resetForm();
       } else {
         this.$refs.methods.putData(
           `/agencias/${this.form.id}`,
           this.form,
           "getDataTable"
         );
-        this.agenciasDialog = false;
       }
+      this.agenciasDialog = false;
+      this.resetForm();
     },
     // Metodo para Resetear Datos
     resetForm() {
@@ -799,6 +798,7 @@ export default {
       this.form.rif_agencia = "";
       this.form.nit_agencia = "";
       this.form.estatus = "";
+      this.agenciasDialog = false;
     },
   },
 };

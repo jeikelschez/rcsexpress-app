@@ -1,6 +1,6 @@
 <template>
   <q-page class="pagina q-pa-md">
-    <q-dialog v-model="formDialog">
+    <q-dialog v-model="agentesDialog">
       <q-card class="q-pa-md" bordered style="width: 900px; max-width: 90vw">
         <q-card-section>
           <q-form @submit="sendData()" class="q-gutter-md">
@@ -346,7 +346,7 @@
               rounded
               color="primary"
               :disabled="this.allowOption(2)"
-              @click="formDialog = true"
+              @click="agentesDialog = true"
               @click.capture="resetForm()"
               size="16px"
               class="q-px-xl q-py-xs insertarestadosmovil"
@@ -356,7 +356,7 @@
 
         <div class="q-pa-md my-card row" bordered flat style="margin-top: 2px">
           <q-table
-            :rows="datos"
+            :rows="agentes"
             binary-state-sort
             row-key="id"
             :columns="columns"
@@ -396,7 +396,7 @@
                       'setDataEdit',
                       'form'
                     );
-                    formDialog = true;
+                    agentesDialog = true;
                   "
                 ></q-btn>
                 <q-btn
@@ -423,6 +423,9 @@
                         <q-item-label>{{ col.label }}</q-item-label>
                       </q-item-section>
                       <q-item-section side>
+                        <q-item-label v-if="col.name === 'flag_activo'">
+                          {{ filterDesc("estatus", props.row.flag_activo) }}
+                        </q-item-label>
                         <q-btn
                           v-if="col.name === 'action'"
                           dense
@@ -437,7 +440,7 @@
                               'setDataEdit',
                               'form'
                             );
-                            formDialog = true;
+                            agentesDialog = true;
                           "
                         ></q-btn>
                         <q-btn
@@ -451,10 +454,7 @@
                           @click="selected = props.row.id"
                           @click.capture="agentesDelete = true"
                         ></q-btn>
-                        <q-item-label
-                          v-else
-                          caption
-                          :class="col.classes ? col.classes : ''"
+                        <q-item-label v-if="col.name != 'flag_activo'"
                           >{{ col.value }}
                         </q-item-label>
                       </q-item-section>
@@ -491,7 +491,6 @@
 
     <methods
       ref="methods"
-      @set-Data="setData"
       @set-Data-Edit="setDataEdit"
       @get-Data-Table="getDataTable"
       @set-Data-Table="setDataTable"
@@ -598,9 +597,9 @@ export default {
       count: 1,
       currentPage: 1,
       agencias: [],
+      agentes: [],
       agenciasSelected: [],
       rpermisos: [],
-      datos: [],
       selected: [],
       filter: "",
       selectedAgencia: [],
@@ -612,7 +611,7 @@ export default {
       loading: ref(false),
       separator: ref("vertical"),
       agentesDelete: ref(false),
-      formDialog: ref(false),
+      agentesDialog: ref(false),
     };
   },
   mounted() {
@@ -679,11 +678,15 @@ export default {
 
     // METODOS DE PAGINA
 
+    // Metodo para Eliminar Agente
+    deleteData(idpost) {
+      this.$refs.methods.deleteData(`/agentes/${idpost}`, "getDataTable");
+    },
     // Metodo para Extraer Datos de Tabla
     getDataTable(props) {
       this.loading = true;
       if (props) this.pagination = props.pagination;
-      this.$refs.methods.getData(`/agentes`, "setDataTable", "datos", {
+      this.$refs.methods.getData(`/agentes`, "setDataTable", "agentes", {
         headers: {
           agencia: this.selectedAgencia.id,
           page: this.pagination.page,
@@ -703,10 +706,6 @@ export default {
       this.pagination.rowsNumber = res.total;
       this.pagination.rowsPerPage = res.limit;
       this.loading = false;
-    },
-    // Metodo para Setear Datos Generales
-    setData(res, dataRes) {
-      this[dataRes] = res.data ? res.data : res;
     },
     // Metodo para Setear Datos de un Agente Existente
     setDataEdit(res, dataRes) {
@@ -744,20 +743,15 @@ export default {
       this.form.flag_activo = this.form.flag_activo.value;
       if (!this.form.id) {
         this.$refs.methods.createData(`/agentes`, this.form, "getDataTable");
-        this.loading = true;
-        this.resetForm();
       } else {
         this.$refs.methods.putData(
           `/agentes/${this.form.id}`,
           this.form,
           "getDataTable"
         );
-        this.resetForm();
       }
-    },
-    // Metodo para Eliminar Agente
-    deleteData(idpost) {
-      this.$refs.methods.deleteData(`/agentes/${idpost}`, "getDataTable");
+      this.agentesDialog = false;
+      this.resetForm();
     },
     // Metodo para resetear Datos de Agente Creado o Seleccionado
     resetForm() {
@@ -775,7 +769,7 @@ export default {
       this.form.porc_comision_entrega = "";
       this.form.porc_comision_seguro = "";
       this.form.cod_agencia = null;
-      this.formDialog = false;
+      this.agentesDialog = false;
     },
   },
 };
