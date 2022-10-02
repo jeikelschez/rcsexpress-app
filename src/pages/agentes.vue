@@ -313,7 +313,6 @@
               </template>
             </q-select>
           </div>
-
           <div
             class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-6 cardMarginFilter"
             style="align-self: center; text-align: center"
@@ -336,7 +335,6 @@
               </template>
             </q-input>
           </div>
-
           <div
             class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
             style="text-align: center; align-self: center"
@@ -353,7 +351,6 @@
             ></q-btn>
           </div>
         </div>
-
         <div class="q-pa-md my-card row" bordered flat style="margin-top: 2px">
           <q-table
             :rows="agentes"
@@ -483,7 +480,12 @@
             label="Aceptar"
             color="primary"
             v-close-popup
-            @click="deleteData(selected)"
+            @click="
+              this.$refs.methods.deleteData(
+                `/agentes/${selected}`,
+                'getDataTable'
+              )
+            "
           />
         </q-card-actions>
       </q-card>
@@ -491,6 +493,7 @@
 
     <methods
       ref="methods"
+      @set-Data-Init="setDataInit"
       @set-Data-Edit="setDataEdit"
       @get-Data-Table="getDataTable"
       @set-Data-Table="setDataTable"
@@ -502,7 +505,6 @@
 
 <script>
 import { ref } from "vue";
-import { api } from "boot/axios";
 import { LocalStorage } from "quasar";
 import rulesVue from "src/components/rules.vue";
 import { VMoney } from "v-money";
@@ -593,17 +595,12 @@ export default {
         filterValue: "",
         rowsNumber: "",
       },
-      orderDirection: "",
-      count: 1,
-      currentPage: 1,
       agencias: [],
       agentes: [],
       agenciasSelected: [],
       rpermisos: [],
       selected: [],
-      filter: "",
       selectedAgencia: [],
-      error: "",
     };
   },
   setup() {
@@ -616,17 +613,7 @@ export default {
   },
   mounted() {
     this.$emit("changeTitle", "SCEN - Mantenimiento - Agentes", "");
-    api
-      .get(`/agencias`, {
-        headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-        },
-      })
-      .then((res) => {
-        this.agencias = res.data.data;
-        this.selectedAgencia = this.agencias[0];
-        this.getDataTable();
-      });
+    this.$refs.methods.getData("/agencias", "setDataInit", "agencias");
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
@@ -678,9 +665,11 @@ export default {
 
     // METODOS DE PAGINA
 
-    // Metodo para Eliminar Agente
-    deleteData(idpost) {
-      this.$refs.methods.deleteData(`/agentes/${idpost}`, "getDataTable");
+    // Metodo para Setear Datos al Iniciar
+    setDataInit(res, dataRes) {
+      this[dataRes] = res.data ? res.data : res;
+      this.selectedAgencia = this.agencias[0];
+      this.getDataTable();
     },
     // Metodo para Extraer Datos de Tabla
     getDataTable(props) {
@@ -700,14 +689,14 @@ export default {
     },
     // Metodo para Setear Datos de Tabla
     setDataTable(res, dataRes) {
-      this[dataRes] = res.data;
+      this[dataRes] = res.data ? res.data : res;
       this.pagination.page = res.currentPage;
       this.currentPage = res.currentPage;
       this.pagination.rowsNumber = res.total;
       this.pagination.rowsPerPage = res.limit;
       this.loading = false;
     },
-    // Metodo para Setear Datos de un Agente Existente
+    // Metodo para Setear Datos al Editar
     setDataEdit(res, dataRes) {
       this[dataRes].id = res.id;
       this[dataRes].cod_agencia = res.cod_agencia;
@@ -727,7 +716,7 @@ export default {
       );
       this[dataRes].flag_activo = this.filterDesc("estatus", res.flag_activo);
     },
-    // Metodo para Actualizar o Crear Agente
+    // Metodo para Actualizar o Crear Datos
     sendData() {
       this.form.porc_comision_venta = this.form.porc_comision_venta
         .replaceAll(".", "")
@@ -753,7 +742,7 @@ export default {
       this.agentesDialog = false;
       this.resetForm();
     },
-    // Metodo para resetear Datos de Agente Creado o Seleccionado
+    // Metodo para resetear Datos de Formulario
     resetForm() {
       delete this.form.id;
       this.form.nb_agente = "";

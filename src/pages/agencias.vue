@@ -449,7 +449,7 @@
                 icon="delete"
                 :disabled="this.allowOption(4)"
                 @click="selected = props.row.id"
-                @click.capture="deletePopup = true"
+                @click.capture="agenciasDelete = true"
               ></q-btn>
             </q-td>
           </template>
@@ -495,7 +495,7 @@
                         icon="delete"
                         :disabled="this.allowOption(4)"
                         @click="selected = props.row.id"
-                        @click.capture="deletePopup = true"
+                        @click.capture="agenciasDelete = true"
                       ></q-btn>
                       <q-item-label v-if="col.name != 'estatus'"
                         >{{ col.value }}
@@ -510,7 +510,7 @@
       </div>
     </div>
 
-    <q-dialog v-model="deletePopup">
+    <q-dialog v-model="agenciasDelete">
       <q-card style="width: 700px">
         <q-card-section>
           <div class="text-h5" style="font-size: 18px">
@@ -524,7 +524,7 @@
             label="Aceptar"
             color="primary"
             v-close-popup
-            @click="deleteData(selected)"
+            @click="this.$refs.methods.deleteData(`/agencias/${selected}`, 'getDataTable')"
           />
         </q-card-actions>
       </q-card>
@@ -620,8 +620,6 @@ export default {
       },
       paises: [],
       estados: [],
-      count: 1,
-      currentPage: 1,
       ciudades: [],
       agencias: [],
       rpermisos: [],
@@ -637,8 +635,8 @@ export default {
     return {
       loading: ref(false),
       separator: ref("vertical"),
+      agenciasDelete: ref(false),
       agenciasDialog: ref(false),
-      deletePopup: ref(false),
     };
   },
   mounted() {
@@ -700,10 +698,6 @@ export default {
     setData(res, dataRes) {
       this[dataRes] = res.data ? res.data : res;
     },
-    // Metodo para Eliminar Datos en Tabla
-    deleteData(idpost) {
-      this.$refs.methods.deleteData(`/agencias/${idpost}`, "getDataTable");
-    },
     // Metodo para Extraer Datos de Tabla
     getDataTable(props) {
       this.loading = true;
@@ -721,7 +715,7 @@ export default {
     },
     // Metodo para Setear Datos de Tabla
     setDataTable(res, dataRes) {
-      this[dataRes] = res.data;
+      this[dataRes] = res.data ? res.data : res;
       this.pagination.page = res.currentPage;
       this.currentPage = res.currentPage;
       this.pagination.rowsNumber = res.total;

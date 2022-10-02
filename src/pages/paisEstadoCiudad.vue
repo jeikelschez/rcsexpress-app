@@ -936,7 +936,12 @@
             label="Aceptar"
             color="primary"
             v-close-popup
-            @click="deleteData(`/paises/${selected}`, 'getDataPaises')"
+            @click="
+              this.$refs.methods.deleteData(
+                `/paises/${selected}`,
+                'getDataPaises'
+              )
+            "
           />
         </q-card-actions>
       </q-card>
@@ -957,7 +962,12 @@
             label="Aceptar"
             color="primary"
             v-close-popup
-            @click="deleteData(`/estados/${selected}`, 'getDataEstados')"
+            @click="
+              this.$refs.methods.deleteData(
+                `/estados/${selected}`,
+                'getDataEstados'
+              )
+            "
           />
         </q-card-actions>
       </q-card>
@@ -978,7 +988,12 @@
             label="Aceptar"
             color="primary"
             v-close-popup
-            @click="deleteData(`/ciudades/${selected}`, 'getDataCiudades')"
+            @click="
+              this.$refs.methods.deleteData(
+                `/ciudades/${selected}`,
+                'getDataCiudades'
+              )
+            "
           />
         </q-card-actions>
       </q-card>
@@ -1004,8 +1019,7 @@
 
 <script>
 import { ref } from "vue";
-import { api } from "boot/axios";
-import { useQuasar, LocalStorage } from "quasar";
+import { LocalStorage } from "quasar";
 import rulesVue from "src/components/rules.vue";
 import methodsVue from "src/components/methods.vue";
 
@@ -1194,11 +1208,7 @@ export default {
       selectedEstado: [],
       paisesSelected: [],
       estadosCiudadesSelected: [],
-      estadoRef: "",
-      error: "",
       filterPaises: "",
-      currentPageEstados: 1,
-      currentPageCiudades: 1,
     };
   },
   setup() {
@@ -1272,12 +1282,7 @@ export default {
     setData(res, dataRes) {
       this[dataRes] = res.data ? res.data : res;
     },
-    // Metodo para Eliminar Datos en Tabla
-    deleteData(url, callBack) {
-      this.loading = true;
-      this.$refs.methods.deleteData(url, callBack);
-    },
-
+    
     // Metodos para Paises
     // Metodo para Extraer Datos de Tabla
     getDataPaises() {
@@ -1286,7 +1291,7 @@ export default {
     },
     // Metodo para setear Datos Iniciales
     setDataPaises(res, dataRes) {
-      this[dataRes] = res;
+      this[dataRes] = res.data ? res.data : res;
       this.selectedPais = this.paises[0];
       this.getDataEstados();
       this.loading = false;
@@ -1350,7 +1355,7 @@ export default {
     // Metodo para Setear Datos en Tabla
     setDataEstados(res, dataRes) {
       this.ciudades = [];
-      this[dataRes] = res.data;
+      this[dataRes] = res.data ? res.data : res;
       this.selectedEstado = this.estados[0];
       this.paginationEstados.page = res.currentPage;
       this.currentPageEstados = res.currentPage;
@@ -1412,7 +1417,7 @@ export default {
     },
     // Metodo para Setear Datos en Tabla
     setDataCiudades(res, dataRes) {
-      this[dataRes] = res.data;
+      this[dataRes] = res.data ? res.data : res;
       this.paginationCiudades.page = res.currentPage;
       this.currentPageCiudades = res.currentPage;
       this.paginationCiudades.rowsNumber = res.total;
