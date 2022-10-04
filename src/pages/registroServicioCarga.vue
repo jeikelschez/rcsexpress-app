@@ -4435,23 +4435,22 @@ export default {
       this.showTextLoading();
       this.saveDetails = false;
       var form = JSON.parse(JSON.stringify(this.form));
-      if (
-        form.estatus_administra == "E" ||
-        form.estatus_administra == "P" ||
-        form.estatus_administra == "G" ||
-        form.estatus_administra == "F"
-      ) {
-        errorMessage =
-          "La guía no puede ser modificada bajo el estatus administrativo en el que se encuentra...";
-        return stopFuction;
-      }
       this.$refs.formData.validate().then(async (valid) => {
         try {
           if (!valid) {
             errorMessage = "Este campo es requerido en maestro";
             return stopFuction;
           }
-
+          if (
+            form.estatus_administra == "E" ||
+            form.estatus_administra == "P" ||
+            form.estatus_administra == "G" ||
+            form.estatus_administra == "F"
+          ) {
+            errorMessage =
+              "La guía no puede ser modificada bajo el estatus administrativo en el que se encuentra...";
+            return stopFuction;
+          }
           if (form.cod_cliente_org.cte_decontado == 1) {
             if (form.id_clte_part_orig) {
               api
