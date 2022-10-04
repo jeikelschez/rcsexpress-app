@@ -3146,7 +3146,7 @@ export default {
         return false;
       }
     },
-    // Pasar un numero a numero con dos decimales
+    // Pasar un numero a numero con dos decimales en formato correcto para efectuar operaciones
     parseFloatN(number) {
       number = Math.round(number * 100) / 100;
       return number;
@@ -3220,9 +3220,10 @@ export default {
         }
         if (this.detalle_movimiento[0]) {
           this.$q.notify({
-            message: "La guía ya fue Tarifeada",
+            message: "La guía ya fue Tarificada",
             color: "red",
           });
+          this.detalle = true;
           return;
         }
         if (this.form.estatus_administra.value == "A") {
@@ -3304,9 +3305,10 @@ export default {
           return error;
         }
 
+        // setear los valores del concepto básico
         this.detalle_movimiento[0] = {
           id: 0,
-          cod_movimiento: this.form.id,
+          cod_movimiento: null,
           nro_item: 1,
           conceptos: {
             desc_concepto: "",
@@ -3319,8 +3321,10 @@ export default {
           check_impuesto: null,
           check_comision: null,
         };
+
         this.showTextLoading();
 
+        // tarificar mínimo
         await api
           .get(`/vcontrol/4`, {
             headers: {
@@ -3336,6 +3340,8 @@ export default {
             }
             return error;
           });
+
+        // Se incluye este aparte para calcular el diferencial del minimo y el valor declarado
         await api
           .get(`/cfacturacion/${this.detalle_movimiento[0].cod_concepto}`, {
             headers: {
@@ -3356,6 +3362,8 @@ export default {
             }
             return error;
           });
+
+        // tarificar mínimo
         await api
           .get(`/tarifas`, {
             headers: {
@@ -3392,6 +3400,8 @@ export default {
             }
             monto_basico = res.data[0].monto_tarifa;
             kgr_minimos = res.data[0].kgr_hasta;
+
+            // Se incluye este aparte para calcular el diferencial del minimo y el valor declarado
             if (form.peso_kgs > 30) {
               val_declarado_otros = form.monto_ref_cte_sin_imp
                 ? form.monto_ref_cte_sin_imp
@@ -3410,10 +3420,11 @@ export default {
                   this.parseFloatN(dif_comision);
               }
             }
+
             this.detalle_movimiento[0].importe_renglon = monto_basico;
             this.detalle_movimiento[0].cantidad = kgr_minimos;
             this.detalle_movimiento[0].precio_unitario =
-              monto_basico / kgr_minimos;
+              this.parseFloatN(monto_basico) / this.parseFloatN(kgr_minimos);
           })
           .catch((err) => {
             if (err.response) {
@@ -3422,9 +3433,10 @@ export default {
             return error;
           });
 
+        // setear los valores del concepto kg adicionales
         this.detalle_movimiento[1] = {
           id: 0,
-          cod_movimiento: this.form.id,
+          cod_movimiento: null,
           nro_item: 2,
           conceptos: {
             desc_concepto: "",
@@ -3438,6 +3450,7 @@ export default {
           check_comision: null,
         };
 
+        // tarificar kg adicionales
         await api
           .get(`/vcontrol/5`, {
             headers: {
@@ -3454,6 +3467,7 @@ export default {
             return error;
           });
 
+        // buscar si el concepto acepta comisiones y vale para el iva
         await api
           .get(`/cfacturacion/${this.detalle_movimiento[1].cod_concepto}`, {
             headers: {
@@ -3519,6 +3533,7 @@ export default {
           };
         }
 
+        // Buscar tarifa kg adicionales
         await api
           .get(`/tarifas`, axiosConfig)
           .then((res) => {
@@ -3528,23 +3543,23 @@ export default {
               return error;
             }
             if (
-              res.data[0].monto_tarifa == null ||
-              res.data[0].monto_tarifa == "" ||
-              res.data[0].monto_tarifa == 0
+              res.data[0].kgr_hasta == null ||
+              res.data[0].kgr_hasta == "" ||
+              res.data[0].kgr_hasta == 0
             ) {
               errorMessage =
                 "Problemas al ubicar el monto de los Kgs. adicionales. Revisar mantenimiento de tarifas";
               return error;
             }
-            if (
-              this.parseFloatN(form.peso_kgs) - this.parseFloatN(kgr_minimos) >=
-              0
-            ) {
+
+            if (form.peso_kgs > kgr_minimos) {
               kgs_adicionales =
                 this.parseFloatN(form.peso_kgs) - this.parseFloatN(kgr_minimos);
             } else {
               kgs_adicionales = 0;
             }
+
+            // Se incluye este aparte para calcular el diferencial del minimo y el valor declarado
             if (form.peso_kgs > 30) {
               monto_kg_ad = 0;
             } else {
@@ -3552,6 +3567,7 @@ export default {
                 this.parseFloatN(kgs_adicionales) *
                 this.parseFloatN(res.data[0].monto_tarifa);
             }
+
             this.detalle_movimiento[1].cantidad = kgs_adicionales;
             this.detalle_movimiento[1].importe_renglon = monto_kg_ad;
             this.detalle_movimiento[1].precio_unitario =
@@ -3564,9 +3580,10 @@ export default {
             return error;
           });
 
+        // setear los valores del concepto otros
         this.detalle_movimiento[2] = {
           id: 0,
-          cod_movimiento: this.form.id,
+          cod_movimiento: null,
           nro_item: 3,
           conceptos: {
             desc_concepto: "",
@@ -3580,6 +3597,7 @@ export default {
           check_comision: null,
         };
 
+        // tarificar otros
         await api
           .get(`/vcontrol/6`, {
             headers: {
@@ -3596,6 +3614,7 @@ export default {
             return error;
           });
 
+        // buscar si el concepto acepta comisiones y vale para el iva
         await api
           .get(`/cfacturacion/${this.detalle_movimiento[2].cod_concepto}`, {
             headers: {
@@ -3617,6 +3636,7 @@ export default {
             return error;
           });
 
+        // Se incluye esta tarifa para manejar precio actualizado del $.
         await api
           .get(`/tarifas`, {
             headers: {
@@ -3630,8 +3650,11 @@ export default {
           })
           .then((res) => {
             monto_especial = !res.data[0] ? 0 : res.data[0].monto_tarifa;
+
+            //Se incluye este aparte para calcular el diferencial del minimo y el valor declarado
             if (form.peso_kgs > 30) {
               monto_otros = 0;
+              //Se incluye esta tarifa para manejar precio actualizado del $.
               if (monto_especial > 0 && monto_basico < monto_especial) {
                 monto_otros =
                   this.parseFloatN(monto_especial) -
@@ -3655,6 +3678,8 @@ export default {
                   ? 0
                   : this.parseFloatN(comision) - this.parseFloatN(monto_base);
             }
+
+            //Se incluye esta tarifa para manejar precio actualizado del $.
             if (
               monto_especial > 0 &&
               comision < monto_especial &&
@@ -3675,9 +3700,10 @@ export default {
             return error;
           });
 
+        // setear los valores del concepto seguros
         this.detalle_movimiento[3] = {
           id: 0,
-          cod_movimiento: this.form.id,
+          cod_movimiento: null,
           nro_item: 4,
           conceptos: {
             desc_concepto: "",
@@ -3690,6 +3716,8 @@ export default {
           check_impuesto: null,
           check_comision: null,
         };
+
+        // tarificar seguro
         await api
           .get(`/vcontrol/9`, {
             headers: {
@@ -3706,6 +3734,7 @@ export default {
             return error;
           });
 
+        //buscar si el concepto acepta comisiones y vale para el iva
         await api
           .get(`/cfacturacion/${this.detalle_movimiento[3].cod_concepto}`, {
             headers: {
@@ -3735,9 +3764,10 @@ export default {
         this.detalle_movimiento[3].precio_unitario = monto_seguro;
         this.detalle_movimiento[3].importe_renglon = monto_seguro;
 
+        // setear los valores del concepto COD
         this.detalle_movimiento[4] = {
           id: 0,
-          cod_movimiento: this.form.id,
+          cod_movimiento: null,
           nro_item: 5,
           conceptos: {
             desc_concepto: "",
@@ -3750,6 +3780,8 @@ export default {
           check_impuesto: null,
           check_comision: null,
         };
+
+        // tarificar COD
         await api
           .get(`/vcontrol/8`, {
             headers: {
@@ -3810,9 +3842,10 @@ export default {
             return error;
           });
 
+        // setear los valores del concepto gastos reembolsables
         this.detalle_movimiento[5] = {
           id: 0,
-          cod_movimiento: this.form.id,
+          cod_movimiento: null,
           nro_item: 6,
           conceptos: {
             desc_concepto: "",
@@ -3825,6 +3858,8 @@ export default {
           check_impuesto: null,
           check_comision: null,
         };
+
+        // tarificar gastos reembolsables
         await api
           .get(`/vcontrol/18`, {
             headers: {
@@ -3841,6 +3876,7 @@ export default {
             return error;
           });
 
+        //buscar si el concepto acepta comisiones y vale para el iva
         await api
           .get(`/cfacturacion/${this.detalle_movimiento[5].cod_concepto}`, {
             headers: {
@@ -3878,6 +3914,7 @@ export default {
             return error;
           });
 
+        // setear los valores del concepto gastos reembolsables
         for (var i = 0; i <= this.detalle_movimiento.length - 1; i++) {
           form.monto_subtotal =
             this.parseFloatN(form.monto_subtotal) +
@@ -3925,6 +3962,7 @@ export default {
         });
       }
     },
+    // Metodo para que una funcion no avance hasta que se cumpla una condicion
     async until(conditionFunction) {
       const poll = (resolve) => {
         if (conditionFunction()) resolve();
@@ -3933,207 +3971,180 @@ export default {
       return new Promise(poll);
     },
     // Metodo para Validar si Guia Existe y hacer Get de la Misma
-    validationGetGuia() {
-      api
-        .get(`/mmovimientos`, {
-          headers: {
-            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            nro_documento: this.form.nro_documento,
-            tipo: "GC",
-          },
-        })
-        .then((res) => {
-          if (res.data.data[0]) {
-            this.setDataGuia(res.data.data);
-          } else {
-            api
-              .get(`/cguias`, {
-                headers: {
-                  Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                  desde: this.form.nro_documento,
-                  nro_documento: this.form.nro_documento,
-                  hasta: this.form.nro_documento,
-                  tipo: 20,
-                },
-              })
-              .then((res) => {
-                if (res.data.data[0]) {
-                  var cod_agencia = res.data.data[0].cod_agencia;
-                  var cod_cliente = res.data.data[0].cod_cliente;
-                  var cod_agente = res.data.data[0].cod_agente;
-                  if (cod_agencia) this.count += 3;
-                  api
-                    .get(`/ginutilizadas`, {
-                      headers: {
-                        Authorization: `Bearer ${LocalStorage.getItem(
-                          "token"
-                        )}`,
-                        agencia: cod_agencia,
-                        nro_guia: this.form.nro_documento,
-                      },
-                    })
-                    .then((res) => {
-                      if (res.data.data[0]) {
-                        this.count = 1;
-                        this.objetive = 1;
-                        this.$q.notify({
-                          message:
-                            "No se puede seleccionar la Guía, ya que la misma está Inutilizada...!",
-                          color: "red",
-                        });
-                        return;
-                      } else {
-                        api
-                          .get(`/agencias`, {
-                            headers: {
-                              Authorization: `Bearer ${LocalStorage.getItem(
-                                "token"
-                              )}`,
-                            },
-                          })
-                          .then((res) => {
-                            this.agencias = res.data.data;
-                            this.objetive += 1;
-                            if (
-                              this.filterAndReturn(
-                                "agencias",
-                                "id",
-                                cod_agencia
-                              ) >= 0
-                            ) {
-                              this.form.cod_agencia =
-                                this.agencias[
-                                  this.filterAndReturn(
-                                    "agencias",
-                                    "id",
-                                    cod_agencia
-                                  )
-                                ];
-                              api
-                                .get(`/clientes`, {
-                                  headers: {
-                                    Authorization: `Bearer ${LocalStorage.getItem(
-                                      "token"
-                                    )}`,
-                                    agencia: this.form.cod_agencia.id,
-                                  },
-                                })
-                                .then((res) => {
-                                  this.clientes_origen = res.data.data;
-                                  this.objetive++;
-                                  if (
-                                    this.filterAndReturn(
-                                      "clientes_origen",
-                                      "id",
-                                      cod_cliente
-                                    ) !== false
-                                  )
-                                    this.form.cod_cliente_org =
-                                      this.clientes_origen[
-                                        this.filterAndReturn(
-                                          "clientes_origen",
-                                          "id",
-                                          cod_cliente
-                                        )
-                                      ];
-                                });
-                              api
-                                .get(`/agentes`, {
-                                  headers: {
-                                    Authorization: `Bearer ${LocalStorage.getItem(
-                                      "token"
-                                    )}`,
-                                    agencia: this.form.cod_agencia.id,
-                                  },
-                                })
-                                .then((res) => {
-                                  this.agentes = res.data.data;
-                                  this.objetive += 1;
-                                  if (
-                                    this.filterAndReturn(
-                                      "agentes",
-                                      "id",
-                                      cod_agente
-                                    ) !== false
-                                  )
-                                    this.form.cod_agente_venta =
-                                      this.agentes[
-                                        this.filterAndReturn(
-                                          "agentes",
-                                          "id",
-                                          cod_agente
-                                        )
-                                      ];
-                                });
-                              api
-                                .get(`/proveedores`, {
-                                  headers: {
-                                    Authorization: `Bearer ${LocalStorage.getItem(
-                                      "token"
-                                    )}`,
-                                    agencia: this.form.cod_agencia.id,
-                                  },
-                                })
-                                .then((res) => {
-                                  this.proveedores = res.data.data;
+    async validationGetGuia() {
+      try {
+        var errorMessage = null;
 
-                                  this.objetive += 1;
-                                });
-                            }
-                          });
-                        this.form.tipo_servicio = "N";
-                        this.form.tipo_ubicacion = "U";
-                        this.form.tipo_urgencia = "N";
-                        this.form.check_transito = 0;
-                        this.form.estatus_operativo = this.estatus_operativo[0];
-                        this.form.check_pe = 1;
-                        moment.locale("es");
-                        var date = moment().format("L");
-                        this.form.fecha_pe = date;
-                        this.form.fecha_elab = date;
-                        this.form.fecha_emision = date;
-                        this.form.fecha_envio = date;
-                        this.form.estatus_administra =
-                          this.estatus_administrativo[0];
-                        this.checkbox.nacional = "1";
-                        this.checkbox.urbano = "1";
-                        this.checkbox.normal = "1";
-                        this.form.check_elab = 1;
-                      }
-                    })
-                    .catch((err) => {
-                      this.count = 1;
-                      this.objetive = 1;
-                      if (err.response) {
-                        this.error = err.response.data.message;
-                      }
-                      this.errorDelServidor();
-                    });
-                } else {
-                  this.objetive = 1;
-                  this.count = 1;
-                  this.$q.notify({
-                    message:
-                      "El numero de guía no se encuentra en inventario. Debe asignar el numero antes de continuar",
-                    color: "red",
-                  });
-                  return;
-                }
-              })
-              .catch((err) => {
-                if (err.response) {
-                  this.error = err.response.data.message;
-                }
-                this.errorDelServidor();
-              });
-          }
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.error = err.response.data.message;
-          }
-          this.errorDelServidor();
-        });
+        await api
+          .get(`/mmovimientos`, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              nro_documento: this.form.nro_documento,
+              tipo: "GC",
+            },
+          })
+          .then((res) => {
+            if (res.data.data[0]) {
+              this.setDataGuia(res.data.data);
+              return stopFuction;
+            }
+          })
+          .catch((err) => {
+            errorMessage = err.response.data.message;
+            return error;
+          });
+
+        await api
+          .get(`/cguias`, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              desde: this.form.nro_documento,
+              nro_documento: this.form.nro_documento,
+              hasta: this.form.nro_documento,
+              tipo: 20,
+            },
+          })
+          .then((res) => {
+            if (res.data.data[0]) {
+              var cod_agencia = res.data.data[0].cod_agencia;
+              var cod_cliente = res.data.data[0].cod_cliente;
+              var cod_agente = res.data.data[0].cod_agente;
+            } else {
+              errorMessage =
+                "El numero de guía no se encuentra en inventario. Debe asignar el numero antes de continuar";
+              return stopFuction;
+            }
+          })
+          .catch((err) => {
+            if (err.response) {
+              this.error = err.response.data.message;
+            }
+            this.errorDelServidor();
+          });
+
+        await api
+          .get(`/ginutilizadas`, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              agencia: cod_agencia,
+              nro_guia: this.form.nro_documento,
+            },
+          })
+          .then((res) => {
+            if (res.data.data[0]) {
+              errorMessage =
+                "No se puede seleccionar la Guía, ya que la misma está Inutilizada...!";
+              return stopFuction;
+            }
+          })
+          .catch((err) => {
+            errorMessage = err.response.data.message;
+            return stopFuction;
+          });
+
+        await api
+          .get(`/agencias`, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            },
+          })
+          .then((res) => {
+            this.agencias = res.data.data;
+            this.objetive += 1;
+            if (this.filterAndReturn("agencias", "id", cod_agencia) >= 0) {
+              this.form.cod_agencia =
+                this.agencias[
+                  this.filterAndReturn("agencias", "id", cod_agencia)
+                ];
+            }
+          })
+          .catch((err) => {
+            errorMessage = err.response.data.message;
+            return stopFuction;
+          });
+        await api
+          .get(`/clientes`, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              agencia: this.form.cod_agencia.id,
+            },
+          })
+          .then((res) => {
+            this.clientes_origen = res.data.data;
+            this.objetive++;
+            if (this.filterAndReturn("clientes_origen", "id", cod_cliente) >= 0)
+              this.form.cod_cliente_org =
+                this.clientes_origen[
+                  this.filterAndReturn("clientes_origen", "id", cod_cliente)
+                ];
+          })
+          .catch((err) => {
+            errorMessage = err.response.data.message;
+            return stopFuction;
+          });
+        await api
+          .get(`/agentes`, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              agencia: this.form.cod_agencia.id,
+            },
+          })
+          .then((res) => {
+            this.agentes = res.data.data;
+            this.objetive += 1;
+            if (this.filterAndReturn("agentes", "id", cod_agente) >= 0)
+              this.form.cod_agente_venta =
+                this.agentes[this.filterAndReturn("agentes", "id", cod_agente)];
+          })
+          .catch((err) => {
+            errorMessage = err.response.data.message;
+            return stopFuction;
+          });
+        await api
+          .get(`/proveedores`, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              agencia: this.form.cod_agencia.id,
+            },
+          })
+          .then((res) => {
+            this.proveedores = res.data.data;
+
+            this.objetive += 1;
+          })
+          .catch((err) => {
+            errorMessage = err.response.data.message;
+            return stopFuction;
+          });
+
+        this.form.tipo_servicio = "N";
+        this.form.tipo_ubicacion = "U";
+        this.form.tipo_urgencia = "N";
+        this.form.check_transito = 0;
+        this.form.estatus_operativo = this.estatus_operativo[0];
+        this.form.check_pe = 1;
+        moment.locale("es");
+        var date = moment().format("L");
+        this.form.fecha_pe = date;
+        this.form.fecha_elab = date;
+        this.form.fecha_emision = date;
+        this.form.fecha_envio = date;
+        this.form.estatus_administra = this.estatus_administrativo[0];
+        this.checkbox.nacional = "1";
+        this.checkbox.urbano = "1";
+        this.checkbox.normal = "1";
+        this.form.check_elab = 1;
+        this.resetLoading();
+      } catch (stopFuction) {
+        if (errorMessage) {
+          this.resetFormGuia();
+          this.resetLoading();
+          this.$q.notify({
+            message: errorMessage,
+            color: "red",
+          });
+        }
+      }
     },
     // Metodo para Extraer Datos de Tabla de Detalles de Movimiento
     getDataDetalles() {
@@ -4162,129 +4173,137 @@ export default {
       this[dataRes] = res.data ? res.data : res;
     },
     // Metodo para Setear Datos de Guia
-    setDataGuia(res) {
-      var res = res[0];
-      if (res.cod_agencia) this.count += 3;
-      if (res.cod_agencia_dest) this.count += 2;
-      var cod_agencia = res.cod_agencia;
-      var cod_cliente_org = res.cod_cliente_org;
-      var cod_agencia_dest = res.cod_agencia_dest;
-      var cod_zona_dest = res.cod_zona_dest;
-      var cod_cliente_dest = res.cod_cliente_dest;
-      var cod_agente_venta = res.cod_agente_venta;
-      var cod_agencia_transito = res.cod_agencia_transito;
-      var cod_proveedor = res.cod_proveedor;
-      this.form.nro_piezas = res.nro_piezas;
-      this.form.id = res.id;
-      this.getDataDetalles();
-      this.form.peso_kgs = res.peso_kgs;
-      this.form.serie_documento = res.serie_documento;
-      this.form.fecha_elab = res.fecha_elab;
-      this.form.check_elab = res.check_elab;
-      this.form.check_pe = res.check_pe;
-      this.form.fecha_pe = res.fecha_pe;
-      this.form.saldo = res.saldo;
-      this.form.nro_piezas = res.nro_piezas;
-      this.form.peso_kgs = res.peso_kgs;
-      this.filterAndSet(
-        "modalidad_pago",
-        "value",
-        res.modalidad_pago,
-        "form",
-        "modalidad_pago"
-      );
-      this.filterAndSet(
-        "pagado_en",
-        "value",
-        res.pagado_en,
-        "form",
-        "pagado_en"
-      );
-      this.filterAndSet(
-        "estatus_operativo",
-        "value",
-        res.estatus_operativo,
-        "form",
-        "estatus_operativo"
-      );
-      this.filterAndSet(
-        "estatus_administrativo",
-        "value",
-        res.estatus_administra,
-        "form",
-        "estatus_administra"
-      );
-      this.form.id_clte_part_dest = res.id_clte_part_dest;
-      this.form.id_clte_part_orig = res.id_clte_part_orig;
-      this.form.dimensiones = res.dimensiones;
-      this.form.desc_contenido = res.desc_contenido;
-      this.form.carga_neta = res.carga_neta;
-      this.form.valor_declarado_cod = res.valor_declarado_cod;
-      this.form.valor_declarado_seg = res.valor_declarado_seg;
-      this.form.porc_apl_seguro = res.porc_apl_seguro;
-      this.form.monto_subtotal = res.monto_subtotal;
-      this.form.monto_impuesto = res.monto_impuesto;
-      this.form.monto_base = res.monto_base;
-      this.form.monto_total = res.monto_total;
-      this.form.check_transito = res.check_transito;
-      this.form.monto_ref_cte_sin_imp = res.monto_ref_cte_sin_imp;
-      this.form.porc_comision = 0; //FALTA TRAERLO DE BD
-      this.form.porc_descuento = res.porc_descuento;
+    async setDataGuia(res) {
+      try {
+        var errorMessage;
+        var res = res[0];
+        var cod_agencia = res.cod_agencia;
+        var cod_cliente_org = res.cod_cliente_org;
+        var cod_agencia_dest = res.cod_agencia_dest;
+        var cod_zona_dest = res.cod_zona_dest;
+        var cod_cliente_dest = res.cod_cliente_dest;
+        var cod_agente_venta = res.cod_agente_venta;
+        var cod_agencia_transito = res.cod_agencia_transito;
+        var cod_proveedor = res.cod_proveedor;
+        this.form.nro_piezas = res.nro_piezas;
+        this.form.id = res.id;
+        this.getDataDetalles();
+        this.form.peso_kgs = res.peso_kgs;
+        this.form.serie_documento = res.serie_documento;
+        this.form.fecha_elab = res.fecha_elab;
+        this.form.check_elab = res.check_elab;
+        this.form.check_pe = res.check_pe;
+        this.form.fecha_pe = res.fecha_pe;
+        this.form.saldo = res.saldo;
+        this.form.nro_piezas = res.nro_piezas;
+        this.form.peso_kgs = res.peso_kgs;
+        this.filterAndSet(
+          "modalidad_pago",
+          "value",
+          res.modalidad_pago,
+          "form",
+          "modalidad_pago"
+        );
+        this.filterAndSet(
+          "pagado_en",
+          "value",
+          res.pagado_en,
+          "form",
+          "pagado_en"
+        );
+        this.filterAndSet(
+          "estatus_operativo",
+          "value",
+          res.estatus_operativo,
+          "form",
+          "estatus_operativo"
+        );
+        this.filterAndSet(
+          "estatus_administrativo",
+          "value",
+          res.estatus_administra,
+          "form",
+          "estatus_administra"
+        );
+        this.form.id_clte_part_dest = res.id_clte_part_dest;
+        this.form.id_clte_part_orig = res.id_clte_part_orig;
+        this.form.dimensiones = res.dimensiones;
+        this.form.desc_contenido = res.desc_contenido;
+        this.form.carga_neta = res.carga_neta;
+        this.form.valor_declarado_cod = res.valor_declarado_cod;
+        this.form.valor_declarado_seg = res.valor_declarado_seg;
+        this.form.porc_apl_seguro = res.porc_apl_seguro;
+        this.form.monto_subtotal = res.monto_subtotal;
+        this.form.monto_impuesto = res.monto_impuesto;
+        this.form.monto_base = res.monto_base;
+        this.form.monto_total = res.monto_total;
+        this.form.check_transito = res.check_transito;
+        this.form.monto_ref_cte_sin_imp = res.monto_ref_cte_sin_imp;
+        this.form.porc_comision = 0; //FALTA TRAERLO DE BD
+        this.form.porc_descuento = res.porc_descuento;
 
-      if (res.fecha_emision)
-        this.form.fecha_emision = res.fecha_emision
-          .split("-")
-          .reverse()
-          .join("/");
-      if (res.fecha_envio)
-        this.form.fecha_envio = res.fecha_envio.split("-").reverse().join("/");
-      if (res.fecha_aplicacion)
-        this.form.fecha_aplicacion = res.fecha_aplicacion
-          .split("-")
-          .reverse()
-          .join("/");
-      if (res.fecha_llega_transito)
-        this.form.fecha_llega_transito = res.fecha_llega_transito
-          .split("-")
-          .reverse()
-          .join("/");
+        if (res.fecha_emision)
+          this.form.fecha_emision = res.fecha_emision
+            .split("-")
+            .reverse()
+            .join("/");
+        if (res.fecha_envio)
+          this.form.fecha_envio = res.fecha_envio
+            .split("-")
+            .reverse()
+            .join("/");
+        if (res.fecha_aplicacion)
+          this.form.fecha_aplicacion = res.fecha_aplicacion
+            .split("-")
+            .reverse()
+            .join("/");
+        if (res.fecha_llega_transito)
+          this.form.fecha_llega_transito = res.fecha_llega_transito
+            .split("-")
+            .reverse()
+            .join("/");
 
-      if (res.tipo_carga == "PM") this.checkbox.paquetes = "1";
-      if (res.tipo_carga == "SB") this.checkbox.sobres = "1";
-      if (res.tipo_servicio == "N") this.checkbox.nacional = "1";
-      if (res.tipo_servicio == "I") this.checkbox.internacional = "1";
-      if (res.tipo_ubicacion == "U") this.checkbox.urbano = "1";
-      if (res.tipo_ubicacion == "E") this.checkbox.extra_urbano = "1";
-      if (res.tipo_urgencia == "N") this.checkbox.normal = "1";
-      if (res.tipo_urgencia == "E") this.checkbox.emergencia = "1";
+        if (res.tipo_carga == "PM") this.checkbox.paquetes = "1";
+        if (res.tipo_carga == "SB") this.checkbox.sobres = "1";
+        if (res.tipo_servicio == "N") this.checkbox.nacional = "1";
+        if (res.tipo_servicio == "I") this.checkbox.internacional = "1";
+        if (res.tipo_ubicacion == "U") this.checkbox.urbano = "1";
+        if (res.tipo_ubicacion == "E") this.checkbox.extra_urbano = "1";
+        if (res.tipo_urgencia == "N") this.checkbox.normal = "1";
+        if (res.tipo_urgencia == "E") this.checkbox.emergencia = "1";
 
-      api
-        .get(`/agencias`, {
+        var axiosConfig = {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            agencia: cod_agencia,
           },
-        })
-        .then((res) => {
-          this.objetive++;
-          this.agencias = res.data.data;
-          this.filterAndSet(
-            "agencias",
-            "id",
-            cod_agencia,
-            "form",
-            "cod_agencia",
-            "nb_agencia"
-          );
+        };
 
-          var axiosConfig = {
+        await api
+          .get(`/agencias`, {
             headers: {
               Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-              agencia: cod_agencia,
             },
-          };
+          })
+          .then((res) => {
+            this.agencias = res.data.data;
+            this.filterAndSet(
+              "agencias",
+              "id",
+              cod_agencia,
+              "form",
+              "cod_agencia",
+              "nb_agencia"
+            );
+          })
+          .catch((err) => {
+            errorMessage = err.response.data.message;
+            return error;
+          });
 
-          api.get(`/agentes`, axiosConfig).then((res) => {
-            this.objetive = this.objetive + 1;
+        await api
+          .get(`/agentes`, axiosConfig)
+          .then((res) => {
             this.agentes = res.data.data;
             this.filterAndSet(
               "agentes",
@@ -4294,10 +4313,15 @@ export default {
               "cod_agente_venta",
               "nb_agente"
             );
+          })
+          .catch((err) => {
+            errorMessage = err.response.data.message;
+            return error;
           });
 
-          api.get(`/proveedores`, axiosConfig).then((res) => {
-            this.objetive = this.objetive + 1;
+        await api
+          .get(`/proveedores`, axiosConfig)
+          .then((res) => {
             this.proveedores = res.data.data;
             this.filterAndSet(
               "proveedores",
@@ -4307,10 +4331,15 @@ export default {
               "cod_proveedor",
               "nb_proveedor"
             );
+          })
+          .catch((err) => {
+            errorMessage = err.response.data.message;
+            return error;
           });
 
-          api.get(`/clientes`, axiosConfig).then((res) => {
-            this.objetive++;
+        await api
+          .get(`/clientes`, axiosConfig)
+          .then((res) => {
             this.clientes_origen = res.data.data;
             this.filterAndSet(
               "clientes_origen",
@@ -4320,67 +4349,90 @@ export default {
               "cod_cliente_org",
               "nb_cliente"
             );
+          })
+          .catch((err) => {
+            errorMessage = err.response.data.message;
+            return error;
           });
 
-          this.filterAndSet(
-            "agencias",
-            "id",
-            cod_agencia_dest,
-            "form",
-            "cod_agencia_dest",
-            "nb_agencia"
-          );
+        this.filterAndSet(
+          "agencias",
+          "id",
+          cod_agencia_dest,
+          "form",
+          "cod_agencia_dest",
+          "nb_agencia"
+        );
 
-          api
-            .get(`/clientes`, {
-              headers: {
-                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                agencia: cod_agencia_dest,
-              },
-            })
-            .then((res) => {
-              this.objetive = this.objetive + 1;
-              this.clientes_destino = res.data.data;
-              this.filterAndSet(
-                "clientes_destino",
-                "id",
-                cod_cliente_dest,
-                "form",
-                "cod_cliente_dest",
-                "nb_cliente"
-              );
-            });
-          api
-            .get(`/zonas`, {
-              headers: {
-                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                agencia: cod_agencia_dest,
-              },
-            })
-            .then((res) => {
-              this.objetive = this.objetive + 1;
-              this.zonas_destino = res.data;
-              this.filterAndSet(
-                "zonas_destino",
-                "id",
-                cod_zona_dest,
-                "form",
-                "cod_zona_dest",
-                "nb_zona"
-              );
-            });
-          this.filterAndSet(
-            "agencias",
-            "id",
-            cod_agencia_transito,
-            "form",
-            "cod_agencia_transito",
-            "nb_agencia"
-          );
+        await api
+          .get(`/clientes`, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              agencia: cod_agencia_dest,
+            },
+          })
+          .then((res) => {
+            this.clientes_destino = res.data.data;
+            this.filterAndSet(
+              "clientes_destino",
+              "id",
+              cod_cliente_dest,
+              "form",
+              "cod_cliente_dest",
+              "nb_cliente"
+            );
+          })
+          .catch((err) => {
+            errorMessage = err.response.data.message;
+            return error;
+          });
+
+        await api
+          .get(`/zonas`, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              agencia: cod_agencia_dest,
+            },
+          })
+          .then((res) => {
+            this.zonas_destino = res.data;
+            this.filterAndSet(
+              "zonas_destino",
+              "id",
+              cod_zona_dest,
+              "form",
+              "cod_zona_dest",
+              "nb_zona"
+            );
+          })
+          .catch((err) => {
+            errorMessage = err.response.data.message;
+            return error;
+          });
+
+        this.filterAndSet(
+          "agencias",
+          "id",
+          cod_agencia_transito,
+          "form",
+          "cod_agencia_transito",
+          "nb_agencia"
+        );
+
+        this.resetLoading();
+      } catch (error) {
+        this.resetFormGuia();
+        this.resetLoading();
+        this.$q.notify({
+          message: errorMessage,
+          color: "red",
         });
+      }
     },
     // Metodo para Enviar Datos de Guia
-    sendDataGuia() {
+    async sendDataGuia() {
+      var errorMessage = null;
+      this.showTextLoading();
       this.saveDetails = false;
       var form = JSON.parse(JSON.stringify(this.form));
       if (
@@ -4389,584 +4441,566 @@ export default {
         form.estatus_administra == "G" ||
         form.estatus_administra == "F"
       ) {
-        this.$q.notify({
-          message:
-            "La guía no puede ser modificada bajo el estatus administrativo en el que se encuentra...",
-          color: "red",
-        });
-        return;
+        errorMessage =
+          "La guía no puede ser modificada bajo el estatus administrativo en el que se encuentra...";
+        return stopFuction;
       }
       this.$refs.formData.validate().then(async (valid) => {
-        if (!valid) {
-          this.$q.notify({
-            message: "Completa los datos requeridos",
-            color: "red",
-          });
-          return;
-        }
-
-        if (form.cod_cliente_org.cte_decontado == 1) {
-          if (form.id_clte_part_orig) {
-            api
-              .get(`/cparticulares/${form.id_clte_part_orig}`, {
-                headers: {
-                  Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                },
-              })
-              .then((res) => {
-                if (
-                  !res.data.cod_municipio ||
-                  !res.data.cod_parroquia ||
-                  !res.data.cod_localidad
-                ) {
-                  this.$q.notify({
-                    message: "Debe completar la DPT del Cliente Origen",
-                    color: "red",
-                  });
-                  this.resetFormClientes();
-                  this.clienteLabelBox = true;
-                  this.destino = false;
-                  this.clienteLabel = "origen";
-                  this.setDataClientesParticulares(res.data);
-                  return;
-                }
-              });
-          } else {
-            this.$q.notify({
-              message: "Debe crear el Cliente Particular Origen",
-              color: "red",
-            });
-            this.resetFormClientes();
-            this.disabledRif = false;
-            this.clienteLabelBox = true;
-            this.destino = false;
-            this.clienteLabel = "origen";
-            this.formClientesParticulares.cod_agencia = form.cod_agencia;
-            return;
+        try {
+          if (!valid) {
+            errorMessage = "Este campo es requerido en maestro";
+            return stopFuction;
           }
-        } else {
-          for (var i = 0; i <= this.clientes_origen.length - 1; i++) {
-            if (this.clientes_origen[i].id == form.cod_cliente_org.id) {
-              if (
-                !this.clientes_origen[i].cod_municipio ||
-                !this.clientes_origen[i].cod_parroquia ||
-                !this.clientes_origen[i].cod_localidad
-              ) {
-                this.$q.notify({
-                  message: "Debe completar la DPT del Cliente Origen",
-                  color: "red",
+
+          if (form.cod_cliente_org.cte_decontado == 1) {
+            if (form.id_clte_part_orig) {
+              api
+                .get(`/cparticulares/${form.id_clte_part_orig}`, {
+                  headers: {
+                    Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                  },
+                })
+                .then((res) => {
+                  if (
+                    !res.data.cod_municipio ||
+                    !res.data.cod_parroquia ||
+                    !res.data.cod_localidad
+                  ) {
+                    this.resetFormClientes();
+                    this.clienteLabelBox = true;
+                    this.destino = false;
+                    this.clienteLabel = "origen";
+                    this.setDataClientesParticulares(res.data);
+                    errorMessage = "Debe completar la DPT del Cliente Origen";
+                    return stopFuction;
+                  }
                 });
-                this.cliente = false;
-                this.clientesBox = true;
-                this.resetFormClientes();
-                this.setDataClientes(this.clientes_origen[i]);
-                return;
+            } else {
+              this.resetFormClientes();
+              this.disabledRif = false;
+              this.clienteLabelBox = true;
+              this.destino = false;
+              this.clienteLabel = "origen";
+              this.formClientesParticulares.cod_agencia = form.cod_agencia;
+              errorMessage = "Debe crear el Cliente Particular Origen";
+              return stopFuction;
+            }
+          } else {
+            for (var i = 0; i <= this.clientes_origen.length - 1; i++) {
+              if (this.clientes_origen[i].id == form.cod_cliente_org.id) {
+                if (
+                  !this.clientes_origen[i].cod_municipio ||
+                  !this.clientes_origen[i].cod_parroquia ||
+                  !this.clientes_origen[i].cod_localidad
+                ) {
+                  this.cliente = false;
+                  this.clientesBox = true;
+                  this.resetFormClientes();
+                  this.setDataClientes(this.clientes_origen[i]);
+                  errorMessage = "Debe completar la DPT del Cliente Origen";
+                  return stopFuction;
+                }
               }
             }
           }
-        }
-        if (form.cod_cliente_dest.cte_decontado == 1) {
-          if (form.id_clte_part_dest) {
-            api
-              .get(`/cparticulares/${form.id_clte_part_dest}`, {
-                headers: {
-                  Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                },
-              })
-              .then((res) => {
-                if (
-                  !res.data.cod_municipio ||
-                  !res.data.cod_parroquia ||
-                  !res.data.cod_localidad
-                ) {
-                  this.$q.notify({
-                    message: "Debe completar la DPT del Cliente Destino",
-                    color: "red",
-                  });
-                  this.resetFormClientes();
-                  this.clienteLabelBox = true;
-                  this.clienteLabel = "destino";
-                  this.destino = true;
-                  this.setDataClientesParticulares(res.data);
-                  return;
-                }
-              });
-          } else {
-            this.$q.notify({
-              message: "Debe crear el Cliente Particular Destino",
-              color: "red",
-            });
-            this.resetFormClientes();
-            this.disabledRif = false;
-            this.clienteLabelBox = true;
-            this.destino = true;
-            this.clienteLabel = "destino";
-            this.formClientesParticulares.cod_agencia = form.cod_agencia_dest;
-            return;
-          }
-        } else {
-          for (var i = 0; i <= this.clientes_destino.length - 1; i++) {
-            if (this.clientes_destino[i].id == form.cod_cliente_dest.id) {
-              if (
-                !this.clientes_destino[i].cod_municipio ||
-                !this.clientes_destino[i].cod_parroquia ||
-                !this.clientes_destino[i].cod_localidad
-              ) {
-                this.$q.notify({
-                  message: "Debe completar la DPT del Cliente Destino",
-                  color: "red",
+          if (form.cod_cliente_dest.cte_decontado == 1) {
+            if (form.id_clte_part_dest) {
+              api
+                .get(`/cparticulares/${form.id_clte_part_dest}`, {
+                  headers: {
+                    Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                  },
+                })
+                .then((res) => {
+                  if (
+                    !res.data.cod_municipio ||
+                    !res.data.cod_parroquia ||
+                    !res.data.cod_localidad
+                  ) {
+                    this.resetFormClientes();
+                    this.clienteLabelBox = true;
+                    this.clienteLabel = "destino";
+                    this.destino = true;
+                    this.setDataClientesParticulares(res.data);
+                    errorMessage = "Debe completar la DPT del Cliente Destino";
+                    return stopFuction;
+                  }
                 });
-                this.resetFormClientes();
-                this.cliente = true;
-                this.clientesBox = true;
-                this.setDataClientes(this.clientes_destino[i]);
-                return;
+            } else {
+              this.$q.notify({
+                message: "Debe crear el Cliente Particular Destino",
+                color: "red",
+              });
+              this.resetFormClientes();
+              this.disabledRif = false;
+              this.clienteLabelBox = true;
+              this.destino = true;
+              this.clienteLabel = "destino";
+              this.formClientesParticulares.cod_agencia = form.cod_agencia_dest;
+              errorMessage = "Debe crear el Cliente Particular Destino";
+              return stopFuction;
+            }
+          } else {
+            for (var i = 0; i <= this.clientes_destino.length - 1; i++) {
+              if (this.clientes_destino[i].id == form.cod_cliente_dest.id) {
+                if (
+                  !this.clientes_destino[i].cod_municipio ||
+                  !this.clientes_destino[i].cod_parroquia ||
+                  !this.clientes_destino[i].cod_localidad
+                ) {
+                  this.resetFormClientes();
+                  this.cliente = true;
+                  this.clientesBox = true;
+                  this.setDataClientes(this.clientes_destino[i]);
+                  errorMessage = "Debe completar la DPT del Cliente Destino";
+                  return stopFuction;
+                }
               }
             }
           }
-        }
-        form.estatus_administra = form.estatus_administra.value;
-        form.estatus_operativo = form.estatus_operativo.value;
-        form.cod_agencia = form.cod_agencia.id;
-        form.cod_cliente_dest = form.cod_cliente_dest.id;
-        form.cod_cliente_org = form.cod_cliente_org.id;
-        form.cod_agencia_dest = form.cod_agencia_dest.id;
-        form.cod_agencia_transito = form.cod_agencia_transito.id;
-        form.cod_zona_dest = form.cod_zona_dest.id;
-        form.cod_agente_venta = form.cod_agente_venta.id;
-        form.cod_proveedor = form.cod_proveedor.id;
-        if (this.checkbox.paquetes == "1") form.tipo_carga = "PM";
-        if (this.checkbox.sobres == "1") form.tipo_carga = "SB";
-        if (this.checkbox.nacional == "1") form.tipo_servicio = "N";
-        if (this.checkbox.internacional == "1") form.tipo_servicio = "I";
-        if (this.checkbox.urbano == "1") form.tipo_ubicacion = "U";
-        if (this.checkbox.extra_urbano == "1") form.tipo_ubicacion = "E";
-        if (this.checkbox.foraneo == "1") form.tipo_ubicacion = "F";
-        if (this.checkbox.normal == "1") form.tipo_urgencia = "N";
-        if (this.checkbox.emergencia == "1") form.tipo_urgencia = "E";
-        form.modalidad_pago = form.modalidad_pago.value;
-        form.pagado_en = form.pagado_en.value;
-        if (form.fecha_envio)
-          form.fecha_envio = form.fecha_envio.split("/").reverse().join("-");
-        form.nro_piezas = form.nro_piezas
-          .replaceAll(".", "")
-          .replaceAll(",", ".");
-        form.peso_kgs = form.peso_kgs.replaceAll(".", "").replaceAll(",", ".");
-        form.monto_subtotal = form.monto_subtotal
-          .replaceAll(".", "")
-          .replaceAll(",", ".");
-        form.monto_impuesto = form.monto_impuesto
-          .replaceAll(".", "")
-          .replaceAll(",", ".");
-        form.monto_total = form.monto_total
-          .replaceAll(".", "")
-          .replaceAll(",", ".");
-        form.monto_base = form.monto_base
-          .replaceAll(".", "")
-          .replaceAll(",", ".");
-        form.porc_apl_seguro = form.porc_apl_seguro
-          .replaceAll(".", "")
-          .replaceAll(",", ".");
-        form.porc_descuento = form.porc_descuento
-          .replaceAll(".", "")
-          .replaceAll(",", ".");
-        form.carga_neta = form.carga_neta
-          .replaceAll(".", "")
-          .replaceAll(",", ".");
-        if (form.fecha_aplicacion)
-          form.fecha_aplicacion = form.fecha_aplicacion
-            .split("/")
-            .reverse()
-            .join("-");
-        if (form.fecha_emision)
-          form.fecha_emision = form.fecha_emision
-            .split("/")
-            .reverse()
-            .join("-");
-        if (form.fecha_llega_transito)
-          form.fecha_llega_transito = form.fecha_llega_transito
-            .split("/")
-            .reverse()
-            .join("-");
 
-        if (form.fecha_pe)
-          form.fecha_pe = form.fecha_pe.split("/").reverse().join("-");
-
-        if (form.fecha_elab)
-          form.fecha_elab = form.fecha_elab.split("/").reverse().join("-");
-
-        if (!this.detalle_movimiento[0]) {
-          this.saveDetallesPopUp = true;
-          await this.until(
-            (_) => this.saveDetails == true || this.saveDetails == null
-          );
-          if (this.saveDetails == null) return;
-        }
-
-        if (form.base_comision_vta_rcl > 0) {
-          await api
-            .get(`/ciudades/${form.cod_agente_venta.id}`, {
-              headers: {
-                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-              },
-            })
-            .then((res) => {
-              if (!res.data.porc_comision_venta || porc_comision_venta == 0) {
-                this.$q.notify({
-                  message:
-                    "Error del Sistema. Problemas al buscar el % de comisión por venta. Revise el % del agente para que sea posible generar la comisión...",
-                  color: "red",
-                });
-                return;
-              }
-              if (!res.data.porc_comision_seguro || porc_comision_seguro == 0) {
-                this.$q.notify({
-                  message:
-                    "Error del Sistema. Problemas al buscar el % de comisión por seguro. Revise el % del agente para que sea posible generar la comisión...",
-                  color: "red",
-                });
-                return;
-              }
-            });
-          form.comision_seg_vta = (
-            (this.parseFloatN(porc_comision_seguro) *
-              this.parseFloatN(base_comision_seg)) /
-            100
-          ).toFixed(2);
-          form.comision_venta = (
-            (this.parseFloatN(form.porc_comision_venta) *
-              this.parseFloatN(form.base_comision_vta_rcl)) /
-            100
-          ).toFixed(2);
-        }
-
-        if (form.estatus_administra !== "G") {
-          form.estatus_administra = "F";
-        }
-
-        form.check_pxfac = 1;
-        moment.locale("es");
-        form.fecha_pxfac = moment().format("L").split("/").reverse().join("-");
-
-        if (form.peso_kgs >= 0.001) {
-          await api
-            .get(`/fpos`, {
-              headers: {
-                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                fecha: moment().format("L").split("/").reverse().join("-"),
-                peso: form.peso_kgs,
-                monto_fpo: form.valor,
-              },
-            })
-            .then((res) => {
-              form.cod_fpo = res.cod_fpo;
-            });
-        }
-
-        var guia;
-        await api
-          .get(`/cguias`, {
-            headers: {
-              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-              desde: form.nro_documento,
-              hasta: form.nro_documento,
-              tipo: 20,
-            },
-          })
-          .then((res) => {
-            guia = res.data.data[0];
-            guia.cant_disponible = guia.cant_disponible - 1;
-          });
-
-        delete guia.tipos;
-
-        await api
-          .put(`/cguias/${guia.id}`, guia, {
-            headers: {
-              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            },
-          })
-          .catch((err) => {
-            this.$q.notify({
-              message:
-                "Error del Sistema. Problemas al actualizar el inventario de guías. Comuníquese con el proveedor del Sistemas...",
-              color: "red",
-            });
-            return;
-          });
-
-        if (form.id !== "") {
-          delete form.porc_comision;
-          if (form.id_clte_part_dest == "") delete form.id_clte_part_dest;
-          if (form.id_clte_part_orig == "") delete form.id_clte_part_orig;
-          if (this.reversada == true) {
-            form.estatus_administra = "E";
-            form.check_elab = 1;
-            moment.locale("es");
-            form.fecha_emision = moment().format("L");
+          form.estatus_administra = form.estatus_administra.value;
+          form.estatus_operativo = form.estatus_operativo.value;
+          form.cod_agencia = form.cod_agencia.id;
+          form.cod_cliente_dest = form.cod_cliente_dest.id;
+          form.cod_cliente_org = form.cod_cliente_org.id;
+          form.cod_agencia_dest = form.cod_agencia_dest.id;
+          form.cod_agencia_transito = form.cod_agencia_transito.id;
+          form.cod_zona_dest = form.cod_zona_dest.id;
+          form.cod_agente_venta = form.cod_agente_venta.id;
+          form.cod_proveedor = form.cod_proveedor.id;
+          if (this.checkbox.paquetes == "1") form.tipo_carga = "PM";
+          if (this.checkbox.sobres == "1") form.tipo_carga = "SB";
+          if (this.checkbox.nacional == "1") form.tipo_servicio = "N";
+          if (this.checkbox.internacional == "1") form.tipo_servicio = "I";
+          if (this.checkbox.urbano == "1") form.tipo_ubicacion = "U";
+          if (this.checkbox.extra_urbano == "1") form.tipo_ubicacion = "E";
+          if (this.checkbox.foraneo == "1") form.tipo_ubicacion = "F";
+          if (this.checkbox.normal == "1") form.tipo_urgencia = "N";
+          if (this.checkbox.emergencia == "1") form.tipo_urgencia = "E";
+          form.modalidad_pago = form.modalidad_pago.value;
+          form.pagado_en = form.pagado_en.value;
+          if (form.fecha_envio)
+            form.fecha_envio = form.fecha_envio.split("/").reverse().join("-");
+          form.nro_piezas = form.nro_piezas
+            .replaceAll(".", "")
+            .replaceAll(",", ".");
+          form.peso_kgs = form.peso_kgs
+            .replaceAll(".", "")
+            .replaceAll(",", ".");
+          form.monto_subtotal = form.monto_subtotal
+            .replaceAll(".", "")
+            .replaceAll(",", ".");
+          form.monto_impuesto = form.monto_impuesto
+            .replaceAll(".", "")
+            .replaceAll(",", ".");
+          form.monto_total = form.monto_total
+            .replaceAll(".", "")
+            .replaceAll(",", ".");
+          form.monto_base = form.monto_base
+            .replaceAll(".", "")
+            .replaceAll(",", ".");
+          form.porc_apl_seguro = form.porc_apl_seguro
+            .replaceAll(".", "")
+            .replaceAll(",", ".");
+          form.porc_descuento = form.porc_descuento
+            .replaceAll(".", "")
+            .replaceAll(",", ".");
+          form.carga_neta = form.carga_neta
+            .replaceAll(".", "")
+            .replaceAll(",", ".");
+          if (form.fecha_aplicacion)
+            form.fecha_aplicacion = form.fecha_aplicacion
+              .split("/")
+              .reverse()
+              .join("-");
+          if (form.fecha_emision)
             form.fecha_emision = form.fecha_emision
               .split("/")
               .reverse()
               .join("-");
-          }
-          await api
-            .put(`/mmovimientos/${form.id}`, form, {
-              headers: {
-                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-              },
-            })
-            .then((res) => {
-              this.$q.notify({
-                message: "Guia Actualizada",
-                color: "green",
-              });
-              this.reversada = false;
-              this.destino = false;
-              this.cliente = false;
-              this.saveDetails = false;
-              this.count = 1;
-              this.objetive = 0;
-              return;
-            })
-            .catch((err) => {
-              this.$q.notify({
-                message:
-                  "Error del Sistema. Problemas al actualizar los datos Generales de la Guía. Comuníquese con el proveedor del Sistemas...",
-                color: "red",
-              });
-              this.reversada = false;
-              this.destino = false;
-              this.saveDetails = false;
-              this.cliente = false;
-              this.count = 1;
-              this.objetive = 0;
-              return;
-            });
-          return;
-        } else {
-          delete form.id;
-          delete form.porc_comision;
-          if (form.id_clte_part_dest == "") delete form.id_clte_part_dest;
-          if (form.id_clte_part_orig == "") delete form.id_clte_part_orig;
-          await api
-            .post(`/mmovimientos`, form, {
-              headers: {
-                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-              },
-            })
-            .then((res) => {
-              this.setDataGuia(res);
-              this.$q.notify({
-                message: "Guia Creada",
-                color: "green",
-              });
-              this.saveDetails = false;
-              this.reversada = false;
-              this.destino = false;
-              this.cliente = false;
-              this.count = 1;
-              this.objetive = 0;
-              return;
-            })
-            .catch((err) => {
-              this.$q.notify({
-                message:
-                  "Error del Sistema. Problemas al crear los datos Generales de la Guía. Comuníquese con el proveedor del Sistemas...",
-                color: "red",
-              });
-              this.saveDetails = false;
-              this.readonlyAgencia = false;
-              this.reversada = false;
-              this.destino = false;
-              this.cliente = false;
-              this.count = 1;
-              this.objetive = 0;
-              return;
-            });
-        }
+          if (form.fecha_llega_transito)
+            form.fecha_llega_transito = form.fecha_llega_transito
+              .split("/")
+              .reverse()
+              .join("-");
 
-        if (this.detalle_movimiento[0]) {
-          var detalle;
-          for (var i = 0; i <= this.detalle_movimiento.length - 1; i++) {
-            if (this.detalle_movimiento[i].id == 0) {
-              detalle = this.detalle_movimiento[i];
-              delete detalle.conceptos;
-              api
-                .post(`/dmovimientos`, detalle, {
-                  headers: {
-                    Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                  },
-                })
-                .catch((err) => {
-                  this.$q.notify({
-                    message:
-                      "Error del Sistema. Problemas al crear los datos del Detalle de la Guía. Comuníquese con el proveedor del Sistemas",
-                    color: "red",
-                  });
-                  return;
-                });
-            } else {
-              detalle = this.detalle_movimiento[i];
-              delete detalle.conceptos;
-              api
-                .put(`/dmovimientos/${detalle.id}`, detalle, {
-                  headers: {
-                    Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                  },
-                })
-                .catch((err) => {
-                  this.$q.notify({
-                    message:
-                      "Error del Sistema. Problemas al actualizar los datos del Detalle de la Guía. Comuníquese con el proveedor del Sistemas",
-                    color: "red",
-                  });
-                  return;
-                });
+          if (form.fecha_pe)
+            form.fecha_pe = form.fecha_pe.split("/").reverse().join("-");
+
+          if (form.fecha_elab)
+            form.fecha_elab = form.fecha_elab.split("/").reverse().join("-");
+
+          if (!this.detalle_movimiento[0]) {
+            this.saveDetallesPopUp = true;
+            await this.until(
+              (_) => this.saveDetails == true || this.saveDetails == null
+            );
+            if (this.saveDetails == null) return stopFuction;
+          }
+
+          if (form.base_comision_vta_rcl > 0) {
+            await api
+              .get(`/ciudades/${form.cod_agente_venta.id}`, {
+                headers: {
+                  Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                },
+              })
+              .then((res) => {
+                if (
+                  !res.data.porc_comision_venta ||
+                  res.data.porc_comision_venta == 0
+                ) {
+                  errorMessage =
+                    "Error del Sistema. Problemas al buscar el % de comisión por venta. Revise el % del agente para que sea posible generar la comisión...";
+                  return stopFuction;
+                }
+                if (
+                  !res.data.porc_comision_seguro ||
+                  res.data.porc_comision_seguro == 0
+                ) {
+                  errorMessage =
+                    "Error del Sistema. Problemas al buscar el % de comisión por seguro. Revise el % del agente para que sea posible generar la comisión...";
+                  return stopFuction;
+                }
+              });
+            form.comision_seg_vta = (
+              (this.parseFloatN(porc_comision_seguro) *
+                this.parseFloatN(base_comision_seg)) /
+              100
+            ).toFixed(2);
+            form.comision_venta = (
+              (this.parseFloatN(form.porc_comision_venta) *
+                this.parseFloatN(form.base_comision_vta_rcl)) /
+              100
+            ).toFixed(2);
+          }
+
+          if (form.estatus_administra !== "G") {
+            form.estatus_administra = "F";
+          }
+
+          form.check_pxfac = 1;
+          moment.locale("es");
+          form.fecha_pxfac = moment()
+            .format("L")
+            .split("/")
+            .reverse()
+            .join("-");
+
+          if (form.peso_kgs >= 0.001) {
+            await api
+              .get(`/fpos`, {
+                headers: {
+                  Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                  fecha: moment().format("L").split("/").reverse().join("-"),
+                  peso: form.peso_kgs,
+                  monto_fpo: form.valor,
+                },
+              })
+              .then((res) => {
+                form.cod_fpo = res.data[0].cod_fpo;
+              });
+          }
+
+          var guia;
+          await api
+            .get(`/cguias`, {
+              headers: {
+                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                desde: form.nro_documento,
+                hasta: form.nro_documento,
+                tipo: 20,
+              },
+            })
+            .then((res) => {
+              if (res.data.data[0]) {
+                guia = res.data.data[0];
+                guia.cant_disponible = guia.cant_disponible - 1;
+              } else {
+                errorMessage =
+                  "No hay una Guia registrada para este Numero de Documento...";
+                return stopFuction;
+              }
+            });
+
+          delete guia.tipos;
+
+          await api
+            .put(`/cguias/${guia.id}`, guia, {
+              headers: {
+                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              },
+            })
+            .catch((err) => {
+              errorMessage =
+                "Error del Sistema. Problemas al actualizar el inventario de guías. Comuníquese con el proveedor del Sistemas...";
+              return stopFuction;
+            });
+
+          if (form.id !== "") {
+            delete form.porc_comision;
+            if (form.id_clte_part_dest == "") delete form.id_clte_part_dest;
+            if (form.id_clte_part_orig == "") delete form.id_clte_part_orig;
+            if (this.reversada == true) {
+              form.estatus_administra = "E";
+              form.check_elab = 1;
+              moment.locale("es");
+              form.fecha_emision = moment().format("L");
+              form.fecha_emision = form.fecha_emision
+                .split("/")
+                .reverse()
+                .join("-");
             }
+            await api
+              .put(`/mmovimientos/${form.id}`, form, {
+                headers: {
+                  Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                },
+              })
+              .then((res) => {
+                this.$q.notify({
+                  message: "Guia Actualizada",
+                  color: "green",
+                });
+                this.reversada = false;
+                this.destino = false;
+                this.cliente = false;
+                this.saveDetails = false;
+                this.count = 1;
+                this.objetive = 0;
+              })
+              .catch((err) => {
+                this.reversada = false;
+                this.destino = false;
+                this.saveDetails = false;
+                this.cliente = false;
+                this.count = 1;
+                this.objetive = 0;
+                errorMessage =
+                  "Error del Sistema. Problemas al actualizar los datos Generales de la Guía. Comuníquese con el proveedor del Sistemas...";
+                return stopFuction;
+              });
+          } else {
+            delete form.id;
+            delete form.porc_comision;
+            if (form.id_clte_part_dest == "") delete form.id_clte_part_dest;
+            if (form.id_clte_part_orig == "") delete form.id_clte_part_orig;
+            await api
+              .post(`/mmovimientos`, form, {
+                headers: {
+                  Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                },
+              })
+              .then((res) => {
+                this.setDataGuia(res.data.data);
+                this.form.id = res[0].id;
+                this.$q.notify({
+                  message: "Guia Creada",
+                  color: "green",
+                });
+                this.saveDetails = false;
+                this.reversada = false;
+                this.destino = false;
+                this.cliente = false;
+                this.count = 1;
+                this.objetive = 0;
+              })
+              .catch((err) => {
+                this.saveDetails = false;
+                this.readonlyAgencia = false;
+                this.reversada = false;
+                this.destino = false;
+                this.cliente = false;
+                this.count = 1;
+                this.objetive = 0;
+                errorMessage =
+                  "Error del Sistema. Problemas al crear los datos Generales de la Guía. Comuníquese con el proveedor del Sistemas...";
+                return stopFuction;
+              });
           }
-          var comisionVenta;
-          var comisionSeguro;
-          await api
-            .get(`/ccomisiones`, {
-              headers: {
-                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                cod_movimiento: this.form.id,
-                mayor: "S",
-                tipo: "V",
-              },
-            })
-            .then((res) => {
-              if (res.data.data[0]) {
-                comisionVenta = [
-                  (cod_agencia = form.cod_agencia),
-                  (cod_agente = form.cod_agente),
-                  (cod_movimiento = this.form.id),
-                  (fecha_emision = form.fecha_emision),
-                  (monto_comision = form.comision_venta),
-                  (estatus = 0),
-                ];
-                api
-                  .put(`/ccomisiones/${res.data.data[0].id}`, comisionVenta, {
-                    headers: {
-                      Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                    },
-                  })
-                  .catch((err) => {
-                    this.$q.notify({
-                      message:
-                        "Error del Sistema. Problemas al actualizar comisiones. Comuníquese con el proveedor del Sistemas",
-                      color: "red",
-                    });
-                    return;
-                  });
-              } else {
-                comisionVenta = [
-                  (cod_agencia = form.cod_agencia),
-                  (cod_agente = form.cod_agente),
-                  (cod_movimiento = this.form.id),
-                  (fecha_emision = form.fecha_emision),
-                  (monto_comision = form.comision_venta),
-                  (tipo_comision = "V"),
-                  (estatus = 0),
-                ];
-                api
-                  .post(`/ccomisiones/`, comisionVenta, {
-                    headers: {
-                      Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                    },
-                  })
-                  .catch((err) => {
-                    this.$q.notify({
-                      message:
-                        "Error del Sistema. Problemas al crear comisiones. Comuníquese con el proveedor del Sistemas",
-                      color: "red",
-                    });
-                    return;
-                  });
-              }
-            })
-            .catch((err) => {
-              this.$q.notify({
-                message:
-                  "Error del Sistema. Problemas al encontrar comisiones. Comuníquese con el proveedor del Sistemas",
-                color: "red",
-              });
-              return;
-            });
 
-          await api
-            .get(`/ccomisiones`, {
-              headers: {
-                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                cod_movimiento: this.form.id,
-                mayor: "S",
-                tipo: "S",
-              },
-            })
-            .then((res) => {
-              if (res.data.data[0]) {
-                comisionSeguro = [
-                  (cod_agencia = form.cod_agencia),
-                  (cod_agente = form.cod_agente),
-                  (cod_movimiento = this.form.id),
-                  (fecha_emision = form.fecha_emision),
-                  (monto_comision = form.comision_seg_vta),
-                  (estatus = 0),
-                ];
+          if (this.detalle_movimiento[0]) {
+            var detalle;
+            for (var i = 0; i <= this.detalle_movimiento.length - 1; i++) {
+              this.detalle_movimiento[i].cod_movimiento = this.form.id;
+              if (this.detalle_movimiento[i].id == 0) {
+                detalle = this.detalle_movimiento[i];
+                delete detalle.conceptos;
                 api
-                  .put(`/ccomisiones/${res.data.data[0].id}`, comisionSeguro, {
+                  .post(`/dmovimientos`, detalle, {
                     headers: {
                       Authorization: `Bearer ${LocalStorage.getItem("token")}`,
                     },
                   })
                   .catch((err) => {
-                    this.$q.notify({
-                      message:
-                        "Error del Sistema. Problemas al actualizar comisiones. Comuníquese con el proveedor del Sistemas",
-                      color: "red",
-                    });
-                    return;
+                    errorMessage =
+                      "Error del Sistema. Problemas al crear los datos del Detalle de la Guía. Comuníquese con el proveedor del Sistemas";
+                    return stopFuction;
                   });
               } else {
-                comisionSeguro = [
-                  (cod_agencia = form.cod_agencia),
-                  (cod_agente = form.cod_agente),
-                  (cod_movimiento = this.form.id),
-                  (fecha_emision = form.fecha_emision),
-                  (monto_comision = form.comision_seg_vta),
-                  (tipo_comision = "V"),
-                  (estatus = 0),
-                ];
+                detalle = this.detalle_movimiento[i];
+                delete detalle.conceptos;
                 api
-                  .post(`/ccomisiones/`, comisionSeguro, {
+                  .put(`/dmovimientos/${detalle.id}`, detalle, {
                     headers: {
                       Authorization: `Bearer ${LocalStorage.getItem("token")}`,
                     },
                   })
                   .catch((err) => {
-                    this.$q.notify({
-                      message:
-                        "Error del Sistema. Problemas al crear comisiones. Comuníquese con el proveedor del Sistemas",
-                      color: "red",
-                    });
-                    return;
+                    errorMessage =
+                      "Error del Sistema. Problemas al actualizar los datos del Detalle de la Guía. Comuníquese con el proveedor del Sistemas";
+                    return stopFuction;
                   });
               }
-            })
-            .catch((err) => {
-              this.$q.notify({
-                message:
-                  "Error del Sistema. Problemas al encontrar comisiones. Comuníquese con el proveedor del Sistemas",
-                color: "red",
+            }
+            var comisionVenta;
+            var comisionSeguro;
+            await api
+              .get(`/ccomisiones`, {
+                headers: {
+                  Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                  cod_movimiento: this.form.id,
+                  mayor: "S",
+                  tipo: "V",
+                },
+              })
+              .then((res) => {
+                if (res.data.data[0]) {
+                  comisionVenta = [
+                    (cod_agencia = form.cod_agencia),
+                    (cod_agente = form.cod_agente),
+                    (cod_movimiento = this.form.id),
+                    (fecha_emision = form.fecha_emision),
+                    (monto_comision = form.comision_venta),
+                    (estatus = 0),
+                  ];
+                  api
+                    .put(`/ccomisiones/${res.data.data[0].id}`, comisionVenta, {
+                      headers: {
+                        Authorization: `Bearer ${LocalStorage.getItem(
+                          "token"
+                        )}`,
+                      },
+                    })
+                    .catch((err) => {
+                      errorMessage =
+                        "Error del Sistema. Problemas al actualizar comisiones. Comuníquese con el proveedor del Sistemas";
+                      return stopFuction;
+                    });
+                } else {
+                  comisionVenta = [
+                    (cod_agencia = form.cod_agencia),
+                    (cod_agente = form.cod_agente),
+                    (cod_movimiento = this.form.id),
+                    (fecha_emision = form.fecha_emision),
+                    (monto_comision = form.comision_venta),
+                    (tipo_comision = "V"),
+                    (estatus = 0),
+                  ];
+                  api
+                    .post(`/ccomisiones/`, comisionVenta, {
+                      headers: {
+                        Authorization: `Bearer ${LocalStorage.getItem(
+                          "token"
+                        )}`,
+                      },
+                    })
+                    .catch((err) => {
+                      errorMessage =
+                        "Error del Sistema. Problemas al crear comisiones. Comuníquese con el proveedor del Sistemas";
+                      return stopFuction;
+                    });
+                }
+              })
+              .catch((err) => {
+                errorMessage =
+                  "Error del Sistema. Problemas al encontrar comisiones. Comuníquese con el proveedor del Sistemas";
+                return stopFuction;
               });
-              return;
+
+            await api
+              .get(`/ccomisiones`, {
+                headers: {
+                  Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                  cod_movimiento: this.form.id,
+                  mayor: "S",
+                  tipo: "S",
+                },
+              })
+              .then((res) => {
+                if (res.data.data[0]) {
+                  comisionSeguro = [
+                    (cod_agencia = form.cod_agencia),
+                    (cod_agente = form.cod_agente),
+                    (cod_movimiento = this.form.id),
+                    (fecha_emision = form.fecha_emision),
+                    (monto_comision = form.comision_seg_vta),
+                    (estatus = 0),
+                  ];
+                  api
+                    .put(
+                      `/ccomisiones/${res.data.data[0].id}`,
+                      comisionSeguro,
+                      {
+                        headers: {
+                          Authorization: `Bearer ${LocalStorage.getItem(
+                            "token"
+                          )}`,
+                        },
+                      }
+                    )
+                    .catch((err) => {
+                      errorMessage =
+                        "Error del Sistema. Problemas al actualizar comisiones. Comuníquese con el proveedor del Sistemas";
+                      return stopFuction;
+                    });
+                } else {
+                  comisionSeguro = [
+                    (cod_agencia = form.cod_agencia),
+                    (cod_agente = form.cod_agente),
+                    (cod_movimiento = this.form.id),
+                    (fecha_emision = form.fecha_emision),
+                    (monto_comision = form.comision_seg_vta),
+                    (tipo_comision = "V"),
+                    (estatus = 0),
+                  ];
+                  api
+                    .post(`/ccomisiones/`, comisionSeguro, {
+                      headers: {
+                        Authorization: `Bearer ${LocalStorage.getItem(
+                          "token"
+                        )}`,
+                      },
+                    })
+                    .catch((err) => {
+                      errorMessage =
+                        "Error del Sistema. Problemas al crear comisiones. Comuníquese con el proveedor del Sistemas";
+                      return stopFuction;
+                    });
+                }
+              })
+              .catch((err) => {
+                errorMessage =
+                  "Error del Sistema. Problemas al encontrar comisiones. Comuníquese con el proveedor del Sistemas";
+                return stopFuction;
+              });
+          }
+
+          this.$q.notify({
+            message: "Actualizacion Exitosa",
+            color: "green",
+          });
+          this.resetLoading();
+        } catch (stopFuction) {
+          if (errorMessage) {
+            this.resetLoading();
+            this.$q.notify({
+              message: errorMessage,
+              color: "red",
             });
+          }
         }
-
-        this.$q.notify({
-          message: "Actualizacion Exitosa",
-          color: "green",
-        });
       });
     },
     // Metodo para mostrar PopUp de Cliente Particular al hacer Click en Boton
