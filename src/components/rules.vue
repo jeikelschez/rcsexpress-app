@@ -14,6 +14,10 @@ export default {
       if (val == null || val.trim() == "")
         return ret !== false ? ret : `Valor Requerido`;
     },
+    isReqCurrency(val, ret = false) {
+      if (val == null || val.trim() == "" || val.trim() == "0,00" || val.trim() == "0")
+        return ret !== false ? ret : `Valor Requerido`;
+    },
     isReqSelect(val, ret = false) {
       if (val == null || val == [] || val == "")
         return ret !== false ? ret : `Valor Requerido`;
