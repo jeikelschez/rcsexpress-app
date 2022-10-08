@@ -248,7 +248,7 @@
           v-model:pagination="pagination"
         >
           <template v-slot:loading>
-            <q-inner-loading showing color="primary" />
+            <q-inner-loading showing color="primary" class="loading" />
           </template>
           <template v-slot:body-cell-flag_activo="props">
             <q-td :props="props">
@@ -493,15 +493,15 @@ export default {
     },
     // Metodo para Setear Datos Seleccionados
     setDataEdit(res, dataRes) {
-      this.form.id = res.id;
-      this.form.nb_receptor = res.nb_receptor;
-      this.form.dir_receptor = res.dir_receptor;
-      this.form.tlf_receptor = res.tlf_receptor;
-      this.form.cel_receptor = res.cel_receptor;
-      this.form.cedula_receptor = res.cedula_receptor;
-      this.form.placa = res.placa;
-      this.form.vehiculo = res.vehiculo;
-      this.form.flag_activo = this.filterDesc("estatus", res.flag_activo);
+      this[dataRes].id = res.id;
+      this[dataRes].nb_receptor = res.nb_receptor;
+      this[dataRes].dir_receptor = res.dir_receptor;
+      this[dataRes].tlf_receptor = res.tlf_receptor;
+      this[dataRes].cel_receptor = res.cel_receptor;
+      this[dataRes].cedula_receptor = res.cedula_receptor;
+      this[dataRes].placa = res.placa;
+      this[dataRes].vehiculo = res.vehiculo;
+      this[dataRes].flag_activo = this.filterDesc("estatus", res.flag_activo);
     },
     // Metodo para Editar o Crear Datos
     sendData() {

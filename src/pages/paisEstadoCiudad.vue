@@ -800,7 +800,7 @@
                   v-model:pagination="paginationCiudades"
                 >
                   <template v-slot:loading>
-                    <q-inner-loading showing color="primary" />
+                    <q-inner-loading showing color="primary" class="loading" />
                   </template>
                   <template v-slot:body-cell-cod_region="props">
                     <q-td :props="props">
@@ -1278,7 +1278,7 @@ export default {
     setData(res, dataRes) {
       this[dataRes] = res.data ? res.data : res;
     },
-    
+
     // Metodos para Paises
     // Metodo para Extraer Datos de Tabla
     getDataPaises() {
@@ -1297,7 +1297,6 @@ export default {
       this[dataRes].desc_pais = res.desc_pais;
       this[dataRes].tipo_pais = this.filterDesc("tipoPais", res.tipo_pais);
       this[dataRes].id = res.id;
-      this.loading = false;
     },
     // Metodo para Editar o Crear Paises
     sendDataPaises() {
@@ -1365,7 +1364,6 @@ export default {
       this[dataRes].desc_estado = res.desc_estado;
       this[dataRes].siglas = res.siglas;
       this[dataRes].id = res.id;
-      this.loading = false;
     },
     // Metodo para Editar o Crear Estados
     sendDataEstados() {

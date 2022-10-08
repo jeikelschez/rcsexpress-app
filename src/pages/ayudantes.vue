@@ -165,7 +165,7 @@
           v-model:pagination="pagination"
         >
           <template v-slot:loading>
-            <q-inner-loading showing color="primary" />
+            <q-inner-loading showing color="primary" class="loading" />
           </template>
           <template v-slot:body-cell-flag_activo="props">
             <q-td :props="props">
@@ -274,7 +274,10 @@
             color="primary"
             v-close-popup
             @click="
-              this.$refs.methods.deleteData(`/ayudantes/${selected}`, 'getDataTable')
+              this.$refs.methods.deleteData(
+                `/ayudantes/${selected}`,
+                'getDataTable'
+              )
             "
           />
         </q-card-actions>
@@ -419,7 +422,6 @@ export default {
       this[dataRes].dir_ayudante = res.dir_ayudante;
       this[dataRes].tlf_ayudante = res.tlf_ayudante;
       this[dataRes].flag_activo = this.filterDesc("estatus", res.flag_activo);
-      this.loading = false;
     },
     // Metodo para Editar o Crear Datos
     sendData() {

@@ -148,7 +148,7 @@
           v-model:pagination="pagination"
         >
           <template v-slot:loading>
-            <q-inner-loading showing color="primary" />
+            <q-inner-loading showing color="primary" class="loading" />
           </template>
           <template v-slot:body-cell-action="props">
             <q-td :props="props">
@@ -376,10 +376,10 @@ export default {
     },
     // Metodo para Setear Datos Seleccionados
     setDataEdit(res, dataRes) {
-      this.form.id = res.id;
-      this.form.descripcion = res.descripcion;
-      this.form.placas = res.placas;
-      this.form.chofer = res.chofer;
+      this[dataRes].id = res.id;
+      this[dataRes].descripcion = res.descripcion;
+      this[dataRes].placas = res.placas;
+      this[dataRes].chofer = res.chofer;
     },
     // Metodo para Crear y Editar Datos
     sendData() {

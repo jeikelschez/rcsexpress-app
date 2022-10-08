@@ -264,7 +264,7 @@
           v-model:pagination="pagination"
         >
           <template v-slot:loading>
-            <q-inner-loading showing color="primary" />
+            <q-inner-loading showing color="primary" class="loading" />
           </template>
           <template v-slot:body-cell-tipo_urgencia="props">
             <q-td :props="props">
@@ -657,14 +657,30 @@ export default {
       this.form.monto_tarifa = this.form.monto_tarifa
         .replaceAll(".", "")
         .replaceAll(",", ".");
-      this.form.tipo_urgencia = this.form.tipo_urgencia ? this.form.tipo_urgencia.value : null;
-      this.form.tipo_tarifa = this.form.tipo_tarifa ? this.form.tipo_tarifa.value : null;
-      this.form.tipo_ubicacion = this.form.tipo_ubicacion ? this.form.tipo_ubicacion.value : null;
-      this.form.tipo_carga = this.form.tipo_carga ? this.form.tipo_carga.value : null;
-      this.form.modalidad_pago = this.form.modalidad_pago ? this.form.modalidad_pago.value : null;
-      this.form.pagado_en = this.form.pagado_en ? this.form.pagado_en.value : null;
-      this.form.region_origen = this.form.region_origen ? this.form.region_origen.value : null;
-      this.form.region_destino = this.form.region_destino ? this.form.region_destino.value : null;
+      this.form.tipo_urgencia = this.form.tipo_urgencia
+        ? this.form.tipo_urgencia.value
+        : null;
+      this.form.tipo_tarifa = this.form.tipo_tarifa
+        ? this.form.tipo_tarifa.value
+        : null;
+      this.form.tipo_ubicacion = this.form.tipo_ubicacion
+        ? this.form.tipo_ubicacion.value
+        : null;
+      this.form.tipo_carga = this.form.tipo_carga
+        ? this.form.tipo_carga.value
+        : null;
+      this.form.modalidad_pago = this.form.modalidad_pago
+        ? this.form.modalidad_pago.value
+        : null;
+      this.form.pagado_en = this.form.pagado_en
+        ? this.form.pagado_en.value
+        : null;
+      this.form.region_origen = this.form.region_origen
+        ? this.form.region_origen.value
+        : null;
+      this.form.region_destino = this.form.region_destino
+        ? this.form.region_destino.value
+        : null;
       if (!this.form.id) {
         this.$refs.methods.createData("/tarifas", this.form, "getDataTable");
       } else {
