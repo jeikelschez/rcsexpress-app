@@ -1,6 +1,6 @@
 <template>
   <q-page class="pagina q-pa-md">
-    <q-dialog v-model="agenciasDialog">
+    <q-dialog v-model="dialog">
       <q-card class="q-pa-md" bordered style="width: 900px; max-width: 80vw">
         <q-card-section>
           <q-form @submit="sendData" class="q-gutter-md">
@@ -159,12 +159,13 @@
                   upper-case
                   outlined
                   v-model="form.nb_agencia"
-                  label="Agencia"
+                  label="Nombre Agencia"
                   class="pcform"
                   hint=""
                   lazy-rules
                   :rules="[
                     (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 50),
                     (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   @update:model-value="
@@ -182,7 +183,7 @@
                   v-model="form.persona_contacto"
                   label="Nombre"
                   :rules="[
-                    (val) => this.$refs.rulesVue.isMax(val, 200),
+                    (val) => this.$refs.rulesVue.isMax(val, 50),
                     (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   hint=""
@@ -224,7 +225,7 @@
                   label="Rif"
                   hint=""
                   :rules="[
-                    (val) => this.$refs.rulesVue.isMax(val, 200),
+                    (val) => this.$refs.rulesVue.isMax(val, 20),
                     (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   lazy-rules
@@ -243,7 +244,7 @@
                   v-model="form.nit_agencia"
                   label="NIT Agencia"
                   :rules="[
-                    (val) => this.$refs.rulesVue.isMax(val, 200),
+                    (val) => this.$refs.rulesVue.isMax(val, 20),
                     (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   hint=""
@@ -267,10 +268,10 @@
                   hint=""
                   lazy-rules
                   :rules="[
-                    (val) => this.$refs.rulesVue.isMax(val, 200),
+                    (val) => this.$refs.rulesVue.isMax(val, 50),
                     (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
-                  mask="####-#####"
+                  mask="(####) ### - ####"
                 >
                   <template v-slot:prepend>
                     <q-icon name="fax" />
@@ -285,10 +286,10 @@
                   hint=""
                   lazy-rules
                   :rules="[
-                    (val) => this.$refs.rulesVue.isMax(val, 200),
+                    (val) => this.$refs.rulesVue.isMax(val, 50),
                     (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
-                  mask="(###) ### - ####"
+                  mask="(####) ### - ####"
                 >
                   <template v-slot:prepend>
                     <q-icon name="phone" />
@@ -319,6 +320,10 @@
                   hint=""
                   type="email"
                   lazy-rules
+                  :rules="[
+                    (val) => this.$refs.rulesVue.isMax(val, 50),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
+                  ]"
                   @update:model-value="
                     form.email_agencia = form.email_agencia.toUpperCase()
                   "
@@ -394,7 +399,7 @@
             rounded
             color="primary"
             :disabled="this.allowOption(2)"
-            @click="agenciasDialog = true"
+            @click="dialog = true"
             @click.capture="this.resetForm()"
           ></q-btn>
         </div>
@@ -402,7 +407,7 @@
 
       <div class="q-pa-md q-gutter-y-md">
         <q-table
-          :rows="datos"
+          :rows="agencias"
           :loading="loading"
           binary-state-sort
           row-key="id"
@@ -438,7 +443,7 @@
                     'setDataEdit',
                     'form'
                   );
-                  agenciasDialog = true;
+                  dialog = true;
                 "
               ></q-btn>
               <q-btn
@@ -465,6 +470,9 @@
                       <q-item-label>{{ col.label }}</q-item-label>
                     </q-item-section>
                     <q-item-section side>
+                      <q-item-label v-if="col.name === 'estatus'">
+                        {{ filterDesc("estatus", props.row.estatus) }}
+                      </q-item-label>
                       <q-btn
                         v-if="col.name === 'action'"
                         dense
@@ -480,7 +488,7 @@
                             'setDataEdit',
                             'form'
                           );
-                          agenciasDialog = true;
+                          dialog = true;
                         "
                       ></q-btn>
                       <q-btn
@@ -494,10 +502,7 @@
                         @click="selected = props.row.id"
                         @click.capture="deletePopup = true"
                       ></q-btn>
-                      <q-item-label
-                        v-else
-                        caption
-                        :class="col.classes ? col.classes : ''"
+                      <q-item-label v-if="col.name != 'estatus'"
                         >{{ col.value }}
                       </q-item-label>
                     </q-item-section>
@@ -524,7 +529,7 @@
             label="Aceptar"
             color="primary"
             v-close-popup
-            @click="deleteData(selected)"
+            @click="this.$refs.methods.deleteData(`/agencias/${selected}`, 'getDataTable')"
           />
         </q-card-actions>
       </q-card>
@@ -620,10 +625,8 @@ export default {
       },
       paises: [],
       estados: [],
-      count: 1,
-      currentPage: 1,
       ciudades: [],
-      datos: [],
+      agencias: [],
       rpermisos: [],
       paisesSelected: [],
       estadosSelected: [],
@@ -637,8 +640,8 @@ export default {
     return {
       loading: ref(false),
       separator: ref("vertical"),
-      agenciasDialog: ref(false),
       deletePopup: ref(false),
+      dialog: ref(false),
     };
   },
   mounted() {
@@ -696,11 +699,15 @@ export default {
 
     // METODOS DE PAGINA
 
+    // Metodo para Setear Datos Generales
+    setData(res, dataRes) {
+      this[dataRes] = res.data ? res.data : res;
+    },
     // Metodo para Extraer Datos de Tabla
     getDataTable(props) {
       this.loading = true;
       if (props) this.pagination = props.pagination;
-      this.$refs.methods.getData(`/agencias`, "setDataTable", "datos", {
+      this.$refs.methods.getData(`/agencias`, "setDataTable", "agencias", {
         headers: {
           page: this.pagination.page,
           limit: this.pagination.rowsPerPage,
@@ -713,16 +720,12 @@ export default {
     },
     // Metodo para Setear Datos de Tabla
     setDataTable(res, dataRes) {
-      this[dataRes] = res.data;
+      this[dataRes] = res.data ? res.data : res;
       this.pagination.page = res.currentPage;
       this.currentPage = res.currentPage;
       this.pagination.rowsNumber = res.total;
       this.pagination.rowsPerPage = res.limit;
       this.loading = false;
-    },
-    // Metodo para Setear Datos Generales
-    setData(res, dataRes) {
-      this[dataRes] = res.data ? res.data : res;
     },
     // Metodo para Setear Datos de Agencia Seleccionada
     setDataEdit(res, dataRes) {
@@ -761,26 +764,21 @@ export default {
             });
         });
     },
-    // Metodo para Eliminar Agencia
-    deleteData(idpost) {
-      this.$refs.methods.deleteData(`/agencias/${idpost}`, "getDataTable");
-    },
     // Metodo para Editar o Crear Agencia
     sendData() {
       this.form.cod_ciudad = this.selectedCiudad.id;
       this.form.estatus = this.form.estatus.value;
       if (!this.form.id) {
         this.$refs.methods.createData("/agencias", this.form, "getDataTable");
-        this.agenciasDialog = false;
-        this.resetForm();
       } else {
         this.$refs.methods.putData(
           `/agencias/${this.form.id}`,
           this.form,
           "getDataTable"
         );
-        this.agenciasDialog = false;
       }
+      this.dialog = false;
+      this.resetForm();
     },
     // Metodo para Resetear Datos
     resetForm() {
@@ -799,6 +797,7 @@ export default {
       this.form.rif_agencia = "";
       this.form.nit_agencia = "";
       this.form.estatus = "";
+      this.dialog = false;
     },
   },
 };

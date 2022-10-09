@@ -14,19 +14,9 @@
                   class="pcform"
                   lazy-rules
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        50,
-                        'Maximo 50 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 50),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   @update:model-value="
                     form.nb_receptor = form.nb_receptor.toUpperCase()
@@ -37,15 +27,12 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-6 col-xs-12">
                 <q-select
                   outlined
                   v-model="form.flag_activo"
                   label="Estatus"
-                  :rules="[
-                    (val) => this.$refs.rulesVue.isReqSelect(val, 'Requerido'),
-                  ]"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
                   hint=""
                   :options="estatus"
                   lazy-rules
@@ -55,25 +42,14 @@
                   </template>
                 </q-select>
               </div>
-
               <div class="col-md-12 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.dir_receptor"
                   label="Direccion"
                   :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        100,
-                        'Maximo 100 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isMax(val, 100),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   hint=""
                   lazy-rules
@@ -86,28 +62,18 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.tlf_receptor"
                   label="Teléfonos"
                   :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        50,
-                        'Maximo 50 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isMax(val, 50),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   hint=""
                   lazy-rules
+                  mask="(####) ### - ####"
                   class="pcform"
                   @update:model-value="
                     form.tlf_receptor = form.tlf_receptor.toUpperCase()
@@ -118,28 +84,18 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.cel_receptor"
                   label="Celular"
                   :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        50,
-                        'Maximo 50 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isMax(val, 50),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   hint=""
                   lazy-rules
+                  mask="(####) ### - ####"
                   @update:model-value="
                     form.cel_receptor = form.cel_receptor.toUpperCase()
                   "
@@ -149,25 +105,14 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.cedula_receptor"
                   label="Cedula"
                   :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        20,
-                        'Maximo 20 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isMax(val, 20),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   hint=""
                   lazy-rules
@@ -181,25 +126,14 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.placa"
                   label="Placa"
                   :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        10,
-                        'Maximo 10 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isMax(val, 10),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   hint=""
                   lazy-rules
@@ -210,25 +144,14 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-12 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.vehiculo"
                   label="Descripcion de Vehiculo"
                   :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        100,
-                        'Maximo 100 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isMax(val, 100),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   hint=""
                   lazy-rules
@@ -242,7 +165,6 @@
                 </q-input>
               </div>
             </div>
-
             <div
               class="full-width row justify-center items-center content-center"
               style="margin-bottom: 10px"
@@ -301,7 +223,7 @@
           style="text-align: center; align-self: center"
         >
           <q-btn
-            label="Insertar Receptor"
+            label="Insertar"
             rounded
             color="primary"
             @click="dialog = true"
@@ -313,19 +235,25 @@
 
       <div class="row q-pa-md q-gutter-y-md">
         <q-table
-          :rows="datos"
+          :rows="receptores"
           row-key="id"
           :columns="columns"
           binary-state-sort
           :loading="loading"
           :separator="separator"
+          :rows-per-page-options="[5, 10, 15, 20, 50]"
           :filter="filter"
           style="width: 100%"
           :grid="$q.screen.xs"
           v-model:pagination="pagination"
         >
           <template v-slot:loading>
-            <q-inner-loading showing color="primary" />
+            <q-inner-loading showing color="primary" class="loading" />
+          </template>
+          <template v-slot:body-cell-flag_activo="props">
+            <q-td :props="props">
+              {{ filterDesc("estatus", props.row.flag_activo) }}
+            </q-td>
           </template>
           <template v-slot:body-cell-action="props">
             <q-td :props="props">
@@ -337,7 +265,11 @@
                 icon="edit"
                 :disabled="this.allowOption(3)"
                 @click="
-                  getData(`/receptores/${props.row.id}`, 'setDataEdit', 'form');
+                  this.$refs.methods.getData(
+                    `/receptores/${props.row.id}`,
+                    'setDataEdit',
+                    'form'
+                  );
                   dialog = true;
                 "
               ></q-btn>
@@ -365,23 +297,11 @@
                       <q-item-label>{{ col.label }}</q-item-label>
                     </q-item-section>
                     <q-item-section side>
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
+                      <q-item-label v-if="col.name === 'flag_activo'">
+                        {{ filterDesc("estatus", props.row.flag_activo) }}
+                      </q-item-label>
                       <q-btn
-                        v-else-if="col.name === 'action'"
+                        v-if="col.name === 'action'"
                         dense
                         round
                         flat
@@ -389,7 +309,7 @@
                         icon="edit"
                         :disabled="this.allowOption(3)"
                         @click="
-                          getData(
+                          this.$refs.methods.getData(
                             `/receptores/${props.row.id}`,
                             'setDataEdit',
                             'form'
@@ -397,23 +317,8 @@
                           dialog = true;
                         "
                       ></q-btn>
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
                       <q-btn
-                        v-else-if="col.name === 'action'"
+                        v-if="col.name === 'action'"
                         dense
                         round
                         flat
@@ -423,11 +328,8 @@
                         @click="selected = props.row.id"
                         @click.capture="deletePopup = true"
                       ></q-btn>
-                      <q-item-label
-                        v-else
-                        caption
-                        :class="col.classes ? col.classes : ''"
-                        >{{ col.value }}
+                      <q-item-label v-if="col.name != 'flag_activo'">
+                        {{ col.value }}
                       </q-item-label>
                     </q-item-section>
                   </q-item>
@@ -446,7 +348,6 @@
             ¿Estas seguro que quieres eliminar este elemento?
           </div>
         </q-card-section>
-
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="primary" v-close-popup />
           <q-btn
@@ -454,20 +355,21 @@
             label="Aceptar"
             color="primary"
             v-close-popup
-            @click="deleteData(selected)"
+            @click="
+              this.$refs.methods.deleteData(
+                `/receptores/${selected}`,
+                'getDataTable'
+              )
+            "
           />
         </q-card-actions>
       </q-card>
     </q-dialog>
     <methods
       ref="methods"
-      @get-Data="
-        getData('/receptores', 'setData', 'datos');
-        this.loading = true;
-      "
-      @set-data="setData"
-      @reset-Loading="resetLoading"
       @set-Data-Edit="setDataEdit"
+      @get-Data-Table="getDataTable"
+      @set-Data-Table="setDataTable"
       @set-Data-Permisos="setDataPermisos"
     >
     </methods>
@@ -478,7 +380,7 @@
 <script>
 import { ref } from "vue";
 import rulesVue from "src/components/rules.vue";
-import { useQuasar, LocalStorage } from "quasar";
+import { LocalStorage } from "quasar";
 import methodsVue from "src/components/methods.vue";
 
 export default {
@@ -495,7 +397,6 @@ export default {
           field: "nb_receptor",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
           name: "cedula_receptor",
@@ -503,22 +404,18 @@ export default {
           field: "cedula_receptor",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
-          name: "activo_desc",
+          name: "flag_activo",
           label: "Estatus",
-          field: "activo_desc",
+          field: "flag_activo",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
           name: "action",
           label: "Acciones",
           align: "center",
-          sortable: true,
-          required: true,
         },
       ],
       form: {
@@ -535,35 +432,26 @@ export default {
         { label: "ACTIVO", value: "A" },
         { label: "INACTIVO", value: "I" },
       ],
-      datos: [],
+      pagination: {
+        rowsPerPage: 5,
+      },
+      receptores: [],
       selected: [],
       rpermisos: [],
-      error: "",
+      filter: "",
     };
   },
   setup() {
-    const $q = useQuasar();
-    const pagination = ref({
-      sortBy: "desc",
-      descending: false,
-      page: 1,
-      rowsPerPage: 5,
-    });
     return {
-      pagination: ref({
-        rowsPerPage: 5,
-      }),
+      loading: ref(false),
       separator: ref("vertical"),
       dialog: ref(false),
-      loading: ref(false),
       deletePopup: ref(false),
-      filter: ref(""),
     };
   },
   mounted() {
-    this.getData("/receptores", "setData", "datos");
     this.$emit("changeTitle", "SCEN - Mantenimiento - Receptores", "");
-    this.loading = true;
+    this.getDataTable();
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
@@ -573,9 +461,10 @@ export default {
     });
   },
   methods: {
-    // Metodo para Resetear Carga
-    resetLoading() {
-      this.loading = false;
+    // Metodo para traer el value de los Selects y Columns
+    filterDesc(array, value) {
+      var find = this[array].findIndex((item) => item.value == value);
+      return find >= 0 ? this[array][find].label : null;
     },
     // Metodo para validar Permisos
     allowOption(option) {
@@ -592,68 +481,42 @@ export default {
 
     // METODOS DE PAGINA
 
-    // Metodo para Hacer Get de Datos
-    getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, {
-        headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-        },
-      });
+    // Metodo para Extraer Datos de Tabla
+    getDataTable() {
+      this.loading = true;
+      this.$refs.methods.getData("/receptores", "setDataTable", "receptores");
     },
-    // Metodo para Setear Datos
-    setData(res, dataRes) {
-      this[dataRes] = res;
+    // Metodo para Setear Datos de Tabla
+    setDataTable(res, dataRes) {
+      this[dataRes] = res.data ? res.data : res;
       this.loading = false;
     },
     // Metodo para Setear Datos Seleccionados
     setDataEdit(res, dataRes) {
-      this.form.id = res.id;
-      this.form.nb_receptor = res.nb_receptor;
-      this.form.dir_receptor = res.dir_receptor;
-      this.form.tlf_receptor = res.tlf_receptor;
-      this.form.cel_receptor = res.cel_receptor;
-      this.form.cedula_receptor = res.cedula_receptor;
-      this.form.placa = res.placa;
-      this.form.vehiculo = res.vehiculo;
-      this.form.flag_activo = res.activo_desc;
-      this.loading = false;
-    },
-    // Metodo para Eliminar Datos
-    deleteData(idpost) {
-      this.$refs.methods.deleteData(`/receptores/${idpost}`, "getData", {
-        headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-        },
-      });
-      this.loading = true;
+      this[dataRes].id = res.id;
+      this[dataRes].nb_receptor = res.nb_receptor;
+      this[dataRes].dir_receptor = res.dir_receptor;
+      this[dataRes].tlf_receptor = res.tlf_receptor;
+      this[dataRes].cel_receptor = res.cel_receptor;
+      this[dataRes].cedula_receptor = res.cedula_receptor;
+      this[dataRes].placa = res.placa;
+      this[dataRes].vehiculo = res.vehiculo;
+      this[dataRes].flag_activo = this.filterDesc("estatus", res.flag_activo);
     },
     // Metodo para Editar o Crear Datos
     sendData() {
       this.form.flag_activo = this.form.flag_activo.value;
       if (!this.form.id) {
-        this.$refs.methods.createData("/receptores", this.form, "getData", {
-          headers: {
-            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-          },
-        });
-        this.resetForm();
-        this.dialog = false;
-        this.loading = true;
+        this.$refs.methods.createData("/receptores", this.form, "getDataTable");
       } else {
         this.$refs.methods.putData(
           `/receptores/${this.form.id}`,
           this.form,
-          "getData",
-          {
-            headers: {
-              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            },
-          }
+          "getDataTable"
         );
-        this.dialog = false;
-        this.resetForm();
-        this.loading = true;
       }
+      this.dialog = false;
+      this.resetForm();
     },
     // Metodo para Resetear Datos
     resetForm() {
