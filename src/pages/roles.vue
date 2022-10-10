@@ -23,7 +23,7 @@
               </div>
             </div>
 
-            <div class="full-width row justify-center items-center content-center" style="margin-bottom: 10px">
+            <div class=" row justify-center items-center content-center" style="margin-bottom: 10px">
               <q-btn label="Enviar" type="submit" color="primary" class="col-md-5 col-sm-5 col-xs-12"
                 icon="person_add" />
               <q-btn label="Cerrar" color="primary" flat class="col-md-5 col-sm-5 col-xs-12 btnmovil" icon="close"
@@ -116,7 +116,7 @@
                     <q-item-section>
                       <q-item-label>{{ col.label }}</q-item-label>
                     </q-item-section>
-                    <q-item-section side>
+                    <q-item-section side class="itemMovilSide">
                       <q-chip v-if="col.name === 'status'" :color="
                         props.row.status == 'Active'
                           ? 'green'

@@ -503,7 +503,7 @@
             </div>
 
             <div
-              class="full-width row justify-center items-center content-center"
+              class="row justify-center items-center content-center"
               style="margin-bottom: 6px"
             >
               <q-btn
@@ -1040,7 +1040,7 @@
             </div>
 
             <div
-              class="full-width row justify-center items-center content-center"
+              class="row justify-center items-center content-center"
               style="margin-bottom: 6px"
             >
               <q-btn
@@ -1064,1308 +1064,1047 @@
       </q-card>
     </q-dialog>
 
-    <div class="row justify-center">
-      <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
-        <div class="row q-pa-md" style="margin-top: 10px; padding-bottom: 0px">
-          <div
-            class="row col-md-6 col-xl-6 col-lg-6 col-xs-12 justify-center"
-            style="align-self: center; text-align: center"
+    <div class="row q-pa-md justify-center">
+      <div
+          class="row col-md-6 col-xl-6 col-lg-6 col-xs-12 justify-center"
+          style="align-self: center; text-align: center"
+        >
+          <q-card
+            class="q-pa-md col-md-12 col-xs-12 col-sm-12"
+            bordered
           >
-            <q-card
-              class="q-pa-md col-md-12 col-xs-12 col-sm-12 cardMenu"
-              bordered
-              style="margin-bottom: 10px; padding: 5px"
-            >
-              <q-card-section class="menuFilter" style="padding-bottom: 0px">
-                <div class="row">
-                  <div
-                    class="col-md-12 col-xs-12"
-                    style="
-                      align-self: center;
-                      text-align: left;
-                      margin-top: -30px;
-                    "
-                  >
-                    <h4
-                      style="font-size: 16px; margin-bottom: 5px"
-                      class="text-secondary"
-                    >
-                      <strong>Fecha de Envio</strong>
-                    </h4>
-                  </div>
-                  <div class="col-md-6 col-xs-12">
-                    <q-input
-                      outlined
-                      label="Desde"
-                      hint=""
-                      v-model="form.f_val"
-                      dense
-                      mask="date"
-                      :rules="['date']"
-                      class="pcform"
-                      lazy-rules
-                    >
-                      <template v-slot:append>
-                        <q-icon name="event" class="cursor-pointer">
-                          <q-popup-proxy
-                            cover
-                            transition-show="scale"
-                            transition-hide="scale"
-                          >
-                            <q-date v-model="form.f_val">
-                              <div class="row items-center justify-end">
-                                <q-btn
-                                  v-close-popup
-                                  label="Close"
-                                  color="primary"
-                                  flat
-                                />
-                              </div>
-                            </q-date>
-                          </q-popup-proxy>
-                        </q-icon>
-                      </template>
-                    </q-input>
-                  </div>
-
-                  <div class="col-md-6 col-xs-12">
-                    <q-input
-                      outlined
-                      label="Hasta"
-                      hint=""
-                      v-model="form.f_val"
-                      dense
-                      mask="date"
-                      :rules="['date']"
-                      lazy-rules
-                    >
-                      <template v-slot:append>
-                        <q-icon name="event" class="cursor-pointer">
-                          <q-popup-proxy
-                            cover
-                            transition-show="scale"
-                            transition-hide="scale"
-                          >
-                            <q-date v-model="form.f_val">
-                              <div class="row items-center justify-end">
-                                <q-btn
-                                  v-close-popup
-                                  label="Close"
-                                  color="primary"
-                                  flat
-                                />
-                              </div>
-                            </q-date>
-                          </q-popup-proxy>
-                        </q-icon>
-                      </template>
-                    </q-input>
-                  </div>
-                </div>
-              </q-card-section>
-            </q-card>
-          </div>
-
-          <div
-            class="row col-md-6 col-xs-12 col-xl-6 col-lg-6 justify-center"
-            style="align-self: center; text-align: center"
-          >
-            <q-card
-              class="q-pa-md col-md-12 col-xs-12 col-sm-12"
-              bordered
-              style="margin-bottom: 10px; padding: 5px"
-            >
-              <q-card-section class="menuFilter" style="padding-bottom: 0px">
-                <div class="row">
-                  <div
-                    class="col-md-12 col-xs-12"
-                    style="
-                      align-self: center;
-                      text-align: left;
-                      margin-top: -30px;
-                    "
-                  >
-                    <h4
-                      style="font-size: 16px; margin-bottom: 5px"
-                      class="text-secondary"
-                    >
-                      <strong>Datos de Guia</strong>
-                    </h4>
-                  </div>
-                  <div class="col-md-6 col-xs-12">
-                    <q-input
-                      outlined
-                      v-model="formClientes.cod_agente"
-                      label="NRO. Guia"
-                      dense
-                      hint=""
-                      class="pcform"
-                      :rules="[reglasInputs]"
-                      lazy-rules
-                    >
-                      <template v-slot:prepend>
-                        <q-icon name="face" />
-                      </template>
-                    </q-input>
-                  </div>
-
-                  <div class="col-md-6 col-xs-12">
-                    <q-input
-                      outlined
-                      v-model="formClientes.cod_agente"
-                      label="Estatus"
-                      hint=""
-                      dense
-                      :rules="[reglasInputs]"
-                      lazy-rules
-                    >
-                      <template v-slot:prepend>
-                        <q-icon name="face" />
-                      </template>
-                    </q-input>
-                  </div>
-                </div>
-              </q-card-section>
-            </q-card>
-          </div>
-
-          <div
-            class="row col-md-6 col-xs-12 col-xl-6 col-lg-6 menuHeader justify-center"
-            style="align-self: center; text-align: center"
-          >
-            <q-card
-              bordered
-              style="margin-bottom: 20px; padding: 0px"
-              class="q-pa-md row col-md-12 col-xs-12 col-xl-12 col-lg-12 col-sm-12 cardMenu"
-            >
-              <q-card-section
-                class="row col-md-12 col-xs-12 menuFilter2"
-                style="padding-bottom: 0px"
-              >
+            <q-card-section class="row">
                 <div
-                  class="col-md-4 col-xs-12 col-sm-4 titleMenu"
-                  style="align-self: center; text-align: center"
+                  class="col-md-12 col-xs-12"
+                  style="
+                    align-self: center;
+                    text-align: left;
+                    margin-top: -30px;
+                  "
                 >
-                  <p
-                    style="
-                      font-size: 16px;
-                      align-self: center;
-                      text-align: center;
-                      margin-bottom: 0px;
-                      margin-top: 4px;
-                    "
+                  <h4
+                    style="font-size: 16px; margin-bottom: 5px"
                     class="text-secondary"
                   >
-                    <strong>TIPO DE GUIA</strong>
-                  </p>
+                    <strong>Fecha de Envio</strong>
+                  </h4>
                 </div>
-
-                <div
-                  class="col-md-4 col-xs-6 col-sm-4 justify-center"
-                  style="
-                    margin-top: 7px;
-                    align-self: center;
-                    text-align: center;
-                  "
-                  id="select"
-                >
-                  <q-field
-                    hide-bottom-space
-                    borderless
-                    @update:model-value="
-                      this.axiosConfig.headers.tipo_guia_carga =
-                        this.selectedGuiaCarga.value;
-                      getData(`/cguias`, 'setData', 'datos');
-                    "
+                <div class="col-md-6 col-xs-12">
+                  <q-input
+                    outlined
+                    label="Desde"
+                    hint=""
+                    v-model="form.f_val"
                     dense
+                    mask="date"
+                    :rules="['date']"
                     class="pcform"
-                    v-model="selectedGuiaCarga"
+                    lazy-rules
                   >
-                    <template v-slot:control>
-                      <q-checkbox
-                        size="md"
-                        v-model="selectedGuiaCarga"
-                        true-value="1"
-                        false-value="0"
-                        style="font-size: 13px"
-                        label="Guia de Carga"
-                      />
+                    <template v-slot:append>
+                      <q-icon name="event" class="cursor-pointer">
+                        <q-popup-proxy
+                          cover
+                          transition-show="scale"
+                          transition-hide="scale"
+                        >
+                          <q-date v-model="form.f_val">
+                            <div class="row items-center justify-end">
+                              <q-btn
+                                v-close-popup
+                                label="Close"
+                                color="primary"
+                                flat
+                              />
+                            </div>
+                          </q-date>
+                        </q-popup-proxy>
+                      </q-icon>
                     </template>
-                  </q-field>
+                  </q-input>
                 </div>
 
-                <div
-                  class="col-md-4 col-xs-6 col-sm-4 justify-center"
-                  style="
-                    margin-top: 7px;
-                    align-self: center;
-                    text-align: center;
-                  "
-                  id="select"
-                >
-                  <q-field
-                    hide-bottom-space
-                    borderless
+                <div class="col-md-6 col-xs-12">
+                  <q-input
+                    outlined
+                    label="Hasta"
+                    hint=""
+                    v-model="form.f_val"
                     dense
-                    @update:model-value="
-                      this.axiosConfig.headers.tipo_guia_factura =
-                        this.selectedGuiaFactura.value;
-                      getData(`/cguias`, 'setData', 'datos');
-                    "
-                    v-model="selectedGuiaFactura"
+                    mask="date"
+                    :rules="['date']"
+                    lazy-rules
                   >
-                    <template v-slot:control>
-                      <q-checkbox
-                        size="md"
-                        v-model="selectedGuiaFactura"
-                        true-value="1"
-                        false-value="0"
-                        style="font-size: 13px"
-                        label="Guia de Factura"
-                      />
+                    <template v-slot:append>
+                      <q-icon name="event" class="cursor-pointer">
+                        <q-popup-proxy
+                          cover
+                          transition-show="scale"
+                          transition-hide="scale"
+                        >
+                          <q-date v-model="form.f_val">
+                            <div class="row items-center justify-end">
+                              <q-btn
+                                v-close-popup
+                                label="Close"
+                                color="primary"
+                                flat
+                              />
+                            </div>
+                          </q-date>
+                        </q-popup-proxy>
+                      </q-icon>
                     </template>
-                  </q-field>
+                  </q-input>
                 </div>
+            </q-card-section>
+          </q-card>
+      </div>
 
-                <div
-                  class="col-md-4 col-xs-12 col-sm-4"
-                  style="align-self: center; text-align: center"
-                >
-                  <p
-                    style="
-                      font-size: 16px;
-                      align-self: center;
-                      text-align: center;
-                      margin-bottom: 0px;
-                      margin-top: 4px;
-                    "
-                    class="text-secondary checkboxTitle"
-                  >
-                    <strong>EN TRANSITO</strong>
-                  </p>
-                </div>
-
-                <div
-                  class="col-md-4 col-xs-6 col-sm-4"
-                  style="
-                    margin-bottom: 7px;
-                    margin-top: 7px;
-                    align-self: center;
-                    text-align: center;
-                  "
-                  id="select"
-                >
-                  <q-field
-                    hide-bottom-space
-                    borderless
-                    @update:model-value="
-                      this.axiosConfig.headers.tipo_guia_carga =
-                        this.selectedGuiaCarga.value;
-                      getData(`/cguias`, 'setData', 'datos');
-                    "
-                    dense
-                    class="pcform"
-                    v-model="selectedGuiaCarga"
-                  >
-                    <template v-slot:control>
-                      <q-checkbox
-                        size="md"
-                        v-model="selectedGuiaCarga"
-                        true-value="1"
-                        false-value="0"
-                        style="font-size: 13px"
-                        label="SI"
-                      />
-                    </template>
-                  </q-field>
-                </div>
-
-                <div
-                  class="col-md-4 col-xs-6 col-sm-4"
-                  style="
-                    margin-bottom: 7px;
-                    margin-top: 7px;
-                    align-self: center;
-                    text-align: center;
-                  "
-                  id="select"
-                >
-                  <q-field
-                    hide-bottom-space
-                    borderless
-                    dense
-                    @update:model-value="
-                      this.axiosConfig.headers.tipo_guia_factura =
-                        this.selectedGuiaFactura.value;
-                      getData(`/cguias`, 'setData', 'datos');
-                    "
-                    v-model="selectedGuiaFactura"
-                  >
-                    <template v-slot:control>
-                      <q-checkbox
-                        size="md"
-                        v-model="selectedGuiaFactura"
-                        true-value="1"
-                        false-value="0"
-                        style="font-size: 13px"
-                        label="NO"
-                      />
-                    </template>
-                  </q-field>
-                </div>
-              </q-card-section>
-            </q-card>
-          </div>
-
-          <div
-            class="row col-md-6 col-xs-12 col-xl-6 col-lg-6 menuHeader justify-center"
-            style="align-self: center; text-align: center"
+      <div
+          class="row col-md-6 col-xs-12 col-xl-6 col-lg-6 justify-center"
+          style="align-self: center; text-align: center"
+        >
+          <q-card
+            class="q-pa-md col-md-12 col-xs-12 col-sm-12"
+            bordered
+            style="margin-bottom: 10px; padding: 5px"
           >
-            <q-card
-              bordered
-              style="padding: 5px; margin-bottom: 20px"
-              class="q-pa-md row col-md-12 col-xs-12 col-xl-12 col-lg-12 col-sm-12"
+            <q-card-section class="row">>
+              <div class="row">
+                <div
+                  class="col-md-12 col-xs-12"
+                  style="
+                    align-self: center;
+                    text-align: left;
+                    margin-top: -30px;
+                  "
+                >
+                  <h4
+                    style="font-size: 16px; margin-bottom: 5px"
+                    class="text-secondary"
+                  >
+                    <strong>Datos de Guia</strong>
+                  </h4>
+                </div>
+                <div class="col-md-6 col-xs-12">
+                  <q-input
+                    outlined
+                    v-model="formClientes.cod_agente"
+                    label="NRO. Guia"
+                    dense
+                    hint=""
+                    class="pcform"
+                    :rules="[reglasInputs]"
+                    lazy-rules
+                  >
+                    <template v-slot:prepend>
+                      <q-icon name="face" />
+                    </template>
+                  </q-input>
+                </div>
+
+                <div class="col-md-6 col-xs-12">
+                  <q-input
+                    outlined
+                    v-model="formClientes.cod_agente"
+                    label="Estatus"
+                    hint=""
+                    dense
+                    :rules="[reglasInputs]"
+                    lazy-rules
+                  >
+                    <template v-slot:prepend>
+                      <q-icon name="face" />
+                    </template>
+                  </q-input>
+                </div>
+              </div>
+            </q-card-section>
+          </q-card>
+      </div>
+
+      <div
+          class="row col-md-6 col-xs-12 col-xl-6 col-lg-6 justify-center"
+          style="align-self: center; text-align: center"
+        >
+          <q-card
+            bordered
+            class="q-pa-md row col-md-12 col-xs-12 col-xl-12 col-lg-12 col-sm-12"
+          >
+            <q-card-section class="row col-md-12 col-xs-12"
+              style="padding-bottom: 0px"
             >
-              <q-card-section
-                class="row col-md-12 col-xs-12 menuFilter2"
-                style="padding-bottom: 0px; padding-top: 0px"
+              <div
+                class="col-md-4 col-xs-12 col-sm-4 titleMenu"
+                style="align-self: center; text-align: center"
               >
-                <div
-                  class="col-md-3 col-xs-12 SelectAgenciaCliente pcform"
-                  style="align-self: center; text-align: center"
-                >
-                  <p
-                    style="
-                      font-size: 16px;
-                      align-self: center;
-                      text-align: center;
-                      margin-bottom: 0px;
-                    "
-                    class="text-secondary"
-                  >
-                    <strong>AGENCIAS</strong>
-                  </p>
-                </div>
-
-                <div
-                  class="col-md-4 col-xs-12 col-sm-6"
+                <p
                   style="
-                    margin-top: 7px;
-                    margin-bottom: 10px;
+                    font-size: 16px;
                     align-self: center;
                     text-align: center;
+                    margin-bottom: 0px;
+                    margin-top: 4px;
                   "
-                  id="select"
+                  class="text-secondary"
                 >
-                  <q-select
-                    rounded
-                    transition-show="flip-up"
-                    transition-hide="flip-down"
-                    :options="paises"
-                    dense
-                    class="selectmovil"
-                    option-label="desc_pais"
-                    option-value="id"
-                    v-model="selectedPais"
-                    outlined
-                    standout
-                    label="Origen"
-                    @update:model-value="
-                      this.axiosConfig.headers.pais = this.selectedPais.id;
-                      getDataEstados(`/estados`, 'setDataEstados', 'estados');
-                    "
-                  >
-                    <template v-slot:prepend>
-                      <q-icon name="search" />
-                    </template>
-                  </q-select>
-                </div>
+                  <strong>TIPO DE GUIA</strong>
+                </p>
+              </div>
 
-                <div
-                  class="col-md-4 col-xs-12 col-sm-6 SelectAgenciaCliente"
-                  style="
-                    margin-top: 7px;
-                    margin-bottom: 10px;
-                    align-self: center;
-                    text-align: center;
-                  "
-                  id="select"
-                >
-                  <q-select
-                    rounded
-                    transition-show="flip-up"
-                    transition-hide="flip-down"
-                    :options="paises"
-                    dense
-                    option-label="desc_pais"
-                    option-value="id"
-                    v-model="selectedPais"
-                    outlined
-                    standout
-                    label="Destino"
-                    @update:model-value="
-                      this.axiosConfig.headers.pais = this.selectedPais.id;
-                      getDataEstados(`/estados`, 'setDataEstados', 'estados');
-                    "
-                  >
-                    <template v-slot:prepend>
-                      <q-icon name="search" />
-                    </template>
-                  </q-select>
-                </div>
-
-                <div
-                  class="col-md-3 col-xs-12 SelectAgenciaCliente pcform"
-                  style="align-self: center; text-align: center"
-                >
-                  <p
-                    style="
-                      font-size: 16px;
-                      align-self: center;
-                      text-align: center;
-                      margin-bottom: 0px;
-                      padding-right: 3px;
-                    "
-                    class="text-secondary"
-                  >
-                    <strong>CLIENTES</strong>
-                  </p>
-                </div>
-
-                <div
-                  class="col-md-4 col-xs-12 col-sm-6"
-                  style="
-                    margin-top: 7px;
-                    margin-bottom: 10px;
-                    align-self: center;
-                    text-align: center;
-                  "
-                  id="select"
-                >
-                  <q-select
-                    rounded
-                    transition-show="flip-up"
-                    transition-hide="flip-down"
-                    :options="paises"
-                    dense
-                    option-label="desc_pais"
-                    class="selectmovil"
-                    option-value="id"
-                    v-model="selectedPais"
-                    outlined
-                    standout
-                    label="Origen"
-                    @update:model-value="
-                      this.axiosConfig.headers.pais = this.selectedPais.id;
-                      getDataEstados(`/estados`, 'setDataEstados', 'estados');
-                    "
-                  >
-                    <template v-slot:prepend>
-                      <q-icon name="search" />
-                    </template>
-                  </q-select>
-                </div>
-
-                <div
-                  class="col-md-4 col-xs-12 col-sm-6"
-                  style="
-                    margin-top: 7px;
-                    margin-bottom: 10px;
-                    align-self: center;
-                    text-align: center;
-                  "
-                  id="select"
-                >
-                  <q-select
-                    rounded
-                    transition-show="flip-up"
-                    transition-hide="flip-down"
-                    :options="paises"
-                    option-label="desc_pais"
-                    option-value="id"
-                    dense
-                    v-model="selectedPais"
-                    outlined
-                    standout
-                    label="Destino"
-                    @update:model-value="
-                      this.axiosConfig.headers.pais = this.selectedPais.id;
-                      getDataEstados(`/estados`, 'setDataEstados', 'estados');
-                    "
-                  >
-                    <template v-slot:prepend>
-                      <q-icon name="search" />
-                    </template>
-                  </q-select>
-                </div>
-              </q-card-section>
-            </q-card>
-          </div>
-        </div>
-
-        <div style="margin-top: 20px">
-          <div class="q-gutter-y-md">
-            <div bordered flat class="my-card row">
-              <q-table
-                :rows="clientes"
-                dense
-                :columns="columnsClientes"
-                binary-state-sort
-                slice
-                :separator="separator"
-                row-key="action"
-                :loading="loading"
-                class="my-sticky-header-column-table"
-                :filter="filter"
-                style="width: 100%"
-                :grid="$q.screen.xs"
-                v-model:pagination="pagination"
+              <div
+                class="col-md-4 col-xs-6 col-sm-4 justify-center"
+                style="margin-top: 7px; align-self: center; text-align: center"
+                id="select"
               >
-                <template v-slot:loading>
-                  <q-inner-loading showing color="primary" />
-                </template>
-
-                <template v-slot:body-cell-action="props">
-                  <q-td :props="props">
-                    <q-btn
-                      dense
-                      round
-                      flat
-                      color="primary"
-                      icon="save"
-                      :disabled="this.disabledDelete"
-                      @click="selected = props.row.id"
-                      @click.capture="permisosDelete = true"
-                    ></q-btn>
-                  </q-td>
-                </template>
-
-                <template v-slot:body-cell-check="props">
-                  <q-td :props="props">
+                <q-field
+                  hide-bottom-space
+                  borderless
+                  @update:model-value="
+                    this.axiosConfig.headers.tipo_guia_carga =
+                      this.selectedGuiaCarga.value;
+                    getData(`/cguias`, 'setData', 'datos');
+                  "
+                  dense
+                  class="pcform"
+                  v-model="selectedGuiaCarga"
+                >
+                  <template v-slot:control>
                     <q-checkbox
-                      size="lg"
-                      v-model="props.row.cte_decontado"
+                      size="md"
+                      v-model="selectedGuiaCarga"
                       true-value="1"
                       false-value="0"
                       style="font-size: 13px"
+                      label="Guia de Carga"
                     />
-                  </q-td>
-                </template>
+                  </template>
+                </q-field>
+              </div>
 
-                <template v-slot:body-cell-estatus_select="props">
-                  <q-td :props="props">
-                    <q-select
-                      outlined
-                      v-model="props.row.rif_cedula"
-                      :options="estatus"
-                    >
-                    </q-select>
-                  </q-td>
-                </template>
+              <div
+                class="col-md-4 col-xs-6 col-sm-4 justify-center"
+                style="margin-top: 7px; align-self: center; text-align: center"
+                id="select"
+              >
+                <q-field
+                  hide-bottom-space
+                  borderless
+                  dense
+                  @update:model-value="
+                    this.axiosConfig.headers.tipo_guia_factura =
+                      this.selectedGuiaFactura.value;
+                    getData(`/cguias`, 'setData', 'datos');
+                  "
+                  v-model="selectedGuiaFactura"
+                >
+                  <template v-slot:control>
+                    <q-checkbox
+                      size="md"
+                      v-model="selectedGuiaFactura"
+                      true-value="1"
+                      false-value="0"
+                      style="font-size: 13px"
+                      label="Guia de Factura"
+                    />
+                  </template>
+                </q-field>
+              </div>
 
-                <template v-slot:body-cell-persona_recibio_input="props">
-                  <q-td :props="props">
-                    <q-input
-                      outlined
-                      v-model="props.row.nb_cliente"
-                      :input-style="{
-                        width: `${props.row.nb_cliente.length / 2 + 2}em`,
-                        minWidth: '30px',
-                      }"
-                    >
-                    </q-input>
-                  </q-td>
-                </template>
+              <div
+                class="col-md-4 col-xs-12 col-sm-4"
+                style="align-self: center; text-align: center"
+              >
+                <p
+                  style="
+                    font-size: 16px;
+                    align-self: center;
+                    text-align: center;
+                    margin-bottom: 0px;
+                    margin-top: 4px;
+                  "
+                  class="text-secondary checkboxTitle"
+                >
+                  <strong>EN TRANSITO</strong>
+                </p>
+              </div>
 
-                <template v-slot:body-cell-ci_input="props">
-                  <q-td :props="props">
-                    <q-input
-                      outlined
-                      v-model="props.row.rif_cedula"
-                      :input-style="{
-                        width: `${props.row.rif_cedula.length / 2 + 2}em`,
-                        minWidth: '30px',
-                      }"
-                      @update:model-value="
-                        getData(props.row.id, 'putDatoSelect');
-                        this.formEdit.estatus_lote = props.row.rif_cedula.value;
-                      "
-                    >
-                    </q-input>
-                  </q-td>
-                </template>
+              <div
+                class="col-md-4 col-xs-6 col-sm-4"
+                style="
+                  margin-bottom: 7px;
+                  margin-top: 7px;
+                  align-self: center;
+                  text-align: center;
+                "
+                id="select"
+              >
+                <q-field
+                  hide-bottom-space
+                  borderless
+                  @update:model-value="
+                    this.axiosConfig.headers.tipo_guia_carga =
+                      this.selectedGuiaCarga.value;
+                    getData(`/cguias`, 'setData', 'datos');
+                  "
+                  dense
+                  class="pcform"
+                  v-model="selectedGuiaCarga"
+                >
+                  <template v-slot:control>
+                    <q-checkbox
+                      size="md"
+                      v-model="selectedGuiaCarga"
+                      true-value="1"
+                      false-value="0"
+                      style="font-size: 13px"
+                      label="SI"
+                    />
+                  </template>
+                </q-field>
+              </div>
 
-                <template v-slot:body-cell-fecha_entrega_input="props">
-                  <q-td :props="props">
-                    <q-input
-                      outlined
-                      hint=""
-                      style="padding-bottom: 0px"
-                      :input-style="{ minWidth: '100px' }"
-                      v-model="formClientes.nit"
-                      mask="date"
-                      :rules="['date']"
-                      lazy-rules
-                    >
-                      <template v-slot:append>
-                        <q-icon name="event" class="cursor-pointer">
-                          <q-popup-proxy
-                            cover
-                            transition-show="scale"
-                            transition-hide="scale"
-                          >
-                            <q-date v-model="formClientes.nit">
-                              <div class="row items-center justify-end">
-                                <q-btn
-                                  v-close-popup
-                                  label="Close"
-                                  color="primary"
-                                  flat
-                                />
-                              </div>
-                            </q-date>
-                          </q-popup-proxy>
-                        </q-icon>
-                      </template>
-                    </q-input>
-                  </q-td>
-                </template>
-
-                <template v-slot:body-cell-agente_select="props">
-                  <q-td :props="props">
-                    <q-select
-                      outlined
-                      v-model="props.row.persona_contacto"
-                      :options="estatus"
-                    >
-                    </q-select>
-                  </q-td>
-                </template>
-
-                <template v-slot:body-cell-dias_entrega_input="props">
-                  <q-td :props="props">
-                    <q-input
-                      outlined
-                      :input-style="{
-                        width: `${props.row.id.length / 2 + 2}em`,
-                        minWidth: '10px',
-                      }"
-                      v-model="props.row.id"
-                      :options="estatus"
-                    >
-                    </q-input>
-                  </q-td>
-                </template>
-
-                <template v-slot:body-cell-motivo_retraso_select="props">
-                  <q-td :props="props">
-                    <q-select
-                      outlined
-                      v-model="props.row.dir_fiscal"
-                      :options="estatus"
-                    >
-                    </q-select>
-                  </q-td>
-                </template>
-
-                <template v-slot:body-cell-agencia_trafico_select="props">
-                  <q-td :props="props">
-                    <q-select
-                      outlined
-                      v-model="props.row.dir_correo"
-                      :options="estatus"
-                    >
-                    </q-select>
-                  </q-td>
-                </template>
-
-                <template v-slot:body-cell-fecha_llega_transito_input="props">
-                  <q-td :props="props">
-                    <q-input
-                      outlined
-                      hint=""
-                      style="padding-bottom: 0px"
-                      :input-style="{ minWidth: '100px' }"
-                      v-model="formClientes.nit"
-                      mask="date"
-                      :rules="['date']"
-                      lazy-rules
-                    >
-                      <template v-slot:append>
-                        <q-icon name="event" class="cursor-pointer">
-                          <q-popup-proxy
-                            cover
-                            transition-show="scale"
-                            transition-hide="scale"
-                          >
-                            <q-date v-model="formClientes.nit">
-                              <div class="row items-center justify-end">
-                                <q-btn
-                                  v-close-popup
-                                  label="Close"
-                                  color="primary"
-                                  flat
-                                />
-                              </div>
-                            </q-date>
-                          </q-popup-proxy>
-                        </q-icon>
-                      </template>
-                    </q-input>
-                  </q-td>
-                </template>
-
-                <template v-slot:body-cell-fecha_sale_transito_input="props">
-                  <q-td :props="props">
-                    <q-input
-                      outlined
-                      hint=""
-                      style="padding-bottom: 0px"
-                      :input-style="{ minWidth: '100px' }"
-                      v-model="formClientes.nit"
-                      mask="date"
-                      :rules="['date']"
-                      lazy-rules
-                    >
-                      <template v-slot:append>
-                        <q-icon name="event" class="cursor-pointer">
-                          <q-popup-proxy
-                            cover
-                            transition-show="scale"
-                            transition-hide="scale"
-                          >
-                            <q-date v-model="formClientes.nit">
-                              <div class="row items-center justify-end">
-                                <q-btn
-                                  v-close-popup
-                                  label="Close"
-                                  color="primary"
-                                  flat
-                                />
-                              </div>
-                            </q-date>
-                          </q-popup-proxy>
-                        </q-icon>
-                      </template>
-                    </q-input>
-                  </q-td>
-                </template>
-
-                <template v-slot:body-cell-observacion_input="props">
-                  <q-td :props="props">
-                    <q-input
-                      outlined
-                      :input-style="{
-                        width: `${props.row.razon_social.length / 2 + 2}em`,
-                        minWidth: '100px',
-                      }"
-                      v-model="props.row.razon_social"
-                      :options="estatus"
-                    >
-                    </q-input>
-                  </q-td>
-                </template>
-
-                <template v-slot:item="props">
-                  <div
-                    class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
-                    :style="props.selected ? 'transform: scale(0.95);' : ''"
-                  >
-                    <q-card :class="props.selected ? 'bg-grey-2' : ''">
-                      <q-list dense>
-                        <q-item v-for="col in props.cols" :key="col.name">
-                          <q-item-section>
-                            <q-item-label>{{ col.label }}</q-item-label>
-                          </q-item-section>
-
-                          <q-item-section side style="padding-left: 0px">
-                            <q-chip
-                              v-if="col.name === 'checke'"
-                              :color="
-                                props.row.check == 'Active'
-                                  ? 'green'
-                                  : props.row.check == 'Disable'
-                                  ? 'red'
-                                  : 'grey'
-                              "
-                              text-color="white"
-                              dense
-                              class="text-weight-bolder"
-                              square
-                              >{{ col.value }}</q-chip
-                            >
-                            <q-btn
-                              v-else-if="col.name === 'action'"
-                              dense
-                              round
-                              flat
-                              color="primary"
-                              icon="save"
-                              :disabled="this.disabledDelete"
-                              @click="selected = props.row.id"
-                              @click.capture="permisosDelete = true"
-                            ></q-btn>
-                            <q-item-label
-                              v-else
-                              caption
-                              :class="col.classes ? col.classes : ''"
-                              >{{ col.value }}</q-item-label
-                            >
-                          </q-item-section>
-
-                          <q-item-section side style="padding-left: 0px">
-                            <q-chip
-                              v-if="col.name === 'checke'"
-                              :color="
-                                props.row.check == 'Active'
-                                  ? 'green'
-                                  : props.row.check == 'Disable'
-                                  ? 'red'
-                                  : 'grey'
-                              "
-                              text-color="white"
-                              dense
-                              class="text-weight-bolder"
-                              square
-                              >{{ col.value }}</q-chip
-                            >
-                            <q-checkbox
-                              v-else-if="col.name === 'check'"
-                              size="lg"
-                              v-model="props.row.cte_decontado"
-                              true-value="1"
-                              false-value="0"
-                              style="font-size: 13px"
-                            />
-                            <q-item-label
-                              v-else
-                              caption
-                              :class="col.classes ? col.classes : ''"
-                              >{{ col.value }}</q-item-label
-                            >
-                          </q-item-section>
-
-                          <q-item-section side style="padding-left: 0px">
-                            <q-chip
-                              v-if="col.name === 'checke'"
-                              :color="
-                                props.row.status == 'Active'
-                                  ? 'green'
-                                  : props.row.status == 'Disable'
-                                  ? 'red'
-                                  : 'grey'
-                              "
-                              text-color="white"
-                              dense
-                              class="text-weight-bolder"
-                              square
-                              >{{ col.value }}</q-chip
-                            >
-                            <q-select
-                              v-else-if="col.name === 'estatus_select'"
-                              outlined
-                              autogrow
-                              v-model="props.row.estatus_desc"
-                              :options="estatus"
-                              label="Estatus"
-                              @update:model-value="
-                                getData(props.row.id, 'putDatoSelect');
-                                this.formEdit.estatus_lote =
-                                  props.row.estatus_desc.value;
-                              "
-                            >
-                            </q-select>
-                          </q-item-section>
-
-                          <q-item-section side style="padding-left: 0px">
-                            <q-chip
-                              v-if="col.name === 'checke'"
-                              :color="
-                                props.row.status == 'Active'
-                                  ? 'green'
-                                  : props.row.status == 'Disable'
-                                  ? 'red'
-                                  : 'grey'
-                              "
-                              text-color="white"
-                              dense
-                              class="text-weight-bolder"
-                              square
-                              >{{ col.value }}</q-chip
-                            >
-                            <q-input
-                              v-else-if="col.name === 'persona_recibio_input'"
-                              outlined
-                              v-model="props.row.estatus_desc"
-                              :options="estatus"
-                              label="Persona que Recibio"
-                              @update:model-value="
-                                getData(props.row.id, 'putDatoSelect');
-                                this.formEdit.estatus_lote =
-                                  props.row.estatus_desc.value;
-                              "
-                            >
-                            </q-input>
-                          </q-item-section>
-
-                          <q-item-section side style="padding-left: 0px">
-                            <q-chip
-                              v-if="col.name === 'checke'"
-                              :color="
-                                props.row.status == 'Active'
-                                  ? 'green'
-                                  : props.row.status == 'Disable'
-                                  ? 'red'
-                                  : 'grey'
-                              "
-                              text-color="white"
-                              dense
-                              class="text-weight-bolder"
-                              square
-                              >{{ col.value }}</q-chip
-                            >
-                            <q-input
-                              v-else-if="col.name === 'ci_input'"
-                              outlined
-                              v-model="props.row.estatus_desc"
-                              :options="estatus"
-                              label="C.I."
-                              @update:model-value="
-                                getData(props.row.id, 'putDatoSelect');
-                                this.formEdit.estatus_lote =
-                                  props.row.estatus_desc.value;
-                              "
-                            >
-                            </q-input>
-                          </q-item-section>
-
-                          <q-item-section side style="padding-left: 0px">
-                            <q-chip
-                              v-if="col.name === 'checke'"
-                              :color="
-                                props.row.status == 'Active'
-                                  ? 'green'
-                                  : props.row.status == 'Disable'
-                                  ? 'red'
-                                  : 'grey'
-                              "
-                              text-color="white"
-                              dense
-                              class="text-weight-bolder"
-                              square
-                              >{{ col.value }}</q-chip
-                            >
-                            <q-input
-                              v-else-if="col.name === 'fecha_entrega_input'"
-                              outlined
-                              label="Fecha Entrega"
-                              hint=""
-                              style="padding-bottom: 0px"
-                              v-model="form.fecha_ini_val"
-                              mask="date"
-                              :rules="['date']"
-                              class="pcform"
-                              lazy-rules
-                            >
-                              <template v-slot:append>
-                                <q-icon name="event" class="cursor-pointer">
-                                  <q-popup-proxy
-                                    cover
-                                    transition-show="scale"
-                                    transition-hide="scale"
-                                  >
-                                    <q-date v-model="form.fecha_ini_val">
-                                      <div class="row items-center justify-end">
-                                        <q-btn
-                                          v-close-popup
-                                          label="Close"
-                                          color="primary"
-                                          flat
-                                        />
-                                      </div>
-                                    </q-date>
-                                  </q-popup-proxy>
-                                </q-icon>
-                              </template>
-                            </q-input>
-                          </q-item-section>
-
-                          <q-item-section side style="padding-left: 0px">
-                            <q-chip
-                              v-if="col.name === 'checke'"
-                              :color="
-                                props.row.status == 'Active'
-                                  ? 'green'
-                                  : props.row.status == 'Disable'
-                                  ? 'red'
-                                  : 'grey'
-                              "
-                              text-color="white"
-                              dense
-                              class="text-weight-bolder"
-                              square
-                              >{{ col.value }}</q-chip
-                            >
-                            <q-select
-                              v-else-if="col.name === 'agente_select'"
-                              outlined
-                              autogrow
-                              v-model="props.row.estatus_desc"
-                              :options="estatus"
-                              label="Agente Entrega"
-                              @update:model-value="
-                                getData(props.row.id, 'putDatoSelect');
-                                this.formEdit.estatus_lote =
-                                  props.row.estatus_desc.value;
-                              "
-                            >
-                            </q-select>
-                          </q-item-section>
-
-                          <q-item-section side style="padding-left: 0px">
-                            <q-chip
-                              v-if="col.name === 'checke'"
-                              :color="
-                                props.row.status == 'Active'
-                                  ? 'green'
-                                  : props.row.status == 'Disable'
-                                  ? 'red'
-                                  : 'grey'
-                              "
-                              text-color="white"
-                              dense
-                              class="text-weight-bolder"
-                              square
-                              >{{ col.value }}</q-chip
-                            >
-                            <q-input
-                              v-else-if="col.name === 'dias_entrega_input'"
-                              outlined
-                              v-model="props.row.estatus_desc"
-                              :options="estatus"
-                              label="Dias de Entrega"
-                              @update:model-value="
-                                getData(props.row.id, 'putDatoSelect');
-                                this.formEdit.estatus_lote =
-                                  props.row.estatus_desc.value;
-                              "
-                            >
-                            </q-input>
-                          </q-item-section>
-
-                          <q-item-section side style="padding-left: 0px">
-                            <q-chip
-                              v-if="col.name === 'checke'"
-                              :color="
-                                props.row.status == 'Active'
-                                  ? 'green'
-                                  : props.row.status == 'Disable'
-                                  ? 'red'
-                                  : 'grey'
-                              "
-                              text-color="white"
-                              dense
-                              class="text-weight-bolder"
-                              square
-                              >{{ col.value }}</q-chip
-                            >
-                            <q-select
-                              autogrow
-                              v-else-if="col.name === 'motivo_retraso_select'"
-                              outlined
-                              v-model="props.row.estatus_desc"
-                              :options="estatus"
-                              label="Motivo de Retraso"
-                              @update:model-value="
-                                getData(props.row.id, 'putDatoSelect');
-                                this.formEdit.estatus_lote =
-                                  props.row.estatus_desc.value;
-                              "
-                            >
-                            </q-select>
-                          </q-item-section>
-
-                          <q-item-section side style="padding-left: 0px">
-                            <q-chip
-                              v-if="col.name === 'checke'"
-                              :color="
-                                props.row.status == 'Active'
-                                  ? 'green'
-                                  : props.row.status == 'Disable'
-                                  ? 'red'
-                                  : 'grey'
-                              "
-                              text-color="white"
-                              dense
-                              class="text-weight-bolder"
-                              square
-                              >{{ col.value }}</q-chip
-                            >
-                            <q-select
-                              v-else-if="col.name === 'agencia_trafico_select'"
-                              outlined
-                              autogrow
-                              v-model="props.row.estatus_desc"
-                              :options="estatus"
-                              label="Agencia Transito"
-                              @update:model-value="
-                                getData(props.row.id, 'putDatoSelect');
-                                this.formEdit.estatus_lote =
-                                  props.row.estatus_desc.value;
-                              "
-                            >
-                            </q-select>
-                          </q-item-section>
-
-                          <q-item-section side style="padding-left: 0px">
-                            <q-chip
-                              v-if="col.name === 'checke'"
-                              :color="
-                                props.row.status == 'Active'
-                                  ? 'green'
-                                  : props.row.status == 'Disable'
-                                  ? 'red'
-                                  : 'grey'
-                              "
-                              text-color="white"
-                              dense
-                              class="text-weight-bolder"
-                              square
-                              >{{ col.value }}</q-chip
-                            >
-                            <q-input
-                              v-else-if="
-                                col.name === 'fecha_llega_transito_input'
-                              "
-                              outlined
-                              label="Llega a Transito"
-                              hint=""
-                              v-model="form.fecha_ini_val"
-                              style="padding-bottom: 0px"
-                              mask="date"
-                              :rules="['date']"
-                              class="pcform"
-                              lazy-rules
-                            >
-                              <template v-slot:append>
-                                <q-icon name="event" class="cursor-pointer">
-                                  <q-popup-proxy
-                                    cover
-                                    transition-show="scale"
-                                    transition-hide="scale"
-                                  >
-                                    <q-date v-model="form.fecha_ini_val">
-                                      <div class="row items-center justify-end">
-                                        <q-btn
-                                          v-close-popup
-                                          label="Close"
-                                          color="primary"
-                                          flat
-                                        />
-                                      </div>
-                                    </q-date>
-                                  </q-popup-proxy>
-                                </q-icon>
-                              </template>
-                            </q-input>
-                          </q-item-section>
-
-                          <q-item-section side style="padding-left: 0px">
-                            <q-chip
-                              v-if="col.name === 'checke'"
-                              :color="
-                                props.row.status == 'Active'
-                                  ? 'green'
-                                  : props.row.status == 'Disable'
-                                  ? 'red'
-                                  : 'grey'
-                              "
-                              text-color="white"
-                              dense
-                              class="text-weight-bolder"
-                              square
-                              >{{ col.value }}</q-chip
-                            >
-                            <q-input
-                              v-else-if="
-                                col.name === 'fecha_sale_transito_input'
-                              "
-                              outlined
-                              label="Llega de Transito"
-                              style="padding-bottom: 0px"
-                              hint=""
-                              v-model="form.fecha_ini_val"
-                              mask="date"
-                              :rules="['date']"
-                              class="pcform"
-                              lazy-rules
-                            >
-                              <template v-slot:append>
-                                <q-icon name="event" class="cursor-pointer">
-                                  <q-popup-proxy
-                                    cover
-                                    transition-show="scale"
-                                    transition-hide="scale"
-                                  >
-                                    <q-date v-model="form.fecha_ini_val">
-                                      <div class="row items-center justify-end">
-                                        <q-btn
-                                          v-close-popup
-                                          label="Close"
-                                          color="primary"
-                                          flat
-                                        />
-                                      </div>
-                                    </q-date>
-                                  </q-popup-proxy>
-                                </q-icon>
-                              </template>
-                            </q-input>
-                          </q-item-section>
-
-                          <q-item-section
-                            side
-                            style="padding-left: 0px; padding-bottom: 10px"
-                          >
-                            <q-chip
-                              v-if="col.name === 'checke'"
-                              :color="
-                                props.row.status == 'Active'
-                                  ? 'green'
-                                  : props.row.status == 'Disable'
-                                  ? 'red'
-                                  : 'grey'
-                              "
-                              text-color="white"
-                              dense
-                              class="text-weight-bolder"
-                              square
-                              >{{ col.value }}</q-chip
-                            >
-                            <q-input
-                              v-else-if="col.name === 'observacion_input'"
-                              outlined
-                              v-model="props.row.estatus_desc"
-                              :options="estatus"
-                              label="Observacion"
-                              @update:model-value="
-                                getData(props.row.id, 'putDatoSelect');
-                                this.formEdit.estatus_lote =
-                                  props.row.estatus_desc.value;
-                              "
-                            >
-                            </q-input>
-                          </q-item-section>
-                        </q-item>
-                      </q-list>
-                    </q-card>
-                  </div>
-                </template>
-              </q-table>
-            </div>
-          </div>
-        </div>
+              <div
+                class="col-md-4 col-xs-6 col-sm-4"
+                style="
+                  margin-bottom: 7px;
+                  margin-top: 7px;
+                  align-self: center;
+                  text-align: center;
+                "
+                id="select"
+              >
+                <q-field
+                  hide-bottom-space
+                  borderless
+                  dense
+                  @update:model-value="
+                    this.axiosConfig.headers.tipo_guia_factura =
+                      this.selectedGuiaFactura.value;
+                    getData(`/cguias`, 'setData', 'datos');
+                  "
+                  v-model="selectedGuiaFactura"
+                >
+                  <template v-slot:control>
+                    <q-checkbox
+                      size="md"
+                      v-model="selectedGuiaFactura"
+                      true-value="1"
+                      false-value="0"
+                      style="font-size: 13px"
+                      label="NO"
+                    />
+                  </template>
+                </q-field>
+              </div>
+            </q-card-section>
+          </q-card>
       </div>
+
+      <div
+          class="row col-md-6 col-xs-12 col-xl-6 col-lg-6 justify-center"
+          style="align-self: center; text-align: center"
+        >
+          <q-card
+            bordered
+            class="q-pa-md row col-md-12 col-xs-12 col-xl-12 col-lg-12 col-sm-12"
+          >
+            <q-card-section class="row col-md-12 col-xs-12"
+              style="padding-bottom: 0px; padding-top: 0px"
+            >
+              <div
+                class="col-md-3 col-xs-12 SelectAgenciaCliente pcform"
+                style="align-self: center; text-align: center"
+              >
+                <p
+                  style="
+                    font-size: 16px;
+                    align-self: center;
+                    text-align: center;
+                    margin-bottom: 0px;
+                  "
+                  class="text-secondary"
+                >
+                  <strong>AGENCIAS</strong>
+                </p>
+              </div>
+
+              <div
+                class="col-md-4 col-xs-12 col-sm-6"
+                style="
+                  margin-top: 7px;
+                  margin-bottom: 10px;
+                  align-self: center;
+                  text-align: center;
+                "
+                id="select"
+              >
+                <q-select
+                  rounded
+                  transition-show="flip-up"
+                  transition-hide="flip-down"
+                  :options="paises"
+                  dense
+                  class="selectmovil"
+                  option-label="desc_pais"
+                  option-value="id"
+                  v-model="selectedPais"
+                  outlined
+                  standout
+                  label="Origen"
+                  @update:model-value="
+                    this.axiosConfig.headers.pais = this.selectedPais.id;
+                    getDataEstados(`/estados`, 'setDataEstados', 'estados');
+                  "
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="search" />
+                  </template>
+                </q-select>
+              </div>
+
+              <div
+                class="col-md-4 col-xs-12 col-sm-6 SelectAgenciaCliente"
+                style="
+                  margin-top: 7px;
+                  margin-bottom: 10px;
+                  align-self: center;
+                  text-align: center;
+                "
+                id="select"
+              >
+                <q-select
+                  rounded
+                  transition-show="flip-up"
+                  transition-hide="flip-down"
+                  :options="paises"
+                  dense
+                  option-label="desc_pais"
+                  option-value="id"
+                  v-model="selectedPais"
+                  outlined
+                  standout
+                  label="Destino"
+                  @update:model-value="
+                    this.axiosConfig.headers.pais = this.selectedPais.id;
+                    getDataEstados(`/estados`, 'setDataEstados', 'estados');
+                  "
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="search" />
+                  </template>
+                </q-select>
+              </div>
+
+              <div
+                class="col-md-3 col-xs-12 SelectAgenciaCliente pcform"
+                style="align-self: center; text-align: center"
+              >
+                <p
+                  style="
+                    font-size: 16px;
+                    align-self: center;
+                    text-align: center;
+                    margin-bottom: 0px;
+                    padding-right: 3px;
+                  "
+                  class="text-secondary"
+                >
+                  <strong>CLIENTES</strong>
+                </p>
+              </div>
+
+              <div
+                class="col-md-4 col-xs-12 col-sm-6"
+                style="
+                  margin-top: 7px;
+                  margin-bottom: 10px;
+                  align-self: center;
+                  text-align: center;
+                "
+                id="select"
+              >
+                <q-select
+                  rounded
+                  transition-show="flip-up"
+                  transition-hide="flip-down"
+                  :options="paises"
+                  dense
+                  option-label="desc_pais"
+                  class="selectmovil"
+                  option-value="id"
+                  v-model="selectedPais"
+                  outlined
+                  standout
+                  label="Origen"
+                  @update:model-value="
+                    this.axiosConfig.headers.pais = this.selectedPais.id;
+                    getDataEstados(`/estados`, 'setDataEstados', 'estados');
+                  "
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="search" />
+                  </template>
+                </q-select>
+              </div>
+
+              <div
+                class="col-md-4 col-xs-12 col-sm-6"
+                style="
+                  margin-top: 7px;
+                  margin-bottom: 10px;
+                  align-self: center;
+                  text-align: center;
+                "
+                id="select"
+              >
+                <q-select
+                  rounded
+                  transition-show="flip-up"
+                  transition-hide="flip-down"
+                  :options="paises"
+                  option-label="desc_pais"
+                  option-value="id"
+                  dense
+                  v-model="selectedPais"
+                  outlined
+                  standout
+                  label="Destino"
+                  @update:model-value="
+                    this.axiosConfig.headers.pais = this.selectedPais.id;
+                    getDataEstados(`/estados`, 'setDataEstados', 'estados');
+                  "
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="search" />
+                  </template>
+                </q-select>
+              </div>
+            </q-card-section>
+          </q-card>
+      </div>
+    </div>
+
+    <div class="q-pa-md">
+      <q-table
+          :rows="clientes"
+          dense
+          :columns="columnsClientes"
+          binary-state-sort
+          slice
+          :separator="separator"
+          row-key="action"
+          :loading="loading"
+          class="my-sticky-header-column-table"
+          :filter="filter"
+          style="width: 100%"
+          :grid="$q.screen.xs"
+          v-model:pagination="pagination"
+        >
+          <template v-slot:loading>
+            <q-inner-loading showing color="primary" />
+          </template>
+
+          <template v-slot:body-cell-action="props">
+            <q-td :props="props">
+              <q-btn
+                dense
+                round
+                flat
+                color="primary"
+                icon="save"
+                :disabled="this.disabledDelete"
+                @click="selected = props.row.id"
+                @click.capture="permisosDelete = true"
+              ></q-btn>
+            </q-td>
+          </template>
+
+          <template v-slot:body-cell-check="props">
+            <q-td :props="props">
+              <q-checkbox
+                size="lg"
+                v-model="props.row.cte_decontado"
+                true-value="1"
+                false-value="0"
+                style="font-size: 13px"
+              />
+            </q-td>
+          </template>
+
+          <template v-slot:body-cell-estatus_select="props">
+            <q-td :props="props">
+              <q-select
+                outlined
+                v-model="props.row.rif_cedula"
+                :options="estatus"
+              >
+              </q-select>
+            </q-td>
+          </template>
+
+          <template v-slot:body-cell-persona_recibio_input="props">
+            <q-td :props="props">
+              <q-input
+                outlined
+                v-model="props.row.nb_cliente"
+                :input-style="{
+                  width: `${props.row.nb_cliente.length / 2 + 2}em`,
+                  minWidth: '30px',
+                }"
+              >
+              </q-input>
+            </q-td>
+          </template>
+
+          <template v-slot:body-cell-ci_input="props">
+            <q-td :props="props">
+              <q-input
+                outlined
+                v-model="props.row.rif_cedula"
+                :input-style="{
+                  width: `${props.row.rif_cedula.length / 2 + 2}em`,
+                  minWidth: '30px',
+                }"
+                @update:model-value="
+                  getData(props.row.id, 'putDatoSelect');
+                  this.formEdit.estatus_lote = props.row.rif_cedula.value;
+                "
+              >
+              </q-input>
+            </q-td>
+          </template>
+
+          <template v-slot:body-cell-fecha_entrega_input="props">
+            <q-td :props="props">
+              <q-input
+                outlined
+                hint=""
+                style="padding-bottom: 0px"
+                :input-style="{ minWidth: '100px' }"
+                v-model="formClientes.nit"
+                mask="date"
+                :rules="['date']"
+                lazy-rules
+              >
+                <template v-slot:append>
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy
+                      cover
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
+                      <q-date v-model="formClientes.nit">
+                        <div class="row items-center justify-end">
+                          <q-btn
+                            v-close-popup
+                            label="Close"
+                            color="primary"
+                            flat
+                          />
+                        </div>
+                      </q-date>
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
+            </q-td>
+          </template>
+
+          <template v-slot:body-cell-agente_select="props">
+            <q-td :props="props">
+              <q-select
+                outlined
+                v-model="props.row.persona_contacto"
+                :options="estatus"
+              >
+              </q-select>
+            </q-td>
+          </template>
+
+          <template v-slot:body-cell-dias_entrega_input="props">
+            <q-td :props="props">
+              <q-input
+                outlined
+                :input-style="{
+                  width: `${props.row.id.length / 2 + 2}em`,
+                  minWidth: '10px',
+                }"
+                v-model="props.row.id"
+                :options="estatus"
+              >
+              </q-input>
+            </q-td>
+          </template>
+
+          <template v-slot:body-cell-motivo_retraso_select="props">
+            <q-td :props="props">
+              <q-select
+                outlined
+                v-model="props.row.dir_fiscal"
+                :options="estatus"
+              >
+              </q-select>
+            </q-td>
+          </template>
+
+          <template v-slot:body-cell-agencia_trafico_select="props">
+            <q-td :props="props">
+              <q-select
+                outlined
+                v-model="props.row.dir_correo"
+                :options="estatus"
+              >
+              </q-select>
+            </q-td>
+          </template>
+
+          <template v-slot:body-cell-fecha_llega_transito_input="props">
+            <q-td :props="props">
+              <q-input
+                outlined
+                hint=""
+                style="padding-bottom: 0px"
+                :input-style="{ minWidth: '100px' }"
+                v-model="formClientes.nit"
+                mask="date"
+                :rules="['date']"
+                lazy-rules
+              >
+                <template v-slot:append>
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy
+                      cover
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
+                      <q-date v-model="formClientes.nit">
+                        <div class="row items-center justify-end">
+                          <q-btn
+                            v-close-popup
+                            label="Close"
+                            color="primary"
+                            flat
+                          />
+                        </div>
+                      </q-date>
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
+            </q-td>
+          </template>
+
+          <template v-slot:body-cell-fecha_sale_transito_input="props">
+            <q-td :props="props">
+              <q-input
+                outlined
+                hint=""
+                style="padding-bottom: 0px"
+                :input-style="{ minWidth: '100px' }"
+                v-model="formClientes.nit"
+                mask="date"
+                :rules="['date']"
+                lazy-rules
+              >
+                <template v-slot:append>
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy
+                      cover
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
+                      <q-date v-model="formClientes.nit">
+                        <div class="row items-center justify-end">
+                          <q-btn
+                            v-close-popup
+                            label="Close"
+                            color="primary"
+                            flat
+                          />
+                        </div>
+                      </q-date>
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
+            </q-td>
+          </template>
+
+          <template v-slot:body-cell-observacion_input="props">
+            <q-td :props="props">
+              <q-input
+                outlined
+                :input-style="{
+                  width: `${props.row.razon_social.length / 2 + 2}em`,
+                  minWidth: '100px',
+                }"
+                v-model="props.row.razon_social"
+                :options="estatus"
+              >
+              </q-input>
+            </q-td>
+          </template>
+
+          <template v-slot:item="props">
+            <div
+              class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+              :style="props.selected ? 'transform: scale(0.95);' : ''"
+            >
+              <q-card :class="props.selected ? 'bg-grey-2' : ''">
+                <q-list dense>
+                  <q-item v-for="col in props.cols" :key="col.name">
+                    <q-item-section>
+                      <q-item-label>{{ col.label }}</q-item-label>
+                    </q-item-section>
+
+                    <q-item-section side class="itemMovilSide">
+                      <q-btn
+                        v-if="col.name === 'action'"
+                        dense
+                        round
+                        flat
+                        color="primary"
+                        icon="save"
+                        :disabled="this.disabledDelete"
+                        @click="selected = props.row.id"
+                        @click.capture="permisosDelete = true"
+                      ></q-btn>
+
+                      <q-checkbox
+                        v-if="col.name === 'check'"
+                        size="lg"
+                        v-model="props.row.cte_decontado"
+                        true-value="1"
+                        false-value="0"
+                        style="font-size: 13px"
+                      />
+
+                      <q-select
+                        v-if="col.name === 'estatus_select'"
+                        outlined
+                        autogrow
+                        v-model="props.row.estatus_desc"
+                        :options="estatus"
+                        label="Estatus"
+                        @update:model-value="
+                          getData(props.row.id, 'putDatoSelect');
+                          this.formEdit.estatus_lote =
+                            props.row.estatus_desc.value;
+                        "
+                      >
+                      </q-select>
+
+                      <q-input
+                        v-if="col.name === 'persona_recibio_input'"
+                        outlined
+                        v-model="props.row.estatus_desc"
+                        :options="estatus"
+                        label="Persona que Recibio"
+                        @update:model-value="
+                          getData(props.row.id, 'putDatoSelect');
+                          this.formEdit.estatus_lote =
+                            props.row.estatus_desc.value;
+                        "
+                      >
+                      </q-input>
+
+                      <q-input
+                        v-if="col.name === 'ci_input'"
+                        outlined
+                        v-model="props.row.estatus_desc"
+                        :options="estatus"
+                        label="C.I."
+                        @update:model-value="
+                          getData(props.row.id, 'putDatoSelect');
+                          this.formEdit.estatus_lote =
+                            props.row.estatus_desc.value;
+                        "
+                      >
+                      </q-input>
+
+                      <q-input
+                        v-if="col.name === 'fecha_entrega_input'"
+                        outlined
+                        label="Fecha Entrega"
+                        hint=""
+                        style="padding-bottom: 0px"
+                        v-model="form.fecha_ini_val"
+                        mask="date"
+                        :rules="['date']"
+                        class="pcform"
+                        lazy-rules
+                      >
+                        <template v-slot:append>
+                          <q-icon name="event" class="cursor-pointer">
+                            <q-popup-proxy
+                              cover
+                              transition-show="scale"
+                              transition-hide="scale"
+                            >
+                              <q-date v-model="form.fecha_ini_val">
+                                <div class="row items-center justify-end">
+                                  <q-btn
+                                    v-close-popup
+                                    label="Close"
+                                    color="primary"
+                                    flat
+                                  />
+                                </div>
+                              </q-date>
+                            </q-popup-proxy>
+                          </q-icon>
+                        </template>
+                      </q-input>
+
+                      <q-select
+                        v-if="col.name === 'agente_select'"
+                        outlined
+                        autogrow
+                        v-model="props.row.estatus_desc"
+                        :options="estatus"
+                        label="Agente Entrega"
+                        @update:model-value="
+                          getData(props.row.id, 'putDatoSelect');
+                          this.formEdit.estatus_lote =
+                            props.row.estatus_desc.value;
+                        "
+                      >
+                      </q-select>
+
+                      <q-input
+                        v-if="col.name === 'dias_entrega_input'"
+                        outlined
+                        v-model="props.row.estatus_desc"
+                        :options="estatus"
+                        label="Dias de Entrega"
+                        @update:model-value="
+                          getData(props.row.id, 'putDatoSelect');
+                          this.formEdit.estatus_lote =
+                            props.row.estatus_desc.value;
+                        "
+                      >
+                      </q-input>
+
+                      <q-select
+                        autogrow
+                        v-if="col.name === 'motivo_retraso_select'"
+                        outlined
+                        v-model="props.row.estatus_desc"
+                        :options="estatus"
+                        label="Motivo de Retraso"
+                        @update:model-value="
+                          getData(props.row.id, 'putDatoSelect');
+                          this.formEdit.estatus_lote =
+                            props.row.estatus_desc.value;
+                        "
+                      >
+                      </q-select>
+
+                      <q-select
+                        v-if="col.name === 'agencia_trafico_select'"
+                        outlined
+                        autogrow
+                        v-model="props.row.estatus_desc"
+                        :options="estatus"
+                        label="Agencia Transito"
+                        @update:model-value="
+                          getData(props.row.id, 'putDatoSelect');
+                          this.formEdit.estatus_lote =
+                            props.row.estatus_desc.value;
+                        "
+                      >
+                      </q-select>
+
+                      <q-input
+                        v-if="col.name === 'fecha_llega_transito_input'"
+                        outlined
+                        label="Llega a Transito"
+                        hint=""
+                        v-model="form.fecha_ini_val"
+                        style="padding-bottom: 0px"
+                        mask="date"
+                        :rules="['date']"
+                        class="pcform"
+                        lazy-rules
+                      >
+                        <template v-slot:append>
+                          <q-icon name="event" class="cursor-pointer">
+                            <q-popup-proxy
+                              cover
+                              transition-show="scale"
+                              transition-hide="scale"
+                            >
+                              <q-date v-model="form.fecha_ini_val">
+                                <div class="row items-center justify-end">
+                                  <q-btn
+                                    v-close-popup
+                                    label="Close"
+                                    color="primary"
+                                    flat
+                                  />
+                                </div>
+                              </q-date>
+                            </q-popup-proxy>
+                          </q-icon>
+                        </template>
+                      </q-input>
+
+                      <q-input
+                        v-if="col.name === 'fecha_sale_transito_input'"
+                        outlined
+                        label="Llega de Transito"
+                        style="padding-bottom: 0px"
+                        hint=""
+                        v-model="form.fecha_ini_val"
+                        mask="date"
+                        :rules="['date']"
+                        class="pcform"
+                        lazy-rules
+                      >
+                        <template v-slot:append>
+                          <q-icon name="event" class="cursor-pointer">
+                            <q-popup-proxy
+                              cover
+                              transition-show="scale"
+                              transition-hide="scale"
+                            >
+                              <q-date v-model="form.fecha_ini_val">
+                                <div class="row items-center justify-end">
+                                  <q-btn
+                                    v-close-popup
+                                    label="Close"
+                                    color="primary"
+                                    flat
+                                  />
+                                </div>
+                              </q-date>
+                            </q-popup-proxy>
+                          </q-icon>
+                        </template>
+                      </q-input>
+
+                      <q-input
+                        v-if="col.name === 'observacion_input'"
+                        outlined
+                        v-model="props.row.estatus_desc"
+                        :options="estatus"
+                        label="Observacion"
+                        @update:model-value="
+                          getData(props.row.id, 'putDatoSelect');
+                          this.formEdit.estatus_lote =
+                            props.row.estatus_desc.value;
+                        "
+                      >
+                      </q-input>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-card>
+            </div>
+          </template>
+      </q-table>
     </div>
 
     <q-dialog v-model="clientesDelete">
@@ -2388,6 +2127,7 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+
     <methods
       ref="methods"
       @get-data="
@@ -3185,7 +2925,7 @@ export default {
 }
 @media screen and (min-width: 1024px) {
   .cardMenu {
-    margin-right: 20px;
+    padding-right: 20px;
     margin-bottom: 20px;
   }
 }
@@ -3258,43 +2998,4 @@ export default {
     margin-left: 15px;
   }
 }
-</style>
-
-<style lang="sass">
-.my-sticky-header-column-table
-  /* height or max-height is important */
-
-  /* specifying max-width so the example can
-    highlight the sticky column on any browser window */
-
-  td:first-child
-    /* bg color is important for td; just specify one */
-    background-color: #ffffff !important
-
-  tr th
-    position: sticky
-    /* higher than z-index for td below */
-    z-index: 2
-    /* bg color is important; just specify one */
-    background: #fff
-
-  /* this will be the loading indicator */
-  thead tr:last-child th
-    /* height of all previous header rows */
-    top: 48px
-    /* highest z-index */
-    z-index: 3
-  thead tr:first-child th
-    top: 0
-    z-index: 1
-  tr:first-child th:first-child
-    /* highest z-index */
-    z-index: 3
-
-  td:first-child
-    z-index: 1
-
-  td:first-child, th:first-child
-    position: sticky
-    left: 0
 </style>

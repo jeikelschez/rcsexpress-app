@@ -26,7 +26,20 @@
   padding-left: 20px !important
 }
 
-/* CSS de Paises Estados Ciudades */
+.itemMovilSide {
+  padding-left: 70px !important
+}
+
+.q-item {
+  padding-top: 10px !important;
+}
+
+.q-item__label {
+  font-size: 12px;
+}
+
+
+@media screen and (max-width: 1024px) {.cardMarginButton {margin-top: 15px;}}
 
 @media screen and (min-width: 600px) {.inputestadospc {margin-right: 20px;margin-left:20px;}}
 @media screen and (max-width: 600px) {.inputestadospc2 {margin-top: 20px;}}
@@ -45,7 +58,7 @@
 @media screen and (max-width: 600px) {.inputpc {margin-top: 20px}}
 @media screen and (min-width: 500px) {.pagina {margin-left: 60px;padding-top:60px; margin-bottom: 60px;}}
 @media screen and (min-width: 500px) {.dashboard {margin-left: 60px;margin-top:55px}}
-@media screen and (max-width: 500px) {.pagina {margin-top:35px; padding-bottom: 50px;}}
+@media screen and (max-width: 500px) {.pagina {margin-top:45px; padding-bottom: 50px;}}
 @media screen and (min-width: 500px) {.paginaManual {margin-left: 360px;margin-top:25px}}
 @media screen and (max-width: 500px) {.paginaManual {margin-top:15px}}
 @media screen and (min-width: 1130px) {.inputManual {margin-left: 37px; text-align: center}}

@@ -237,7 +237,7 @@
               </q-card>
             </div>
             <div
-              class="full-width row justify-center items-center content-center"
+              class="row justify-center items-center content-center"
               style="margin-bottom: 10px"
             >
               <q-btn
@@ -315,7 +315,7 @@
             </q-select>
           </div>
           <div
-            class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-6 cardMarginFilter"
+            class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-6"
             style="align-self: center; text-align: center"
           >
             <q-input
@@ -337,7 +337,7 @@
             </q-input>
           </div>
           <div
-            class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
+            class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 cardMarginButton"
             style="text-align: center; align-self: center"
           >
             <q-btn
@@ -418,7 +418,7 @@
                       <q-item-section>
                         <q-item-label>{{ col.label }}</q-item-label>
                       </q-item-section>
-                      <q-item-section side>
+                      <q-item-section side class="itemMovilSide">
                         <q-item-label v-if="col.name === 'flag_activo'">
                           {{ filterDesc("estatus", props.row.flag_activo) }}
                         </q-item-label>

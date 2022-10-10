@@ -256,7 +256,7 @@
             </div>
 
             <div
-              class="full-width row justify-center items-center content-center"
+              class=" row justify-center items-center content-center"
               style="margin-bottom: 10px"
             >
               <q-btn
@@ -285,9 +285,9 @@
       <div class="row q-pa-md justify-end">
         <div
           class="col-md-4 col-xs-12 text-secondary movilTitle"
-          style="align-self: center; text-align: center"
+          style="align-self: center; text-align: center; font-size: 25px;"
         >
-          <h4><strong>CONCEPTOS DE FLANQUEO POSTAL OBLIGATORIO</strong></h4>
+          <p><strong>CONCEPTOS DE FLANQUEO POSTAL OBLIGATORIO</strong></p>
         </div>
         <div
           class="col-md-5 col-sm-7 col-xs-12 cardMargin selectMovil"
@@ -377,7 +377,7 @@
                     <q-item-section>
                       <q-item-label>{{ col.label }}</q-item-label>
                     </q-item-section>
-                    <q-item-section side>
+                    <q-item-section side class="itemMovilSide">
                       <q-chip
                         v-if="col.name === 'status'"
                         :color="

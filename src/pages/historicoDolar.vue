@@ -1,86 +1,66 @@
 <template>
   <q-page class="pagina q-pa-md">
     <q-dialog v-model="dialog">
-      <q-card class="q-pa-md" bordered style="width: 999px">
+      <q-card class="q-pa-md" bordered style="width: 900px; max-width: 80vw">
         <q-card-section>
-          <q-form @submit="sendData()" class="q-gutter-md">
+          <q-form @submit="sendData" class="q-gutter-md">
             <div class="row">
-              <div class="col-md-12 col-xs-12">
+              <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
-                  v-model="form.nro_cuenta"
-                  label="Numero de Cuenta"
+                  label="Fecha"
                   hint=""
-                  @update:model-value="
-                    form.nro_cuenta = form.nro_cuenta.toUpperCase()
-                  "
+                  v-model="form.fecha"
                   lazy-rules
+                  :readonly="fechaNoEditable"
+                  class="pcform"
                   :rules="[
                     (val) => this.$refs.rulesVue.isReq(val),
-                    (val) => this.$refs.rulesVue.isMax(val, 25),
-                    (val) => this.$refs.rulesVue.isMin(val, 3),
+                    (val) =>
+                      this.$refs.rulesVue.checkDate(val, 'Fecha Invalida'),
+                    (val) => this.dateDuplicate(val),
                   ]"
+                  mask="##/##/####"
                 >
-                  <template v-slot:prepend>
-                    <q-icon name="pin" />
+                  <template v-slot:append>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy
+                        ref="qDateProxy"
+                        transition-show="scale"
+                        transition-hide="scale"
+                      >
+                        <q-date
+                          v-model="form.fecha"
+                          mask="DD/MM/YYYY"
+                          @update:model-value="this.$refs.qDateProxy.hide()"
+                        ></q-date>
+                      </q-popup-proxy>
+                    </q-icon>
                   </template>
                 </q-input>
               </div>
-              <div class="col-md-5 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="form.flag_activa"
-                  label="Estatus"
-                  hint=""
-                  class="pcform"
-                  :options="estatus"
-                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="rule" />
-                  </template>
-                </q-select>
-              </div>
-              <div class="col-md-7 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="form.tipo_cuenta"
-                  label="Tipo de Cuenta"
-                  hint=""
-                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
-                  :options="tipoCuenta"
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="ballot" />
-                  </template>
-                </q-select>
-              </div>
-              <div class="col-md-12 col-xs-12">
+
+              <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
-                  v-model="form.firma_autorizada"
-                  label="Firma Autorizada"
-                  hint=""
-                  @update:model-value="
-                    form.firma_autorizada = form.firma_autorizada.toUpperCase()
-                  "
-                  lazy-rules
+                  v-model="form.valor"
+                  v-money="money"
+                  label="Valor"
                   :rules="[
-                    (val) => this.$refs.rulesVue.isMax(val, 50),
-                    (val) => this.$refs.rulesVue.isMin(val, 3),
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) =>
+                      this.$refs.rulesVue.isMax(val, 22, 'Cantidad Maxima'),
                   ]"
+                  hint=""
+                  class="pcform"
+                  lazy-rules
                 >
-                  <template v-slot:prepend>
-                    <q-icon name="border_color" />
-                  </template>
                 </q-input>
               </div>
             </div>
+
             <div
               class=" row justify-center items-center content-center"
-              style="margin-bottom: 10px"
             >
               <q-btn
                 label="Enviar"
@@ -103,95 +83,57 @@
       </q-card>
     </q-dialog>
 
-    <div
-      class="q-pa-sm justify-center col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
-    >
-      <div class="row q-pa-md">
-        <div
-          class="col-xs-12 text-secondary movilTitle"
-          style="align-self: center; text-align: center"
+    <div class="q-pa-sm justify-center">
+      <div
+        class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 text-secondary movilTitle"
+      >
+        <p
+          style="
+            font-size: 25px;
+            align-self: center;
+            text-align: center;
+            margin-top: 18px;
+          "
         >
-          <p style="font-size: 26px; margin-bottom: 20px">
-            <strong>MANTENIMIENTO - CUENTAS BANCARIAS</strong>
-          </p>
-        </div>
-        <div
-          class="col-md-5 col-xs-12 col-sm-6 cardMargin selectMovil"
-          style="align-self: center; text-align: center"
-        >
-          <q-select
-            rounded
-            transition-show="flip-up"
-            transition-hide="flip-down"
-            dense
-            :options="bancosSelected"
-            @filter="
-              (val, update) =>
-                filterArray(
-                  val,
-                  update,
-                  'bancosSelected',
-                  'bancos',
-                  'nb_banco'
-                )
-            "
-            use-input
-            hide-selected
-            fill-input
-            input-debounce="0"
-            option-label="nb_banco"
-            option-value="id"
-            v-model="selectedBanco"
-            outlined
-            standout
-            label="Escoge un Banco"
-            @update:model-value="
-              getDataTable(`/cuentas`, 'setDataTable', 'cuentas')
-            "
-            ><template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  Sin resultados
-                </q-item-section>
-              </q-item>
-            </template>
-            <template v-slot:prepend>
-              <q-icon name="search" />
-            </template>
-          </q-select>
-        </div>
+          <strong>MANTENIMIENTO - HISTORICO DEL DOLAR</strong>
+        </p>
+      </div>
 
+      <div
+        class="q-pa-md row col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 justify-end"
+      >
         <div
-          class="col-md-5 col-xs-12 col-sm-6 cardMarginLast selectMovil"
-          style="align-self: center; text-align: center"
+          class="col-md-7 col-xl-7 col-lg-7 col-xs-12 col-sm-12 cardMarginFilter selectMovil"
         >
           <q-input
+            v-model="this.pagination.filterValue"
             rounded
-            outlined
             dense
+            outlined
             standout
-            v-model="filter"
-            type="search"
             label="Búsqueda avanzada"
+            @keydown.enter="getDataTable()"
           >
-            <template v-slot:prepend>
-              <q-icon name="search" />
+            <template v-slot:append>
+              <q-icon
+                @click="getDataTable()"
+                class="cursor-pointer"
+                name="search"
+              />
             </template>
           </q-input>
         </div>
         <div
-          class="col-md-2 col-xs-12 col-sm-12"
+          class="col-md-2 col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
           style="text-align: center; align-self: center"
         >
           <q-btn
             label="Insertar"
             rounded
-            dense
             color="primary"
             :disabled="this.allowOption(2)"
             @click="dialog = true"
-            @click.capture="resetForm()"
-            size="16px"
+            @click.capture="resetForm"
             class="q-px-xl q-py-xs"
           ></q-btn>
         </div>
@@ -199,30 +141,20 @@
 
       <div class="q-pa-md q-gutter-y-md">
         <q-table
-          :rows="cuentas"
-          row-key="id"
+          :rows="historico"
           binary-state-sort
+          row-key="id"
           :columns="columns"
           :separator="separator"
-          :filter="filter"
-          :loading="loading"
           :rows-per-page-options="[5, 10, 15, 20, 50]"
+          @request="getDataTable"
           style="width: 100%"
+          :loading="loading"
           :grid="$q.screen.xs"
           v-model:pagination="pagination"
         >
           <template v-slot:loading>
             <q-inner-loading showing color="primary" class="loading" />
-          </template>
-          <template v-slot:body-cell-tipo_cuenta="props">
-            <q-td :props="props">
-              {{ filterDesc("tipoCuenta", props.row.tipo_cuenta) }}
-            </q-td>
-          </template>
-          <template v-slot:body-cell-flag_activa="props">
-            <q-td :props="props">
-              {{ filterDesc("estatus", props.row.flag_activa) }}
-            </q-td>
           </template>
           <template v-slot:body-cell-action="props">
             <q-td :props="props">
@@ -235,10 +167,11 @@
                 :disabled="this.allowOption(3)"
                 @click="
                   this.$refs.methods.getData(
-                    `/cuentas/${props.row.id}`,
-                    'setDataEdit',
+                    `/hdolar/${props.row.fecha}`,
+                    `setDataEdit`,
                     'form'
                   );
+                  fechaNoEditable = true;
                   dialog = true;
                 "
               ></q-btn>
@@ -249,7 +182,7 @@
                 color="primary"
                 icon="delete"
                 :disabled="this.allowOption(4)"
-                @click="selected = props.row.id"
+                @click="selected = props.row.fecha"
                 @click.capture="deletePopup = true"
               ></q-btn>
             </q-td>
@@ -266,12 +199,6 @@
                       <q-item-label>{{ col.label }}</q-item-label>
                     </q-item-section>
                     <q-item-section side class="itemMovilSide">
-                      <q-item-label v-if="col.name === 'tipo_cuenta'">
-                        {{ filterDesc("tipoCuenta", props.row.tipo_cuenta) }}
-                      </q-item-label>
-                      <q-item-label v-if="col.name === 'flag_activa'">
-                        {{ filterDesc("estatus", props.row.flag_activa) }}
-                      </q-item-label>
                       <q-btn
                         v-if="col.name === 'action'"
                         dense
@@ -282,8 +209,8 @@
                         :disabled="this.allowOption(3)"
                         @click="
                           this.$refs.methods.getData(
-                            `/cuentas/${props.row.id}`,
-                            'setDataEdit',
+                            `/hdolar/${props.row.fecha}`,
+                            `setDataEdit`,
                             'form'
                           );
                           dialog = true;
@@ -300,7 +227,9 @@
                         @click="selected = props.row.id"
                         @click.capture="deletePopup = true"
                       ></q-btn>
-                      <q-item-label v-if="col.name != 'tipo_cuenta' && col.name != 'flag_activa'"> {{ col.value }} </q-item-label>
+                      <q-item-label v-if="col.name != 'estatus_lote'">
+                        {{ col.value }}
+                      </q-item-label>
                     </q-item-section>
                   </q-item>
                 </q-list>
@@ -315,9 +244,10 @@
       <q-card style="width: 700px">
         <q-card-section>
           <div class="text-h5" style="font-size: 18px">
-            ¿Estas seguro que quieres eliminar este elemento?
+            ¿Estás seguro que quieres eliminar este elemento?
           </div>
         </q-card-section>
+
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="primary" v-close-popup />
           <q-btn
@@ -326,7 +256,10 @@
             color="primary"
             v-close-popup
             @click="
-              this.$refs.methods.deleteData(`/cuentas/${selected}`, 'getDataTable')
+              this.$refs.methods.deleteData(
+                `/hdolar/${selected}`,
+                'getDataTable'
+              )
             "
           />
         </q-card-actions>
@@ -335,10 +268,11 @@
 
     <methods
       ref="methods"
-      @set-Data-Init="setDataInit"
       @set-Data-Edit="setDataEdit"
       @get-Data-Table="getDataTable"
+      @get-Data-Table-All="getDataTableAll"
       @set-Data-Table="setDataTable"
+      @set-Data-Table-All="setDataTableAll"
       @set-Data-Permisos="setDataPermisos"
     ></methods>
 
@@ -348,40 +282,29 @@
 
 <script>
 import { ref } from "vue";
-import { LocalStorage } from "quasar";
+import { VMoney } from "v-money";
+import moment from "moment";
 import rulesVue from "src/components/rules.vue";
+import { useQuasar, LocalStorage } from "quasar";
 import methodsVue from "src/components/methods.vue";
 
 export default {
-  components: { methods: methodsVue, rulesVue },
+  directives: { money: VMoney },
+  components: { methods: methodsVue, rulesVue, VMoney },
   data() {
     return {
       columns: [
         {
-          name: "nro_cuenta",
-          label: "Numero de Cuenta",
-          field: "nro_cuenta",
+          name: "fecha",
+          label: "Fecha",
+          field: "fecha",
           align: "left",
           sortable: true,
         },
         {
-          name: "tipo_cuenta",
-          label: "Tipo de Cuenta",
-          field: "tipo_cuenta",
-          align: "left",
-          sortable: true,
-        },
-        {
-          name: "flag_activa",
-          label: "Estatus",
-          field: "flag_activa",
-          align: "left",
-          sortable: true,
-        },
-        {
-          name: "firma_autorizada",
-          label: "Firma Autorizada",
-          field: "firma_autorizada",
+          name: "valor",
+          label: "Valor Dolar",
+          field: "valor",
           align: "left",
           sortable: true,
         },
@@ -391,34 +314,36 @@ export default {
           align: "center",
         },
       ],
+      money: {
+        decimal: ",",
+        thousands: ".",
+        prefix: "",
+        suffix: "",
+        precision: 2,
+        masked: true,
+      },
       form: {
-        nro_cuenta: "",
-        flag_activa: "",
-        tipo_cuenta: "",
-        firma_autorizada: "",
-        cod_banco: [],
+        valor: "",
+        fecha: "",
       },
-      estatus: [
-        { label: "ACTIVA", value: "A" },
-        { label: "INACTIVA", value: "I" },
-      ],
-      tipoCuenta: [
-        { label: "AHORRO", value: "A" },
-        { label: "CORRIENTE", value: "C" },
-      ],
       pagination: {
+        page: 1,
         rowsPerPage: 5,
+        sortBy: "fecha",
+        descending: true,
+        filter: "fecha,valor",
+        filterValue: "",
+        rowsNumber: "",
       },
-      bancos: [],
-      cuentas: [],
-      bancosSelected: [],
-      selected: [],
-      selectedBanco: [],
+      historico: [],
+      fechaNoEditable: false,
+      historicoAll: [],
       rpermisos: [],
       filter: "",
     };
   },
   setup() {
+    const $q = useQuasar();
     return {
       loading: ref(false),
       separator: ref("vertical"),
@@ -427,18 +352,17 @@ export default {
     };
   },
   mounted() {
-    this.$emit("changeTitle", "SCEN - Mantenimiento - Cuentas Bancarias", "");
-    this.$refs.methods.getData("/bancos", "setDataInit", "bancos");
-
+    this.$emit("changeTitle", "SCEN - Mantenimiento - Historico Del Dolar", "");
+    this.getDataTable();
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
         rol: LocalStorage.getItem("tokenTraducido").usuario.roles.id,
-        menu: "cuentasbancarias",
+        menu: "controlcorrelativo",
       },
     });
   },
   methods: {
-    // Metodo para Filtrar Selects
+    // Metodos para Filtrar Selects
     filterArray(val, update, pagina, array, element) {
       if (val === "") {
         update(() => {
@@ -477,70 +401,83 @@ export default {
       if (this.rpermisos.findIndex((item) => item.acciones.accion == 1) < 0)
         this.$router.push("/error403");
     },
-
-    // METODOS DE PAGINA
-
-    // Metodo para Setear Datos al Iniciar
-    setDataInit(res, dataRes) {
-      this[dataRes] = res.data ? res.data : res;
-      this.selectedBanco = this.bancos[0];
-      this.getDataTable();
+    dateDuplicate(val) {
+      if (!this.fechaNoEditable) {
+        var fecha = val;
+        fecha = fecha.split("/").reverse().join("-");
+        var find = this.historicoAll.findIndex((item) => item.fecha == fecha);
+        return find >= 0 ? "Esta Fecha ya esta Registrada!" : true;
+      }
     },
+
+    // METODOS PARA PAGINA
+
     // Metodo para Extraer Datos de Tabla
-    getDataTable() {
+    getDataTable(props) {
       this.loading = true;
-      this.$refs.methods.getData("/cuentas", "setDataTable", "cuentas", {
+      this.getDataTableAll();
+      if (props) this.pagination = props.pagination;
+      this.$refs.methods.getData(`/hDolar`, "setDataTable", "historico", {
         headers: {
-          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-          banco: this.selectedBanco.id,
+          page: this.pagination.page,
+          limit: this.pagination.rowsPerPage,
+          order_by: this.pagination.sortBy,
+          order_direction: this.pagination.descending ? "DESC" : "ASC",
+          filter: this.pagination.filter,
+          filter_value: this.pagination.filterValue,
         },
       });
+    },
+    // Metodo para Extraer Todos los Datos de Tabla
+    getDataTableAll() {
+      this.loading = true;
+      this.$refs.methods.getData("/hdolar", "setDataTableAll", "historicoAll");
+    },
+    // Metodo para Setear Todos los Datos de Tabla
+    setDataTableAll(res, dataRes) {
+      this[dataRes] = res.data ? res.data : res;
+      this.loading = false;
     },
     // Metodo para Setear Datos de Tabla
     setDataTable(res, dataRes) {
       this[dataRes] = res.data ? res.data : res;
-      this.loading = false;
+      this.pagination.page = res.currentPage;
+      this.currentPage = res.currentPage;
+      this.pagination.rowsNumber = res.total;
+      this.pagination.rowsPerPage = res.limit;
     },
-    // Metodo para Setear Datos Seleccionados
+    // Metodos para Setear Datos Seleccionados
     setDataEdit(res, dataRes) {
       this[dataRes].id = res.id;
-      this[dataRes].nro_cuenta = res.nro_cuenta;
-      this[dataRes].flag_activa = this.filterDesc("estatus", res.flag_activa);
-      this[dataRes].tipo_cuenta = this.filterDesc("tipoCuenta", res.tipo_cuenta);
-      this[dataRes].firma_autorizada = res.firma_autorizada;
-      this[dataRes].cod_banco = res.cod_banco;
+      this[dataRes].fecha = res.fecha.split("-").reverse().join("/");
+      this[dataRes].valor = res.valor;
     },
-    // Metodo para Crear o Editar Datos
+    // Metodos para Crear y Editar Datos
     sendData() {
-      this.form.cod_banco = this.selectedBanco.id;
-      this.form.flag_activa = this.form.flag_activa.value;
-      this.form.tipo_cuenta = this.form.tipo_cuenta.value;
-      if (!this.form.id) {
-        this.$refs.methods.createData(`/cuentas`, this.form, "getDataTable");
+      var form = JSON.parse(JSON.stringify(this.form));
+      form.fecha = form.fecha.split("/").reverse().join("-");
+      form.valor = form.valor.replaceAll(".", "").replaceAll(",", ".");
+      if (this.dateDuplicate(form.fecha) === true) {
+        this.$refs.methods.createData("/hdolar", form, "getDataTable")
       } else {
-        this.$refs.methods.putData(
-          `/cuentas/${this.form.id}`,
-          this.form,
-          "getDataTable"
-        );
+        this.$refs.methods.putData(`/hdolar/${form.fecha}`, form, "getDataTable")
       }
-      this.dialog = false;
       this.resetForm();
     },
-    // Metodo para Resetear Datos
+
+    // Metodos para Resetear Datos
     resetForm() {
       delete this.form.id;
-      this.form.nro_cuenta = "";
-      this.form.flag_activa = "";
-      this.form.tipo_cuenta = "";
-      this.form.firma_autorizada = "";
+      this.dialog = false;
+      this.fechaNoEditable = false;
+      this.form.valor = "";
+      this.form.fecha = "";
     },
   },
 };
 </script>
 
 <style>
-
 @media screen and (min-width: 600px) {
   .movilTitle {
     display: none;
@@ -560,13 +497,13 @@ export default {
 }
 
 @media screen and (min-width: 1024px) {
-  .cardMarginLast {
+  .cardMarginFilter {
     padding-right: 20px !important;
   }
 }
 
-@media screen and (min-width: 1024px) {
-  .cardMarginFilter {
+@media screen and (min-width: 600px) {
+  .cardMarginSm {
     padding-right: 20px !important;
   }
 }

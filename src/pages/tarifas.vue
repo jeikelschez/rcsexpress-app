@@ -182,7 +182,7 @@
               </div>
             </div>
             <div
-              class="full-width row justify-center items-center content-center"
+              class=" row justify-center items-center content-center"
               style="margin-bottom: 10px"
             >
               <q-btn
@@ -332,7 +332,7 @@
                     <q-item-section>
                       <q-item-label>{{ col.label }}</q-item-label>
                     </q-item-section>
-                    <q-item-section side>
+                    <q-item-section side class="itemMovilSide">
                       <q-item-label v-if="col.name === 'tipo_urgencia'">
                         {{
                           filterDesc("tipoUrgencia", props.row.tipo_urgencia)
