@@ -12,12 +12,11 @@
                   hint=""
                   v-model="form.fecha"
                   lazy-rules
-                  :readonly="fechaNoEditable"
+                  :disable="fechaNoEditable"
                   class="pcform"
                   :rules="[
                     (val) => this.$refs.rulesVue.isReq(val),
-                    (val) =>
-                      this.$refs.rulesVue.checkDate(val, 'Fecha Invalida'),
+                    (val) => this.$refs.rulesVue.checkDate(val),
                     (val) => this.dateDuplicate(val),
                   ]"
                   mask="##/##/####"
@@ -39,17 +38,16 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.valor"
                   v-money="money"
                   label="Valor"
+                  input-class="text-right"
                   :rules="[
                     (val) => this.$refs.rulesVue.isReq(val),
-                    (val) =>
-                      this.$refs.rulesVue.isMax(val, 22, 'Cantidad Maxima'),
+                    (val) => this.$refs.rulesVue.isMax(val, 22),
                   ]"
                   hint=""
                   class="pcform"
@@ -58,10 +56,7 @@
                 </q-input>
               </div>
             </div>
-
-            <div
-              class=" row justify-center items-center content-center"
-            >
+            <div class="row justify-center items-center content-center">
               <q-btn
                 label="Enviar"
                 type="submit"
@@ -138,7 +133,6 @@
           ></q-btn>
         </div>
       </div>
-
       <div class="q-pa-md q-gutter-y-md">
         <q-table
           :rows="historico"
@@ -227,7 +221,7 @@
                         @click="selected = props.row.id"
                         @click.capture="deletePopup = true"
                       ></q-btn>
-                      <q-item-label v-if="col.name != 'estatus_lote'">
+                      <q-item-label>
                         {{ col.value }}
                       </q-item-label>
                     </q-item-section>
@@ -247,7 +241,6 @@
             ¿Estás seguro que quieres eliminar este elemento?
           </div>
         </q-card-section>
-
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="primary" v-close-popup />
           <q-btn
@@ -283,7 +276,6 @@
 <script>
 import { ref } from "vue";
 import { VMoney } from "v-money";
-import moment from "moment";
 import rulesVue from "src/components/rules.vue";
 import { useQuasar, LocalStorage } from "quasar";
 import methodsVue from "src/components/methods.vue";
@@ -300,13 +292,24 @@ export default {
           field: "fecha",
           align: "left",
           sortable: true,
+          format: (val) =>
+          val.split("-").reverse().join("/"),
         },
         {
           name: "valor",
           label: "Valor Dolar",
           field: "valor",
-          align: "left",
+          align: "right",
           sortable: true,
+          format: (val) =>
+            new Intl.NumberFormat("de-DE", {
+              style: "currency",
+              currency: "EUR",
+              currencyDisplay: "code",
+            })
+              .format(val)
+              .replace("EUR", "")
+              .trim(),
         },
         {
           name: "action",
@@ -458,9 +461,13 @@ export default {
       form.fecha = form.fecha.split("/").reverse().join("-");
       form.valor = form.valor.replaceAll(".", "").replaceAll(",", ".");
       if (this.dateDuplicate(form.fecha) === true) {
-        this.$refs.methods.createData("/hdolar", form, "getDataTable")
+        this.$refs.methods.createData("/hdolar", form, "getDataTable");
       } else {
-        this.$refs.methods.putData(`/hdolar/${form.fecha}`, form, "getDataTable")
+        this.$refs.methods.putData(
+          `/hdolar/${form.fecha}`,
+          form,
+          "getDataTable"
+        );
       }
       this.resetForm();
     },

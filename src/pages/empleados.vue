@@ -11,19 +11,9 @@
                   v-model="form.nombre"
                   label="Nombre de Empleado"
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        30,
-                        'Maximo 30 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 30),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   hint=""
                   class="pcform"
@@ -35,26 +25,15 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.rif_empleado"
                   label="RIF de Empleado"
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        10,
-                        'Maximo 10 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 10),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   hint=""
                   lazy-rules
@@ -65,7 +44,6 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-3 col-xs-12" style="margin-bottom: 15px">
                 <q-checkbox
                   size="lg"
@@ -76,24 +54,18 @@
                   label="¿APLICA RETENCIÓN?"
                 />
               </div>
-
-              <div class="col-md-9 col-xs-12">
+              <div class="col-md-3 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.porcentaje_retencion"
-                  label="Porcentaje Retención"
+                  label="% Retención"
                   v-money="money"
+                  class="pcform"
                   input-class="text-right"
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
-                    (val) =>
-                      this.$refs.rulesVue.isMax(val, 6, 'Maxima Cantidad'),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 6),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   hint=""
                   lazy-rules
@@ -103,23 +75,17 @@
                   </template>
                 </q-input>
               </div>
-
-              <div class="col-md-6 col-xs-12">
+              <div class="col-md-3 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.periodo"
                   label="Período"
+                  class="pcform"
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        6,
-                        'Maximo 6 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 6),
                   ]"
                   hint=""
-                  class="pcform"
                   lazy-rules
                   @update:model-value="
                     form.periodo = form.periodo.toUpperCase()
@@ -130,17 +96,12 @@
                   </template>
                 </q-input>
               </div>
-
-              <div class="col-md-6 col-xs-12">
+              <div class="col-md-3 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.sueldo"
                   label="Sueldo"
-                  :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMax(val, 13, 'Maxima Cantidad') ||
-                      '',
-                  ]"
+                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 13)]"
                   hint=""
                   v-money="money"
                   input-class="text-right"
@@ -152,9 +113,8 @@
                 </q-input>
               </div>
             </div>
-
             <div
-              class=" row justify-center items-center content-center"
+              class="row justify-center items-center content-center"
               style="margin-bottom: 10px"
             >
               <q-btn
@@ -215,7 +175,7 @@
           style="text-align: center; align-self: center"
         >
           <q-btn
-            label="Añadir Empleado"
+            label="Insertar"
             rounded
             color="primary"
             @click="dialog = true"
@@ -227,19 +187,20 @@
 
       <div class="q-pa-md q-gutter-y-md">
         <q-table
-          :rows="datos"
+          :rows="empleados"
           binary-state-sort
           row-key="id"
           :loading="loading"
           :columns="columns"
           :separator="separator"
+          :rows-per-page-options="[5, 10, 15, 20, 50]"
           :filter="filter"
           style="width: 100%"
           :grid="$q.screen.xs"
           v-model:pagination="pagination"
         >
           <template v-slot:loading>
-            <q-inner-loading showing color="primary" />
+            <q-inner-loading showing color="primary" class="loading" />
           </template>
           <template v-slot:body-cell-action="props">
             <q-td :props="props">
@@ -251,7 +212,11 @@
                 icon="edit"
                 :disabled="this.allowOption(3)"
                 @click="
-                  getData(`/empleados/${props.row.id}`, 'setDataEdit', 'form');
+                  this.$refs.methods.getData(
+                    `/empleados/${props.row.id}`,
+                    'setDataEdit',
+                    'form'
+                  );
                   dialog = true;
                 "
               ></q-btn>
@@ -279,23 +244,8 @@
                       <q-item-label>{{ col.label }}</q-item-label>
                     </q-item-section>
                     <q-item-section side class="itemMovilSide">
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
                       <q-btn
-                        v-else-if="col.name === 'action'"
+                        v-if="col.name === 'action'"
                         dense
                         round
                         flat
@@ -303,7 +253,7 @@
                         icon="edit"
                         :disabled="this.allowOption(3)"
                         @click="
-                          getData(
+                          this.$refs.methods.getData(
                             `/empleados/${props.row.id}`,
                             'setDataEdit',
                             'form'
@@ -311,23 +261,8 @@
                           dialog = true;
                         "
                       ></q-btn>
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
                       <q-btn
-                        v-else-if="col.name === 'action'"
+                        v-if="col.name === 'action'"
                         dense
                         round
                         flat
@@ -337,12 +272,7 @@
                         @click="selected = props.row.id"
                         @click.capture="deletePopup = true"
                       ></q-btn>
-                      <q-item-label
-                        v-else
-                        caption
-                        :class="col.classes ? col.classes : ''"
-                        >{{ col.value }}
-                      </q-item-label>
+                      <q-item-label> {{ col.value }} </q-item-label>
                     </q-item-section>
                   </q-item>
                 </q-list>
@@ -360,7 +290,6 @@
             ¿Estas seguro que quieres eliminar este elemento?
           </div>
         </q-card-section>
-
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="primary" v-close-popup />
           <q-btn
@@ -368,7 +297,9 @@
             label="Aceptar"
             color="primary"
             v-close-popup
-            @click="deleteData(selected)"
+            @click="
+              this.$refs.methods.deleteData(`/empleados/${selected}`, 'getData')
+            "
           />
         </q-card-actions>
       </q-card>
@@ -376,10 +307,9 @@
 
     <methods
       ref="methods"
-      @get-Data="getData('/empleados', 'setData', 'datos')"
-      @set-data="setData"
-      @set-Data-Edit="setData"
-      @reset-Loading="resetLoading"
+      @set-Data-Edit="setDataEdit"
+      @get-Data-Table="getDataTable"
+      @set-Data-Table="setDataTable"
       @set-Data-Permisos="setDataPermisos"
     >
     </methods>
@@ -390,7 +320,7 @@
 
 <script>
 import { ref } from "vue";
-import { useQuasar, LocalStorage } from "quasar";
+import { LocalStorage } from "quasar";
 import { VMoney } from "v-money";
 import methodsVue from "src/components/methods.vue";
 import rulesVue from "src/components/rules.vue";
@@ -420,7 +350,6 @@ export default {
           field: "nombre",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
           name: "sueldo",
@@ -428,7 +357,15 @@ export default {
           field: "sueldo",
           align: "right",
           sortable: true,
-          required: true,
+          format: (val) =>
+            new Intl.NumberFormat("de-DE", {
+              style: "currency",
+              currency: "EUR",
+              currencyDisplay: "code",
+            })
+              .format(val)
+              .replace("EUR", "")
+              .trim(),
         },
         {
           name: "porcentaje_retencion",
@@ -436,14 +373,20 @@ export default {
           field: "porcentaje_retencion",
           align: "right",
           sortable: true,
-          required: true,
+          format: (val) =>
+            new Intl.NumberFormat("de-DE", {
+              style: "currency",
+              currency: "EUR",
+              currencyDisplay: "code",
+            })
+              .format(val)
+              .replace("EUR", "")
+              .trim(),
         },
         {
           name: "action",
           label: "Acciones",
           align: "center",
-          sortable: true,
-          required: true,
         },
       ],
       form: {
@@ -454,34 +397,26 @@ export default {
         periodo: "",
         sueldo: "",
       },
-      datos: [],
+      pagination: {
+        rowsPerPage: 5,
+      },
+      empleados: [],
       selected: [],
       rpermisos: [],
-      error: "",
+      filter: "",
     };
   },
   setup() {
-    const $q = useQuasar();
-    const pagination = ref({
-      sortBy: "desc",
-      descending: false,
-      page: 1,
-      rowsPerPage: 5,
-    });
     return {
-      pagination: ref({
-        rowsPerPage: 5,
-      }),
+      loading: ref(false),
       separator: ref("vertical"),
       dialog: ref(false),
-      loading: ref(false),
       deletePopup: ref(false),
-      filter: ref(""),
     };
   },
   mounted() {
     this.$emit("changeTitle", "SCEN - Mantenimiento - Empleados", "");
-    this.getData("/empleados", "setData", "datos");
+    this.getDataTable();
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
@@ -491,10 +426,6 @@ export default {
     });
   },
   methods: {
-    // Metodo para Resetear Carga
-    resetLoading() {
-      this.loading = false;
-    },
     // Metodo para validar Permisos
     allowOption(option) {
       return (
@@ -510,28 +441,25 @@ export default {
 
     // METODOS DE PAGINA
 
-    // Metodo para Get de Datos
-    getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes);
+    // Metodo para Extraer Datos de Tabla
+    getDataTable() {
+      this.loading = true;
+      this.$refs.methods.getData("/empleados", "setDataTable", "empleados");
     },
-    // Metodo para Setear Datos
-    setData(res, dataRes) {
-      this[dataRes] = res;
+    // Metodo para Setear Datos de Tabla
+    setDataTable(res, dataRes) {
+      this[dataRes] = res.data ? res.data : res;
       this.loading = false;
     },
     // Metodo para Setear Datos Seleccionados
     setDataEdit(res, dataRes) {
-      this.form.id = res.id;
-      this.form.rif_empleado = res.rif_empleado;
-      this.form.aplica_retencion = res.aplica_retencion;
-      this.form.porcentaje_retencion = res.porcentaje_retencion;
-      this.form.porcentaje_retencion = res.porcentaje_retencion;
-      this.form.sueldo = res.sueldo;
-    },
-    // Metodo para Eliminar Datos
-    deleteData(idpost) {
-      this.$refs.methods.deleteData(`/empleados/${idpost}`, "getData");
-      this.loading = true;
+      this[dataRes].id = res.id;
+      this[dataRes].nombre = res.nombre ;
+      this[dataRes].rif_empleado = res.rif_empleado;
+      this[dataRes].aplica_retencion = res.aplica_retencion;
+      this[dataRes].periodo = res.periodo;
+      this[dataRes].porcentaje_retencion = res.porcentaje_retencion;
+      this[dataRes].sueldo = res.sueldo;
     },
     // Metodo para Editar o Crear Datos
     sendData() {
@@ -542,20 +470,16 @@ export default {
         .replaceAll(".", "")
         .replaceAll(",", ".");
       if (!this.form.id) {
-        this.$refs.methods.createData("/empleados", this.form, "getData");
-        this.resetForm();
-        this.loading = true;
-        this.dialog = false;
+        this.$refs.methods.createData("/empleados", this.form, "getDataTable");
       } else {
         this.$refs.methods.putData(
           `/empleados/${this.form.id}`,
           this.form,
-          "getData"
+          "getDataTable"
         );
-        this.dialog = false;
-        this.resetForm();
-        this.loading = true;
       }
+      this.dialog = false;
+      this.resetForm();
     },
     // Metodo para Resetear Datos
     resetForm() {
@@ -572,9 +496,6 @@ export default {
 </script>
 
 <style>
-.hide {
-  display: none;
-}
 
 @media screen and (min-width: 600px) {
   .movilTitle {
