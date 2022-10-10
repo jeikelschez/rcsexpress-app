@@ -740,7 +740,6 @@ export default {
       this[dataRes].nit_agencia = res.nit_agencia;
       this[dataRes].estatus = this.filterDesc("estatus", res.estatus);
       this.selectedCiudad = res.ciudades;
-      this.ciudadEdit = res.ciudades.id;
       api
         .get(`/ciudades`, {
           headers: {

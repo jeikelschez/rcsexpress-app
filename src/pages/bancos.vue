@@ -14,13 +14,9 @@
                   class="pcform"
                   lazy-rules
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
+                    (val) => this.$refs.rulesVue.isMax(val, 50),
                   ]"
                   @update:model-value="
                     form.nb_banco = form.nb_banco.toUpperCase()
@@ -31,7 +27,6 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
@@ -39,12 +34,8 @@
                   label="Direccion"
                   hint=""
                   :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
+                    (val) => this.$refs.rulesVue.isMax(val, 50),
                   ]"
                   lazy-rules
                   @update:model-value="
@@ -56,7 +47,6 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
@@ -64,51 +54,45 @@
                   label="Fax"
                   class="pcform"
                   :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
+                    (val) => this.$refs.rulesVue.isMax(val, 25),
                   ]"
                   hint=""
                   lazy-rules
-                  mask="#### - ##########"
+                  mask="(####) ### - ####"
                 >
                   <template v-slot:prepend>
                     <q-icon name="fax" />
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.tlf_banco"
                   label="Teléfono"
                   :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
+                    (val) => this.$refs.rulesVue.isMax(val, 25),
                   ]"
                   hint=""
                   lazy-rules
-                  mask="### - ### - ##########"
+                  mask="(####) ### - ####"
                 >
                   <template v-slot:prepend>
                     <q-icon name="phone" />
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-5 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.cod_postal"
                   label="Código Postal"
+                  :rules="[
+                    (val) => this.$refs.rulesVue.isMin(val, 1),
+                    (val) => this.$refs.rulesVue.isMax(val, 10),
+                  ]"
                   hint=""
                   class="pcform"
                   lazy-rules
@@ -119,12 +103,15 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-7 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.email_banco"
                   label="Correo Electrónico"
+                  :rules="[
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
+                    (val) => this.$refs.rulesVue.isMax(val, 50),
+                  ]"
                   hint=""
                   type="email"
                   lazy-rules
@@ -138,7 +125,6 @@
                 </q-input>
               </div>
             </div>
-
             <div
               class="row justify-center items-center content-center"
               style="margin-bottom: 10px"
@@ -195,7 +181,7 @@
           style="text-align: center; align-self: center"
         >
           <q-btn
-            label="Insertar Banco"
+            label="Insertar"
             rounded
             size="13px"
             color="primary"
@@ -207,14 +193,14 @@
           ></q-btn>
         </div>
       </div>
-
       <div class="q-pa-md q-gutter-y-md">
         <q-table
-          :rows="datos"
+          :rows="bancos"
           :loading="loading"
           binary-state-sort
           row-key="id"
           :columns="columns"
+          :rows-per-page-options="[5, 10, 15, 20, 50]"
           :separator="separator"
           :filter="filter"
           style="width: 100%"
@@ -222,7 +208,7 @@
           v-model:pagination="pagination"
         >
           <template v-slot:loading>
-            <q-inner-loading showing color="primary" />
+            <q-inner-loading showing color="primary" class="loading" />
           </template>
           <template v-slot:body-cell-action="props">
             <q-td :props="props">
@@ -234,7 +220,11 @@
                 icon="edit"
                 :disabled="this.allowOption(3)"
                 @click="
-                  getData(`/bancos/${props.row.id}`, 'setData', 'form');
+                  this.$refs.methods.getData(
+                    `/bancos/${props.row.id}`,
+                    'setDataTable',
+                    'form'
+                  );
                   dialog = true;
                 "
               ></q-btn>
@@ -262,23 +252,8 @@
                       <q-item-label>{{ col.label }}</q-item-label>
                     </q-item-section>
                     <q-item-section side>
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
                       <q-btn
-                        v-else-if="col.name === 'action'"
+                        v-if="col.name === 'action'"
                         dense
                         round
                         flat
@@ -286,27 +261,16 @@
                         icon="edit"
                         :disabled="this.allowOption(3)"
                         @click="
-                          getData(`/bancos/${props.row.id}`, 'setData', 'form');
+                          this.$refs.methods.getData(
+                            `/bancos/${props.row.id}`,
+                            'setDataTable',
+                            'form'
+                          );
                           dialog = true;
                         "
                       ></q-btn>
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
                       <q-btn
-                        v-else-if="col.name === 'action'"
+                        v-if="col.name === 'action'"
                         dense
                         round
                         flat
@@ -316,12 +280,7 @@
                         @click="selected = props.row.id"
                         @click.capture="deletePopup = true"
                       ></q-btn>
-                      <q-item-label
-                        v-else
-                        caption
-                        :class="col.classes ? col.classes : ''"
-                        >{{ col.value }}
-                      </q-item-label>
+                      <q-item-label> {{ col.value }} </q-item-label>
                     </q-item-section>
                   </q-item>
                 </q-list>
@@ -339,7 +298,6 @@
             ¿Estas seguro que quieres eliminar este elemento?
           </div>
         </q-card-section>
-
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="primary" v-close-popup />
           <q-btn
@@ -347,7 +305,12 @@
             label="Aceptar"
             color="primary"
             v-close-popup
-            @click="deleteData(selected)"
+            @click="
+              this.$refs.methods.deleteData(
+                `/bancos/${selected}`,
+                'getDataTable'
+              )
+            "
           />
         </q-card-actions>
       </q-card>
@@ -355,13 +318,8 @@
 
     <methods
       ref="methods"
-      @get-Data="
-        getData('/bancos', 'setData', 'datos');
-        this.loading = true;
-      "
-      @reset-Loading="resetLoading"
-      @set-data="setData"
-      @set-Data-Edit="setData"
+      @get-Data-Table="getDataTable"
+      @set-Data-Table="setDataTable"
       @set-Data-Permisos="setDataPermisos"
     >
     </methods>
@@ -372,7 +330,7 @@
 
 <script>
 import { ref } from "vue";
-import { useQuasar, LocalStorage } from "quasar";
+import { LocalStorage } from "quasar";
 import rulesVue from "src/components/rules.vue";
 import methodsVue from "src/components/methods.vue";
 
@@ -390,7 +348,6 @@ export default {
           field: "nb_banco",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
           name: "tlf_banco",
@@ -398,7 +355,6 @@ export default {
           field: "tlf_banco",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
           name: "fax_banco",
@@ -406,7 +362,6 @@ export default {
           field: "fax_banco",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
           name: "cod_postal",
@@ -414,23 +369,18 @@ export default {
           field: "cod_postal",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
           name: "email_banco",
           label: "Correo electrónico",
           field: "email_banco",
           align: "left",
-          type: "string",
           sortable: true,
-          required: true,
         },
         {
           name: "action",
           label: "Acciones",
           align: "center",
-          sortable: true,
-          required: true,
         },
       ],
       form: {
@@ -441,43 +391,26 @@ export default {
         cod_postal: "",
         email_banco: "",
       },
-      form: {
-        nb_banco: "",
-        direccion_banco: "",
-        tlf_banco: "",
-        fax_banco: "",
-        cod_postal: "",
-        email_banco: "",
+      pagination: {
+        rowsPerPage: 5,
       },
-      datos: [],
+      bancos: [],
       selected: [],
       rpermisos: [],
-      error: "",
+      filter: "",
     };
   },
   setup() {
-    const $q = useQuasar();
-    const pagination = ref({
-      sortBy: "desc",
-      descending: false,
-      page: 1,
-      rowsPerPage: 5,
-    });
     return {
-      pagination: ref({
-        rowsPerPage: 5,
-      }),
+      loading: ref(false),
       separator: ref("vertical"),
       dialog: ref(false),
-      loading: ref(false),
       deletePopup: ref(false),
-      filter: ref(""),
     };
   },
   mounted() {
     this.$emit("changeTitle", "SCEN - Mantenimiento - Bancos", "");
-    this.getData("/bancos", "setData", "datos");
-    this.loading = true;
+    this.getDataTable();
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
@@ -487,9 +420,10 @@ export default {
     });
   },
   methods: {
-    // Metodo para Resetear Carga
-    resetLoading() {
-      this.loading = false;
+    // Metodo para traer el value de los Selects y Columns
+    filterDesc(array, value) {
+      var find = this[array].findIndex((item) => item.value == value);
+      return find >= 0 ? this[array][find].label : null;
     },
     // Metodo para validar Permisos
     allowOption(option) {
@@ -504,38 +438,31 @@ export default {
         this.$router.push("/error403");
     },
 
-    // METODOS DE PAGINA
+    // METODOS DE PAGINAS
 
-    // Metodo para hacer Get de Datos
-    getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes);
-    },
-    // Metodo para Setear Datos
-    setData(res, dataRes) {
-      this[dataRes] = res;
-      this.loading = false;
-    },
-    // Metodo para Eliminar Datos
-    deleteData(idpost) {
-      this.$refs.methods.deleteData(`/bancos/${idpost}`, "getData");
+    // Metodo para Extraer Datos de Tabla
+    getDataTable() {
       this.loading = true;
+      this.$refs.methods.getData("/bancos", "setDataTable", "bancos");
+    },
+    // Metodo para Setear Datos de Tabla
+    setDataTable(res, dataRes) {
+      this[dataRes] = res.data ? res.data : res;
+      this.loading = false;
     },
     // Metodo para Editar y Crear Datos
     sendData() {
       if (!this.form.id) {
-        this.$refs.methods.createData("/bancos", this.form, "getData");
-        this.resetForm();
-        this.dialog = false;
-        this.loading = true;
+        this.$refs.methods.createData("/bancos", this.form, "getDataTable");
       } else {
         this.$refs.methods.putData(
           `/bancos/${this.form.id}`,
           this.form,
-          "getData"
+          "getDataTable"
         );
-        this.dialog = false;
-        this.loading = true;
       }
+      this.dialog = false;
+      this.resetForm();
     },
     // Metodo para Resetear Formulario
     resetForm() {
@@ -552,10 +479,6 @@ export default {
 </script>
 
 <style>
-.hide {
-  display: none;
-}
-
 @media screen and (min-width: 600px) {
   .movilTitle {
     display: none;

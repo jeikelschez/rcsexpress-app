@@ -330,7 +330,7 @@
                   v-model:pagination="pagination"
                 >
                   <template v-slot:loading>
-                    <q-inner-loading showing color="primary" />
+                    <q-inner-loading showing color="primary" class="loading" />
                   </template>
                   <template v-slot:body-cell-tipo_pais="props">
                     <q-td :props="props">
@@ -548,7 +548,7 @@
                   v-model:pagination="paginationEstados"
                 >
                   <template v-slot:loading>
-                    <q-inner-loading showing color="primary" />
+                    <q-inner-loading showing color="primary" class="loading" />
                   </template>
                   <template v-slot:body-cell-action="props">
                     <q-td :props="props">
@@ -1428,6 +1428,7 @@ export default {
         "checkUrbano",
         res.check_urbano
       );
+      console.log(this.formCiudades.check_urbano)
     },
     // Metodos para Editar o Crear Ciudades
     sendDataCiudades() {

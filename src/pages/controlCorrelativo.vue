@@ -25,7 +25,6 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
@@ -46,7 +45,6 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
@@ -65,7 +63,6 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
@@ -83,7 +80,6 @@
                 </q-input>
               </div>
             </div>
-
             <div
               class="full-width row justify-center items-center content-center"
             >
@@ -123,7 +119,6 @@
           <strong>MANTENIMIENTO - CONTROL CORRELATIVO</strong>
         </p>
       </div>
-
       <div
         class="q-pa-md row col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
       >
@@ -247,7 +242,6 @@
           ></q-btn>
         </div>
       </div>
-
       <div class="q-pa-md q-gutter-y-md">
         <q-table
           :rows="correlativos"
@@ -326,9 +320,6 @@
                       <q-item-label>{{ col.label }}</q-item-label>
                     </q-item-section>
                     <q-item-section side>
-                      <q-item-label v-if="col.name === 'estatus_lote'">
-                        {{ filterDesc("estatus", props.row.estatus_lote) }}
-                      </q-item-label>
                       <q-btn
                         v-if="col.name === 'action'"
                         dense
@@ -357,7 +348,25 @@
                         @click="selected = props.row.id"
                         @click.capture="deletePopup = true"
                       ></q-btn>
-                      <q-item-label v-if="col.name != 'estatus_lote'"> {{ col.value }} </q-item-label>
+                      <q-select
+                        v-if="col.name === 'estatus_lote'"
+                        outlined
+                        dense
+                        v-model="props.row.estatus_desc"
+                        :options="estatus"
+                        @update:model-value="
+                          this.$refs.methods.getData(
+                            `/correlativo/${props.row.id}`,
+                            `putDataSelect`,
+                            'form'
+                          );
+                          this.form.estatus_lote = props.row.estatus_desc.value;
+                        "
+                      >
+                      </q-select>
+                      <q-item-label>
+                        {{ col.value }}
+                      </q-item-label>
                     </q-item-section>
                   </q-item>
                 </q-list>
@@ -375,7 +384,6 @@
             ¿Estás seguro que quieres eliminar este elemento?
           </div>
         </q-card-section>
-
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="primary" v-close-popup />
           <q-btn

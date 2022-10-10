@@ -16,19 +16,9 @@
                   "
                   lazy-rules
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        25,
-                        'Maximo 25 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 25),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                 >
                   <template v-slot:prepend>
@@ -36,7 +26,6 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-5 col-xs-12">
                 <q-select
                   outlined
@@ -45,10 +34,7 @@
                   hint=""
                   class="pcform"
                   :options="estatus"
-                  :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
-                  ]"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
                   lazy-rules
                 >
                   <template v-slot:prepend>
@@ -56,18 +42,14 @@
                   </template>
                 </q-select>
               </div>
-
               <div class="col-md-7 col-xs-12">
                 <q-select
                   outlined
                   v-model="form.tipo_cuenta"
                   label="Tipo de Cuenta"
                   hint=""
-                  :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
-                  ]"
-                  :options="tipoDeCuenta"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
+                  :options="tipoCuenta"
                   lazy-rules
                 >
                   <template v-slot:prepend>
@@ -75,7 +57,6 @@
                   </template>
                 </q-select>
               </div>
-
               <div class="col-md-12 col-xs-12">
                 <q-input
                   outlined
@@ -87,18 +68,8 @@
                   "
                   lazy-rules
                   :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        50,
-                        'Maximo 50 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isMax(val, 50),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                 >
                   <template v-slot:prepend>
@@ -107,7 +78,6 @@
                 </q-input>
               </div>
             </div>
-
             <div
               class="full-width row justify-center items-center content-center"
               style="margin-bottom: 10px"
@@ -145,7 +115,6 @@
             <strong>MANTENIMIENTO - CUENTAS BANCARIAS</strong>
           </p>
         </div>
-
         <div
           class="col-md-5 col-xs-12 col-sm-6 cardMargin selectMovil"
           style="align-self: center; text-align: center"
@@ -157,11 +126,10 @@
             dense
             :options="bancosSelected"
             @filter="
-              (val, update, abort) =>
+              (val, update) =>
                 filterArray(
                   val,
                   update,
-                  abort,
                   'bancosSelected',
                   'bancos',
                   'nb_banco'
@@ -178,7 +146,7 @@
             standout
             label="Escoge un Banco"
             @update:model-value="
-              getDataCuentas(`/cuentas`, 'setData', 'cuentas')
+              getDataTable(`/cuentas`, 'setDataTable', 'cuentas')
             "
             ><template v-slot:no-option>
               <q-item>
@@ -218,6 +186,7 @@
           <q-btn
             label="Insertar"
             rounded
+            dense
             color="primary"
             :disabled="this.allowOption(2)"
             @click="dialog = true"
@@ -237,12 +206,23 @@
           :separator="separator"
           :filter="filter"
           :loading="loading"
+          :rows-per-page-options="[5, 10, 15, 20, 50]"
           style="width: 100%"
           :grid="$q.screen.xs"
           v-model:pagination="pagination"
         >
           <template v-slot:loading>
-            <q-inner-loading showing color="primary" />
+            <q-inner-loading showing color="primary" class="loading" />
+          </template>
+          <template v-slot:body-cell-tipo_cuenta="props">
+            <q-td :props="props">
+              {{ filterDesc("tipoCuenta", props.row.tipo_cuenta) }}
+            </q-td>
+          </template>
+          <template v-slot:body-cell-flag_activa="props">
+            <q-td :props="props">
+              {{ filterDesc("estatus", props.row.flag_activa) }}
+            </q-td>
           </template>
           <template v-slot:body-cell-action="props">
             <q-td :props="props">
@@ -254,7 +234,11 @@
                 icon="edit"
                 :disabled="this.allowOption(3)"
                 @click="
-                  getData(`/cuentas/${props.row.id}`, 'setDataEdit', 'form');
+                  this.$refs.methods.getData(
+                    `/cuentas/${props.row.id}`,
+                    'setDataEdit',
+                    'form'
+                  );
                   dialog = true;
                 "
               ></q-btn>
@@ -266,7 +250,7 @@
                 icon="delete"
                 :disabled="this.allowOption(4)"
                 @click="selected = props.row.id"
-                @click.capture="cuentasDelete = true"
+                @click.capture="deletePopup = true"
               ></q-btn>
             </q-td>
           </template>
@@ -282,23 +266,14 @@
                       <q-item-label>{{ col.label }}</q-item-label>
                     </q-item-section>
                     <q-item-section side>
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
+                      <q-item-label v-if="col.name === 'tipo_cuenta'">
+                        {{ filterDesc("tipoCuenta", props.row.tipo_cuenta) }}
+                      </q-item-label>
+                      <q-item-label v-if="col.name === 'flag_activa'">
+                        {{ filterDesc("estatus", props.row.flag_activa) }}
+                      </q-item-label>
                       <q-btn
-                        v-else-if="col.name === 'action'"
+                        v-if="col.name === 'action'"
                         dense
                         round
                         flat
@@ -306,7 +281,7 @@
                         icon="edit"
                         :disabled="this.allowOption(3)"
                         @click="
-                          getData(
+                          this.$refs.methods.getData(
                             `/cuentas/${props.row.id}`,
                             'setDataEdit',
                             'form'
@@ -314,23 +289,8 @@
                           dialog = true;
                         "
                       ></q-btn>
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
                       <q-btn
-                        v-else-if="col.name === 'action'"
+                        v-if="col.name === 'action'"
                         dense
                         round
                         flat
@@ -338,14 +298,9 @@
                         icon="delete"
                         :disabled="this.allowOption(4)"
                         @click="selected = props.row.id"
-                        @click.capture="cuentasDelete = true"
+                        @click.capture="deletePopup = true"
                       ></q-btn>
-                      <q-item-label
-                        v-else
-                        caption
-                        :class="col.classes ? col.classes : ''"
-                        >{{ col.value }}
-                      </q-item-label>
+                      <q-item-label v-if="col.name != 'tipo_cuenta' && col.name != 'flag_activa'"> {{ col.value }} </q-item-label>
                     </q-item-section>
                   </q-item>
                 </q-list>
@@ -356,14 +311,13 @@
       </div>
     </div>
 
-    <q-dialog v-model="cuentasDelete">
+    <q-dialog v-model="deletePopup">
       <q-card style="width: 700px">
         <q-card-section>
           <div class="text-h5" style="font-size: 18px">
             ¿Estas seguro que quieres eliminar este elemento?
           </div>
         </q-card-section>
-
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="primary" v-close-popup />
           <q-btn
@@ -371,7 +325,9 @@
             label="Aceptar"
             color="primary"
             v-close-popup
-            @click="deleteData(selected)"
+            @click="
+              this.$refs.methods.deleteData(`/cuentas/${selected}`, 'getDataTable')
+            "
           />
         </q-card-actions>
       </q-card>
@@ -379,12 +335,10 @@
 
     <methods
       ref="methods"
-      @get-Data="getDataCuentas(`/cuentas`, 'setData', 'cuentas')"
-      @reset-Loading="resetLoading"
-      @set-Data-Cuentas-Edit="setDataEdit"
       @set-Data-Init="setDataInit"
-      @set-Data="setData"
       @set-Data-Edit="setDataEdit"
+      @get-Data-Table="getDataTable"
+      @set-Data-Table="setDataTable"
       @set-Data-Permisos="setDataPermisos"
     ></methods>
 
@@ -394,8 +348,7 @@
 
 <script>
 import { ref } from "vue";
-import { api } from "boot/axios";
-import { useQuasar, LocalStorage } from "quasar";
+import { LocalStorage } from "quasar";
 import rulesVue from "src/components/rules.vue";
 import methodsVue from "src/components/methods.vue";
 
@@ -410,23 +363,20 @@ export default {
           field: "nro_cuenta",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
-          name: "tipo_desc",
+          name: "tipo_cuenta",
           label: "Tipo de Cuenta",
-          field: "tipo_desc",
+          field: "tipo_cuenta",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
-          name: "activa_desc",
+          name: "flag_activa",
           label: "Estatus",
-          field: "activa_desc",
+          field: "flag_activa",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
           name: "firma_autorizada",
@@ -434,14 +384,11 @@ export default {
           field: "firma_autorizada",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
           name: "action",
           label: "Acciones",
           align: "center",
-          sortable: true,
-          required: true,
         },
       ],
       form: {
@@ -455,43 +402,33 @@ export default {
         { label: "ACTIVA", value: "A" },
         { label: "INACTIVA", value: "I" },
       ],
-      tipoDeCuenta: [
+      tipoCuenta: [
         { label: "AHORRO", value: "A" },
         { label: "CORRIENTE", value: "C" },
       ],
+      pagination: {
+        rowsPerPage: 5,
+      },
       bancos: [],
       cuentas: [],
       bancosSelected: [],
       selected: [],
       selectedBanco: [],
       rpermisos: [],
-      bancoRef: "",
-      error: "",
+      filter: "",
     };
   },
   setup() {
-    const $q = useQuasar();
-    const pagination = ref({
-      sortBy: "desc",
-      descending: false,
-      page: 1,
-      control: 0,
-      rowsPerPage: 5,
-    });
     return {
-      pagination: ref({
-        rowsPerPage: 5,
-      }),
+      loading: ref(false),
       separator: ref("vertical"),
       dialog: ref(false),
-      loading: ref(false),
-      cuentasDelete: ref(false),
-      filter: ref(""),
+      deletePopup: ref(false),
     };
   },
   mounted() {
     this.$emit("changeTitle", "SCEN - Mantenimiento - Cuentas Bancarias", "");
-    this.getData("/bancos", "setDataInit", "bancos");
+    this.$refs.methods.getData("/bancos", "setDataInit", "bancos");
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
@@ -502,7 +439,7 @@ export default {
   },
   methods: {
     // Metodo para Filtrar Selects
-    filterArray(val, update, abort, pagina, array, element) {
+    filterArray(val, update, pagina, array, element) {
       if (val === "") {
         update(() => {
           this[pagina] = this[array];
@@ -523,9 +460,10 @@ export default {
         }
       });
     },
-    // Metodo para Resetear Carga
-    resetLoading() {
-      this.loading = false;
+    // Metodo para traer el value de los Selects y Columns
+    filterDesc(array, value) {
+      var find = this[array].findIndex((item) => item.value == value);
+      return find >= 0 ? this[array][find].label : null;
     },
     // Metodo para validar Permisos
     allowOption(option) {
@@ -540,59 +478,37 @@ export default {
         this.$router.push("/error403");
     },
 
-    // METODOS DE PAGINAS
+    // METODOS DE PAGINA
 
-    // Metodo para hacer Get de Datos
-    getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes);
+    // Metodo para Setear Datos al Iniciar
+    setDataInit(res, dataRes) {
+      this[dataRes] = res.data ? res.data : res;
+      this.selectedBanco = this.bancos[0];
+      this.getDataTable();
     },
-    // Metodo para Get de Agentes
-    getDataCuentas(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, {
+    // Metodo para Extraer Datos de Tabla
+    getDataTable() {
+      this.loading = true;
+      this.$refs.methods.getData("/cuentas", "setDataTable", "cuentas", {
         headers: {
           Authorization: `Bearer ${LocalStorage.getItem("token")}`,
           banco: this.selectedBanco.id,
         },
       });
-      this.loading = true;
     },
-    // Metodo para Setear Datos al Iniciar
-    setDataInit(res, dataRes) {
-      this[dataRes] = res;
-      this.bancoRef = this.bancos[0].id;
-      this.selectedBanco = this.bancos[0];
-      api
-        .get(`/cuentas`, {
-          headers: {
-            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            banco: this.bancoRef,
-          },
-        })
-        .then((res) => {
-          this.cuentas = res.data;
-        });
-
-      this.loading = false;
-    },
-    // Metodo para Setear Datos
-    setData(res, dataRes) {
-      this[dataRes] = res;
+    // Metodo para Setear Datos de Tabla
+    setDataTable(res, dataRes) {
+      this[dataRes] = res.data ? res.data : res;
       this.loading = false;
     },
     // Metodo para Setear Datos Seleccionados
     setDataEdit(res, dataRes) {
       this[dataRes].id = res.id;
       this[dataRes].nro_cuenta = res.nro_cuenta;
-      this[dataRes].flag_activa = res.activa_desc;
-      this[dataRes].tipo_cuenta = res.tipo_desc;
+      this[dataRes].flag_activa = this.filterDesc("estatus", res.flag_activa);
+      this[dataRes].tipo_cuenta = this.filterDesc("tipoCuenta", res.tipo_cuenta);
       this[dataRes].firma_autorizada = res.firma_autorizada;
       this[dataRes].cod_banco = res.cod_banco;
-      this.loading = false;
-    },
-    // Metodo para Eliminar Datos
-    deleteData(idpost) {
-      this.$refs.methods.deleteData(`/cuentas/${idpost}`, "getData");
-      this.loading = true;
     },
     // Metodo para Crear o Editar Datos
     sendData() {
@@ -600,24 +516,20 @@ export default {
       this.form.flag_activa = this.form.flag_activa.value;
       this.form.tipo_cuenta = this.form.tipo_cuenta.value;
       if (!this.form.id) {
-        this.$refs.methods.createData(`/cuentas`, this.form, "getData");
-        this.resetForm();
-        this.dialog = false;
-        this.loading = true;
+        this.$refs.methods.createData(`/cuentas`, this.form, "getDataTable");
       } else {
         this.$refs.methods.putData(
           `/cuentas/${this.form.id}`,
           this.form,
-          "getData"
+          "getDataTable"
         );
-        this.resetForm();
-        this.dialog = false;
-        this.loading = true;
       }
+      this.dialog = false;
+      this.resetForm();
     },
     // Metodo para Resetear Datos
     resetForm() {
-      delete this.form.id
+      delete this.form.id;
       this.form.nro_cuenta = "";
       this.form.flag_activa = "";
       this.form.tipo_cuenta = "";
@@ -628,9 +540,6 @@ export default {
 </script>
 
 <style>
-.hide {
-  display: none;
-}
 
 @media screen and (min-width: 600px) {
   .movilTitle {

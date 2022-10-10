@@ -14,13 +14,8 @@
                   class="pcform"
                   lazy-rules
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        50,
-                        'Maximo 50 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 50),
                   ]"
                   @update:model-value="form.nombre = form.nombre.toUpperCase()"
                 >
@@ -36,29 +31,29 @@
                   outlined
                   v-model="form.valor"
                   label="Valor de Variable"
-                  v-money="money"
                   input-class="text-right"
                   hint=""
                   lazy-rules
+                  :rules="[
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 100),
+                  ]"
+                  @update:model-value="form.valor = form.valor.toUpperCase()"
                 >
                   <template v-slot:prepend>
                     <q-icon name="apartment" />
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-12 col-xs-12">
                 <q-select
                   outlined
                   v-model="form.tipo"
                   label="Tipo de Variable"
                   hint=""
-                  :options="tipo"
+                  :options="tipos"
                   lazy-rules
-                  :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
-                  ]"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="done_all" />
@@ -66,7 +61,6 @@
                 </q-select>
               </div>
             </div>
-
             <div
               class="full-width row justify-center items-center content-center"
             >
@@ -134,6 +128,7 @@
           <q-btn
             label="Insertar"
             rounded
+            dense
             style="text-align: center; align-self: center"
             color="primary"
             :disabled="this.allowOption(2)"
@@ -146,14 +141,14 @@
           ></q-btn>
         </div>
       </div>
-
       <div class="q-pa-md q-gutter-y-md">
         <q-table
-          :rows="datos"
+          :rows="variables"
           row-key="id"
           binary-state-sort
           :columns="columns"
           :separator="separator"
+          :rows-per-page-options="[5, 10, 15, 20, 50]"
           :loading="loading"
           :filter="filter"
           style="width: 100%"
@@ -161,16 +156,21 @@
           v-model:pagination="pagination"
         >
           <template v-slot:loading>
-            <q-inner-loading showing color="primary" />
+            <q-inner-loading showing color="primary" class="loading" />
           </template>
           <template v-slot:body-cell-tipo="props">
             <q-td :props="props">
               <q-select
                 outlined
+                dense
                 v-model="props.row.tipo_desc"
-                :options="tipo"
+                :options="tipos"
                 @update:model-value="
-                  getData(`/vcontrol/${props.row.id}`, `putDataSelect`, 'form');
+                  this.$refs.methods.getData(
+                    `/vcontrol/${props.row.id}`,
+                    `putDataSelect`,
+                    'form'
+                  );
                   this.form.tipo = props.row.tipo_desc.value;
                 "
               >
@@ -187,7 +187,11 @@
                 icon="edit"
                 :disabled="this.allowOption(3)"
                 @click="
-                  getData(`/vcontrol/${props.row.id}`, `setDataEdit`, 'form');
+                  this.$refs.methods.getData(
+                    `/vcontrol/${props.row.id}`,
+                    `setDataEdit`,
+                    'form'
+                  );
                   dialog = true;
                 "
               ></q-btn>
@@ -215,23 +219,8 @@
                       <q-item-label>{{ col.label }}</q-item-label>
                     </q-item-section>
                     <q-item-section side>
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
                       <q-btn
-                        v-else-if="col.name === 'action'"
+                        v-if="col.name === 'action'"
                         dense
                         round
                         flat
@@ -239,7 +228,7 @@
                         icon="edit"
                         :disabled="this.allowOption(3)"
                         @click="
-                          getData(
+                          this.$refs.methods.getData(
                             `/vcontrol/${props.row.id}`,
                             `setDataEdit`,
                             'form'
@@ -247,23 +236,8 @@
                           dialog = true;
                         "
                       ></q-btn>
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
                       <q-btn
-                        v-else-if="col.name === 'action'"
+                        v-if="col.name === 'action'"
                         dense
                         round
                         flat
@@ -273,30 +247,14 @@
                         @click="selected = props.row.id"
                         @click.capture="deletePopup = true"
                       ></q-btn>
-                    </q-item-section>
-                    <q-item-section side>
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
                       <q-select
-                        v-else-if="col.name === 'tipo'"
+                        v-if="col.name === 'tipo'"
                         outlined
+                        dense
                         v-model="props.row.tipo_desc"
-                        :options="tipo"
+                        :options="tipos"
                         @update:model-value="
-                          getData(
+                          this.$refs.methods.getData(
                             `/vcontrol/${props.row.id}`,
                             `putDataSelect`,
                             'form'
@@ -305,12 +263,7 @@
                         "
                       >
                       </q-select>
-                      <q-item-label
-                        v-else
-                        caption
-                        :class="col.classes ? col.classes : ''"
-                        >{{ col.value }}
-                      </q-item-label>
+                      <q-item-label v-if="col.name != 'tipo'"> {{ col.value }} </q-item-label>
                     </q-item-section>
                   </q-item>
                 </q-list>
@@ -328,7 +281,6 @@
             ¿Estás seguro que quieres eliminar este elemento?
           </div>
         </q-card-section>
-
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="primary" v-close-popup />
           <q-btn
@@ -336,7 +288,12 @@
             label="Aceptar"
             color="primary"
             v-close-popup
-            @click="deleteData(selected)"
+            @click="
+              this.$refs.methods.deleteData(
+                `/vcontrol/${selected}`,
+                'getDataTable'
+              )
+            "
           />
         </q-card-actions>
       </q-card>
@@ -344,15 +301,11 @@
 
     <methods
       ref="methods"
-      @get-Data="
-        getData('/vcontrol', 'setData', 'datos');
-        this.loading = true;
-      "
-      @set-Data="setData"
-      @reset-Loading="resetLoading"
       @set-Data-Edit="setDataEdit"
-      @put-Data-Select="putDataSelect"
+      @get-Data-Table="getDataTable"
+      @set-Data-Table="setDataTable"
       @set-Data-Permisos="setDataPermisos"
+      @put-Data-Select="putDataSelect"
     ></methods>
 
     <rules-vue ref="rulesVue"></rules-vue>
@@ -361,16 +314,13 @@
 
 <script>
 import { ref } from "vue";
-import { useQuasar, LocalStorage } from "quasar";
+import { LocalStorage } from "quasar";
 import rulesVue from "src/components/rules.vue";
 import methodsVue from "src/components/methods.vue";
-import { VMoney } from "v-money";
 
 export default {
-  directives: { money: VMoney },
   components: {
     methods: methodsVue,
-    VMoney,
     rulesVue,
   },
   data() {
@@ -390,14 +340,12 @@ export default {
           field: "nombre",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
           name: "tipo",
           label: "Tipo de Variable",
+          field: "tipo",
           align: "left",
-          sortable: true,
-          required: true,
         },
         {
           name: "valor",
@@ -406,14 +354,11 @@ export default {
           align: "left",
           type: "string",
           sortable: true,
-          required: true,
         },
         {
           name: "action",
           label: "Acciones",
           align: "center",
-          sortable: true,
-          required: true,
         },
       ],
       form: {
@@ -421,41 +366,32 @@ export default {
         tipo: "",
         valor: "",
       },
-      tipo: [
+      tipos: [
         { label: "STRING", value: "1" },
         { label: "ENTERO", value: "2" },
         { label: "DECIMAL", value: "3" },
         { label: "FECHA", value: "4" },
         { label: "ENTERO LARGO", value: "5" },
       ],
-      tipos: [],
-      datos: [],
+      pagination: {
+        rowsPerPage: 5,
+      },
+      variables: [],
       rpermisos: [],
+      filter: "",
     };
   },
   setup() {
-    const $q = useQuasar();
-    const pagination = ref({
-      sortBy: "desc",
-      descending: false,
-      page: 1,
-      rowsPerPage: 5,
-    });
     return {
-      pagination: ref({
-        rowsPerPage: 5,
-      }),
-      separator: ref("vertical"),
       loading: ref(false),
+      separator: ref("vertical"),
       dialog: ref(false),
       deletePopup: ref(false),
-      filter: ref(""),
     };
   },
   mounted() {
     this.$emit("changeTitle", "SCEN - Mantenimiento - Variable Control", "");
-    this.getData("/vcontrol", "setData", "datos");
-    this.loading = true;
+    this.getDataTable();
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
@@ -465,18 +401,15 @@ export default {
     });
   },
   methods: {
-    // Metodos para Resetear Datos
-    resetLoading() {
-      this.loading = false;
+    // Metodo para traer el Label de los Selects y Columns
+    filterDesc(array, value) {
+      var find = this[array].findIndex((item) => item.value == value);
+      return find >= 0 ? this[array][find].label : null;
     },
-    // Metodo para buscar y Setear Datos en Selects
-    filterSelect(array, codigo, searched, selectedOption, selectedOptionValue) {
-      var find = this[array].findIndex((item) => item[codigo] == searched);
-      if (find >= 0) {
-        this[selectedOption][selectedOptionValue] = this[array][find];
-      } else {
-        this[selectedOption][selectedOptionValue] = { label: "", value: null };
-      }
+    // Metodo para traer el Value de los Selects y Columns
+    filterLabel(array, label) {
+      var find = this[array].findIndex((item) => item.label == label);
+      return find >= 0 ? this[array][find].value : null;
     },
     // Metodo para validar Permisos
     allowOption(option) {
@@ -493,61 +426,48 @@ export default {
 
     // METODOS DE PAGINA
 
-    // Metodos para hacer Get de Datos
-    getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
+    // Metodo para Extraer Datos de Tabla(
+    getDataTable() {
+      this.loading = true;
+      this.$refs.methods.getData("/vcontrol", "setDataTable", "variables");
     },
-    // Metodos para Setear Datos
-    setData(res, dataRes) {
-      this[dataRes] = res;
+    // Metodo para Setear Datos de Tabla
+    setDataTable(res, dataRes) {
+      this[dataRes] = res.data ? res.data : res;
       this.loading = false;
     },
     // Metodos para Setear Datos para Seleccionar
     setDataEdit(res, dataRes) {
-      this.filterSelect("tipo", "value", res.tipo, "form", "tipo");
       this[dataRes].id = res.id;
       this[dataRes].nombre = res.nombre;
       this[dataRes].valor = res.valor;
-    },
-    // Metodos para Eliminar Datos
-    deleteData(idpost) {
-      this.$refs.methods.deleteData(`/vcontrol/${idpost}`, "getData");
-      this.loading = true;
+      this[dataRes].tipo = this.filterDesc("tipos", res.tipo);      
     },
     // Metodos para Editar y Crear Datos
     sendData() {
-      this.form.valor = this.form.valor
-        .replaceAll(".", "")
-        .replaceAll(",", ".");
-      this.form.tipo = this.form.tipo.value;
+      this.form.tipo = this.form.tipo.value ? this.form.tipo.value : this.filterLabel("tipos", this.form.tipo);
       if (!this.form.id) {
-        this.$refs.methods.createData("/vcontrol", this.form, "getData");
-        this.resetForm();
-        this.dialog = false;
-        this.loading = true;
+        this.$refs.methods.createData("/vcontrol", this.form, "getDataTable");
       } else {
         this.$refs.methods.putData(
           `/vcontrol/${this.form.id}`,
           this.form,
-          "getData"
+          "getDataTable"
         );
-        this.resetForm();
-        this.dialog = false;
-        this.loading = true;
       }
+      this.dialog = false;
+      this.resetForm();
     },
     // Metodos para Actualizar con Selects de Tabla
     putDataSelect(res, dataRes) {
       this[dataRes].id = res.id;
       this[dataRes].nombre = res.nombre;
       this[dataRes].valor = res.valor;
-
       this.$refs.methods.putData(
         `/vcontrol/${this.form.id}`,
         this.form,
-        "getData"
+        "getDataTable"
       );
-      this.loading = true;
     },
     // Metodos para Resetear Datos
     resetForm() {
@@ -561,10 +481,6 @@ export default {
 </script>
 
 <style>
-.hide {
-  display: none;
-}
-
 @media screen and (min-width: 600px) {
   .movilTitle {
     display: none;

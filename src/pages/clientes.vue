@@ -17,19 +17,9 @@
                   "
                   lazy-rules
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        100,
-                        'Maximo 100 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 100),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                 >
                   <template v-slot:prepend>
@@ -37,7 +27,6 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-4 col-xs-12">
                 <q-input
                   outlined
@@ -50,19 +39,9 @@
                   "
                   lazy-rules
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        20,
-                        'Maximo 20 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 20),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                 >
                   <template v-slot:prepend>
@@ -70,7 +49,6 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-4 col-xs-12">
                 <q-input
                   outlined
@@ -79,18 +57,8 @@
                   hint=""
                   @update:model-value="form.nit = form.nit.toUpperCase()"
                   :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        200,
-                        'Maximo 200 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isMax(val, 20),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                 >
                   <template v-slot:prepend>
@@ -98,19 +66,15 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-4 col-xs-12">
                 <q-select
                   outlined
-                  v-model="form.tipo_persona"
+                  v-model="form.tipo_persona_new"
                   label="Tipo Persona"
                   hint=""
                   class="pcform"
-                  :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
-                  ]"
-                  :options="tipo_persona"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
+                  :options="tipoPersona"
                   lazy-rules
                 >
                   <template v-slot:prepend>
@@ -118,7 +82,6 @@
                   </template>
                 </q-select>
               </div>
-
               <div class="col-md-4 col-xs-12">
                 <q-input
                   outlined
@@ -126,23 +89,14 @@
                   label="Telefono"
                   hint=""
                   class="pcform"
+                  mask="(####) ### - ####"
                   @update:model-value="
                     form.tlf_cliente = form.tlf_cliente.toUpperCase()
                   "
                   lazy-rules
                   :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        100,
-                        'Maximo 100 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isMax(val, 100),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                 >
                   <template v-slot:prepend>
@@ -150,28 +104,18 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-4 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.fax"
                   label="Fax"
                   hint=""
+                  mask="(####) ### - ####"
                   @update:model-value="form.fax = form.fax.toUpperCase()"
                   lazy-rules
                   :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        65,
-                        'Maximo 65 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isMax(val, 65),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                 >
                   <template v-slot:prepend>
@@ -179,7 +123,6 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-5 col-xs-12">
                 <q-input
                   outlined
@@ -192,18 +135,8 @@
                   "
                   lazy-rules
                   :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        100,
-                        'Maximo 100 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isMax(val, 100),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                 >
                   <template v-slot:prepend>
@@ -211,7 +144,6 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-4 col-xs-12">
                 <q-input
                   outlined
@@ -224,19 +156,9 @@
                   "
                   lazy-rules
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        100,
-                        'Maximo 100 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 200),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                 >
                   <template v-slot:prepend>
@@ -244,7 +166,6 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-3 col-xs-12" style="margin-bottom: 20px">
                 <q-checkbox
                   size="lg"
@@ -255,7 +176,6 @@
                   label="¿ES CLIENTE PARTICULAR"
                 />
               </div>
-
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
@@ -268,19 +188,9 @@
                   "
                   lazy-rules
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        100,
-                        'Maximo 100 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 100),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                 >
                   <template v-slot:prepend>
@@ -288,30 +198,20 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
-                  v-model="form.dir_correo"
-                  label="Direccion Correo"
+                  v-model="form.email"
+                  label="Email"
+                  type="email"
                   hint=""
                   @update:model-value="
                     form.dir_correo = form.dir_correo.toUpperCase()
                   "
                   lazy-rules
                   :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        100,
-                        'Maximo 100 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isMax(val, 100),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                 >
                   <template v-slot:prepend>
@@ -319,7 +219,6 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-4 col-xs-12">
                 <q-select
                   outlined
@@ -327,10 +226,7 @@
                   label="Estatus"
                   hint=""
                   class="pcform"
-                  :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
-                  ]"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
                   :options="estatus"
                   lazy-rules
                 >
@@ -339,7 +235,6 @@
                   </template>
                 </q-select>
               </div>
-
               <div class="col-md-8 col-xs-12">
                 <q-input
                   outlined
@@ -351,18 +246,8 @@
                   "
                   lazy-rules
                   :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        100,
-                        'Maximo 100 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isMax(val, 300),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                 >
                   <template v-slot:prepend>
@@ -370,7 +255,6 @@
                   </template>
                 </q-input>
               </div>
-
               <q-card
                 class="q-pa-md"
                 bordered
@@ -393,22 +277,17 @@
                     <div class="col-md-4 col-xs-12">
                       <q-select
                         outlined
-                        v-model="pais"
+                        v-model="selectedPais"
                         label="Pais"
                         hint=""
                         class="pcform"
-                        :rules="[
-                          (val) =>
-                            this.$refs.rulesVue.isReqSelect(val, 'Requerido') ||
-                            '',
-                        ]"
+                        :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
                         :options="paisesSelected"
                         @filter="
-                          (val, update, abort) =>
+                          (val, update) =>
                             filterArray(
                               val,
                               update,
-                              abort,
                               'paisesSelected',
                               'paises',
                               'desc_pais'
@@ -422,23 +301,21 @@
                         option-label="desc_pais"
                         option-value="id"
                         @update:model-value="
-                          getDataLocalidades('estados', 'setPaginatedData', {
-                            headers: {
-                              pais: this.pais.id,
-                            },
-                          });
-                          this.estado = '';
-                          this.ciudad = '';
-                          this.localidades = [];
-                          this.municipios = [];
-                          this.parroquias = [];
-                          this.ciudades = [];
-                          this.form.cod_localidad = [];
-                          this.form.cod_municipio = [];
-                          this.form.cod_parroquia = [];
-                          this.form.cod_localidad = [];
-                          this.form.cod_municipio = [];
-                          this.form.cod_parroquia = [];
+                          this.$refs.methods.getData(
+                            'estados',
+                            'setData',
+                            'estados',
+                            {
+                              headers: {
+                                pais: this.selectedPais.id,
+                              },
+                            }
+                          );
+                          this.selectedEstado = [];
+                          this.selectedCiudad = [];
+                          this.selectedMunicipio = [];
+                          this.selectedParroquia = [];
+                          this.selectedLocalidad = [];
                         "
                         ><template v-slot:no-option>
                           <q-item>
@@ -452,26 +329,20 @@
                         </template>
                       </q-select>
                     </div>
-
                     <div class="col-md-4 col-xs-12">
                       <q-select
                         outlined
-                        v-model="estado"
+                        v-model="selectedEstado"
                         label="Estado"
                         class="pcform"
                         hint=""
-                        :rules="[
-                          (val) =>
-                            this.$refs.rulesVue.isReqSelect(val, 'Requerido') ||
-                            '',
-                        ]"
+                        :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
                         :options="estadosSelected"
                         @filter="
-                          (val, update, abort) =>
+                          (val, update) =>
                             filterArray(
                               val,
                               update,
-                              abort,
                               'estadosSelected',
                               'estados',
                               'desc_estado'
@@ -485,33 +356,40 @@
                         option-label="desc_estado"
                         option-value="id"
                         @update:model-value="
-                          getDataLocalidades('municipios', 'setPaginatedData', {
-                            headers: {
-                              estado: this.estado.id,
-                            },
-                          });
-                          this.form.cod_parroquia = [];
-                          this.parroquias = [];
-                          this.form.cod_municipio = [];
-                          this.form.cod_parroquia = [];
-                          this.form.cod_municipio = [];
-                          getDataLocalidades(
-                            'localidades',
-                            'setPaginatedData',
+                          this.selectedCiudad = [];
+                          this.selectedMunicipio = [];
+                          this.selectedParroquia = [];
+                          this.selectedLocalidad = [];
+                          this.$refs.methods.getData(
+                            'municipios',
+                            'setData',
+                            'municipios',
                             {
                               headers: {
-                                estado: this.estado.id,
+                                estado: this.selectedEstado.id,
                               },
                             }
                           );
-                          getDataLocalidades('ciudades', 'setPaginatedData', {
-                            headers: {
-                              estado: this.estado.id,
-                            },
-                          });
-                          this.ciudad = '';
-                          this.form.cod_localidad = [];
-                          this.form.cod_localidad = [];
+                          this.$refs.methods.getData(
+                            'localidades',
+                            'setData',
+                            'localidades',
+                            {
+                              headers: {
+                                estado: this.selectedEstado.id,
+                              },
+                            }
+                          );
+                          this.$refs.methods.getData(
+                            'ciudades',
+                            'setData',
+                            'ciudades',
+                            {
+                              headers: {
+                                estado: this.selectedEstado.id,
+                              },
+                            }
+                          );
                         "
                         ><template v-slot:no-option>
                           <q-item>
@@ -525,25 +403,19 @@
                         </template>
                       </q-select>
                     </div>
-
                     <div class="col-md-4 col-xs-12">
                       <q-select
                         outlined
-                        v-model="ciudad"
+                        v-model="selectedCiudad"
                         label="Ciudad"
                         hint=""
-                        :rules="[
-                          (val) =>
-                            this.$refs.rulesVue.isReqSelect(val, 'Requerido') ||
-                            '',
-                        ]"
+                        :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
                         :options="ciudadesSelected"
                         @filter="
-                          (val, update, abort) =>
+                          (val, update) =>
                             filterArray(
                               val,
                               update,
-                              abort,
                               'ciudadesSelected',
                               'ciudades',
                               'desc_ciudad'
@@ -568,26 +440,20 @@
                         </template>
                       </q-select>
                     </div>
-
                     <div class="col-md-4 col-xs-12">
                       <q-select
                         outlined
-                        v-model="form.cod_municipio"
+                        v-model="selectedMunicipio"
                         label="Municipio"
                         hint=""
                         class="pcform"
-                        :rules="[
-                          (val) =>
-                            this.$refs.rulesVue.isReqSelect(val, 'Requerido') ||
-                            '',
-                        ]"
+                        :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
                         :options="municipiosSelected"
                         @filter="
-                          (val, update, abort) =>
+                          (val, update) =>
                             filterArray(
                               val,
                               update,
-                              abort,
                               'municipiosSelected',
                               'municipios',
                               'desc_municipio'
@@ -601,13 +467,17 @@
                         option-value="id"
                         lazy-rules
                         @update:model-value="
-                          getDataLocalidades('parroquias', 'setPaginatedData', {
-                            headers: {
-                              municipio: this.form.cod_municipio.id,
-                            },
-                          });
-                          this.form.cod_parroquia = [];
-                          this.form.cod_parroquia = [];
+                          this.$refs.methods.getData(
+                            'parroquias',
+                            'setData',
+                            'parroquias',
+                            {
+                              headers: {
+                                municipio: this.selectedMunicipio.id,
+                              },
+                            }
+                          );
+                          this.selectedParroquia = [];
                         "
                         ><template v-slot:no-option>
                           <q-item>
@@ -621,26 +491,20 @@
                         </template>
                       </q-select>
                     </div>
-
                     <div class="col-md-4 col-xs-12">
                       <q-select
                         outlined
-                        v-model="form.cod_parroquia"
+                        v-model="selectedParroquia"
                         label="Parroquia"
                         hint=""
                         class="pcform"
-                        :rules="[
-                          (val) =>
-                            this.$refs.rulesVue.isReqSelect(val, 'Requerido') ||
-                            '',
-                        ]"
+                        :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
                         :options="parroquiasSelected"
                         @filter="
-                          (val, update, abort) =>
+                          (val, update) =>
                             filterArray(
                               val,
                               update,
-                              abort,
                               'parroquiasSelected',
                               'parroquias',
                               'desc_parroquia'
@@ -665,25 +529,19 @@
                         </template>
                       </q-select>
                     </div>
-
                     <div class="col-md-4 col-xs-12">
                       <q-select
                         outlined
-                        v-model="form.cod_localidad"
+                        v-model="selectedLocalidad"
                         label="Localidad"
                         hint=""
-                        :rules="[
-                          (val) =>
-                            this.$refs.rulesVue.isReqSelect(val, 'Requerido') ||
-                            '',
-                        ]"
+                        :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
                         :options="localidadesSelected"
                         @filter="
-                          (val, update, abort) =>
+                          (val, update) =>
                             filterArray(
                               val,
                               update,
-                              abort,
                               'localidadesSelected',
                               'localidades',
                               'desc_localidad'
@@ -711,7 +569,6 @@
                   </div>
                 </q-card-section>
               </q-card>
-
               <q-card
                 class="q-pa-md"
                 bordered
@@ -737,22 +594,17 @@
                     <div class="col-md-6 col-xs-12">
                       <q-select
                         outlined
-                        v-model="form.cod_agente"
+                        v-model="selectedAgente"
                         label="Agente de Venta"
                         hint=""
                         class="pcform"
-                        :rules="[
-                          (val) =>
-                            this.$refs.rulesVue.isReqSelect(val, 'Requerido') ||
-                            '',
-                        ]"
+                        :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
                         :options="agentesSelected"
                         @filter="
-                          (val, update, abort) =>
+                          (val, update) =>
                             filterArray(
                               val,
                               update,
-                              abort,
                               'agentesSelected',
                               'agentes',
                               'persona_responsable'
@@ -777,19 +629,14 @@
                         </template>
                       </q-select>
                     </div>
-
                     <div class="col-md-6 col-xs-12">
                       <q-select
                         outlined
                         v-model="form.modalidad_pago"
                         label="Modalidad de Pago"
                         hint=""
-                        :rules="[
-                          (val) =>
-                            this.$refs.rulesVue.isReqSelect(val, 'Requerido') ||
-                            '',
-                        ]"
-                        :options="modalidad_pago"
+                        :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
+                        :options="modalidadPago"
                         lazy-rules
                       >
                         <template v-slot:prepend>
@@ -801,7 +648,6 @@
                 </q-card-section>
               </q-card>
             </div>
-
             <div
               class="full-width row justify-center items-center content-center"
               style="margin-bottom: 6px"
@@ -819,6 +665,7 @@
                 flat
                 class="col-md-5 col-sm-5 col-xs-12 btnmovil"
                 icon="close"
+                @click="this.resetForm()"
                 v-close-popup
               />
             </div>
@@ -839,7 +686,6 @@
             <strong>MANTENIMIENTO - CLIENTES</strong>
           </p>
         </div>
-
         <div
           class="col-md-5 col-xs-12 col-sm-6 cardMargin selectMovil"
           style="align-self: center; text-align: center"
@@ -851,11 +697,10 @@
             transition-hide="flip-down"
             :options="agenciasSelected"
             @filter="
-              (val, update, abort) =>
+              (val, update) =>
                 filterArray(
                   val,
                   update,
-                  abort,
                   'agenciasSelected',
                   'agencias',
                   'nb_agencia'
@@ -871,10 +716,7 @@
             outlined
             standout
             label="Escoge una Agencia"
-            @update:model-value="
-              getDataClientes(`/clientes`, 'setDataTable', 'clientes');
-              getData(`/agentes`, 'setPaginatedData', 'agentes');
-            "
+            @update:model-value="getDataTable()"
             ><template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey">
@@ -887,41 +729,36 @@
             </template>
           </q-select>
         </div>
-
         <div
           class="col-md-5 col-xs-12 col-sm-6 cardMarginLast selectMovil"
           style="align-self: center; text-align: center"
         >
           <q-input
-            v-model="filter"
+            v-model="this.pagination.filterValue"
             rounded
             dense
             outlined
             standout
             label="Búsqueda avanzada"
-            @keydown.enter="
-              this.getDataClientes(`/clientes`, 'setDataTable', 'clientes')
-            "
+            @keydown.enter="getDataTable()"
           >
             <template v-slot:append>
               <q-icon
-                @click="
-                  this.getDataClientes(`/clientes`, 'setDataTable', 'clientes')
-                "
+                @click="getDataTable()"
                 class="cursor-pointer"
                 name="search"
               />
             </template>
           </q-input>
         </div>
-
         <div
           class="col-md-2 col-xs-12 col-sm-12"
           style="text-align: center; align-self: center"
         >
           <q-btn
-            label="Insertar Cliente"
+            label="Insertar"
             rounded
+            dense
             color="primary"
             @click="
               dialog = true;
@@ -932,7 +769,6 @@
           ></q-btn>
         </div>
       </div>
-
       <div class="q-pa-md q-gutter-y-md">
         <q-table
           :rows="clientes"
@@ -941,14 +777,19 @@
           binary-state-sort
           :loading="loading"
           :rows-per-page-options="[5, 10, 15, 20, 50]"
-          @request="onRequest"
+          @request="getDataTable"
           :separator="separator"
           style="width: 100%"
           :grid="$q.screen.xs"
           v-model:pagination="pagination"
         >
           <template v-slot:loading>
-            <q-inner-loading showing color="primary" />
+            <q-inner-loading showing color="primary" class="loading" />
+          </template>
+          <template v-slot:body-cell-flag_activo="props">
+            <q-td :props="props">
+              {{ filterDesc("estatus", props.row.flag_activo) }}
+            </q-td>
           </template>
           <template v-slot:body-cell-action="props">
             <q-td :props="props">
@@ -960,7 +801,11 @@
                 icon="edit"
                 :disabled="this.allowOption(3)"
                 @click="
-                  getData(`/clientes/${props.row.id}`, 'setDataEdit', 'form');
+                  this.$refs.methods.getData(
+                    `/clientes/${props.row.id}`,
+                    'setDataEdit',
+                    'form'
+                  );
                   dialog = true;
                 "
               ></q-btn>
@@ -972,7 +817,7 @@
                 icon="delete"
                 :disabled="this.allowOption(4)"
                 @click="selected = props.row.id"
-                @click.capture="clientesDelete = true"
+                @click.capture="deletePopup = true"
               ></q-btn>
             </q-td>
           </template>
@@ -988,23 +833,11 @@
                       <q-item-label>{{ col.label }}</q-item-label>
                     </q-item-section>
                     <q-item-section side>
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
+                      <q-item-label v-if="col.name === 'flag_activo'">
+                        {{ filterDesc("estatus", props.row.flag_activo) }}
+                      </q-item-label>
                       <q-btn
-                        v-else-if="col.name === 'action'"
+                        v-if="col.name === 'action'"
                         dense
                         round
                         flat
@@ -1012,7 +845,7 @@
                         icon="edit"
                         :disabled="this.allowOption(3)"
                         @click="
-                          getData(
+                          this.$refs.methods.getData(
                             `/clientes/${props.row.id}`,
                             'setDataEdit',
                             'form'
@@ -1020,23 +853,8 @@
                           dialog = true;
                         "
                       ></q-btn>
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
                       <q-btn
-                        v-else-if="col.name === 'action'"
+                        v-if="col.name === 'action'"
                         dense
                         round
                         flat
@@ -1044,13 +862,10 @@
                         icon="delete"
                         :disabled="this.allowOption(4)"
                         @click="selected = props.row.id"
-                        @click.capture="clientesDelete = true"
+                        @click.capture="deletePopup = true"
                       ></q-btn>
-                      <q-item-label
-                        v-else
-                        caption
-                        :class="col.classes ? col.classes : ''"
-                        >{{ col.value }}
+                      <q-item-label v-if="col.name != 'flag_activo'">
+                        {{ col.value }}
                       </q-item-label>
                     </q-item-section>
                   </q-item>
@@ -1062,14 +877,13 @@
       </div>
     </div>
 
-    <q-dialog v-model="clientesDelete">
+    <q-dialog v-model="deletePopup">
       <q-card style="width: 700px">
         <q-card-section>
           <div class="text-h5" style="font-size: 18px">
             ¿Estas seguro que quieres eliminar este elemento?
           </div>
         </q-card-section>
-
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="primary" v-close-popup />
           <q-btn
@@ -1077,7 +891,12 @@
             label="Aceptar"
             color="primary"
             v-close-popup
-            @click="deleteData(selected)"
+            @click="
+              this.$refs.methods.deleteData(
+                `/clientes/${selected}`,
+                'getDataTable'
+              )
+            "
           />
         </q-card-actions>
       </q-card>
@@ -1085,16 +904,13 @@
 
     <methods
       ref="methods"
-      @get-data-Clientes="
-        getDataClientes(`/clientes`, 'setDataTable', 'clientes')
-      "
-      @reset-Loading="resetLoading"
-      @set-Data-Table="setDataTable"
-      @on-Request="onRequest"
       @set-Data="setData"
-      @set-Paginated-Data="setPaginatedData"
-      @set-Data-Edit="setDataEdit"
       @set-Data-Init="setDataInit"
+      @set-Data-Edit="setDataEdit"
+      @get-Data-Table="getDataTable"
+      @set-Data-Table="setDataTable"
+      @set-Data-Table-All="setDataTableAll"
+      @get-Data-Table-All="getDataTableAll"
       @set-Data-Permisos="setDataPermisos"
     ></methods>
 
@@ -1123,7 +939,6 @@ export default {
           field: "nb_cliente",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
           name: "rif_cedula",
@@ -1131,15 +946,13 @@ export default {
           field: "rif_cedula",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
-          name: "activo_desc",
+          name: "flag_activo",
           label: "Estatus",
-          field: "activo_desc",
+          field: "flag_activo",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
           name: "cte_decontado",
@@ -1147,31 +960,27 @@ export default {
           field: "cte_decontado",
           align: "center",
           sortable: true,
-          required: true,
         },
         {
           name: "action",
           label: "Acciones",
           align: "center",
-          sortable: true,
-          required: true,
         },
       ],
       form: {
         nb_cliente: "",
         rif_cedula: "",
         nit: "",
-        dir_correo: "",
         dir_fiscal: "",
         email: "",
         tlf_cliente: "",
         fax: "",
         razon_social: "",
-        tipo_persona: "",
         modalidad_pago: "",
         persona_contacto: "",
         observacion: "",
         cte_decontado: "",
+        tipo_persona: "",
         tipo_persona_new: "",
         flag_activo: "",
         cod_agencia: [],
@@ -1181,14 +990,27 @@ export default {
         cod_parroquia: [],
         cod_localidad: [],
       },
-      pais: "",
-      count: 1,
-      currentPage: 1,
-      estado: "",
-      ciudad: "",
-      filter: "",
-      agencias: [],
-      paises: [],
+      tipoPersona: [
+        { label: "JURÍDICA", value: "J" },
+        { label: "NATURAL", value: "N" },
+      ],
+      modalidadPago: [
+        { label: "CONTADO", value: "CO" },
+        { label: "CREDITO", value: "CR" },
+      ],
+      estatus: [
+        { label: "ACTIVO", value: "A" },
+        { label: "INACTIVO", value: "I" },
+      ],
+      pagination: {
+        page: 1,
+        rowsPerPage: 5,
+        sortBy: "nb_cliente",
+        descending: false,
+        filter: "nb_cliente,rif_cedula,flag_activo",
+        filterValue: "",
+        rowsNumber: "",
+      },
       agenciasSelected: [],
       paisesSelected: [],
       estadosSelected: [],
@@ -1197,49 +1019,38 @@ export default {
       parroquiasSelected: [],
       localidadesSelected: [],
       agentesSelected: [],
+      agencias: [],
+      paises: [],
       estados: [],
       ciudades: [],
       municipios: [],
       parroquias: [],
       localidades: [],
-      orderDirection: "",
       clientes: [],
+      clientesAll: [],
       agentes: [],
       selected: [],
+      selectedPais: [],
+      selectedEstado: [],
+      selectedCiudad: [],
+      selectedMunicipio: [],
+      selectedParroquia: [],
+      selectedLocalidad: [],
       selectedAgencia: [],
-      tipo_persona: [
-        { label: "JURÍDICA", value: "J" },
-        { label: "NATURAL", value: "N" },
-      ],
-      modalidad_pago: [
-        { label: "CONTADO", value: "CO" },
-        { label: "CREDITO", value: "CR" },
-      ],
-      estatus: [
-        { label: "ACTIVO", value: "1" },
-        { label: "INACTIVO", value: "0" },
-      ],
-      error: "",
+      selectedAgente: [],
       rpermisos: [],
+      pais: "",
+      estado: "",
+      filter: "",
     };
   },
   setup() {
     const $q = useQuasar();
-    const loading = ref(false);
-    const order = ref(false);
-    const pagination = ref({
-      descending: "",
-      page: 1,
-      rowsPerPage: 5,
-      rowsNumber: "",
-    });
     return {
-      pagination,
-      anulate: ref(false),
+      loading: ref(false),
       separator: ref("vertical"),
       dialog: ref(false),
-      loading: ref(false),
-      clientesDelete: ref(false),
+      deletePopup: ref(false),
       clienteParticularExistente() {
         $q.notify({
           message: "Solo puede haber un Cliente Particular por Agencia",
@@ -1261,66 +1072,8 @@ export default {
     });
   },
   methods: {
-    // Metodo para Actualizar Tabla al Seleccionar opcion de la Misma
-    onRequest(res) {
-      let { page, rowsPerPage, sortBy, descending } = res.pagination;
-      if (this.currentPage !== page) descending = "";
-
-      const fetchCount =
-        rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-      if (!sortBy) sortBy = "";
-
-      var headerSortBy = sortBy;
-
-      if (headerSortBy == "action") {
-        descending = "";
-        headerSortBy = "";
-        sortBy = "";
-      }
-
-      if (descending !== "") {
-        this.pagination.descending = !this.pagination.descending;
-        if (this.pagination.descending == true) {
-          this.orderDirection = "DESC";
-        } else this.orderDirection = "ASC";
-      }
-
-      this.pagination.sortBy = sortBy;
-      this.pagination.page = page;
-      this.pagination.rowsPerPage = rowsPerPage;
-
-      this.getData(`/clientes`, "setDataTable", "clientes", {
-        headers: {
-          agencia: this.selectedAgencia.id,
-          page: page,
-          limit: fetchCount,
-          order_direction: this.orderDirection,
-          order_by: headerSortBy,
-          filter: "nb_cliente,rif_cedula",
-          filter_value: this.filter,
-        },
-      });
-    },
-    // Metodo para Setear Datos en Tabla
-    setDataTable(res, dataRes) {
-      this[dataRes] = res.data;
-      this.pagination.page = res.currentPage;
-      this.currentPage = res.currentPage;
-      this.pagination.rowsNumber = res.total;
-      this.pagination.rowsPerPage = res.limit;
-      this.loading = false;
-      for (var e = 0, len = this.clientes.length; e < len; e++) {
-        if (this.clientes[e].cte_decontado === "1") {
-          this.clientes[e].cte_decontado = "🏴";
-        }
-        if (this.clientes[e].cte_decontado === "0") {
-          this.clientes[e].cte_decontado = "";
-        }
-        if (e == this.clientes.length - 1) break;
-      }
-    },
-    // Metodo para Filtrar Selects
-    filterArray(val, update, abort, pagina, array, element) {
+    // Metodo para filtrar opciones de Selects
+    filterArray(val, update, pagina, array, element) {
       if (val === "") {
         update(() => {
           this[pagina] = this[array];
@@ -1341,9 +1094,15 @@ export default {
         }
       });
     },
-    // Metodo para Resetear Carga
-    resetLoading() {
-      this.loading = false;
+    // Metodo para traer el value de los Selects y Columns
+    filterDesc(array, value) {
+      var find = this[array].findIndex((item) => item.value == value);
+      return find >= 0 ? this[array][find].label : null;
+    },
+    // Metodo para traer el value de los Selects y Columns
+    findIndex(array, value) {
+      var find = this[array].findIndex((item) => item.id == value);
+      return find >= 0 ? find : null;
     },
     // Metodo para validar Permisos
     allowOption(option) {
@@ -1360,232 +1119,241 @@ export default {
 
     // METODOS DE PAGINA
 
-    // Metodo para hacer Get de datos
-    getData(url, call, dataRes, axiosConfig) {
-      this.$refs.methods.getData(url, call, dataRes, axiosConfig);
-    },
-    // Metodo para hacer Get de Agentes
-    getDataClientes(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, {
-        headers: {
-          agencia: this.selectedAgencia.id,
-          page: 1,
-          limit: 5,
-          order_direction: this.orderDirection,
-          filter: "nb_cliente,rif_cedula",
-          filter_value: this.filter,
-          order_direction: this.orderDirection,
-          order_by: this.pagination.sortBy,
-        },
-      });
-      this.loading = true;
+    // Metodo para Setear Datos Generales
+    setData(res, dataRes) {
+      this[dataRes] = res.data ? res.data : res;
     },
     // Metodo para Setear Datos Iniciales
     setDataInit(res, dataRes) {
       this[dataRes] = res.data;
       this.selectedAgencia = this.agencias[0];
-      this.$refs.methods.getData(`/paises`, `setData`, `paises`);
-      this.$refs.methods.getData(`/clientes`, "setDataTable", `clientes`, {
-        headers: {
-          agencia: this.agencias[0].id,
-          page: 1,
-          limit: 5,
-        },
-      });
-      this.$refs.methods.getData(`/agentes`, `setPaginatedData`, `agentes`, {
-        headers: {
-          agencia: this.agencias[0].id,
-        },
-      });
+      this.getDataTable();
+    },
+    // Metodo para Extraer Datos de Tabla
+    getDataTable(props) {
       this.loading = true;
+      this.getDataTableAll();
+      if (props) this.pagination = props.pagination;
+      this.$refs.methods.getData(`/clientes`, "setDataTable", "clientes", {
+        headers: {
+          agencia: this.selectedAgencia.id,
+          page: this.pagination.page,
+          limit: this.pagination.rowsPerPage,
+          order_by: this.pagination.sortBy,
+          order_direction: this.pagination.descending ? "DESC" : "ASC",
+          filter: this.pagination.filter,
+          filter_value: this.pagination.filterValue,
+        },
+      });
+      this.$refs.methods.getData(`/agentes`, "setData", "agentes", {
+        headers: {
+          agencia: this.selectedAgencia.id,
+        },
+      });
     },
-    // Metodo para Setear Datos
-    setData(res, dataRes) {
-      this[dataRes] = res;
+    // Metodo para Setear Datos de Tabla
+    setDataTable(res, dataRes) {
+      this[dataRes] = res.data ? res.data : res;
+      this.pagination.page = res.currentPage;
+      this.currentPage = res.currentPage;
+      this.pagination.rowsNumber = res.total;
+      this.pagination.rowsPerPage = res.limit;
+      for (var e = 0, len = this.clientes.length; e < len; e++) {
+        if (this.clientes[e].cte_decontado === "1") {
+          this.clientes[e].cte_decontado = "🏴";
+        } else {
+          this.clientes[e].cte_decontado = "";
+        }
+        if (e == this.clientes.length - 1) break;
+      }
+      this.loading = false;
     },
-    // Metodo para Setear Datos Paginados
-    setPaginatedData(res, dataRes) {
-      this[dataRes] = res.data;
+    // Metodo para Extraer Todos los Datos de Tabla
+    getDataTableAll() {
+      this.loading = true;
+      this.$refs.methods.getData(
+        "/clientes",
+        "setDataTableAll",
+        "clientesAll",
+        {
+          headers: {
+            agencia: this.selectedAgencia.id,
+          },
+        }
+      );
+    },
+    // Metodo para Setear Todos los Datos de Tabla
+    setDataTableAll(res, dataRes) {
+      this[dataRes] = res.data ? res.data : res;
+      this.loading = false;
     },
     // Metodo para Setear Datos Seleccionados
-    setDataEdit(res, dataRes) {
-      this.loading = false;
-      this.resetForm();
+    async setDataEdit(res, dataRes) {
+      // Seteo el agente del Cliente
+      this.selectedAgente =
+        this.agentes[this.findIndex("agentes", res.cod_agente)];
+
+      // Obtengo Estado de la Ciudad
+      await api
+        .get(`/ciudades/${res.cod_ciudad}`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .then((ciudad) => {
+          this.estado = ciudad.data.cod_estado;
+        });
+
+      // Obtengo Pais del Estado
+      await api
+        .get(`/estados/${this.estado}`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .then((estado) => {
+          this.pais = estado.data.cod_pais;
+          // Seteo el Pais del Cliente
+          this.selectedPais = this.paises[this.findIndex("paises", this.pais)];
+        });
+
+      // Obtengo Estados del Pais
+      await api
+        .get(`/estados/`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            pais: this.pais,
+          },
+        })
+        .then((estados) => {
+          this.estados = estados.data.data;
+          // Seteo el Estado del Cliente
+          this.selectedEstado =
+            this.estados[this.findIndex("estados", this.estado)];
+        });
+
+      // Obtengo Ciudades del Estado
+      await api
+        .get(`/ciudades/`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            estado: this.estado,
+          },
+        })
+        .then((ciudades) => {
+          this.ciudades = ciudades.data.data;
+          // Seteo la ciudad del Cliente
+          this.selectedCiudad =
+            this.ciudades[this.findIndex("ciudades", res.cod_ciudad)];
+        });
+
+      // Obtengo Ciudades del Estado
+      await api
+        .get(`/municipios/`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            estado: this.estado,
+          },
+        })
+        .then((municipios) => {
+          this.municipios = municipios.data.data;
+          // Seteo el Municipio del Cliente si existe
+          if (res.cod_municipio) {
+            this.selectedMunicipio =
+              this.municipios[this.findIndex("municipios", res.cod_municipio)];
+            // Obtengo Parroquias del Municipio
+            api
+              .get(`/parroquias/`, {
+                headers: {
+                  Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                  municipio: res.cod_municipio,
+                },
+              })
+              .then((parroquias) => {
+                this.parroquias = parroquias.data.data;
+                // Seteo la Parroquia del Cliente si existe
+                if (res.cod_parroquia) {
+                  this.selectedParroquia =
+                    this.parroquias[
+                      this.findIndex("parroquias", res.cod_parroquia)
+                    ];
+                }
+              });
+          }
+        });
+
+      // Obtengo Localidades del Estado
+      await api
+        .get(`/localidades/`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            estado: this.estado,
+          },
+        })
+        .then((localidades) => {
+          this.localidades = localidades.data.data;
+          // Seteo la localidad del Cliente si existe
+          if (res.cod_localidad) {
+            this.selectedLocalidad =
+              this.localidades[
+                this.findIndex("localidades", res.cod_localidad)
+              ];
+          }
+        });
+
       this[dataRes].id = res.id;
-      this[dataRes].descripcion = res.descripcion;
+      this[dataRes].cod_agencia = res.cod_agencia;
       this[dataRes].nb_cliente = res.nb_cliente;
       this[dataRes].rif_cedula = res.rif_cedula;
       this[dataRes].nit = res.nit;
-      this[dataRes].dir_correo = res.dir_correo;
       this[dataRes].dir_fiscal = res.dir_fiscal;
+      this[dataRes].email = res.email;
       this[dataRes].tlf_cliente = res.tlf_cliente;
       this[dataRes].fax = res.fax;
       this[dataRes].razon_social = res.razon_social;
-      this[dataRes].tipo_persona = res.tipo_desc;
-      this[dataRes].modalidad_pago = res.modalidad_desc;
+      this[dataRes].tipo_persona_new = this.filterDesc(
+        "tipoPersona",
+        res.tipo_persona_new
+      );
+      this[dataRes].modalidad_pago = this.filterDesc(
+        "modalidadPago",
+        res.modalidad_pago
+      );
       this[dataRes].persona_contacto = res.persona_contacto;
+      this[dataRes].observacion = res.observacion;
       this[dataRes].cte_decontado = res.cte_decontado;
-      this[dataRes].flag_activo = res.activo_desc;
-      this[dataRes].cod_agencia = res.cod_agencia;
-      var cod_agente = res.cod_agente;
-      var cod_parroquia = res.cod_parroquia;
-      var cod_localidad = res.cod_localidad;
-      var cod_municipio = res.cod_municipio;
-      var cod_ciudad = res.cod_ciudad;
-      api
-        .get(`/agentes`, {
-          headers: {
-            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            agencia: this.selectedAgencia.id,
-          },
-        })
-        .then((res) => {
-          this.agentes = res.data.data;
-          for (var i = 0; i <= this.agentes.length - 1; i++) {
-            if (this.agentes[i].id == cod_agente) {
-              this.form.cod_agente = this.agentes[i];
-              break;
-            }
-          }
-        });
-      api
-        .get(`/municipios/${cod_municipio}`, {
-          headers: {
-            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-          },
-        })
-        .then((res) => {
-          this.form.cod_municipio = res.data.desc_municipio;
-          var cod_municipio = res.data.id;
-          var cod_estado = res.data.cod_estado;
-
-          api
-            .get(`/municipios`, {
-              headers: {
-                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                estado: cod_estado,
-              },
-            })
-            .then((res) => {
-              this.municipios = res.data.data;
-            });
-
-          api
-            .get(`/parroquias`, {
-              headers: {
-                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                municipio: cod_municipio,
-              },
-            })
-            .then((res) => {
-              this.parroquias = res.data.data;
-              for (var i = 0; i <= this.parroquias.length - 1; i++) {
-                if (this.parroquias[i].id == cod_parroquia) {
-                  this.form.cod_parroquia = this.parroquias[i];
-                  break;
-                }
-              }
-            });
-
-          api
-            .get(`/localidades`, {
-              headers: {
-                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                estado: cod_estado,
-              },
-            })
-            .then((res) => {
-              this.localidades = res.data.data;
-              for (var i = 0; i <= this.localidades.length - 1; i++) {
-                if (this.localidades[i].id == cod_localidad) {
-                  this.form.cod_localidad = this.localidades[i];
-                  break;
-                }
-              }
-            });
-
-          api
-            .get(`/ciudades`, {
-              headers: {
-                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                estado: cod_estado,
-              },
-            })
-            .then((res) => {
-              this.ciudades = res.data.data;
-              for (var i = 0; i <= this.ciudades.length - 1; i++) {
-                if (this.ciudades[i].id == cod_ciudad) {
-                  this.ciudad = this.ciudades[i];
-                  break;
-                }
-              }
-            });
-
-          api
-            .get(`/estados/${cod_estado}`, {
-              headers: {
-                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-              },
-            })
-            .then((res) => {
-              this.estado = res.data.desc_estado;
-              var paisHeader = res.data.cod_pais;
-              api
-                .get(`/estados`, {
-                  headers: {
-                    Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                    pais: paisHeader,
-                  },
-                })
-                .then((res) => {
-                  this.estados = res.data.data;
-                  this.pais = res.data.data[0].paises.desc_pais;
-                });
-            });
-        });
-    },
-    // Metodo para Eliminar Datos
-    deleteData(idpost) {
-      this.$refs.methods.deleteData(`/clientes/${idpost}`, "getDataClientes");
-      this.loading = true;
+      this[dataRes].flag_activo = this.filterDesc("estatus", res.flag_activo);
     },
     // Metodo para Editar y Crear Datos
     sendData() {
-      if (this.form.cte_decontado === "1") {
-        for (var e = 0, len = this.clientes.length; e < len; e++) {
-          if (this.clientes[e].cte_decontado === "🏴") {
-            this.clienteParticularExistente();
-            return;
-          }
-          if (e == this.clientes.length - 1) break;
-        }
+      if (
+        this.form.cte_decontado === "1" &&
+        this.clientesAll.findIndex((item) => item.cte_decontado == "1") >= 0
+      ) {
+        this.clienteParticularExistente();
+        return;
       }
       this.form.cod_agencia = this.selectedAgencia.id;
-      this.form.cod_agente = this.form.cod_agente.id;
-      this.form.cod_localidad = this.form.cod_localidad.id;
-      this.form.cod_municipio = this.form.cod_municipio.id;
-      this.form.cod_parroquia = this.form.cod_parroquia.id;
-      this.form.cod_ciudad = this.ciudad.id;
+      this.form.cod_agente = this.selectedAgente.id;
+      this.form.cod_localidad = this.selectedLocalidad.id;
+      this.form.cod_municipio = this.selectedMunicipio.id;
+      this.form.cod_parroquia = this.selectedParroquia.id;
+      this.form.cod_ciudad = this.selectedCiudad.id;
       this.form.modalidad_pago = this.form.modalidad_pago.value;
       this.form.flag_activo = this.form.flag_activo.value;
-      this.form.tipo_persona = this.form.tipo_persona.value;
+      this.form.tipo_persona_new = this.form.tipo_persona_new.value;
+      this.form.tipo_persona = "J";
       if (!this.form.id) {
-        this.$refs.methods.createData(
-          `/clientes`,
-          this.form,
-          "getDataClientes"
-        );
-        this.dialog = false;
-        this.loading = true;
+        this.$refs.methods.createData(`/clientes`, this.form, "getDataTable");
       } else {
         this.$refs.methods.putData(
           `/clientes/${this.form.id}`,
           this.form,
-          "getDataClientes"
+          "getDataTable"
         );
-        this.dialog = false;
-        this.loading = true;
       }
+      this.dialog = false;
+      this.resetForm();
     },
     // Metodo para Resetear Formulario
     resetForm() {
@@ -1593,18 +1361,17 @@ export default {
       this.form.nb_cliente = "";
       this.form.rif_cedula = "";
       this.form.nit = "";
-      this.form.dir_correo = "";
       this.form.dir_fiscal = "";
       this.form.email = "";
       this.form.tlf_cliente = "";
       this.form.fax = "";
       this.form.razon_social = "";
       this.form.tipo_persona = "";
+      this.form.tipo_persona_new = "";
       this.form.modalidad_pago = "";
       this.form.persona_contacto = "";
       this.form.observacion = "";
       this.form.cte_decontado = "";
-      this.form.tipo_persona_new = "";
       this.form.flag_activo = "";
       this.form.cod_agencia = "";
       this.form.cod_agente = "";
@@ -1612,23 +1379,15 @@ export default {
       this.form.cod_parroquia = "";
       this.form.cod_localidad = "";
       this.form.cte_decontado = "0";
-      this.municipios = [];
-      this.parroquias = [];
-      this.localidades = [];
-      this.estados = [];
-      this.ciudades = [];
-      this.pais = [];
-      this.estado = [];
-      this.ciudad = [];
-    },
-    // Metodo para Get de Localidades
-    getDataLocalidades(sub_location, update, axiosConfig) {
-      this.$refs.methods.getData(
-        `/${sub_location}`,
-        `${update}`,
-        `${sub_location}`,
-        axiosConfig
-      );
+      this.selectedMunicipio = [];
+      this.selectedParroquia = [];
+      this.selectedLocalidad = [];
+      this.selectedPais = [];
+      this.selectedEstado = [];
+      this.selectedCiudad = [];
+      this.selectedAgente = [];
+      this.pais = "";
+      this.estado = "";
     },
   },
 };
