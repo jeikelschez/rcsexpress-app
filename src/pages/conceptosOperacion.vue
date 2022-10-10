@@ -70,7 +70,7 @@
             </div>
 
             <div
-              class="full-width row justify-center items-center content-center"
+              class=" row justify-center items-center content-center"
               style="margin-bottom: 10px"
             >
               <q-btn
@@ -100,7 +100,7 @@
           class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 text-secondary movilTitle"
           style="align-self: center; text-align: center"
         >
-          <p style="font-size: 30px">
+          <p style="font-size: 25px">
             <strong>CONCEPTOS POR OPERACIÓN</strong>
           </p>
         </div>
@@ -151,7 +151,7 @@
         </div>
 
         <div
-          class="col-md-5 col-xs-12 col-sm-6 cardMarginLast selectMovil"
+          class="col-md-5 col-xs-12 col-sm-6 cardMarginLast"
           style="align-self: center; text-align: center"
         >
           <q-input
@@ -246,7 +246,7 @@
                         <q-item-section>
                           <q-item-label>{{ col.label }}</q-item-label>
                         </q-item-section>
-                        <q-item-section side>
+                        <q-item-section side class="itemMovilSide">
                           <q-chip
                             v-if="col.name === 'status'"
                             :color="
@@ -589,9 +589,5 @@ export default {
   }
 }
 
-@media screen and (max-width: 1024px) {
-  .selectMovil {
-    margin-bottom: 10px !important;
-  }
-}
+
 </style>

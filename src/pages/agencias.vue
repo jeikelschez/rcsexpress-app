@@ -335,7 +335,7 @@
               </div>
             </div>
             <div
-              class="full-width row justify-center items-center content-center"
+              class="row justify-center items-center content-center"
             >
               <q-btn
                 label="Enviar"
@@ -469,7 +469,7 @@
                     <q-item-section>
                       <q-item-label>{{ col.label }}</q-item-label>
                     </q-item-section>
-                    <q-item-section side>
+                    <q-item-section side class="itemMovilSide">
                       <q-item-label v-if="col.name === 'estatus'">
                         {{ filterDesc("estatus", props.row.estatus) }}
                       </q-item-label>
@@ -832,7 +832,7 @@ export default {
   }
 }
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 600px) {
   .buttonMargin {
     margin-bottom: 20px !important;
   }

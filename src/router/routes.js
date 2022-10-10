@@ -101,6 +101,11 @@ const routes = [
         children: [{ path: "", component: () => import('src/pages/cuentasporpagar.vue')}]
       },
       {
+        path: '/historicoDolar',
+        component: () => import("layouts/mainLayout.vue"),
+        children: [{ path: "", component: () => import('src/pages/historicoDolar.vue')}]
+      },
+      {
         path: '/ingresocuentaspagar',
         component: () => import("layouts/mainLayout.vue"),
         children: [{ path: "", component: () => import('src/pages/ingresocuentaspagar.vue')}]
@@ -308,7 +313,7 @@ const routes = [
       {
         path: '/usuarios',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('pages/Usuarios.vue')}]
+        children: [{ path: "", component: () => import('pages/usuarios.vue')}]
       },
       {
         path: '/permisologia',
@@ -328,7 +333,7 @@ const routes = [
       {
         path: '/cargamanualguias',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('src/pages/cargamanualguias.vue')}]
+        children: [{ path: "", component: () => import('src/pages/cargaManualGuias.vue')}]
       },
   ]
   },

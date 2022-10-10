@@ -168,9 +168,9 @@
       <div class="row q-pa-md justify-end">
         <div
           class="col-md-4 col-xs-12 text-secondary movilTitle"
-          style="align-self: center; text-align: center"
+          style="align-self: center; text-align: center; font-size: 25px"
         >
-          <h4><strong>MANTENIMIENTO - BANCOS</strong></h4>
+          <p><strong>MANTENIMIENTO - BANCOS</strong></p>
         </div>
         <div
           class="col-md-6 col-sm-7 col-xs-12 cardMargin selectMobile"
@@ -191,7 +191,7 @@
           </q-input>
         </div>
         <div
-          class="col-md-2 col-sm-4 col-xs-12 buttonMargin"
+          class="col-md-2 col-sm-4 col-xs-12"
           style="text-align: center; align-self: center"
         >
           <q-btn
@@ -261,7 +261,7 @@
                     <q-item-section>
                       <q-item-label>{{ col.label }}</q-item-label>
                     </q-item-section>
-                    <q-item-section side>
+                    <q-item-section side class="itemMovilSide">
                       <q-chip
                         v-if="col.name === 'status'"
                         :color="

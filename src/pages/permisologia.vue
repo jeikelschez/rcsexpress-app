@@ -241,7 +241,7 @@
                     <q-item-section>
                       <q-item-label>{{ col.label }}</q-item-label>
                     </q-item-section>
-                    <q-item-section side>
+                    <q-item-section side class="itemMovilSide">
                       <q-item-label v-if="col.name === 'label'">{{
                         props.row.label
                       }}</q-item-label>

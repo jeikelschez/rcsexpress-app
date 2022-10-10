@@ -45,7 +45,7 @@
               </div>
             </div>
             <div
-              class="full-width row justify-center items-center content-center"
+              class=" row justify-center items-center content-center"
               style="margin-bottom: 10px"
             >
               <q-btn
@@ -117,7 +117,7 @@
               </div>
             </div>
             <div
-              class="full-width row justify-center items-center content-center"
+              class=" row justify-center items-center content-center"
               style="margin-bottom: 10px"
             >
               <q-btn
@@ -221,7 +221,7 @@
               </div>
             </div>
             <div
-              class="full-width row justify-center items-center content-center"
+              class=" row justify-center items-center content-center"
               style="margin-bottom: 10px"
             >
               <q-btn
@@ -245,7 +245,7 @@
       </q-card>
     </q-dialog>
 
-    <div class="row paddingMobile">
+    <div class="row">
       <q-carousel
         v-model="slide"
         transition-prev="scale"
@@ -258,7 +258,7 @@
           name="paises"
           class="flex-center col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 paddingMobile"
         >
-          <div class="row q-pa-md paddingMobile">
+          <div class="row paddingMobile">
             <div
               class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 text-secondary movilTitle"
               style="align-self: center; text-align: center; font-size: 20px"
@@ -266,7 +266,7 @@
               <p><strong>MANTENIMIENTO - PAÍS, ESTADO, CIUDAD</strong></p>
             </div>
             <div
-              class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-12 marginHeaderMovil"
+              class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-12"
               style="align-self: center; text-align: center; padding-left: 0px"
             >
               <q-option-group
@@ -279,7 +279,7 @@
               />
             </div>
             <div
-              class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-12 cardMarginFilter"
+              class="q-pa-md col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-12"
             >
               <q-input
                 v-model="filterPaises"
@@ -300,7 +300,7 @@
               </q-input>
             </div>
             <div
-              class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
+              class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 cardMarginButton"
               style="text-align: center; align-self: center"
             >
               <q-btn
@@ -378,7 +378,7 @@
                             <q-item-section>
                               <q-item-label>{{ col.label }}</q-item-label>
                             </q-item-section>
-                            <q-item-section side>
+                            <q-item-section side class="itemMovilSide">
                               <q-item-label v-if="col.name === 'tipo_pais'">
                                 {{
                                   filterDesc("tipoPais", props.row.tipo_pais)
@@ -494,7 +494,7 @@
               </q-select>
             </div>
             <div
-              class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 cardMarginFilter"
+              class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12"
               style="text-align: center; align-self: center"
             >
               <q-input
@@ -516,7 +516,7 @@
               </q-input>
             </div>
             <div
-              class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
+              class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 cardMarginButton" 
               style="text-align: center; align-self: center"
             >
               <q-btn
@@ -591,7 +591,7 @@
                             <q-item-section>
                               <q-item-label>{{ col.label }}</q-item-label>
                             </q-item-section>
-                            <q-item-section side>
+                            <q-item-section side class="itemMovilSide">
                               <q-btn
                                 v-if="col.name === 'action'"
                                 dense
@@ -746,7 +746,7 @@
               </q-select>
             </div>
             <div
-              class="col-md-9 col-xl-9 col-lg-9 col-xs-12 col-sm-12 cardMarginFilter"
+              class="col-md-9 col-xl-9 col-lg-9 col-xs-12 col-sm-12"
               style="text-align: center; align-self: center"
             >
               <q-input
@@ -768,7 +768,7 @@
               </q-input>
             </div>
             <div
-              class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12"
+              class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 cardMarginButton"
               style="text-align: center; align-self: center"
             >
               <q-btn
@@ -853,7 +853,7 @@
                             <q-item-section>
                               <q-item-label>{{ col.label }}</q-item-label>
                             </q-item-section>
-                            <q-item-section side>
+                            <q-item-section side class="itemMovilSide">
                               <q-item-label v-if="col.name === 'cod_region'">
                                 {{
                                   filterDesc("regiones", props.row.cod_region)
@@ -1479,6 +1479,12 @@ export default {
 @media screen and (min-width: 1024px) {
   .marginHeader {
     padding-right: 30px;
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .marginHeader {
+    padding-right: 0px;
   }
 }
 

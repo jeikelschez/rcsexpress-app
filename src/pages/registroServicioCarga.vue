@@ -464,7 +464,7 @@
             </div>
 
             <div
-              class="full-width row justify-center items-center content-center"
+              class=" row justify-center items-center content-center"
               style="margin-bottom: 6px; margin-top: 10px"
             >
               <q-btn
@@ -588,7 +588,7 @@
                     <q-item-section>
                       <q-item-label>{{ col.label }}</q-item-label>
                     </q-item-section>
-                    <q-item-section side>
+                    <q-item-section side class="itemMovilSide">
                       <q-input
                         outlined
                         v-if="col.name == 'cantidad'"
@@ -1261,7 +1261,7 @@
             </div>
 
             <div
-              class="full-width row justify-center items-center content-center"
+              class=" row justify-center items-center content-center"
               style="margin-bottom: 6px; margin-top: 10px"
             >
               <q-btn

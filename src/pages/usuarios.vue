@@ -23,7 +23,7 @@
 
               <div class="col-md-7 col-xs-12">
                 <q-input outlined v-model="form.password" label="Contraseña" :type="isPwd ? 'password' : 'text'"
-                  :readonly="this.disabledEdit" :disable="this.disabledEdit" lazy-rules :rules="[
+                  :readonly="this.disabledEdit" lazy-rules :rules="[
                     (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
                     (val) =>
                       this.$refs.rulesVue.isMax(val, 10, 'Requiere Retorno'),
@@ -76,7 +76,7 @@
               </div>
             </div>
 
-            <div class="full-width row justify-center items-center content-center" style="margin-bottom: 10px">
+            <div class=" row justify-center items-center content-center" style="margin-bottom: 10px">
               <q-btn label="Enviar" type="submit" color="primary" class="col-md-5 col-sm-5 col-xs-12"
                 icon="person_add" />
               <q-btn label="Cerrar" color="primary" flat class="col-md-5 col-sm-5 col-xs-12 btnmovil" icon="close"
@@ -172,7 +172,7 @@
                     <q-item-section>
                       <q-item-label>{{ col.label }}</q-item-label>
                     </q-item-section>
-                    <q-item-section side>
+                    <q-item-section side class="itemMovilSide">
                       <q-chip v-if="col.name === 'status'" :color="
                         props.row.status == 'Active'
                           ? 'green'
@@ -439,6 +439,7 @@ export default {
     },
     // Metodo para Setear Datos Seleccionados
     setDataEdit(res, dataRes) {
+      this.resetForm()
       this[dataRes].login = res.login;
       this[dataRes].nombre = res.nombre;
       this[dataRes].id = res.id;
@@ -479,13 +480,13 @@ export default {
     },
     // Metodo para Resetear Datos
     resetForm() {
+      this.form.password = null;
       this.disabledEdit = false;
       delete this.form.id;
       this.form.nombre = null;
       this.form.login = null;
       this.form.cod_rol = null;
       this.form.activo = null;
-      this.form.password = null;
       this.form.cod_agencia = null;
     },
   },

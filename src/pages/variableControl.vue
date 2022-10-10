@@ -68,7 +68,7 @@
             </div>
 
             <div
-              class="full-width row justify-center items-center content-center"
+              class=" row justify-center items-center content-center"
             >
               <q-btn
                 label="Enviar"
@@ -214,7 +214,7 @@
                     <q-item-section>
                       <q-item-label>{{ col.label }}</q-item-label>
                     </q-item-section>
-                    <q-item-section side>
+                    <q-item-section side class="itemMovilSide">
                       <q-chip
                         v-if="col.name === 'status'"
                         :color="
@@ -274,7 +274,7 @@
                         @click.capture="deletePopup = true"
                       ></q-btn>
                     </q-item-section>
-                    <q-item-section side>
+                    <q-item-section side class="itemMovilSide">
                       <q-chip
                         v-if="col.name === 'status'"
                         :color="
