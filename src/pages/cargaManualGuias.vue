@@ -173,7 +173,7 @@
             </div>
 
             <div
-              class=" row justify-center items-center content-center"
+              class="row justify-center items-center content-center"
               style="margin-bottom: 10px"
             >
               <q-btn
@@ -216,18 +216,20 @@
         style="align-self: center; text-align: center; padding-bottom: 10px"
       >
         <div
-          class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 cardMarginFilter selectMobile"
+          class="col-md-8 col-xl-8 col-lg-8 col-xs-12 col-sm-12 cardMarginFilter selectMobile"
           style="align-self: center; text-align: center"
         >
           <q-file
             rounded
             outlined
             v-model="file"
-            ref="fileSelector"
+            ref="txtFile"
             dense
-            label="Archivo"
+            label="Archivo TXT"
             max-files="1"
-            @update:model-value="textRead()"
+            @update:model-value="readFile()"
+            accept=".txt, .TXT"
+            @rejected="onRejected"
           >
             <template v-slot:append>
               <q-icon
@@ -238,17 +240,16 @@
               />
               <q-icon
                 name="file_upload"
-                @click="this.$refs.fileSelector.pickFiles()"
+                @click="this.$refs.txtFile.pickFiles()"
               />
             </template>
-
             <template v-slot:hint> </template>
           </q-file>
         </div>
 
         <div
-          class="col-md-8 col-xl-8 col-lg-8 col-xs-12 col-sm-12 botonesGuias"
-          style="text-align: center; align-self: center"
+          class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 botonesGuias"
+          style="text-align: right; align-self: center"
         >
           <q-btn
             dense
@@ -621,7 +622,6 @@
         style="width: 100%"
         :grid="$q.screen.xs"
         :rows-per-page-options="[5, 10, 15, 20, 50]"
-        @request="onRequest"
         v-model:pagination="pagination"
       >
         <template v-slot:loading>
@@ -839,7 +839,6 @@
 
 <script>
 import { ref } from "vue";
-import {readFileSync, promises as fsPromises} from 'fs'
 import rulesVue from "src/components/rules.vue";
 import moment from "moment";
 import { useQuasar, LocalStorage } from "quasar";
@@ -854,124 +853,102 @@ export default {
   data() {
     return {
       columns: [
-        // {
-        //   name: "control_inicio",
-        //   label: "Nro. Factura",
-        //   field: "control_inicio",
-        //   align: "left",
-        //   sortable: true,
-        //   required: true,
-        // },
-        // {
-        //   name: "control_final",
-        //   label: "Fecha Factura",
-        //   field: "control_final",
-        //   align: "left",
-        //   sortable: true,
-        //   required: true,
-        // },
-        // {
-        //   name: "cant_asignada",
-        //   label: "Nombre Cliente",
-        //   field: "cant_asignada",
-        //   align: "left",
-        //   sortable: true,
-        //   required: true,
-        // },
-        // {
-        //   name: "cant_disponible",
-        //   label: "CI. Rif",
-        //   field: "cant_disponible",
-        //   align: "left",
-        //   sortable: true,
-        //   required: true,
-        // },
-        // {
-        //   name: "fecha_asignacion",
-        //   label: "Direccion Entrega",
-        //   field: "fecha_asignacion",
-        //   align: "left",
-        //   sortable: true,
-        //   required: true,
-        // },
-        // {
-        //   name: "fecha_asignacion",
-        //   label: "Fecha de Asignación",
-        //   field: "fecha_asignacion",
-        //   align: "left",
-        //   sortable: true,
-        //   required: true,
-        // },
-        // {
-        //   name: "estado_entrega",
-        //   label: "Estado Entrega",
-        //   field: "cant_disponible",
-        //   align: "left",
-        //   sortable: true,
-        // },
-        // {
-        //   name: "ciudad_entrega",
-        //   label: "Ciudad Entrega",
-        //   field: "cant_disponible",
-        //   align: "left",
-        //   sortable: true,
-        // },
-        // {
-        //   name: "ciudad_entrega",
-        //   label: "Bultos",
-        //   field: "cant_disponible",
-        //   align: "left",
-        //   sortable: true,
-        // },
-        // {
-        //   name: "ciudad_entrega",
-        //   label: "Telefonos",
-        //   field: "cant_disponible",
-        //   align: "left",
-        //   sortable: true,
-        // },
-        // {
-        //   name: "ciudad_entrega",
-        //   label: "Monto Factura",
-        //   field: "cant_disponible",
-        //   align: "left",
-        //   sortable: true,
-        // },
-        // {
-        //   name: "ciudad_entrega",
-        //   label: "Peso",
-        //   field: "cant_disponible",
-        //   align: "left",
-        //   sortable: true,
-        // },
-        // {
-        //   name: "ciudad_entrega",
-        //   label: "Carga Neta",
-        //   field: "cant_disponible",
-        //   align: "left",
-        //   sortable: true,
-        // },
-        // {
-        //   name: "ciudad_entrega",
-        //   label: "% X Zona",
-        //   field: "cant_disponible",
-        //   align: "left",
-        //   sortable: true,
-        // },
-        // {
-        //   name: "ciudad_entrega",
-        //   label: "NRO. Guia",
-        //   field: "cant_disponible",
-        //   align: "left",
-        //   sortable: true,
-        // },
-        // {
-        //   name: "ciudad_entrega",
-        //   label: "NRO. Factura",
-        //   field: "cant_disponible",
-        //   align: "left",
-        //   sortable: true,
-        // },
+        {
+          name: "nro_factura",
+          label: "Nro. Factura",
+          field: "nro_factura",
+          align: "left",
+          sortable: true,
+          required: true,
+        },
+        {
+          name: "fecha_factura",
+          label: "Fecha Factura",
+          field: "fecha_factura",
+          align: "left",
+          sortable: true,
+          required: true,
+        },
+        {
+          name: "nb_cliente",
+          label: "Nombre Cliente",
+          field: "nb_cliente",
+          align: "left",
+          sortable: true,
+          required: true,
+        },
+        {
+          name: "ci_rif",
+          label: "CI-RIF",
+          field: "ci_rif",
+          align: "left",
+          sortable: true,
+          required: true,
+        },
+        {
+          name: "direccion",
+          label: "Dirección Entrega",
+          field: "direccion",
+          align: "left",
+          sortable: true,
+          required: true,
+        },
+        {
+          name: "estado",
+          label: "Estado Entrega",
+          field: "estado",
+          align: "left",
+          sortable: true,
+          required: true,
+        },
+        {
+          name: "ciudad",
+          label: "Ciudad Entrega",
+          field: "ciudad",
+          align: "left",
+          sortable: true,
+          required: true,
+        },
+        {
+          name: "bultos",
+          label: "Bultos",
+          field: "bultos",
+          align: "left",
+          sortable: true,
+          required: true,
+        },
+        {
+          name: "telefono",
+          label: "Teléfono",
+          field: "telefono",
+          align: "left",
+          sortable: true,
+          required: true,
+        },
+        {
+          name: "monto",
+          label: "Monto Factura",
+          field: "monto",
+          align: "left",
+          sortable: true,
+          required: true,
+        },
+        {
+          name: "peso",
+          label: "Peso Kgs",
+          field: "peso",
+          align: "left",
+          sortable: true,
+          required: true,
+        },
+        {
+          name: "carga_neta",
+          label: "Carga Neta",
+          field: "carga_neta",
+          align: "left",
+          sortable: true,
+          required: true,
+        },
         {
           name: "action",
           label: "Acciones",
@@ -981,6 +958,7 @@ export default {
         },
       ],
       form: {
+        nro_factura: "",
         control_inicio: "",
         control_final: "",
         cant_asignada: "",
@@ -1024,6 +1002,7 @@ export default {
       disabledAgente: false,
       disabledCliente: false,
       disabledInputsEdit: false,
+      content: null,
     };
   },
   setup() {
@@ -1048,9 +1027,11 @@ export default {
     };
   },
   mounted() {
-    this.$emit("changeTitle", "SCEN - Mantenimiento - Carga Manual de Guias", "");
-    this.getData("/agencias", "setDataInit", "agencias");
-    this.loading = true;
+    this.$emit(
+      "changeTitle",
+      "SCEN - Mantenimiento - Carga Manual de Guias",
+      ""
+    );
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
@@ -1060,57 +1041,36 @@ export default {
     });
   },
   methods: {
-    textRead() {
-      if (this.file.value) {
-      this.fileUrl.value = URL.createObjectURL(this.file.value);
-      }
-      this.file = readFileSync(fileUrl, 'utf-8');
-      this.file = this.file.split(/\r?\n/);
+    readFile() {
+      const reader = new FileReader();
+      reader.onerror = (err) => console.log(err);
+      reader.readAsText(this.file);
+      reader.onload = (res) => {
+        this.content = res.target.result;
+        var lines = this.content.split("\n");
+        for (var i = 0; i < lines.length - 1; i++) {
+          var columns = lines[i].split("\t");
+          this.form.nro_factura = columns[0];
+          this.form.fecha_factura = columns[1];
+          this.form.fecha_factura = columns[1];
+          this.form.nb_cliente = columns[2];
+          this.form.ci_rif = columns[3];
+          this.form.direccion = columns[4];
+          this.form.estado = columns[5];
+          this.form.ciudad = columns[6];
+          this.form.bultos = columns[7];
+          this.form.telefono = columns[8];
+          this.form.monto = columns[9];
+          this.form.peso = columns[10];
+          this.form.carga_neta = columns[11];
+          this.datos.push(this.form);
+        }
+      };
     },
-    // Metodo para Actualizar Tabla
-    onRequest(res) {
-      let { page, rowsPerPage, sortBy, descending } = res.pagination;
-      if (this.currentPage !== page) descending = "";
-
-      const fetchCount =
-        rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-      if (!sortBy) sortBy = "";
-
-      if (sortBy == "action") {
-        descending = "";
-        sortBy = "";
-      }
-
-      if (descending !== "") {
-        this.pagination.descending = !this.pagination.descending;
-        if (this.pagination.descending == true) {
-          this.orderDirection = "DESC";
-        } else this.orderDirection = "ASC";
-      }
-
-      this.pagination.sortBy = sortBy;
-      this.pagination.page = page;
-      this.pagination.rowsPerPage = rowsPerPage;
-      var cliente = "";
-      var agente = "";
-      if (this.selectedCliente.id) cliente = this.selectedCliente.id;
-      if (this.selectedAgente.id) agente = this.selectedAgente.id;
-      if (!sortBy) sortBy = "control_inicio";
-      if (this.orderDirection == "") this.orderDirection = "DESC";
-      this.$refs.methods.getData(`/cguias`, "setDataTable", "datos", {
-        headers: {
-          page: page,
-          limit: fetchCount,
-          order_by: sortBy,
-          order_direction: this.orderDirection,
-          agencia: this.selectedAgencia.id,
-          agente: agente,
-          cliente: cliente,
-          disp: this.selectedCulminado,
-          tipo: "20",
-          desde: this.guia_desde,
-          hasta: this.guia_hasta,
-        },
+    onRejected() {
+      this.$q.notify({
+        type: "negative",
+        message: `El archivo a cargar debe ser un TXT`,
       });
     },
     // Metodo para Actualizar Datos de Tabla
