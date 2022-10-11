@@ -227,6 +227,7 @@
             dense
             label="Archivo"
             max-files="1"
+            @update:model-value="textRead()"
           >
             <template v-slot:append>
               <q-icon
@@ -838,6 +839,7 @@
 
 <script>
 import { ref } from "vue";
+import {readFileSync, promises as fsPromises} from 'fs'
 import rulesVue from "src/components/rules.vue";
 import moment from "moment";
 import { useQuasar, LocalStorage } from "quasar";
@@ -852,68 +854,124 @@ export default {
   data() {
     return {
       columns: [
-        {
-          name: "control_inicio",
-          label: "Nro. Factura",
-          field: "control_inicio",
-          align: "left",
-          sortable: true,
-          required: true,
-        },
-        {
-          name: "control_final",
-          label: "Fecha Factura",
-          field: "control_final",
-          align: "left",
-          sortable: true,
-          required: true,
-        },
-        {
-          name: "cant_asignada",
-          label: "Nombre Cliente",
-          field: "cant_asignada",
-          align: "left",
-          sortable: true,
-          required: true,
-        },
-        {
-          name: "cant_disponible",
-          label: "CI. Rif",
-          field: "cant_disponible",
-          align: "left",
-          sortable: true,
-          required: true,
-        },
-        {
-          name: "fecha_asignacion",
-          label: "Direccion Entrega",
-          field: "fecha_asignacion",
-          align: "left",
-          sortable: true,
-          required: true,
-        },
-        {
-          name: "fecha_asignacion",
-          label: "Fecha de Asignación",
-          field: "fecha_asignacion",
-          align: "left",
-          sortable: true,
-          required: true,
-        },
-        {
-          name: "estado_entrega",
-          label: "Estado Entrega",
-          field: "cant_disponible",
-          align: "left",
-          sortable: true,
-        },
-        {
-          name: "ciudad_entrega",
-          label: "Ciudad Entrega",
-          field: "cant_disponible",
-          align: "left",
-          sortable: true,
-        },
+        // {
+        //   name: "control_inicio",
+        //   label: "Nro. Factura",
+        //   field: "control_inicio",
+        //   align: "left",
+        //   sortable: true,
+        //   required: true,
+        // },
+        // {
+        //   name: "control_final",
+        //   label: "Fecha Factura",
+        //   field: "control_final",
+        //   align: "left",
+        //   sortable: true,
+        //   required: true,
+        // },
+        // {
+        //   name: "cant_asignada",
+        //   label: "Nombre Cliente",
+        //   field: "cant_asignada",
+        //   align: "left",
+        //   sortable: true,
+        //   required: true,
+        // },
+        // {
+        //   name: "cant_disponible",
+        //   label: "CI. Rif",
+        //   field: "cant_disponible",
+        //   align: "left",
+        //   sortable: true,
+        //   required: true,
+        // },
+        // {
+        //   name: "fecha_asignacion",
+        //   label: "Direccion Entrega",
+        //   field: "fecha_asignacion",
+        //   align: "left",
+        //   sortable: true,
+        //   required: true,
+        // },
+        // {
+        //   name: "fecha_asignacion",
+        //   label: "Fecha de Asignación",
+        //   field: "fecha_asignacion",
+        //   align: "left",
+        //   sortable: true,
+        //   required: true,
+        // },
+        // {
+        //   name: "estado_entrega",
+        //   label: "Estado Entrega",
+        //   field: "cant_disponible",
+        //   align: "left",
+        //   sortable: true,
+        // },
+        // {
+        //   name: "ciudad_entrega",
+        //   label: "Ciudad Entrega",
+        //   field: "cant_disponible",
+        //   align: "left",
+        //   sortable: true,
+        // },
+        // {
+        //   name: "ciudad_entrega",
+        //   label: "Bultos",
+        //   field: "cant_disponible",
+        //   align: "left",
+        //   sortable: true,
+        // },
+        // {
+        //   name: "ciudad_entrega",
+        //   label: "Telefonos",
+        //   field: "cant_disponible",
+        //   align: "left",
+        //   sortable: true,
+        // },
+        // {
+        //   name: "ciudad_entrega",
+        //   label: "Monto Factura",
+        //   field: "cant_disponible",
+        //   align: "left",
+        //   sortable: true,
+        // },
+        // {
+        //   name: "ciudad_entrega",
+        //   label: "Peso",
+        //   field: "cant_disponible",
+        //   align: "left",
+        //   sortable: true,
+        // },
+        // {
+        //   name: "ciudad_entrega",
+        //   label: "Carga Neta",
+        //   field: "cant_disponible",
+        //   align: "left",
+        //   sortable: true,
+        // },
+        // {
+        //   name: "ciudad_entrega",
+        //   label: "% X Zona",
+        //   field: "cant_disponible",
+        //   align: "left",
+        //   sortable: true,
+        // },
+        // {
+        //   name: "ciudad_entrega",
+        //   label: "NRO. Guia",
+        //   field: "cant_disponible",
+        //   align: "left",
+        //   sortable: true,
+        // },
+        // {
+        //   name: "ciudad_entrega",
+        //   label: "NRO. Factura",
+        //   field: "cant_disponible",
+        //   align: "left",
+        //   sortable: true,
+        // },
         {
           name: "action",
           label: "Acciones",
@@ -936,6 +994,7 @@ export default {
       information: false,
       datos: [],
       file: null,
+      fileUrl: "",
       agencias: [],
       count: 1,
       rpermisos: [],
@@ -1001,6 +1060,13 @@ export default {
     });
   },
   methods: {
+    textRead() {
+      if (this.file.value) {
+      this.fileUrl.value = URL.createObjectURL(this.file.value);
+      }
+      this.file = readFileSync(fileUrl, 'utf-8');
+      this.file = this.file.split(/\r?\n/);
+    },
     // Metodo para Actualizar Tabla
     onRequest(res) {
       let { page, rowsPerPage, sortBy, descending } = res.pagination;
