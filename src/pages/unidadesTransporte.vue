@@ -96,10 +96,10 @@
     >
       <div class="row q-pa-md justify-end">
         <div
-          class="col-xs-12 text-secondary movilTitle"
-          style="align-self: center; text-align: center; font-size: 25px"
+          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
+          style="align-self: center; text-align: center"
         >
-          <p><strong>MANTENIMIENTO - UNIDADES DE TRANSPORTE</strong></p>
+          <p style="font-size: 20px" class="text-secondary"><strong>MANTENIMIENTO - UNIDADES DE TRANSPORTE</strong></p>
         </div>
         <div
           class="col-md-5 col-sm-6 col-xs-12 marginHeader marginHeaderMobile"

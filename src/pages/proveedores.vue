@@ -14,18 +14,8 @@
                   class="pcform"
                   lazy-rules
                   :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        50,
-                        'Maximo 50 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isMax(val, 50),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   @update:model-value="
                     form.nb_beneficiario = form.nb_beneficiario.toUpperCase()
@@ -36,7 +26,6 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-4 col-xs-12">
                 <q-input
                   outlined
@@ -46,19 +35,9 @@
                   class="pcform"
                   lazy-rules
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        100,
-                        'Maximo 100 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 100),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   @update:model-value="
                     form.nb_proveedor = form.nb_proveedor.toUpperCase()
@@ -69,7 +48,6 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-4 col-xs-12">
                 <q-input
                   outlined
@@ -77,19 +55,9 @@
                   label="RIF"
                   hint=""
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        20,
-                        'Maximo 22 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 20),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   lazy-rules
                   @update:model-value="
@@ -101,7 +69,6 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
@@ -109,18 +76,8 @@
                   label="NIT"
                   class="pcform"
                   :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        20,
-                        'Maximo 20 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isMax(val, 20),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   hint=""
                   lazy-rules
@@ -133,20 +90,12 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.condicion_pago"
                   label="Condición de Pago (Días)"
-                  :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        2,
-                        'Maximo 2 Caracteres'
-                      ) || '',
-                  ]"
+                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 2)]"
                   v-money="moneyNotDecimal"
                   input-class="text-right"
                   hint=""
@@ -157,25 +106,14 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.direccion_correo"
                   label="Direccion de Correo"
                   :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        200,
-                        'Maximo 200 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isMax(val, 200),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   hint=""
                   class="pcform"
@@ -189,25 +127,14 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.direccion_fiscal"
                   label="Direccion Fiscal"
                   :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        200,
-                        'Maximo 200 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isMax(val, 200),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   hint=""
                   lazy-rules
@@ -220,59 +147,38 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-4 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.tlf_proveedor"
                   label="Telefono"
                   :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        100,
-                        'Maximo 100 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isMax(val, 100),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   hint=""
                   lazy-rules
                   class="pcform"
-                  mask="### - ### - ##########"
+                  mask="(####) ### - ####"
                 >
                   <template v-slot:prepend>
                     <q-icon name="phone" />
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-4 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.fax_proveedor"
                   label="Fax"
                   :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        50,
-                        'Maximo 50 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isMax(val, 50),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   hint=""
                   lazy-rules
                   class="pcform"
+                  mask="(####) ### - ####"
                   @update:model-value="
                     form.fax_proveedor = form.fax_proveedor.toUpperCase()
                   "
@@ -282,25 +188,14 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-4 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.email_proveedor"
                   label="Email"
                   :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        50,
-                        'Maximo 50 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isMax(val, 50),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   hint=""
                   lazy-rules
@@ -314,7 +209,6 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-4 col-xs-12">
                 <q-select
                   outlined
@@ -323,7 +217,7 @@
                   class="pcform"
                   input-class="input"
                   hint=""
-                  :options="servicio_prestado"
+                  :options="servicioPrestado"
                   lazy-rules
                 >
                   <template v-slot:prepend>
@@ -331,7 +225,6 @@
                   </template>
                 </q-select>
               </div>
-
               <div class="col-md-4 col-xs-12">
                 <q-select
                   outlined
@@ -340,20 +233,22 @@
                   class="pcform"
                   input-class="input"
                   hint=""
-                  :options="tipo_persona"
-                  :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
-                  ]"
+                  :options="tipoPersona"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
                   lazy-rules
                   @update:model-value="
-                    this.getData(`/mretenciones`, 'setData', 'retenciones', {
-                      headers: {
-                        vigente: 's',
-                        tipo_persona: form.tipo_persona.value,
-                      },
-                    });
-                    this.form.cod_tipo_retencion = [];
+                    this.$refs.methods.getData(
+                      'mretenciones',
+                      'setData',
+                      'retenciones',
+                      {
+                        headers: {
+                          vigente: 's',
+                          tipo_persona: form.tipo_persona.value,
+                        },
+                      }
+                    );
+                    this.selectedRetencion = [];
                   "
                 >
                   <template v-slot:prepend>
@@ -361,20 +256,18 @@
                   </template>
                 </q-select>
               </div>
-
               <div class="col-md-4 col-xs-12">
                 <q-select
                   outlined
-                  v-model="form.cod_tipo_retencion"
+                  v-model="selectedRetencion"
                   label="Tipo Retención ISLR"
                   hint=""
                   :options="retencionesSelected"
                   @filter="
-                    (val, update, abort) =>
+                    (val, update) =>
                       filterArray(
                         val,
                         update,
-                        abort,
                         'retencionesSelected',
                         'retenciones',
                         'nb_tipo_retencion'
@@ -384,10 +277,7 @@
                   hide-selected
                   fill-input
                   input-debounce="0"
-                  :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
-                  ]"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
                   option-label="nb_tipo_retencion"
                   option-value="id"
                   lazy-rules
@@ -403,17 +293,13 @@
                   </template>
                 </q-select>
               </div>
-
               <div class="col-md-6 col-xs-12">
                 <q-select
                   outlined
                   v-model="form.flag_activo"
                   label="Estatus"
                   input-class="input"
-                  :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
-                  ]"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
                   hint=""
                   class="pcform"
                   :options="estatus"
@@ -424,7 +310,6 @@
                   </template>
                 </q-select>
               </div>
-
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
@@ -432,14 +317,7 @@
                   label="Observaciones"
                   hint=""
                   lazy-rules
-                  :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
-                  ]"
+                  :rules="[(val) => this.$refs.rulesVue.isMin(val, 3)]"
                   @update:model-value="
                     form.observacion = form.observacion.toUpperCase()
                   "
@@ -450,9 +328,8 @@
                 </q-input>
               </div>
             </div>
-
             <div
-              class=" row justify-center items-center content-center"
+              class="row justify-center items-center content-center"
               style="margin-bottom: 10px"
             >
               <q-btn
@@ -479,36 +356,29 @@
     <div class="q-pa-sm justify-center">
       <div class="q-pa-md row justify-end">
         <div
-          class="col-md-4 col-xs-12 text-secondary movilTitle"
-          style="
-            align-self: center;
-            text-align: center;
-            font-size: 20px;
-            margin-bottom: 15px;
-          "
+          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
+          style="align-self: center; text-align: center"
         >
-          <p><strong>MANTENIMIENTO - PROVEEDORES</strong></p>
+          <p style="font-size: 20px" class="text-secondary">
+            <strong>MANTENIMIENTO - PROVEEDORES</strong>
+          </p>
         </div>
         <div
           class="col-md-5 col-sm-7 col-xs-12 cardMargin selectMobile"
           style="align-self: center"
         >
           <q-input
-            v-model="filter"
+            v-model="this.pagination.filterValue"
             rounded
             dense
             outlined
             standout
             label="Búsqueda avanzada"
-            @keydown.enter="
-              getDataProveedores('/proveedores', 'setDataTable', 'datos')
-            "
+            @keydown.enter="getDataTable()"
           >
             <template v-slot:append>
               <q-icon
-                @click="
-                  getDataProveedores('/proveedores', 'setDataTable', 'datos')
-                "
+                @click="getDataTable()"
                 class="cursor-pointer"
                 name="search"
               />
@@ -520,7 +390,7 @@
           style="text-align: center; align-self: center"
         >
           <q-btn
-            label="Insertar Proveedor"
+            label="Insertar"
             rounded
             color="primary"
             @click="
@@ -531,23 +401,27 @@
           ></q-btn>
         </div>
       </div>
-
       <div class="q-pa-md q-gutter-y-md">
         <q-table
-          :rows="datos"
+          :rows="proveedores"
           binary-state-sort
           :loading="loading"
           row-key="id"
           :columns="columns"
           :rows-per-page-options="[5, 10, 15, 20, 50]"
-          @request="onRequest"
+          @request="getDataTable"
           :separator="separator"
           style="width: 100%"
           :grid="$q.screen.xs"
           v-model:pagination="pagination"
         >
           <template v-slot:loading>
-            <q-inner-loading showing color="primary" />
+            <q-inner-loading showing color="primary" class="loading" />
+          </template>
+          <template v-slot:body-cell-flag_activo="props">
+            <q-td :props="props">
+              {{ filterDesc("estatus", props.row.flag_activo) }}
+            </q-td>
           </template>
           <template v-slot:body-cell-action="props">
             <q-td :props="props">
@@ -559,19 +433,12 @@
                 icon="edit"
                 :disabled="this.allowOption(3)"
                 @click="
-                  getData(
+                  this.$refs.methods.getData(
                     `/proveedores/${props.row.id}`,
                     'setDataEdit',
-                    'form',
-                    {
-                      headers: {
-                        Authorization: ``,
-                        vigente: 's',
-                      },
-                    }
+                    'form'
                   );
                   dialog = true;
-                  this.resetForm();
                 "
               ></q-btn>
               <q-btn
@@ -598,23 +465,11 @@
                       <q-item-label>{{ col.label }}</q-item-label>
                     </q-item-section>
                     <q-item-section side class="itemMovilSide">
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
+                      <q-item-label v-if="col.name === 'flag_activo'">
+                        {{ filterDesc("estatus", props.row.flag_activo) }}
+                      </q-item-label>
                       <q-btn
-                        v-else-if="col.name === 'action'"
+                        v-if="col.name === 'action'"
                         dense
                         round
                         flat
@@ -622,38 +477,16 @@
                         icon="edit"
                         :disabled="this.allowOption(3)"
                         @click="
-                          getData(
+                          this.$refs.methods.getData(
                             `/proveedores/${props.row.id}`,
                             'setDataEdit',
-                            'form',
-                            {
-                              headers: {
-                                Authorization: ``,
-                                vigente: 's',
-                              },
-                            }
+                            'form'
                           );
-                          this.resetForm();
                           dialog = true;
                         "
                       ></q-btn>
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
                       <q-btn
-                        v-else-if="col.name === 'action'"
+                        v-if="col.name === 'action'"
                         dense
                         round
                         flat
@@ -663,11 +496,8 @@
                         @click="selected = props.row.id"
                         @click.capture="deletePopup = true"
                       ></q-btn>
-                      <q-item-label
-                        v-else
-                        caption
-                        :class="col.classes ? col.classes : ''"
-                        >{{ col.value }}
+                      <q-item-label v-if="col.name != 'flag_activo'">
+                        {{ col.value }}
                       </q-item-label>
                     </q-item-section>
                   </q-item>
@@ -686,7 +516,6 @@
             ¿Estas seguro que quieres eliminar este elemento?
           </div>
         </q-card-section>
-
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="primary" v-close-popup />
           <q-btn
@@ -694,7 +523,12 @@
             label="Aceptar"
             color="primary"
             v-close-popup
-            @click="deleteData(selected)"
+            @click="
+              this.$refs.methods.deleteData(
+                `/proveedores/${selected}`,
+                'getDataTable'
+              )
+            "
           />
         </q-card-actions>
       </q-card>
@@ -702,14 +536,10 @@
 
     <methods
       ref="methods"
-      @get-Data-Proveedores="
-        getDataProveedores('/proveedores', 'setDataTable', 'datos')
-      "
-      @set-Data-Table="setDataTable"
-      @on-Request="onRequest"
-      @set-data="setData"
-      @reset-Loading="resetLoading"
+      @set-Data="setData"
       @set-Data-Edit="setDataEdit"
+      @get-Data-Table="getDataTable"
+      @set-Data-Table="setDataTable"
       @set-Data-Permisos="setDataPermisos"
     >
     </methods>
@@ -720,7 +550,8 @@
 
 <script>
 import { ref } from "vue";
-import { useQuasar, LocalStorage } from "quasar";
+import { api } from "boot/axios";
+import { LocalStorage } from "quasar";
 import rulesVue from "src/components/rules.vue";
 import { VMoney } from "v-money";
 import methodsVue from "src/components/methods.vue";
@@ -749,7 +580,6 @@ export default {
           field: "nb_proveedor",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
           name: "condicion_pago",
@@ -757,22 +587,19 @@ export default {
           field: "condicion_pago",
           align: "left",
           sortable: true,
-          required: true,
+          format: (val) => (val != null ? val + " Días" : ""),
         },
         {
-          name: "activo_desc",
+          name: "flag_activo",
           label: "Estatus",
-          field: "activo_desc",
+          field: "flag_activo",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
           name: "action",
           label: "Acciones",
           align: "center",
-          sortable: true,
-          required: true,
         },
       ],
       form: {
@@ -792,11 +619,11 @@ export default {
         tipo_persona: [],
         flag_activo: [],
       },
-      tipo_persona: [
+      tipoPersona: [
         { label: "JURÍDICA", value: "J" },
         { label: "NATURAL", value: "N" },
       ],
-      servicio_prestado: [
+      servicioPrestado: [
         { label: "TRANSPORTE", value: "TP" },
         { label: "PAPELERIA", value: "PP" },
         { label: "SUMINISTROS DE COMPUTACIÓN", value: "SC" },
@@ -806,40 +633,36 @@ export default {
         { label: "ACTIVO", value: "A" },
         { label: "INACTIVO", value: "I" },
       ],
+      pagination: {
+        page: 1,
+        rowsPerPage: 5,
+        sortBy: "nb_proveedor",
+        descending: false,
+        filter: "nb_proveedor,condicion_pago,flag_activo",
+        filterValue: "",
+        rowsNumber: "",
+      },
       retenciones: [],
-      orderDirection: "",
-      filter: "",
       currentPage: 1,
-      datos: [],
+      proveedores: [],
       selected: [],
+      selectedRetencion: [],
       retencionesSelected: [],
       rpermisos: [],
-      error: "",
     };
   },
   setup() {
-    const $q = useQuasar();
-    const loading = ref(false);
-    const order = ref(false);
-    const pagination = ref({
-      descending: "",
-      page: 1,
-      rowsPerPage: 5,
-      rowsNumber: "",
-    });
-
     return {
-      pagination,
-      anulate: ref(false),
-      separator: ref("vertical"),
       loading: ref(false),
+      separator: ref("vertical"),
       dialog: ref(false),
       deletePopup: ref(false),
     };
   },
   mounted() {
     this.$emit("changeTitle", "SCEN - Mantenimiento - Proveedores", "");
-    this.getDataProveedores("/proveedores", "setDataTable", "datos");
+    this.getDataTable();
+
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
         rol: LocalStorage.getItem("tokenTraducido").usuario.roles.id,
@@ -848,60 +671,8 @@ export default {
     });
   },
   methods: {
-    // Metodo para Actualizar Tabla al seleccionar opcion de la misma
-    onRequest(res, dataRes) {
-      let { page, rowsPerPage, sortBy, descending } = res.pagination;
-      if (this.currentPage !== page) {
-        descending = "";
-      }
-      const fetchCount =
-        rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-
-      if (!sortBy) sortBy = "nro_item";
-
-      if (sortBy == "action") {
-        descending = "";
-        sortBy = "";
-      }
-
-      if (descending !== "") {
-        this.pagination.descending = !this.pagination.descending;
-        if (this.pagination.descending == true) {
-          this.orderDirection = "DESC";
-        } else this.orderDirection = "ASC";
-      }
-
-      this.pagination.sortBy = sortBy;
-      this.pagination.page = page;
-      this.pagination.rowsPerPage = rowsPerPage;
-      this.getData(`/proveedores`, "setDataTable", "datos", {
-        headers: {
-          page: page,
-          limit: fetchCount,
-          order_direction: this.orderDirection,
-          order_by: sortBy,
-          filter: "nb_proveedor,condicion_pago",
-          filter_value: this.filter,
-        },
-      });
-    },
-    // Metodo para Setear Datos de Tabla
-    setDataTable(res, dataRes) {
-      this[dataRes] = res.data;
-      this.pagination.page = res.currentPage;
-      this.currentPage = res.currentPage;
-      this.pagination.rowsNumber = res.total;
-      this.pagination.rowsPerPage = res.limit;
-      this.loading = false;
-      for (var e = 0, len = this.datos.length; e < len; e++) {
-        if (this.datos[e].condicion_pago !== null) {
-          this.datos[e].condicion_pago = this.datos[e].condicion_pago + " Dias";
-        }
-        if (e == this.datos.length - 1) break;
-      }
-    },
-    // Metodo para Filtrar Array
-    filterArray(val, update, abort, pagina, array, element) {
+    // Metodos para Filtrar Selects
+    filterArray(val, update, pagina, array, element) {
       if (val === "") {
         update(() => {
           this[pagina] = this[array];
@@ -922,9 +693,15 @@ export default {
         }
       });
     },
-    // Metodo para Resetear Carga
-    resetLoading() {
-      this.loading = false;
+    // Metodo para traer el value de los Selects y Columns
+    findIndex(array, value) {
+      var find = this[array].findIndex((item) => item.id == value);
+      return find >= 0 ? find : null;
+    },
+    // Metodo para traer el value de los Selects y Columns
+    filterDesc(array, value) {
+      var find = this[array].findIndex((item) => item.value == value);
+      return find >= 0 ? this[array][find].label : null;
     },
     // Metodo para validar Permisos
     allowOption(option) {
@@ -941,44 +718,58 @@ export default {
 
     // METODOS DE PAGINA
 
-    // Metodo para Get de Datos
-    getData(url, call, dataRes, axiosConfig) {
-      this.$refs.methods.getData(url, call, dataRes, axiosConfig);
-    },
-    // Metodo para Get de Proveedores
-    getDataProveedores(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, {
-        headers: {
-          vigente: "s",
-          page: 1,
-          limit: 5,
-          filter: "nb_proveedor,condicion_pago",
-          filter_value: this.filter,
-          order_direction: this.orderDirection,
-          order_by: this.pagination.sortBy,
-        },
-      });
-      this.loading = true;
-    },
-    // Metodo para Setear Datos
+    // Metodo para Setear Datos Generales
     setData(res, dataRes) {
+      this[dataRes] = res.data ? res.data : res;
+    },
+    // Metodo para Extraer Datos de Tabla
+    getDataTable(props) {
+      this.loading = true;
+      if (props) this.pagination = props.pagination;
+      this.$refs.methods.getData(
+        `/proveedores`,
+        "setDataTable",
+        "proveedores",
+        {
+          headers: {
+            page: this.pagination.page,
+            limit: this.pagination.rowsPerPage,
+            order_by: this.pagination.sortBy,
+            order_direction: this.pagination.descending ? "DESC" : "ASC",
+            filter: this.pagination.filter,
+            filter_value: this.pagination.filterValue,
+          },
+        }
+      );
+    },
+    // Metodo para Setear Datos de Tabla
+    setDataTable(res, dataRes) {
+      this[dataRes] = res.data ? res.data : res;
+      this.pagination.page = res.currentPage;
+      this.currentPage = res.currentPage;
+      this.pagination.rowsNumber = res.total;
+      this.pagination.rowsPerPage = res.limit;
       this.loading = false;
-      this[dataRes] = res.data;
     },
     // Metodo para Setear Datos Seleccionados
     setDataEdit(res, dataRes) {
-      if (res.tipo_persona === "J") {
-        var tipo_personaHeader = "J";
-      } else if (res.tipo_persona === "N") {
-        var tipo_personaHeader = "N";
-      }
-      this.loading = false;
-      this.getData(`/mretenciones`, "setData", "retenciones", {
-        headers: {
-          vigente: "s",
-          tipo_persona: tipo_personaHeader,
-        },
-      });
+      api
+        .get(`/mretenciones/`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            vigente: "s",
+            tipo_persona: res.tipo_persona,
+          },
+        })
+        .then((retenciones) => {
+          this.retenciones = retenciones.data.data;
+          if (res.cod_tipo_retencion) {
+            this.selectedRetencion =
+              this.retenciones[
+                this.findIndex("retenciones", res.cod_tipo_retencion)
+              ];
+          }
+        });
       this.form.id = res.id;
       this.form.condicion_pago = res.condicion_pago;
       this.form.nb_proveedor = res.nb_proveedor;
@@ -996,14 +787,6 @@ export default {
       this.form.flag_activo = res.activo_desc;
       this.form.cod_tipo_retencion = res.retenciones;
     },
-    // Metodo para Eliminar Datos
-    deleteData(idpost) {
-      this.$refs.methods.deleteData(
-        `/proveedores/${idpost}`,
-        "getDataProveedores"
-      );
-      this.loading = true;
-    },
     // Metodo para Crear o Editar Datos
     sendData() {
       this.form.condicion_pago = this.form.condicion_pago
@@ -1012,26 +795,22 @@ export default {
       this.form.tipo_servicio = this.form.tipo_servicio.value;
       this.form.tipo_persona = this.form.tipo_persona.value;
       this.form.flag_activo = this.form.flag_activo.value;
-      this.form.cod_tipo_retencion = this.form.cod_tipo_retencion.id;
+      this.form.cod_tipo_retencion = this.selectedRetencion.id;
       if (!this.form.id) {
         this.$refs.methods.createData(
           "/proveedores",
           this.form,
-          "getDataProveedores"
+          "getDataTable"
         );
-        this.resetForm();
-        this.loading = true;
-        this.dialog = false;
       } else {
         this.$refs.methods.putData(
           `/proveedores/${this.form.id}`,
           this.form,
-          "getDataProveedores"
+          "getDataTable"
         );
-        this.dialog = false;
-        this.resetForm();
-        this.loading = true;
       }
+      this.dialog = false;
+      this.resetForm();
     },
     // Metodo para Resetear Datos
     resetForm() {
@@ -1048,7 +827,7 @@ export default {
       this.form.condicion_pago = "";
       this.form.observacion = "";
       this.form.tipo_servicio = "";
-      this.form.cod_tipo_retencion = "";
+      this.selectedRetencion = [];
       this.retenciones = [];
       this.form.tipo_persona = "";
       this.form.flag_activo = "";
@@ -1058,10 +837,6 @@ export default {
 </script>
 
 <style>
-.hide {
-  display: none;
-}
-
 @media screen and (min-width: 600px) {
   .movilTitle {
     display: none;

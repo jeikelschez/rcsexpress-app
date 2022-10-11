@@ -95,13 +95,13 @@
     </q-dialog>
 
     <div class="q-pa-sm justify-center">
-      <div class="row q-pa-md">
+      <div class="q-pa-md row justify-end">
         <div
-          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 text-secondary movilTitle"
+          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
           style="align-self: center; text-align: center"
         >
-          <p style="font-size: 25px">
-            <strong>CONCEPTOS POR OPERACIÓN</strong>
+          <p style="font-size: 20px" class="text-secondary">
+            <strong>MANTENIMIENTO - CONCEPTOS POR OPERACIÓN</strong>
           </p>
         </div>
 

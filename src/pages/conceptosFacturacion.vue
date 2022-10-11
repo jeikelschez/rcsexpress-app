@@ -120,13 +120,13 @@
     </q-dialog>
 
     <div class="q-pa-sm justify-center">
-      <div class="row q-pa-md">
+      <div class="q-pa-md row justify-end">
         <div
-          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 text-secondary movilTitle"
-          style="align-self: center; text-align: center; margin-bottom: 20px"
+          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
+          style="align-self: center; text-align: center"
         >
-          <p style="font-size: 26px">
-            <strong>CONCEPTOS DE FACTURACIÓN</strong>
+          <p style="font-size: 20px" class="text-secondary">
+            <strong>MANTENIMIENTO - CONCEPTOS DE FACTURACIÓN</strong>
           </p>
         </div>
 

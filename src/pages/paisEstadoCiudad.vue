@@ -45,7 +45,7 @@
               </div>
             </div>
             <div
-              class=" row justify-center items-center content-center"
+              class="row justify-center items-center content-center"
               style="margin-bottom: 10px"
             >
               <q-btn
@@ -117,7 +117,7 @@
               </div>
             </div>
             <div
-              class=" row justify-center items-center content-center"
+              class="row justify-center items-center content-center"
               style="margin-bottom: 10px"
             >
               <q-btn
@@ -221,7 +221,7 @@
               </div>
             </div>
             <div
-              class=" row justify-center items-center content-center"
+              class="row justify-center items-center content-center"
               style="margin-bottom: 10px"
             >
               <q-btn
@@ -260,10 +260,12 @@
         >
           <div class="row paddingMobile">
             <div
-              class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 text-secondary movilTitle"
-              style="align-self: center; text-align: center; font-size: 20px"
+              class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
+              style="align-self: center; text-align: center"
             >
-              <p><strong>MANTENIMIENTO - PAÍS, ESTADO, CIUDAD</strong></p>
+              <p style="font-size: 20px" class="text-secondary">
+                <strong>MANTENIMIENTO - PAÍS, ESTADO, CIUDAD</strong>
+              </p>
             </div>
             <div
               class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-12"
@@ -278,9 +280,7 @@
                 style="font-size: 17px"
               />
             </div>
-            <div
-              class="q-pa-md col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-12"
-            >
+            <div class="q-pa-md col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-12">
               <q-input
                 v-model="filterPaises"
                 rounded
@@ -432,10 +432,12 @@
         >
           <div class="row q-pa-md paddingMobile">
             <div
-              class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 text-secondary movilTitle"
-              style="align-self: center; text-align: center; font-size: 20px"
+              class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
+              style="align-self: center; text-align: center"
             >
-              <p><strong>MANTENIMIENTO - PAÍS, ESTADO, CIUDAD</strong></p>
+              <p style="font-size: 20px" class="text-secondary">
+                <strong>MANTENIMIENTO - PAÍS, ESTADO, CIUDAD</strong>
+              </p>
             </div>
             <div
               class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 marginHeader marginHeaderMovil"
@@ -516,7 +518,7 @@
               </q-input>
             </div>
             <div
-              class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 cardMarginButton" 
+              class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 cardMarginButton"
               style="text-align: center; align-self: center"
             >
               <q-btn
@@ -640,10 +642,12 @@
         >
           <div class="row q-pa-md paddingMobile">
             <div
-              class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 text-secondary movilTitle"
-              style="align-self: center; text-align: center; font-size: 20px"
+              class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
+              style="align-self: center; text-align: center"
             >
-              <p><strong>MANTENIMIENTO - PAÍS, ESTADO, CIUDAD</strong></p>
+              <p style="font-size: 20px" class="text-secondary">
+                <strong>MANTENIMIENTO - PAÍS, ESTADO, CIUDAD</strong>
+              </p>
             </div>
             <div
               class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 marginHeader marginHeaderMovil marginHeaderPC"
@@ -1428,7 +1432,7 @@ export default {
         "checkUrbano",
         res.check_urbano
       );
-      console.log(this.formCiudades.check_urbano)
+      console.log(this.formCiudades.check_urbano);
     },
     // Metodos para Editar o Crear Ciudades
     sendDataCiudades() {

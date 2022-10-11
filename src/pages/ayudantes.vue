@@ -82,7 +82,7 @@
               </div>
             </div>
             <div
-              class=" row justify-center items-center content-center"
+              class="row justify-center items-center content-center"
               style="margin-bottom: 10px"
             >
               <q-btn
@@ -111,10 +111,12 @@
     >
       <div class="row q-pa-md justify-end">
         <div
-          class="col-md-4 col-xs-12 text-secondary movilTitle"
+          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
           style="align-self: center; text-align: center"
         >
-          <h4><strong>MANTENIMIENTO - AYUDANTES</strong></h4>
+          <p style="font-size: 20px" class="text-secondary">
+            <strong>MANTENIMIENTO - AYUDANTES</strong>
+          </p>
         </div>
         <div
           class="col-md-6 col-sm-7 col-xs-12 cardMargin selectMobile"

@@ -42,16 +42,15 @@
     </q-dialog>
 
     <div class="q-pa-sm justify-center">
-      <div class="row q-pa-md">
+      <div class="q-pa-md row justify-end">
         <div
-          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 text-secondary movilTitle"
+          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
           style="align-self: center; text-align: center"
         >
-          <p style="font-size: 30px; margin-bottom: 20px">
+          <p style="font-size: 20px" class="text-secondary">
             <strong>SEGURIDAD - PERMISOLOGÍA</strong>
           </p>
         </div>
-
         <div
           class="col-md-6 col-xl-6 col-lg-6 col-xs-12 col-sm-6 cardMargin selectMobile"
           style="align-self: center; text-align: center"

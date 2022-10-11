@@ -211,10 +211,10 @@
     >
       <div class="justify-end q-pa-md row">
         <div
-          class="col-md-4 col-xs-12 text-secondary movilTitle"
+          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
           style="align-self: center; text-align: center"
         >
-          <h4><strong>MANTENIMIENTO - TARIFAS</strong></h4>
+          <p style="font-size: 20px" class="text-secondary"><strong>MANTENIMIENTO - TARIFAS</strong></p>
         </div>
         <div
           class="col-md-6 col-sm-7 col-xs-12 cardMargin selectMobile"

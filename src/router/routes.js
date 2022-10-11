@@ -308,7 +308,7 @@ const routes = [
       {
         path: '/roles',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('pages/Roles.vue')}]
+        children: [{ path: "", component: () => import('pages/roles.vue')}]
       },
       {
         path: '/usuarios',

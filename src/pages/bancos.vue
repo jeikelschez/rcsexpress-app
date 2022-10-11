@@ -151,12 +151,14 @@
     </q-dialog>
 
     <div class="q-pa-sm justify-center">
-      <div class="row q-pa-md justify-end">
+      <div class="q-pa-md row justify-end">
         <div
-          class="col-md-4 col-xs-12 text-secondary movilTitle"
-          style="align-self: center; text-align: center; font-size: 25px"
+          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
+          style="align-self: center; text-align: center"
         >
-          <p><strong>MANTENIMIENTO - BANCOS</strong></p>
+          <p style="font-size: 20px" class="text-secondary">
+            <strong>MANTENIMIENTO - BANCOS</strong>
+          </p>
         </div>
         <div
           class="col-md-6 col-sm-7 col-xs-12 cardMargin selectMobile"

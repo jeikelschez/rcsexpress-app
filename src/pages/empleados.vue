@@ -139,17 +139,14 @@
     </q-dialog>
 
     <div class="q-pa-sm justify-center">
-      <div class="row q-pa-md justify-end">
+      <div class="q-pa-md row justify-end">
         <div
-          class="col-md-4 col-xs-12 text-secondary movilTitle"
-          style="
-            align-self: center;
-            text-align: center;
-            font-size: 20px;
-            margin-bottom: 15px;
-          "
+          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
+          style="align-self: center; text-align: center"
         >
-          <p><strong>MANTENIMIENTO - EMPLEADOS</strong></p>
+          <p style="font-size: 20px" class="text-secondary">
+            <strong>MANTENIMIENTO - EMPLEADOS</strong>
+          </p>
         </div>
         <div
           class="col-md-5 col-sm-7 col-xs-12 cardMargin selectMobile"
@@ -454,7 +451,7 @@ export default {
     // Metodo para Setear Datos Seleccionados
     setDataEdit(res, dataRes) {
       this[dataRes].id = res.id;
-      this[dataRes].nombre = res.nombre ;
+      this[dataRes].nombre = res.nombre;
       this[dataRes].rif_empleado = res.rif_empleado;
       this[dataRes].aplica_retencion = res.aplica_retencion;
       this[dataRes].periodo = res.periodo;
@@ -496,7 +493,6 @@ export default {
 </script>
 
 <style>
-
 @media screen and (min-width: 600px) {
   .movilTitle {
     display: none;

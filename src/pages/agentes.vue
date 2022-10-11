@@ -265,10 +265,12 @@
       <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
         <div class="q-pa-md row" style="margin-top: 2px">
           <div
-            class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 text-secondary movilTitle"
-            style="align-self: center; text-align: center; font-size: 20px"
+            class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
+            style="align-self: center; text-align: center"
           >
-            <p><strong>MANTENIMIENTO - AGENTES</strong></p>
+            <p style="font-size: 20px" class="text-secondary">
+              <strong>MANTENIMIENTO - AGENTES</strong>
+            </p>
           </div>
           <div
             class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-6 cardMargin selectMobile"

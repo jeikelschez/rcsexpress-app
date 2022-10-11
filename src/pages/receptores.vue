@@ -195,10 +195,10 @@
     >
       <div class="row justify-end q-pa-md">
         <div
-          class="col-md-12 col-xs-12 text-secondary movilTitle"
+          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
           style="align-self: center; text-align: center"
         >
-          <h4><strong>MANTENIMIENTO - RECEPTORES</strong></h4>
+          <p style="font-size: 20px" class="text-secondary"><strong>MANTENIMIENTO - RECEPTORES</strong></p>
         </div>
         <div
           class="col-md-6 col-sm-7 col-xs-12 cardMargin selectMobile"

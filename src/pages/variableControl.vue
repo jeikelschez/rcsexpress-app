@@ -85,21 +85,13 @@
       </q-card>
     </q-dialog>
 
-    <div class="justify-center" style="margin-top: 7px">
-      <div
-        class="row q-pa-md col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 text-secondary justify-end"
-      >
+    <div class="q-pa-sm justify-center">
+      <div class="q-pa-md row justify-end">
         <div
-          class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 movilTitle"
+          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
+          style="align-self: center; text-align: center"
         >
-          <p
-            style="
-              font-size: 25px;
-              align-self: center;
-              text-align: center;
-              margin-top: 15px;
-            "
-          >
+          <p style="font-size: 20px" class="text-secondary">
             <strong>MANTENIMIENTO - VARIABLE CONTROL</strong>
           </p>
         </div>
@@ -353,7 +345,7 @@ export default {
           name: "valor",
           label: "Valor de la Variable",
           field: "valor",
-          align: "left",
+          align: "right",
           type: "string",
           sortable: true,
         },

@@ -79,158 +79,154 @@
     </q-dialog>
 
     <div class="q-pa-sm justify-center">
-      <div
-        class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 text-secondary movilTitle"
-      >
-        <p
-          style="
-            font-size: 25px;
-            align-self: center;
-            text-align: center;
-            margin-top: 18px;
-          "
+      <div class="q-pa-md row justify-end">
+        <div
+          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
+          style="align-self: center; text-align: center"
         >
-          <strong>MANTENIMIENTO - HISTORICO DEL DOLAR</strong>
-        </p>
-      </div>
+          <p style="font-size: 20px" class="text-secondary">
+            <strong>MANTENIMIENTO - HISTORICO DEL DOLAR</strong>
+          </p>
+        </div>
 
-      <div
-        class="q-pa-md row col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 justify-end"
-      >
         <div
-          class="col-md-7 col-xl-7 col-lg-7 col-xs-12 col-sm-12 cardMarginFilter selectMovil"
+          class="q-pa-md row col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 justify-end"
         >
-          <q-input
-            v-model="this.pagination.filterValue"
-            rounded
-            dense
-            outlined
-            standout
-            label="Búsqueda avanzada"
-            @keydown.enter="getDataTable()"
+          <div
+            class="col-md-7 col-xl-7 col-lg-7 col-xs-12 col-sm-12 cardMarginFilter selectMovil"
           >
-            <template v-slot:append>
-              <q-icon
-                @click="getDataTable()"
-                class="cursor-pointer"
-                name="search"
-              />
-            </template>
-          </q-input>
-        </div>
-        <div
-          class="col-md-2 col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
-          style="text-align: center; align-self: center"
-        >
-          <q-btn
-            label="Insertar"
-            rounded
-            color="primary"
-            :disabled="this.allowOption(2)"
-            @click="dialog = true"
-            @click.capture="resetForm"
-            class="q-px-xl q-py-xs"
-          ></q-btn>
-        </div>
-      </div>
-      <div class="q-pa-md q-gutter-y-md">
-        <q-table
-          :rows="historico"
-          binary-state-sort
-          row-key="id"
-          :columns="columns"
-          :separator="separator"
-          :rows-per-page-options="[5, 10, 15, 20, 50]"
-          @request="getDataTable"
-          style="width: 100%"
-          :loading="loading"
-          :grid="$q.screen.xs"
-          v-model:pagination="pagination"
-        >
-          <template v-slot:loading>
-            <q-inner-loading showing color="primary" class="loading" />
-          </template>
-          <template v-slot:body-cell-action="props">
-            <q-td :props="props">
-              <q-btn
-                dense
-                round
-                flat
-                color="primary"
-                icon="edit"
-                :disabled="this.allowOption(3)"
-                @click="
-                  this.$refs.methods.getData(
-                    `/hdolar/${props.row.fecha}`,
-                    `setDataEdit`,
-                    'form'
-                  );
-                  fechaNoEditable = true;
-                  dialog = true;
-                "
-              ></q-btn>
-              <q-btn
-                dense
-                round
-                flat
-                color="primary"
-                icon="delete"
-                :disabled="this.allowOption(4)"
-                @click="selected = props.row.fecha"
-                @click.capture="deletePopup = true"
-              ></q-btn>
-            </q-td>
-          </template>
-          <template v-slot:item="props">
-            <div
-              class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
-              :style="props.selected ? 'transform: scale(0.95);' : ''"
+            <q-input
+              v-model="this.pagination.filterValue"
+              rounded
+              dense
+              outlined
+              standout
+              label="Búsqueda avanzada"
+              @keydown.enter="getDataTable()"
             >
-              <q-card :class="props.selected ? 'bg-grey-2' : ''">
-                <q-list dense>
-                  <q-item v-for="col in props.cols" :key="col.name">
-                    <q-item-section>
-                      <q-item-label>{{ col.label }}</q-item-label>
-                    </q-item-section>
-                    <q-item-section side class="itemMovilSide">
-                      <q-btn
-                        v-if="col.name === 'action'"
-                        dense
-                        round
-                        flat
-                        color="primary"
-                        icon="edit"
-                        :disabled="this.allowOption(3)"
-                        @click="
-                          this.$refs.methods.getData(
-                            `/hdolar/${props.row.fecha}`,
-                            `setDataEdit`,
-                            'form'
-                          );
-                          dialog = true;
-                        "
-                      ></q-btn>
-                      <q-btn
-                        v-if="col.name === 'action'"
-                        dense
-                        round
-                        flat
-                        color="primary"
-                        icon="delete"
-                        :disabled="this.allowOption(4)"
-                        @click="selected = props.row.id"
-                        @click.capture="deletePopup = true"
-                      ></q-btn>
-                      <q-item-label>
-                        {{ col.value }}
-                      </q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-card>
-            </div>
-          </template>
-        </q-table>
+              <template v-slot:append>
+                <q-icon
+                  @click="getDataTable()"
+                  class="cursor-pointer"
+                  name="search"
+                />
+              </template>
+            </q-input>
+          </div>
+          <div
+            class="col-md-2 col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
+            style="text-align: center; align-self: center"
+          >
+            <q-btn
+              label="Insertar"
+              rounded
+              color="primary"
+              :disabled="this.allowOption(2)"
+              @click="dialog = true"
+              @click.capture="resetForm"
+              class="q-px-xl q-py-xs"
+            ></q-btn>
+          </div>
+        </div>
+        <div class="q-pa-md q-gutter-y-md">
+          <q-table
+            :rows="historico"
+            binary-state-sort
+            row-key="id"
+            :columns="columns"
+            :separator="separator"
+            :rows-per-page-options="[5, 10, 15, 20, 50]"
+            @request="getDataTable"
+            style="width: 100%"
+            :loading="loading"
+            :grid="$q.screen.xs"
+            v-model:pagination="pagination"
+          >
+            <template v-slot:loading>
+              <q-inner-loading showing color="primary" class="loading" />
+            </template>
+            <template v-slot:body-cell-action="props">
+              <q-td :props="props">
+                <q-btn
+                  dense
+                  round
+                  flat
+                  color="primary"
+                  icon="edit"
+                  :disabled="this.allowOption(3)"
+                  @click="
+                    this.$refs.methods.getData(
+                      `/hdolar/${props.row.fecha}`,
+                      `setDataEdit`,
+                      'form'
+                    );
+                    fechaNoEditable = true;
+                    dialog = true;
+                  "
+                ></q-btn>
+                <q-btn
+                  dense
+                  round
+                  flat
+                  color="primary"
+                  icon="delete"
+                  :disabled="this.allowOption(4)"
+                  @click="selected = props.row.fecha"
+                  @click.capture="deletePopup = true"
+                ></q-btn>
+              </q-td>
+            </template>
+            <template v-slot:item="props">
+              <div
+                class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+                :style="props.selected ? 'transform: scale(0.95);' : ''"
+              >
+                <q-card :class="props.selected ? 'bg-grey-2' : ''">
+                  <q-list dense>
+                    <q-item v-for="col in props.cols" :key="col.name">
+                      <q-item-section>
+                        <q-item-label>{{ col.label }}</q-item-label>
+                      </q-item-section>
+                      <q-item-section side class="itemMovilSide">
+                        <q-btn
+                          v-if="col.name === 'action'"
+                          dense
+                          round
+                          flat
+                          color="primary"
+                          icon="edit"
+                          :disabled="this.allowOption(3)"
+                          @click="
+                            this.$refs.methods.getData(
+                              `/hdolar/${props.row.fecha}`,
+                              `setDataEdit`,
+                              'form'
+                            );
+                            dialog = true;
+                          "
+                        ></q-btn>
+                        <q-btn
+                          v-if="col.name === 'action'"
+                          dense
+                          round
+                          flat
+                          color="primary"
+                          icon="delete"
+                          :disabled="this.allowOption(4)"
+                          @click="selected = props.row.id"
+                          @click.capture="deletePopup = true"
+                        ></q-btn>
+                        <q-item-label>
+                          {{ col.value }}
+                        </q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-card>
+              </div>
+            </template>
+          </q-table>
+        </div>
       </div>
     </div>
 
@@ -277,7 +273,7 @@
 import { ref } from "vue";
 import { VMoney } from "v-money";
 import rulesVue from "src/components/rules.vue";
-import { useQuasar, LocalStorage } from "quasar";
+import { LocalStorage } from "quasar";
 import methodsVue from "src/components/methods.vue";
 
 export default {
@@ -292,8 +288,7 @@ export default {
           field: "fecha",
           align: "left",
           sortable: true,
-          format: (val) =>
-          val.split("-").reverse().join("/"),
+          format: (val) => val.split("-").reverse().join("/"),
         },
         {
           name: "valor",
@@ -342,11 +337,9 @@ export default {
       fechaNoEditable: false,
       historicoAll: [],
       rpermisos: [],
-      filter: "",
     };
   },
   setup() {
-    const $q = useQuasar();
     return {
       loading: ref(false),
       separator: ref("vertical"),
@@ -357,6 +350,7 @@ export default {
   mounted() {
     this.$emit("changeTitle", "SCEN - Mantenimiento - Historico Del Dolar", "");
     this.getDataTable();
+
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
         rol: LocalStorage.getItem("tokenTraducido").usuario.roles.id,
@@ -409,7 +403,7 @@ export default {
         var fecha = val;
         fecha = fecha.split("/").reverse().join("-");
         var find = this.historicoAll.findIndex((item) => item.fecha == fecha);
-        return find >= 0 ? "Esta Fecha ya esta Registrada!" : true;
+        return find >= 0 ? "Esta Fecha ya está Registrada!" : true;
       }
     },
 

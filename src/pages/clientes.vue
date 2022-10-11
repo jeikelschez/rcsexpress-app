@@ -674,15 +674,13 @@
       </q-card>
     </q-dialog>
 
-    <div
-      class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 q-pa-sm justify-center"
-    >
-      <div class="row q-pa-md">
+    <div class="q-pa-sm justify-center">
+      <div class="q-pa-md row justify-end">
         <div
           class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
           style="align-self: center; text-align: center"
         >
-          <p style="font-size: 27px" class="text-secondary">
+          <p style="font-size: 20px" class="text-secondary">
             <strong>MANTENIMIENTO - CLIENTES</strong>
           </p>
         </div>

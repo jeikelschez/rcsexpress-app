@@ -334,9 +334,7 @@
                 </q-input>
               </div>
             </div>
-            <div
-              class="row justify-center items-center content-center"
-            >
+            <div class="row justify-center items-center content-center">
               <q-btn
                 label="Enviar"
                 type="submit"
@@ -363,10 +361,12 @@
         class="row justify-end q-pa-md col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
       >
         <div
-          class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 text-secondary movilTitle"
-          style="align-self: center; text-align: center; font-size: 20px"
+          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
+          style="align-self: center; text-align: center"
         >
-          <p><strong>MANTENIMIENTO - AGENCIAS</strong></p>
+          <p style="font-size: 20px" class="text-secondary">
+            <strong>MANTENIMIENTO - AGENCIAS</strong>
+          </p>
         </div>
         <div
           class="col-md-5 col-sm-7 col-xs-12 cardMargin selectMobile"
@@ -529,7 +529,12 @@
             label="Aceptar"
             color="primary"
             v-close-popup
-            @click="this.$refs.methods.deleteData(`/agencias/${selected}`, 'getDataTable')"
+            @click="
+              this.$refs.methods.deleteData(
+                `/agencias/${selected}`,
+                'getDataTable'
+              )
+            "
           />
         </q-card-actions>
       </q-card>

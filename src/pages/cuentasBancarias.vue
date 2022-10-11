@@ -103,15 +103,13 @@
       </q-card>
     </q-dialog>
 
-    <div
-      class="q-pa-sm justify-center col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
-    >
-      <div class="row q-pa-md">
+    <div class="q-pa-sm justify-center">
+      <div class="q-pa-md row justify-end">
         <div
-          class="col-xs-12 text-secondary movilTitle"
+          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
           style="align-self: center; text-align: center"
         >
-          <p style="font-size: 26px; margin-bottom: 20px">
+          <p style="font-size: 20px" class="text-secondary">
             <strong>MANTENIMIENTO - CUENTAS BANCARIAS</strong>
           </p>
         </div>
