@@ -1049,6 +1049,7 @@ export default {
         this.content = res.target.result;
         var lines = this.content.split("\n");
         for (var i = 0; i < lines.length - 1; i++) {
+          this.form = {};
           var columns = lines[i].split("\t");
           this.form.nro_factura = columns[0];
           this.form.fecha_factura = columns[1];
