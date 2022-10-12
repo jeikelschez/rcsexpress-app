@@ -3,7 +3,7 @@
     <q-dialog v-model="dialog">
       <q-card class="q-pa-md" bordered style="width: 900px; max-width: 80vw">
         <q-card-section>
-          <q-form @submit="sendData" class="q-gutter-md">
+          <q-form @submit="sendData" class="q-gutter-md"> 
             <div class="row">
               <div class="col-md-4 col-xs-12">
                 <q-input
@@ -398,8 +398,9 @@
               this.resetForm();
             "
             :disabled="this.allowOption(2)"
-            class="q-px-xl q-py-xs" 
-          ></q-btn>
+            class="q-px-xl q-py-xs"
+          >
+          </q-btn>
         </div>
       </div>
       <div class="q-pa-md q-gutter-y-md">
@@ -771,22 +772,22 @@ export default {
               ];
           }
         });
-      this.form.id = res.id;
-      this.form.condicion_pago = res.condicion_pago;
-      this.form.nb_proveedor = res.nb_proveedor;
-      this.form.nb_beneficiario = res.nb_beneficiario;
-      this.form.rif_proveedor = res.rif_proveedor;
-      this.form.nit_proveedor = res.nit_proveedor;
-      this.form.direccion_fiscal = res.direccion_fiscal;
-      this.form.direccion_correo = res.direccion_correo;
-      this.form.tlf_proveedor = res.tlf_proveedor;
-      this.form.fax_proveedor = res.fax_proveedor;
-      this.form.email_proveedor = res.email_proveedor;
-      this.form.observacion = res.observacion;
-      this.form.tipo_servicio = res.tipo_svc;
-      this.form.tipo_persona = res.tipo_desc;
-      this.form.flag_activo = res.activo_desc;
-      this.form.cod_tipo_retencion = res.retenciones;
+      this[dataRes].id = res.id;
+      this[dataRes].condicion_pago = res.condicion_pago;
+      this[dataRes].nb_proveedor = res.nb_proveedor;
+      this[dataRes].nb_beneficiario = res.nb_beneficiario;
+      this[dataRes].rif_proveedor = res.rif_proveedor;
+      this[dataRes].nit_proveedor = res.nit_proveedor;
+      this[dataRes].direccion_fiscal = res.direccion_fiscal;
+      this[dataRes].direccion_correo = res.direccion_correo;
+      this[dataRes].tlf_proveedor = res.tlf_proveedor;
+      this[dataRes].fax_proveedor = res.fax_proveedor;
+      this[dataRes].email_proveedor = res.email_proveedor;
+      this[dataRes].observacion = res.observacion;
+      this[dataRes].tipo_servicio = res.tipo_svc;
+      this[dataRes].tipo_persona = res.tipo_desc;
+      this[dataRes].flag_activo = res.activo_desc;
+      this[dataRes].cod_tipo_retencion = res.retenciones;
     },
     // Metodo para Crear o Editar Datos
     sendData() {

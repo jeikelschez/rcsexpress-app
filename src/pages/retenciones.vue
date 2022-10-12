@@ -15,13 +15,8 @@
                   class="pcform"
                   type="number"
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        2,
-                        'Maximo 2 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 2),
                   ]"
                 >
                   <template v-slot:prepend>
@@ -29,7 +24,6 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-4 col-xs-12">
                 <q-select
                   outlined
@@ -37,11 +31,8 @@
                   label="Tipo Persona"
                   hint=""
                   class="pcform"
-                  :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
-                  ]"
-                  :options="tipo_persona"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
+                  :options="tipoPersona"
                   lazy-rules
                 >
                   <template v-slot:prepend>
@@ -49,7 +40,6 @@
                   </template>
                 </q-select>
               </div>
-
               <div class="col-md-5 col-xs-12">
                 <q-input
                   outlined
@@ -58,19 +48,9 @@
                   hint=""
                   lazy-rules
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        50,
-                        'Maximo 50 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 50),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   @update:model-value="
                     form.nb_tipo_retencion =
@@ -82,7 +62,6 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-4 col-xs-12">
                 <q-input
                   outlined
@@ -94,19 +73,8 @@
                   input-class="text-right"
                   lazy-rules
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        12,
-                        'Maximo 12 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 12),
                   ]"
                 >
                   <template v-slot:prepend>
@@ -114,7 +82,6 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-4 col-xs-12">
                 <q-input
                   outlined
@@ -126,19 +93,8 @@
                   input-class="text-right"
                   class="pcform"
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        12,
-                        'Maximo 12 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 12),
                   ]"
                 >
                   <template v-slot:prepend>
@@ -157,19 +113,8 @@
                   input-class="text-right"
                   lazy-rules
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        12,
-                        'Maximo 12 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 12),
                   ]"
                 >
                   <template v-slot:prepend>
@@ -177,7 +122,6 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
@@ -189,19 +133,8 @@
                   v-money="money"
                   input-class="text-right"
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        12,
-                        'Maximo 12 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 12),
                   ]"
                 >
                   <template v-slot:prepend>
@@ -218,13 +151,8 @@
                   hint=""
                   lazy-rules
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        3,
-                        'Maximo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 3),
                   ]"
                   @update:model-value="
                     form.cod_seniat = form.cod_seniat.toUpperCase()
@@ -235,7 +163,6 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
@@ -243,9 +170,7 @@
                   hint=""
                   v-model="form.fecha_ini_val"
                   mask="##/##/####"
-                  :rules="[
-                    (val) => this.$refs.rulesVue.checkDate(val, '') || '',
-                  ]"
+                  :rules="[(val) => this.$refs.rulesVue.checkDate(val)]"
                   class="pcform"
                   lazy-rules
                 >
@@ -276,7 +201,6 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
@@ -284,9 +208,7 @@
                   hint=""
                   v-model="form.fecha_fin_val"
                   mask="##/##/####"
-                  :rules="[
-                    (val) => this.$refs.rulesVue.checkDate(val, '') || '',
-                  ]"
+                  :rules="[(val) => this.$refs.rulesVue.checkDate(val)]"
                   lazy-rules
                 >
                   <template v-slot:append>
@@ -317,7 +239,6 @@
                 </q-input>
               </div>
             </div>
-
             <div
               class="row justify-center items-center content-center"
               style="margin-bottom: 10px"
@@ -358,21 +279,17 @@
           style="align-self: center"
         >
           <q-input
-            v-model="filter"
+            v-model="this.pagination.filterValue"
             rounded
             dense
             outlined
             standout
             label="Búsqueda avanzada"
-            @keydown.enter="
-              getDataRetenciones('/mretenciones', 'setDataTable', 'datos')
-            "
+            @keydown.enter="getDataTable()"
           >
             <template v-slot:append>
               <q-icon
-                @click="
-                  getDataRetenciones('/mretenciones', 'setDataTable', 'datos')
-                "
+                @click="getDataTable()"
                 class="cursor-pointer"
                 name="search"
               />
@@ -384,7 +301,7 @@
           style="text-align: center; align-self: center"
         >
           <q-btn
-            label="Insertar Retención"
+            label="Insertar"
             rounded
             color="primary"
             @click="
@@ -392,16 +309,17 @@
               this.resetForm();
             "
             :disabled="this.allowOption(2)"
+            class="q-px-xl q-py-xs"
           ></q-btn>
         </div>
       </div>
 
       <div class="q-pa-md q-gutter-y-md">
         <q-table
-          :rows="datos"
+          :rows="retenciones"
           binary-state-sort
           :rows-per-page-options="[5, 10, 15, 20, 50]"
-          @request="onRequest"
+          @request="getDataTable"
           row-key="id"
           :loading="loading"
           :columns="columns"
@@ -411,7 +329,12 @@
           v-model:pagination="pagination"
         >
           <template v-slot:loading>
-            <q-inner-loading showing color="primary" />
+            <q-inner-loading showing color="primary" class="loading" />
+          </template>
+          <template v-slot:body-cell-cod_tipo_persona="props">
+            <q-td :props="props">
+              {{ filterDesc("tipoPersona", props.row.cod_tipo_persona) }}
+            </q-td>
           </template>
           <template v-slot:body-cell-action="props">
             <q-td :props="props">
@@ -423,7 +346,7 @@
                 icon="edit"
                 :disabled="this.allowOption(3)"
                 @click="
-                  getData(
+                  this.$refs.methods.getData(
                     `/mretenciones/${props.row.id}`,
                     'setDataEdit',
                     'form'
@@ -455,23 +378,13 @@
                       <q-item-label>{{ col.label }}</q-item-label>
                     </q-item-section>
                     <q-item-section side class="itemMovilSide">
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
+                      <q-item-label v-if="col.name === 'cod_tipo_persona'">
+                        {{
+                          filterDesc("tipoPersona", props.row.cod_tipo_persona)
+                        }}
+                      </q-item-label>
                       <q-btn
-                        v-else-if="col.name === 'action'"
+                        v-if="col.name === 'action'"
                         dense
                         round
                         flat
@@ -479,7 +392,7 @@
                         icon="edit"
                         :disabled="this.allowOption(3)"
                         @click="
-                          getData(
+                          this.$refs.methods.getData(
                             `/mretenciones/${props.row.id}`,
                             'setDataEdit',
                             'form'
@@ -487,23 +400,8 @@
                           dialog = true;
                         "
                       ></q-btn>
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
                       <q-btn
-                        v-else-if="col.name === 'action'"
+                        v-if="col.name === 'action'"
                         dense
                         round
                         flat
@@ -513,11 +411,8 @@
                         @click="selected = props.row.id"
                         @click.capture="deletePopup = true"
                       ></q-btn>
-                      <q-item-label
-                        v-else
-                        caption
-                        :class="col.classes ? col.classes : ''"
-                        >{{ col.value }}
+                      <q-item-label v-if="col.name != 'cod_tipo_persona'">
+                        {{ col.value }}
                       </q-item-label>
                     </q-item-section>
                   </q-item>
@@ -536,7 +431,6 @@
             ¿Estas seguro que quieres eliminar este elemento?
           </div>
         </q-card-section>
-
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="primary" v-close-popup />
           <q-btn
@@ -544,7 +438,12 @@
             label="Aceptar"
             color="primary"
             v-close-popup
-            @click="deleteData(selected)"
+            @click="
+              this.$refs.methods.deleteData(
+                `/mretenciones/${selected}`,
+                'getDataTable'
+              )
+            "
           />
         </q-card-actions>
       </q-card>
@@ -552,13 +451,9 @@
 
     <methods
       ref="methods"
-      @get-Data-Retenciones="
-        getDataRetenciones('/mretenciones', 'setDataTable', 'datos')
-      "
-      @reset-Loading="resetLoading"
       @set-Data-Edit="setDataEdit"
+      @get-Data-Table="getDataTable"
       @set-Data-Table="setDataTable"
-      @on-Request="onRequest"
       @set-Data-Permisos="setDataPermisos"
     >
     </methods>
@@ -569,7 +464,7 @@
 
 <script>
 import { ref } from "vue";
-import { useQuasar, LocalStorage } from "quasar";
+import { LocalStorage } from "quasar";
 import rulesVue from "src/components/rules.vue";
 import { VMoney } from "v-money";
 import methodsVue from "src/components/methods.vue";
@@ -598,7 +493,6 @@ export default {
           field: "cod_tipo_retencion",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
           name: "nb_tipo_retencion",
@@ -606,7 +500,6 @@ export default {
           field: "nb_tipo_retencion",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
           name: "porc_retencion",
@@ -614,7 +507,15 @@ export default {
           field: "porc_retencion",
           align: "right",
           sortable: true,
-          required: true,
+          format: (val) =>
+            new Intl.NumberFormat("de-DE", {
+              style: "currency",
+              currency: "EUR",
+              currencyDisplay: "code",
+            })
+              .format(val)
+              .replace("EUR", "")
+              .trim(),
         },
         {
           name: "pago_mayor",
@@ -622,7 +523,15 @@ export default {
           field: "pago_mayor",
           align: "right",
           sortable: true,
-          required: true,
+          format: (val) =>
+            new Intl.NumberFormat("de-DE", {
+              style: "currency",
+              currency: "EUR",
+              currencyDisplay: "code",
+            })
+              .format(val)
+              .replace("EUR", "")
+              .trim(),
         },
         {
           name: "sustraendo",
@@ -630,15 +539,22 @@ export default {
           field: "sustraendo",
           align: "right",
           sortable: true,
-          required: true,
+          format: (val) =>
+            new Intl.NumberFormat("de-DE", {
+              style: "currency",
+              currency: "EUR",
+              currencyDisplay: "code",
+            })
+              .format(val)
+              .replace("EUR", "")
+              .trim(),
         },
         {
-          name: "tipo_persona_desc",
+          name: "cod_tipo_persona",
           label: "Tipo de Persona",
-          field: "tipo_persona_desc",
+          field: "cod_tipo_persona",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
           name: "fecha_fin_val",
@@ -646,14 +562,12 @@ export default {
           field: "fecha_fin_val",
           align: "left",
           sortable: true,
-          required: true,
+          format: (val) => val.split("-").reverse().join("/"),
         },
         {
           name: "action",
           label: "Acciones",
           align: "center",
-          sortable: true,
-          required: true,
         },
       ],
       form: {
@@ -668,42 +582,36 @@ export default {
         fecha_ini_val: "",
         fecha_fin_val: "",
       },
-      orderDirection: "",
-      datos: [],
-      count: 1,
-      currentPage: 1,
-      tipo_persona: [
+      tipoPersona: [
         { label: "JURÍDICA", value: "J" },
         { label: "NATURAL", value: "N" },
       ],
+      pagination: {
+        page: 1,
+        rowsPerPage: 5,
+        sortBy: "nb_tipo_retencion",
+        descending: false,
+        filter:
+          "cod_tipo_retencion,nb_tipo_retencion,porc_retencion,pago_mayor,sustraendo,fecha_fin_val",
+        filterValue: "",
+        rowsNumber: "",
+      },
+      retenciones: [],
       selected: [],
       rpermisos: [],
-      error: "",
     };
   },
   setup() {
-    const $q = useQuasar();
-    const loading = ref(false);
-    const order = ref(false);
-    const pagination = ref({
-      descending: "",
-      page: 1,
-      rowsPerPage: 5,
-      rowsNumber: "",
-    });
     return {
-      pagination,
-      anulate: ref(false),
+      loading: ref(false),
       separator: ref("vertical"),
       dialog: ref(false),
-      loading: ref(false),
       deletePopup: ref(false),
-      filter: ref(""),
     };
   },
   mounted() {
     this.$emit("changeTitle", "SCEN - Mantenimiento - Retenciones", "");
-    this.getDataRetenciones("/mretenciones", "setDataTable", "datos");
+    this.getDataTable();
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
@@ -713,58 +621,32 @@ export default {
     });
   },
   methods: {
-    // Metodo para hacer Get de Datos cuando seleccionas opcion de Tabla
-    onRequest(res) {
-      let { page, rowsPerPage, sortBy, descending } = res.pagination;
-      if (this.currentPage !== page) {
-        descending = "";
+    // Metodos para Filtrar Selects
+    filterArray(val, update, pagina, array, element) {
+      if (val === "") {
+        update(() => {
+          this[pagina] = this[array];
+        });
+        return;
       }
-      const filter = res.filter;
-      const startRow = (page - 1) * rowsPerPage;
-      const fetchCount =
-        rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-
-      if (!sortBy) sortBy = "";
-
-      if (sortBy == "action") {
-        descending = "";
-        sortBy = "";
-      }
-
-      if (descending !== "") {
-        this.pagination.descending = !this.pagination.descending;
-        if (this.pagination.descending == true) {
-          this.orderDirection = "DESC";
-        } else this.orderDirection = "ASC";
-      }
-
-      this.pagination.sortBy = sortBy;
-      this.pagination.page = page;
-      this.pagination.rowsPerPage = rowsPerPage;
-      this.getData(`/mretenciones`, "setDataTable", "datos", {
-        headers: {
-          page: page,
-          limit: fetchCount,
-          order_direction: this.orderDirection,
-          order_by: sortBy,
-          filter:
-            "cod_tipo_retencion,nb_tipo_retencion,porc_retencion,pago_mayor,sustraendo,fecha_fin_val",
-          filter_value: this.filter,
-        },
+      update(() => {
+        const needle = val.toUpperCase();
+        var notEqual = [];
+        for (var i = 0; i <= this[array].length - 1; i++) {
+          if (this[array][i][element].indexOf(needle) > -1) {
+            notEqual.push(this[array][i]);
+          }
+          if (i == this[array].length - 1) {
+            this[pagina] = notEqual;
+            break;
+          }
+        }
       });
     },
-    // Metodo para Setear Datos en Tabla
-    setDataTable(res, dataRes) {
-      this[dataRes] = res.data;
-      this.pagination.page = res.currentPage;
-      this.currentPage = res.currentPage;
-      this.pagination.rowsNumber = res.total;
-      this.pagination.rowsPerPage = res.limit;
-      this.loading = false;
-    },
-    // Metodo para Resetear Carga
-    resetLoading() {
-      this.loading = false;
+    // Metodo para traer el value de los Selects y Columns
+    filterDesc(array, value) {
+      var find = this[array].findIndex((item) => item.value == value);
+      return find >= 0 ? this[array][find].label : null;
     },
     // Metodo para validar Permisos
     allowOption(option) {
@@ -781,55 +663,59 @@ export default {
 
     // METODOS DE PAGINA
 
-    // Metodo para hacer Get de Datos
-    getData(url, call, dataRes, axiosConfig) {
-      this.$refs.methods.getData(url, call, dataRes, axiosConfig);
-    },
-    // Metodo para hacer Get de Retenciones
-    getDataRetenciones(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, {
-        headers: {
-          page: 1,
-          limit: 5,
-          order_direction: this.orderDirection,
-          order_by: this.pagination.sortBy,
-          filter:
-            "cod_tipo_retencion,nb_tipo_retencion,porc_retencion,pago_mayor,sustraendo,fecha_fin_val",
-          filter_value: this.filter,
-        },
-      });
+    // Metodo para Extraer Datos de Tabla
+    getDataTable(props) {
       this.loading = true;
+      if (props) this.pagination = props.pagination;
+      this.$refs.methods.getData(
+        `/mretenciones`,
+        "setDataTable",
+        "retenciones",
+        {
+          headers: {
+            page: this.pagination.page,
+            limit: this.pagination.rowsPerPage,
+            order_by: this.pagination.sortBy,
+            order_direction: this.pagination.descending ? "DESC" : "ASC",
+            filter: this.pagination.filter,
+            filter_value: this.pagination.filterValue,
+          },
+        }
+      );
+    },
+    // Metodo para Setear Datos de Tabla
+    setDataTable(res, dataRes) {
+      this[dataRes] = res.data ? res.data : res;
+      this.pagination.page = res.currentPage;
+      this.currentPage = res.currentPage;
+      this.pagination.rowsNumber = res.total;
+      this.pagination.rowsPerPage = res.limit;
+      this.loading = false;
     },
     // Metodo para Setear Datos Seleccionados
     setDataEdit(res, dataRes) {
-      this.loading = false;
-      this.form.id = res.id;
-      this.form.cod_tipo_persona = res.tipo_persona_desc;
-      this.form.cod_tipo_retencion = res.cod_tipo_retencion;
-      this.form.nb_tipo_retencion = res.nb_tipo_retencion;
-      this.form.porc_base = res.porc_base;
-      this.form.porc_retencion = res.porc_retencion;
-      this.form.pago_mayor = res.pago_mayor;
-      this.form.sustraendo = res.sustraendo;
-      this.form.cod_seniat = res.cod_seniat;
+      this[dataRes].id = res.id;
+      this[dataRes].cod_tipo_retencion = res.cod_tipo_retencion;
+      this[dataRes].nb_tipo_retencion = res.nb_tipo_retencion;
+      this[dataRes].porc_base = res.porc_base;
+      this[dataRes].porc_retencion = res.porc_retencion;
+      this[dataRes].pago_mayor = res.pago_mayor;
+      this[dataRes].sustraendo = res.sustraendo;
+      this[dataRes].cod_seniat = res.cod_seniat;
+      this[dataRes].cod_tipo_persona = this.filterDesc(
+        "tipoPersona",
+        res.cod_tipo_persona
+      );
       if (res.fecha_ini_val)
-        this.form.fecha_ini_val = res.fecha_ini_val
+        this[dataRes].fecha_ini_val = res.fecha_ini_val
           .split("-")
           .reverse()
           .join("/");
       if (res.fecha_fin_val)
-        this.form.fecha_fin_val = res.fecha_fin_val
+        this[dataRes].fecha_fin_val = res.fecha_fin_val
           .split("-")
           .reverse()
           .join("/");
-    },
-    // Metodo para Eliminar Datos Seleccionados
-    deleteData(idpost) {
-      this.$refs.methods.deleteData(
-        `/mretenciones/${idpost}`,
-        "getDataRetenciones"
-      );
-      this.loading = true;
     },
     // Metodo para Editar o Crear Datos
     sendData() {
@@ -837,7 +723,6 @@ export default {
         .split("/")
         .reverse()
         .join("-");
-
       this.form.fecha_fin_val = this.form.fecha_fin_val
         .split("/")
         .reverse()
@@ -855,25 +740,22 @@ export default {
         .replaceAll(".", "")
         .replaceAll(",", ".");
       this.form.cod_tipo_persona = this.form.cod_tipo_persona.value;
+
       if (!this.form.id) {
         this.$refs.methods.createData(
           "/mretenciones",
           this.form,
-          "getDataRetenciones"
+          "getDataTable"
         );
-        this.resetForm();
-        this.loading = true;
-        this.dialog = false;
       } else {
         this.$refs.methods.putData(
           `/mretenciones/${this.form.id}`,
           this.form,
-          "getDataRetenciones"
+          "getDataTable"
         );
-        this.dialog = false;
-        this.resetForm();
-        this.loading = true;
       }
+      this.dialog = false;
+      this.resetForm();
     },
     // Metodo para Resetear Carga
     resetForm() {
@@ -894,10 +776,6 @@ export default {
 </script>
 
 <style>
-.hide {
-  display: none;
-}
-
 @media screen and (min-width: 600px) {
   .movilTitle {
     display: none;
