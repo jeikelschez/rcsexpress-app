@@ -17,19 +17,9 @@
                   "
                   lazy-rules
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        100,
-                        'Maximo 100 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 100),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                 >
                   <template v-slot:prepend>
@@ -37,17 +27,13 @@
                   </template>
                 </q-input>
               </div>
-
               <div
                 class="col-md-12 col-xs-12 displayHide"
                 style="margin-bottom: 7px"
                 id="select"
               >
                 <q-field
-                  :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
-                  ]"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
                   hide-bottom-space
                   borderless
                   dense
@@ -68,9 +54,8 @@
                 </q-field>
               </div>
             </div>
-
             <div
-              class=" row justify-center items-center content-center"
+              class="row justify-center items-center content-center"
               style="margin-bottom: 10px"
             >
               <q-btn
@@ -115,11 +100,10 @@
             transition-hide="flip-down"
             :options="tipoDeOperacionSelected"
             @filter="
-              (val, update, abort) =>
+              (val, update) =>
                 filterArray(
                   val,
                   update,
-                  abort,
                   'tipoDeOperacionSelected',
                   'tipoDeOperacion',
                   'descripcion'
@@ -136,7 +120,7 @@
             outlined
             standout
             label="Tipo de Operación"
-            @update:model-value="getData(`/coperacion`, 'setData', 'datos')"
+            @update:model-value="getData(`/coperacion`, 'setData', 'conceptos')"
             ><template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey">
@@ -191,7 +175,7 @@
         <div class="q-gutter-y-md">
           <div bordered flat class="my-card row">
             <q-table
-              :rows="datos"
+              :rows="conceptos"
               row-key="id"
               binary-state-sort
               :columns="columns"
@@ -346,7 +330,7 @@
 
     <methods
       ref="methods"
-      @get-Data="getData(`/coperacion`, 'setData', 'datos')"
+      @get-Data="getData(`/coperacion`, 'setData', 'conceptos')"
       @reset-Loading="resetLoading"
       @set-Data-Edit="setDataEdit"
       @set-Data="setData"
@@ -376,14 +360,11 @@ export default {
           field: "desc_concepto",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
           name: "action",
           label: "Acciones",
           align: "center",
-          sortable: true,
-          required: true,
         },
       ],
       form: {
@@ -391,35 +372,24 @@ export default {
         tipo: "",
         afecta_estado: "N",
       },
+      pagination: {
+        rowsPerPage: 5,
+      },
       tipoDeOperacion: [],
-      datos: [],
+      conceptos: [],
       selected: [],
       tipoDeOperacionSelected: [],
       selectedTipo: [],
       rpermisos: [],
-      error: "",
+      filter: "",
     };
   },
   setup() {
-    const $q = useQuasar();
-    const pagination = ref({
-      sortBy: "desc",
-      descending: false,
-      page: 1,
-      control: 0,
-      rowsPerPage: 5,
-    });
     return {
-      pagination: ref({
-        rowsPerPage: 5,
-      }),
+      loading: ref(false),
       separator: ref("vertical"),
       dialog: ref(false),
-      loading: ref(false),
-      disable: ref(true),
-      disableEdit: ref(true),
-      conceptosDelete: ref(false),
-      filter: ref(""),
+      deletePopup: ref(false),
     };
   },
   mounted() {
@@ -430,7 +400,7 @@ export default {
     );
     this.selectedTipo.id = "1";
     this.getData("/tipos", "setDataTipos", "tipoDeOperacion");
-    this.getData("/coperacion", "setData", "datos");
+    this.getData("/coperacion", "setData", "conceptos");
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
@@ -441,7 +411,7 @@ export default {
   },
   methods: {
     // Metodo para Filtrar Selects
-    filterArray(val, update, abort, pagina, array, element) {
+    filterArray(val, update, pagina, array, element) {
       if (val === "") {
         update(() => {
           this[pagina] = this[array];
@@ -549,10 +519,6 @@ export default {
 </script>
 
 <style>
-.hide {
-  display: none;
-}
-
 @media screen and (min-width: 600px) {
   .movilTitle {
     display: none;
@@ -588,6 +554,4 @@ export default {
     margin-bottom: 15px !important;
   }
 }
-
-
 </style>
