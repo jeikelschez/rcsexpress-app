@@ -216,7 +216,7 @@
         style="align-self: center; text-align: center; padding-bottom: 10px"
       >
         <div
-          class="col-md-8 col-xl-8 col-lg-8 col-xs-12 col-sm-12 cardMarginFilter selectMobile"
+          class="col-md-5 col-xl-8 col-lg-8 col-xs-12 col-sm-12 cardMarginFilter selectMobile"
           style="align-self: center; text-align: center"
         >
           <q-file
@@ -227,7 +227,10 @@
             dense
             label="Archivo TXT"
             max-files="1"
-            @update:model-value="readFile()"
+            @update:model-value="
+              readFile();
+              this.datos = [];
+            "
             accept=".txt, .TXT"
             @rejected="onRejected"
           >
@@ -248,7 +251,7 @@
         </div>
 
         <div
-          class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 botonesGuias"
+          class="col-md-6 col-xl-4 col-lg-4 col-xs-12 col-sm-12 botonesGuias"
           style="text-align: right; align-self: center"
         >
           <q-btn
@@ -256,14 +259,11 @@
             color="primary"
             :disabled="this.allowOption(2)"
             round
-            @click="
-              this.dialog = true;
-              this.setDataCreate();
-            "
+            @click=""
             padding="sm"
             style="margin-right: 25px; margin-bottom: 6px"
           >
-            <q-icon size="30px" name="find_in_page" color="white"> </q-icon>
+            <q-icon size="25px" name="find_in_page" color="white"> </q-icon>
             <q-tooltip
               class="bg-primary"
               style="max-height: 30px"
@@ -281,17 +281,13 @@
             padding="sm"
             style="margin-right: 25px; margin-bottom: 6px"
             @click="
+              selectedAgencia = [];
               selectedCliente = [];
               selectedAgente = [];
-              selectedGuiaCarga = '';
-              selectedGuiaFactura = '';
-              selectedCulminado = '';
-              guia_desde = '';
-              guia_hasta = '';
-              getDataGuias();
+              file = [];
             "
           >
-            <q-icon size="30px" name="filter_alt_off" color="white"> </q-icon>
+            <q-icon size="25px" name="filter_alt_off" color="white"> </q-icon>
             <q-tooltip
               class="bg-primary"
               style="max-height: 30px"
@@ -319,7 +315,7 @@
               getDataGuias();
             "
           >
-            <q-icon size="30px" name="content_paste_search" color="white">
+            <q-icon size="25px" name="content_paste_search" color="white">
             </q-icon>
             <q-tooltip
               class="bg-primary"
@@ -348,7 +344,7 @@
               getDataGuias();
             "
           >
-            <q-icon size="30px" name="file_open" color="white"> </q-icon>
+            <q-icon size="25px" name="file_open" color="white"> </q-icon>
             <q-tooltip
               class="bg-primary"
               style="max-height: 30px"
@@ -368,15 +364,11 @@
             @click="
               selectedCliente = [];
               selectedAgente = [];
-              selectedGuiaCarga = '';
-              selectedGuiaFactura = '';
-              selectedCulminado = '';
-              guia_desde = '';
-              guia_hasta = '';
+              selectedAgencia = [];
               getDataGuias();
             "
           >
-            <q-icon size="30px" name="collections_bookmark" color="white">
+            <q-icon size="25px" name="collections_bookmark" color="white">
             </q-icon>
             <q-tooltip
               class="bg-primary"
@@ -405,7 +397,7 @@
               getDataGuias();
             "
           >
-            <q-icon size="30px" name="print" color="white"> </q-icon>
+            <q-icon size="25px" name="print" color="white"> </q-icon>
             <q-tooltip
               class="bg-primary"
               style="max-height: 30px"
@@ -423,7 +415,7 @@
             padding="sm"
             style="margin-bottom: 6px"
           >
-            <q-icon size="30px" name="print" color="primary"> </q-icon>
+            <q-icon size="25px" name="print" color="primary"> </q-icon>
             <q-tooltip
               class="bg-primary"
               transition-show="scale"
@@ -495,6 +487,16 @@
             </template>
             <template v-slot:prepend>
               <q-icon name="search" />
+            </template>
+            <template v-slot:append>
+              <q-icon
+                @click.stop.prevent="
+                  this.selectedAgente = [];
+                  getDataGuias();
+                "
+                class="cursor-pointer"
+                name="filter_alt_off"
+              />
             </template>
           </q-select>
         </div>
@@ -614,6 +616,7 @@
     <div class="q-pa-md q-gutter-y-md" style="padding-top: 6px">
       <q-table
         :rows="datos"
+        class="my-sticky-header-column-table"
         binary-state-sort
         row-key="id"
         :columns="columns"
@@ -627,42 +630,43 @@
         <template v-slot:loading>
           <q-inner-loading showing color="primary" style="padding-top: 46px" />
         </template>
-        <template v-slot:body-cell-estado_entrega="props">
+        <template v-slot:body-cell-nro_guia="props">
           <q-td :props="props">
-            <q-select
+            <q-input
               outlined
               dense
-              v-model="props.row.estatus_desc"
-              :options="estados"
+              v-model="props.row.nro_guia"
               @update:model-value="
                 this.$refs.methods.getData(
                   `/correlativo/${props.row.id}`,
                   `putDataSelect`,
                   'form'
-                );
-                this.form.estatus_lote = props.row.estatus_desc.value;
+                )
               "
             >
-            </q-select>
+            </q-input>
           </q-td>
         </template>
-        <template v-slot:body-cell-ciudad_entrega="props">
+        <template v-slot:body-cell-porc_zona="props">
           <q-td :props="props">
-            <q-select
+            <q-input
               outlined
               dense
-              v-model="props.row.estatus_desc"
-              :options="ciudades"
+              v-model="props.row.porc_zona"
               @update:model-value="
                 this.$refs.methods.getData(
                   `/correlativo/${props.row.id}`,
                   `putDataSelect`,
                   'form'
-                );
-                this.form.estatus_lote = props.row.estatus_desc.value;
+                )
               "
             >
-            </q-select>
+            </q-input>
+          </q-td>
+        </template>
+        <template v-slot:body-cell-last_nro_factura="props">
+          <q-td :props="props" style="background-color: #dbd9d9">
+            {{ props.row.nro_factura }}
           </q-td>
         </template>
         <template v-slot:body-cell-action="props">
@@ -690,6 +694,16 @@
               @click="selected = props.row.id"
               @click.capture="deletePopup = true"
             ></q-btn>
+            <q-btn
+              dense
+              round
+              flat
+              color="primary"
+              icon="save"
+              :disabled="this.allowOption(4)"
+              @click="selected = props.row.id"
+              @click.capture="deletePopup = true"
+            ></q-btn>
           </q-td>
         </template>
         <template v-slot:item="props">
@@ -704,38 +718,34 @@
                     <q-item-label>{{ col.label }}</q-item-label>
                   </q-item-section>
                   <q-item-section side class="itemMovilSide">
-                    <q-select
-                      v-if="col.name === 'estado_entrega'"
+                    <q-input
+                      v-if="col.name === 'porc_zona'"
                       outlined
                       dense
-                      v-model="props.row.estatus_desc"
-                      :options="estados"
+                      v-model="props.row.porc_zona"
                       @update:model-value="
                         this.$refs.methods.getData(
                           `/correlativo/${props.row.id}`,
                           `putDataSelect`,
                           'form'
-                        );
-                        this.form.estatus_lote = props.row.estatus_desc.value;
+                        )
                       "
                     >
-                    </q-select>
-                    <q-select
-                      v-if="col.name === 'ciudad_entrega'"
+                    </q-input>
+                    <q-input
+                      v-if="col.name === 'nro_guia'"
                       outlined
                       dense
-                      v-model="props.row.estatus_desc"
-                      :options="ciudades"
+                      v-model="props.row.nro_guia"
                       @update:model-value="
                         this.$refs.methods.getData(
                           `/correlativo/${props.row.id}`,
                           `putDataSelect`,
                           'form'
-                        );
-                        this.form.estatus_lote = props.row.estatus_desc.value;
+                        )
                       "
                     >
-                    </q-select>
+                    </q-input>
                     <q-btn
                       v-if="col.name === 'action'"
                       dense
@@ -765,11 +775,19 @@
                       @click="selected = props.row.id"
                       @click.capture="deletePopup = true"
                     ></q-btn>
+                    <q-btn
+                      v-if="col.name === 'action'"
+                      dense
+                      round
+                      flat
+                      color="primary"
+                      icon="save"
+                      :disabled="this.allowOption(4)"
+                      @click="selected = props.row.id"
+                      @click.capture="deletePopup = true"
+                    ></q-btn>
                     <q-item-label
-                      v-if="
-                        col.name != 'ciudad_entrega' &&
-                        col.name != 'estado_entrega'
-                      "
+                      v-if="col.name != 'nro_guia' && col.name != 'porc_zona'"
                     >
                       {{ col.value }}
                     </q-item-label>
@@ -823,13 +841,10 @@
 
     <methods
       ref="methods"
-      @get-Data-Guias="getDataGuias"
       @set-Data="setData"
       @set-Data-Edit="setDataEdit"
-      @set-Data-Table="setDataTable"
       @reset-Loading="resetLoading"
       @set-Data-Init="setDataInit"
-      @set-Data-Paginated="setDataPaginated"
       @set-Data-Permisos="setDataPermisos"
     ></methods>
 
@@ -849,10 +864,15 @@ export default {
     methods: methodsVue,
     rulesVue,
   },
-  name: "AsignacionGuias",
   data() {
     return {
       columns: [
+        {
+          name: "action",
+          label: "Acciones",
+          align: "center",
+          required: false,
+        },
         {
           name: "nro_factura",
           label: "Nro. Factura",
@@ -950,58 +970,52 @@ export default {
           required: true,
         },
         {
-          name: "action",
-          label: "Acciones",
-          align: "center",
+          name: "porc_zona",
+          label: "% Por Zona",
+          field: "porc_zona",
+          align: "left",
+          sortable: true,
+          required: true,
+        },
+        {
+          name: "nro_guia",
+          label: "Nro. Guia",
+          field: "nro_guia",
+          align: "left",
+          sortable: true,
+          required: true,
+        },
+        {
+          name: "last_nro_factura",
+          label: "Nro. Factura",
+          field: "nro_factura",
+          align: "left",
           sortable: true,
           required: true,
         },
       ],
-      form: {
-        nro_factura: "",
-        control_inicio: "",
-        control_final: "",
-        cant_asignada: "",
-        cant_disponible: "",
-        fecha_asignacion: "",
-        cod_agencia: "",
-        cod_agente: "",
-        cod_cliente: "",
-        tipo: "20",
+      form: {},
+      pagination: {
+        page: 1,
+        rowsPerPage: 5,
+        sortBy: "ci_rif",
+        descending: false,
       },
-      information: false,
       datos: [],
       file: null,
-      fileUrl: "",
       agencias: [],
-      count: 1,
       rpermisos: [],
       menus: [],
-      orderDirection: "",
-      currentPage: 1,
       clientes: [],
       agentes: [],
       agenciasSelected: [],
       agentesSelected: [],
-      agentesFormSelected: [],
       clientesSelected: [],
-      clientesFormSelected: [],
-      clientesForm: [],
-      agentesForm: [],
       selected: [],
       selectedAgencia: [],
-      selectedGuiaCarga: "20",
-      selectedGuiaFactura: "",
-      selectedCulminado: "",
-      guia_desde: "",
-      guia_hasta: "",
       selectedCliente: [],
       selectedAgente: [],
       error: "",
-      disabledAgencia: true,
-      disabledAgente: false,
-      disabledCliente: false,
-      disabledInputsEdit: false,
       content: null,
     };
   },
@@ -1009,15 +1023,7 @@ export default {
     const $q = useQuasar();
     const loading = ref(false);
     const order = ref(false);
-    const pagination = ref({
-      descending: true,
-      page: 1,
-      rowsPerPage: 5,
-      rowsNumber: "",
-      order_by: "control_inicio",
-    });
     return {
-      pagination,
       anulate: ref(false),
       fileSelector: false,
       separator: ref("vertical"),
@@ -1032,15 +1038,16 @@ export default {
       "SCEN - Mantenimiento - Carga Manual de Guias",
       ""
     );
-
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
         rol: LocalStorage.getItem("tokenTraducido").usuario.roles.id,
         menu: "asignacionguias",
       },
     });
+    this.$refs.methods.getData("/agencias", "setDataInit", "agencias");
   },
   methods: {
+    // Metodo para Interpretar Archivos Subidos
     readFile() {
       const reader = new FileReader();
       reader.onerror = (err) => console.log(err);
@@ -1068,6 +1075,7 @@ export default {
         }
       };
     },
+    // Metodo para Manejar Errores al Subir Archivos
     onRejected() {
       this.$q.notify({
         type: "negative",
@@ -1075,36 +1083,24 @@ export default {
       });
     },
     // Metodo para Actualizar Datos de Tabla
-    setDataTable(res, dataRes) {
+    setDataInit(res, dataRes) {
       this[dataRes] = res.data;
-      this.pagination.page = res.currentPage;
-      this.currentPage = res.currentPage;
-      this.pagination.rowsNumber = res.total;
-      this.pagination.rowsPerPage = res.limit;
-      this.loading = false;
-    },
-    // Metodo para Setear Datos al Abrir Modal de Crear
-    setDataCreate() {
-      moment.locale("es");
-      this.form.fecha_asignacion = moment().format("L");
-      this.form.cod_agencia = this.selectedAgencia;
-      if (this.selectedAgencia.id) {
-        this.disabledAgencia = true;
-      } else {
-        this.disabledAgencia = false;
-      }
-      if (this.selectedCliente.id) {
-        this.form.cod_cliente = this.selectedCliente;
-        this.disabledCliente = true;
-      } else {
-        this.disabledCliente = false;
-      }
-      if (this.selectedAgente.id) {
-        this.form.cod_agente = this.selectedAgente;
-        this.disabledAgente = true;
-      } else {
-        this.disabledAgente = false;
-      }
+      this.selectedAgencia = this.agencias[0];
+      this.$refs.methods.getData("/clientes", "setData", "clientes", {
+        headers: {
+          agencia: this.agencias[0].id,
+        },
+      });
+      this.$refs.methods.getData("/agentes", "setData", "agentes", {
+        headers: {
+          agencia: this.agencias[0].id,
+        },
+      });
+      this.$refs.methods.getData("/mmovimientos", "setData", "datos", {
+        headers: {
+          agencia: this.agencias[0].id,
+        },
+      });
     },
     // Metodo para Filtrar Selects
     filterArray(val, update, abort, pagina, array, element) {
@@ -1144,35 +1140,6 @@ export default {
       if (this.rpermisos.findIndex((item) => item.acciones.accion == 1) < 0)
         this.$router.push("/error403");
     },
-    // Regla particular de Correlativo
-    reglasCorrelativo(val) {
-      if (val === null) {
-        return "Debes Escribir Algo";
-      }
-      if (val === "") {
-        return "Debes Escribir Algo";
-      }
-      if ((val !== null) !== "") {
-        if (val - this.form.control_inicio < 0) {
-          return "El Ultimo Correlativo debe ser Mayor al Primero";
-        }
-        if (val.length > 10) {
-          return "Deben ser Maximo 10 caracteres";
-        }
-      }
-    },
-    // Regla Particular de Correlativo para Filtros
-    reglasCorrelativoFilter() {
-      if (this.guia_desde == "" || this.guia_desde == null) return true;
-      if (this.guia_desde - this.guia_hasta < 0) {
-        this.$q.notify({
-          message: "El Ultimo Correlativo debe ser Mayor al Primero",
-          color: "red",
-        });
-        return false;
-      }
-      return true;
-    },
 
     // METODOS DE PAGINA
 
@@ -1206,31 +1173,9 @@ export default {
         },
       });
     },
-    // Metodo para Setear datos Paginados
-    setDataPaginated(res, dataRes) {
-      this[dataRes] = res.data;
-    },
-    // Metodo para Setear Datos No Paginados
+    // Metodo para Setear Datos
     setData(res, dataRes) {
-      this[dataRes] = res;
-    },
-    // Metodo para Setear Datos Iniciales
-    setDataInit(res, dataRes) {
-      this[dataRes] = res.data;
-      this.selectedAgencia = this.agencias[0];
-      this.pagination.sortBy = "control_inicio";
-      this.getData("/clientes", "setDataPaginated", "clientes");
-      this.getData("/agentes", "setDataPaginated", "agentes");
-      this.getData(`/cguias`, "setDataTable", "datos", {
-        headers: {
-          agencia: this.selectedAgencia.id,
-          page: 1,
-          tipo: "20",
-          limit: 5,
-          order_direction: "DESC",
-          order_by: "control_inicio",
-        },
-      });
+      this[dataRes] = res.data ? res.data : res;
     },
     // Metodo para Setear Datos Seleccionados
     setDataEdit(res, dataRes) {
@@ -1320,6 +1265,41 @@ export default {
   },
 };
 </script>
+
+<style lang="sass">
+.my-sticky-header-column-table
+
+  td:first-child
+    /* bg color is important for td; just specify one */
+    background-color: #fff !important
+
+  tr th
+    position: sticky
+    /* higher than z-index for td below */
+    z-index: 2
+    /* bg color is important; just specify one */
+    background: #fff
+
+  /* this will be the loading indicator */
+  thead tr:last-child th
+    /* height of all previous header rows */
+    top: 48px
+    /* highest z-index */
+    z-index: 3
+  thead tr:first-child th
+    top: 0
+    z-index: 1
+  tr:first-child th:first-child
+    /* highest z-index */
+    z-index: 3
+
+  td:first-child
+    z-index: 1
+
+  td:first-child, th:first-child
+    position: sticky
+    left: 0
+</style>
 
 <style>
 .hide {
