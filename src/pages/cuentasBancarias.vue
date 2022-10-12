@@ -184,12 +184,10 @@
           <q-btn
             label="Insertar"
             rounded
-            dense
             color="primary"
             :disabled="this.allowOption(2)"
             @click="dialog = true"
             @click.capture="resetForm()"
-            size="16px"
             class="q-px-xl q-py-xs"
           ></q-btn>
         </div>

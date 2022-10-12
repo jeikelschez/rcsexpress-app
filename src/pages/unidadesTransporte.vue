@@ -67,7 +67,7 @@
               </div>
             </div>
             <div
-              class=" row justify-center items-center content-center"
+              class="row justify-center items-center content-center"
               style="margin-bottom: 10px"
             >
               <q-btn
@@ -99,7 +99,9 @@
           class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
           style="align-self: center; text-align: center"
         >
-          <p style="font-size: 20px" class="text-secondary"><strong>MANTENIMIENTO - UNIDADES DE TRANSPORTE</strong></p>
+          <p style="font-size: 20px" class="text-secondary">
+            <strong>MANTENIMIENTO - UNIDADES DE TRANSPORTE</strong>
+          </p>
         </div>
         <div
           class="col-md-5 col-sm-6 col-xs-12 marginHeader marginHeaderMobile"
@@ -130,6 +132,7 @@
             @click="dialog = true"
             @click.capture="resetForm()"
             :disabled="this.allowOption(2)"
+            class="q-px-xl q-py-xs"
           ></q-btn>
         </div>
       </div>

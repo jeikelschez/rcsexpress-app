@@ -61,9 +61,7 @@
                 </q-select>
               </div>
             </div>
-            <div
-              class=" row justify-center items-center content-center"
-            >
+            <div class="row justify-center items-center content-center">
               <q-btn
                 label="Enviar"
                 type="submit"
@@ -85,8 +83,10 @@
       </q-card>
     </q-dialog>
 
-    <div class="q-pa-sm justify-center">
-      <div class="q-pa-md row justify-end">
+    <div
+      class="q-pa-sm justify-center col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
+    >
+      <div class="row q-pa-md justify-end">
         <div
           class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
           style="align-self: center; text-align: center"
@@ -96,8 +96,8 @@
           </p>
         </div>
         <div
-          class="col-md-6 col-sm-7 col-xs-12 cardMargin selectMobile"
-          style="align-self: center; align-self: center"
+          class="col-md-5 col-sm-6 col-xs-12 marginHeader marginHeaderMobile"
+          style="align-self: center"
         >
           <q-input
             v-model="filter"
@@ -120,16 +120,14 @@
           <q-btn
             label="Insertar"
             rounded
-            dense
             style="text-align: center; align-self: center"
             color="primary"
             :disabled="this.allowOption(2)"
+            class="q-px-xl q-py-xs"
             @click="
               dialog = true;
               this.resetForm();
             "
-            size="16px"
-            class="q-px-xl q-py-xs"
           ></q-btn>
         </div>
       </div>
@@ -210,7 +208,7 @@
                     <q-item-section>
                       <q-item-label>{{ col.label }}</q-item-label>
                     </q-item-section>
-                    <q-item-section side class="itemMovilSide">                      
+                    <q-item-section side class="itemMovilSide">
                       <q-btn
                         v-if="col.name === 'action'"
                         dense
@@ -240,7 +238,7 @@
                         @click.capture="deletePopup = true"
                       ></q-btn>
                     </q-item-section>
-                    <q-item-section side class="itemMovilSide">                      
+                    <q-item-section side class="itemMovilSide">
                       <q-select
                         v-if="col.name === 'tipo'"
                         outlined
@@ -257,7 +255,9 @@
                         "
                       >
                       </q-select>
-                      <q-item-label v-if="col.name != 'tipo'"> {{ col.value }} </q-item-label>
+                      <q-item-label v-if="col.name != 'tipo'">
+                        {{ col.value }}
+                      </q-item-label>
                     </q-item-section>
                   </q-item>
                 </q-list>
@@ -435,11 +435,13 @@ export default {
       this[dataRes].id = res.id;
       this[dataRes].nombre = res.nombre;
       this[dataRes].valor = res.valor;
-      this[dataRes].tipo = this.filterDesc("tipos", res.tipo);      
+      this[dataRes].tipo = this.filterDesc("tipos", res.tipo);
     },
     // Metodos para Editar y Crear Datos
     sendData() {
-      this.form.tipo = this.form.tipo.value ? this.form.tipo.value : this.filterLabel("tipos", this.form.tipo);
+      this.form.tipo = this.form.tipo.value
+        ? this.form.tipo.value
+        : this.filterLabel("tipos", this.form.tipo);
       if (!this.form.id) {
         this.$refs.methods.createData("/vcontrol", this.form, "getDataTable");
       } else {
@@ -488,26 +490,27 @@ export default {
 }
 
 @media screen and (min-width: 600px) {
-  .cardMargin {
-    padding-right: 20px !important;
+  .marginHeader {
+    padding-right: 20px;
   }
 }
 
 @media screen and (min-width: 1024px) {
-  .cardMarginFilter {
-    padding-right: 20px !important;
-  }
-}
-
-@media screen and (max-width: 1024px) {
-  .buttonMargin {
-    margin-bottom: 15px !important;
+  .marginHeaderFilter {
+    padding-right: 20px;
   }
 }
 
 @media screen and (max-width: 600px) {
-  .selectMobile {
-    margin-bottom: 25px !important;
+  .marginHeaderMobile {
+    margin-bottom: 25px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .paddingMobile {
+    padding-left: 2px;
+    padding-right: 2px;
   }
 }
 </style>

@@ -201,7 +201,7 @@
           <p style="font-size: 20px" class="text-secondary"><strong>MANTENIMIENTO - RECEPTORES</strong></p>
         </div>
         <div
-          class="col-md-6 col-sm-7 col-xs-12 cardMargin selectMobile"
+          class="col-md-5 col-sm-6 col-xs-12 marginHeader marginHeaderMobile"
           style="align-self: center"
         >
           <q-input
@@ -229,6 +229,7 @@
             @click="dialog = true"
             @click.capture="resetForm()"
             :disabled="this.allowOption(2)"
+            class="q-px-xl q-py-xs"
           ></q-btn>
         </div>
       </div>
@@ -535,10 +536,6 @@ export default {
 </script>
 
 <style>
-.hide {
-  display: none;
-}
-
 @media screen and (min-width: 600px) {
   .movilTitle {
     display: none;
@@ -552,26 +549,27 @@ export default {
 }
 
 @media screen and (min-width: 600px) {
-  .cardMargin {
-    padding-right: 20px !important;
+  .marginHeader {
+    padding-right: 20px;
   }
 }
 
 @media screen and (min-width: 1024px) {
-  .cardMarginFilter {
-    padding-right: 20px !important;
-  }
-}
-
-@media screen and (max-width: 1024px) {
-  .buttonMargin {
-    margin-bottom: 15px !important;
+  .marginHeaderFilter {
+    padding-right: 20px;
   }
 }
 
 @media screen and (max-width: 600px) {
-  .selectMobile {
-    margin-bottom: 25px !important;
+  .marginHeaderMobile {
+    margin-bottom: 25px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .paddingMobile {
+    padding-left: 2px;
+    padding-right: 2px;
   }
 }
 </style>

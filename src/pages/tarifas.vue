@@ -217,7 +217,7 @@
           <p style="font-size: 20px" class="text-secondary"><strong>MANTENIMIENTO - TARIFAS</strong></p>
         </div>
         <div
-          class="col-md-6 col-sm-7 col-xs-12 cardMargin selectMobile"
+          class="col-md-5 col-sm-6 col-xs-12 marginHeader marginHeaderMobile"
           style="align-self: center"
         >
           <q-input
@@ -245,6 +245,7 @@
             @click="dialog = true"
             @click.capture="resetForm()"
             :disabled="this.allowOption(2)"
+            class="q-px-xl q-py-xs"
           ></q-btn>
         </div>
       </div>

@@ -310,6 +310,7 @@
                 @click="paisesDialog = true"
                 :disabled="this.allowOption(2)"
                 @click.capture="resetFormPaises"
+                class="q-px-xl q-py-xs"
               >
               </q-btn>
             </div>
@@ -528,6 +529,7 @@
                 :disabled="this.allowOption(2)"
                 @click="estadosDialog = true"
                 @click.capture="resetFormEstados"
+                class="q-px-xl q-py-xs"
               >
               </q-btn>
             </div>
@@ -782,6 +784,7 @@
                 :disabled="this.allowOption(2)"
                 @click="ciudadesDialog = true"
                 @click.capture="resetFormCiudades"
+                class="q-px-xl q-py-xs"
               >
               </q-btn>
             </div>

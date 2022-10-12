@@ -349,6 +349,7 @@
               :disabled="this.allowOption(2)"
               @click="dialog = true"
               @click.capture="resetForm()"
+              class="q-px-xl q-py-xs"
             ></q-btn>
           </div>
         </div>

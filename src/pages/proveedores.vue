@@ -398,6 +398,7 @@
               this.resetForm();
             "
             :disabled="this.allowOption(2)"
+            class="q-px-xl q-py-xs" 
           ></q-btn>
         </div>
       </div>
