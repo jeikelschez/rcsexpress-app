@@ -235,7 +235,7 @@
           </q-input>
         </div>
         <div
-          class="col-md-2 col-sm-4 col-xs-12"
+          class="col-md-2 col-sm-3 col-xs-12"
           style="text-align: center; align-self: center"
         >
           <q-btn
@@ -728,26 +728,27 @@ export default {
 }
 
 @media screen and (min-width: 600px) {
-  .cardMargin {
-    padding-right: 20px !important;
+  .marginHeader {
+    padding-right: 20px;
   }
 }
 
 @media screen and (min-width: 1024px) {
-  .cardMarginFilter {
-    padding-right: 20px !important;
-  }
-}
-
-@media screen and (max-width: 1024px) {
-  .buttonMargin {
-    margin-bottom: 15px !important;
+  .marginHeaderFilter {
+    padding-right: 20px;
   }
 }
 
 @media screen and (max-width: 600px) {
-  .selectMobile {
-    margin-bottom: 25px !important;
+  .marginHeaderMobile {
+    margin-bottom: 25px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .paddingMobile {
+    padding-left: 2px;
+    padding-right: 2px;
   }
 }
 </style>
