@@ -405,7 +405,6 @@
           ></q-btn>
         </div>
       </div>
-
       <div class="q-pa-md q-gutter-y-md">
         <q-table
           :rows="agencias"
@@ -807,45 +806,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.hide {
-  display: none;
-}
-
-@media screen and (min-width: 600px) {
-  .movilTitle {
-    display: none;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .movilTitle {
-    display: block;
-  }
-}
-
-@media screen and (min-width: 600px) {
-  .cardMargin {
-    padding-right: 20px !important;
-  }
-}
-
-@media screen and (min-width: 1024px) {
-  .cardMarginFilter {
-    padding-right: 20px !important;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .buttonMargin {
-    margin-bottom: 20px !important;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .selectMobile {
-    margin-bottom: 20px !important;
-  }
-}
-</style>

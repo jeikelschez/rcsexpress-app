@@ -307,7 +307,7 @@
 
 <script>
 import { ref } from "vue";
-import { useQuasar, LocalStorage } from "quasar";
+import { LocalStorage } from "quasar";
 import rulesVue from "src/components/rules.vue";
 import methodsVue from "src/components/methods.vue";
 
@@ -392,11 +392,6 @@ export default {
         }
       });
     },
-    // Metodo para traer el value de los Selects y Columns
-    filterDesc(array, value) {
-      var find = this[array].findIndex((item) => item.value == value);
-      return find >= 0 ? this[array][find].label : null;
-    },
     // Metodo para validar Permisos
     allowOption(option) {
       return (
@@ -464,41 +459,3 @@ export default {
   },
 };
 </script>
-
-<style>
-@media screen and (min-width: 600px) {
-  .movilTitle {
-    display: none;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .movilTitle {
-    display: block;
-  }
-}
-
-@media screen and (min-width: 600px) {
-  .cardMargin {
-    padding-right: 20px !important;
-  }
-}
-
-@media screen and (min-width: 1024px) {
-  .cardMarginFilter {
-    padding-right: 20px !important;
-  }
-}
-
-@media screen and (max-width: 1024px) {
-  .buttonMargin {
-    margin-bottom: 15px !important;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .selectMobile {
-    margin-bottom: 15px !important;
-  }
-}
-</style>

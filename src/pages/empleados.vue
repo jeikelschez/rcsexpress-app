@@ -166,7 +166,6 @@
             </template>
           </q-input>
         </div>
-
         <div
           class="col-md-2 col-sm-4 col-xs-12"
           style="text-align: center; align-self: center"
@@ -182,7 +181,6 @@
           </q-btn>
         </div>
       </div>
-
       <div class="q-pa-md q-gutter-y-md">
         <q-table
           :rows="empleados"
@@ -492,41 +490,3 @@ export default {
   },
 };
 </script>
-
-<style>
-@media screen and (min-width: 600px) {
-  .movilTitle {
-    display: none;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .movilTitle {
-    display: block;
-  }
-}
-
-@media screen and (min-width: 600px) {
-  .cardMargin {
-    padding-right: 20px !important;
-  }
-}
-
-@media screen and (min-width: 1024px) {
-  .cardMarginLast {
-    padding-right: 20px !important;
-  }
-}
-
-@media screen and (max-width: 1024px) {
-  .buttonMargin {
-    margin-bottom: 20px !important;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .selectMobile {
-    margin-bottom: 20px !important;
-  }
-}
-</style>
