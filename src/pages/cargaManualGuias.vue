@@ -1,5 +1,9 @@
 <template>
   <q-page class="pagina q-pa-md">
+    <q-inner-loading :showing="loadingPage">
+      <q-spinner-gears size="50px" color="primary" />
+    </q-inner-loading>
+
     <q-dialog v-model="dialog">
       <q-card class="q-pa-md" bordered style="width: 999px; max-width: 80vw">
         <q-card-section>
@@ -160,6 +164,7 @@
                   outlined
                   v-model="form.bultos"
                   label="Bultos"
+                  v-money="moneyNotDecimal"
                   hint=""
                   class="pcform"
                   lazy-rules
@@ -188,6 +193,7 @@
                   outlined
                   v-model="form.monto"
                   label="Monto Factura"
+                  v-money="money"
                   hint=""
                   lazy-rules
                 >
@@ -202,6 +208,7 @@
                   v-model="form.peso"
                   label="Peso"
                   class="pcform"
+                  v-money="moneyNotDecimal"
                   hint=""
                   lazy-rules
                 >
@@ -215,6 +222,7 @@
                   outlined
                   v-model="form.carga_neta"
                   label="Carga Neta"
+                  v-money="money"
                   class="pcform"
                   hint=""
                   lazy-rules
@@ -228,6 +236,7 @@
                 <q-input
                   outlined
                   v-model="form.porc_comision"
+                  v-money="money"
                   label="% Comision"
                   hint=""
                   lazy-rules
@@ -276,6 +285,14 @@
         </q-card-section>
       </q-card>
     </q-dialog>
+
+    <q-page-sticky
+      position="bottom-right"
+      class="z-top"
+      style="margin-right: 20px; margin-bottom: 20px"
+    >
+      <q-btn round color="primary" icon="save" @click="saveData()" />
+    </q-page-sticky>
 
     <div class="q-pa-sm justify-center">
       <div
@@ -713,7 +730,7 @@
             <q-input
               outlined
               dense
-              style="min-width: 600px"
+              style="min-width: 120px"
               v-model="props.row.nro_guia"
               @update:model-value="
                 this.$refs.methods.getData(
@@ -732,20 +749,43 @@
               outlined
               dense
               v-model="props.row.porc_zona"
-              @update:model-value="
-                this.$refs.methods.getData(
-                  `/correlativo/${props.row.id}`,
-                  `putDataSelect`,
-                  'form'
-                )
-              "
+              :input-style="{ color: 'blue' }"
+              v-if="props.row.porc_zona_status == true"
             >
+            </q-input>
+            <q-input
+              outlined
+              dense
+              v-model="props.row.porc_zona"
+              :input-style="{ color: 'red' }"
+              v-else-if="props.row.porc_zona_status == false"
+            >
+            </q-input>
+            <q-input outlined dense v-model="props.row.porc_zona" v-else>
             </q-input>
           </q-td>
         </template>
-        <template v-slot:body-cell-last_nro_factura="props">
-          <q-td :props="props" style="background-color: #dbd9d9">
-            {{ props.row.nro_factura }}
+        <template v-slot:body-cell-ciudad="props">
+          <q-td
+            :props="props"
+            style="color: blue"
+            v-if="props.row.ciudadExist == true && !props.row.zonaExist"
+          >
+            {{ props.row.ciudad }}
+          </q-td>
+          <q-td :props="props" v-else-if="props.row.zonaExist == true">
+            {{ props.row.ciudad }}
+          </q-td>
+          <q-td :props="props" style="color: red" v-else>
+            {{ props.row.ciudad }}
+          </q-td>
+        </template>
+        <template v-slot:body-cell-estado="props">
+          <q-td :props="props" style="color: red" v-if="!props.row.estadoExist">
+            {{ props.row.estado }}
+          </q-td>
+          <q-td :props="props" v-else>
+            {{ props.row.estado }}
           </q-td>
         </template>
         <template v-slot:body-cell-action="props">
@@ -908,8 +948,10 @@
 
 <script>
 import { ref } from "vue";
+import { api } from "boot/axios";
 import rulesVue from "src/components/rules.vue";
 import moment from "moment";
+import { VMoney } from "v-money";
 import { useQuasar, LocalStorage } from "quasar";
 import methodsVue from "src/components/methods.vue";
 
@@ -917,9 +959,28 @@ export default {
   components: {
     methods: methodsVue,
     rulesVue,
+    VMoney,
   },
+  directives: { money: VMoney },
+
   data() {
     return {
+      money: {
+        decimal: ",",
+        thousands: ".",
+        prefix: "",
+        suffix: "",
+        precision: 2,
+        masked: true,
+      },
+      moneyNotDecimal: {
+        decimal: ",",
+        thousands: ".",
+        prefix: "",
+        suffix: "",
+        precision: 0,
+        masked: true,
+      },
       columns: [
         {
           name: "nro_factura",
@@ -1072,7 +1133,9 @@ export default {
         descending: false,
       },
       datos: [],
+      loadingPage: false,
       file: null,
+      validate: null,
       agencias: [],
       rpermisos: [],
       menus: [],
@@ -1121,30 +1184,90 @@ export default {
   methods: {
     // Metodo para Interpretar Archivos Subidos
     readFile() {
+      this.loadingPage = true;
       const reader = new FileReader();
       reader.onerror = (err) => console.log(err);
       reader.readAsText(this.file);
-      reader.onload = (res) => {
+      reader.onload = async (res) => {
         this.content = res.target.result;
         var lines = this.content.split("\n");
         for (var i = 0; i < lines.length - 1; i++) {
           var form = {};
+          var estadoID = null;
           var columns = lines[i].split("\t");
           form.nro_factura = columns[0];
           form.fecha_factura = columns[1];
           form.nb_cliente = columns[2];
           form.ci_rif = columns[3];
           form.direccion = columns[4];
-          form.estado = columns[5];
-          form.ciudad = columns[6];
+          form.ciudad = columns[5];
+          form.estado = columns[6];
           form.bultos = columns[7];
           form.telefono = columns[8];
           form.monto = columns[9];
           form.peso = columns[10];
           form.carga_neta = columns[11];
           form.id = i;
+          await api
+            .get(`/estados`, {
+              headers: {
+                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                desc: form.estado,
+                pais: 1,
+              },
+            })
+            .then((res) => {
+              if (res.data.data[0]) {
+                form.estadoExist = true;
+                estadoID = res.data.data[0].id;
+              } else {
+                form.estadoExist = false;
+              }
+            })
+            .catch((err) => {
+              if (err.response) {
+                form.estadoExist = false;
+              }
+            });
+          if (estadoID) {
+            await api
+              .get(`/ciudades`, {
+                headers: {
+                  Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                  desc: form.ciudad,
+                  estado: estadoID,
+                },
+              })
+              .then((res) => {
+                if (res.data.data[0]) {
+                  form.ciudadExist = true;
+                } else {
+                  form.ciudadExist = false;
+                }
+              })
+              .catch((err) => {
+                if (err.response) {
+                  form.ciudadExist = false;
+                }
+              });
+            if (form.ciudadExist) {
+              await api
+                .get(`/zonas`, {
+                  headers: {
+                    Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                    desc: form.ciudad,
+                  },
+                })
+                .then((res) => {
+                  if (res.data[0]) {
+                    form.zonaExist = true;
+                  }
+                });
+            }
+          }
           this.datos.push(form);
         }
+        this.loadingPage = false;
       };
     },
     // Metodo para Manejar Errores al Subir Archivos
@@ -1164,11 +1287,6 @@ export default {
         },
       });
       this.$refs.methods.getData("/agentes", "setData", "agentes", {
-        headers: {
-          agencia: this.agencias[0].id,
-        },
-      });
-      this.$refs.methods.getData("/mmovimientos", "setData", "datos", {
         headers: {
           agencia: this.agencias[0].id,
         },
@@ -1211,6 +1329,11 @@ export default {
       this[dataRes] = res;
       if (this.rpermisos.findIndex((item) => item.acciones.accion == 1) < 0)
         this.$router.push("/error403");
+    },
+    // Pasar un numero a numero con dos decimales en formato correcto para efectuar operaciones
+    parseFloatN(number) {
+      number = Math.round(number * 100) / 100;
+      return number;
     },
 
     // METODOS DE PAGINA
@@ -1283,9 +1406,210 @@ export default {
       this.datos.splice(idpost, 1);
     },
     // Metodo para Editar o Crear Datos
-    sendData() {
-      this.datos[this.form.id] = this.form;
-      this.dialog = false;
+    async sendData() {
+      try {
+        this.loadingPage = true;
+        var errorMessage;
+        var monto_basico;
+        var kgs_adicionales;
+        var kgr_minimos;
+        var monto_kg_ad;
+        var monto_kg_adicional;
+        var monto_comision;
+        var monto_base;
+        var form;
+        var datos;
+        datos = JSON.parse(JSON.stringify(this.datos));
+        form = JSON.parse(JSON.stringify(this.form));
+        form.bultos = form.bultos.replaceAll(".", "").replaceAll(",", ".");
+        form.monto = form.monto.replaceAll(".", "").replaceAll(",", ".");
+        form.peso = form.peso.replaceAll(".", "").replaceAll(",", ".");
+        form.carga_neta = form.carga_neta
+          .replaceAll(".", "")
+          .replaceAll(",", ".");
+        form.porc_comision = form.porc_comision
+          .replaceAll(".", "")
+          .replaceAll(",", ".");
+
+        if (form.peso < 30) {
+          // Buscar tarifa kg adicionales – De aquí sacar monto_kg_adicional
+          await api.get(`/tarifas`, {
+              headers: {
+                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                tipo_tarifa: "BA",
+                tipo_urgencia: "N",
+                tipo_ubicacion: "U",
+                tipo_carga: "PM",
+              },
+            })
+            .then((res) => {
+              if (!res.data[0]) {
+                errorMessage = `Problemas al ubicar la tarifa básica. Revisar mantenimiento de tarifas`;
+                return stopFuction;
+              }
+              if (
+                res.data[0].monto_tarifa == null ||
+                res.data[0].monto_tarifa == "" ||
+                res.data[0].monto_tarifa == 0
+              ) {
+                errorMessage = `Problemas al ubicar el monto de la tarifa básica. Revisar mantenimiento de tarifas`;
+                return stopFuction;
+              }
+              if (
+                res.data[0].kgr_hasta == null ||
+                res.data[0].kgr_hasta == "" ||
+                res.data[0].kgr_hasta == 0
+              ) {
+                errorMessage = `Problemas al ubicar los Kgs. minimos de la tarifa básica. Revisar mantenimiento de tarifas`;
+                return error;
+              }
+              monto_basico = res.data[0].monto_tarifa;
+              kgr_minimos = res.data[0].kgr_hasta;
+            })
+            .catch((err) => {
+              if (err.response) {
+                errorMessage = err.response.data.message;
+              }
+              return stopFuction;
+            });
+          // Buscar tarifa kg adicionales – De aquí sacar monto_kg_adicional
+          await api.get(`/tarifas`, {
+              headers: {
+                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                tipo_tarifa: "KA",
+                tipo_urgencia: "N",
+                tipo_ubicacion: "U",
+                modalidad_pago: "CO",
+                pagado_en: "O",
+                region_origen: "CE",
+                region_destino: "OR",
+                mix_region: "S",
+              },
+            })
+            .then((res) => {
+              if (!res.data[0]) {
+                errorMessage = `Problemas al ubicar la tarifa de Kgs. Adicionales. Revisar mantenimiento de tarifas`;
+                return stopFuction;
+              }
+              if (
+                res.data[0].kgr_hasta == null ||
+                res.data[0].kgr_hasta == "" ||
+                res.data[0].kgr_hasta == 0
+              ) {
+                errorMessage = `Problemas al ubicar los Kgs. Adicionales de la tarifa. Revisar mantenimiento de tarifas`;
+                return error;
+              }
+              monto_kg_adicional = res.data[0].monto_tarifa;
+            })
+            .catch((err) => {
+              if (err.response) {
+                errorMessage = err.response.data.message;
+              }
+              return stopFuction;
+            });
+        }
+        console.log("monto_basico " + monto_basico);
+        console.log("kgs_adicionales " + kgs_adicionales);
+        console.log("kgr_minimos " + kgr_minimos);
+        console.log("monto_kg_ad " + monto_kg_ad);
+        console.log("monto_kg_adicional " + monto_kg_adicional);
+        console.log("monto_comision " + monto_comision);
+        console.log("monto_base " + monto_base);
+        if (datos[form.id].peso > kgr_minimos) {
+          kgs_adicionales =
+            this.parseFloatN(datos[form.id].peso) -
+            this.parseFloatN(kgr_minimos);
+        } else {
+          kgs_adicionales = 0;
+        }
+
+        monto_kg_ad =
+          this.parseFloatN(kgs_adicionales) *
+          this.parseFloatN(monto_kg_adicional);
+
+        monto_comision =
+          (this.parseFloatN(datos[form.id].monto) *
+            this.parseFloatN(datos[form.id].porc_zona)) /
+          100;
+
+        monto_base =
+          this.parseFloatN(monto_basico) + this.parseFloatN(monto_kg_ad);
+
+        if (monto_base > monto_comision) {
+          if (kgs_adicionales == 0) {
+            datos[form.id].porc_zona_status = true;
+          } else {
+            datos[form.id].porc_zona_status = false;
+          }
+        }
+        console.log("RESULTADOS");
+        console.log("monto_basico " + monto_basico);
+        console.log("kgs_adicionales " + kgs_adicionales);
+        console.log("kgr_minimos " + kgr_minimos);
+        console.log("monto_kg_ad " + monto_kg_ad);
+        console.log("monto_kg_adicional " + monto_kg_adicional);
+        console.log("monto_comision " + monto_comision);
+        console.log("monto_base " + monto_base);
+        this.loadingPage = false;
+        this.datos[form.id] = form;
+        this.dialog = false;
+      } catch (stopFuction) {
+        console.log(stopFuction);
+        this.loadingPage = false;
+        if (errorMessage) {
+          this.$q.notify({
+            message: errorMessage,
+            color: "red",
+          });
+        }
+      }
+    },
+    async saveData() {
+      try {
+        this.loadingPage = true;
+        var errorMessage;
+        var datos;
+        datos = JSON.parse(JSON.stringify(this.datos));
+        if (datos[0]) {
+          for (var i = 0; i <= datos.length - 1; i++) {
+            datos[i].bultos = datos[i].bultos
+              .replaceAll(".", "")
+              .replaceAll(",", ".");
+            datos[i].monto = datos[i].monto
+              .replaceAll(".", "")
+              .replaceAll(",", ".");
+            datos[i].peso = datos[i].peso
+              .replaceAll(".", "")
+              .replaceAll(",", ".");
+            datos[i].carga_neta = datos[i].carga_neta
+              .replaceAll(".", "")
+              .replaceAll(",", ".");
+            datos[i].porc_comision = datos[i].porc_comision
+              .replaceAll(".", "")
+              .replaceAll(",", ".");
+            if (this.$refs.rulesVue.isReq(datos[i].porc_zona, false)) {
+              errorMessage = `Error. El % Porc por Zona es Requerido en factura NRO ${datos[i].nro_factura}`;
+              return stopFuction;
+            }
+            if (this.$refs.rulesVue.isReq(datos[i].nro_guia, false)) {
+              errorMessage = `Error en Nro de Guia de factura NRO ${datos[i].nro_factura}`;
+              return stopFuction;
+            }
+          }
+        } else {
+          errorMessage = `Error. No hay un Documento Cargado`;
+          return stopFuction;
+        }
+        this.loadingPage = false;
+      } catch (stopFuction) {
+        this.loadingPage = false;
+        if (errorMessage) {
+          this.$q.notify({
+            message: errorMessage,
+            color: "red",
+          });
+        }
+      }
     },
     // Metodo para Resetear Datos
     resetForm() {
