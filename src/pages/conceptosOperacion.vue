@@ -182,7 +182,7 @@
             v-model:pagination="pagination"
           >
             <template v-slot:loading>
-              <q-inner-loading showing color="primary" />
+              <q-inner-loading showing color="primary" class="loading" />
             </template>
             <template v-slot:body-cell-action="props">
               <q-td :props="props">
