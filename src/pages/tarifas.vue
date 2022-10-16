@@ -182,7 +182,7 @@
               </div>
             </div>
             <div
-              class=" row justify-center items-center content-center"
+              class="row justify-center items-center content-center"
               style="margin-bottom: 10px"
             >
               <q-btn
@@ -206,18 +206,20 @@
       </q-card>
     </q-dialog>
 
-    <div
-      class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 q-pa-sm justify-center"
-    >
-      <div class="justify-end q-pa-md row">
+    <div class="q-pa-sm justify-center">
+      <div
+        class="row justify-end q-pa-md col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
+      >
         <div
           class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
           style="align-self: center; text-align: center"
         >
-          <p style="font-size: 20px" class="text-secondary"><strong>MANTENIMIENTO - TARIFAS</strong></p>
+          <p style="font-size: 20px" class="text-secondary">
+            <strong>MANTENIMIENTO - TARIFAS</strong>
+          </p>
         </div>
         <div
-          class="col-md-5 col-sm-6 col-xs-12 marginHeader marginHeaderMobile"
+          class="col-md-5 col-sm-7 col-xs-12 cardMargin selectMobile"
           style="align-self: center"
         >
           <q-input
@@ -235,7 +237,7 @@
           </q-input>
         </div>
         <div
-          class="col-md-2 col-sm-4 col-xs-12"
+          class="col-md-2 col-sm-3 col-xs-12"
           style="text-align: center; align-self: center"
         >
           <q-btn
@@ -249,7 +251,6 @@
           ></q-btn>
         </div>
       </div>
-
       <div class="row q-gutter-y-md q-pa-md">
         <q-table
           :rows="tarifas"
@@ -713,41 +714,3 @@ export default {
   },
 };
 </script>
-
-<style>
-@media screen and (min-width: 600px) {
-  .movilTitle {
-    display: none;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .movilTitle {
-    display: block;
-  }
-}
-
-@media screen and (min-width: 600px) {
-  .cardMargin {
-    padding-right: 20px !important;
-  }
-}
-
-@media screen and (min-width: 1024px) {
-  .cardMarginFilter {
-    padding-right: 20px !important;
-  }
-}
-
-@media screen and (max-width: 1024px) {
-  .buttonMargin {
-    margin-bottom: 15px !important;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .selectMobile {
-    margin-bottom: 25px !important;
-  }
-}
-</style>

@@ -79,7 +79,7 @@
               </div>
             </div>
             <div
-              class=" row justify-center items-center content-center"
+              class="row justify-center items-center content-center"
               style="margin-bottom: 10px"
             >
               <q-btn
@@ -103,207 +103,214 @@
       </q-card>
     </q-dialog>
 
-    <div class="q-pa-sm justify-center">
-      <div class="q-pa-md row justify-end">
-        <div
-          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
-          style="align-self: center; text-align: center"
-        >
-          <p style="font-size: 20px" class="text-secondary">
-            <strong>MANTENIMIENTO - CUENTAS BANCARIAS</strong>
-          </p>
-        </div>
-        <div
-          class="col-md-5 col-xs-12 col-sm-6 cardMargin selectMovil"
-          style="align-self: center; text-align: center"
-        >
-          <q-select
-            rounded
-            transition-show="flip-up"
-            transition-hide="flip-down"
-            dense
-            :options="bancosSelected"
-            @filter="
-              (val, update) =>
-                filterArray(
-                  val,
-                  update,
-                  'bancosSelected',
-                  'bancos',
-                  'nb_banco'
-                )
-            "
-            use-input
-            hide-selected
-            fill-input
-            input-debounce="0"
-            option-label="nb_banco"
-            option-value="id"
-            v-model="selectedBanco"
-            outlined
-            standout
-            label="Escoge un Banco"
-            @update:model-value="
-              getDataTable(`/cuentas`, 'setDataTable', 'cuentas')
-            "
-            ><template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  Sin resultados
-                </q-item-section>
-              </q-item>
-            </template>
-            <template v-slot:prepend>
-              <q-icon name="search" />
-            </template>
-          </q-select>
-        </div>
-
-        <div
-          class="col-md-5 col-xs-12 col-sm-6 cardMarginLast selectMovil"
-          style="align-self: center; text-align: center"
-        >
-          <q-input
-            rounded
-            outlined
-            dense
-            standout
-            v-model="filter"
-            type="search"
-            label="Búsqueda avanzada"
+    <div class="row q-pa-sm justify-center">
+      <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
+        <div class="q-pa-md row" style="margin-top: 2px">
+          <div
+            class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
+            style="align-self: center; text-align: center"
           >
-            <template v-slot:prepend>
-              <q-icon name="search" />
-            </template>
-          </q-input>
-        </div>
-        <div
-          class="col-md-2 col-xs-12 col-sm-12"
-          style="text-align: center; align-self: center"
-        >
-          <q-btn
-            label="Insertar"
-            rounded
-            color="primary"
-            :disabled="this.allowOption(2)"
-            @click="dialog = true"
-            @click.capture="resetForm()"
-            class="q-px-xl q-py-xs"
-          ></q-btn>
-        </div>
-      </div>
-
-      <div class="q-pa-md q-gutter-y-md">
-        <q-table
-          :rows="cuentas"
-          row-key="id"
-          binary-state-sort
-          :columns="columns"
-          :separator="separator"
-          :filter="filter"
-          :loading="loading"
-          :rows-per-page-options="[5, 10, 15, 20, 50]"
-          style="width: 100%"
-          :grid="$q.screen.xs"
-          v-model:pagination="pagination"
-        >
-          <template v-slot:loading>
-            <q-inner-loading showing color="primary" class="loading" />
-          </template>
-          <template v-slot:body-cell-tipo_cuenta="props">
-            <q-td :props="props">
-              {{ filterDesc("tipoCuenta", props.row.tipo_cuenta) }}
-            </q-td>
-          </template>
-          <template v-slot:body-cell-flag_activa="props">
-            <q-td :props="props">
-              {{ filterDesc("estatus", props.row.flag_activa) }}
-            </q-td>
-          </template>
-          <template v-slot:body-cell-action="props">
-            <q-td :props="props">
-              <q-btn
-                dense
-                round
-                flat
-                color="primary"
-                icon="edit"
-                :disabled="this.allowOption(3)"
-                @click="
-                  this.$refs.methods.getData(
-                    `/cuentas/${props.row.id}`,
-                    'setDataEdit',
-                    'form'
-                  );
-                  dialog = true;
-                "
-              ></q-btn>
-              <q-btn
-                dense
-                round
-                flat
-                color="primary"
-                icon="delete"
-                :disabled="this.allowOption(4)"
-                @click="selected = props.row.id"
-                @click.capture="deletePopup = true"
-              ></q-btn>
-            </q-td>
-          </template>
-          <template v-slot:item="props">
-            <div
-              class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
-              :style="props.selected ? 'transform: scale(0.95);' : ''"
+            <p style="font-size: 20px" class="text-secondary">
+              <strong>MANTENIMIENTO - CUENTAS BANCARIAS</strong>
+            </p>
+          </div>
+          <div
+            class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-6 cardMargin selectMobile"
+            style="align-self: center; text-align: center"
+          >
+            <q-select
+              rounded
+              transition-show="flip-up"
+              transition-hide="flip-down"
+              dense
+              :options="bancosSelected"
+              @filter="
+                (val, update) =>
+                  filterArray(
+                    val,
+                    update,
+                    'bancosSelected',
+                    'bancos',
+                    'nb_banco'
+                  )
+              "
+              use-input
+              hide-selected
+              fill-input
+              input-debounce="0"
+              option-label="nb_banco"
+              option-value="id"
+              v-model="selectedBanco"
+              outlined
+              standout
+              label="Escoge un Banco"
+              @update:model-value="
+                getDataTable(`/cuentas`, 'setDataTable', 'cuentas')
+              "
+              ><template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    Sin resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:prepend>
+                <q-icon name="search" />
+              </template>
+            </q-select>
+          </div>
+          <div
+            class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-6"
+            style="align-self: center; text-align: center"
+          >
+            <q-input
+              rounded
+              outlined
+              dense
+              standout
+              v-model="filter"
+              type="search"
+              label="Búsqueda avanzada"
             >
-              <q-card :class="props.selected ? 'bg-grey-2' : ''">
-                <q-list dense>
-                  <q-item v-for="col in props.cols" :key="col.name">
-                    <q-item-section>
-                      <q-item-label>{{ col.label }}</q-item-label>
-                    </q-item-section>
-                    <q-item-section side class="itemMovilSide">
-                      <q-item-label v-if="col.name === 'tipo_cuenta'">
-                        {{ filterDesc("tipoCuenta", props.row.tipo_cuenta) }}
-                      </q-item-label>
-                      <q-item-label v-if="col.name === 'flag_activa'">
-                        {{ filterDesc("estatus", props.row.flag_activa) }}
-                      </q-item-label>
-                      <q-btn
-                        v-if="col.name === 'action'"
-                        dense
-                        round
-                        flat
-                        color="primary"
-                        icon="edit"
-                        :disabled="this.allowOption(3)"
-                        @click="
-                          this.$refs.methods.getData(
-                            `/cuentas/${props.row.id}`,
-                            'setDataEdit',
-                            'form'
-                          );
-                          dialog = true;
-                        "
-                      ></q-btn>
-                      <q-btn
-                        v-if="col.name === 'action'"
-                        dense
-                        round
-                        flat
-                        color="primary"
-                        icon="delete"
-                        :disabled="this.allowOption(4)"
-                        @click="selected = props.row.id"
-                        @click.capture="deletePopup = true"
-                      ></q-btn>
-                      <q-item-label v-if="col.name != 'tipo_cuenta' && col.name != 'flag_activa'"> {{ col.value }} </q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-card>
-            </div>
-          </template>
-        </q-table>
+              <template v-slot:prepend>
+                <q-icon name="search" />
+              </template>
+            </q-input>
+          </div>
+          <div
+            class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 cardMarginButton"
+            style="text-align: center; align-self: center"
+          >
+            <q-btn
+              label="Insertar"
+              rounded
+              color="primary"
+              :disabled="this.allowOption(2)"
+              @click="dialog = true"
+              @click.capture="resetForm()"
+              class="q-px-xl q-py-xs"
+            ></q-btn>
+          </div>
+        </div>
+        <div class="q-pa-md my-card row" bordered flat style="margin-top: 2px">
+          <q-table
+            :rows="cuentas"
+            row-key="id"
+            binary-state-sort
+            :columns="columns"
+            :separator="separator"
+            :filter="filter"
+            :loading="loading"
+            :rows-per-page-options="[5, 10, 15, 20, 50]"
+            style="width: 100%"
+            :grid="$q.screen.xs"
+            v-model:pagination="pagination"
+          >
+            <template v-slot:loading>
+              <q-inner-loading showing color="primary" class="loading" />
+            </template>
+            <template v-slot:body-cell-tipo_cuenta="props">
+              <q-td :props="props">
+                {{ filterDesc("tipoCuenta", props.row.tipo_cuenta) }}
+              </q-td>
+            </template>
+            <template v-slot:body-cell-flag_activa="props">
+              <q-td :props="props">
+                {{ filterDesc("estatus", props.row.flag_activa) }}
+              </q-td>
+            </template>
+            <template v-slot:body-cell-action="props">
+              <q-td :props="props">
+                <q-btn
+                  dense
+                  round
+                  flat
+                  color="primary"
+                  icon="edit"
+                  :disabled="this.allowOption(3)"
+                  @click="
+                    this.$refs.methods.getData(
+                      `/cuentas/${props.row.id}`,
+                      'setDataEdit',
+                      'form'
+                    );
+                    dialog = true;
+                  "
+                ></q-btn>
+                <q-btn
+                  dense
+                  round
+                  flat
+                  color="primary"
+                  icon="delete"
+                  :disabled="this.allowOption(4)"
+                  @click="selected = props.row.id"
+                  @click.capture="deletePopup = true"
+                ></q-btn>
+              </q-td>
+            </template>
+            <template v-slot:item="props">
+              <div
+                class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+                :style="props.selected ? 'transform: scale(0.95);' : ''"
+              >
+                <q-card :class="props.selected ? 'bg-grey-2' : ''">
+                  <q-list dense>
+                    <q-item v-for="col in props.cols" :key="col.name">
+                      <q-item-section>
+                        <q-item-label>{{ col.label }}</q-item-label>
+                      </q-item-section>
+                      <q-item-section side class="itemMovilSide">
+                        <q-item-label v-if="col.name === 'tipo_cuenta'">
+                          {{ filterDesc("tipoCuenta", props.row.tipo_cuenta) }}
+                        </q-item-label>
+                        <q-item-label v-if="col.name === 'flag_activa'">
+                          {{ filterDesc("estatus", props.row.flag_activa) }}
+                        </q-item-label>
+                        <q-btn
+                          v-if="col.name === 'action'"
+                          dense
+                          round
+                          flat
+                          color="primary"
+                          icon="edit"
+                          :disabled="this.allowOption(3)"
+                          @click="
+                            this.$refs.methods.getData(
+                              `/cuentas/${props.row.id}`,
+                              'setDataEdit',
+                              'form'
+                            );
+                            dialog = true;
+                          "
+                        ></q-btn>
+                        <q-btn
+                          v-if="col.name === 'action'"
+                          dense
+                          round
+                          flat
+                          color="primary"
+                          icon="delete"
+                          :disabled="this.allowOption(4)"
+                          @click="selected = props.row.id"
+                          @click.capture="deletePopup = true"
+                        ></q-btn>
+                        <q-item-label
+                          v-if="
+                            col.name != 'tipo_cuenta' &&
+                            col.name != 'flag_activa'
+                          "
+                        >
+                          {{ col.value }}
+                        </q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-card>
+              </div>
+            </template>
+          </q-table>
+        </div>
       </div>
     </div>
 
@@ -322,7 +329,10 @@
             color="primary"
             v-close-popup
             @click="
-              this.$refs.methods.deleteData(`/cuentas/${selected}`, 'getDataTable')
+              this.$refs.methods.deleteData(
+                `/cuentas/${selected}`,
+                'getDataTable'
+              )
             "
           />
         </q-card-actions>
@@ -502,7 +512,10 @@ export default {
       this[dataRes].id = res.id;
       this[dataRes].nro_cuenta = res.nro_cuenta;
       this[dataRes].flag_activa = this.filterDesc("estatus", res.flag_activa);
-      this[dataRes].tipo_cuenta = this.filterDesc("tipoCuenta", res.tipo_cuenta);
+      this[dataRes].tipo_cuenta = this.filterDesc(
+        "tipoCuenta",
+        res.tipo_cuenta
+      );
       this[dataRes].firma_autorizada = res.firma_autorizada;
       this[dataRes].cod_banco = res.cod_banco;
     },
@@ -534,48 +547,3 @@ export default {
   },
 };
 </script>
-
-<style>
-
-@media screen and (min-width: 600px) {
-  .movilTitle {
-    display: none;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .movilTitle {
-    display: block;
-  }
-}
-
-@media screen and (min-width: 600px) {
-  .cardMargin {
-    padding-right: 20px !important;
-  }
-}
-
-@media screen and (min-width: 1024px) {
-  .cardMarginLast {
-    padding-right: 20px !important;
-  }
-}
-
-@media screen and (min-width: 1024px) {
-  .cardMarginFilter {
-    padding-right: 20px !important;
-  }
-}
-
-@media screen and (max-width: 1024px) {
-  .buttonMargin {
-    margin-bottom: 15px !important;
-  }
-}
-
-@media screen and (max-width: 1024px) {
-  .selectMovil {
-    margin-bottom: 15px !important;
-  }
-}
-</style>

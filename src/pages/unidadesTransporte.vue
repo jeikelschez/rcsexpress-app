@@ -91,10 +91,10 @@
       </q-card>
     </q-dialog>
 
-    <div
-      class="q-pa-sm justify-center col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
-    >
-      <div class="row q-pa-md justify-end">
+    <div class="q-pa-sm justify-center">
+      <div
+        class="row justify-end q-pa-md col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
+      >
         <div
           class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
           style="align-self: center; text-align: center"
@@ -104,7 +104,7 @@
           </p>
         </div>
         <div
-          class="col-md-5 col-sm-6 col-xs-12 marginHeader marginHeaderMobile"
+          class="col-md-5 col-sm-7 col-xs-12 cardMargin selectMobile"
           style="align-self: center"
         >
           <q-input
@@ -136,7 +136,7 @@
           ></q-btn>
         </div>
       </div>
-      <div class="q-pa-md">
+      <div class="q-pa-md q-gutter-y-md">
         <q-table
           :rows="unidades"
           binary-state-sort
@@ -409,42 +409,3 @@ export default {
   },
 };
 </script>
-
-<style>
-@media screen and (min-width: 600px) {
-  .movilTitle {
-    display: none;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .movilTitle {
-    display: block;
-  }
-}
-
-@media screen and (min-width: 600px) {
-  .marginHeader {
-    padding-right: 20px;
-  }
-}
-
-@media screen and (min-width: 1024px) {
-  .marginHeaderFilter {
-    padding-right: 20px;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .marginHeaderMobile {
-    margin-bottom: 25px;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .paddingMobile {
-    padding-left: 2px;
-    padding-right: 2px;
-  }
-}
-</style>

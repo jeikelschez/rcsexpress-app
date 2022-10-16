@@ -17,19 +17,9 @@
                   "
                   lazy-rules
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        100,
-                        'Maximo 100 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 100),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                 >
                   <template v-slot:prepend>
@@ -37,16 +27,13 @@
                   </template>
                 </q-input>
               </div>
-
               <div
                 class="col-md-6 col-xs-6"
                 style="margin-bottom: 7px"
                 id="select"
               >
                 <q-field
-                  :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido') || '',
-                  ]"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val)]"
                   hide-bottom-space
                   borderless
                   dense
@@ -65,16 +52,13 @@
                   </template>
                 </q-field>
               </div>
-
               <div
                 class="col-md-6 col-xs-6"
                 style="margin-bottom: 7px"
                 id="select"
               >
                 <q-field
-                  :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido') || '',
-                  ]"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val)]"
                   hide-bottom-space
                   borderless
                   dense
@@ -93,9 +77,8 @@
                 </q-field>
               </div>
             </div>
-
             <div
-              class=" row justify-center items-center content-center"
+              class="row justify-center items-center content-center"
               style="margin-bottom: 10px"
             >
               <q-btn
@@ -119,233 +102,195 @@
       </q-card>
     </q-dialog>
 
-    <div class="q-pa-sm justify-center">
-      <div class="q-pa-md row justify-end">
-        <div
-          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
-          style="align-self: center; text-align: center"
-        >
-          <p style="font-size: 20px" class="text-secondary">
-            <strong>MANTENIMIENTO - CONCEPTOS DE FACTURACIÓN</strong>
-          </p>
-        </div>
-
-        <div
-          class="col-md-5 col-xs-12 col-sm-6 cardMargin selectMovil"
-          style="align-self: center; text-align: center"
-        >
-          <q-select
-            rounded
-            dense
-            transition-show="flip-up"
-            transition-hide="flip-down"
-            :options="conceptosSelected"
-            @filter="
-              (val, update, abort) =>
-                filterArray(
-                  val,
-                  update,
-                  abort,
-                  'conceptosSelected',
-                  'conceptos',
-                  'desc_concepto'
-                )
-            "
-            use-input
-            hide-selected
-            fill-input
-            input-debounce="0"
-            option-label="desc_concepto"
-            option-value="id"
-            v-model="selectedConcepto"
-            outlined
-            standout
-            label="Escoge un Concepto"
-            @update:model-value="getData(`/cfacturacion`, 'setData', 'datos')"
+    <div class="row q-pa-sm justify-center">
+      <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
+        <div class="q-pa-md row" style="margin-top: 2px">
+          <div
+            class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
+            style="align-self: center; text-align: center"
           >
-            <template v-slot:prepend>
-              <q-icon name="search" />
-            </template>
-          </q-select>
-        </div>
-
-        <div
-          class="col-md-5 col-xs-12 col-sm-6 cardMarginLast"
-          style="align-self: center; text-align: center"
-        >
-          <q-input
-            rounded
-            outlined
-            standout
-            v-model="filter"
-            dense
-            type="search"
-            label="Búsqueda avanzada"
+            <p style="font-size: 20px" class="text-secondary">
+              <strong>MANTENIMIENTO - CONCEPTOS DE FACTURACIÓN</strong>
+            </p>
+          </div>
+          <div
+            class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-6 cardMargin selectMobile"
+            style="align-self: center; text-align: center"
           >
-            <template v-slot:prepend>
-              <q-icon name="search" />
-            </template>
-          </q-input>
-        </div>
-
-        <div
-          class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
-          style="text-align: center; align-self: center"
-        >
-          <q-btn
-            label="Insertar"
-            rounded
-            color="primary"
-            :disabled="this.allowOption(2)"
-            @click="
-              dialog = true;
-              this.resetForm();
-            "
-            size="16px"
-            class="q-px-xl q-py-xs insertarestadosmovil"
-          ></q-btn>
-        </div>
-      </div>
-
-      <div class="q-pa-md q-gutter-y-md" style="margin-top: 5px">
-        <q-table
-          :rows="datos"
-          row-key="id"
-          :columns="columns"
-          :loading="loading"
-          :separator="separator"
-          :filter="filter"
-          style="width: 100%"
-          :grid="$q.screen.xs"
-          v-model:pagination="pagination"
-        >
-          <template v-slot:loading>
-            <q-inner-loading showing color="primary" />
-          </template>
-          <template v-slot:body-cell-action="props">
-            <q-td :props="props">
-              <q-btn
-                dense
-                round
-                flat
-                color="primary"
-                icon="edit"
-                :disabled="this.allowOption(3)"
-                @click="
-                  getData(
-                    `/cfacturacion/${props.row.id}`,
-                    'setDataEdit',
-                    'form'
-                  );
-                  dialog = true;
-                "
-              ></q-btn>
-              <q-btn
-                dense
-                round
-                flat
-                color="primary"
-                icon="delete"
-                :disabled="this.allowOption(4)"
-                @click="selected = props.row.id"
-                @click.capture="deleteForm = true"
-              ></q-btn>
-            </q-td>
-          </template>
-          <template v-slot:item="props">
-            <div
-              class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
-              :style="props.selected ? 'transform: scale(0.95);' : ''"
+            <q-select
+              rounded
+              dense
+              transition-show="flip-up"
+              transition-hide="flip-down"
+              :options="conceptosSelected"
+              @filter="
+                (val, update) =>
+                  filterArray(
+                    val,
+                    update,
+                    'conceptosSelected',
+                    'conceptos',
+                    'desc_concepto'
+                  )
+              "
+              use-input
+              hide-selected
+              fill-input
+              input-debounce="0"
+              option-label="desc_concepto"
+              option-value="id"
+              v-model="selectedConcepto"
+              outlined
+              standout
+              label="Escoge un Concepto"
+              @update:model-value="getDataTable()"
             >
-              <q-card :class="props.selected ? 'bg-grey-2' : ''">
-                <q-list dense>
-                  <q-item v-for="col in props.cols" :key="col.name">
-                    <q-item-section>
-                      <q-item-label>{{ col.label }}</q-item-label>
-                    </q-item-section>
-                    <q-item-section side class="itemMovilSide">
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
-                      <q-btn
-                        v-else-if="col.name === 'action'"
-                        dense
-                        round
-                        flat
-                        color="primary"
-                        icon="edit"
-                        :disabled="this.allowOption(3)"
-                        @click="
-                          getData(
-                            `/cfacturacion/${props.row.id}`,
-                            'setDataEdit',
-                            'form'
-                          );
-                          dialog = true;
-                        "
-                      ></q-btn>
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
-                      <q-btn
-                        v-else-if="col.name === 'action'"
-                        dense
-                        round
-                        flat
-                        color="primary"
-                        icon="delete"
-                        :disabled="this.allowOption(4)"
-                        @click="selected = props.row.id"
-                        @click.capture="deleteForm = true"
-                      ></q-btn>
-                      <q-item-label
-                        v-else
-                        caption
-                        :class="col.classes ? col.classes : ''"
-                        >{{ col.value }}
-                      </q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-card>
-            </div>
-          </template>
-        </q-table>
+              <template v-slot:prepend>
+                <q-icon name="search" />
+              </template>
+            </q-select>
+          </div>
+
+          <div
+            class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-6"
+            style="align-self: center; text-align: center"
+          >
+            <q-input
+              rounded
+              outlined
+              standout
+              v-model="filter"
+              dense
+              type="search"
+              label="Búsqueda avanzada"
+            >
+              <template v-slot:prepend>
+                <q-icon name="search" />
+              </template>
+            </q-input>
+          </div>
+          <div
+            class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 cardMarginButton"
+            style="text-align: center; align-self: center"
+          >
+            <q-btn
+              label="Insertar"
+              rounded
+              color="primary"
+              :disabled="this.allowOption(2)"
+              @click="
+                dialog = true;
+                this.resetForm();
+              "
+              class="q-px-xl q-py-xs"
+            ></q-btn>
+          </div>
+        </div>
+        <div class="q-pa-md my-card row" bordered flat style="margin-top: 2px">
+          <q-table
+            :rows="conceptosFac"
+            row-key="id"
+            :columns="columns"
+            :loading="loading"
+            :separator="separator"
+            :rows-per-page-options="[5, 10, 15, 20, 50]"
+            :filter="filter"
+            style="width: 100%"
+            :grid="$q.screen.xs"
+            v-model:pagination="pagination"
+          >
+            <template v-slot:loading>
+              <q-inner-loading showing color="primary" class="loading" />
+            </template>
+            <template v-slot:body-cell-action="props">
+              <q-td :props="props">
+                <q-btn
+                  dense
+                  round
+                  flat
+                  color="primary"
+                  icon="edit"
+                  :disabled="this.allowOption(3)"
+                  @click="
+                    this.$refs.methods.getData(
+                      `/cfacturacion/${props.row.id}`,
+                      'setDataEdit',
+                      'form'
+                    );
+                    dialog = true;
+                  "
+                ></q-btn>
+                <q-btn
+                  dense
+                  round
+                  flat
+                  color="primary"
+                  icon="delete"
+                  :disabled="this.allowOption(4)"
+                  @click="selected = props.row.id"
+                  @click.capture="deletePopup = true"
+                ></q-btn>
+              </q-td>
+            </template>
+            <template v-slot:item="props">
+              <div
+                class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+                :style="props.selected ? 'transform: scale(0.95);' : ''"
+              >
+                <q-card :class="props.selected ? 'bg-grey-2' : ''">
+                  <q-list dense>
+                    <q-item v-for="col in props.cols" :key="col.name">
+                      <q-item-section>
+                        <q-item-label>{{ col.label }}</q-item-label>
+                      </q-item-section>
+                      <q-item-section side class="itemMovilSide">
+                        <q-btn
+                          v-if="col.name === 'action'"
+                          dense
+                          round
+                          flat
+                          color="primary"
+                          icon="edit"
+                          :disabled="this.allowOption(3)"
+                          @click="
+                            this.$refs.methods.getData(
+                              `/cfacturacion/${props.row.id}`,
+                              'setDataEdit',
+                              'form'
+                            );
+                            dialog = true;
+                          "
+                        ></q-btn>
+                        <q-btn
+                          v-if="col.name === 'action'"
+                          dense
+                          round
+                          flat
+                          color="primary"
+                          icon="delete"
+                          :disabled="this.allowOption(4)"
+                          @click="selected = props.row.id"
+                          @click.capture="deletePopup = true"
+                        ></q-btn>
+                        <q-item-label> {{ col.value }} </q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-card>
+              </div>
+            </template>
+          </q-table>
+        </div>
       </div>
     </div>
 
-    <q-dialog v-model="deleteForm">
+    <q-dialog v-model="deletePopup">
       <q-card style="width: 700px">
         <q-card-section>
           <div class="text-h5" style="font-size: 18px">
             ¿Estas seguro que quieres eliminar este elemento?
           </div>
         </q-card-section>
-
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="primary" v-close-popup />
           <q-btn
@@ -353,7 +298,12 @@
             label="Aceptar"
             color="primary"
             v-close-popup
-            @click="deleteData(selected)"
+            @click="
+              this.$refs.methods.deleteData(
+                `/cfacturacion/${selected}`,
+                'getDataTable'
+              )
+            "
           />
         </q-card-actions>
       </q-card>
@@ -361,11 +311,10 @@
 
     <methods
       ref="methods"
-      @get-Data="getData(`/cfacturacion`, 'setData', 'datos')"
       @set-Data-Init="setDataInit"
-      @reset-Loading="resetLoading"
       @set-Data-Edit="setDataEdit"
-      @set-Data="setData"
+      @get-Data-Table="getDataTable"
+      @set-Data-Table="setDataTable"
       @set-Data-Permisos="setDataPermisos"
     ></methods>
 
@@ -375,7 +324,7 @@
 
 <script>
 import { ref } from "vue";
-import { useQuasar, LocalStorage } from "quasar";
+import { LocalStorage } from "quasar";
 import rulesVue from "src/components/rules.vue";
 import methodsVue from "src/components/methods.vue";
 
@@ -398,7 +347,7 @@ export default {
           field: "check_comision",
           align: "left",
           sortable: true,
-          required: true,
+          format: (val) => (val == "1" ? "✓" : ""),
         },
         {
           name: "check_impuesto",
@@ -406,14 +355,12 @@ export default {
           field: "check_impuesto",
           align: "left",
           sortable: true,
-          required: true,
+          format: (val) => (val == "1" ? "✓" : ""),
         },
         {
           name: "action",
           label: "Acciones",
           align: "center",
-          sortable: true,
-          required: true,
         },
       ],
       form: {
@@ -422,34 +369,24 @@ export default {
         check_impuesto: "0",
         cod_concepto: "",
       },
+      pagination: {
+        rowsPerPage: 5,
+      },
       conceptos: [],
-      datos: [],
+      conceptosFac: [],
       selected: [],
       conceptosSelected: [],
       selectedConcepto: [],
       rpermisos: [],
-      error: "",
+      filter: "",
     };
   },
   setup() {
-    const $q = useQuasar();
-    const pagination = ref({
-      sortBy: "desc",
-      descending: false,
-      page: 1,
-      control: 0,
-      rowsPerPage: 5,
-      // rowsNumber: xx if getting data from a server
-    });
     return {
-      pagination: ref({
-        rowsPerPage: 5,
-      }),
+      loading: ref(false),
       separator: ref("vertical"),
       dialog: ref(false),
-      loading: ref(false),
-      deleteForm: ref(false),
-      filter: ref(""),
+      deletePopup: ref(false),
     };
   },
   mounted() {
@@ -469,8 +406,8 @@ export default {
   },
 
   methods: {
-    // Metodo para Filtrar Selects
-    filterArray(val, update, abort, pagina, array, element) {
+    // Metodo para filtrar opciones de Selects
+    filterArray(val, update, pagina, array, element) {
       if (val === "") {
         update(() => {
           this[pagina] = this[array];
@@ -479,10 +416,10 @@ export default {
       }
       update(() => {
         const needle = val.toUpperCase();
-        var notEqual = JSON.parse(JSON.stringify(this[array]));
-        for (var i = 0, len = this[array].length; i < len; i++) {
-          if (!(this[array][i][element].indexOf(needle) > -1)) {
-            delete notEqual[i];
+        var notEqual = [];
+        for (var i = 0; i <= this[array].length - 1; i++) {
+          if (this[array][i][element].indexOf(needle) > -1) {
+            notEqual.push(this[array][i]);
           }
           if (i == this[array].length - 1) {
             this[pagina] = notEqual;
@@ -490,10 +427,6 @@ export default {
           }
         }
       });
-    },
-    // Metodo para Resetear Carga
-    resetLoading() {
-      this.loading = false;
     },
     // Metodo para validar Permisos
     allowOption(option) {
@@ -510,94 +443,62 @@ export default {
 
     // METODOS DE PAGINA
 
-    // Metodo para hacer Get de Datos
-    getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, {
-        headers: {
-          cod_concepto: this.selectedConcepto.id,
-          tipo: "8",
-        },
-      });
-      this.loading = true;
-    },
     // Metodo para Setear Datos al Iniciar
     setDataInit(res, dataRes) {
-      this[dataRes] = res;
-      for (var e = 0, len = this.datos.length; e < len; e++) {
-        if (this.datos[e].check_comision === "1") {
-          this.datos[e].check_comision = "✓";
-        }
-        if (this.datos[e].check_comision === "0") {
-          this.datos[e].check_comision = "";
-        }
-        if (this.datos[e].check_impuesto === "1") {
-          this.datos[e].check_impuesto = "✓";
-        }
-        if (this.datos[e].check_impuesto === "0") {
-          this.datos[e].check_impuesto = "";
-        }
-        if (e == this.datos.length - 1) break;
-      }
+      this[dataRes] = res.data ? res.data : res;
       this.selectedConcepto = this.conceptos[0];
-      this.getData("/cfacturacion", "setData", "datos");
-      this.loading = false;
+      this.getDataTable();
     },
-    // Metodo para Setear Datos
-    setData(res, dataRes) {
-      this[dataRes] = res;
+    // Metodo para Extraer Datos de Tabla
+    getDataTable() {
+      this.loading = true;
+      this.$refs.methods.getData(
+        "/cfacturacion",
+        "setDataTable",
+        "conceptosFac",
+        {
+          headers: {
+            cod_concepto: this.selectedConcepto.id,
+          },
+        }
+      );
+    },
+    // Metodo para Setear Datos de Tabla
+    setDataTable(res, dataRes) {
+      this[dataRes] = res.data ? res.data : res;
       this.loading = false;
-      for (var e = 0, len = this.datos.length; e < len; e++) {
-        if (this.datos[e].check_comision === "1") {
-          this.datos[e].check_comision = "✓";
-        }
-        if (this.datos[e].check_comision === "0") {
-          this.datos[e].check_comision = "";
-        }
-        if (this.datos[e].check_impuesto === "1") {
-          this.datos[e].check_impuesto = "✓";
-        }
-        if (this.datos[e].check_impuesto === "0") {
-          this.datos[e].check_impuesto = "";
-        }
-        if (e == this.datos.length - 1) break;
-      }
     },
     // Metodo para Setear Datos seleccionados
     setDataEdit(res, dataRes) {
-      this.loading = false;
       this[dataRes].id = res.id;
       this[dataRes].desc_concepto = res.desc_concepto;
       this[dataRes].check_comision = res.check_comision;
       this[dataRes].check_impuesto = res.check_impuesto;
       this[dataRes].cod_concepto = res.conceptos;
     },
-    // Metodo para Eliminar Datos
-    deleteData(idpost) {
-      this.$refs.methods.deleteData(`/cfacturacion/${idpost}`, "getData");
-      this.loading = true;
-    },
     // Metodo para Editar y Crear Datos
     sendData() {
       this.form.cod_concepto = this.selectedConcepto.id;
       if (!this.form.id) {
-        this.$refs.methods.createData(`/cfacturacion`, this.form, "getData");
-        this.resetForm();
-        this.loading = true;
-        this.dialog = false;
+        this.$refs.methods.createData(
+          `/cfacturacion`,
+          this.form,
+          "getDataTable"
+        );
       } else {
         this.$refs.methods.putData(
           `/cfacturacion/${this.form.id}`,
           this.form,
-          "getData"
+          "getDataTable"
         );
-        this.resetForm();
-        this.loading = true;
-        this.dialog = false;
       }
+      this.dialog = false;
+      this.resetForm();
     },
     // Metodos para Resetear Datos
     resetForm() {
-      delete this.form.id, (this.form.desc_concepto = "");
+      delete this.form.id;
+      this.form.desc_concepto = "";
       this.form.check_comision = "0";
       this.form.check_impuesto = "0";
       this.form.cod_concepto = "";
@@ -605,45 +506,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.hide {
-  display: none;
-}
-
-@media screen and (min-width: 600px) {
-  .movilTitle {
-    display: none;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .movilTitle {
-    display: block;
-  }
-}
-
-@media screen and (min-width: 600px) {
-  .cardMargin {
-    padding-right: 20px !important;
-  }
-}
-
-@media screen and (min-width: 1024px) {
-  .cardMarginLast {
-    padding-right: 20px !important;
-  }
-}
-
-@media screen and (min-width: 1024px) {
-  .cardMarginFilter {
-    padding-right: 20px !important;
-  }
-}
-
-@media screen and (max-width: 1024px) {
-  .buttonMargin {
-    margin-bottom: 15px !important;
-  }
-}
-</style>

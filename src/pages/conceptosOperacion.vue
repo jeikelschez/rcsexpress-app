@@ -17,19 +17,9 @@
                   "
                   lazy-rules
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        100,
-                        'Maximo 100 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 100),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                 >
                   <template v-slot:prepend>
@@ -37,22 +27,17 @@
                   </template>
                 </q-input>
               </div>
-
               <div
-                class="col-md-12 col-xs-12 displayHide"
+                class="col-md-12 col-xs-12"
                 style="margin-bottom: 7px"
                 id="select"
               >
                 <q-field
-                  :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
-                  ]"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
                   hide-bottom-space
                   borderless
                   dense
                   v-model="form.afecta_estado"
-                  :disable="disable"
                 >
                   <template v-slot:control>
                     <q-checkbox
@@ -62,15 +47,14 @@
                       false-value="N"
                       style="font-size: 13px"
                       label="¿AFECTA ESTADO DE GANANCIAS Y PERDIDAS?"
-                      :disable="disable"
+                      :disable="this.selectedTipo.codigo == 'DCO' || this.selectedTipo.codigo == 'DGA' ? false : true"
                     />
                   </template>
                 </q-field>
               </div>
             </div>
-
             <div
-              class=" row justify-center items-center content-center"
+              class="row justify-center items-center content-center"
               style="margin-bottom: 10px"
             >
               <q-btn
@@ -94,243 +78,201 @@
       </q-card>
     </q-dialog>
 
-    <div class="q-pa-sm justify-center">
-      <div class="q-pa-md row justify-end">
-        <div
-          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
-          style="align-self: center; text-align: center"
-        >
-          <p style="font-size: 20px" class="text-secondary">
-            <strong>MANTENIMIENTO - CONCEPTOS POR OPERACIÓN</strong>
-          </p>
-        </div>
-
-        <div
-          class="col-md-5 col-xs-12 col-sm-6 cardMargin selectMovil"
-          style="align-self: center; text-align: center"
-        >
-          <q-select
-            rounded
-            transition-show="flip-up"
-            transition-hide="flip-down"
-            :options="tipoDeOperacionSelected"
-            @filter="
-              (val, update, abort) =>
-                filterArray(
-                  val,
-                  update,
-                  abort,
-                  'tipoDeOperacionSelected',
-                  'tipoDeOperacion',
-                  'descripcion'
-                )
-            "
-            use-input
-            hide-selected
-            fill-input
-            dense
-            input-debounce="0"
-            option-label="descripcion"
-            option-value="id"
-            v-model="selectedTipo"
-            outlined
-            standout
-            label="Tipo de Operación"
-            @update:model-value="getData(`/coperacion`, 'setData', 'datos')"
-            ><template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  Sin resultados
-                </q-item-section>
-              </q-item>
-            </template>
-            <template v-slot:prepend>
-              <q-icon name="search" />
-            </template>
-          </q-select>
-        </div>
-
-        <div
-          class="col-md-5 col-xs-12 col-sm-6 cardMarginLast"
-          style="align-self: center; text-align: center"
-        >
-          <q-input
-            rounded
-            outlined
-            standout
-            dense
-            v-model="filter"
-            type="search"
-            label="Búsqueda avanzada"
+    <div class="row q-pa-sm justify-center">
+      <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
+        <div class="q-pa-md row" style="margin-top: 2px">
+          <div
+            class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
+            style="align-self: center; text-align: center"
           >
-            <template v-slot:prepend>
-              <q-icon name="search" />
-            </template>
-          </q-input>
-        </div>
-        <div
-          class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
-          style="text-align: center; align-self: center"
-        >
-          <q-btn
-            label="Insertar"
-            rounded
-            color="primary"
-            :disabled="this.allowOption(2)"
-            @click="
-              dialog = true;
-              resetForm();
-            "
-            size="16px"
-            class="q-px-xl q-py-xs insertarestadosmovil"
-          ></q-btn>
-        </div>
-      </div>
-
-      <div class="q-pa-md">
-        <div class="q-gutter-y-md">
-          <div bordered flat class="my-card row">
-            <q-table
-              :rows="datos"
-              row-key="id"
-              binary-state-sort
-              :columns="columns"
-              :loading="loading"
-              :separator="separator"
-              :filter="filter"
-              style="width: 100%"
-              :grid="$q.screen.xs"
-              v-model:pagination="pagination"
-            >
-              <template v-slot:loading>
-                <q-inner-loading showing color="primary" />
-              </template>
-              <template v-slot:body-cell-action="props">
-                <q-td :props="props">
-                  <q-btn
-                    dense
-                    round
-                    flat
-                    color="primary"
-                    icon="edit"
-                    :disabled="this.allowOption(3)"
-                    @click="
-                      getData(
-                        `/coperacion/${props.row.id}`,
-                        'setDataEdit',
-                        'form'
-                      );
-                      dialog = true;
-                    "
-                  ></q-btn>
-                  <q-btn
-                    dense
-                    round
-                    flat
-                    color="primary"
-                    icon="delete"
-                    :disabled="this.allowOption(4)"
-                    @click="selected = props.row.id"
-                    @click.capture="conceptosDelete = true"
-                  ></q-btn>
-                </q-td>
-              </template>
-              <template v-slot:item="props">
-                <div
-                  class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
-                  :style="props.selected ? 'transform: scale(0.95);' : ''"
-                >
-                  <q-card :class="props.selected ? 'bg-grey-2' : ''">
-                    <q-list dense>
-                      <q-item v-for="col in props.cols" :key="col.name">
-                        <q-item-section>
-                          <q-item-label>{{ col.label }}</q-item-label>
-                        </q-item-section>
-                        <q-item-section side class="itemMovilSide">
-                          <q-chip
-                            v-if="col.name === 'status'"
-                            :color="
-                              props.row.status == 'Active'
-                                ? 'green'
-                                : props.row.status == 'Disable'
-                                ? 'red'
-                                : 'grey'
-                            "
-                            text-color="white"
-                            dense
-                            class="text-weight-bolder"
-                            square
-                            >{{ col.value }}</q-chip
-                          >
-                          <q-btn
-                            v-else-if="col.name === 'action'"
-                            dense
-                            round
-                            flat
-                            color="primary"
-                            icon="edit"
-                            :disabled="this.allowOption(3)"
-                            @click="
-                              getData(
-                                `/coperacion/${props.row.id}`,
-                                'setDataEdit',
-                                'form'
-                              );
-                              dialog = true;
-                            "
-                          ></q-btn>
-                          <q-chip
-                            v-if="col.name === 'status'"
-                            :color="
-                              props.row.status == 'Active'
-                                ? 'green'
-                                : props.row.status == 'Disable'
-                                ? 'red'
-                                : 'grey'
-                            "
-                            text-color="white"
-                            dense
-                            class="text-weight-bolder"
-                            square
-                            >{{ col.value }}</q-chip
-                          >
-                          <q-btn
-                            v-else-if="col.name === 'action'"
-                            dense
-                            round
-                            flat
-                            color="primary"
-                            icon="delete"
-                            :disabled="this.allowOption(4)"
-                            @click="selected = props.row.id"
-                            @click.capture="conceptosDelete = true"
-                          ></q-btn>
-                          <q-item-label
-                            v-else
-                            caption
-                            :class="col.classes ? col.classes : ''"
-                            >{{ col.value }}
-                          </q-item-label>
-                        </q-item-section>
-                      </q-item>
-                    </q-list>
-                  </q-card>
-                </div>
-              </template>
-            </q-table>
+            <p style="font-size: 20px" class="text-secondary">
+              <strong>MANTENIMIENTO - CONCEPTOS POR OPERACIÓN</strong>
+            </p>
           </div>
+          <div
+            class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-6 cardMargin selectMobile"
+            style="align-self: center; text-align: center"
+          >
+            <q-select
+              rounded
+              transition-show="flip-up"
+              transition-hide="flip-down"
+              :options="tipoOperacionSelected"
+              @filter="
+                (val, update) =>
+                  filterArray(
+                    val,
+                    update,
+                    'tipoOperacionSelected',
+                    'tipoOperacion',
+                    'descripcion'
+                  )
+              "
+              use-input
+              hide-selected
+              fill-input
+              dense
+              input-debounce="0"
+              option-label="descripcion"
+              option-value="id"
+              v-model="selectedTipo"
+              outlined
+              standout
+              label="Tipo de Operación"
+              @update:model-value="getDataTable()"
+              ><template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    Sin resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:prepend>
+                <q-icon name="search" />
+              </template>
+            </q-select>
+          </div>
+          <div
+            class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-6"
+            style="align-self: center; text-align: center"
+          >
+            <q-input
+              rounded
+              outlined
+              standout
+              dense
+              v-model="filter"
+              type="search"
+              label="Búsqueda avanzada"
+            >
+              <template v-slot:prepend>
+                <q-icon name="search" />
+              </template>
+            </q-input>
+          </div>
+          <div
+            class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 cardMarginButton"
+            style="text-align: center; align-self: center"
+          >
+            <q-btn
+              label="Insertar"
+              rounded
+              color="primary"
+              :disabled="this.allowOption(2)"
+              @click="
+                dialog = true;
+                resetForm();
+              "
+              class="q-px-xl q-py-xs"
+            ></q-btn>
+          </div>
+        </div>
+        <div class="q-pa-md my-card row" bordered flat style="margin-top: 2px">
+          <q-table
+            :rows="conceptos"
+            row-key="id"
+            binary-state-sort
+            :columns="columns"
+            :loading="loading"
+            :separator="separator"
+            :rows-per-page-options="[5, 10, 15, 20, 50]"
+            :filter="filter"
+            style="width: 100%"
+            :grid="$q.screen.xs"
+            v-model:pagination="pagination"
+          >
+            <template v-slot:loading>
+              <q-inner-loading showing color="primary" class="loading" />
+            </template>
+            <template v-slot:body-cell-action="props">
+              <q-td :props="props">
+                <q-btn
+                  dense
+                  round
+                  flat
+                  color="primary"
+                  icon="edit"
+                  :disabled="this.allowOption(3)"
+                  @click="
+                    this.$refs.methods.getData(
+                      `/coperacion/${props.row.id}`,
+                      'setDataEdit',
+                      'form'
+                    );
+                    dialog = true;
+                  "
+                ></q-btn>
+                <q-btn
+                  dense
+                  round
+                  flat
+                  color="primary"
+                  icon="delete"
+                  :disabled="this.allowOption(4)"
+                  @click="selected = props.row.id"
+                  @click.capture="deletePopup = true"
+                ></q-btn>
+              </q-td>
+            </template>
+            <template v-slot:item="props">
+              <div
+                class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+                :style="props.selected ? 'transform: scale(0.95);' : ''"
+              >
+                <q-card :class="props.selected ? 'bg-grey-2' : ''">
+                  <q-list dense>
+                    <q-item v-for="col in props.cols" :key="col.name">
+                      <q-item-section>
+                        <q-item-label>{{ col.label }}</q-item-label>
+                      </q-item-section>
+                      <q-item-section side class="itemMovilSide">
+                        <q-btn
+                          v-if="col.name === 'action'"
+                          dense
+                          round
+                          flat
+                          color="primary"
+                          icon="edit"
+                          :disabled="this.allowOption(3)"
+                          @click="
+                            this.$refs.methods.getData(
+                              `/coperacion/${props.row.id}`,
+                              'setDataEdit',
+                              'form'
+                            );
+                            dialog = true;
+                          "
+                        ></q-btn>
+                        <q-btn
+                          v-if="col.name === 'action'"
+                          dense
+                          round
+                          flat
+                          color="primary"
+                          icon="delete"
+                          :disabled="this.allowOption(4)"
+                          @click="selected = props.row.id"
+                          @click.capture="deletePopup = true"
+                        ></q-btn>
+                        <q-item-label> {{ col.value }} </q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-card>
+              </div>
+            </template>
+          </q-table>
         </div>
       </div>
     </div>
 
-    <q-dialog v-model="conceptosDelete">
+    <q-dialog v-model="deletePopup">
       <q-card style="width: 700px">
         <q-card-section>
           <div class="text-h5" style="font-size: 18px">
             ¿Estas seguro que quieres eliminar este elemento?
           </div>
         </q-card-section>
-
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="primary" v-close-popup />
           <q-btn
@@ -338,7 +280,12 @@
             label="Aceptar"
             color="primary"
             v-close-popup
-            @click="deleteData(selected)"
+            @click="
+              this.$refs.methods.deleteData(
+                `/coperacion/${selected}`,
+                'getDataTable'
+              )
+            "
           />
         </q-card-actions>
       </q-card>
@@ -346,11 +293,10 @@
 
     <methods
       ref="methods"
-      @get-Data="getData(`/coperacion`, 'setData', 'datos')"
-      @reset-Loading="resetLoading"
+      @set-Data-Init="setDataInit"
       @set-Data-Edit="setDataEdit"
-      @set-Data="setData"
-      @set-Data-Tipos="setDataTipos"
+      @get-Data-Table="getDataTable"
+      @set-Data-Table="setDataTable"
       @set-Data-Permisos="setDataPermisos"
     >
     </methods>
@@ -361,7 +307,7 @@
 
 <script>
 import { ref } from "vue";
-import { useQuasar, LocalStorage } from "quasar";
+import { LocalStorage } from "quasar";
 import rulesVue from "src/components/rules.vue";
 import methodsVue from "src/components/methods.vue";
 
@@ -376,14 +322,11 @@ export default {
           field: "desc_concepto",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
           name: "action",
           label: "Acciones",
           align: "center",
-          sortable: true,
-          required: true,
         },
       ],
       form: {
@@ -391,35 +334,24 @@ export default {
         tipo: "",
         afecta_estado: "N",
       },
-      tipoDeOperacion: [],
-      datos: [],
+      pagination: {
+        rowsPerPage: 5,
+      },
+      tipoOperacion: [],
+      conceptos: [],
       selected: [],
-      tipoDeOperacionSelected: [],
+      tipoOperacionSelected: [],
       selectedTipo: [],
       rpermisos: [],
-      error: "",
+      filter: "",
     };
   },
   setup() {
-    const $q = useQuasar();
-    const pagination = ref({
-      sortBy: "desc",
-      descending: false,
-      page: 1,
-      control: 0,
-      rowsPerPage: 5,
-    });
     return {
-      pagination: ref({
-        rowsPerPage: 5,
-      }),
+      loading: ref(false),
       separator: ref("vertical"),
       dialog: ref(false),
-      loading: ref(false),
-      disable: ref(true),
-      disableEdit: ref(true),
-      conceptosDelete: ref(false),
-      filter: ref(""),
+      deletePopup: ref(false),
     };
   },
   mounted() {
@@ -428,9 +360,7 @@ export default {
       "SCEN - Mantenimiento - Conceptos de Operación",
       ""
     );
-    this.selectedTipo.id = "1";
-    this.getData("/tipos", "setDataTipos", "tipoDeOperacion");
-    this.getData("/coperacion", "setData", "datos");
+    this.$refs.methods.getData("/tipos", "setDataInit", "tipoOperacion");
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
@@ -440,8 +370,8 @@ export default {
     });
   },
   methods: {
-    // Metodo para Filtrar Selects
-    filterArray(val, update, abort, pagina, array, element) {
+    // Metodo para filtrar opciones de Selects
+    filterArray(val, update, pagina, array, element) {
       if (val === "") {
         update(() => {
           this[pagina] = this[array];
@@ -462,10 +392,6 @@ export default {
         }
       });
     },
-    // Metodo para Resetear Carga
-    resetLoading() {
-      this.loading = false;
-    },
     // Metodo para validar Permisos
     allowOption(option) {
       return (
@@ -481,61 +407,47 @@ export default {
 
     // METODOS DE PAGINA
 
-    // Metodo para hacer Get de Datos
-    getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, {
+    // Metodo para Setear Datos al Iniciar
+    setDataInit(res, dataRes) {
+      this[dataRes] = res.data ? res.data : res;
+      this.selectedTipo = this.tipoOperacion[0];
+      this.getDataTable();
+    },
+    // Metodo para Extraer Datos de Tabla
+    getDataTable() {
+      this.loading = true;
+      this.$refs.methods.getData("/coperacion", "setDataTable", "conceptos", {
         headers: {
           tipo: this.selectedTipo.id,
-          fuente: "OP",
         },
       });
-      this.loading = true;
     },
-    // Metodo para Setear Datos
-    setData(res, dataRes) {
-      this[dataRes] = res;
+    // Metodo para Setear Datos de Tabla
+    setDataTable(res, dataRes) {
+      this[dataRes] = res.data ? res.data : res;
       this.loading = false;
-    },
-    // Metodos para Setear Tipos
-    setDataTipos(res, dataRes) {
-      this[dataRes] = res;
-      this.selectedTipo = res[0];
     },
     // Metodo para Setear Datos seleccionados
     setDataEdit(res, dataRes) {
-      this.loading = false;
       this[dataRes].tipo = res.tipos.descripcion;
       this[dataRes].id = res.id;
       this[dataRes].desc_concepto = res.desc_concepto;
       this[dataRes].afecta_estado = res.afecta_estado;
     },
-    // Metodo para Eliminar Datos
-    deleteData(idpost) {
-      this.$refs.methods.deleteData(
-        `/coperacion/${idpost}`,
-        "getData",
-        this.axiosConfig
-      );
-      this.loading = true;
-    },
     // Metodo para Editar y Crear Datos
     sendData() {
       this.form.tipo = this.selectedTipo.id;
       if (!this.form.id) {
-        this.$refs.methods.createData(`/coperacion`, this.form, "getData");
-        this.resetForm();
-        this.loading = true;
-        this.dialog = false;
+        this.$refs.methods.createData(`/coperacion`, this.form, "getDataTable");
       } else {
         this.$refs.methods.putData(
           `/coperacion/${this.form.id}`,
           this.form,
-          "getData"
+          "getDataTable"
         );
-        this.resetForm();
-        this.loading = true;
-        this.dialog = false;
       }
+      this.dialog = false;
+      this.resetForm();
     },
     // Metodos para Resetear Datos
     resetForm() {
@@ -547,47 +459,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.hide {
-  display: none;
-}
-
-@media screen and (min-width: 600px) {
-  .movilTitle {
-    display: none;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .movilTitle {
-    display: block;
-  }
-}
-
-@media screen and (min-width: 600px) {
-  .cardMargin {
-    padding-right: 20px !important;
-  }
-}
-
-@media screen and (min-width: 1024px) {
-  .cardMarginLast {
-    padding-right: 20px !important;
-  }
-}
-
-@media screen and (min-width: 1024px) {
-  .cardMarginFilter {
-    padding-right: 20px !important;
-  }
-}
-
-@media screen and (max-width: 1024px) {
-  .buttonMargin {
-    margin-bottom: 15px !important;
-  }
-}
-
-
-</style>

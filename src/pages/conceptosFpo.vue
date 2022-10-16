@@ -14,15 +14,9 @@
                   class="pcform"
                   lazy-rules
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
-                    (val) =>
-                      this.$refs.rulesVue.isMax(val, 6, 'Maximo 6 Caracteres'),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || ']',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 5),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   @update:model-value="
                     form.cod_fpo = form.cod_fpo.toUpperCase()
@@ -33,7 +27,6 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
@@ -44,13 +37,8 @@
                   hint=""
                   class="pcform"
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        13,
-                        'Maximo 10 Caracteres'
-                      ) || '',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 4),
                   ]"
                   lazy-rules
                 >
@@ -59,7 +47,6 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-12 col-xs-12">
                 <q-input
                   outlined
@@ -68,19 +55,9 @@
                   hint=""
                   class="pcform"
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
-                    (val) =>
-                      this.$refs.rulesVue.isMax(
-                        val,
-                        40,
-                        'Maximo 40 Caracteres'
-                      ),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(
-                        val,
-                        3,
-                        'Minimo 3 Caracteres'
-                      ) || ']',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 40),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                   lazy-rules
                   @update:model-value="
@@ -92,7 +69,6 @@
                   </template>
                 </q-input>
               </div>
-
               <q-card
                 class="q-pa-md"
                 bordered
@@ -103,7 +79,7 @@
                     <div
                       class="col-md-12 col-xs-12"
                       style="
-                        align-self: center;
+                        align-self: center; 
                         text-align: left;
                         margin-top: -30px;
                       "
@@ -122,7 +98,8 @@
                         lazy-rules
                         mask="##/##/####"
                         :rules="[
-                          (val) => this.$refs.rulesVue.checkDate(val, '') || '',
+                          (val) => this.$refs.rulesVue.isReq(val),
+                          (val) => this.$refs.rulesVue.checkDate(val),
                         ]"
                       >
                         <template v-slot:append>
@@ -145,7 +122,6 @@
                         </template>
                       </q-input>
                     </div>
-
                     <div class="col-md-6 col-xs-12">
                       <q-input
                         outlined
@@ -156,7 +132,8 @@
                         lazy-rules
                         mask="##/##/####"
                         :rules="[
-                          (val) => this.$refs.rulesVue.checkDate(val, '') || '',
+                          (val) => this.$refs.rulesVue.isReq(val),
+                          (val) => this.$refs.rulesVue.checkDate(val),
                         ]"
                       >
                         <template v-slot:append>
@@ -182,7 +159,6 @@
                   </div>
                 </q-card-section>
               </q-card>
-
               <q-card
                 class="q-pa-md"
                 bordered
@@ -212,14 +188,7 @@
                         input-class="text-right"
                         class="pcform"
                         lazy-rules
-                        :rules="[
-                          (val) =>
-                            this.$refs.rulesVue.isMax(
-                              val,
-                              5,
-                              'Maximo 4 Caracteres'
-                            ) || ']',
-                        ]"
+                        :rules="[(val) => this.$refs.rulesVue.isMax(val, 5)]"
                       >
                         <template v-slot:prepend>
                           <q-icon name="scale" />
@@ -236,14 +205,7 @@
                         v-money="money"
                         input-class="text-right"
                         lazy-rules
-                        :rules="[
-                          (val) =>
-                            this.$refs.rulesVue.isMax(
-                              val,
-                              5,
-                              'Maximo 4 Caracteres'
-                            ) || ']',
-                        ]"
+                        :rules="[(val) => this.$refs.rulesVue.isMax(val, 5)]"
                       >
                         <template v-slot:prepend>
                           <q-icon name="scale" />
@@ -254,9 +216,8 @@
                 </q-card-section>
               </q-card>
             </div>
-
             <div
-              class=" row justify-center items-center content-center"
+              class="row justify-center items-center content-center"
               style="margin-bottom: 10px"
             >
               <q-btn
@@ -273,7 +234,6 @@
                 class="col-md-5 col-sm-5 col-xs-12 btnmovil"
                 icon="close"
                 v-close-popup
-                @click="setData()"
               />
             </div>
           </q-form>
@@ -282,16 +242,21 @@
     </q-dialog>
 
     <div class="q-pa-sm justify-center">
-      <div class="q-pa-md row justify-end">
+      <div
+        class="row justify-end q-pa-md col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
+      >
         <div
           class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
           style="align-self: center; text-align: center"
         >
           <p style="font-size: 20px" class="text-secondary">
-            <strong>MANTENIMIENTO - CONCEPTOS DE FRANQUEO POSTAL OBLIGATORIO</strong></p>
+            <strong
+              >MANTENIMIENTO - CONCEPTOS DE FRANQUEO POSTAL OBLIGATORIO</strong
+            >
+          </p>
         </div>
         <div
-          class="col-md-5 col-sm-7 col-xs-12 cardMargin selectMovil"
+          class="col-md-5 col-sm-7 col-xs-12 cardMargin selectMobile"
           style="align-self: center"
         >
           <q-input
@@ -309,11 +274,11 @@
           </q-input>
         </div>
         <div
-          class="col-md-2 col-sm-4 col-xs-12"
+          class="col-md-2 col-sm-3 col-xs-12"
           style="text-align: center; align-self: center"
         >
           <q-btn
-            label="Insertar Concepto"
+            label="Insertar"
             rounded
             color="primary"
             @click="
@@ -321,17 +286,18 @@
               this.resetForm();
             "
             :disabled="this.allowOption(2)"
+            class="q-px-xl q-py-xs"
           ></q-btn>
         </div>
       </div>
-
-      <div class="q-pa-md q-gutter-y-md">
+      <div class="row q-pa-md q-gutter-y-md">
         <q-table
-          :rows="datos"
+          :rows="conceptos"
           row-key="id"
           binary-state-sort
           :columns="columns"
           :separator="separator"
+          :rows-per-page-options="[5, 10, 15, 20, 50]"
           :loading="loading"
           :filter="filter"
           style="width: 100%"
@@ -339,7 +305,7 @@
           v-model:pagination="pagination"
         >
           <template v-slot:loading>
-            <q-inner-loading showing color="primary" />
+            <q-inner-loading showing color="primary" class="loading" />
           </template>
           <template v-slot:body-cell-action="props">
             <q-td :props="props">
@@ -351,7 +317,11 @@
                 icon="edit"
                 :disabled="this.allowOption(3)"
                 @click="
-                  getData(`/fpos/${props.row.id}`, 'setDataEdit', 'form');
+                  this.$refs.methods.getData(
+                    `/fpos/${props.row.id}`,
+                    'setDataEdit',
+                    'form'
+                  );
                   dialog = true;
                 "
               ></q-btn>
@@ -379,23 +349,8 @@
                       <q-item-label>{{ col.label }}</q-item-label>
                     </q-item-section>
                     <q-item-section side class="itemMovilSide">
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
                       <q-btn
-                        v-else-if="col.name === 'action'"
+                        v-if="col.name === 'action'"
                         dense
                         round
                         flat
@@ -403,7 +358,7 @@
                         icon="edit"
                         :disabled="this.allowOption(3)"
                         @click="
-                          getData(
+                          this.$refs.methods.getData(
                             `/fpos/${props.row.id}`,
                             'setDataEdit',
                             'form'
@@ -411,23 +366,8 @@
                           dialog = true;
                         "
                       ></q-btn>
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
                       <q-btn
-                        v-else-if="col.name === 'action'"
+                        v-if="col.name === 'action'"
                         dense
                         round
                         flat
@@ -437,12 +377,7 @@
                         @click="selected = props.row.id"
                         @click.capture="deletePopup = true"
                       ></q-btn>
-                      <q-item-label
-                        v-else
-                        caption
-                        :class="col.classes ? col.classes : ''"
-                        >{{ col.value }}
-                      </q-item-label>
+                      <q-item-label> {{ col.value }} </q-item-label>
                     </q-item-section>
                   </q-item>
                 </q-list>
@@ -460,7 +395,6 @@
             ¿Estas seguro que quieres eliminar este elemento?
           </div>
         </q-card-section>
-
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="primary" v-close-popup />
           <q-btn
@@ -468,7 +402,9 @@
             label="Aceptar"
             color="primary"
             v-close-popup
-            @click="deleteData(selected)"
+            @click="
+              this.$refs.methods.deleteData(`/fpos/${selected}`, 'getDataTable')
+            "
           />
         </q-card-actions>
       </q-card>
@@ -476,10 +412,9 @@
 
     <methods
       ref="methods"
-      @get-Data="getData('/fpos', 'setData', 'datos')"
-      @set-data="setData"
-      @reset-Loading="resetLoading"
       @set-Data-Edit="setDataEdit"
+      @get-Data-Table="getDataTable"
+      @set-Data-Table="setDataTable"
       @set-Data-Permisos="setDataPermisos"
     >
     </methods>
@@ -490,7 +425,7 @@
 
 <script>
 import { ref } from "vue";
-import { useQuasar, LocalStorage } from "quasar";
+import { LocalStorage } from "quasar";
 import { VMoney } from "v-money";
 import methodsVue from "src/components/methods.vue";
 import rulesVue from "src/components/rules.vue";
@@ -519,7 +454,6 @@ export default {
           field: "cod_fpo",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
           name: "desc_tipo",
@@ -527,7 +461,14 @@ export default {
           field: "desc_tipo",
           align: "left",
           sortable: true,
-          required: true,
+        },       
+        {
+          name: "f_val",
+          label: "Valido Desde",
+          field: "f_val",
+          align: "left",
+          sortable: true,
+          format: (val) => val.split("-").reverse().join("/"),
         },
         {
           name: "f_anul",
@@ -535,7 +476,7 @@ export default {
           field: "f_anul",
           align: "left",
           sortable: true,
-          required: true,
+          format: (val) => val.split("-").reverse().join("/"),
         },
         {
           name: "valor",
@@ -543,7 +484,6 @@ export default {
           field: "valor",
           align: "right",
           sortable: true,
-          required: true,
         },
         {
           name: "peso_inicio",
@@ -551,7 +491,6 @@ export default {
           field: "peso_inicio",
           align: "right",
           sortable: true,
-          required: true,
         },
         {
           name: "peso_fin",
@@ -559,14 +498,11 @@ export default {
           field: "peso_fin",
           align: "right",
           sortable: true,
-          required: true,
         },
         {
           name: "action",
           label: "Acciones",
           align: "center",
-          sortable: true,
-          required: true,
         },
       ],
       form: {
@@ -578,34 +514,26 @@ export default {
         peso_inicio: 0,
         peso_fin: 0,
       },
-      datos: [],
+      pagination: {
+        rowsPerPage: 5,
+      },
+      conceptos: [],
       selected: [],
       rpermisos: [],
-      error: "",
+      filter: "",
     };
   },
   setup() {
-    const $q = useQuasar();
-    const pagination = ref({
-      sortBy: "desc",
-      descending: false,
-      page: 1,
-      rowsPerPage: 5,
-    });
     return {
-      pagination: ref({
-        rowsPerPage: 5,
-      }),
+      loading: ref(false),
       separator: ref("vertical"),
       dialog: ref(false),
-      loading: ref(false),
       deletePopup: ref(false),
-      filter: ref(""),
     };
   },
   mounted() {
     this.$emit("changeTitle", "SCEN - Mantenimiento - Conceptos FPO", "");
-    this.getData("/fpos", "setData", "datos");
+    this.getDataTable();
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
@@ -615,9 +543,10 @@ export default {
     });
   },
   methods: {
-    // Metodo para Resetear Carga
-    resetLoading() {
-      this.loading = false;
+    // Metodo para traer el value de los Selects y Columns
+    filterDesc(array, value) {
+      var find = this[array].findIndex((item) => item.value == value);
+      return find >= 0 ? this[array][find].label : null;
     },
     // Metodo para validar Permisos
     allowOption(option) {
@@ -634,32 +563,27 @@ export default {
 
     // METODOS DE PAGINA
 
-    // Metodo para Hacer Get de Datos
-    getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes);
+    // Metodo para Extraer Datos de Tabla
+    getDataTable() {
+      this.loading = true;
+      this.$refs.methods.getData("/fpos", "setDataTable", "conceptos");
     },
-    // Metodo para Setear Datos
-    setData(res, dataRes) {
-      this[dataRes] = res;
+    // Metodo para Setear Datos de Tabla
+    setDataTable(res, dataRes) {
+      this[dataRes] = res.data ? res.data : res;
       this.loading = false;
     },
     // Metodo para Setear Datos seleccionados
     setDataEdit(res, dataRes) {
-      this.loading = false;
-      this.form.id = res.id;
-      this.form.cod_fpo = res.cod_fpo;
-      this.form.desc_tipo = res.desc_tipo;
-      this.form.valor = res.valor;
-      this.form.f_val = res.f_val.split("-").reverse().join("/");
-      this.form.f_anul = res.f_anul.split("-").reverse().join("/");
-      this.form.peso_inicio = res.peso_inicio;
-      this.form.peso_fin = res.peso_fin;
-      this.form.valor = res.valor;
-    },
-    // Metodo para Eliminar Datos
-    deleteData(idpost) {
-      this.$refs.methods.deleteData(`/fpos/${idpost}`, "getData");
-      this.loading = true;
+      this[dataRes].id = res.id;
+      this[dataRes].cod_fpo = res.cod_fpo;
+      this[dataRes].desc_tipo = res.desc_tipo;
+      this[dataRes].valor = res.valor;
+      this[dataRes].f_val = res.f_val.split("-").reverse().join("/");
+      this[dataRes].f_anul = res.f_anul.split("-").reverse().join("/");
+      this[dataRes].peso_inicio = res.peso_inicio;
+      this[dataRes].peso_fin = res.peso_fin;
+      this[dataRes].valor = res.valor;
     },
     // Metodo para Editar y Crear Datos
     sendData() {
@@ -675,21 +599,17 @@ export default {
       this.form.f_val = this.form.f_val.split("/").reverse().join("-");
       this.form.f_anul = this.form.f_anul.split("/").reverse().join("-");
       if (!this.form.id) {
-        this.$refs.methods.createData("/fpos", this.form, "getData");
+        this.$refs.methods.createData("/fpos", this.form, "getDataTable");
         this.resetForm();
-        this.loading = true;
-        this.dialog = false;
       } else {
         this.$refs.methods.putData(
           `/fpos/${this.form.id}`,
           this.form,
-          "getData"
+          "getDataTable"
         );
-        this.edit = false;
-        this.resetForm();
-        this.loading = true;
-        this.dialog = false;
       }
+      this.dialog = false;
+      this.resetForm();
     },
     resetForm() {
       delete this.form.id;
@@ -704,45 +624,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.hide {
-  display: none;
-}
-
-@media screen and (min-width: 600px) {
-  .movilTitle {
-    display: none;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .movilTitle {
-    display: block;
-  }
-}
-
-@media screen and (min-width: 600px) {
-  .cardMargin {
-    padding-right: 20px !important;
-  }
-}
-
-@media screen and (min-width: 1024px) {
-  .cardMarginLast {
-    padding-right: 20px !important;
-  }
-}
-
-@media screen and (max-width: 1024px) {
-  .buttonMargin {
-    margin-bottom: 20px !important;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .selectMovil {
-    margin-bottom: 20px !important;
-  }
-}
-</style>

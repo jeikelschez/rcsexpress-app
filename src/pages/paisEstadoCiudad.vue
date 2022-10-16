@@ -441,7 +441,7 @@
               </p>
             </div>
             <div
-              class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 marginHeader marginHeaderMovil"
+              class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 cardMargin selectMobile"
               style="align-self: center; text-align: center; padding-left: 0px"
             >
               <q-option-group
@@ -454,7 +454,7 @@
               />
             </div>
             <div
-              class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 marginHeader marginSelectMobile marginHeaderMovil"
+              class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 cardMargin selectMobile"
               style="text-align: center; align-self: center"
             >
               <q-select
@@ -534,115 +534,115 @@
               </q-btn>
             </div>
           </div>
-
-          <div class="q-pa-md">
-            <div class="q-gutter-y-md">
-              <div bordered flat class="my-card row">
-                <q-table
-                  :rows="estados"
-                  row-key="id"
-                  binary-state-sort
-                  :rows-per-page-options="[5, 10, 15, 20, 50]"
-                  @request="getDataEstados"
-                  :columns="columnsEstados"
-                  :separator="separator"
-                  style="width: 100%"
-                  :loading="loading"
-                  :grid="$q.screen.xs"
-                  v-model:pagination="paginationEstados"
+          <div
+            class="q-pa-md my-card row"
+            bordered
+            flat
+            style="margin-top: 2px"
+          >
+            <q-table
+              :rows="estados"
+              row-key="id"
+              binary-state-sort
+              :rows-per-page-options="[5, 10, 15, 20, 50]"
+              @request="getDataEstados"
+              :columns="columnsEstados"
+              :separator="separator"
+              style="width: 100%"
+              :loading="loading"
+              :grid="$q.screen.xs"
+              v-model:pagination="paginationEstados"
+            >
+              <template v-slot:loading>
+                <q-inner-loading showing color="primary" class="loading" />
+              </template>
+              <template v-slot:body-cell-action="props">
+                <q-td :props="props">
+                  <q-btn
+                    dense
+                    round
+                    flat
+                    color="primary"
+                    icon="edit"
+                    :disabled="this.allowOption(3)"
+                    @click="
+                      this.$refs.methods.getData(
+                        `/estados/${props.row.id}`,
+                        'setDataEstadosEdit',
+                        'formEstados'
+                      );
+                      estadosDialog = true;
+                    "
+                  ></q-btn>
+                  <q-btn
+                    dense
+                    round
+                    flat
+                    color="primary"
+                    icon="delete"
+                    :disabled="this.allowOption(4)"
+                    @click="selected = props.row.id"
+                    @click.capture="estadosDelete = true"
+                  ></q-btn>
+                </q-td>
+              </template>
+              <template v-slot:item="props">
+                <div
+                  class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+                  :style="props.selected ? 'transform: scale(0.95);' : ''"
                 >
-                  <template v-slot:loading>
-                    <q-inner-loading showing color="primary" class="loading" />
-                  </template>
-                  <template v-slot:body-cell-action="props">
-                    <q-td :props="props">
-                      <q-btn
-                        dense
-                        round
-                        flat
-                        color="primary"
-                        icon="edit"
-                        :disabled="this.allowOption(3)"
-                        @click="
-                          this.$refs.methods.getData(
-                            `/estados/${props.row.id}`,
-                            'setDataEstadosEdit',
-                            'formEstados'
-                          );
-                          estadosDialog = true;
-                        "
-                      ></q-btn>
-                      <q-btn
-                        dense
-                        round
-                        flat
-                        color="primary"
-                        icon="delete"
-                        :disabled="this.allowOption(4)"
-                        @click="selected = props.row.id"
-                        @click.capture="estadosDelete = true"
-                      ></q-btn>
-                    </q-td>
-                  </template>
-                  <template v-slot:item="props">
-                    <div
-                      class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
-                      :style="props.selected ? 'transform: scale(0.95);' : ''"
-                    >
-                      <q-card :class="props.selected ? 'bg-grey-2' : ''">
-                        <q-list dense>
-                          <q-item v-for="col in props.cols" :key="col.name">
-                            <q-item-section>
-                              <q-item-label>{{ col.label }}</q-item-label>
-                            </q-item-section>
-                            <q-item-section side class="itemMovilSide">
-                              <q-btn
-                                v-if="col.name === 'action'"
-                                dense
-                                round
-                                flat
-                                color="primary"
-                                icon="edit"
-                                :disabled="this.allowOption(3)"
-                                @click="
-                                  this.$refs.methods.getData(
-                                    `/estados/${props.row.id}`,
-                                    'setDataEstadosEdit',
-                                    'formEstados'
-                                  );
-                                  estadosDialog = true;
-                                "
-                              ></q-btn>
-                              <q-btn
-                                v-if="col.name === 'action'"
-                                dense
-                                round
-                                flat
-                                color="primary"
-                                icon="delete"
-                                :disabled="this.allowOption(4)"
-                                @click="selected = props.row.id"
-                                @click.capture="estadosDelete = true"
-                              ></q-btn>
-                              <q-item-label>
-                                {{ col.value }}
-                              </q-item-label>
-                            </q-item-section>
-                          </q-item>
-                        </q-list>
-                      </q-card>
-                    </div>
-                  </template>
-                </q-table>
-              </div>
-            </div>
+                  <q-card :class="props.selected ? 'bg-grey-2' : ''">
+                    <q-list dense>
+                      <q-item v-for="col in props.cols" :key="col.name">
+                        <q-item-section>
+                          <q-item-label>{{ col.label }}</q-item-label>
+                        </q-item-section>
+                        <q-item-section side class="itemMovilSide">
+                          <q-btn
+                            v-if="col.name === 'action'"
+                            dense
+                            round
+                            flat
+                            color="primary"
+                            icon="edit"
+                            :disabled="this.allowOption(3)"
+                            @click="
+                              this.$refs.methods.getData(
+                                `/estados/${props.row.id}`,
+                                'setDataEstadosEdit',
+                                'formEstados'
+                              );
+                              estadosDialog = true;
+                            "
+                          ></q-btn>
+                          <q-btn
+                            v-if="col.name === 'action'"
+                            dense
+                            round
+                            flat
+                            color="primary"
+                            icon="delete"
+                            :disabled="this.allowOption(4)"
+                            @click="selected = props.row.id"
+                            @click.capture="estadosDelete = true"
+                          ></q-btn>
+                          <q-item-label>
+                            {{ col.value }}
+                          </q-item-label>
+                        </q-item-section>
+                      </q-item>
+                    </q-list>
+                  </q-card>
+                </div>
+              </template>
+            </q-table>
           </div>
         </q-carousel-slide>
         <q-carousel-slide
           name="ciudades"
           class="flex-center col-md-11 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
         >
-          <div class="row q-pa-md paddingMobile">
+          <div class="row justify-end q-pa-md paddingMobile">
             <div
               class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
               style="align-self: center; text-align: center"
@@ -652,7 +652,7 @@
               </p>
             </div>
             <div
-              class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 marginHeader marginHeaderMovil marginHeaderPC"
+              class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 cardMargin selectMobile"
               style="align-self: center; text-align: center; padding-left: 0px"
             >
               <q-option-group
@@ -665,7 +665,7 @@
               />
             </div>
             <div
-              class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 marginHeader marginHeaderPC marginHeaderMovil"
+              class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 cardMargin selectMobile"
             >
               <q-select
                 rounded
@@ -710,7 +710,7 @@
               </q-select>
             </div>
             <div
-              class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 marginHeaderPC marginHeaderMovil"
+              class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 cardMargin selectMobile"
             >
               <q-select
                 rounded
@@ -752,8 +752,8 @@
               </q-select>
             </div>
             <div
-              class="col-md-9 col-xl-9 col-lg-9 col-xs-12 col-sm-12"
-              style="text-align: center; align-self: center"
+              class="col-md-6 col-sm-7 col-xs-12 cardMargin selectMobile"
+              style="align-self: center"
             >
               <q-input
                 v-model="this.paginationCiudades.filterValue"
@@ -774,7 +774,7 @@
               </q-input>
             </div>
             <div
-              class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 cardMarginButton"
+              class="col-md-2 col-sm-3 col-xs-12"
               style="text-align: center; align-self: center"
             >
               <q-btn
@@ -1470,48 +1470,3 @@ export default {
   },
 };
 </script>
-
-<style>
-@media screen and (min-width: 600px) {
-  .movilTitle {
-    display: none;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .movilTitle {
-    display: block;
-  }
-}
-
-@media screen and (min-width: 1024px) {
-  .marginHeader {
-    padding-right: 30px;
-  }
-}
-
-@media screen and (max-width: 1024px) {
-  .marginHeader {
-    padding-right: 0px;
-  }
-}
-
-@media screen and (max-width: 1024px) {
-  .marginHeaderMovil {
-    margin-bottom: 25px;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .paddingMobile {
-    padding-left: 2px;
-    padding-right: 2px;
-  }
-}
-
-@media screen and (min-width: 1024px) {
-  .marginHeaderPC {
-    margin-bottom: 20px;
-  }
-}
-</style>

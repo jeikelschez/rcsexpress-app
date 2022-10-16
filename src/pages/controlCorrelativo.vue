@@ -113,7 +113,7 @@
           </p>
         </div>
         <div
-          class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-6 cardMarginFilter selectMovil"
+          class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-6 cardMargin selectMobile"
           style="align-self: center; text-align: center"
         >
           <q-select
@@ -156,7 +156,7 @@
           </q-select>
         </div>
         <div
-          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-6 cardMarginFilter selectMovil"
+          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-6 cardMargin selectMobile"
         >
           <q-select
             rounded
@@ -198,7 +198,7 @@
           </q-select>
         </div>
         <div
-          class="col-md-3 col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 cardMarginFilter selectMovil"
+          class="col-md-3 col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 cardMargin selectMobile"
         >
           <q-input
             v-model="this.pagination.filterValue"
@@ -720,47 +720,3 @@ export default {
   },
 };
 </script>
-
-<style>
-@media screen and (min-width: 600px) {
-  .movilTitle {
-    display: none;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .movilTitle {
-    display: block;
-  }
-}
-
-@media screen and (min-width: 600px) {
-  .cardMargin {
-    padding-right: 20px !important;
-  }
-}
-
-@media screen and (min-width: 1024px) {
-  .cardMarginFilter {
-    padding-right: 20px !important;
-  }
-}
-
-@media screen and (min-width: 600px) {
-  .cardMarginSm {
-    padding-right: 20px !important;
-  }
-}
-
-@media screen and (max-width: 1024px) {
-  .buttonMargin {
-    margin-bottom: 15px !important;
-  }
-}
-
-@media screen and (max-width: 1024px) {
-  .selectMovil {
-    margin-bottom: 15px !important;
-  }
-}
-</style>
