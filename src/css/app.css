@@ -78,4 +78,4 @@
 @media screen and (max-width: 1024px) {.buttonMargin {margin-bottom: 15px !important;}}
 @media screen and (max-width: 600px) {.selectMobile {margin-bottom: 15px !important;}}
 @media screen and (max-width: 1024px) {.selectMobile2 {margin-bottom: 15px !important;}}
-@media(min-width:1024px) and (max-width:1480px){.selectMobile3 {margin-top: 20px !important;}}
+@media(min-width:1024px) and (max-width:1440px){.selectMobile3 {margin-top: 20px !important;}}

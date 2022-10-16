@@ -503,7 +503,7 @@
         </div>
         <div
           class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-6"
-          style="margin-top: -7px"
+          style="margin-top: -4px"
         >
           <q-field
             hide-bottom-space
