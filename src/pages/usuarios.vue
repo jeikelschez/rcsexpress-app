@@ -17,11 +17,9 @@
                   @update:model-value="form.login = form.login.toUpperCase()"
                   lazy-rules
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
-                    (val) =>
-                      this.$refs.rulesVue.isMax(val, 11, 'Requiere Retorno'),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(val, 3, 'Debe ser Mayor') || '',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 12),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                 >
                   <template v-slot:prepend>
@@ -29,33 +27,26 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-7 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.password"
                   label="Contraseña"
-                  :type="isPwd ? 'password' : 'text'"
                   :readonly="this.disabledEdit"
                   lazy-rules
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
-                    (val) =>
-                      this.$refs.rulesVue.isMax(val, 10, 'Requiere Retorno'),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(val, 3, 'Debe ser Mayor') || '',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 100),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                 >
                   <template v-slot:prepend>
                     <q-icon
-                      :name="isPwd ? 'visibility_off' : 'visibility'"
                       class="cursor-pointer"
-                      @click="isPwd = !isPwd"
                     />
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-5 col-xs-12">
                 <q-input
                   outlined
@@ -66,11 +57,9 @@
                   @update:model-value="form.nombre = form.nombre.toUpperCase()"
                   lazy-rules
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val, 'Requerido'),
-                    (val) =>
-                      this.$refs.rulesVue.isMax(val, 50, 'Requiere Retorno'),
-                    (val) =>
-                      this.$refs.rulesVue.isMin(val, 3, 'Debe ser Mayor') || '',
+                    (val) => this.$refs.rulesVue.isReq(val),
+                    (val) => this.$refs.rulesVue.isMax(val, 50),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
                   ]"
                 >
                   <template v-slot:prepend>
@@ -78,18 +67,14 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-7 col-xs-12">
                 <q-select
                   outlined
                   v-model="form.activo"
                   label="Vigente"
                   hint=""
-                  :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
-                  ]"
-                  :options="vigente"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
+                  :options="estatus"
                   lazy-rules
                 >
                   <template v-slot:prepend>
@@ -97,23 +82,29 @@
                   </template>
                 </q-select>
               </div>
-
               <div class="col-md-12 col-xs-12">
                 <q-select
                   outlined
-                  v-model="form.cod_rol"
+                  v-model="selectedRol"
                   label="Rol Desempeñado"
                   hint=""
-                  :rules="[
-                    (val) =>
-                      this.$refs.rulesVue.isReqSelect(val, 'Requerido') || '',
-                  ]"
-                  :options="roles"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
+                  :options="rolesSelected"
                   option-label="descripcion"
                   option-value="id"
                   lazy-rules
                   transition-show="flip-up"
                   transition-hide="flip-down"
+                  @filter="
+                          (val, update) =>
+                            filterArray(
+                              val,
+                              update,
+                              'rolesSelected',
+                              'roles',
+                              'descripcion'
+                            )
+                        "
                 >
                   <template v-slot:prepend>
                     <q-icon name="badge" />
@@ -121,7 +112,6 @@
                 </q-select>
               </div>
             </div>
-
             <div
               class="row justify-center items-center content-center"
               style="margin-bottom: 10px"
@@ -147,244 +137,207 @@
       </q-card>
     </q-dialog>
 
-    <div class="q-pa-sm justify-center">
-      <div class="q-pa-md row justify-end">
-        <div
-          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
-          style="align-self: center; text-align: center"
-        >
-          <p style="font-size: 20px" class="text-secondary">
-            <strong>SEGURIDAD - USUARIOS</strong>
-          </p>
-        </div>
-
-        <div
-          class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-6 cardMargin selectMobile"
-          style="align-self: center; text-align: center"
-        >
-          <q-select
-            rounded
-            transition-show="flip-up"
-            transition-hide="flip-down"
-            :options="agenciasSelected"
-            @filter="
-              (val, update, abort) =>
-                filterArray(
-                  val,
-                  update,
-                  abort,
-                  'agenciasSelected',
-                  'agencias',
-                  'nb_agencia'
-                )
-            "
-            use-input
-            hide-selected
-            fill-input
-            dense
-            input-debounce="0"
-            option-label="nb_agencia"
-            option-value="id"
-            v-model="selectedAgencia"
-            outlined
-            standout
-            label="Escoge una Agencia"
-            @update:model-value="
-              getData(`/usuarios`, 'setData', 'usuarios', {
-                headers: {
-                  agencia: this.selectedAgencia.id,
-                },
-              })
-            "
-            ><template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  Sin resultados
-                </q-item-section>
-              </q-item>
-            </template>
-            <template v-slot:prepend>
-              <q-icon name="search" />
-            </template>
-          </q-select>
-        </div>
-
-        <div
-          class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-6 cardMarginFilter selectMobile"
-          style="align-self: center; text-align: center"
-        >
-          <q-input
-            rounded
-            outlined
-            standout
-            dense
-            v-model="filter"
-            type="search"
-            label="Búsqueda avanzada"
+    <div class="row q-pa-sm justify-center">
+      <div class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
+        <div class="q-pa-md row" style="margin-top: 2px">
+          <div
+            class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 movilTitle"
+            style="align-self: center; text-align: center"
           >
-            <template v-slot:prepend>
-              <q-icon name="search" />
-            </template>
-          </q-input>
-        </div>
-
-        <div
-          class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
-          style="text-align: center; align-self: center"
-        >
-          <q-btn
-            label="Insertar"
-            rounded
-            color="primary"
-            :disabled="this.allowOption(2)"
-            @click="dialog = true"
-            @click.capture="resetForm()"
-            size="16px"
-            class="q-px-xl q-py-xs"
-          ></q-btn>
-        </div>
-      </div>
-
-      <div class="q-pa-md q-gutter-y-md">
-        <q-table
-          :rows="usuarios"
-          row-key="id"
-          binary-state-sort
-          :columns="columns"
-          :separator="separator"
-          :loading="loading"
-          :filter="filter"
-          style="width: 100%"
-          :grid="$q.screen.xs"
-          v-model:pagination="pagination"
-        >
-          <template v-slot:loading>
-            <q-inner-loading showing color="primary" />
-          </template>
-          <template v-slot:body-cell-action="props">
-            <q-td :props="props">
-              <q-btn
-                dense
-                round
-                flat
-                color="primary"
-                icon="edit"
-                :disabled="this.allowOption(3)"
-                @click="
-                  getData(
-                    `/usuarios/${props.row.login}`,
-                    'setDataEdit',
-                    'form'
-                  );
-                  dialog = true;
-                "
-              ></q-btn>
-              <q-btn
-                dense
-                round
-                flat
-                color="primary"
-                icon="delete"
-                :disabled="this.allowOption(4)"
-                @click="selected = props.row.login"
-                @click.capture="usuariosDelete = true"
-              ></q-btn>
-            </q-td>
-          </template>
-          <template v-slot:item="props">
-            <div
-              class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
-              :style="props.selected ? 'transform: scale(0.95);' : ''"
+            <p style="font-size: 20px" class="text-secondary">
+              <strong>SEGURIDAD - USUARIOS</strong>
+            </p>
+          </div>
+          <div
+            class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-6 cardMargin selectMobile"
+            style="align-self: center; text-align: center"
+          >
+            <q-select
+              rounded
+              transition-show="flip-up"
+              transition-hide="flip-down"
+              :options="agenciasSelected"
+              @filter="
+                (val, update) =>
+                  filterArray(
+                    val,
+                    update,
+                    'agenciasSelected',
+                    'agencias',
+                    'nb_agencia'
+                  )
+              "
+              use-input
+              hide-selected
+              fill-input
+              dense
+              input-debounce="0"
+              option-label="nb_agencia"
+              option-value="id"
+              v-model="selectedAgencia"
+              outlined
+              standout
+              label="Escoge una Agencia"
+              @update:model-value="getDataTable()"
+              ><template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    Sin resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:prepend>
+                <q-icon name="search" />
+              </template>
+            </q-select>
+          </div>
+          <div
+            class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-6"
+            style="align-self: center; text-align: center"
+          >
+            <q-input
+              rounded
+              outlined
+              standout
+              dense
+              v-model="filter"
+              type="search"
+              label="Búsqueda avanzada"
             >
-              <q-card :class="props.selected ? 'bg-grey-2' : ''">
-                <q-list dense>
-                  <q-item v-for="col in props.cols" :key="col.name">
-                    <q-item-section>
-                      <q-item-label>{{ col.label }}</q-item-label>
-                    </q-item-section>
-                    <q-item-section side class="itemMovilSide">
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
-                      <q-btn
-                        v-else-if="col.name === 'action'"
-                        dense
-                        round
-                        flat
-                        color="primary"
-                        icon="edit"
-                        :disabled="this.allowOption(3)"
-                        @click="
-                          getData(
-                            `/usuarios/${props.row.login}`,
-                            'setDataEdit',
-                            'form'
-                          );
-                          dialog = true;
-                        "
-                      ></q-btn>
-                      <q-chip
-                        v-if="col.name === 'status'"
-                        :color="
-                          props.row.status == 'Active'
-                            ? 'green'
-                            : props.row.status == 'Disable'
-                            ? 'red'
-                            : 'grey'
-                        "
-                        text-color="white"
-                        dense
-                        class="text-weight-bolder"
-                        square
-                        >{{ col.value }}</q-chip
-                      >
-                      <q-btn
-                        v-else-if="col.name === 'action'"
-                        dense
-                        round
-                        flat
-                        color="primary"
-                        icon="delete"
-                        :disabled="this.allowOption(4)"
-                        @click="selected = props.row.id"
-                        @click.capture="usuariosDelete = true"
-                      ></q-btn>
-                      <q-item-label
-                        v-else
-                        caption
-                        :class="col.classes ? col.classes : ''"
-                        >{{ col.value }}
+              <template v-slot:prepend>
+                <q-icon name="search" />
+              </template>
+            </q-input>
+          </div>
+          <div
+            class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 cardMarginButton"
+            style="text-align: center; align-self: center"
+          >
+            <q-btn
+              label="Insertar"
+              rounded
+              color="primary"
+              :disabled="this.allowOption(2)"
+              @click="dialog = true"
+              @click.capture="resetForm()"
+              class="q-px-xl q-py-xs"
+            ></q-btn>
+          </div>
+        </div>
+        <div class="q-pa-md my-card row" bordered flat style="margin-top: 2px">
+          <q-table
+            :rows="usuarios"
+            row-key="id"
+            binary-state-sort
+            :columns="columns"
+            :separator="separator"
+            :rows-per-page-options="[5, 10, 15, 20, 50]"
+            :loading="loading"
+            :filter="filter"
+            style="width: 100%"
+            :grid="$q.screen.xs"
+            v-model:pagination="pagination"
+          >
+            <template v-slot:loading>
+              <q-inner-loading showing color="primary" class="loading" />
+            </template>
+            <template v-slot:body-cell-activo="props">
+              <q-td :props="props">
+                {{ filterDesc("estatus", props.row.activo).label }}
+              </q-td>
+            </template>
+            <template v-slot:body-cell-action="props">
+              <q-td :props="props">
+                <q-btn
+                  dense
+                  round
+                  flat
+                  color="primary"
+                  icon="edit"
+                  :disabled="this.allowOption(3)"
+                  @click="
+                    this.$refs.methods.getData(
+                      `/usuarios/${props.row.login}`,
+                      'setDataEdit',
+                      'form'
+                    );
+                    dialog = true;
+                  "
+                ></q-btn>
+                <q-btn
+                  dense
+                  round
+                  flat
+                  color="primary"
+                  icon="delete"
+                  :disabled="this.allowOption(4)"
+                  @click="selected = props.row.login"
+                  @click.capture="deletePopup = true"
+                ></q-btn>
+              </q-td>
+            </template>
+            <template v-slot:item="props">
+              <div
+                class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+                :style="props.selected ? 'transform: scale(0.95);' : ''"
+              >
+                <q-card :class="props.selected ? 'bg-grey-2' : ''">
+                  <q-list dense>
+                    <q-item v-for="col in props.cols" :key="col.name">
+                      <q-item-section>
+                        <q-item-label>{{ col.label }}</q-item-label>
+                      </q-item-section>
+                      <q-item-section side class="itemMovilSide">
+                        <q-item-label v-if="col.name === 'activo'">
+                        {{ filterDesc("estatus", props.row.activo).label }}
                       </q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-card>
-            </div>
-          </template>
-        </q-table>
+                        <q-btn
+                          v-if="col.name === 'action'"
+                          dense
+                          round
+                          flat
+                          color="primary"
+                          icon="edit"
+                          :disabled="this.allowOption(3)"
+                          @click="
+                            this.$refs.methods.getData(
+                              `/usuarios/${props.row.login}`,
+                              'setDataEdit',
+                              'form'
+                            );
+                            dialog = true;
+                          "
+                        ></q-btn>
+                        <q-btn
+                          v-if="col.name === 'action'"
+                          dense
+                          round
+                          flat
+                          color="primary"
+                          icon="delete"
+                          :disabled="this.allowOption(4)"
+                          @click="selected = props.row.id"
+                          @click.capture="deletePopup = true"
+                        ></q-btn>
+                        <q-item-label v-if="col.name != 'activo'"> {{ col.value }} </q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-card>
+              </div>
+            </template>
+          </q-table>
+        </div>
       </div>
     </div>
 
-    <q-dialog v-model="usuariosDelete">
+    <q-dialog v-model="deletePopup">
       <q-card style="width: 700px">
         <q-card-section>
           <div class="text-h5" style="font-size: 18px">
             ¿Estas seguro que quieres eliminar este elemento?
           </div>
         </q-card-section>
-
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="primary" v-close-popup />
           <q-btn
@@ -392,7 +345,12 @@
             label="Aceptar"
             color="primary"
             v-close-popup
-            @click="deleteData(selected)"
+            @click="
+              this.$refs.methods.deleteData(
+                `/usuarios/${selected}`,
+                'getDataTable'
+              )
+            "
           />
         </q-card-actions>
       </q-card>
@@ -400,17 +358,11 @@
 
     <methods
       ref="methods"
-      @get-Data-Usuarios="
-        getData(`/usuarios`, 'setData', 'usuarios', {
-          headers: {
-            agencia: selectedAgencia.id,
-          },
-        })
-      "
-      @reset-Loading="resetLoading"
-      @set-Data-Edit="setDataEdit"
       @set-Data="setData"
       @set-Data-Init="setDataInit"
+      @set-Data-Edit="setDataEdit"
+      @get-Data-Table="getDataTable"
+      @set-Data-Table="setDataTable"
       @set-Data-Permisos="setDataPermisos"
     ></methods>
 
@@ -421,8 +373,7 @@
 <script>
 import { ref } from "vue";
 import rulesVue from "src/components/rules.vue";
-import { api } from "boot/axios";
-import { useQuasar, LocalStorage } from "quasar";
+import { LocalStorage } from "quasar";
 import methodsVue from "src/components/methods.vue";
 
 export default {
@@ -436,7 +387,6 @@ export default {
           field: "login",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
           name: "nombre",
@@ -444,7 +394,6 @@ export default {
           field: "nombre",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
           name: "roles",
@@ -452,22 +401,18 @@ export default {
           field: (row) => row.roles.descripcion,
           align: "left",
           sortable: true,
-          required: true,
         },
         {
-          name: "activo_desc",
+          name: "activo",
           label: "Vigente",
-          field: "activo_desc",
+          field: "activo",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
           name: "action",
           label: "Acciones",
           align: "center",
-          sortable: true,
-          required: true,
         },
       ],
       form: {
@@ -478,47 +423,38 @@ export default {
         password: "",
         cod_agencia: [],
       },
-      vigente: [
+      estatus: [
         { label: "ACTIVO", value: "1" },
         { label: "INACTIVO", value: "0" },
       ],
+      pagination: {
+        rowsPerPage: 5, 
+      },
       agencias: [],
       roles: [],
       usuarios: [],
       selected: [],
       selectedAgencia: [],
+      selectedRol: [],
+      rolesSelected: [],
       agenciasSelected: [],
       rpermisos: [],
-      menus: [],
       disabledPassword: false,
-      error: "",
+      disabledEdit: false,
+      filter: "",
     };
   },
   setup() {
-    const $q = useQuasar();
-    const pagination = ref({
-      sortBy: "desc",
-      descending: false,
-      page: 2,
-      control: 0,
-      rowsPerPage: 5,
-    });
     return {
-      pagination: ref({
-        rowsPerPage: 5,
-      }),
-      separator: ref("vertical"),
-      password: ref(""),
       loading: ref(false),
-      isPwd: ref(true),
+      separator: ref("vertical"),
       dialog: ref(false),
-      usuariosDelete: ref(false),
-      filter: ref(""),
+      deletePopup: ref(false),
     };
   },
   mounted() {
     this.$emit("changeTitle", "SCEN - Mantenimiento - Usuarios", "");
-    this.getData("/agencias", "setDataInit", "agencias");
+    this.$refs.methods.getData("/agencias", "setDataInit", "agencias");
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
@@ -528,8 +464,8 @@ export default {
     });
   },
   methods: {
-    // Metodo para Filtrar Selects
-    filterArray(val, update, abort, pagina, array, element) {
+    // Metodo para filtrar opciones de Selects
+    filterArray(val, update, pagina, array, element) {
       if (val === "") {
         update(() => {
           this[pagina] = this[array];
@@ -550,21 +486,10 @@ export default {
         }
       });
     },
-    // Metodo para Resetear Datos
-    resetLoading() {
-      this.loading = false;
-    },
-    // Metodo para buscar y Setear Datos en Selects
-    filterSelect(array, codigo, searched, selectedOption, selectedOptionValue) {
-      var find = this[array].findIndex((item) => item[codigo] == searched);
-      if (find >= 0) {
-        this[selectedOption][selectedOptionValue] = this[array][find];
-      } else {
-        this[selectedOption][selectedOptionValue] = {
-          label: "",
-          value: "null",
-        };
-      }
+    // Metodo para traer el value de los Selects y Columns
+    filterDesc(array, value) {
+      var find = this[array].findIndex((item) => item.value == value);
+      return find >= 0 ? this[array][find] : null;
     },
     // Metodo para validar Permisos
     allowOption(option) {
@@ -581,81 +506,63 @@ export default {
 
     // METODOS DE PAGINA
 
-    // Metodo para Get de Datos
-    getData(url, call, dataRes, axiosConfig) {
-      this.$refs.methods.getData(url, call, dataRes, axiosConfig);
-    },
-    // Metodo para Get de Datos Iniciales
-    setDataInit(res, dataRes) {
-      this[dataRes] = res.data;
-      this.selectedAgencia = this.agencias[0];
-      api
-        .get(`/roles`, {
-          headers: {
-            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            agencia: this.agencias[0].id,
-          },
-        })
-        .then((res) => {
-          this.roles = res.data;
-        });
-      api
-        .get(`/usuarios`, {
-          headers: {
-            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            agencia: this.agencias[0].id,
-          },
-        })
-        .then((res) => {
-          this.usuarios = res.data;
-        });
-      this.loading = false;
-    },
     // Metodo para Setear Datos
     setData(res, dataRes) {
-      this[dataRes] = res;
+      this[dataRes] = res.data ? res.data : res;
+    },
+    // Metodo para Setear Datos al Iniciar
+    setDataInit(res, dataRes) {
+      this[dataRes] = res.data ? res.data : res;
+      this.selectedAgencia = this.agencias[0];
+      this.getDataTable();
+    },
+    // Metodo para Extraer Datos de Tabla
+    getDataTable() {
+      this.loading = true;
+      this.$refs.methods.getData(`/roles`, "setData", "roles", {
+        headers: {
+          agencia: this.selectedAgencia.id,
+        },
+      });
+      this.$refs.methods.getData(`/usuarios`, "setDataTable", "usuarios", {
+        headers: {
+          agencia: this.selectedAgencia.id,
+        },
+      });
+    },
+    // Metodo para Setear Datos de Tabla
+    setDataTable(res, dataRes) {
+      this[dataRes] = res.data ? res.data : res;
       this.loading = false;
     },
     // Metodo para Setear Datos Seleccionados
     setDataEdit(res, dataRes) {
-      this.resetForm();
       this[dataRes].login = res.login;
       this[dataRes].nombre = res.nombre;
+      this[dataRes].password = "******";
       this[dataRes].id = res.id;
       this.disabledEdit = true;
-      this.filterSelect("roles", "id", res.roles.id, "form", "cod_rol");
-      this.filterSelect("vigente", "value", res.activo, "form", "activo");
+      this[dataRes].activo = this.filterDesc("estatus", res.activo);
+      this.selectedRol = res.roles;
       this[dataRes].cod_agencia = this.selectedAgencia;
-    },
-    // Metodo para Eliminar Datos Seleccionados
-    deleteData(idpost) {
-      this.$refs.methods.deleteData(`/usuarios/${idpost}`, "getDataUsuarios");
-      this.loading = true;
     },
     // Metodo para Editar y Crear Datos
     sendData() {
       this.form.activo = this.form.activo.value;
-      this.form.cod_rol = this.form.cod_rol.id;
+      this.form.cod_rol = this.selectedRol.id;
       this.form.cod_agencia = this.selectedAgencia.id;
       if (!this.disabledEdit) {
-        this.$refs.methods.createData(
-          `/usuarios`,
-          this.form,
-          "getDataUsuarios"
-        );
-        this.dialog = false;
-        this.loading = true;
+        this.$refs.methods.createData(`/usuarios`, this.form, "getDataTable");
       } else {
         delete this.form.password;
-        delete this.form.edit;
         this.$refs.methods.putData(
           `/usuarios/${this.form.login}`,
           this.form,
-          "getDataUsuarios"
+          "getDataTable"
         );
-        this.dialog = false;
-        this.loading = true;
       }
+      this.dialog = false;
+      this.resetForm();
     },
     // Metodo para Resetear Datos
     resetForm() {
@@ -664,52 +571,10 @@ export default {
       delete this.form.id;
       this.form.nombre = null;
       this.form.login = null;
-      this.form.cod_rol = null;
+      this.selectedRol = [];
       this.form.activo = null;
       this.form.cod_agencia = null;
     },
   },
 };
 </script>
-
-<style>
-.hide {
-  display: none;
-}
-
-@media screen and (min-width: 600px) {
-  .movilTitle {
-    display: none;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .movilTitle {
-    display: block;
-  }
-}
-
-@media screen and (min-width: 600px) {
-  .cardMargin {
-    padding-right: 20px !important;
-  }
-}
-
-@media screen and (min-width: 1024px) {
-  .cardMarginFilter {
-    padding-right: 20px !important;
-  }
-}
-
-@media screen and (max-width: 1024px) {
-  .buttonMargin {
-    margin-bottom: 15px !important;
-  }
-}
-
-@media screen and (max-width: 1024px) {
-  .selectMobile {
-    margin-bottom: 15px !important;
-  }
-}
-</style>
