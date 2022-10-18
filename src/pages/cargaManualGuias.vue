@@ -1,9 +1,5 @@
 <template>
   <q-page class="pagina q-pa-md">
-    <q-inner-loading :showing="loadingPage">
-      <q-spinner-gears size="50px" color="primary" />
-    </q-inner-loading>
-
     <q-dialog v-model="dialog">
       <q-card class="q-pa-md" bordered style="width: 999px; max-width: 80vw">
         <q-card-section>
@@ -83,35 +79,35 @@
                 <q-select
                   transition-show="flip-up"
                   transition-hide="flip-down"
-                  :options="estados_selected"
+                  :options="estadoSelected"
+                  class="pcform"
                   @filter="
                     (val, update, abort) =>
                       filterArray(
                         val,
                         update,
                         abort,
-                        'estados_selected',
-                        'estadosForm',
-                        'nb_agencia'
+                        'estadoSelected',
+                        'estados',
+                        'desc_estado'
                       )
                   "
                   use-input
                   hide-selected
                   fill-input
                   input-debounce="0"
-                  class="pcform"
-                  option-label="nb_agencia"
+                  option-label="desc_estado"
                   option-value="id"
-                  v-model="form.estado"
+                  v-model="selectedEstado"
                   outlined
                   standout
-                  label="Estado Entrega"
+                  label="Estado"
                   @update:model-value="
-                    this.selectedCliente = [];
-                    this.clientes = [];
-                    getData(`/agentes`, 'setData', 'agentes', {
+                    this.selectedCiudad = [];
+                    this.ciudades = [];
+                    getData(`/ciudades`, 'setData', 'ciudades', {
                       headers: {
-                        agencia: this.selectedAgencia.id,
+                        estado: this.selectedEstado.id,
                       },
                     });
                   "
@@ -122,40 +118,64 @@
                       </q-item-section>
                     </q-item>
                   </template>
+                  <template v-slot:prepend>
+                    <q-icon name="search" />
+                  </template>
+                  <template v-slot:append>
+                    <q-icon
+                      @click.stop.prevent="
+                        this.selectedEstado = [];
+                        this.ciudades = [];
+                        this.selectedCiudad = [];
+                      "
+                      class="cursor-pointer"
+                      name="filter_alt_off"
+                    />
+                  </template>
                 </q-select>
               </div>
               <div class="col-md-4 col-xs-12">
                 <q-select
                   transition-show="flip-up"
                   transition-hide="flip-down"
-                  :options="ciudades_selected"
+                  :options="ciudadSelected"
                   @filter="
                     (val, update, abort) =>
                       filterArray(
                         val,
                         update,
                         abort,
-                        'ciudad_selected',
-                        'ciudadesForm',
-                        'nb_agencia'
+                        'ciudadSelected',
+                        'ciudades',
+                        'desc_ciudad'
                       )
                   "
                   use-input
                   hide-selected
                   fill-input
                   input-debounce="0"
-                  option-label="nb_agencia"
+                  option-label="desc_ciudad"
                   option-value="id"
-                  v-model="form.ciudad"
+                  v-model="selectedCiudad"
                   outlined
                   standout
-                  label="Ciudad Entrega"
+                  label="Ciudad"
                   ><template v-slot:no-option>
                     <q-item>
                       <q-item-section class="text-grey">
                         Sin resultados
                       </q-item-section>
                     </q-item>
+                  </template>
+                  <template v-slot:append>
+                    <q-icon
+                      @click.stop.prevent="this.selectedCliente = []"
+                      class="cursor-pointer"
+                      name="filter_alt_off"
+                    />
+                  </template>
+                  <template v-slot:prepend>
+                    <q-icon name="search" />
                   </template>
                 </q-select>
               </div>
@@ -719,8 +739,7 @@
         :separator="separator"
         style="width: 100%"
         :grid="$q.screen.xs"
-        :rows-per-page-options="[5, 10, 15, 20, 50]"
-        v-model:pagination="pagination"
+        :rows-per-page-options="[0]"
       >
         <template v-slot:loading>
           <q-inner-loading showing color="primary" style="padding-top: 46px" />
@@ -749,7 +768,8 @@
               outlined
               dense
               v-model="props.row.porc_zona"
-              :input-style="{ color: 'blue' }"
+              @blur="validationPorcZona(props.row)"
+              :input-style="{ color: 'primary' }"
               v-if="props.row.porc_zona_status == true"
             >
             </q-input>
@@ -757,11 +777,18 @@
               outlined
               dense
               v-model="props.row.porc_zona"
+              @blur="validationPorcZona(props.row)"
               :input-style="{ color: 'red' }"
               v-else-if="props.row.porc_zona_status == false"
             >
             </q-input>
-            <q-input outlined dense v-model="props.row.porc_zona" v-else>
+            <q-input
+              outlined
+              dense
+              @blur="validationPorcZona(props.row)"
+              v-model="props.row.porc_zona"
+              v-else
+            >
             </q-input>
           </q-td>
         </template>
@@ -892,6 +919,9 @@
           </div>
         </template>
       </q-table>
+      <q-inner-loading :showing="loadingPage">
+        <q-spinner-gears size="50px" color="primary" />
+      </q-inner-loading>
     </div>
 
     <q-dialog v-model="deletePopup">
@@ -1125,12 +1155,7 @@ export default {
         carga_neta: "",
         porc_comision: "",
         nro_guia: "",
-      },
-      pagination: {
-        page: 1,
-        rowsPerPage: 5,
-        sortBy: "ci_rif",
-        descending: false,
+        porc_zona: "",
       },
       datos: [],
       loadingPage: false,
@@ -1142,14 +1167,18 @@ export default {
       clientes: [],
       agentes: [],
       agenciasSelected: [],
+      estadoSelected: [],
+      ciudadSelected: [],
       agentesSelected: [],
       clientesSelected: [],
       selected: [],
       selectedAgencia: [],
+      selectedEstado: [],
+      selectedCiudad: [],
       selectedCliente: [],
       selectedAgente: [],
-      estadosForm: [],
-      ciudadesForm: [],
+      estados: [],
+      ciudades: [],
       error: "",
       content: null,
     };
@@ -1177,6 +1206,11 @@ export default {
       headers: {
         rol: LocalStorage.getItem("tokenTraducido").usuario.roles.id,
         menu: "asignacionguias",
+      },
+    });
+    this.$refs.methods.getData("/estados", "setData", "estados", {
+      headers: {
+        pais: 1,
       },
     });
     this.$refs.methods.getData("/agencias", "setDataInit", "agencias");
@@ -1373,33 +1407,93 @@ export default {
       this[dataRes] = res.data ? res.data : res;
     },
     // Metodo para Setear Datos Seleccionados
-    setDataEdit(dataRes) {
-      var form = dataRes;
-      (this.form.id = form.id),
-        (this.form.nro_factura = form.nro_factura),
-        (this.form.fecha_factura = form.fecha_factura),
-        (this.form.nb_cliente = form.nb_cliente),
-        (this.form.ci_rif = form.ci_rif),
-        (this.form.direccion = form.direccion),
-        (this.form.estado = form.estado),
-        (this.form.ciudad = form.ciudad),
-        (this.form.bultos = form.bultos),
-        (this.form.telefono = form.telefono),
-        (this.form.monto = form.monto),
-        (this.form.peso = form.peso),
-        (this.form.carga_neta = form.carga_neta),
-        (this.form.porc_comision = form.porc_comision),
-        (this.form.nro_guia = form.nro_guia);
-      // this.getData(`/agentes`, 'setData', 'estadosForm', {
-      //   headers: {
-      //     agencia: this.selectedAgencia.id,
-      //   },
-      // });
-      // this.getData(`/agentes`, 'setData', 'ciudadesForm', {
-      //   headers: {
-      //     agencia: this.selectedAgencia.id,
-      //   },
-      // });
+    async setDataEdit(dataRes) {
+      try {
+        this.loadingPage = true;
+        var form = dataRes;
+        (this.form.id = form.id),
+          (this.form.nro_factura = form.nro_factura),
+          (this.form.fecha_factura = form.fecha_factura),
+          (this.form.nb_cliente = form.nb_cliente),
+          (this.form.ci_rif = form.ci_rif),
+          (this.form.direccion = form.direccion),
+          (this.form.estado = form.estado),
+          (this.form.ciudad = form.ciudad),
+          (this.form.bultos = form.bultos),
+          (this.form.telefono = form.telefono),
+          (this.form.monto = form.monto),
+          (this.form.peso = form.peso),
+          (this.form.carga_neta = form.carga_neta),
+          (this.form.porc_comision = form.porc_comision),
+          (this.form.nro_guia = form.nro_guia);
+        this.form.porc_zona = form.porc_zona;
+        await api
+          .get(`/estados`, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              desc: form.estado,
+            },
+          })
+          .then((res) => {
+            if (!res.data.data[0]) {
+              errorMessage = `Problemas al ubicar el Estado Seleccionado... Seleccione uno manualmente`;
+              return stopFuction;
+            }
+            this.selectedEstado = res.data.data[0];
+          })
+          .catch((err) => {
+            if (err.response) {
+              errorMessage = err.response.data.message;
+            }
+            return stopFuction;
+          });
+        await api
+          .get(`/ciudades`, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              estado: this.selectedEstado.id,
+            },
+          })
+          .then((res) => {
+            this.ciudades = res.data.data;
+          })
+          .catch((err) => {
+            if (err.response) {
+              errorMessage = err.response.data.message;
+            }
+            return stopFuction;
+          });
+        await api
+          .get(`/ciudades`, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              desc: form.ciudad,
+            },
+          })
+          .then((res) => {
+            if (!res.data.data[0]) {
+              errorMessage = `Problemas al ubicar la Ciudad Seleccionada... Seleccione una manualmente`;
+              return stopFuction;
+            }
+            this.selectedCiudad = res.data.data[0];
+          })
+          .catch((err) => {
+            if (err.response) {
+              errorMessage = err.response.data.message;
+            }
+            return stopFuction;
+          });
+        this.dialog = true;
+        this.loadingPage = false;
+      } catch (stopFuction) {
+        this.loadingPage = false;
+        if (errorMessage) {
+          this.$q.notify({
+            message: errorMessage,
+            color: "red",
+          });
+        }
+      }
     },
     // Metodo para Eliminar Datos Seleccionados
     deleteData(idpost) {
@@ -1410,30 +1504,51 @@ export default {
       try {
         this.loadingPage = true;
         var errorMessage;
-        var monto_basico;
-        var kgs_adicionales;
-        var kgr_minimos;
-        var monto_kg_ad;
-        var monto_kg_adicional;
-        var monto_comision;
-        var monto_base;
         var form;
+        form = JSON.parse(JSON.stringify(this.form));
+        this.datos[form.id] = form;
+        this.dialog = false;
+      } catch (stopFuction) {
+        this.loadingPage = false;
+        if (errorMessage) {
+          this.$q.notify({
+            message: errorMessage,
+            color: "red",
+          });
+        }
+      }
+    },
+    // Metodo para Validaciones del Porc Zona al Editarlo en la Tabla
+    async validationPorcZona(formRes) {
+      try {
+        this.loadingPage = true;
+        var errorMessage;
+        var monto_basico = null;
+        var kgs_adicionales = null;
+        var kgr_minimos = null;
+        var monto_kg_ad = null;
+        var monto_kg_adicional = null;
+        var monto_comision = null;
+        var monto_base = null;
+        var form = formRes;
         var datos;
         datos = JSON.parse(JSON.stringify(this.datos));
-        form = JSON.parse(JSON.stringify(this.form));
-        form.bultos = form.bultos.replaceAll(".", "").replaceAll(",", ".");
-        form.monto = form.monto.replaceAll(".", "").replaceAll(",", ".");
-        form.peso = form.peso.replaceAll(".", "").replaceAll(",", ".");
-        form.carga_neta = form.carga_neta
-          .replaceAll(".", "")
-          .replaceAll(",", ".");
-        form.porc_comision = form.porc_comision
-          .replaceAll(".", "")
-          .replaceAll(",", ".");
+
+        if (form.bultos)
+          form.bultos = form.bultos.replaceAll(".", "").replaceAll(",", ".");
+        if (form.monto)
+          form.monto = form.monto.replaceAll(".", "").replaceAll(",", ".");
+        if (form.peso)
+          form.peso = form.peso.replaceAll(".", "").replaceAll(",", ".");
+        if (form.carga_neta)
+          form.carga_neta = form.carga_neta
+            .replaceAll(".", "")
+            .replaceAll(",", ".");
 
         if (form.peso < 30) {
           // Buscar tarifa kg adicionales – De aquí sacar monto_kg_adicional
-          await api.get(`/tarifas`, {
+          await api
+            .get(`/tarifas`, {
               headers: {
                 Authorization: `Bearer ${LocalStorage.getItem("token")}`,
                 tipo_tarifa: "BA",
@@ -1473,7 +1588,8 @@ export default {
               return stopFuction;
             });
           // Buscar tarifa kg adicionales – De aquí sacar monto_kg_adicional
-          await api.get(`/tarifas`, {
+          await api
+            .get(`/tarifas`, {
               headers: {
                 Authorization: `Bearer ${LocalStorage.getItem("token")}`,
                 tipo_tarifa: "KA",
@@ -1515,7 +1631,11 @@ export default {
         console.log("monto_kg_adicional " + monto_kg_adicional);
         console.log("monto_comision " + monto_comision);
         console.log("monto_base " + monto_base);
-        if (datos[form.id].peso > kgr_minimos) {
+        if (
+          datos[form.id].peso > kgr_minimos &&
+          kgr_minimos &&
+          datos[form.id].peso
+        ) {
           kgs_adicionales =
             this.parseFloatN(datos[form.id].peso) -
             this.parseFloatN(kgr_minimos);
@@ -1523,25 +1643,29 @@ export default {
           kgs_adicionales = 0;
         }
 
-        monto_kg_ad =
-          this.parseFloatN(kgs_adicionales) *
-          this.parseFloatN(monto_kg_adicional);
+        if (monto_kg_adicional && kgs_adicionales)
+          monto_kg_ad =
+            this.parseFloatN(kgs_adicionales) *
+            this.parseFloatN(monto_kg_adicional);
 
-        monto_comision =
-          (this.parseFloatN(datos[form.id].monto) *
-            this.parseFloatN(datos[form.id].porc_zona)) /
-          100;
+        if (datos[form.id].monto && datos[form.id].porc_zona)
+          monto_comision =
+            (this.parseFloatN(datos[form.id].monto) *
+              this.parseFloatN(datos[form.id].porc_zona)) /
+            100;
 
-        monto_base =
-          this.parseFloatN(monto_basico) + this.parseFloatN(monto_kg_ad);
+        if (monto_basico && monto_kg_ad)
+          monto_base =
+            this.parseFloatN(monto_basico) + this.parseFloatN(monto_kg_ad);
 
-        if (monto_base > monto_comision) {
+        if (monto_base > monto_comision && monto_base && monto_comision) {
           if (kgs_adicionales == 0) {
             datos[form.id].porc_zona_status = true;
           } else {
             datos[form.id].porc_zona_status = false;
           }
         }
+        datos[form.id].porc_zona_status = false
         console.log("RESULTADOS");
         console.log("monto_basico " + monto_basico);
         console.log("kgs_adicionales " + kgs_adicionales);
@@ -1551,7 +1675,6 @@ export default {
         console.log("monto_comision " + monto_comision);
         console.log("monto_base " + monto_base);
         this.loadingPage = false;
-        this.datos[form.id] = form;
         this.dialog = false;
       } catch (stopFuction) {
         console.log(stopFuction);
@@ -1564,6 +1687,7 @@ export default {
         }
       }
     },
+    // Metodo para Guardar Datos de Item Seleccionado
     async saveData() {
       try {
         this.loadingPage = true;

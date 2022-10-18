@@ -464,7 +464,7 @@
             </div>
 
             <div
-              class=" row justify-center items-center content-center"
+              class="row justify-center items-center content-center"
               style="margin-bottom: 6px; margin-top: 10px"
             >
               <q-btn
@@ -1261,7 +1261,7 @@
             </div>
 
             <div
-              class=" row justify-center items-center content-center"
+              class="row justify-center items-center content-center"
               style="margin-bottom: 6px; margin-top: 10px"
             >
               <q-btn
@@ -4142,14 +4142,14 @@ export default {
         this.resetLoading();
       } catch (error) {
         if (errorMessage) {
-        this.detalle_movimiento = [];
-        this.resetLoading();
-        this.$q.notify({
-          message: errorMessage,
-          color: "red",
-        });
-        errorMessage = ""
-      }
+          this.detalle_movimiento = [];
+          this.resetLoading();
+          this.$q.notify({
+            message: errorMessage,
+            color: "red",
+          });
+          errorMessage = "";
+        }
       }
     },
     // Metodo para que una funcion no avance hasta que se cumpla una condicion
@@ -4856,13 +4856,13 @@ export default {
           form.pagado_en = form.pagado_en.value;
           if (form.fecha_envio)
             form.fecha_envio = form.fecha_envio.split("/").reverse().join("-");
-            form.valor_declarado_cod = form.valor_declarado_cod
+          form.valor_declarado_cod = form.valor_declarado_cod
             .replaceAll(".", "")
             .replaceAll(",", ".");
-            form.valor_declarado_seg = form.valor_declarado_seg
+          form.valor_declarado_seg = form.valor_declarado_seg
             .replaceAll(".", "")
             .replaceAll(",", ".");
-            form.monto_ref_cte_sin_imp = form.monto_ref_cte_sin_imp
+          form.monto_ref_cte_sin_imp = form.monto_ref_cte_sin_imp
             .replaceAll(".", "")
             .replaceAll(",", ".");
           form.nro_piezas = form.nro_piezas
