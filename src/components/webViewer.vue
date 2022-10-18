@@ -1,5 +1,5 @@
 <template>
-  <div id="webViewer" ref="viewer"></div>
+  <div id="webViewer" ref="viewer" style="width: 100%; max-width: 80vw; height: 700px"></div>
 </template>
 
 <script>
@@ -44,9 +44,3 @@ export default {
   },
 };
 </script>
-
-<style>
-#webviewer {
-  height: 600px;
-}
-</style>
