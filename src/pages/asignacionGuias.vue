@@ -28,7 +28,7 @@
                     ) {
                       this.form.cant_asignada =
                         this.form.control_final - this.form.control_inicio + 1;
-                        this.form.cant_disponible = this.form.cant_asignada;
+                      this.form.cant_disponible = this.form.cant_asignada;
                     }
                   "
                   type="number"
@@ -59,7 +59,7 @@
                     ) {
                       this.form.cant_asignada =
                         this.form.control_final - this.form.control_inicio + 1;
-                        this.form.cant_disponible = this.form.cant_asignada;
+                      this.form.cant_disponible = this.form.cant_asignada;
                     }
                   "
                   type="number"
@@ -661,7 +661,7 @@
               icon="sim_card_download"
               :disabled="props.row.cant_disponible > 0 ? false : true"
               @click="selected = props.row.id"
-              @click.capture="printLote(props.row)"
+              @click.capture="this.pdfView = true"
             ></q-btn>
           </q-td>
         </template>
@@ -724,7 +724,7 @@
                       icon="sim_card_download"
                       :disabled="props.row.cant_disponible > 0 ? false : true"
                       @click="selected = props.row.id"
-                      @click.capture="printLote(props.row)"
+                      @click.capture="this.pdfView = true"
                     ></q-btn>
                     <q-item-label
                       v-if="
@@ -769,6 +769,12 @@
       </q-card>
     </q-dialog>
 
+    <q-dialog v-model="pdfView" @show="this.printPending()">
+      <div style="width: 100%; max-width: 80vw">
+        <webViewer ref="webViewer"></webViewer>
+      </div>
+    </q-dialog>
+
     <methods
       ref="methods"
       @set-Data="setData"
@@ -787,12 +793,15 @@
 import { ref } from "vue";
 import rulesVue from "src/components/rules.vue";
 import moment from "moment";
+import { api } from "boot/axios";
 import { useQuasar, LocalStorage } from "quasar";
 import methodsVue from "src/components/methods.vue";
+import webViewerVue from "src/components/webViewer.vue";
 
 export default {
   components: {
     methods: methodsVue,
+    webViewer: webViewerVue,
     rulesVue,
   },
   name: "AsignacionGuias",
@@ -909,6 +918,7 @@ export default {
       disabledAgente: false,
       disabledCliente: false,
       disabledInputsEdit: false,
+      base64: "",
     };
   },
   setup() {
@@ -920,6 +930,7 @@ export default {
       separator: ref("vertical"),
       deletePopup: ref(false),
       dialog: ref(false),
+      pdfView: ref(false),
     };
   },
   mounted() {
@@ -1071,9 +1082,11 @@ export default {
         this.deletePopup = true;
       }
     },
-    // Metodo para Eliminar Datos Seleccionados
-    printLote(row) {
-      console.log("Aqui imprimo el Lote");
+    // Imprimir Guias pendientes
+    printPending () {
+      api.get(`/mmovimientos/generatePDF`).then((res) => {
+        this.$refs.webViewer.showpdf(res.data.base64);
+      });
     },
     // Metodo para Resetear Datos
     resetForm() {

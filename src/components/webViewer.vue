@@ -1,10 +1,10 @@
 <template>
-  <div id="webViewer" ref="viewer" style="width: 100%; max-width: 80vw; height: 700px"></div>
+  <div id="WebViewer" ref="viewer" style="width: 100%; max-width: 80vw; height: 700px"></div>
 </template>
 
 <script>
 import { ref } from "vue";
-import webViewer from "@pdftron/webviewer";
+import WebViewer from "@pdftron/pdfjs-express-viewer";
 export default {
   name: "webViewer",
   data: function() {
@@ -18,27 +18,21 @@ export default {
     };
   },
   methods: {
+    base64ToBlob(base64) {
+      const binaryString = window.atob(base64);
+      const len = binaryString.length;
+      const bytes = new Uint8Array(len);
+      for (let i = 0; i < len; ++i) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      return new Blob([bytes], { type: 'application/pdf' });
+    },
     showpdf(pdf) {
       const path = `${process.env.publicPath}/webViewer`;
-      webViewer({ path }, this.viewer).then((instance) => {
-        instance.UI.disableElements(["ribbons"]);
-        instance.UI.disableElements(["toolsHeader"]);
-        instance.UI.setLanguage("es");
-        let base64 = pdf
-        const binaryString = window.atob(base64);
-        const len = binaryString.length;
-        const bytes = new Uint8Array(len);
-        for (let i = 0; i < len; ++i) {
-          bytes[i] = binaryString.charCodeAt(i);
-        }
-        let base64String = new Blob([bytes], { type: "application/pdf" });
-        instance.UI.loadDocument(base64String, {
-          filename: "myfile.pdf",
-        });
-        const { documentViewer } = instance.Core;
-        documentViewer.addEventListener("documentLoaded", () => {
-          // perform document operations
-        });
+      const licenseKey = 'atkUT8UOiniAvAWUG1rN';
+      WebViewer({ path, licenseKey }, this.viewer).then(instance => {
+        instance.UI.loadDocument(this.base64ToBlob(pdf), { filename: 'myfile.pdf' });
       });
     },
   },
