@@ -63,7 +63,7 @@ const routes = [
       {
         path: '/emitircarta',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('src/pages/emitircarta.vue')}]
+        children: [{ path: "", component: () => import('src/pages/Emitircarta.vue')}]
       },
       {
         path: '/administracion',
