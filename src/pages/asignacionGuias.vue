@@ -1083,10 +1083,16 @@ export default {
       }
     },
     // Imprimir Guias pendientes
-    printPending () {
-      api.get(`/mmovimientos/generatePDF`).then((res) => {
-        this.$refs.webViewer.showpdf(res.data.base64);
-      });
+    printPending() {
+      api
+        .get(`/cguias/generatePDF`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => {
+          this.$refs.webViewer.showpdf(res.data.base64);
+        });
     },
     // Metodo para Resetear Datos
     resetForm() {

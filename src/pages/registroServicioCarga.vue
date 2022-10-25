@@ -210,7 +210,6 @@
                   </template>
                 </q-select>
               </div>
-
               <div class="col-md-4 col-xs-12">
                 <q-select
                   outlined
@@ -290,7 +289,6 @@
                   </template>
                 </q-select>
               </div>
-
               <div class="col-md-4 col-xs-12">
                 <q-select
                   outlined
@@ -329,7 +327,6 @@
                   </template>
                 </q-select>
               </div>
-
               <div class="col-md-4 col-xs-12">
                 <q-select
                   outlined
@@ -382,7 +379,6 @@
                   </template>
                 </q-select>
               </div>
-
               <div class="col-md-4 col-xs-12">
                 <q-select
                   outlined
@@ -422,7 +418,6 @@
                   </template>
                 </q-select>
               </div>
-
               <div class="col-md-4 col-xs-12">
                 <q-select
                   outlined
@@ -462,7 +457,6 @@
                 </q-select>
               </div>
             </div>
-
             <div
               class="row justify-center items-center content-center"
               style="margin-bottom: 6px; margin-top: 10px"
@@ -506,7 +500,7 @@
           :grid="$q.screen.xs"
           hide-bottom
         >
-          <template v-slot:top="">
+          <template>
             <div class="col-4 q-table__title">
               <h4
                 style="font-size: 19px; margin-top: 10px; margin-bottom: 10px"
@@ -670,7 +664,6 @@
             >
             </q-input>
           </div>
-
           <div class="col-md-3 col-xs-12">
             <q-input
               outlined
@@ -685,7 +678,6 @@
             >
             </q-input>
           </div>
-
           <div class="col-md-3 col-xs-12">
             <q-input
               outlined
@@ -700,7 +692,6 @@
             >
             </q-input>
           </div>
-
           <div class="col-md-3 col-xs-12">
             <q-input
               outlined
@@ -714,7 +705,6 @@
             >
             </q-input>
           </div>
-
           <div class="col-md-3 col-xs-12">
             <q-input
               outlined
@@ -729,7 +719,6 @@
             >
             </q-input>
           </div>
-
           <div class="col-md-3 col-xs-12">
             <q-input
               outlined
@@ -744,7 +733,6 @@
             >
             </q-input>
           </div>
-
           <div class="col-md-3 col-xs-12">
             <q-input
               outlined
@@ -759,7 +747,6 @@
             >
             </q-input>
           </div>
-
           <div class="col-md-3 col-xs-12">
             <q-input
               outlined
@@ -880,7 +867,6 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-4 col-xs-12">
                 <q-select
                   outlined
@@ -943,7 +929,6 @@
                   </template>
                 </q-select>
               </div>
-
               <div class="col-md-4 col-xs-12">
                 <q-select
                   outlined
@@ -1025,7 +1010,6 @@
                   </template>
                 </q-select>
               </div>
-
               <div class="col-md-4 col-xs-12">
                 <q-select
                   outlined
@@ -1123,7 +1107,6 @@
                   </template>
                 </q-select>
               </div>
-
               <div class="col-md-4 col-xs-12">
                 <q-select
                   outlined
@@ -1165,7 +1148,6 @@
                   </template>
                 </q-select>
               </div>
-
               <div class="col-md-4 col-xs-12">
                 <q-select
                   outlined
@@ -1206,7 +1188,6 @@
                   </template>
                 </q-select>
               </div>
-
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
@@ -1224,7 +1205,6 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
@@ -1241,7 +1221,6 @@
                   </template>
                 </q-input>
               </div>
-
               <div class="col-md-12 col-xs-12">
                 <q-input
                   outlined
@@ -1259,7 +1238,6 @@
                 </q-input>
               </div>
             </div>
-
             <div
               class="row justify-center items-center content-center"
               style="margin-bottom: 6px; margin-top: 10px"
@@ -1309,6 +1287,14 @@
                 label="NRO. Documento"
                 class="pcmovil"
                 hint=""
+                :autofocus=true
+                @keyup.enter="
+                  if (form.nro_documento !== '') {
+                    this.resetFormGuia();
+                    this.showTextLoading();
+                    this.validationGetGuia();
+                  }
+                "
                 dense
                 :rules="[
                   (val) => this.$refs.rulesVue.isReq(val, ''),
@@ -1331,7 +1317,6 @@
                 </template>
               </q-input>
             </div>
-
             <div class="col-md-12 col-xs-6">
               <q-input
                 outlined
@@ -1347,7 +1332,6 @@
               >
               </q-input>
             </div>
-
             <div class="col-md-6 col-xs-6">
               <q-input
                 outlined
@@ -1360,7 +1344,6 @@
               >
               </q-input>
             </div>
-
             <div class="col-md-6 col-xs-6">
               <q-input
                 outlined
@@ -1377,7 +1360,6 @@
               </q-input>
             </div>
           </div>
-
           <div
             class="col-md-4 col-xs-12 boxStyle"
             style="margin-bottom: 5px; padding-top: 5px"
@@ -1445,7 +1427,6 @@
                       </template>
                     </q-input>
                   </div>
-
                   <div class="col-md-6 col-xs-6">
                     <q-input
                       outlined
@@ -1455,6 +1436,7 @@
                       style="padding-bottom: 10px"
                       v-model="form.fecha_envio"
                       lazy-rules
+                      mask="##/##/####"
                       :rules="[(val) => this.$refs.rulesVue.checkDate(val, '')]"
                     >
                       <template v-slot:append>
@@ -1474,7 +1456,6 @@
                       </template>
                     </q-input>
                   </div>
-
                   <div class="col-md-12 col-xs-12">
                     <q-input
                       outlined
@@ -1483,8 +1464,7 @@
                       dense
                       style="padding-bottom: 10px"
                       v-model="form.fecha_aplicacion"
-                      lazy-rules
-                      :rules="[(val) => this.$refs.rulesVue.checkDate(val, '')]"
+                      mask="##/##/####"
                     >
                       <template v-slot:append>
                         <q-icon name="event" class="cursor-pointer">
@@ -1507,7 +1487,6 @@
               </q-card-section>
             </q-card>
           </div>
-
           <div
             class="col-md-3 col-xs-12 boxStyle"
             style="margin-bottom: 5px; padding-top: 5px"
@@ -1616,7 +1595,6 @@
               </q-card-section>
             </q-card>
           </div>
-
           <div
             class="col-md-2 col-xs-12 boxStyle"
             style="margin-bottom: 11px; padding-top: 10px"
@@ -1666,7 +1644,6 @@
                     >
                     </q-select>
                   </div>
-
                   <div class="col-md-12 col-xs-12">
                     <q-select
                       outlined
@@ -1688,7 +1665,6 @@
               </q-card-section>
             </q-card>
           </div>
-
           <div
             class="col-md-3 col-xs-12 boxStyle"
             style="margin-bottom: 10px; padding-right: 7px"
@@ -1868,7 +1844,6 @@
               </q-card-section>
             </q-card>
           </div>
-
           <div class="col-md-5 col-xs-12 boxStyle" style="margin-bottom: 7px">
             <q-card
               class="q-pa-md col-md-4 col-xs-12 cardMenus"
@@ -2069,7 +2044,6 @@
                       </template>
                     </q-select>
                   </div>
-
                   <div
                     class="col-md-2 col-xs-2 items-start"
                     style="text-align: center"
@@ -2098,7 +2072,6 @@
               </q-card-section>
             </q-card>
           </div>
-
           <div
             class="col-md-4 col-xs-12 boxStyle"
             style="margin-bottom: 0px; padding-bottom: 5px"
@@ -2132,7 +2105,6 @@
                     <strong>Servicio</strong>
                   </h4>
                 </div>
-
                 <div
                   class="col-md-5 col-xs-6 checkboxForaneo"
                   style="margin-bottom: 6px"
@@ -2151,7 +2123,6 @@
                     "
                   />
                 </div>
-
                 <div class="col-md-5 col-xs-6" style="margin-bottom: 6px">
                   <q-checkbox
                     size="lg"
@@ -2167,7 +2138,6 @@
                     "
                   />
                 </div>
-
                 <div
                   class="col-md-2 col-xs-12 items-center"
                   style="align-self: center; text-align: left"
@@ -2179,7 +2149,6 @@
                     <strong>Ubicación</strong>
                   </h4>
                 </div>
-
                 <div
                   class="col-md-5 col-xs-6 checkboxForaneo"
                   style="margin-bottom: 6px"
@@ -2198,7 +2167,6 @@
                     "
                   />
                 </div>
-
                 <div class="col-md-5 col-xs-6" style="margin-bottom: 6px">
                   <q-checkbox
                     size="lg"
@@ -2214,7 +2182,6 @@
                     "
                   />
                 </div>
-
                 <div
                   class="col-md-2 col-xs-12 items-center"
                   style="align-self: center; text-align: left"
@@ -2226,7 +2193,6 @@
                     <strong>Urgencia</strong>
                   </h4>
                 </div>
-
                 <div class="col-md-5 col-xs-6 checkboxForaneo">
                   <q-checkbox
                     size="lg"
@@ -2242,7 +2208,6 @@
                     "
                   />
                 </div>
-
                 <div class="col-md-5 col-xs-6">
                   <q-checkbox
                     size="lg"
@@ -2261,7 +2226,6 @@
               </q-card-section>
             </q-card>
           </div>
-
           <div
             class="col-md-6 col-xs-12 lastboxStyle"
             style="margin-bottom: 5px"
@@ -2310,7 +2274,6 @@
                     >
                     </q-input>
                   </div>
-
                   <div class="col-md-6 col-xs-12">
                     <q-input
                       outlined
@@ -2326,7 +2289,6 @@
                     >
                     </q-input>
                   </div>
-
                   <div class="col-md-6 col-xs-12">
                     <q-input
                       outlined
@@ -2343,7 +2305,6 @@
                     >
                     </q-input>
                   </div>
-
                   <div class="col-md-6 col-xs-12">
                     <q-input
                       outlined
@@ -2363,7 +2324,6 @@
               </q-card-section>
             </q-card>
           </div>
-
           <div class="row col-md-6 col-xs-12">
             <div class="row col-md-12 col-xs-12 inputsCard">
               <div class="col-md-6 col-xs-12">
@@ -2404,7 +2364,6 @@
                   </template>
                 </q-select>
               </div>
-
               <div class="col-md-6 col-xs-12">
                 <q-select
                   outlined
@@ -2442,7 +2401,6 @@
                 </q-select>
               </div>
             </div>
-
             <div class="row col-md-12 col-xs-12">
               <div class="col-md-6 col-xs-6">
                 <q-input
@@ -2460,7 +2418,6 @@
                 >
                 </q-input>
               </div>
-
               <div class="col-md-6 col-xs-6">
                 <q-input
                   outlined
@@ -2477,7 +2434,6 @@
                 </q-input>
               </div>
             </div>
-
             <div class="row col-md-12 col-xs-12">
               <div class="col-md-6 col-xs-12">
                 <q-input
@@ -2498,7 +2454,6 @@
                 >
                 </q-input>
               </div>
-
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
@@ -2518,7 +2473,6 @@
               </div>
             </div>
           </div>
-
           <div class="col-md-2 col-xs-9">
             <q-input
               outlined
@@ -2539,7 +2493,6 @@
             >
             </q-input>
           </div>
-
           <div class="col-md-2 col-xs-3">
             <q-input
               outlined
@@ -2562,7 +2515,6 @@
               </template>
             </q-input>
           </div>
-
           <div class="col-md-3 col-xs-12">
             <q-select
               outlined
@@ -2570,7 +2522,6 @@
               label="Agencia Transito"
               hint=""
               use-input
-              :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, '')]"
               hide-selected
               fill-input
               input-debounce="0"
@@ -2601,7 +2552,6 @@
               </template>
             </q-select>
           </div>
-
           <div class="col-md-3 col-xs-12">
             <q-input
               outlined
@@ -2610,9 +2560,9 @@
               dense
               style="padding-bottom: 10px"
               v-model="form.fecha_llega_transito"
+              mask="##/##/####"
               lazy-rules
               class="pcform"
-              :rules="[(val) => this.$refs.rulesVue.checkDate(val, '')]"
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
@@ -2631,7 +2581,6 @@
               </template>
             </q-input>
           </div>
-
           <div
             class="col-md-2 col-xs-12 margin_bottom"
             style="padding-right: 10px"
@@ -2645,7 +2594,6 @@
               label="PASEO POR TRANSITO"
             />
           </div>
-
           <div class="col-md-3 col-xs-12">
             <q-select
               outlined
@@ -2659,7 +2607,6 @@
             >
             </q-select>
           </div>
-
           <div class="col-md-3 col-xs-12">
             <q-select
               outlined
@@ -2674,7 +2621,6 @@
             >
             </q-select>
           </div>
-
           <div class="col-md-3 col-xs-12">
             <q-input
               outlined
@@ -2696,7 +2642,6 @@
               </template>
             </q-input>
           </div>
-
           <div class="col-md-1 col-xs-5">
             <q-input
               outlined
@@ -2714,7 +2659,6 @@
             >
             </q-input>
           </div>
-
           <div class="col-md-1 col-xs-4">
             <q-input
               outlined
@@ -2732,7 +2676,6 @@
             >
             </q-input>
           </div>
-
           <q-inner-loading :showing="visible">
             <q-spinner-gears size="50px" color="primary" />
           </q-inner-loading>
@@ -2768,7 +2711,6 @@
             ¿Estas seguro que quieres reversar esta guia?
           </div>
         </q-card-section>
-
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="primary" v-close-popup />
           <q-btn
@@ -2793,7 +2735,6 @@
             elaboración?...
           </div>
         </q-card-section>
-
         <q-card-actions align="right">
           <q-btn
             flat
@@ -2870,28 +2811,24 @@ export default {
           field: (row) => row.conceptos.desc_concepto,
           name: "cod_concepto",
           align: "left",
-          required: true,
         },
         {
           name: "cantidad",
           label: "Cantidad",
           field: "cantidad",
           align: "right",
-          required: true,
         },
         {
           name: "precio_unitario",
           label: "Precio Unitario",
           field: "precio_unitario",
           align: "right",
-          required: true,
         },
         {
           name: "importe_renglon",
           label: "Importe Renglon",
           field: "importe_renglon",
           align: "right",
-          required: true,
         },
       ],
       form: {
@@ -3074,6 +3011,8 @@ export default {
       ],
       pagination: {
         rowsPerPage: 10,
+        sortBy: "nro_item",
+        descending: false,
       },
       error: "",
     };
@@ -4358,6 +4297,8 @@ export default {
         {
           headers: {
             cod_movimiento: this.form.id,
+            order_by: this.pagination.sortBy,
+            order_direction: this.pagination.descending ? "DESC" : "ASC",
           },
         }
       );
@@ -4439,11 +4380,15 @@ export default {
         ) {
           this.nro_factura = `${res.serie_doc_principal}-${res.nro_doc_principal}`;
         } else if (!res.nro_ctrl_doc_ppal_new && res.nro_ctrl_doc_ppal) {
-          this.nro_factura = `${res.nro_ctrl_doc_ppal}0000`;
+          this.nro_factura = res.nro_ctrl_doc_ppal.padStart(4, "0000");
         } else if (!res.serie_doc_principal && res.nro_ctrl_doc_ppal_new) {
-          this.nro_factura = `${res.nro_ctrl_doc_ppal_new}00-000000`;
+          this.nro_factura = res.nro_ctrl_doc_ppal_new.padStart(9, "00-000000");
         } else if (res.serie_doc_principal && res.nro_ctrl_doc_ppal_new) {
-          this.nro_factura = `${res.serie_doc_principal}-${res.nro_ctrl_doc_ppal_new}00-000000`;
+          this.nro_factura =
+            `${res.serie_doc_principal}-${res.nro_ctrl_doc_ppal_new}`.padStart(
+              9,
+              "00-000000"
+            );
         }
         var monto_total = res.monto_total;
 
@@ -4456,7 +4401,7 @@ export default {
         if (!res.nro_ctrl_doc_ppal) {
           this.nro_doc = "";
         } else {
-          this.nro_doc = `${res.nro_ctrl_doc_ppal}0000`;
+          this.nro_doc = res.nro_ctrl_doc_ppal.padStart(4, "0000");
         }
 
         moment.locale("es");
@@ -4501,7 +4446,7 @@ export default {
         this.form.porc_apl_seguro = res.porc_apl_seguro;
         this.form.check_transito = res.check_transito;
         this.form.monto_ref_cte_sin_imp = res.monto_ref_cte_sin_imp;
-        this.form.porc_comision = 0; //FALTA TRAERLO DE BD
+        this.form.porc_comision = res.porc_comision;
         this.form.porc_descuento = res.porc_descuento;
 
         if (res.fecha_emision)
@@ -4712,7 +4657,7 @@ export default {
       this.$refs.formData.validate().then(async (valid) => {
         try {
           if (!valid) {
-            errorMessage = "Este campo es requerido en maestro";
+            errorMessage = "Este campo es requerido";
             return stopFuction;
           }
           if (
