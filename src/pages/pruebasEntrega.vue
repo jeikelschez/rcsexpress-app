@@ -527,529 +527,470 @@
       </q-card>
     </q-dialog>
 
-    <div class="row q-pa-md justify-center">
-      <div class="row col-md-6 col-xl-6 col-lg-6 col-xs-12 justify-center cardMargin selectMobile"
+    <div class="q-pa-sm justify-center">
+      <div
+        class="row justify-end q-pa-md col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
+      >
+        <div class="col-md-3 col-xl-2 col-lg-2 col-xs-12 col-sm-12 movilTitle"
           style="align-self: center; text-align: center"
         >
-          <q-card
-            class="q-pa-md col-md-12 col-xs-12 col-sm-12"
-            bordered style="padding-bottom: 0px; padding-top: 10px"
-          >
-            <q-card-section class="row">
-                <div
-                  class="col-md-12 col-xs-12"
-                  style="
-                    align-self: center;
-                    text-align: left;
-                    margin-top: 5px;
-                  "
-                >
-                  <p
-                    style="font-size: 16px; margin-bottom: 15px"
-                    class="text-secondary"
-                  >
-                    <strong>Fecha de Envio</strong>
-                   </p>
-                </div>
-                <div class="col-md-6 col-xs-12">
-                  <q-input
+          <p style="font-size: 20px" class="text-secondary">
+            <strong>MANTENIMIENTO - PRUEBAS DE ENTREGA</strong>
+          </p>
+        </div>
+        <div class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 cardMargin selectMobile2"
+          style="align-self: center; text-align: center"
+        >
+          <q-input
                     outlined
                     label="Desde"
                     hint=""
-                    v-model="form.f_val"
                     dense
-                    mask="date"
-                    :rules="['date']"
-                    class="pcform"
+                    rounded
+                    style="padding-bottom:0px"
+                    v-model="form.fecha_asignacion"
                     lazy-rules
+                    :rules="[(val) => this.$refs.rulesVue.checkDate(val)]"
                   >
                     <template v-slot:append>
                       <q-icon name="event" class="cursor-pointer">
                         <q-popup-proxy
-                          cover
+                          ref="qDateProxy"
                           transition-show="scale"
                           transition-hide="scale"
                         >
-                          <q-date v-model="form.f_val">
-                            <div class="row items-center justify-end">
-                              <q-btn
-                                v-close-popup
-                                label="Close"
-                                color="primary"
-                                flat
-                              />
-                            </div>
-                          </q-date>
+                          <q-date
+                            v-model="form.fecha_asignacion"
+                            mask="DD/MM/YYYY"
+                            style="padding-bottom:0px"
+                            @update:model-value="this.$refs.qDateProxy.hide()"
+                          ></q-date>
                         </q-popup-proxy>
                       </q-icon>
                     </template>
-                  </q-input>
-                </div>
-
-                <div class="col-md-6 col-xs-12">
-                  <q-input
+          </q-input>
+        </div>
+        <div class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 cardMargin selectMobile2"
+          style="align-self: center; text-align: center"
+        >
+          <q-input
                     outlined
                     label="Hasta"
                     hint=""
-                    v-model="form.f_val"
                     dense
-                    mask="date"
-                    :rules="['date']"
+                    rounded
+                    style="padding-bottom:0px"
+                    v-model="form.fecha_asignacion"
                     lazy-rules
+                    :rules="[(val) => this.$refs.rulesVue.checkDate(val)]"
                   >
                     <template v-slot:append>
                       <q-icon name="event" class="cursor-pointer">
                         <q-popup-proxy
-                          cover
+                          ref="qDateProxy"
                           transition-show="scale"
                           transition-hide="scale"
                         >
-                          <q-date v-model="form.f_val">
-                            <div class="row items-center justify-end">
-                              <q-btn
-                                v-close-popup
-                                label="Close"
-                                color="primary"
-                                flat
-                              />
-                            </div>
-                          </q-date>
+                          <q-date
+                            v-model="form.fecha_asignacion"
+                            mask="DD/MM/YYYY"
+                            style="padding-bottom:0px"
+                            @update:model-value="this.$refs.qDateProxy.hide()"
+                          ></q-date>
                         </q-popup-proxy>
                       </q-icon>
                     </template>
-                  </q-input>
-                </div>
-            </q-card-section>
-          </q-card>
-      </div>
-
-      <div class="row col-md-6 col-xs-12 col-xl-6 col-lg-6 justify-center selectMobile"
+          </q-input>
+        </div>
+        <div class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 cardMargin selectMobile2"
           style="align-self: center; text-align: center"
         >
-          <q-card
-            class="q-pa-md col-md-12 col-xs-12 col-sm-12"
-            bordered
-            style="padding: 5px"
-          >
-            <q-card-section class="row">
-                <div
-                  class="col-md-12 col-xs-12"
-                  style="
-                    align-self: center;
-                    text-align: left;
-                    margin-top: 5px;
-                  "
-                >
-                  <p
-                    style="font-size: 16px; margin-bottom: 15px"
-                    class="text-secondary"
-                  >
-                    <strong>Datos de Guia</strong>
-              </p>
-                </div>
-                <div class="col-md-6 col-xs-12">
-                  <q-input
-                    outlined
-                    v-model="formClientes.cod_agente"
-                    label="NRO. Guia"
-                    dense
-                    hint=""
-                    class="pcform"
-                    :rules="[reglasInputs]"
-                    lazy-rules
-                  >
-                    <template v-slot:prepend>
-                      <q-icon name="face" />
-                    </template>
-                  </q-input>
-                </div>
-
-                <div class="col-md-6 col-xs-12">
-                  <q-input
-                    outlined
-                    v-model="formClientes.cod_agente"
-                    label="Estatus"
-                    hint=""
-                    dense
-                    :rules="[reglasInputs]"
-                    lazy-rules
-                  >
-                    <template v-slot:prepend>
-                      <q-icon name="face" />
-                    </template>
-                  </q-input>
-                </div>
-            </q-card-section>
-          </q-card>
-      </div>
-
-      <div class="row col-md-6 col-xs-12 col-xl-6 col-lg-6 justify-center cardMargin selectMobile"
+          <q-input
+              rounded
+              dense
+              input-debounce="0"
+              v-model="selectedCliente"
+              outlined
+              standout
+              label="NRO. Guia"
+              @update:model-value="getDataTable()"
+              >
+            </q-input>
+        </div>
+        <div class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 cardMargin selectMobile2"
           style="align-self: center; text-align: center"
         >
-          <q-card
-            bordered
-            class="q-pa-md row col-md-12 col-xs-12 col-xl-12 col-lg-12 col-sm-12"
-            style="padding:5px"
-          >
-            <q-card-section class="row col-md-12 col-xs-12"
-            style="padding: 0px"
+          <q-input
+            rounded
+            dense
+            input-debounce="0"
+            v-model="selectedCliente"
+            outlined
+            standout
+            label="Estatus"
+            @update:model-value="getDataTable()"
             >
-              <div
-                class="col-md-4 col-xs-12 col-sm-4 titleMenu"
-                style="align-self: center; text-align: center"
-              >
-                <p
-                  style="
-                    font-size: 16px;
-                    align-self: center;
-                    text-align: center;
-                    margin-bottom: 15px;
-                    margin-top: 5px;
-                  "
-                  class="text-secondary"
-                >
-                  <strong>TIPO DE GUIA</strong>
-                </p>
-              </div>
-
-              <div
-                class="col-md-4 col-xs-6 col-sm-4 justify-center"
-                style="margin-top: 7px; align-self: center; text-align: center"
-                id="select"
-              >
-                <q-field
-                  hide-bottom-space
-                  borderless
-                  @update:model-value="
-                    this.axiosConfig.headers.tipo_guia_carga =
-                      this.selectedGuiaCarga.value;
-                    getData(`/cguias`, 'setData', 'datos');
-                  "
-                  dense
-                  class="pcform"
-                  v-model="selectedGuiaCarga"
-                >
-                  <template v-slot:control>
-                    <q-checkbox
-                      size="md"
-                      v-model="selectedGuiaCarga"
-                      true-value="1"
-                      false-value="0"
-                      style="font-size: 13px"
-                      label="Guia de Carga"
-                    />
-                  </template>
-                </q-field>
-              </div>
-
-              <div
-                class="col-md-4 col-xs-6 col-sm-4 justify-center"
-                style="margin-top: 7px; align-self: center; text-align: center"
-                id="select"
-              >
-                <q-field
-                  hide-bottom-space
-                  borderless
-                  dense
-                  @update:model-value="
-                    this.axiosConfig.headers.tipo_guia_factura =
-                      this.selectedGuiaFactura.value;
-                    getData(`/cguias`, 'setData', 'datos');
-                  "
-                  v-model="selectedGuiaFactura"
-                >
-                  <template v-slot:control>
-                    <q-checkbox
-                      size="md"
-                      v-model="selectedGuiaFactura"
-                      true-value="1"
-                      false-value="0"
-                      style="font-size: 13px"
-                      label="Guia de Factura"
-                    />
-                  </template>
-                </q-field>
-              </div>
-
-              <div
-                class="col-md-4 col-xs-12 col-sm-4"
-                style="align-self: center; text-align: center"
-              >
-                <p
-                  style="
-                    font-size: 16px;
-                    align-self: center;
-                    text-align: center;
-                    margin-bottom: 0px;
-                    margin-top: 5px;
-                  "
-                  class="text-secondary checkboxTitle"
-                >
-                  <strong>EN TRANSITO</strong>
-                </p>
-              </div>
-
-              <div
-                class="col-md-4 col-xs-6 col-sm-4"
-                style="
-                  margin-bottom: 7px;
-                  margin-top: 7px;
-                  align-self: center;
-                  text-align: center;
-                "
-                id="select"
-              >
-                <q-field
-                  hide-bottom-space
-                  borderless
-                  @update:model-value="
-                    this.axiosConfig.headers.tipo_guia_carga =
-                      this.selectedGuiaCarga.value;
-                    getData(`/cguias`, 'setData', 'datos');
-                  "
-                  dense
-                  class="pcform"
-                  v-model="selectedGuiaCarga"
-                >
-                  <template v-slot:control>
-                    <q-checkbox
-                      size="md"
-                      v-model="selectedGuiaCarga"
-                      true-value="1"
-                      false-value="0"
-                      style="font-size: 13px"
-                      label="SI"
-                    />
-                  </template>
-                </q-field>
-              </div>
-
-              <div
-                class="col-md-4 col-xs-6 col-sm-4"
-                style="
-                  margin-bottom: 7px;
-                  margin-top: 7px;
-                  align-self: center;
-                  text-align: center;
-                "
-                id="select"
-              >
-                <q-field
-                  hide-bottom-space
-                  borderless
-                  dense
-                  @update:model-value="
-                    this.axiosConfig.headers.tipo_guia_factura =
-                      this.selectedGuiaFactura.value;
-                    getData(`/cguias`, 'setData', 'datos');
-                  "
-                  v-model="selectedGuiaFactura"
-                >
-                  <template v-slot:control>
-                    <q-checkbox
-                      size="md"
-                      v-model="selectedGuiaFactura"
-                      true-value="1"
-                      false-value="0"
-                      style="font-size: 13px"
-                      label="NO"
-                    />
-                  </template>
-                </q-field>
-              </div>
-            </q-card-section>
-          </q-card>
-      </div>
-
-      <div class="row col-md-6 col-xs-12 col-xl-6 col-lg-6 justify-center selectMobile"
+          </q-input>
+        </div>
+        <div class="col-md-1 col-xl-1 col-lg-1 col-xs-6 col-sm-6 selectMobile2"
           style="align-self: center; text-align: center"
         >
-          <q-card
-            bordered
-            class="q-pa-md row col-md-12 col-xs-12 col-xl-12 col-lg-12 col-sm-12" style="padding: 10px"
+          <q-field
+            hide-bottom-space
+            borderless
+            @update:model-value="
+              this.axiosConfig.headers.tipo_guia_carga =
+                this.selectedGuiaCarga.value;
+              getData(`/cguias`, 'setData', 'datos');
+            "
+            dense
+            v-model="selectedGuiaCarga"
           >
-            <q-card-section class="row col-md-12 col-xs-12"
-              style="padding-right: 10px; padding-left: 10px; padding-top: 0px; padding-bottom: 0px"
+            <template v-slot:control>
+              <q-checkbox
+                size="md"
+                v-model="selectedGuiaCarga"
+                true-value="1"
+                false-value="0"
+                style="font-size: 13px"
+                label="GC"
+              />
+            </template>
+          </q-field>
+        </div>
+        <div class="col-md-1 col-xl-1 col-lg-1 col-xs-6 col-sm-6 selectMobile2"
+          style="align-self: center; text-align: center; padding-left:0px"
+        >
+          <q-field
+            hide-bottom-space
+            borderless
+            @update:model-value="
+              this.axiosConfig.headers.tipo_guia_carga =
+                this.selectedGuiaCarga.value;
+              getData(`/cguias`, 'setData', 'datos');
+            "
+            dense
+            style="padding-left:0px"
+            v-model="selectedGuiaCarga"
+          >
+            <template v-slot:control>
+              <q-checkbox
+                size="md"
+                v-model="selectedGuiaCarga"
+                true-value="1"
+                false-value="0"
+                style="font-size: 13px"
+                label="En transito"
+              />
+            </template>
+          </q-field>
+        </div>
+        <div class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 buttonsDiv"
+        style="align-self: center; text-align: center"
+        >
+          <q-btn
+            dense
+            color="primary"
+            round
+            @click="
+              this.dialog = true;
+              this.form.cod_agencia = findIndex(
+                'agencias',
+                this.selectedAgencia.id,
+                'nb_agencia'
+              );
+              this.form.cod_agente = findIndex(
+                'agentes',
+                this.selectedAgente.id,
+                'persona_responsable'
+              );
+              this.form.cod_cliente = findIndex(
+                'clientes',
+                this.selectedCliente.id,
+                'nb_cliente'
+              );
+              this.form.fecha_asignacion = this.dateInit;
+            "
+            padding="sm"
+            style="margin-right: 25px"
+          >
+            <q-icon size="25px" name="add" color="white"> </q-icon>
+            <q-tooltip
+              class="bg-primary"
+              style="max-height: 30px"
+              transition-show="scale"
+              transition-hide="scale"
+              color="primary"
+              >Agregar Control</q-tooltip
             >
-              <div
-                class="col-md-4 col-xs-12 SelectClienteAgencia justify-center titleCard"
-                style="align-self: center; text-align: center"
-              >
-                <p
-                  style="
-                    font-size: 16px;
-                    align-self: center;
-                    text-align: center;
-                    margin-bottom: 0px;
-                  "
-                  class="text-secondary"
-                >
-                  <strong>AGENCIAS</strong>
-                </p>
-              </div>
-
-              <div
-                class="col-md-4 col-xs-12 col-sm-6 SelectClienteAgencia"
-                style="
-                  margin-top: 7px;
-                  margin-bottom: 10px;
-                  align-self: center;
-                  text-align: center;
-                "
-                id="select"
-              >
-                <q-select
-                  rounded
-                  transition-show="flip-up"
-                  transition-hide="flip-down"
-                  :options="paises"
-                  dense
-                  class="marginSelect"
-                  option-label="desc_pais"
-                  option-value="id"
-                  v-model="selectedPais"
-                  outlined
-                  standout
-                  label="Origen"
-                  @update:model-value="
-                    this.axiosConfig.headers.pais = this.selectedPais.id;
-                    getDataEstados(`/estados`, 'setDataEstados', 'estados');
-                  "
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="search" />
-                  </template>
-                </q-select>
-              </div>
-
-              <div
-                class="col-md-4 col-xs-12 col-sm-6 justify-center"
-                style="
-                  margin-top: 7px;
-                  margin-bottom: 10px;
-                  align-self: center;
-                  text-align: center;
-                "
-                id="select"
-              >
-                <q-select
-                  rounded
-                  transition-show="flip-up"
-                  transition-hide="flip-down"
-                  :options="paises"
-                  dense
-                  option-label="desc_pais"
-                  option-value="id"
-                  v-model="selectedPais"
-                  outlined
-                  standout
-                  label="Destino"
-                  @update:model-value="
-                    this.axiosConfig.headers.pais = this.selectedPais.id;
-                    getDataEstados(`/estados`, 'setDataEstados', 'estados');
-                  "
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="search" />
-                  </template>
-                </q-select>
-              </div>
-
-              <div
-                class="col-md-4 col-xs-12 SelectClienteAgencia titleCard"
-                style="align-self: center; text-align: center"
-              >
-                <p
-                  style="
-                    font-size: 16px;
-                    align-self: center;
-                    text-align: center;
-                    margin-bottom: 0px;
-                  "
-                  class="text-secondary"
-                >
-                  <strong>CLIENTES</strong>
-                </p>
-              </div>
-
-              <div
-                class="col-md-4 col-xs-12 col-sm-6 SelectClienteAgencia"
-                style="
-                  margin-top: 7px;
-                  margin-bottom: 10px;
-                  align-self: center;
-                  text-align: center;
-                "
-                id="select"
-              >
-                <q-select
-                  rounded
-                  transition-show="flip-up"
-                  transition-hide="flip-down"
-                  :options="paises"
-                  dense
-                  option-label="desc_pais"
-                  class="marginSelect"
-                  option-value="id"
-                  v-model="selectedPais"
-                  outlined
-                  standout
-                  label="Origen"
-                  @update:model-value="
-                    this.axiosConfig.headers.pais = this.selectedPais.id;
-                    getDataEstados(`/estados`, 'setDataEstados', 'estados');
-                  "
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="search" />
-                  </template>
-                </q-select>
-              </div>
-
-              <div
-                class="col-md-4 col-xs-12 col-sm-6"
-                style="
-                  margin-top: 7px;
-                  margin-bottom: 10px;
-                  align-self: center;
-                  text-align: center;
-                "
-                id="select"
-              >
-                <q-select
-                  rounded
-                  transition-show="flip-up"
-                  transition-hide="flip-down"
-                  :options="paises"
-                  option-label="desc_pais"
-                  option-value="id"
-                  dense
-                  v-model="selectedPais"
-                  outlined
-                  standout
-                  label="Destino"
-                  @update:model-value="
-                    this.axiosConfig.headers.pais = this.selectedPais.id;
-                    getDataEstados(`/estados`, 'setDataEstados', 'estados');
-                  "
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="search" />
-                  </template>
-                </q-select>
-              </div>
-            </q-card-section>
-          </q-card>
+          </q-btn>
+          <q-btn
+            dense
+            color="primary"
+            round
+            padding="sm"
+            @click="
+              selectedAgencia = [];
+              selectedCliente = [];
+              selectedAgente = [];
+              selectedGuiaCarga = '';
+              selectedGuiaFactura = '';
+              selectedCulminado = '';
+              guia_desde = '';
+              guia_hasta = '';
+              getDataTable();
+            "
+          >
+            <q-icon size="25px" name="filter_alt_off" color="white"> </q-icon>
+            <q-tooltip
+              class="bg-primary"
+              style="max-height: 30px"
+              transition-show="scale"
+              transition-hide="scale"
+              color="primary"
+              >Eliminar Filtros</q-tooltip
+            >
+          </q-btn>
+        </div>
+      </div>
+      <div
+        class="row q-pa-md col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
+        style="align-self: center; text-align: center; margin-top: -10px"
+      >
+        <div class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 cardMargin selectMobile2"
+          style="align-self: center; text-align: center"
+        >
+          <q-select
+            rounded
+            dense
+            transition-show="flip-up"
+            transition-hide="flip-down"
+            :options="agenciasSelected"
+            @filter="
+              (val, update) =>
+                filterArray(
+                  val,
+                  update,
+                  'agenciasSelected',
+                  'agencias',
+                  'nb_agencia'
+                )
+            "
+            use-input
+            hide-selected
+            fill-input
+            input-debounce="0"
+            option-label="nb_agencia"
+            option-value="id"
+            v-model="selectedAgencia"
+            outlined
+            standout
+            label="Agencia Origen"
+            @update:model-value="
+              this.selectedCliente = [];
+              this.selectedAgente = [];
+              getDataTable();
+              this.$refs.methods.getData(`/agentes`, 'setData', 'agentes', {
+                headers: {
+                  agencia: this.selectedAgencia.id,
+                },
+              });
+              this.$refs.methods.getData(`/clientes`, 'setData', 'clientes', {
+                headers: {
+                  agencia: this.selectedAgencia.id,
+                },
+              });
+            "
+            ><template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  Sin resultados
+                </q-item-section>
+              </q-item>
+            </template>
+            <template v-slot:prepend>
+              <q-icon name="search" />
+            </template>
+          </q-select>
+        </div>
+        <div class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 cardMargin selectMobile2"
+          style="align-self: center; text-align: center"
+        >
+          <q-select
+            rounded
+            dense
+            transition-show="flip-up"
+            transition-hide="flip-down"
+            :options="agenciasSelected"
+            @filter="
+              (val, update) =>
+                filterArray(
+                  val,
+                  update,
+                  'agenciasSelected',
+                  'agencias',
+                  'nb_agencia'
+                )
+            "
+            use-input
+            hide-selected
+            fill-input
+            input-debounce="0"
+            option-label="nb_agencia"
+            option-value="id"
+            v-model="selectedAgencia"
+            outlined
+            standout
+            label="Agencia Destino"
+            @update:model-value="
+              this.selectedCliente = [];
+              this.selectedAgente = [];
+              getDataTable();
+              this.$refs.methods.getData(`/agentes`, 'setData', 'agentes', {
+                headers: {
+                  agencia: this.selectedAgencia.id,
+                },
+              });
+              this.$refs.methods.getData(`/clientes`, 'setData', 'clientes', {
+                headers: {
+                  agencia: this.selectedAgencia.id,
+                },
+              });
+            "
+            ><template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  Sin resultados
+                </q-item-section>
+              </q-item>
+            </template>
+            <template v-slot:prepend>
+              <q-icon name="search" />
+            </template>
+          </q-select>
+        </div>
+        <div class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 cardMargin selectMobile2"
+          style="align-self: center; text-align: center"
+        >
+          <q-select
+            rounded
+            dense
+            transition-show="flip-up"
+            transition-hide="flip-down"
+            :options="agenciasSelected"
+            @filter="
+              (val, update) =>
+                filterArray(
+                  val,
+                  update,
+                  'agenciasSelected',
+                  'agencias',
+                  'nb_agencia'
+                )
+            "
+            use-input
+            hide-selected
+            fill-input
+            input-debounce="0"
+            option-label="nb_agencia"
+            option-value="id"
+            v-model="selectedAgencia"
+            outlined
+            standout
+            label="Cliente Origen"
+            @update:model-value="
+              this.selectedCliente = [];
+              this.selectedAgente = [];
+              getDataTable();
+              this.$refs.methods.getData(`/agentes`, 'setData', 'agentes', {
+                headers: {
+                  agencia: this.selectedAgencia.id,
+                },
+              });
+              this.$refs.methods.getData(`/clientes`, 'setData', 'clientes', {
+                headers: {
+                  agencia: this.selectedAgencia.id,
+                },
+              });
+            "
+            ><template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  Sin resultados
+                </q-item-section>
+              </q-item>
+            </template>
+            <template v-slot:prepend>
+              <q-icon name="search" />
+            </template>
+          </q-select>
+        </div>
+        <div class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 cardMargin"
+          style="align-self: center; text-align: center"
+        >
+          <q-select
+            rounded
+            dense
+            transition-show="flip-up"
+            transition-hide="flip-down"
+            :options="agenciasSelected"
+            @filter="
+              (val, update) =>
+                filterArray(
+                  val,
+                  update,
+                  'agenciasSelected',
+                  'agencias',
+                  'nb_agencia'
+                )
+            "
+            use-input
+            hide-selected
+            fill-input
+            input-debounce="0"
+            option-label="nb_agencia"
+            option-value="id"
+            v-model="selectedAgencia"
+            outlined
+            standout
+            label="Cliente Destino"
+            @update:model-value="
+              this.selectedCliente = [];
+              this.selectedAgente = [];
+              getDataTable();
+              this.$refs.methods.getData(`/agentes`, 'setData', 'agentes', {
+                headers: {
+                  agencia: this.selectedAgencia.id,
+                },
+              });
+              this.$refs.methods.getData(`/clientes`, 'setData', 'clientes', {
+                headers: {
+                  agencia: this.selectedAgencia.id,
+                },
+              });
+            "
+            ><template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  Sin resultados
+                </q-item-section>
+              </q-item>
+            </template>
+            <template v-slot:prepend>
+              <q-icon name="search" />
+            </template>
+          </q-select>
+        </div>
       </div>
     </div>
 
-    <div class="q-pa-md">
+    <div class="q-pa-md justify-center">
       <q-table
           :rows="clientes"
           dense
           :columns="columnsClientes"
           binary-state-sort
-          slice
+          :virtual-scroll="null"
           :separator="separator"
           row-key="action"
           :loading="loading"
@@ -1329,6 +1270,10 @@
                         @click.capture="permisosDelete = true"
                       ></q-btn>
 
+                      <q-item-section>
+                      <q-item-label>{{ col.value }}</q-item-label>
+                    </q-item-section>
+
                       <q-checkbox
                         v-if="col.name === 'check'"
                         size="lg"
@@ -1548,6 +1493,7 @@
                         v-model="props.row.estatus_desc"
                         :options="estatus"
                         label="Observacion"
+                        style="padding-bottom:10px"
                         @update:model-value="
                           getData(props.row.id, 'putDatoSelect');
                           this.formEdit.estatus_lote =
@@ -1908,12 +1854,12 @@ export default {
       descending: false,
       page: 2,
       control: 0,
-      rowsPerPage: 4,
+      rowsPerPage: 5,
       // rowsNumber: xx if getting data from a server
     });
     return {
       pagination: ref({
-        rowsPerPage: 4,
+        rowsPerPage: 5,
       }),
       paginationConceptos: ref({
         rowsPerPage: 4,
@@ -1934,10 +1880,11 @@ export default {
     };
   },
   mounted() {
+    this.$emit("changeTitle", "SCEN - Mantenimiento - Pruebas de Entrega", "");
     this.$refs.methods.getData(
-      "/agencias",
+      "/clientes",
       "setDataIniciar",
-      "agencias",
+      "clientes",
       this.axiosConfig
     );
   },
@@ -2058,7 +2005,7 @@ export default {
       this.loading = true;
     },
     setDataIniciar(res, dataRes) {
-      this[dataRes] = res;
+      this[dataRes] = res.data;
       this.getDataIniciar();
       this.loading = false;
     },
@@ -2361,6 +2308,40 @@ export default {
 };
 </script>
 
+<style lang="sass">
+.my-sticky-header-column-table
+
+  td:first-child
+    /* bg color is important for td; just specify one */
+    background-color: #fff !important
+
+  tr th
+    position: sticky
+    /* higher than z-index for td below */
+    z-index: 2
+    /* bg color is important; just specify one */
+    background: #fff
+
+  /* this will be the loading indicator */
+  thead tr:last-child th
+    /* height of all previous header rows */
+    top: 48px
+    /* highest z-index */
+    z-index: 3
+  thead tr:first-child th
+    top: 0
+    z-index: 1
+  tr:first-child th:first-child
+    /* highest z-index */
+    z-index: 3
+
+  td:first-child
+    z-index: 1
+
+  td:first-child, th:first-child
+    position: sticky
+    left: 0
+</style>
 <style>
 .hide {
   display: none;
@@ -2368,6 +2349,11 @@ export default {
 @media screen and (min-width: 600px) and (max-width: 1024px) {
   .titleMenu {
     padding-bottom: 1px;
+  }
+}
+@media screen and (min-width: 1024px) {
+  .buttonsDiv {
+    padding-left: 50px;
   }
 }
 
