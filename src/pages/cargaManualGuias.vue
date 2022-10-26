@@ -453,16 +453,7 @@
             round
             padding="sm"
             style="margin-right: 25px; margin-bottom: 6px"
-            @click="
-              selectedCliente = [];
-              selectedAgente = [];
-              selectedGuiaCarga = '';
-              selectedGuiaFactura = '';
-              selectedCulminado = '';
-              guia_desde = '';
-              guia_hasta = '';
-              getDataGuias();
-            "
+            @click="this.asignarGuia()"
           >
             <q-icon size="25px" name="file_open" color="white"> </q-icon>
             <q-tooltip
@@ -751,13 +742,6 @@
               dense
               style="min-width: 120px"
               v-model="props.row.nro_guia"
-              @update:model-value="
-                this.$refs.methods.getData(
-                  `/correlativo/${props.row.id}`,
-                  `putDataSelect`,
-                  'form'
-                )
-              "
             >
             </q-input>
           </q-td>
@@ -768,24 +752,24 @@
               outlined
               dense
               v-model="props.row.porc_zona"
-              @blur="validationPorcZona(props.row)"
-              :input-style="{ color: 'primary' }"
-              v-if="props.row.porc_zona_status == true"
+              @blur="validationPorcZona(props.row, props.rowIndex)"
+              :input-style="{ color: 'blue' }"
+              v-if="props.row.porc_zona_status == false"
             >
             </q-input>
             <q-input
               outlined
               dense
               v-model="props.row.porc_zona"
-              @blur="validationPorcZona(props.row)"
+              @blur="validationPorcZona(props.row, props.rowIndex)"
               :input-style="{ color: 'red' }"
-              v-else-if="props.row.porc_zona_status == false"
+              v-else-if="props.row.porc_zona_status == true"
             >
             </q-input>
             <q-input
               outlined
               dense
-              @blur="validationPorcZona(props.row)"
+              @blur="validationPorcZona(props.row, props.rowIndex)"
               v-model="props.row.porc_zona"
               v-else
             >
@@ -1017,7 +1001,6 @@ export default {
           label: "Nro. Factura",
           field: "nro_factura",
           align: "left",
-          sortable: true,
           required: true,
         },
         {
@@ -1025,7 +1008,6 @@ export default {
           label: "Fecha Factura",
           field: "fecha_factura",
           align: "left",
-          sortable: true,
           required: true,
         },
         {
@@ -1033,7 +1015,6 @@ export default {
           label: "Nombre Cliente",
           field: "nb_cliente",
           align: "left",
-          sortable: true,
           required: true,
         },
         {
@@ -1041,7 +1022,6 @@ export default {
           label: "CI-RIF",
           field: "ci_rif",
           align: "left",
-          sortable: true,
           required: true,
         },
         {
@@ -1049,7 +1029,6 @@ export default {
           label: "Dirección Entrega",
           field: "direccion",
           align: "left",
-          sortable: true,
           required: true,
         },
         {
@@ -1057,7 +1036,6 @@ export default {
           label: "Estado Entrega",
           field: "estado",
           align: "left",
-          sortable: true,
           required: true,
         },
         {
@@ -1065,7 +1043,6 @@ export default {
           label: "Ciudad Entrega",
           field: "ciudad",
           align: "left",
-          sortable: true,
           required: true,
         },
         {
@@ -1073,7 +1050,6 @@ export default {
           label: "Bultos",
           field: "bultos",
           align: "left",
-          sortable: true,
           required: true,
         },
         {
@@ -1081,7 +1057,6 @@ export default {
           label: "Teléfono",
           field: "telefono",
           align: "left",
-          sortable: true,
           required: true,
         },
         {
@@ -1089,7 +1064,6 @@ export default {
           label: "Monto Factura",
           field: "monto",
           align: "left",
-          sortable: true,
           required: true,
         },
         {
@@ -1097,7 +1071,6 @@ export default {
           label: "Peso Kgs",
           field: "peso",
           align: "left",
-          sortable: true,
           required: true,
         },
         {
@@ -1105,7 +1078,6 @@ export default {
           label: "Carga Neta",
           field: "carga_neta",
           align: "left",
-          sortable: true,
           required: true,
         },
         {
@@ -1113,7 +1085,6 @@ export default {
           label: "% Por Zona",
           field: "porc_zona",
           align: "left",
-          sortable: true,
           required: true,
         },
         {
@@ -1121,7 +1092,6 @@ export default {
           label: "Nro. Guia",
           field: "nro_guia",
           align: "left",
-          sortable: true,
           required: true,
         },
         {
@@ -1129,7 +1099,6 @@ export default {
           label: "Nro. Factura",
           field: "nro_factura",
           align: "left",
-          sortable: true,
           required: true,
         },
         {
@@ -1241,7 +1210,6 @@ export default {
           form.monto = columns[9];
           form.peso = columns[10];
           form.carga_neta = columns[11];
-          form.id = i;
           await api
             .get(`/estados`, {
               headers: {
@@ -1369,7 +1337,27 @@ export default {
       number = Math.round(number * 100) / 100;
       return number;
     },
-
+    async asignarGuia() {
+      try {
+        var errorMessage;
+        if(this.datos[0].nro_guia == null) {
+          errorMessage = 'Debe ingresar el Primer Número de Guía';
+          return stopFuction
+        } else {
+          for (var i = 1; i <= this.datos.length - 1; i++) {
+            this.datos[i].nro_guia = parseInt(this.datos[i - 1].nro_guia,0) + 1
+          }
+        }
+      } catch (stopFuction) {
+        console.log(stopFuction)
+        if (errorMessage) {
+          this.$q.notify({
+            message: errorMessage,
+            color: "red",
+          });
+        }
+      }
+    },
     // METODOS DE PAGINA
 
     // Metodo para hacer Get de Datos
@@ -1519,7 +1507,7 @@ export default {
       }
     },
     // Metodo para Validaciones del Porc Zona al Editarlo en la Tabla
-    async validationPorcZona(formRes) {
+    async validationPorcZona(formRes, index) {
       try {
         this.loadingPage = true;
         var errorMessage;
@@ -1632,12 +1620,12 @@ export default {
         console.log("monto_comision " + monto_comision);
         console.log("monto_base " + monto_base);
         if (
-          datos[form.id].peso > kgr_minimos &&
+          datos[index].peso > kgr_minimos &&
           kgr_minimos &&
-          datos[form.id].peso
+          datos[index].peso
         ) {
           kgs_adicionales =
-            this.parseFloatN(datos[form.id].peso) -
+            this.parseFloatN(datos[index].peso) -
             this.parseFloatN(kgr_minimos);
         } else {
           kgs_adicionales = 0;
@@ -1648,10 +1636,10 @@ export default {
             this.parseFloatN(kgs_adicionales) *
             this.parseFloatN(monto_kg_adicional);
 
-        if (datos[form.id].monto && datos[form.id].porc_zona)
+        if (datos[index].monto && datos[index].porc_zona)
           monto_comision =
-            (this.parseFloatN(datos[form.id].monto) *
-              this.parseFloatN(datos[form.id].porc_zona)) /
+            (this.parseFloatN(datos[index].monto) *
+              this.parseFloatN(datos[index].porc_zona)) /
             100;
 
         if (monto_basico && monto_kg_ad)
@@ -1660,12 +1648,11 @@ export default {
 
         if (monto_base > monto_comision && monto_base && monto_comision) {
           if (kgs_adicionales == 0) {
-            datos[form.id].porc_zona_status = true;
+            this.datos[index].porc_zona_status = true;
           } else {
-            datos[form.id].porc_zona_status = false;
+            this.datos[index].porc_zona_status = false;
           }
         }
-        datos[form.id].porc_zona_status = false
         console.log("RESULTADOS");
         console.log("monto_basico " + monto_basico);
         console.log("kgs_adicionales " + kgs_adicionales);
@@ -1758,6 +1745,9 @@ export default {
 </script>
 
 <style>
+.input {
+  color: red;
+}
 .hide {
   display: none;
 }

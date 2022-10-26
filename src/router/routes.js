@@ -53,7 +53,7 @@ const routes = [
       {
         path: '/facturacioncredito',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('src/pages/facturacioncredito.vue')}]
+        children: [{ path: "", component: () => import('src/pages/Facturacioncredito.vue')}]
       },
       {
         path: '/anulacionguias',

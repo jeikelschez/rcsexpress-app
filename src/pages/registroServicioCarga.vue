@@ -3269,6 +3269,7 @@ export default {
     // Metodo para Tarificar una Guía
     async tarificar() {
       try {
+        var error = true;
         var form = JSON.parse(JSON.stringify(this.form));
         form.nro_piezas = form.nro_piezas
           .replaceAll(".", "")
@@ -4651,6 +4652,7 @@ export default {
     // Metodo para Enviar Datos de Guia
     async sendDataGuia() {
       var errorMessage = null;
+      var stopFuction = true;
       this.showTextLoading();
       this.saveDetails = false;
       var form = JSON.parse(JSON.stringify(this.form));
@@ -4672,13 +4674,12 @@ export default {
           }
           if (form.cod_cliente_org.cte_decontado == 1) {
             if (form.id_clte_part_orig) {
-              api
-                .get(`/cparticulares/${form.id_clte_part_orig}`, {
+              api.get(`/cparticulares/${form.id_clte_part_orig}`, {
                   headers: {
                     Authorization: `Bearer ${LocalStorage.getItem("token")}`,
                   },
                 })
-                .then((res) => {
+              .then((res) => {
                   if (
                     !res.data.cod_municipio ||
                     !res.data.cod_parroquia ||
@@ -4689,7 +4690,6 @@ export default {
                     this.destino = false;
                     this.clienteLabel = "origen";
                     this.setDataClientesParticulares(res.data);
-                    console.log("detente");
                     errorMessage = "Debe completar la DPT del Cliente Origen";
                     return stopFuction;
                   }
@@ -4801,40 +4801,40 @@ export default {
           form.pagado_en = form.pagado_en.value;
           if (form.fecha_envio)
             form.fecha_envio = form.fecha_envio.split("/").reverse().join("-");
-          form.valor_declarado_cod = form.valor_declarado_cod
+          if (form.valor_declarado_cod) form.valor_declarado_cod = form.valor_declarado_cod
             .replaceAll(".", "")
             .replaceAll(",", ".");
-          form.valor_declarado_seg = form.valor_declarado_seg
+          if (form.valor_declarado_seg) form.valor_declarado_seg = form.valor_declarado_seg
             .replaceAll(".", "")
             .replaceAll(",", ".");
-          form.monto_ref_cte_sin_imp = form.monto_ref_cte_sin_imp
+            if (form.monto_ref_cte_sin_imp) form.monto_ref_cte_sin_imp = form.monto_ref_cte_sin_imp
             .replaceAll(".", "")
             .replaceAll(",", ".");
-          form.nro_piezas = form.nro_piezas
+            if (form.nro_piezas) form.nro_piezas = form.nro_piezas
             .replaceAll(".", "")
             .replaceAll(",", ".");
-          form.peso_kgs = form.peso_kgs
+            if (form.peso_kgs) form.peso_kgs = form.peso_kgs
             .replaceAll(".", "")
             .replaceAll(",", ".");
-          form.monto_subtotal = form.monto_subtotal
+            if (form.monto_subtotal) form.monto_subtotal = form.monto_subtotal
             .replaceAll(".", "")
             .replaceAll(",", ".");
-          form.monto_impuesto = form.monto_impuesto
+            if (form.monto_impuesto) form.monto_impuesto = form.monto_impuesto
             .replaceAll(".", "")
             .replaceAll(",", ".");
-          form.monto_total = form.monto_total
+            if (form.monto_total) form.monto_total = form.monto_total
             .replaceAll(".", "")
             .replaceAll(",", ".");
-          form.monto_base = form.monto_base
+            if (form.monto_base) form.monto_base = form.monto_base
             .replaceAll(".", "")
             .replaceAll(",", ".");
-          form.porc_apl_seguro = form.porc_apl_seguro
+            if (form.porc_apl_seguro) form.porc_apl_seguro = form.porc_apl_seguro
             .replaceAll(".", "")
             .replaceAll(",", ".");
-          form.porc_descuento = form.porc_descuento
+          if (form.porc_descuento) form.porc_descuento = form.porc_descuento
             .replaceAll(".", "")
             .replaceAll(",", ".");
-          form.carga_neta = form.carga_neta
+            if (form.carga_neta) form.carga_neta = form.carga_neta
             .replaceAll(".", "")
             .replaceAll(",", ".");
           if (form.fecha_aplicacion)
@@ -5270,6 +5270,7 @@ export default {
           });
           this.resetLoading();
         } catch (stopFuction) {
+          console.log(stopFuction)
           this.resetLoading();
           if (errorMessage) {
             this.$q.notify({
