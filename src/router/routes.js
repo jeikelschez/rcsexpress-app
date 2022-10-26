@@ -63,7 +63,7 @@ const routes = [
       {
         path: '/emitircarta',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('src/pages/Emitircarta.vue')}]
+        children: [{ path: "", component: () => import('src/pages/emitirCarta.vue')}]
       },
       {
         path: '/administracion',
@@ -386,7 +386,7 @@ const routes = [
       {
         path: '/m_emitircarta',
         component: () => import("layouts/manuallayout.vue"),
-        children: [{ path: "", component: () => import('pages/manuals/m_emitircarta.vue')}]
+        children: [{ path: "", component: () => import('pages/manuals/m_emitirCarta.vue')}]
       },
       {
         path: '/m_administracion',
