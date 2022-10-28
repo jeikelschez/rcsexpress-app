@@ -1287,7 +1287,7 @@
                 label="NRO. Documento"
                 class="pcmovil"
                 hint=""
-                :autofocus=true
+                :autofocus="true"
                 @keyup.enter="
                   if (form.nro_documento !== '') {
                     this.resetFormGuia();
@@ -1463,6 +1463,7 @@
                       hint=""
                       dense
                       style="padding-bottom: 10px"
+                      :rules="[(val) => this.$refs.rulesVue.checkDate(val, '')]"
                       v-model="form.fecha_aplicacion"
                       mask="##/##/####"
                     >
@@ -2561,6 +2562,7 @@
               style="padding-bottom: 10px"
               v-model="form.fecha_llega_transito"
               mask="##/##/####"
+              :rules="[(val) => this.$refs.rulesVue.checkDate(val, '')]"
               lazy-rules
               class="pcform"
             >
@@ -2727,7 +2729,7 @@
       </q-card>
     </q-dialog>
 
-    <q-dialog v-model="saveDetallesPopUp">
+    <q-dialog v-model="saveDetallesPopUp" persistent>
       <q-card style="width: 700px">
         <q-card-section>
           <div class="text-h5" style="font-size: 18px">
@@ -2749,6 +2751,31 @@
             color="primary"
             v-close-popup
             @click="this.saveDetails = true"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="validateDetallesPopUp" persistent>
+      <q-card style="width: 700px">
+        <q-card-section>
+          <div class="text-h5" style="font-size: 18px">
+            La guía está tarificada, una vez que se encuentre completa no podrá ser modificada. ¿Está seguro de que la misma esta completa?..."
+          </div>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn
+            flat
+            label="NO"
+            color="primary"
+            @click="validateDetails = null"
+            v-close-popup
+          />
+          <q-btn
+            flat
+            label="SI"
+            color="primary"
+            v-close-popup
+            @click="validateDetails = true"
           />
         </q-card-actions>
       </q-card>
@@ -2933,6 +2960,7 @@ export default {
         emergencia: "0",
       },
       saveDetails: false,
+      validateDetails: false,
       rpermisos: [],
       orderDirection: "",
       nro_factura: "",
@@ -3054,6 +3082,7 @@ export default {
       loading: ref(false),
       clientesDeletePopUp: ref(false),
       saveDetallesPopUp: ref(false),
+      validateDetallesPopUp: ref(false),
       detalle: ref(false),
       clienteLabelBox: ref(false),
       pdfView: ref(false),
@@ -4652,7 +4681,9 @@ export default {
     // Metodo para Enviar Datos de Guia
     async sendDataGuia() {
       var errorMessage = null;
-      var stopFuction = true;
+      var guia;
+      var comisionVenta;
+      var comisionSeguro;
       this.showTextLoading();
       this.saveDetails = false;
       var form = JSON.parse(JSON.stringify(this.form));
@@ -4674,12 +4705,13 @@ export default {
           }
           if (form.cod_cliente_org.cte_decontado == 1) {
             if (form.id_clte_part_orig) {
-              api.get(`/cparticulares/${form.id_clte_part_orig}`, {
+              await api
+                .get(`/cparticulares/${form.id_clte_part_orig}`, {
                   headers: {
                     Authorization: `Bearer ${LocalStorage.getItem("token")}`,
                   },
                 })
-              .then((res) => {
+                .then((res) => {
                   if (
                     !res.data.cod_municipio ||
                     !res.data.cod_parroquia ||
@@ -4724,7 +4756,7 @@ export default {
           }
           if (form.cod_cliente_dest.cte_decontado == 1) {
             if (form.id_clte_part_dest) {
-              api
+              await api
                 .get(`/cparticulares/${form.id_clte_part_dest}`, {
                   headers: {
                     Authorization: `Bearer ${LocalStorage.getItem("token")}`,
@@ -4801,42 +4833,54 @@ export default {
           form.pagado_en = form.pagado_en.value;
           if (form.fecha_envio)
             form.fecha_envio = form.fecha_envio.split("/").reverse().join("-");
-          if (form.valor_declarado_cod) form.valor_declarado_cod = form.valor_declarado_cod
-            .replaceAll(".", "")
-            .replaceAll(",", ".");
-          if (form.valor_declarado_seg) form.valor_declarado_seg = form.valor_declarado_seg
-            .replaceAll(".", "")
-            .replaceAll(",", ".");
-            if (form.monto_ref_cte_sin_imp) form.monto_ref_cte_sin_imp = form.monto_ref_cte_sin_imp
-            .replaceAll(".", "")
-            .replaceAll(",", ".");
-            if (form.nro_piezas) form.nro_piezas = form.nro_piezas
-            .replaceAll(".", "")
-            .replaceAll(",", ".");
-            if (form.peso_kgs) form.peso_kgs = form.peso_kgs
-            .replaceAll(".", "")
-            .replaceAll(",", ".");
-            if (form.monto_subtotal) form.monto_subtotal = form.monto_subtotal
-            .replaceAll(".", "")
-            .replaceAll(",", ".");
-            if (form.monto_impuesto) form.monto_impuesto = form.monto_impuesto
-            .replaceAll(".", "")
-            .replaceAll(",", ".");
-            if (form.monto_total) form.monto_total = form.monto_total
-            .replaceAll(".", "")
-            .replaceAll(",", ".");
-            if (form.monto_base) form.monto_base = form.monto_base
-            .replaceAll(".", "")
-            .replaceAll(",", ".");
-            if (form.porc_apl_seguro) form.porc_apl_seguro = form.porc_apl_seguro
-            .replaceAll(".", "")
-            .replaceAll(",", ".");
-          if (form.porc_descuento) form.porc_descuento = form.porc_descuento
-            .replaceAll(".", "")
-            .replaceAll(",", ".");
-            if (form.carga_neta) form.carga_neta = form.carga_neta
-            .replaceAll(".", "")
-            .replaceAll(",", ".");
+          if (form.valor_declarado_cod)
+            form.valor_declarado_cod = form.valor_declarado_cod
+              .replaceAll(".", "")
+              .replaceAll(",", ".");
+          if (form.valor_declarado_seg)
+            form.valor_declarado_seg = form.valor_declarado_seg
+              .replaceAll(".", "")
+              .replaceAll(",", ".");
+          if (form.monto_ref_cte_sin_imp)
+            form.monto_ref_cte_sin_imp = form.monto_ref_cte_sin_imp
+              .replaceAll(".", "")
+              .replaceAll(",", ".");
+          if (form.nro_piezas)
+            form.nro_piezas = form.nro_piezas
+              .replaceAll(".", "")
+              .replaceAll(",", ".");
+          if (form.peso_kgs)
+            form.peso_kgs = form.peso_kgs
+              .replaceAll(".", "")
+              .replaceAll(",", ".");
+          if (form.monto_subtotal)
+            form.monto_subtotal = form.monto_subtotal
+              .replaceAll(".", "")
+              .replaceAll(",", ".");
+          if (form.monto_impuesto)
+            form.monto_impuesto = form.monto_impuesto
+              .replaceAll(".", "")
+              .replaceAll(",", ".");
+          if (form.monto_total)
+            form.monto_total = form.monto_total
+              .replaceAll(".", "")
+              .replaceAll(",", ".");
+          if (form.monto_base)
+            form.monto_base = form.monto_base
+              .replaceAll(".", "")
+              .replaceAll(",", ".");
+          if (form.porc_apl_seguro)
+            form.porc_apl_seguro = form.porc_apl_seguro
+              .replaceAll(".", "")
+              .replaceAll(",", ".");
+          if (form.porc_descuento)
+            form.porc_descuento = form.porc_descuento
+              .replaceAll(".", "")
+              .replaceAll(",", ".");
+          if (form.carga_neta)
+            form.carga_neta = form.carga_neta
+              .replaceAll(".", "")
+              .replaceAll(",", ".");
           if (form.fecha_aplicacion)
             form.fecha_aplicacion = form.fecha_aplicacion
               .split("/")
@@ -4860,6 +4904,12 @@ export default {
             form.fecha_elab = form.fecha_elab.split("/").reverse().join("-");
 
           if (this.detalle_movimiento[0]) {
+            this.validateDetails = false
+            this.validateDetallesPopUp = true;
+            await this.until(
+              (_) => this.validateDetails == true || this.validateDetails == null
+            );
+            if (this.validateDetails == null) return stopFuction;
             for (var i = 0; i <= this.detalle_movimiento.length - 1; i++) {
               if (
                 this.$refs.rulesVue.isMax(
@@ -4904,9 +4954,70 @@ export default {
                 return stopFuction;
               }
             }
-          }
+            if ((form.base_comision_vta_rcl > 0) && (form.base_comision_seg > 0)) {
+              await api
+                .get(`/ciudades/${form.cod_agente_venta.id}`, {
+                  headers: {
+                    Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                  },
+                })
+                .then((res) => {
+                  if (
+                    !res.data.porc_comision_venta ||
+                    res.data.porc_comision_venta == 0
+                  ) {
+                    errorMessage =
+                      "Error del Sistema. Problemas al buscar el % de comisión por venta. Revise el % del agente para que sea posible generar la comisión...";
+                    return stopFuction;
+                  }
+                  if (
+                    !res.data.porc_comision_seguro ||
+                    res.data.porc_comision_seguro == 0
+                  ) {
+                    errorMessage =
+                      "Error del Sistema. Problemas al buscar el % de comisión por seguro. Revise el % del agente para que sea posible generar la comisión...";
+                    return stopFuction;
+                  }
+                });
+              form.comision_seg_vta = (
+                (this.parseFloatN(res.data.porc_comision_seguro) *
+                  this.parseFloatN(form.base_comision_seg)) /
+                100
+              ).toFixed(2);
 
-          if (!this.detalle_movimiento[0]) {
+              form.comision_venta = (
+                (this.parseFloatN(res.data.porc_comision_venta) *
+                  this.parseFloatN(form.base_comision_vta_rcl)) /
+                100
+              ).toFixed(2);
+
+              if (form.estatus_administra !== "G") {
+              form.estatus_administra = "F";
+              }
+
+              form.check_pxfac = 1;
+              moment.locale("es");
+              form.fecha_pxfac = moment()
+                .format("L")
+                .split("/")
+                .reverse()
+                .join("-");
+            }
+            // if (form.peso_kgs >= 0.001) {
+            // await api
+            //   .get(`/fpos`, {
+            //     headers: {
+            //       Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            //       fecha: moment().format("L").split("/").reverse().join("-"),
+            //       peso: form.peso_kgs,
+            //       monto_fpo: form.valor,
+            //     },
+            //   })
+            //   .then((res) => {
+            //     form.cod_fpo = res.data[0].cod_fpo;
+            //   });
+            // }
+          } else {
             this.saveDetallesPopUp = true;
             await this.until(
               (_) => this.saveDetails == true || this.saveDetails == null
@@ -4914,210 +5025,13 @@ export default {
             if (this.saveDetails == null) return stopFuction;
           }
 
-          if (form.base_comision_vta_rcl > 0) {
+          if (!this.detalle_movimiento[0]) {
             await api
-              .get(`/ciudades/${form.cod_agente_venta.id}`, {
-                headers: {
-                  Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                },
-              })
-              .then((res) => {
-                if (
-                  !res.data.porc_comision_venta ||
-                  res.data.porc_comision_venta == 0
-                ) {
-                  errorMessage =
-                    "Error del Sistema. Problemas al buscar el % de comisión por venta. Revise el % del agente para que sea posible generar la comisión...";
-                  return stopFuction;
-                }
-                if (
-                  !res.data.porc_comision_seguro ||
-                  res.data.porc_comision_seguro == 0
-                ) {
-                  errorMessage =
-                    "Error del Sistema. Problemas al buscar el % de comisión por seguro. Revise el % del agente para que sea posible generar la comisión...";
-                  return stopFuction;
-                }
-              });
-            form.comision_seg_vta = (
-              (this.parseFloatN(porc_comision_seguro) *
-                this.parseFloatN(base_comision_seg)) /
-              100
-            ).toFixed(2);
-            form.comision_venta = (
-              (this.parseFloatN(form.porc_comision_venta) *
-                this.parseFloatN(form.base_comision_vta_rcl)) /
-              100
-            ).toFixed(2);
-            var comisionVenta;
-            var comisionSeguro;
-
-            await api
-              .get(`/ccomisiones`, {
-                headers: {
-                  Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                  cod_movimiento: this.form.id,
-                  mayor: "S",
-                  tipo: "V",
-                },
-              })
-              .then((res) => {
-                if (res.data.data[0]) {
-                  comisionVenta = {
-                    cod_agencia: form.cod_agencia,
-                    cod_agente: form.cod_agente,
-                    cod_movimiento: this.form.id,
-                    fecha_emision: form.fecha_emision,
-                    monto_comision: form.comision_venta,
-                    estatus: 0,
-                  };
-                  api
-                    .put(`/ccomisiones/${res.data.data[0].id}`, comisionVenta, {
-                      headers: {
-                        Authorization: `Bearer ${LocalStorage.getItem(
-                          "token"
-                        )}`,
-                      },
-                    })
-                    .catch((err) => {
-                      errorMessage =
-                        "Error del Sistema. Problemas al actualizar comisiones. Comuníquese con el proveedor del Sistemas";
-                      return stopFuction;
-                    });
-                } else {
-                  comisionVenta = {
-                    cod_agencia: form.cod_agencia,
-                    cod_agente: form.cod_agente,
-                    cod_movimiento: this.form.id,
-                    fecha_emision: form.fecha_emision,
-                    monto_comision: form.comision_venta,
-                    tipo_comision: "V",
-                    estatus: 0,
-                  };
-                  api
-                    .post(`/ccomisiones/`, comisionVenta, {
-                      headers: {
-                        Authorization: `Bearer ${LocalStorage.getItem(
-                          "token"
-                        )}`,
-                      },
-                    })
-                    .catch((err) => {
-                      errorMessage =
-                        "Error del Sistema. Problemas al crear comisiones. Comuníquese con el proveedor del Sistemas";
-                      return stopFuction;
-                    });
-                }
-              })
-              .catch((err) => {
-                errorMessage =
-                  "Error del Sistema. Problemas al encontrar comisiones. Comuníquese con el proveedor del Sistemas";
-                return stopFuction;
-              });
-
-            await api
-              .get(`/ccomisiones`, {
-                headers: {
-                  Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                  cod_movimiento: this.form.id,
-                  mayor: "S",
-                  tipo: "S",
-                },
-              })
-              .then((res) => {
-                if (res.data.data[0]) {
-                  comisionSeguro = {
-                    cod_agencia: form.cod_agencia,
-                    cod_agente: form.cod_agente,
-                    cod_movimiento: this.form.id,
-                    fecha_emision: form.fecha_emision,
-                    monto_comision: form.comision_seg_vta,
-                    estatus: 0,
-                  };
-                  api
-                    .put(
-                      `/ccomisiones/${res.data.data[0].id}`,
-                      comisionSeguro,
-                      {
-                        headers: {
-                          Authorization: `Bearer ${LocalStorage.getItem(
-                            "token"
-                          )}`,
-                        },
-                      }
-                    )
-                    .catch((err) => {
-                      errorMessage =
-                        "Error del Sistema. Problemas al actualizar comisiones. Comuníquese con el proveedor del Sistemas";
-                      return stopFuction;
-                    });
-                } else {
-                  comisionSeguro = {
-                    cod_agencia: form.cod_agencia,
-                    cod_agente: form.cod_agente,
-                    cod_movimiento: this.form.id,
-                    fecha_emision: form.fecha_emision,
-                    monto_comision: form.comision_seg_vta,
-                    tipo_comision: "V",
-                    estatus: 0,
-                  };
-                  api
-                    .post(`/ccomisiones/`, comisionSeguro, {
-                      headers: {
-                        Authorization: `Bearer ${LocalStorage.getItem(
-                          "token"
-                        )}`,
-                      },
-                    })
-                    .catch((err) => {
-                      errorMessage =
-                        "Error del Sistema. Problemas al crear comisiones. Comuníquese con el proveedor del Sistemas";
-                      return stopFuction;
-                    });
-                }
-              })
-              .catch((err) => {
-                errorMessage =
-                  "Error del Sistema. Problemas al encontrar comisiones. Comuníquese con el proveedor del Sistemas";
-                return stopFuction;
-              });
-          }
-
-          if (form.estatus_administra !== "G") {
-            form.estatus_administra = "F";
-          }
-
-          form.check_pxfac = 1;
-          moment.locale("es");
-          form.fecha_pxfac = moment()
-            .format("L")
-            .split("/")
-            .reverse()
-            .join("-");
-
-          // if (form.peso_kgs >= 0.001) {
-          //   await api
-          //     .get(`/fpos`, {
-          //       headers: {
-          //         Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-          //         fecha: moment().format("L").split("/").reverse().join("-"),
-          //         peso: form.peso_kgs,
-          //         monto_fpo: form.valor,
-          //       },
-          //     })
-          //     .then((res) => {
-          //       form.cod_fpo = res.data[0].cod_fpo;
-          //     });
-          // }
-
-          var guia;
-
-          await api
             .get(`/cguias`, {
               headers: {
                 Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                desde: form.nro_documento,
-                hasta: form.nro_documento,
+                desde_fact: form.nro_documento,
+                hasta_fact: form.nro_documento,
                 tipo: 20,
               },
             })
@@ -5145,6 +5059,7 @@ export default {
                 "Error del Sistema. Problemas al actualizar el inventario de guías. Comuníquese con el proveedor del Sistemas...";
               return stopFuction;
             });
+          }
 
           if (form.id !== "") {
             delete form.porc_comision;
@@ -5216,6 +5131,138 @@ export default {
           }
 
           if (this.detalle_movimiento[0]) {
+              await api
+                .get(`/ccomisiones`, {
+                  headers: {
+                    Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                    cod_movimiento: this.form.id,
+                    mayor: "S",
+                    tipo: "V",
+                  },
+                })
+                .then((res) => {
+                  if (res.data.data[0]) {
+                    comisionVenta = {
+                      cod_agencia: form.cod_agencia,
+                      cod_agente: form.cod_agente,
+                      cod_movimiento: this.form.id,
+                      fecha_emision: form.fecha_emision,
+                      monto_comision: form.comision_venta,
+                      estatus: 0,
+                    };
+                    api.put(
+                        `/ccomisiones/${res.data.data[0].id}`,
+                        comisionVenta,
+                        {
+                          headers: {
+                            Authorization: `Bearer ${LocalStorage.getItem(
+                              "token"
+                            )}`,
+                          },
+                        }
+                      )
+                      .catch((err) => {
+                        errorMessage =
+                          "Error del Sistema. Problemas al actualizar comisiones. Comuníquese con el proveedor del Sistemas";
+                        return stopFuction;
+                      });
+                  } else {
+                    comisionVenta = {
+                      cod_agencia: form.cod_agencia,
+                      cod_agente: form.cod_agente,
+                      cod_movimiento: this.form.id,
+                      fecha_emision: form.fecha_emision,
+                      monto_comision: form.comision_venta,
+                      tipo_comision: "V",
+                      estatus: 0,
+                    };
+                    api
+                      .post(`/ccomisiones/`, comisionVenta, {
+                        headers: {
+                          Authorization: `Bearer ${LocalStorage.getItem(
+                            "token"
+                          )}`,
+                        },
+                      })
+                      .catch((err) => {
+                        errorMessage =
+                          "Error del Sistema. Problemas al crear comisiones. Comuníquese con el proveedor del Sistemas";
+                        return stopFuction;
+                      });
+                  }
+                })
+                .catch((err) => {
+                  errorMessage =
+                    "Error del Sistema. Problemas al encontrar comisiones. Comuníquese con el proveedor del Sistemas";
+                  return stopFuction;
+                });
+
+              await api
+                .get(`/ccomisiones`, {
+                  headers: {
+                    Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                    cod_movimiento: this.form.id,
+                    mayor: "S",
+                    tipo: "S",
+                  },
+                })
+                .then((res) => {
+                  if (res.data.data[0]) {
+                    comisionSeguro = {
+                      cod_agencia: form.cod_agencia,
+                      cod_agente: form.cod_agente,
+                      cod_movimiento: this.form.id,
+                      fecha_emision: form.fecha_emision,
+                      monto_comision: form.comision_seg_vta,
+                      estatus: 0,
+                    };
+                    api
+                      .put(
+                        `/ccomisiones/${res.data.data[0].id}`,
+                        comisionSeguro,
+                        {
+                          headers: {
+                            Authorization: `Bearer ${LocalStorage.getItem(
+                              "token"
+                            )}`,
+                          },
+                        }
+                      )
+                      .catch((err) => {
+                        errorMessage =
+                          "Error del Sistema. Problemas al actualizar comisiones. Comuníquese con el proveedor del Sistemas";
+                        return stopFuction;
+                      });
+                  } else {
+                    comisionSeguro = {
+                      cod_agencia: form.cod_agencia,
+                      cod_agente: form.cod_agente,
+                      cod_movimiento: this.form.id,
+                      fecha_emision: form.fecha_emision,
+                      monto_comision: form.comision_seg_vta,
+                      tipo_comision: "V",
+                      estatus: 0,
+                    };
+                    api
+                      .post(`/ccomisiones/`, comisionSeguro, {
+                        headers: {
+                          Authorization: `Bearer ${LocalStorage.getItem(
+                            "token"
+                          )}`,
+                        },
+                      })
+                      .catch((err) => {
+                        errorMessage =
+                          "Error del Sistema. Problemas al crear comisiones. Comuníquese con el proveedor del Sistemas";
+                        return stopFuction;
+                      });
+                  }
+                })
+                .catch((err) => {
+                  errorMessage =
+                    "Error del Sistema. Problemas al encontrar comisiones. Comuníquese con el proveedor del Sistemas";
+                  return stopFuction;
+                });
             var detalle;
             for (var i = 0; i <= this.detalle_movimiento.length - 1; i++) {
               this.detalle_movimiento[i].cod_movimiento = this.form.id;
@@ -5263,14 +5310,8 @@ export default {
               }
             }
           }
-
-          this.$q.notify({
-            message: "Actualizacion Exitosa",
-            color: "green",
-          });
           this.resetLoading();
         } catch (stopFuction) {
-          console.log(stopFuction)
           this.resetLoading();
           if (errorMessage) {
             this.$q.notify({
