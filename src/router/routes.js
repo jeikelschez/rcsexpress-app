@@ -53,7 +53,7 @@ const routes = [
       {
         path: '/facturacioncredito',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('src/pages/Facturacioncredito.vue')}]
+        children: [{ path: "", component: () => import('src/pages/facturacionCredito.vue')}]
       },
       {
         path: '/anulacionguias',
@@ -376,7 +376,7 @@ const routes = [
       {
         path: '/m_facturacioncredito',
         component: () => import("layouts/manuallayout.vue"),
-        children: [{ path: "", component: () => import('pages/manuals/m_facturacioncredito.vue')}]
+        children: [{ path: "", component: () => import('pages/manuals/m_facturacionCredito.vue')}]
       },
       {
         path: '/m_anulacionguias',
