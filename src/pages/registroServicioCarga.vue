@@ -25,8 +25,9 @@
             anchor="center left"
             self="center right"
             :offset="[5, 10]"
-            >Guardar Guia</q-tooltip
           >
+            Guardar Guia (Ctrl + G)
+          </q-tooltip>
         </q-fab-action>
         <q-fab-action
           color="primary"
@@ -44,8 +45,9 @@
             self="center right"
             :offset="[5, 10]"
             color="primary"
-            >Limpiar Guia</q-tooltip
           >
+            Limpiar Guia (Ctrl + L)
+          </q-tooltip>
         </q-fab-action>
         <q-fab-action
           color="primary"
@@ -63,8 +65,9 @@
             self="center right"
             :offset="[5, 10]"
             color="primary"
-            >Imprimir Guia</q-tooltip
           >
+            Imprimir Guia (Ctrl + I)
+          </q-tooltip>
         </q-fab-action>
         <q-fab-action
           color="primary"
@@ -82,8 +85,9 @@
             :offset="[5, 10]"
             transition-hide="scale"
             color="primary"
-            >Reversar Guia</q-tooltip
           >
+            Reversar Guia (Ctrl + R)
+          </q-tooltip>
         </q-fab-action>
         <q-fab-action
           color="primary"
@@ -101,8 +105,9 @@
             self="center right"
             :offset="[5, 10]"
             color="primary"
-            >Tarifear</q-tooltip
           >
+            Tarifear (Ctrl + F)
+          </q-tooltip>
         </q-fab-action>
         <q-fab-action
           color="primary"
@@ -120,7 +125,8 @@
             :offset="[5, 10]"
             transition-hide="scale"
             color="primary"
-            >Detalle del Documento
+          >
+            Detalle del Documento (Ctrl + T)
           </q-tooltip>
         </q-fab-action>
       </q-fab>
@@ -1288,8 +1294,22 @@
                 class="pcmovil"
                 hint=""
                 :autofocus="true"
+                :tabindex="1"
                 @keyup.enter="
-                  if (form.nro_documento !== '') {
+                  if (
+                    form.nro_documento !== '' &&
+                    form.nro_documento !== this.nroRef
+                  ) {
+                    this.resetFormGuia();
+                    this.showTextLoading();
+                    this.validationGetGuia();
+                  }
+                "
+                @blur="
+                  if (
+                    form.nro_documento !== '' &&
+                    form.nro_documento !== this.nroRef
+                  ) {
                     this.resetFormGuia();
                     this.showTextLoading();
                     this.validationGetGuia();
@@ -1322,13 +1342,9 @@
                 outlined
                 v-model="nro_factura"
                 label="NRO. Factura"
-                :readonly="true"
+                :disable="true"
                 hint=""
                 dense
-                @update:model-value="
-                  form.nro_documento = form.nro_documento.toUpperCase()
-                "
-                lazy-rules
               >
               </q-input>
             </div>
@@ -1338,7 +1354,7 @@
                 v-model="nro_doc"
                 label="NRO. DOC"
                 hint=""
-                :readonly="true"
+                :disable="true"
                 class="pcform pcmovil"
                 dense
               >
@@ -1351,11 +1367,7 @@
                 label="REF"
                 hint=""
                 dense
-                :readonly="true"
-                @update:model-value="
-                  form.nro_documento = form.nro_documento.toUpperCase()
-                "
-                lazy-rules
+                :disable="true"
               >
               </q-input>
             </div>
@@ -1403,6 +1415,8 @@
                       label="Emision"
                       hint=""
                       v-model="form.fecha_emision"
+                      :tabindex="2"
+                      :disable="this.guiaExiste"
                       lazy-rules
                       dense
                       style="padding-bottom: 10px"
@@ -1431,6 +1445,8 @@
                     <q-input
                       outlined
                       label="Envio"
+                      :tabindex="3"
+                      :disable="this.guiaExiste"
                       hint=""
                       dense
                       style="padding-bottom: 10px"
@@ -1460,10 +1476,10 @@
                     <q-input
                       outlined
                       label="Aplicación"
+                      :tabindex="4"
                       hint=""
                       dense
                       style="padding-bottom: 10px"
-                      :rules="[(val) => this.$refs.rulesVue.checkDate(val, '')]"
                       v-model="form.fecha_aplicacion"
                       mask="##/##/####"
                     >
@@ -1528,6 +1544,8 @@
                       style="padding-bottom: 10px"
                       v-model="form.nro_piezas"
                       label="Piezas"
+                      :tabindex="5"
+                      :disable="this.guiaExiste"
                       v-money="moneyNotDecimal"
                       input-class="text-right"
                       :rules="[
@@ -1547,6 +1565,8 @@
                       v-model="form.peso_kgs"
                       ref="formKGS"
                       label="Peso KGS"
+                      :tabindex="6"
+                      :disable="this.guiaExiste"
                       :rules="[
                         (val) => this.$refs.rulesVue.isReqCurrency(val, ''),
                         (val) => this.$refs.rulesVue.isMax(val, 9, ''),
@@ -1569,6 +1589,8 @@
                       false-value="0"
                       style="font-size: 13px"
                       label="Paquetes"
+                      :tabindex="7"
+                      :disable="this.guiaExiste"
                       @update:model-value="
                         if (this.checkbox.paquetes == '1') {
                           this.checkbox.sobres = '0';
@@ -1585,6 +1607,8 @@
                       false-value="0"
                       style="font-size: 13px"
                       label="Sobres"
+                      :tabindex="8"
+                      :disable="this.guiaExiste"
                       @update:model-value="
                         if (this.checkbox.sobres == '1') {
                           this.checkbox.paquetes = '0';
@@ -1634,6 +1658,8 @@
                       v-model="form.modalidad_pago"
                       ref="formModalidadPago"
                       label="Modalidad Pago"
+                      :tabindex="9"
+                      :disable="this.guiaExiste"
                       hint=""
                       :rules="[
                         (val) => this.$refs.rulesVue.isReqSelect(val, ''),
@@ -1651,6 +1677,8 @@
                       v-model="form.pagado_en"
                       ref="formPagado"
                       label="Pagado En"
+                      :tabindex="10"
+                      :disable="this.guiaExiste"
                       hint=""
                       :rules="[
                         (val) => this.$refs.rulesVue.isReqSelect(val, ''),
@@ -1703,10 +1731,11 @@
                       outlined
                       v-model="form.cod_agencia"
                       label="Agencia"
+                      :tabindex="11"
+                      :disable="this.guiaExiste"
                       ref="formAgencia"
                       dense
                       style="padding-bottom: 20px"
-                      :readonly="readonlyAgencia"
                       @click="
                         this.$q.notify({
                           message:
@@ -1739,9 +1768,7 @@
                       @update:model-value="
                         this.clientes_origen = [];
                         this.agentes = [];
-                        this.proveedores = [];
                         this.form.cod_agente_venta = '';
-                        this.form.cod_proveedor = '';
                         this.form.id_clte_part_orig = '';
                         this.$refs.methods.getData(
                           `/clientes`,
@@ -1758,17 +1785,6 @@
                           `/agentes`,
                           'setData',
                           'agentes',
-                          {
-                            headers: {
-                              Authorization: ``,
-                              agencia: this.form.cod_agencia.id,
-                            },
-                          }
-                        );
-                        this.$refs.methods.getData(
-                          `/proveedores`,
-                          'setData',
-                          'proveedores',
                           {
                             headers: {
                               Authorization: ``,
@@ -1795,6 +1811,8 @@
                       outlined
                       v-model="form.cod_cliente_org"
                       label="Cliente"
+                      :tabindex="12"
+                      :disable="this.guiaExiste"
                       ref="formClienteDestino"
                       :rules="[
                         (val) => this.$refs.rulesVue.isReqSelect(val, ''),
@@ -1881,6 +1899,8 @@
                       v-model="form.cod_agencia_dest"
                       ref="formAgenciaDestino"
                       label="Agencia"
+                      :tabindex="13"
+                      :disable="this.guiaExiste"
                       hint=""
                       dense
                       style="padding-bottom: 20px"
@@ -1954,6 +1974,8 @@
                         (val) => this.$refs.rulesVue.isReqSelect(val, ''),
                       ]"
                       label="Cliente"
+                      :tabindex="14"
+                      :disable="this.guiaExiste"
                       dense
                       style="padding-bottom: 20px"
                       hint=""
@@ -2001,6 +2023,8 @@
                       outlined
                       v-model="form.cod_zona_dest"
                       label="Zona"
+                      :tabindex="15"
+                      :disable="this.guiaExiste"
                       dense
                       use-input
                       hide-selected
@@ -2117,6 +2141,8 @@
                     false-value="0"
                     style="font-size: 13px; padding-left: 10px"
                     label="Nacional"
+                    :tabindex="16"
+                    :disable="this.guiaExiste"
                     @update:model-value="
                       if (this.checkbox.nacional == '1') {
                         this.checkbox.internacional = '0';
@@ -2132,6 +2158,8 @@
                     false-value="0"
                     style="font-size: 13px"
                     label="Internacional"
+                    :tabindex="17"
+                    :disable="this.guiaExiste"
                     @update:model-value="
                       if (this.checkbox.internacional == '1') {
                         this.checkbox.nacional = '0';
@@ -2161,6 +2189,8 @@
                     false-value="0"
                     style="font-size: 13px; padding-left: 10px"
                     label="Urbano"
+                    :tabindex="18"
+                    :disable="this.guiaExiste"
                     @update:model-value="
                       if (this.checkbox.urbano == '1') {
                         this.checkbox.extra_urbano = '0';
@@ -2176,6 +2206,8 @@
                     false-value="0"
                     style="font-size: 13px"
                     label="Extra-Urbano"
+                    :tabindex="19"
+                    :disable="this.guiaExiste"
                     @update:model-value="
                       if (this.checkbox.extra_urbano == '1') {
                         this.checkbox.urbano = '0';
@@ -2202,6 +2234,8 @@
                     false-value="0"
                     style="font-size: 13px; padding-left: 10px"
                     label="Normal"
+                    :tabindex="20"
+                    :disable="this.guiaExiste"
                     @update:model-value="
                       if (this.checkbox.normal == '1') {
                         this.checkbox.emergencia = '0';
@@ -2217,6 +2251,8 @@
                     false-value="0"
                     style="font-size: 13px"
                     label="Emergencia"
+                    :tabindex="21"
+                    :disable="this.guiaExiste"
                     @update:model-value="
                       if (this.checkbox.emergencia == '1') {
                         this.checkbox.normal = '0';
@@ -2266,6 +2302,7 @@
                       label="Monto Subtotal"
                       hint=""
                       dense
+                      :disable="true"
                       v-money="money"
                       input-class="text-right"
                       style="padding-bottom: 10px"
@@ -2283,6 +2320,7 @@
                       hint=""
                       :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
                       dense
+                      :disable="true"
                       v-money="money"
                       input-class="text-right"
                       style="padding-bottom: 10px"
@@ -2298,6 +2336,7 @@
                       v-money="money"
                       input-class="text-right"
                       hint=""
+                      :disable="true"
                       :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
                       dense
                       style="padding-bottom: 10px"
@@ -2314,6 +2353,7 @@
                       v-money="money"
                       input-class="text-right"
                       hint=""
+                      :disable="true"
                       :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
                       dense
                       style="padding-bottom: 10px"
@@ -2332,6 +2372,7 @@
                   outlined
                   v-model="form.cod_agente_venta"
                   label="Recolectado Por:"
+                  :tabindex="22"
                   :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, '')]"
                   hint=""
                   class="pcform"
@@ -2371,6 +2412,7 @@
                   v-model="form.cod_proveedor"
                   label="Proveedor del Transporte"
                   hint=""
+                  :tabindex="23"
                   use-input
                   hide-selected
                   style="padding-bottom: 10px"
@@ -2408,6 +2450,8 @@
                   outlined
                   v-model="form.dimensiones"
                   label="Dimensiones"
+                  :tabindex="24"
+                  :disable="this.guiaExiste"
                   dense
                   style="padding-bottom: 10px"
                   hint=""
@@ -2420,19 +2464,19 @@
                 </q-input>
               </div>
               <div class="col-md-6 col-xs-6">
-                <q-input
+                <q-select
                   outlined
                   v-model="form.desc_contenido"
                   label="Contenido"
+                  :tabindex="25"
+                  :disable="this.guiaExiste"
+                  hint=""
                   dense
                   style="padding-bottom: 10px"
-                  hint=""
-                  @update:model-value="
-                    form.desc_contenido = form.desc_contenido.toUpperCase()
-                  "
+                  :options="contenido"
                   lazy-rules
                 >
-                </q-input>
+                </q-select>
               </div>
             </div>
             <div class="row col-md-12 col-xs-12">
@@ -2441,6 +2485,7 @@
                   outlined
                   v-model="form.carga_neta"
                   label="Carga Neta"
+                  :tabindex="26"
                   hint=""
                   dense
                   style="padding-bottom: 10px"
@@ -2460,14 +2505,14 @@
                   outlined
                   v-model="form.valor_declarado_cod"
                   label="COD - Valor Declarado"
+                  :tabindex="27"
+                  :disable="this.guiaExiste"
                   hint=""
                   :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
                   dense
                   style="padding-bottom: 10px"
-                  @update:model-value="
-                    form.valor_declarado_cod =
-                      form.valor_declarado_cod.toUpperCase()
-                  "
+                  v-money="money"
+                  input-class="text-right"
                   lazy-rules
                 >
                 </q-input>
@@ -2479,17 +2524,15 @@
               outlined
               v-model="form.valor_declarado_seg"
               label="Seguro"
+              :tabindex="28"
+              :disable="this.guiaExiste"
               hint=""
-              :readonly="this.disabledSeguro"
               :rules="[(val) => this.$refs.rulesVue.isMax(val, 17, '')]"
               dense
               style="padding-bottom: 10px"
               class="pcform pcmovil"
-              @update:model-value="
-                form.valor_declarado_seg =
-                  form.valor_declarado_seg.toUpperCase();
-                this.updateSeguro();
-              "
+              v-money="money"
+              input-class="text-right"
               lazy-rules
             >
             </q-input>
@@ -2501,7 +2544,8 @@
               hint=""
               :rules="[(val) => this.$refs.rulesVue.isMax(val, 7, '')]"
               dense
-              :readonly="this.disabledPorcSeguro"
+              :tabindex="29"
+              :disable="this.disabledPorcSeguro"
               v-money="money"
               input-class="text-right"
               style="padding-bottom: 10px"
@@ -2516,11 +2560,29 @@
               </template>
             </q-input>
           </div>
+          <div
+            class="col-md-2 col-xs-12 margin_bottom"
+            style="padding-left: 40px; padding-top: 10px"
+          >
+            <q-checkbox
+              size="lg"
+              v-model="form.check_transito"
+              true-value="1"
+              false-value="0"
+              style="font-size: 12px"
+              label="PASA POR TRANSITO"
+              :tabindex="30"
+              :disable="this.guiaExiste"
+              @update:model-value="this.updateTransito()"
+            />
+          </div>
           <div class="col-md-3 col-xs-12">
             <q-select
               outlined
               v-model="form.cod_agencia_transito"
               label="Agencia Transito"
+              :tabindex="31"
+              :disable="this.disabledTransito"
               hint=""
               use-input
               hide-selected
@@ -2557,12 +2619,13 @@
             <q-input
               outlined
               label="Fecha Llegada Transito"
+              :tabindex="32"
+              :disable="this.disabledTransito"
               hint=""
               dense
               style="padding-bottom: 10px"
               v-model="form.fecha_llega_transito"
               mask="##/##/####"
-              :rules="[(val) => this.$refs.rulesVue.checkDate(val, '')]"
               lazy-rules
               class="pcform"
             >
@@ -2583,24 +2646,12 @@
               </template>
             </q-input>
           </div>
-          <div
-            class="col-md-2 col-xs-12 margin_bottom"
-            style="padding-right: 10px"
-          >
-            <q-checkbox
-              size="lg"
-              v-model="form.check_transito"
-              true-value="1"
-              false-value="0"
-              style="font-size: 13px"
-              label="PASEO POR TRANSITO"
-            />
-          </div>
           <div class="col-md-3 col-xs-12">
             <q-select
               outlined
               v-model="form.estatus_operativo"
               label="Estatus Operacional"
+              :tabindex="33"
               hint=""
               dense
               class="pcform"
@@ -2614,6 +2665,7 @@
               outlined
               v-model="form.estatus_administra"
               label="Estatus Administrativo"
+              :tabindex="34"
               hint=""
               :options="estatus_administrativo"
               class="pcform"
@@ -2628,15 +2680,13 @@
               outlined
               v-model="form.monto_ref_cte_sin_imp"
               label="Monto Referencia Cliente"
+              :tabindex="35"
               dense
               hint=""
+              v-money="money"
+              input-class="text-right"
               :rules="[(val) => this.$refs.rulesVue.isMax(val, 17, '')]"
               class="pcform"
-              type="number"
-              @update:model-value="
-                form.monto_ref_cte_sin_imp =
-                  form.monto_ref_cte_sin_imp.toUpperCase()
-              "
               lazy-rules
             >
               <template v-slot:append>
@@ -2649,6 +2699,7 @@
               outlined
               v-model="form.porc_comision"
               label="% X Zona"
+              :tabindex="36"
               v-money="money"
               input-class="text-right"
               class="pcform pcmovil"
@@ -2666,6 +2717,7 @@
               outlined
               v-model="form.porc_descuento"
               label="% Desc"
+              :tabindex="37"
               v-money="money"
               input-class="text-right"
               hint=""
@@ -2759,7 +2811,8 @@
       <q-card style="width: 700px">
         <q-card-section>
           <div class="text-h5" style="font-size: 18px">
-            La guía está tarificada, una vez que se encuentre completa no podrá ser modificada. ¿Está seguro de que la misma esta completa?..."
+            La guía está tarificada, una vez que se encuentre completa no podrá
+            ser modificada. ¿Está seguro de que la misma esta completa?..."
           </div>
         </q-card-section>
         <q-card-actions align="right">
@@ -2868,9 +2921,9 @@ export default {
         serie_documento: "",
         id_clte_part_dest: "",
         id_clte_part_orig: "",
-        fecha_emision: "",
-        fecha_envio: "",
-        fecha_aplicacion: "",
+        fecha_emision: moment().format("DD/MM/YYYY"),
+        fecha_envio: moment().format("DD/MM/YYYY"),
+        fecha_aplicacion: "00/00/0000",
         nro_piezas: "",
         peso_kgs: "",
         tipo_carga: "",
@@ -2905,6 +2958,13 @@ export default {
         monto_ref_cte_sin_imp: "",
         porc_comision: "",
         porc_descuento: "",
+        porc_impuesto: "",
+        comision_venta: 0,
+        comision_seg_vta: 0,
+        base_comision_vta_rcl: "",
+        base_comision_seg: 0,
+        monto_fpo: 0,
+        cod_fpo: "",
         id: "",
       },
       formClientes: {
@@ -2973,6 +3033,7 @@ export default {
       disabledCliente: true,
       disabledSeguro: true,
       disabledPorcSeguro: true,
+      disabledTransito: true,
       pais: "",
       estado: "",
       ciudad: "",
@@ -2980,7 +3041,6 @@ export default {
       valor_dolar: "",
       destino: false,
       cliente: false,
-      headerOrder_direction: "ASC",
       base64:
         "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CmVuZG9iagoKOSAwIG9iago8PC9UeXBlL0ZvbnQvU3VidHlwZS9UcnVlVHlwZS9CYXNlRm9udC9CQUFBQUErQXJpYWwtQm9sZE1UCi9GaXJzdENoYXIgMAovTGFzdENoYXIgMTEKL1dpZHRoc1s3NTAgNzIyIDYxMCA4ODkgNTU2IDI3NyA2NjYgNjEwIDMzMyAyNzcgMjc3IDU1NiBdCi9Gb250RGVzY3JpcHRvciA3IDAgUgovVG9Vbmljb2RlIDggMCBSCj4+CmVuZG9iagoKMTAgMCBvYmoKPDwKL0YxIDkgMCBSCj4+CmVuZG9iagoKMTEgMCBvYmoKPDwvRm9udCAxMCAwIFIKL1Byb2NTZXRbL1BERi9UZXh0XT4+CmVuZG9iagoKMSAwIG9iago8PC9UeXBlL1BhZ2UvUGFyZW50IDQgMCBSL1Jlc291cmNlcyAxMSAwIFIvTWVkaWFCb3hbMCAwIDU5NSA4NDJdL0dyb3VwPDwvUy9UcmFuc3BhcmVuY3kvQ1MvRGV2aWNlUkdCL0kgdHJ1ZT4+L0NvbnRlbnRzIDIgMCBSPj4KZW5kb2JqCgoxMiAwIG9iago8PC9Db3VudCAxL0ZpcnN0IDEzIDAgUi9MYXN0IDEzIDAgUgo+PgplbmRvYmoKCjEzIDAgb2JqCjw8L1RpdGxlPEZFRkYwMDQ0MDA3NTAwNkQwMDZEMDA3OTAwMjAwMDUwMDA0NDAwNDYwMDIwMDA2NjAwNjkwMDZDMDA2NT4KL0Rlc3RbMSAwIFIvWFlaIDU2LjcgNzczLjMgMF0vUGFyZW50IDEyIDAgUj4+CmVuZG9iagoKNCAwIG9iago8PC9UeXBlL1BhZ2VzCi9SZXNvdXJjZXMgMTEgMCBSCi9NZWRpYUJveFsgMCAwIDU5NSA4NDIgXQovS2lkc1sgMSAwIFIgXQovQ291bnQgMT4+CmVuZG9iagoKMTQgMCBvYmoKPDwvVHlwZS9DYXRhbG9nL1BhZ2VzIDQgMCBSCi9PdXRsaW5lcyAxMiAwIFIKPj4KZW5kb2JqCgoxNSAwIG9iago8PC9BdXRob3I8RkVGRjAwNDUwMDc2MDA2MTAwNkUwMDY3MDA2NTAwNkMwMDZGMDA3MzAwMjAwMDU2MDA2QzAwNjEwMDYzMDA2ODAwNkYwMDY3MDA2OTAwNjEwMDZFMDA2RTAwNjkwMDczPgovQ3JlYXRvcjxGRUZGMDA1NzAwNzIwMDY5MDA3NDAwNjUwMDcyPgovUHJvZHVjZXI8RkVGRjAwNEYwMDcwMDA2NTAwNkUwMDRGMDA2NjAwNjYwMDY5MDA2MzAwNjUwMDJFMDA2RjAwNzIwMDY3MDAyMDAwMzIwMDJFMDAzMT4KL0NyZWF0aW9uRGF0ZShEOjIwMDcwMjIzMTc1NjM3KzAyJzAwJyk+PgplbmRvYmoKCnhyZWYKMCAxNgowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMTE5OTcgMDAwMDAgbiAKMDAwMDAwMDAxOSAwMDAwMCBuIAowMDAwMDAwMjI0IDAwMDAwIG4gCjAwMDAwMTIzMzAgMDAwMDAgbiAKMDAwMDAwMDI0NCAwMDAwMCBuIAowMDAwMDExMTU0IDAwMDAwIG4gCjAwMDAwMTExNzYgMDAwMDAgbiAKMDAwMDAxMTM2OCAwMDAwMCBuIAowMDAwMDExNzA5IDAwMDAwIG4gCjAwMDAwMTE5MTAgMDAwMDAgbiAKMDAwMDAxMTk0MyAwMDAwMCBuIAowMDAwMDEyMTQwIDAwMDAwIG4gCjAwMDAwMTIxOTYgMDAwMDAgbiAKMDAwMDAxMjQyOSAwMDAwMCBuIAowMDAwMDEyNDk0IDAwMDAwIG4gCnRyYWlsZXIKPDwvU2l6ZSAxNi9Sb290IDE0IDAgUgovSW5mbyAxNSAwIFIKL0lEIFsgPEY3RDc3QjNEMjJCOUY5MjgyOUQ0OUZGNUQ3OEI4RjI4Pgo8RjdENzdCM0QyMkI5RjkyODI5RDQ5RkY1RDc4QjhGMjg+IF0KPj4Kc3RhcnR4cmVmCjEyNzg3CiUlRU9GCg==",
       reversada: false,
@@ -3004,7 +3064,6 @@ export default {
       clientes_destino: [],
       zonas_destino: [],
       agentes: [],
-      objetivetarificar: "",
       proveedores: [],
       proveedoresFiltered: [],
       agenciasDestFiltered: [],
@@ -3037,20 +3096,26 @@ export default {
         { label: "CREDITO", value: "CR" },
         { label: "PREPAGADA", value: "PP" },
       ],
+      contenido: [
+        {
+          label: "EQUIPOS Y ACCESORIOS DE COMPUTACION",
+          value: "EQUIPOS Y ACCESORIOS DE COMPUTACION",
+        },
+        { label: "EQUIPOS CELULARES", value: "EQUIPOS CELULARES" },
+        { label: "REPUESTOS", value: "REPUESTOS" },
+        { label: "PARABRISAS Y/O VIDRIOS", value: "PARABRISAS Y/O VIDRIOS" },
+        { label: "DOCUMENTOS", value: "DOCUMENTOS" },
+        { label: "VARIOS", value: "VARIOS" },
+      ],
       pagination: {
         rowsPerPage: 10,
         sortBy: "nro_item",
         descending: false,
       },
       error: "",
+      guiaExiste: false,
+      nroRef: "",
     };
-  },
-  watch: {
-    objetive(newValue) {
-      if (newValue == this.count) {
-        this.resetLoading();
-      }
-    },
   },
   setup() {
     const visible = ref(false);
@@ -3121,12 +3186,36 @@ export default {
     },
     // Metodo para Acciones con Comando de Teclado
     comandoteclas(event) {
-      if (
-        event.ctrlKey &&
-        event.keyCode == 72 &&
-        !(event.shiftKey || event.altKey || event.metaKey)
-      )
-        this.sendDataGuia();
+      if (event.ctrlKey && !(event.altKey || event.shiftKey || event.metaKey)) {
+        switch (event.keyCode) {
+          case 71:
+            event.preventDefault();
+            this.sendDataGuia();
+            break;
+          case 76:
+            event.preventDefault();
+            this.resetFormGuia();
+            break;
+          case 73:
+            event.preventDefault();
+            this.pdfView = true;
+            break;
+          case 82:
+            event.preventDefault();
+            this.reversar();
+            break;
+          case 70:
+            event.preventDefault();
+            this.tarificar();
+            break;
+          case 68:
+            event.preventDefault();
+            this.validacionDetalle();
+            break;
+          default:
+            break;
+        }
+      }
     },
     // Metodo para mostrar PDF en funcion de BASE 64
     pdfview() {
@@ -3270,7 +3359,7 @@ export default {
           message: error,
           color: "red",
         });
-        return false;
+        return;
       }
     },
     // Pasar un numero a numero con dos decimales en formato correcto para efectuar operaciones
@@ -3285,14 +3374,22 @@ export default {
         this.disabledPorcSeguro = true;
       }
     },
-    updateEstatusAdministra() {
-      if (
-        this.form.estatus_administra.value == "E" ||
-        !this.form.estatus_administra.value
-      ) {
-        this.disabledSeguro = false;
+    updateTransito() {
+      if (this.form.check_transito == "0") {
+        this.disabledTransito = true;
+        this.form.fecha_llega_transito = null;
       } else {
-        this.disabledSeguro = true;
+        if (!this.guiaExiste) {
+          this.disabledTransito = false;
+          this.form.fecha_llega_transito = moment().format("DD/MM/YYYY");
+        }
+      }
+    },
+    updateEstatusAdministra() {
+      if (this.form.estatus_administra.value == "E") {
+        this.guiaExiste = false;
+      } else {
+        this.guiaExiste = true;
       }
     },
     // Metodo para Tarificar una Guía
@@ -3303,19 +3400,7 @@ export default {
         form.nro_piezas = form.nro_piezas
           .replaceAll(".", "")
           .replaceAll(",", ".");
-        form.peso_kgs = form.peso_kgs.replaceAll(".", "").replaceAll(",", ".");
-        form.monto_subtotal = form.monto_subtotal
-          .replaceAll(".", "")
-          .replaceAll(",", ".");
-        form.monto_impuesto = form.monto_impuesto
-          .replaceAll(".", "")
-          .replaceAll(",", ".");
-        form.monto_total = form.monto_total
-          .replaceAll(".", "")
-          .replaceAll(",", ".");
-        form.monto_base = form.monto_base
-          .replaceAll(".", "")
-          .replaceAll(",", ".");
+        form.peso_kgs = form.peso_kgs.replaceAll(".", "").replaceAll(",", ".");        
         form.porc_apl_seguro = form.porc_apl_seguro
           .replaceAll(".", "")
           .replaceAll(",", ".");
@@ -3328,6 +3413,13 @@ export default {
         form.porc_comision = form.porc_comision
           .replaceAll(".", "")
           .replaceAll(",", ".");
+        form.valor_declarado_seg = form.valor_declarado_seg
+          .replaceAll(".", "")
+          .replaceAll(",", ".");  
+        form.valor_declarado_cod = form.valor_declarado_cod
+          .replaceAll(".", "")
+          .replaceAll(",", ".");
+          
         var monto_basico;
         var kgr_minimos;
         var kgs_adicionales;
@@ -3336,14 +3428,11 @@ export default {
         var comision;
         var porc_otros;
         var val_declarado_otros;
-        var monto_otros;
+        var monto_otros = 0;
         var monto_base;
-        var monto_seguro;
-        var val_porc_seg;
-        var val_declarado_seg;
-        var val_declarado_cod;
+        var monto_seguro = 0;
         var porc_cod;
-        var monto_cod;
+        var monto_cod = 0;
         var iva;
         var errorMessage;
         var monto_especial;
@@ -3356,7 +3445,7 @@ export default {
         if (this.checkbox.foraneo == "1") form.tipo_ubicacion = "F";
         if (this.checkbox.normal == "1") form.tipo_urgencia = "N";
         if (this.checkbox.emergencia == "1") form.tipo_urgencia = "E";
-        if (!this.agencias[0]) {
+        if (!this.form.cod_agencia.id) {
           this.$q.notify({
             message: "Debe Cargar una Guia",
             color: "red",
@@ -3379,85 +3468,70 @@ export default {
           });
           return;
         }
-        if (
-          !this.validateRules(
-            "formAgencia",
-            "Debe ingresar la Agencia Origen antes de tarifear"
-          )
-        ) {
-          this.resetLoading();
-          return error;
-        }
-        if (
-          !this.validateRules(
-            "formAgenciaDestino",
-            "Debe ingresar la Agencia Destino antes de tarifear"
-          )
-        ) {
-          this.resetLoading();
-          return error;
-        }
-        if (
-          !this.validateRules(
-            "formClienteDestino",
-            "Debe ingresar el Cliente Destino antes de tarifear"
-          )
-        ) {
-          this.resetLoading();
-          return error;
-        }
-        if (
-          !this.validateRules(
-            "formKGS",
-            "Debe ingresar la cantidad de KG antes de tarifear"
-          )
-        ) {
-          this.resetLoading();
-          return error;
-        }
-        if (
-          !this.validateRules(
-            "formModalidadPago",
-            "Debe ingresar la modalidad de pago antes de tarifear"
-          )
-        ) {
-          this.resetLoading();
-          return error;
-        }
-        if (
-          !this.validateRules(
-            "formPagado",
-            "Debe ingresar donde será pagada la guía antes de tarifear"
-          )
-        ) {
-          this.resetLoading();
-          return error;
-        }
+        this.validateRules(
+          "formAgencia",
+          "Debe ingresar la Agencia Origen antes de tarifear"
+        );
+        this.validateRules(
+          "formAgenciaDestino",
+          "Debe ingresar la Agencia Destino antes de tarifear"
+        );
+        this.validateRules(
+          "formClienteDestino",
+          "Debe ingresar el Cliente Destino antes de tarifear"
+        );
+        this.validateRules(
+          "formKGS",
+          "Debe ingresar la cantidad de KG antes de tarifear"
+        );
+        this.validateRules(
+          "formModalidadPago",
+          "Debe ingresar la modalidad de pago antes de tarifear"
+        );
+        this.validateRules(
+          "formPagado",
+          "Debe ingresar donde será pagada la guía antes de tarifear"
+        );
         if (
           !(this.checkbox.extra_urbano !== "0" || this.checkbox.urbano !== "0")
         ) {
-          errorMessage = "Debe ingresar el tipo de ubicación antes de tarifear";
-          return error;
+          this.$q.notify({
+            message: "Debe ingresar el tipo de ubicación antes de tarifear",
+            color: "red",
+          });
+          return;
         }
         if (
           !(this.checkbox.emergencia !== "0" || this.checkbox.normal !== "0")
         ) {
-          errorMessage = "Debe ingresar el tipo de urgencia antes de tarifear";
-          return error;
+          this.$q.notify({
+            message: "Debe ingresar el tipo de urgencia antes de tarifear",
+            color: "red",
+          });
+          return;
         }
         if (!(this.checkbox.paquetes !== "0" || this.checkbox.sobres !== "0")) {
-          errorMessage = "Debe ingresar el tipo de carga antes de tarifear";
-          return error;
+          this.$q.notify({
+            message: "Debe ingresar el tipo de carga antes de tarifear",
+            color: "red",
+          });
+          return;
         }
         if (!this.form.cod_agencia.ciudades.cod_region) {
-          errorMessage =
-            "Error del Sistema... No existe un Codigo de Region para la Agencia Origen Seleccionada";
-          return error;
+          this.$q.notify({
+            message:
+              "Error del Sistema... No existe un Codigo de Region para la Agencia Origen Seleccionada",
+            color: "red",
+          });
+          return;
         }
         if (!this.form.cod_agencia_dest.ciudades.cod_region) {
-          errorMessage =
-            "Error del Sistema... No existe un Codigo de Region para la Agencia Destino Seleccionada";
-          return error;
+          this.$q.notify({
+            message:
+              "Error del Sistema... No existe un Codigo de Region para la Agencia Destino Seleccionada",
+            color: "red",
+          });
+          return;
         }
 
         // setear los valores del concepto básico
@@ -3518,7 +3592,7 @@ export default {
             return error;
           });
 
-        // tarificar mínimo
+        // Buscar tarifa básica
         await api
           .get(`/tarifas`, {
             headers: {
@@ -3577,9 +3651,9 @@ export default {
             }
 
             this.detalle_movimiento[0].importe_renglon = monto_basico;
-            this.detalle_movimiento[0].cantidad = kgr_minimos;
+            this.detalle_movimiento[0].cantidad = kgr_minimos / 100;
             this.detalle_movimiento[0].precio_unitario =
-              this.parseFloatN(monto_basico) / this.parseFloatN(kgr_minimos);
+              (this.parseFloatN(monto_basico) / this.parseFloatN(kgr_minimos)) * 100;
           })
           .catch((err) => {
             if (err.response) {
@@ -3660,7 +3734,6 @@ export default {
             },
           };
         }
-        console.log(form.cod_agencia_dest.ciudades);
         if (form.tipo_ubicacion == "U" && form.modalidad_pago.value == "CR") {
           axiosConfig = {
             headers: {
@@ -3827,27 +3900,30 @@ export default {
                 100;
               monto_base =
                 this.parseFloatN(monto_basico) + this.parseFloatN(monto_kg_ad);
-              dif_comision =
-                this.parseFloatN(monto_base) - this.parseFloatN(comision);
-              monto_otros =
-                dif_comision >= 0
-                  ? 0
-                  : this.parseFloatN(comision) - this.parseFloatN(monto_base);
-            }
+              if (comision > 0) {
+                dif_comision =
+                  this.parseFloatN(monto_base) - this.parseFloatN(comision);
+                monto_otros =
+                  dif_comision >= 0
+                    ? 0
+                    : this.parseFloatN(comision) - this.parseFloatN(monto_base);
 
-            //Se incluye esta tarifa para manejar precio actualizado del $.
-            if (
-              monto_especial > 0 &&
-              comision < monto_especial &&
-              this.parseFloatN(monto_especial) - this.parseFloatN(monto_base) >
-                0
-            ) {
-              monto_otros =
-                this.parseFloatN(monto_especial) - this.parseFloatN(monto_base);
+                //Se incluye esta tarifa para manejar precio actualizado del $.
+                if (
+                  monto_especial > 0 &&
+                  comision < monto_especial &&
+                  this.parseFloatN(monto_especial) -
+                    this.parseFloatN(monto_base) >
+                    0
+                ) {
+                  monto_otros =
+                    this.parseFloatN(monto_especial) -
+                    this.parseFloatN(monto_base);
+                }
+              }
             }
-            if (monto_otros == null || monto_otros == "") monto_otros = 0;
-            this.detalle_movimiento[2].importe_renglon = monto_otros;
-            this.detalle_movimiento[2].precio_unitario = monto_otros;
+            this.detalle_movimiento[2].importe_renglon = monto_otros.toFixed(2);
+            this.detalle_movimiento[2].precio_unitario = monto_otros.toFixed(2);
           })
           .catch((err) => {
             if (err.response) {
@@ -3916,9 +3992,8 @@ export default {
           (this.parseFloatN(form.valor_declarado_seg) *
             this.parseFloatN(form.porc_apl_seguro)) /
           100;
-        if (monto_seguro == null || monto_seguro == "") monto_seguro = 0;
-        this.detalle_movimiento[3].precio_unitario = monto_seguro;
-        this.detalle_movimiento[3].importe_renglon = monto_seguro;
+        this.detalle_movimiento[3].precio_unitario = monto_seguro.toFixed(2);
+        this.detalle_movimiento[3].importe_renglon = monto_seguro.toFixed(2);
 
         // setear los valores del concepto COD
         this.detalle_movimiento[4] = {
@@ -3984,12 +4059,11 @@ export default {
           .then((res) => {
             porc_cod = res.data.valor;
             monto_cod =
-              (this.parseFloatN(form.valor_declarado_seg) *
+              (this.parseFloatN(form.valor_declarado_cod) *
                 this.parseFloatN(porc_cod)) /
               100;
-            if (monto_cod == null || monto_cod == "") monto_cod = 0;
-            this.detalle_movimiento[4].precio_unitario = monto_cod;
-            this.detalle_movimiento[4].importe_renglon = monto_cod;
+            this.detalle_movimiento[4].precio_unitario = monto_cod.toFixed(2);
+            this.detalle_movimiento[4].importe_renglon = monto_cod.toFixed(2);
           })
           .catch((err) => {
             if (err.response) {
@@ -4054,6 +4128,7 @@ export default {
             return error;
           });
 
+        // Bascamos el valor del IVA  
         await api
           .get(`/vcontrol/1`, {
             headers: {
@@ -4070,7 +4145,13 @@ export default {
             return error;
           });
 
-        // setear los valores del concepto gastos reembolsables
+        // setear los valores de los totales
+        form.monto_subtotal = 0;
+        form.monto_base = 0;
+        form.base_comision_vta_rcl = 0;
+        form.base_comision_seg = 0;
+        form.monto_impuesto = 0;
+        form.monto_total = 0;
         for (var i = 0; i <= this.detalle_movimiento.length - 1; i++) {
           form.monto_subtotal =
             this.parseFloatN(form.monto_subtotal) +
@@ -4080,27 +4161,31 @@ export default {
               this.parseFloatN(form.monto_base) +
               this.parseFloatN(this.detalle_movimiento[i].importe_renglon);
           }
+          if(this.detalle_movimiento[i].check_comision == 1 && this.detalle_movimiento[i].cod_concepto_oper == 1) {
+            form.base_comision_vta_rcl =
+              this.parseFloatN(form.base_comision_vta_rcl) +
+              this.parseFloatN(this.detalle_movimiento[i].importe_renglon);
+          }
+          if(this.detalle_movimiento[i].check_comision == 1 && this.detalle_movimiento[i].cod_concepto_oper == 2) {
+            form.base_comision_seg =
+              this.parseFloatN(form.base_comision_seg) +
+              this.parseFloatN(this.detalle_movimiento[i].importe_renglon);
+          }
           if (i == this.detalle_movimiento.length - 1) {
-            this.form.monto_subtotal = form.monto_subtotal
-              .toFixed(2)
-              .replaceAll(".", ",");
-            this.form.monto_base = form.monto_base
-              .toFixed(2)
-              .replaceAll(".", ",");
+            this.form.monto_subtotal = form.monto_subtotal.toFixed(2);
+            this.form.monto_base = form.monto_base.toFixed(2);
             this.form.monto_impuesto = (
               (this.parseFloatN(form.monto_base) * this.parseFloatN(iva)) /
               100
-            )
-              .toFixed(2)
-              .replaceAll(".", ",");
+            ).toFixed(2);
             this.form.monto_total = (
               this.parseFloatN(this.form.monto_subtotal) +
               this.parseFloatN(this.form.monto_impuesto)
-            )
-              .toFixed(2)
-              .replaceAll(".", ",");
-            this.form.porc_impuesto = iva.replaceAll(".", ","); //PORC IMPUESTO NO EXISTE
-            this.form.saldo = this.form.monto_total;
+            ).toFixed(2);
+            this.form.porc_impuesto = iva;
+            this.form.saldo = this.form.monto_total;            
+            this.form.base_comision_vta_rcl = form.base_comision_vta_rcl.toFixed(2);
+            this.form.base_comision_seg = form.base_comision_seg.toFixed(2);         
           }
         }
         this.$q.notify({
@@ -4136,6 +4221,7 @@ export default {
         var cod_agencia;
         var cod_cliente;
         var cod_agente;
+        this.nroRef = this.form.nro_documento;
 
         await api
           .get(`/mmovimientos`, {
@@ -4162,13 +4248,13 @@ export default {
           .get(`/cguias`, {
             headers: {
               Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-              desde: this.form.nro_documento,
-              nro_documento: this.form.nro_documento,
-              hasta: this.form.nro_documento,
+              desde_fact: this.form.nro_documento,
+              hasta_fact: this.form.nro_documento,
               tipo: 20,
             },
           })
           .then((res) => {
+            this.guiaExiste = false;
             if (res.data.data[0]) {
               cod_agencia = res.data.data[0].cod_agencia;
               cod_cliente = res.data.data[0].cod_cliente;
@@ -4216,7 +4302,6 @@ export default {
           })
           .then((res) => {
             this.agencias = res.data.data;
-            this.objetive += 1;
             if (this.filterAndReturn("agencias", "id", cod_agencia) >= 0) {
               this.form.cod_agencia =
                 this.agencias[
@@ -4239,7 +4324,6 @@ export default {
           })
           .then((res) => {
             this.clientes_origen = res.data.data;
-            this.objetive++;
             if (this.filterAndReturn("clientes_origen", "id", cod_cliente) >= 0)
               this.form.cod_cliente_org =
                 this.clientes_origen[
@@ -4275,7 +4359,9 @@ export default {
           .get(`/proveedores`, {
             headers: {
               Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-              agencia: this.form.cod_agencia.id,
+              tipo_servicio: "TP",
+              order_by: "nb_proveedor",
+              order_direction: "ASC",
             },
           })
           .then((res) => {
@@ -4294,17 +4380,18 @@ export default {
         this.form.check_transito = 0;
         this.form.estatus_operativo = this.estatus_operativo[0];
         this.form.check_pe = 1;
-        moment.locale("es");
-        var date = moment().format("L");
+        var date = moment().format("DD/MM/YYYY");
         this.form.fecha_pe = date;
         this.form.fecha_elab = date;
         this.form.fecha_emision = date;
         this.form.fecha_envio = date;
+        this.form.fecha_aplicacion = "00/00/0000";
         this.form.estatus_administra = this.estatus_administrativo[0];
         this.checkbox.nacional = "1";
         this.checkbox.urbano = "1";
         this.checkbox.normal = "1";
         this.form.check_elab = 1;
+        this.form.check_transito = "0";
         this.resetLoading();
       } catch (stopFuction) {
         if (errorMessage) {
@@ -4335,9 +4422,6 @@ export default {
     },
     // Metodo para Setear Datos de Detalles de Movimiento
     setDataDetalle(res) {
-      if (res.data[0]) {
-        this.readonlyAgencia = true;
-      }
       this.detalle_movimiento = res.data;
       this.loading = false;
     },
@@ -4350,6 +4434,7 @@ export default {
       try {
         var errorMessage;
         var res = res[0];
+        this.guiaExiste = res.estatus_administra == "E" ? false : true;
         var cod_agencia = res.cod_agencia;
         var cod_cliente_org = res.cod_cliente_org;
         var cod_agencia_dest = res.cod_agencia_dest;
@@ -4478,6 +4563,8 @@ export default {
         this.form.monto_ref_cte_sin_imp = res.monto_ref_cte_sin_imp;
         this.form.porc_comision = res.porc_comision;
         this.form.porc_descuento = res.porc_descuento;
+        this.form.base_comision_vta_rcl = res.base_comision_vta_rcl;
+        this.form.base_comision_seg = res.base_comision_seg;
 
         if (res.fecha_emision)
           this.form.fecha_emision = res.fecha_emision
@@ -4491,9 +4578,8 @@ export default {
             .join("/");
         if (res.fecha_aplicacion)
           this.form.fecha_aplicacion = res.fecha_aplicacion
-            .split("-")
-            .reverse()
-            .join("/");
+            ? res.fecha_aplicacion.split("-").reverse().join("/")
+            : "00/00/0000";
         if (res.fecha_llega_transito)
           this.form.fecha_llega_transito = res.fecha_llega_transito
             .split("-")
@@ -4561,7 +4647,14 @@ export default {
           });
 
         await api
-          .get(`/proveedores`, axiosConfig)
+          .get(`/proveedores`, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              tipo_servicio: "TP",
+              order_by: "nb_proveedor",
+              order_direction: "ASC",
+            },
+          })
           .then((res) => {
             this.proveedores = res.data.data;
             this.filterAndSet(
@@ -4684,15 +4777,19 @@ export default {
       var guia;
       var comisionVenta;
       var comisionSeguro;
+      var comVta = "";
+      var comSeg = "";
       this.showTextLoading();
       this.saveDetails = false;
       var form = JSON.parse(JSON.stringify(this.form));
       this.$refs.formData.validate().then(async (valid) => {
         try {
+          // Verifica los datos requeridos
           if (!valid) {
             errorMessage = "Este campo es requerido";
             return stopFuction;
           }
+          // Verifica el estatus administrativo antes de guardar
           if (
             form.estatus_administra == "E" ||
             form.estatus_administra == "P" ||
@@ -4703,6 +4800,7 @@ export default {
               "La guía no puede ser modificada bajo el estatus administrativo en el que se encuentra...";
             return stopFuction;
           }
+          // Veriica el DPT en cliente origen
           if (form.cod_cliente_org.cte_decontado == 1) {
             if (form.id_clte_part_orig) {
               await api
@@ -4754,6 +4852,7 @@ export default {
               }
             }
           }
+          // Veriica el DPT en cliente destino
           if (form.cod_cliente_dest.cte_decontado == 1) {
             if (form.id_clte_part_dest) {
               await api
@@ -4813,12 +4912,12 @@ export default {
           form.estatus_administra = form.estatus_administra.value;
           form.estatus_operativo = form.estatus_operativo.value;
           form.cod_agencia = form.cod_agencia.id;
+          form.cod_agente_venta = form.cod_agente_venta.id;
           form.cod_cliente_dest = form.cod_cliente_dest.id;
           form.cod_cliente_org = form.cod_cliente_org.id;
           form.cod_agencia_dest = form.cod_agencia_dest.id;
           form.cod_agencia_transito = form.cod_agencia_transito.id;
           form.cod_zona_dest = form.cod_zona_dest.id;
-          form.cod_agente_venta = form.cod_agente_venta.id;
           form.cod_proveedor = form.cod_proveedor.id;
           if (this.checkbox.paquetes == "1") form.tipo_carga = "PM";
           if (this.checkbox.sobres == "1") form.tipo_carga = "SB";
@@ -4882,32 +4981,32 @@ export default {
               .replaceAll(".", "")
               .replaceAll(",", ".");
           if (form.fecha_aplicacion)
-            form.fecha_aplicacion = form.fecha_aplicacion
-              .split("/")
-              .reverse()
-              .join("-");
+            form.fecha_aplicacion =
+              form.fecha_aplicacion != "00/00/0000"
+                ? form.fecha_aplicacion.split("/").reverse().join("-")
+                : null;
           if (form.fecha_emision)
             form.fecha_emision = form.fecha_emision
               .split("/")
               .reverse()
               .join("-");
           if (form.fecha_llega_transito)
-            form.fecha_llega_transito = form.fecha_llega_transito
-              .split("/")
-              .reverse()
-              .join("-");
-
+            form.fecha_llega_transito =
+              form.fecha_llega_transito != "00/00/0000"
+                ? form.fecha_llega_transito.split("/").reverse().join("-")
+                : null;
           if (form.fecha_pe)
             form.fecha_pe = form.fecha_pe.split("/").reverse().join("-");
-
           if (form.fecha_elab)
             form.fecha_elab = form.fecha_elab.split("/").reverse().join("-");
 
+          // Si la guia tiene detalles, valida el mismo
           if (this.detalle_movimiento[0]) {
-            this.validateDetails = false
+            this.validateDetails = false;
             this.validateDetallesPopUp = true;
             await this.until(
-              (_) => this.validateDetails == true || this.validateDetails == null
+              (_) =>
+                this.validateDetails == true || this.validateDetails == null
             );
             if (this.validateDetails == null) return stopFuction;
             for (var i = 0; i <= this.detalle_movimiento.length - 1; i++) {
@@ -4954,9 +5053,20 @@ export default {
                 return stopFuction;
               }
             }
-            if ((form.base_comision_vta_rcl > 0) && (form.base_comision_seg > 0)) {
+
+            if (!form.cod_agente_venta) {
+              this.$q.notify({
+                message: "Error de Usuario. Debe ingresar el agente que recolecto la carga antes de completar la guía",
+                color: "red",
+              });
+              return;
+            }
+
+            // Se genera la comisión del agente que realizo la venta
+            if (form.base_comision_vta_rcl > 0) {
+              //buscar comisión por venta del agente
               await api
-                .get(`/ciudades/${form.cod_agente_venta.id}`, {
+                .get(`/agentes/${form.cod_agente_venta}`, {
                   headers: {
                     Authorization: `Bearer ${LocalStorage.getItem("token")}`,
                   },
@@ -4969,7 +5079,26 @@ export default {
                     errorMessage =
                       "Error del Sistema. Problemas al buscar el % de comisión por venta. Revise el % del agente para que sea posible generar la comisión...";
                     return stopFuction;
+                  } else {
+                    form.comision_venta = (
+                      (this.parseFloatN(res.data.porc_comision_venta) *
+                        this.parseFloatN(form.base_comision_vta_rcl)) /
+                      100
+                    ).toFixed(2); 
                   }
+                });                          
+            }
+
+            // Se genera la comisión del seguro
+            if (form.base_comision_seg > 0) {
+              //buscar comisión por venta del agente
+              await api
+                .get(`/agentes/${form.cod_agente_venta}`, {
+                  headers: {
+                    Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                  },
+                })
+                .then((res) => {                  
                   if (
                     !res.data.porc_comision_seguro ||
                     res.data.porc_comision_seguro == 0
@@ -4977,47 +5106,44 @@ export default {
                     errorMessage =
                       "Error del Sistema. Problemas al buscar el % de comisión por seguro. Revise el % del agente para que sea posible generar la comisión...";
                     return stopFuction;
+                  } else {
+                    form.comision_seg_vta = (
+                      (this.parseFloatN(res.data.porc_comision_seguro) *
+                        this.parseFloatN(form.base_comision_seg)) /
+                      100
+                    ).toFixed(2); 
                   }
-                });
-              form.comision_seg_vta = (
-                (this.parseFloatN(res.data.porc_comision_seguro) *
-                  this.parseFloatN(form.base_comision_seg)) /
-                100
-              ).toFixed(2);
-
-              form.comision_venta = (
-                (this.parseFloatN(res.data.porc_comision_venta) *
-                  this.parseFloatN(form.base_comision_vta_rcl)) /
-                100
-              ).toFixed(2);
-
-              if (form.estatus_administra !== "G") {
-              form.estatus_administra = "F";
-              }
-
-              form.check_pxfac = 1;
-              moment.locale("es");
-              form.fecha_pxfac = moment()
-                .format("L")
-                .split("/")
-                .reverse()
-                .join("-");
+                });              
             }
-            // if (form.peso_kgs >= 0.001) {
-            // await api
-            //   .get(`/fpos`, {
-            //     headers: {
-            //       Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            //       fecha: moment().format("L").split("/").reverse().join("-"),
-            //       peso: form.peso_kgs,
-            //       monto_fpo: form.valor,
-            //     },
-            //   })
-            //   .then((res) => {
-            //     form.cod_fpo = res.data[0].cod_fpo;
-            //   });
-            // }
+
+            if (form.estatus_administra !== "G") form.estatus_administra = "F";
+
+            form.check_pxfac = 1;
+            form.fecha_pxfac = moment()
+              .format("DD/MM/YYYY")
+              .split("/")
+              .reverse()
+              .join("-");
+
+            // Guarda el FPO
+            if (form.peso_kgs >= 0.001) {
+              await api
+                .get(`/fpos`, {
+                  headers: {
+                    Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                    fecha: moment().format("YYYY-MM-DD"),
+                    peso: form.peso_kgs,
+                  },
+                })
+                .then((res) => {
+                  if (res.length > 0) {
+                    form.cod_fpo = res.data[0].cod_fpo;
+                    form.monto_fpo = res.data[0].valor;
+                  }                  
+                });
+            }
           } else {
+            // Si no tiene detalles
             this.saveDetallesPopUp = true;
             await this.until(
               (_) => this.saveDetails == true || this.saveDetails == null
@@ -5025,42 +5151,44 @@ export default {
             if (this.saveDetails == null) return stopFuction;
           }
 
-          if (!this.detalle_movimiento[0]) {
+          // Si la guia es nueva, rebaja la cantidad disponible
+          if (form.id == "") {
             await api
-            .get(`/cguias`, {
-              headers: {
-                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                desde_fact: form.nro_documento,
-                hasta_fact: form.nro_documento,
-                tipo: 20,
-              },
-            })
-            .then((res) => {
-              if (res.data.data[0]) {
-                guia = res.data.data[0];
-                guia.cant_disponible = guia.cant_disponible - 1;
-              } else {
+              .get(`/cguias`, {
+                headers: {
+                  Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                  desde_fact: form.nro_documento,
+                  hasta_fact: form.nro_documento,
+                  tipo: 20,
+                },
+              })
+              .then((res) => {
+                if (res.data.data[0]) {
+                  guia = res.data.data[0];
+                  guia.cant_disponible = guia.cant_disponible - 1;
+                } else {
+                  errorMessage =
+                    "No hay una Guía registrada para este Número de Documento...";
+                  return stopFuction;
+                }
+              });
+
+            delete guia.tipos;
+
+            await api
+              .put(`/cguias/${guia.id}`, guia, {
+                headers: {
+                  Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                },
+              })
+              .catch(() => {
                 errorMessage =
-                  "No hay una Guia registrada para este Numero de Documento...";
+                  "Error del Sistema. Problemas al actualizar el inventario de guías. Comuníquese con el proveedor del Sistemas...";
                 return stopFuction;
-              }
-            });
-
-          delete guia.tipos;
-
-          await api
-            .put(`/cguias/${guia.id}`, guia, {
-              headers: {
-                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-              },
-            })
-            .catch((err) => {
-              errorMessage =
-                "Error del Sistema. Problemas al actualizar el inventario de guías. Comuníquese con el proveedor del Sistemas...";
-              return stopFuction;
-            });
+              });
           }
 
+          // Guarda la guia
           if (form.id !== "") {
             delete form.porc_comision;
             if (form.id_clte_part_dest == "") delete form.id_clte_part_dest;
@@ -5068,8 +5196,6 @@ export default {
             if (this.reversada == true) {
               form.estatus_administra = "E";
               form.check_elab = 1;
-              moment.locale("es");
-              form.fecha_emision = moment().format("L");
               form.fecha_emision = form.fecha_emision
                 .split("/")
                 .reverse()
@@ -5082,24 +5208,16 @@ export default {
                 },
               })
               .then((res) => {
-                this.$q.notify({
-                  message: "Guia Actualizada",
-                  color: "green",
-                });
                 this.reversada = false;
                 this.destino = false;
                 this.cliente = false;
                 this.saveDetails = false;
-                this.count = 1;
-                this.objetive = 0;
               })
-              .catch((err) => {
+              .catch(() => {
                 this.reversada = false;
                 this.destino = false;
                 this.saveDetails = false;
                 this.cliente = false;
-                this.count = 1;
-                this.objetive = 0;
                 errorMessage =
                   "Error del Sistema. Problemas al actualizar los datos Generales de la Guía. Comuníquese con el proveedor del Sistemas...";
                 return stopFuction;
@@ -5117,192 +5235,199 @@ export default {
               })
               .then((res) => {
                 this.setDataGuia(res.data.data);
-                this.form.id = res.id;
-                this.$q.notify({
-                  message: "Guia Creada",
-                  color: "green",
-                });
+                this.form.id = res.id;                
               })
-              .catch((err) => {
+              .catch(() => {
                 errorMessage =
                   "Error del Sistema. Problemas al crear los datos Generales de la Guía. Comuníquese con el proveedor del Sistemas...";
                 return stopFuction;
               });
           }
 
+          // Si tiene detalles, lo guarda y guarda las comisiones
           if (this.detalle_movimiento[0]) {
-              await api
-                .get(`/ccomisiones`, {
-                  headers: {
-                    Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            // Busca la comision de Venta
+            await api
+              .get(`/ccomisiones`, {
+                headers: {
+                  Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                  cod_movimiento: this.form.id,
+                  mayor: "S",
+                  tipo: "V",
+                },
+              })
+              .then((res) => {
+                if (res.data.data[0]) {
+                  comVta = res.data.data[0].id;
+                  comisionVenta = {
+                    cod_agencia: form.cod_agencia,
+                    cod_agente: form.cod_agente_venta,
                     cod_movimiento: this.form.id,
-                    mayor: "S",
-                    tipo: "V",
+                    fecha_emision: form.fecha_emision,
+                    monto_comision: form.comision_venta,
+                    estatus: 0,
+                  };                  
+                } else {
+                  comisionVenta = {
+                    cod_agencia: form.cod_agencia,
+                    cod_agente: form.cod_agente_venta,
+                    cod_movimiento: this.form.id,
+                    fecha_emision: form.fecha_emision,
+                    monto_comision: form.comision_venta,
+                    tipo_comision: "V",
+                    estatus: 0,
+                  };                  
+                }
+              })
+              .catch(() => {
+                errorMessage =
+                  "Error del Sistema. Problemas al encontrar comisiones. Comuníquese con el proveedor del Sistemas";
+                return stopFuction;
+              });
+            
+            // Guarda la comision de Ventas
+            if (comVta != "") {
+              await api.put(`/ccomisiones/${comVta}`, comisionVenta, {
+                  headers: {
+                    Authorization: `Bearer ${LocalStorage.getItem(
+                      "token"
+                    )}`,
                   },
                 })
-                .then((res) => {
-                  if (res.data.data[0]) {
-                    comisionVenta = {
-                      cod_agencia: form.cod_agencia,
-                      cod_agente: form.cod_agente,
-                      cod_movimiento: this.form.id,
-                      fecha_emision: form.fecha_emision,
-                      monto_comision: form.comision_venta,
-                      estatus: 0,
-                    };
-                    api.put(
-                        `/ccomisiones/${res.data.data[0].id}`,
-                        comisionVenta,
-                        {
-                          headers: {
-                            Authorization: `Bearer ${LocalStorage.getItem(
-                              "token"
-                            )}`,
-                          },
-                        }
-                      )
-                      .catch((err) => {
-                        errorMessage =
-                          "Error del Sistema. Problemas al actualizar comisiones. Comuníquese con el proveedor del Sistemas";
-                        return stopFuction;
-                      });
-                  } else {
-                    comisionVenta = {
-                      cod_agencia: form.cod_agencia,
-                      cod_agente: form.cod_agente,
-                      cod_movimiento: this.form.id,
-                      fecha_emision: form.fecha_emision,
-                      monto_comision: form.comision_venta,
-                      tipo_comision: "V",
-                      estatus: 0,
-                    };
-                    api
-                      .post(`/ccomisiones/`, comisionVenta, {
-                        headers: {
-                          Authorization: `Bearer ${LocalStorage.getItem(
-                            "token"
-                          )}`,
-                        },
-                      })
-                      .catch((err) => {
-                        errorMessage =
-                          "Error del Sistema. Problemas al crear comisiones. Comuníquese con el proveedor del Sistemas";
-                        return stopFuction;
-                      });
-                  }
-                })
-                .catch((err) => {
+                .catch(() => {
                   errorMessage =
-                    "Error del Sistema. Problemas al encontrar comisiones. Comuníquese con el proveedor del Sistemas";
-                  return stopFuction;
+                    "Error del Sistema. Problemas al Actualizar comisión del Ventas. Comuníquese con el proveedor del Sistemas";
+                  return stopFuction;                  
                 });
+            } else {
+              await api
+                .post(`/ccomisiones/`, comisionVenta, {
+                  headers: {
+                    Authorization: `Bearer ${LocalStorage.getItem(
+                      "token"
+                    )}`,
+                  },
+                })
+                .catch(() => {
+                  errorMessage =
+                    "Error del Sistema. Problemas al Crear comisión del Ventas. Comuníquese con el proveedor del Sistemas";
+                  return stopFuction;                  
+                });
+            }
 
-              await api
-                .get(`/ccomisiones`, {
-                  headers: {
-                    Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            // Busca la comision de Seguro
+            await api
+              .get(`/ccomisiones`, {
+                headers: {
+                  Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                  cod_movimiento: this.form.id,
+                  mayor: "S",
+                  tipo: "S",
+                },
+              })
+              .then((res) => {
+                if (res.data.data[0]) {
+                  comSeg = res.data.data[0].id;
+                  comisionSeguro = {
+                    cod_agencia: form.cod_agencia,
+                    cod_agente: form.cod_agente_venta,
                     cod_movimiento: this.form.id,
-                    mayor: "S",
-                    tipo: "S",
+                    fecha_emision: form.fecha_emision,
+                    monto_comision: form.comision_seg_vta,
+                    estatus: 0,
+                  };                  
+                } else {
+                  comisionSeguro = {
+                    cod_agencia: form.cod_agencia,
+                    cod_agente: form.cod_agente_venta,
+                    cod_movimiento: this.form.id,
+                    fecha_emision: form.fecha_emision,
+                    monto_comision: form.comision_seg_vta,
+                    tipo_comision: "S",
+                    estatus: 0,
+                  };                  
+                }
+              })
+              .catch(() => {
+                errorMessage =
+                  "Error del Sistema. Problemas al encontrar comisiones. Comuníquese con el proveedor del Sistemas";
+                return stopFuction;
+              });
+
+            // Guarda la comision de Seguro
+            if (comSeg != "") {
+              await api
+                .put(
+                  `/ccomisiones/${comSeg}`,
+                  comisionSeguro,
+                  {
+                    headers: {
+                      Authorization: `Bearer ${LocalStorage.getItem(
+                        "token"
+                      )}`,
+                    },
+                  }
+                )
+                .catch(() => {
+                  errorMessage =
+                    "Error del Sistema. Problemas al Actualizar comisión del Seguro. Comuníquese con el proveedor del Sistemas";
+                  return stopFuction;                  
+                });
+            } else {
+              await api
+                .post(`/ccomisiones/`, comisionSeguro, {
+                  headers: {
+                    Authorization: `Bearer ${LocalStorage.getItem(
+                      "token"
+                    )}`,
                   },
                 })
-                .then((res) => {
-                  if (res.data.data[0]) {
-                    comisionSeguro = {
-                      cod_agencia: form.cod_agencia,
-                      cod_agente: form.cod_agente,
-                      cod_movimiento: this.form.id,
-                      fecha_emision: form.fecha_emision,
-                      monto_comision: form.comision_seg_vta,
-                      estatus: 0,
-                    };
-                    api
-                      .put(
-                        `/ccomisiones/${res.data.data[0].id}`,
-                        comisionSeguro,
-                        {
-                          headers: {
-                            Authorization: `Bearer ${LocalStorage.getItem(
-                              "token"
-                            )}`,
-                          },
-                        }
-                      )
-                      .catch((err) => {
-                        errorMessage =
-                          "Error del Sistema. Problemas al actualizar comisiones. Comuníquese con el proveedor del Sistemas";
-                        return stopFuction;
-                      });
-                  } else {
-                    comisionSeguro = {
-                      cod_agencia: form.cod_agencia,
-                      cod_agente: form.cod_agente,
-                      cod_movimiento: this.form.id,
-                      fecha_emision: form.fecha_emision,
-                      monto_comision: form.comision_seg_vta,
-                      tipo_comision: "V",
-                      estatus: 0,
-                    };
-                    api
-                      .post(`/ccomisiones/`, comisionSeguro, {
-                        headers: {
-                          Authorization: `Bearer ${LocalStorage.getItem(
-                            "token"
-                          )}`,
-                        },
-                      })
-                      .catch((err) => {
-                        errorMessage =
-                          "Error del Sistema. Problemas al crear comisiones. Comuníquese con el proveedor del Sistemas";
-                        return stopFuction;
-                      });
-                  }
-                })
-                .catch((err) => {
+                .catch(() => {
                   errorMessage =
-                    "Error del Sistema. Problemas al encontrar comisiones. Comuníquese con el proveedor del Sistemas";
-                  return stopFuction;
+                    "Error del Sistema. Problemas al Crear comisión del Seguro. Comuníquese con el proveedor del Sistemas";
+                  return stopFuction;                  
                 });
-            var detalle;
-            for (var i = 0; i <= this.detalle_movimiento.length - 1; i++) {
-              this.detalle_movimiento[i].cod_movimiento = this.form.id;
-              this.detalle_movimiento[i].cantidad = this.detalle_movimiento[
-                i
-              ].cantidad
+            }
+
+            // Guarda el Detalle            
+            var detalleTemp = JSON.parse(JSON.stringify(this.detalle_movimiento));
+            for (var i = 0; i <= detalleTemp.length - 1; i++) {
+              detalleTemp[i].cod_movimiento = this.form.id;
+              detalleTemp[i].cantidad = detalleTemp[i].cantidad
                 .replaceAll(".", "")
                 .replaceAll(",", ".");
-              this.detalle_movimiento[i].precio_unitario =
-                this.detalle_movimiento[i].precio_unitario
+              detalleTemp[i].precio_unitario =
+                detalleTemp[i].precio_unitario
                   .replaceAll(".", "")
                   .replaceAll(",", ".");
-              this.detalle_movimiento[i].importe_renglon =
-                this.detalle_movimiento[i].importe_renglon
+              detalleTemp[i].importe_renglon =
+                detalleTemp[i].importe_renglon
                   .replaceAll(".", "")
                   .replaceAll(",", ".");
-              if (this.detalle_movimiento[i].id == 0) {
-                detalle = this.detalle_movimiento[i];
-                delete detalle.conceptos;
+              delete detalleTemp[i].conceptos;    
+              if (detalleTemp[i].id == 0) {
+                delete detalleTemp[i].id;
+                delete detalleTemp[i].check_comision;
+                delete detalleTemp[i].check_impuesto;
                 api
-                  .post(`/dmovimientos`, detalle, {
+                  .post(`/dmovimientos`, detalleTemp[i], {
                     headers: {
                       Authorization: `Bearer ${LocalStorage.getItem("token")}`,
                     },
                   })
-                  .catch((err) => {
+                  .catch(() => {
                     errorMessage =
                       "Error del Sistema. Problemas al crear los datos del Detalle de la Guía. Comuníquese con el proveedor del Sistemas";
                     return stopFuction;
                   });
               } else {
-                detalle = this.detalle_movimiento[i];
-                delete detalle.conceptos;
                 api
-                  .put(`/dmovimientos/${detalle.id}`, detalle, {
+                  .put(`/dmovimientos/${detalleTemp[i].id}`, detalleTemp[i], {
                     headers: {
                       Authorization: `Bearer ${LocalStorage.getItem("token")}`,
                     },
                   })
-                  .catch((err) => {
+                  .catch(() => {
                     errorMessage =
                       "Error del Sistema. Problemas al actualizar los datos del Detalle de la Guía. Comuníquese con el proveedor del Sistemas";
                     return stopFuction;
@@ -5311,6 +5436,10 @@ export default {
             }
           }
           this.resetLoading();
+          this.$q.notify({
+            message: "Actualización Exitosa...",
+            color: "green",
+          });
         } catch (stopFuction) {
           this.resetLoading();
           if (errorMessage) {
@@ -5712,21 +5841,18 @@ export default {
     },
     // Metodo para Resetear Datos de Guia
     resetFormGuia() {
-      this.readonlyAgencia = false;
       this.disabledSeguro = true;
       this.nro_doc = "";
       this.nro_ref = "";
       this.reversada = false;
       this.destino = false;
       this.cliente = false;
-      this.count = 1;
-      this.objetive = 0;
       this.nro_factura = "";
       this.form.t_de_documento = "GC";
       this.form.serie_documento = "";
-      this.form.fecha_emision = "";
-      this.form.fecha_envio = "";
-      this.form.fecha_aplicacion = "";
+      this.form.fecha_emision = moment().format("DD/MM/YYYY");
+      this.form.fecha_envio = moment().format("DD/MM/YYYY");
+      this.form.fecha_aplicacion = "00/00/0000";
       this.form.nro_piezas = "";
       this.form.peso_kgs = "";
       this.form.tipo_carga = "";
@@ -5778,7 +5904,6 @@ export default {
       this.clientes_destino = [];
       this.zonas_destino = [];
       this.agencias = [];
-      this.conceptos = [];
     },
     // Metodo para Resetear Datos de Clientes
     resetFormClientes() {

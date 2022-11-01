@@ -632,13 +632,13 @@
         <template v-slot:body-cell-cod_agente="props">
           <q-td :props="props">
             {{
-              findIndex("agentes", props.row.cod_agente, "persona_responsable")
+              findIndex("agentesAll", props.row.cod_agente, "persona_responsable")
             }}
           </q-td>
         </template>
         <template v-slot:body-cell-cod_cliente="props">
           <q-td :props="props">
-            {{ findIndex("clientes", props.row.cod_cliente, "nb_cliente") }}
+            {{ findIndex("clientesAll", props.row.cod_cliente, "nb_cliente") }}
           </q-td>
         </template>
         <template v-slot:body-cell-action="props">
@@ -689,7 +689,7 @@
                     <q-item-label v-if="col.name === 'cod_agente'">
                       {{
                         findIndex(
-                          "agentes",
+                          "agentesAll",
                           props.row.cod_agente,
                           "persona_responsable"
                         )
@@ -698,7 +698,7 @@
                     <q-item-label v-if="col.name === 'cod_cliente'">
                       {{
                         findIndex(
-                          "clientes",
+                          "clientesAll",
                           props.row.cod_cliente,
                           "nb_cliente"
                         )
@@ -893,6 +893,8 @@ export default {
       },
       guias: [],
       guiasAll: [],
+      clientesAll: [],
+      agentesAll: [],
       agencias: [],
       rpermisos: [],
       menus: [],
@@ -936,6 +938,8 @@ export default {
   mounted() {
     this.$emit("changeTitle", "SCEN - Mantenimiento - Asignacion de Guias", "");
     this.$refs.methods.getData("/agencias", "setData", "agencias");
+    this.$refs.methods.getData("/clientes", "setData", "clientesAll");
+    this.$refs.methods.getData("/agentes", "setData", "agentesAll");
     this.getDataTable();
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
