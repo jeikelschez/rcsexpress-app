@@ -14,7 +14,10 @@
           style="margin-top: 15px"
           icon="save"
           class="z-top"
-          @click="sendDataGuia()"
+          @click="
+            this.closeDialogs();
+            this.sendDataGuia();
+          "
         >
           <q-tooltip
             ref="fabtp"
@@ -34,7 +37,7 @@
           style="margin-top: 15px"
           icon="filter_alt_off"
           class="z-top"
-          @click="resetFormGuia()"
+          @click="limpiarGuia()"
         >
           <q-tooltip
             class="bg-primary"
@@ -54,7 +57,10 @@
           icon="print"
           class="z-top"
           style="margin-top: 15px"
-          @click="this.pdfView = true"
+          @click="
+            closeDialogs();
+            this.pdfView = true;
+          "
         >
           <q-tooltip
             style="max-height: 30px"
@@ -74,7 +80,10 @@
           icon="close"
           class="z-top"
           style="margin-top: 15px"
-          @click="this.reversar()"
+          @click="
+            this.closeDialogs();
+            this.reversar();
+          "
         >
           <q-tooltip
             class="bg-primary"
@@ -93,7 +102,10 @@
           color="primary"
           icon="money"
           class="z-top"
-          @click="this.tarificar()"
+          @click="
+            this.closeDialogs();
+            this.tarificar();
+          "
           style="margin-top: 15px"
         >
           <q-tooltip
@@ -114,7 +126,10 @@
           style="margin-top: 15px"
           icon="description"
           class="z-top"
-          @click="validacionDetalle()"
+          @click="
+            this.closeDialogs();
+            this.showDetalle();
+          "
         >
           <q-tooltip
             class="bg-primary"
@@ -139,7 +154,7 @@
             <div class="row">
               <div
                 class="col-md-12 col-xs-12"
-                v-if="this.cliente == true"
+                v-if="this.cliente"
                 style="align-self: center; text-align: left; margin-top: -30px"
               >
                 <h4 style="font-size: 20px" class="text-secondary">
@@ -148,7 +163,7 @@
               </div>
               <div
                 class="col-md-12 col-xs-12"
-                v-if="this.cliente == false"
+                v-else
                 style="align-self: center; text-align: left; margin-top: -30px"
               >
                 <h4 style="font-size: 20px" class="text-secondary">
@@ -501,7 +516,6 @@
           :separator="separator"
           :filter="filter"
           v-model:pagination="pagination"
-          @request="getDataDetalles"
           style="width: 100%"
           :grid="$q.screen.xs"
           hide-bottom
@@ -533,11 +547,20 @@
                 dense
                 v-money="moneyNotDecimal"
                 v-model="props.row.cantidad"
+                :disable="
+                  props.row.nro_item == 1 || props.row.nro_item == 2
+                    ? this.disableGuia
+                      ? true
+                      : false
+                    : true
+                "
+                ref="cantidad"
                 :rules="[
                   (val) => this.$refs.rulesVue.isReq(val, ''),
-                  (val) => this.$refs.rulesVue.isMax(val, 12, ''),
+                  (val) => this.$refs.rulesVue.isMax(val, 9, ''),
                 ]"
                 hide-bottom-space
+                @keyup="this.calculaDetalle('cantidad', props.row)"
               >
               </q-input>
             </q-td>
@@ -550,11 +573,13 @@
                 input-class="text-right"
                 dense
                 v-model="props.row.importe_renglon"
+                :disable="this.disableGuia"
                 :rules="[
                   (val) => this.$refs.rulesVue.isReq(val, ''),
-                  (val) => this.$refs.rulesVue.isMax(val, 18, ''),
+                  (val) => this.$refs.rulesVue.isMax(val, 15, ''),
                 ]"
                 hide-bottom-space
+                @keyup="this.calculaDetalle('importe_renglon', props.row)"
               >
               </q-input>
             </q-td>
@@ -567,11 +592,13 @@
                 dense
                 v-money="money"
                 v-model="props.row.precio_unitario"
+                :disable="this.disableGuia"
                 :rules="[
                   (val) => this.$refs.rulesVue.isReq(val, ''),
-                  (val) => this.$refs.rulesVue.isMax(val, 18, ''),
+                  (val) => this.$refs.rulesVue.isMax(val, 15, ''),
                 ]"
                 hide-bottom-space
+                @keyup="this.calculaDetalle('precio_unitario', props.row)"
               >
               </q-input>
             </q-td>
@@ -592,15 +619,23 @@
                       <q-input
                         outlined
                         v-if="col.name == 'cantidad'"
+                        :disable="
+                          props.row.nro_item == 1 || props.row.nro_item == 2
+                            ? this.disableGuia
+                              ? true
+                              : false
+                            : true
+                        "
                         input-class="text-right"
                         dense
-                        v-money="money"
+                        v-money="moneyNotDecimal"
                         v-model="props.row.cantidad"
                         :rules="[
                           (val) => this.$refs.rulesVue.isReq(val, ''),
-                          (val) => this.$refs.rulesVue.isMax(val, 12, ''),
+                          (val) => this.$refs.rulesVue.isMax(val, 9, ''),
                         ]"
                         hide-bottom-space
+                        @keyup="this.calculaDetalle('cantidad', props.row)"
                       >
                       </q-input>
                       <q-input
@@ -611,11 +646,15 @@
                         dense
                         style="margin-bottom: 10px"
                         v-model="props.row.importe_renglon"
+                        :disable="this.disableGuia"
                         :rules="[
                           (val) => this.$refs.rulesVue.isReq(val, ''),
-                          (val) => this.$refs.rulesVue.isMax(val, 18, ''),
+                          (val) => this.$refs.rulesVue.isMax(val, 15, ''),
                         ]"
                         hide-bottom-space
+                        @keyup="
+                          this.calculaDetalle('importe_renglon', props.row)
+                        "
                       >
                       </q-input>
                       <q-input
@@ -625,11 +664,15 @@
                         dense
                         v-money="money"
                         v-model="props.row.precio_unitario"
+                        :disable="this.disableGuia"
                         :rules="[
                           (val) => this.$refs.rulesVue.isReq(val, ''),
-                          (val) => this.$refs.rulesVue.isMax(val, 18, ''),
+                          (val) => this.$refs.rulesVue.isMax(val, 15, ''),
                         ]"
                         hide-bottom-space
+                        @keyup="
+                          this.calculaDetalle('precio_unitario', props.row)
+                        "
                       >
                       </q-input>
                       <q-item-label
@@ -661,6 +704,7 @@
               outlined
               v-model="form.valor_declarado_cod"
               label="Valor COD"
+              :readonly="true"
               dense
               v-money="money"
               input-class="text-right"
@@ -675,6 +719,7 @@
               outlined
               v-model="form.valor_declarado_seg"
               label="Valor Seguro"
+              :readonly="true"
               dense
               class="pcform"
               v-money="money"
@@ -689,6 +734,7 @@
               outlined
               v-model="form.porc_apl_seguro"
               label="Porcentaje"
+              :readonly="true"
               v-money="money"
               input-class="text-right"
               class="pcform"
@@ -706,6 +752,7 @@
               v-money="money"
               input-class="text-right"
               label="Sub Total:"
+              :readonly="true"
               lazy-rules
               hint=""
             >
@@ -719,6 +766,7 @@
               v-money="money"
               input-class="text-right"
               label="Monto Base:"
+              :readonly="true"
               class="pcform"
               lazy-rules
               hint=""
@@ -731,6 +779,7 @@
               dense
               v-model="form.monto_impuesto"
               label="Impuesto:"
+              :readonly="true"
               v-money="money"
               input-class="text-right"
               class="pcform"
@@ -747,6 +796,7 @@
               v-money="money"
               input-class="text-right"
               label="Total"
+              :readonly="true"
               class="pcform"
               lazy-rules
               hint=""
@@ -759,6 +809,7 @@
               v-model="form.monto_ref_cte_sin_imp"
               label="Monto Ref. Cliente sin IVA"
               v-money="money"
+              :readonly="true"
               input-class="text-right"
               lazy-rules
               dense
@@ -804,7 +855,7 @@
                   label="RIF/CI"
                   dense
                   :rules="[(val) => this.$refs.rulesVue.isMin(val, 3, '')]"
-                  :readonly="this.disabledRif"
+                  :readonly="this.disableRif"
                   @blur="this.validateExistingClient()"
                   hint=""
                   lazy-rules
@@ -820,7 +871,7 @@
                   outlined
                   v-model="formClientesParticulares.cod_agencia"
                   label="Agencia"
-                  :readonly="this.disabledAgencia"
+                  :readonly="this.disableAgencia"
                   hint=""
                   dense
                   class="pcform"
@@ -862,7 +913,7 @@
                   outlined
                   v-model="formClientesParticulares.nb_cliente"
                   label="Cliente"
-                  :readonly="this.disabledCliente"
+                  :readonly="this.disableCliente"
                   dense
                   :rules="[(val) => this.$refs.rulesVue.isMin(val, 3, '')]"
                   lazy-rules
@@ -878,7 +929,7 @@
                   outlined
                   v-model="pais"
                   label="Pais"
-                  :readonly="this.disabledInputs"
+                  :readonly="this.disableInputs"
                   hint=""
                   dense
                   class="pcform"
@@ -943,7 +994,7 @@
                   label="Estado"
                   class="pcform"
                   hint=""
-                  :readonly="this.disabledInputs"
+                  :readonly="this.disableInputs"
                   :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, '')]"
                   :options="estadosFiltered"
                   @filter="
@@ -1023,7 +1074,7 @@
                   label="Ciudad"
                   dense
                   hint=""
-                  :readonly="this.disabledInputs"
+                  :readonly="this.disableInputs"
                   :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, '')]"
                   :options="ciudadesFiltered"
                   @filter="
@@ -1064,7 +1115,7 @@
                   label="Municipio"
                   hint=""
                   class="pcform"
-                  :readonly="this.disabledInputs"
+                  :readonly="this.disableInputs"
                   dense
                   :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, '')]"
                   :options="municipiosFiltered"
@@ -1118,7 +1169,7 @@
                   outlined
                   v-model="formClientesParticulares.cod_parroquia"
                   label="Parroquia"
-                  :readonly="this.disabledInputs"
+                  :readonly="this.disableInputs"
                   hint=""
                   class="pcform"
                   dense
@@ -1160,7 +1211,7 @@
                   v-model="formClientesParticulares.cod_localidad"
                   label="Localidad"
                   hint=""
-                  :readonly="this.disabledInputs"
+                  :readonly="this.disableInputs"
                   dense
                   :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, '')]"
                   :options="localidadesFiltered"
@@ -1200,7 +1251,7 @@
                   v-model="formClientesParticulares.telefonos"
                   label="Telefono"
                   :rules="[(val) => this.$refs.rulesVue.isMin(val, 3, '')]"
-                  :readonly="this.disabledInputs"
+                  :readonly="this.disableInputs"
                   class="pcform"
                   dense
                   hint=""
@@ -1215,7 +1266,7 @@
                 <q-input
                   outlined
                   v-model="formClientesParticulares.fax"
-                  :readonly="this.disabledInputs"
+                  :readonly="this.disableInputs"
                   label="Fax"
                   dense
                   hint=""
@@ -1232,7 +1283,7 @@
                   outlined
                   v-model="formClientesParticulares.direccion"
                   label="Direccion"
-                  :readonly="this.disabledInputs"
+                  :readonly="this.disableInputs"
                   :rules="[(val) => this.$refs.rulesVue.isMin(val, 3, '')]"
                   dense
                   hint=""
@@ -1250,7 +1301,7 @@
             >
               <q-btn
                 label="Actualizar Cliente"
-                :disable="this.disabledInputs"
+                :disable="this.disableInputs"
                 type="submit"
                 color="primary"
                 class="col-md-5 col-sm-5 col-xs-12"
@@ -1416,7 +1467,7 @@
                       hint=""
                       v-model="form.fecha_emision"
                       :tabindex="2"
-                      :disable="this.guiaExiste"
+                      :disable="this.disableGuia"
                       lazy-rules
                       dense
                       style="padding-bottom: 10px"
@@ -1446,7 +1497,7 @@
                       outlined
                       label="Envio"
                       :tabindex="3"
-                      :disable="this.guiaExiste"
+                      :disable="this.disableGuia"
                       hint=""
                       dense
                       style="padding-bottom: 10px"
@@ -1477,6 +1528,7 @@
                       outlined
                       label="Aplicación"
                       :tabindex="4"
+                      :disable="this.disableGuia"
                       hint=""
                       dense
                       style="padding-bottom: 10px"
@@ -1545,7 +1597,7 @@
                       v-model="form.nro_piezas"
                       label="Piezas"
                       :tabindex="5"
-                      :disable="this.guiaExiste"
+                      :disable="this.disableGuia"
                       v-money="moneyNotDecimal"
                       input-class="text-right"
                       :rules="[
@@ -1566,7 +1618,7 @@
                       ref="formKGS"
                       label="Peso KGS"
                       :tabindex="6"
-                      :disable="this.guiaExiste"
+                      :disable="this.disableGuia"
                       :rules="[
                         (val) => this.$refs.rulesVue.isReqCurrency(val, ''),
                         (val) => this.$refs.rulesVue.isMax(val, 9, ''),
@@ -1590,7 +1642,7 @@
                       style="font-size: 13px"
                       label="Paquetes"
                       :tabindex="7"
-                      :disable="this.guiaExiste"
+                      :disable="this.disableGuia"
                       @update:model-value="
                         if (this.checkbox.paquetes == '1') {
                           this.checkbox.sobres = '0';
@@ -1608,7 +1660,7 @@
                       style="font-size: 13px"
                       label="Sobres"
                       :tabindex="8"
-                      :disable="this.guiaExiste"
+                      :disable="this.disableGuia"
                       @update:model-value="
                         if (this.checkbox.sobres == '1') {
                           this.checkbox.paquetes = '0';
@@ -1659,7 +1711,7 @@
                       ref="formModalidadPago"
                       label="Modalidad Pago"
                       :tabindex="9"
-                      :disable="this.guiaExiste"
+                      :disable="this.disableGuia"
                       hint=""
                       :rules="[
                         (val) => this.$refs.rulesVue.isReqSelect(val, ''),
@@ -1678,7 +1730,7 @@
                       ref="formPagado"
                       label="Pagado En"
                       :tabindex="10"
-                      :disable="this.guiaExiste"
+                      :disable="this.disableGuia"
                       hint=""
                       :rules="[
                         (val) => this.$refs.rulesVue.isReqSelect(val, ''),
@@ -1732,7 +1784,7 @@
                       v-model="form.cod_agencia"
                       label="Agencia"
                       :tabindex="11"
-                      :disable="this.guiaExiste"
+                      :disable="this.disableGuia"
                       ref="formAgencia"
                       dense
                       style="padding-bottom: 20px"
@@ -1812,7 +1864,7 @@
                       v-model="form.cod_cliente_org"
                       label="Cliente"
                       :tabindex="12"
-                      :disable="this.guiaExiste"
+                      :disable="this.disableGuia"
                       ref="formClienteDestino"
                       :rules="[
                         (val) => this.$refs.rulesVue.isReqSelect(val, ''),
@@ -1900,7 +1952,7 @@
                       ref="formAgenciaDestino"
                       label="Agencia"
                       :tabindex="13"
-                      :disable="this.guiaExiste"
+                      :disable="this.disableGuia"
                       hint=""
                       dense
                       style="padding-bottom: 20px"
@@ -1975,7 +2027,7 @@
                       ]"
                       label="Cliente"
                       :tabindex="14"
-                      :disable="this.guiaExiste"
+                      :disable="this.disableGuia"
                       dense
                       style="padding-bottom: 20px"
                       hint=""
@@ -2018,13 +2070,13 @@
                       </template>
                     </q-select>
                   </div>
-                  <div class="col-md-10 col-xs-10">
+                  <div class="col-md-12 col-xs-12">
                     <q-select
                       outlined
                       v-model="form.cod_zona_dest"
                       label="Zona"
                       :tabindex="15"
-                      :disable="this.guiaExiste"
+                      :disable="this.disableGuia"
                       dense
                       use-input
                       hide-selected
@@ -2042,20 +2094,6 @@
                           )
                       "
                       hint=""
-                      @popup-show="
-                        this.$refs.methods.getData(
-                          `/zonas`,
-                          'setData',
-                          'zonas_destino',
-                          {
-                            headers: {
-                              Authorization: ``,
-                              agencia: this.form.cod_agencia_dest.id,
-                            },
-                          }
-                        )
-                      "
-                      behavior="dialog"
                       :options="zonasFiltered"
                       lazy-rules
                       option-label="nb_zona"
@@ -2068,30 +2106,6 @@
                         </q-item>
                       </template>
                     </q-select>
-                  </div>
-                  <div
-                    class="col-md-2 col-xs-2 items-start"
-                    style="text-align: center"
-                  >
-                    <q-btn
-                      dense
-                      color="primary"
-                      round
-                      @click="pushToWindow('/zonasagencia')"
-                      padding="sm"
-                      style="margin-left: 15px"
-                    >
-                      <q-icon size="25px" name="settings" color="white">
-                      </q-icon>
-                      <q-tooltip
-                        class="bg-primary"
-                        style="max-height: 30px"
-                        transition-show="scale"
-                        transition-hide="scale"
-                        color="primary"
-                        >Modificar Zonas</q-tooltip
-                      >
-                    </q-btn>
                   </div>
                 </div>
               </q-card-section>
@@ -2142,7 +2156,7 @@
                     style="font-size: 13px; padding-left: 10px"
                     label="Nacional"
                     :tabindex="16"
-                    :disable="this.guiaExiste"
+                    :disable="this.disableGuia"
                     @update:model-value="
                       if (this.checkbox.nacional == '1') {
                         this.checkbox.internacional = '0';
@@ -2159,7 +2173,7 @@
                     style="font-size: 13px"
                     label="Internacional"
                     :tabindex="17"
-                    :disable="this.guiaExiste"
+                    :disable="this.disableGuia"
                     @update:model-value="
                       if (this.checkbox.internacional == '1') {
                         this.checkbox.nacional = '0';
@@ -2190,7 +2204,7 @@
                     style="font-size: 13px; padding-left: 10px"
                     label="Urbano"
                     :tabindex="18"
-                    :disable="this.guiaExiste"
+                    :disable="this.disableGuia"
                     @update:model-value="
                       if (this.checkbox.urbano == '1') {
                         this.checkbox.extra_urbano = '0';
@@ -2207,7 +2221,7 @@
                     style="font-size: 13px"
                     label="Extra-Urbano"
                     :tabindex="19"
-                    :disable="this.guiaExiste"
+                    :disable="this.disableGuia"
                     @update:model-value="
                       if (this.checkbox.extra_urbano == '1') {
                         this.checkbox.urbano = '0';
@@ -2235,7 +2249,7 @@
                     style="font-size: 13px; padding-left: 10px"
                     label="Normal"
                     :tabindex="20"
-                    :disable="this.guiaExiste"
+                    :disable="this.disableGuia"
                     @update:model-value="
                       if (this.checkbox.normal == '1') {
                         this.checkbox.emergencia = '0';
@@ -2252,7 +2266,7 @@
                     style="font-size: 13px"
                     label="Emergencia"
                     :tabindex="21"
-                    :disable="this.guiaExiste"
+                    :disable="this.disableGuia"
                     @update:model-value="
                       if (this.checkbox.emergencia == '1') {
                         this.checkbox.normal = '0';
@@ -2299,6 +2313,7 @@
                     <q-input
                       outlined
                       v-model="form.monto_subtotal"
+                      ref="subtotal"
                       label="Monto Subtotal"
                       hint=""
                       dense
@@ -2373,6 +2388,7 @@
                   v-model="form.cod_agente_venta"
                   label="Recolectado Por:"
                   :tabindex="22"
+                  :disable="this.disableGuia"
                   :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, '')]"
                   hint=""
                   class="pcform"
@@ -2413,6 +2429,7 @@
                   label="Proveedor del Transporte"
                   hint=""
                   :tabindex="23"
+                  :disable="this.disableGuia"
                   use-input
                   hide-selected
                   style="padding-bottom: 10px"
@@ -2451,7 +2468,7 @@
                   v-model="form.dimensiones"
                   label="Dimensiones"
                   :tabindex="24"
-                  :disable="this.guiaExiste"
+                  :disable="this.disableGuia"
                   dense
                   style="padding-bottom: 10px"
                   hint=""
@@ -2469,7 +2486,7 @@
                   v-model="form.desc_contenido"
                   label="Contenido"
                   :tabindex="25"
-                  :disable="this.guiaExiste"
+                  :disable="this.disableGuia"
                   hint=""
                   dense
                   style="padding-bottom: 10px"
@@ -2486,6 +2503,7 @@
                   v-model="form.carga_neta"
                   label="Carga Neta"
                   :tabindex="26"
+                  :disable="this.disableGuia"
                   hint=""
                   dense
                   style="padding-bottom: 10px"
@@ -2506,7 +2524,7 @@
                   v-model="form.valor_declarado_cod"
                   label="COD - Valor Declarado"
                   :tabindex="27"
-                  :disable="this.guiaExiste"
+                  :disable="this.disableGuia"
                   hint=""
                   :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
                   dense
@@ -2514,6 +2532,7 @@
                   v-money="money"
                   input-class="text-right"
                   lazy-rules
+                  @keyup="this.calculaCod()"
                 >
                 </q-input>
               </div>
@@ -2525,7 +2544,7 @@
               v-model="form.valor_declarado_seg"
               label="Seguro"
               :tabindex="28"
-              :disable="this.guiaExiste"
+              :disable="this.disableGuia"
               hint=""
               :rules="[(val) => this.$refs.rulesVue.isMax(val, 17, '')]"
               dense
@@ -2534,6 +2553,7 @@
               v-money="money"
               input-class="text-right"
               lazy-rules
+              @keyup="this.calculaPorcSeguro()"
             >
             </q-input>
           </div>
@@ -2544,25 +2564,27 @@
               hint=""
               :rules="[(val) => this.$refs.rulesVue.isMax(val, 7, '')]"
               dense
+              label="% Seguro"
               :tabindex="29"
-              :disable="this.disabledPorcSeguro"
+              :disable="
+                this.disableGuia
+                  ? true
+                  : this.curReplace(this.form.valor_declarado_seg) > 0
+                  ? false
+                  : true
+              "
               v-money="money"
               input-class="text-right"
               style="padding-bottom: 10px"
               class="pcform"
-              @update:model-value="
-                form.porc_apl_seguro = form.porc_apl_seguro.toUpperCase()
-              "
               lazy-rules
+              @keyup="this.setDataSeguro()"
             >
-              <template v-slot:prepend>
-                <q-icon name="percent" />
-              </template>
             </q-input>
           </div>
           <div
             class="col-md-2 col-xs-12 margin_bottom"
-            style="padding-left: 40px; padding-top: 10px"
+            style="padding-left: 10px; padding-top: 10px"
           >
             <q-checkbox
               size="lg"
@@ -2572,7 +2594,7 @@
               style="font-size: 12px"
               label="PASA POR TRANSITO"
               :tabindex="30"
-              :disable="this.guiaExiste"
+              :disable="this.disableGuia"
               @update:model-value="this.updateTransito()"
             />
           </div>
@@ -2582,7 +2604,13 @@
               v-model="form.cod_agencia_transito"
               label="Agencia Transito"
               :tabindex="31"
-              :disable="this.disabledTransito"
+              :disable="
+                this.disableGuia
+                  ? true
+                  : form.check_transito == 0
+                  ? true
+                  : false
+              "
               hint=""
               use-input
               hide-selected
@@ -2620,7 +2648,13 @@
               outlined
               label="Fecha Llegada Transito"
               :tabindex="32"
-              :disable="this.disabledTransito"
+              :disable="
+                this.disableGuia
+                  ? true
+                  : form.check_transito == 0
+                  ? true
+                  : false
+              "
               hint=""
               dense
               style="padding-bottom: 10px"
@@ -2652,6 +2686,7 @@
               v-model="form.estatus_operativo"
               label="Estatus Operacional"
               :tabindex="33"
+              :disable="this.disableGuia"
               hint=""
               dense
               class="pcform"
@@ -2666,6 +2701,7 @@
               v-model="form.estatus_administra"
               label="Estatus Administrativo"
               :tabindex="34"
+              :disable="this.disableGuia"
               hint=""
               :options="estatus_administrativo"
               class="pcform"
@@ -2681,6 +2717,7 @@
               v-model="form.monto_ref_cte_sin_imp"
               label="Monto Referencia Cliente"
               :tabindex="35"
+              :disable="this.disableGuia"
               dense
               hint=""
               v-money="money"
@@ -2690,7 +2727,13 @@
               lazy-rules
             >
               <template v-slot:append>
-                <q-btn round dense flat icon="input" />
+                <q-btn
+                  round
+                  dense
+                  flat
+                  icon="input"
+                  @click="this.setMontoRef()"
+                />
               </template>
             </q-input>
           </div>
@@ -2700,14 +2743,12 @@
               v-model="form.porc_comision"
               label="% X Zona"
               :tabindex="36"
+              :disable="this.disableGuia"
               v-money="money"
               input-class="text-right"
               class="pcform pcmovil"
               hint=""
               dense
-              @update:model-value="
-                form.porc_comision = form.porc_comision.toUpperCase()
-              "
               lazy-rules
             >
             </q-input>
@@ -2718,14 +2759,12 @@
               v-model="form.porc_descuento"
               label="% Desc"
               :tabindex="37"
+              :disable="this.disableGuia"
               v-money="money"
               input-class="text-right"
               hint=""
               :rules="[(val) => this.$refs.rulesVue.isMax(val, 7, '')]"
               dense
-              @update:model-value="
-                form.porc_descuento = form.porc_descuento.toUpperCase()
-              "
               lazy-rules
             >
             </q-input>
@@ -2774,6 +2813,7 @@
             v-close-popup
             @click="
               this.reversada = true;
+              this.closeDialogs();
               this.sendDataGuia();
             "
           />
@@ -2875,7 +2915,7 @@ export default {
         prefix: "",
         suffix: "",
         precision: 2,
-        masked: true,
+        masked: false,
       },
       moneyNotDecimal: {
         decimal: ",",
@@ -2883,7 +2923,7 @@ export default {
         prefix: "",
         suffix: "",
         precision: 0,
-        masked: true,
+        masked: false,
       },
       columnsConceptos: [
         {
@@ -2903,6 +2943,15 @@ export default {
           label: "Precio Unitario",
           field: "precio_unitario",
           align: "right",
+          format: (val) =>
+            new Intl.NumberFormat("de-DE", {
+              style: "currency",
+              currency: "EUR",
+              currencyDisplay: "code",
+            })
+              .format(val)
+              .replace("EUR", "")
+              .trim(),
         },
         {
           name: "importe_renglon",
@@ -3022,18 +3071,14 @@ export default {
       saveDetails: false,
       validateDetails: false,
       rpermisos: [],
-      orderDirection: "",
       nro_factura: "",
       nro_doc: "",
       nro_ref: "",
-      disabledAgencia: true,
-      readonlyAgencia: false,
-      disabledInputs: true,
-      disabledRif: true,
-      disabledCliente: true,
-      disabledSeguro: true,
-      disabledPorcSeguro: true,
-      disabledTransito: true,
+      disableAgencia: true,
+      disableInputs: true,
+      disableRif: true,
+      disableCliente: true,
+      disableGuia: true,
       pais: "",
       estado: "",
       ciudad: "",
@@ -3112,9 +3157,8 @@ export default {
         sortBy: "nro_item",
         descending: false,
       },
-      error: "",
-      guiaExiste: false,
       nroRef: "",
+      iva: 0,
     };
   },
   setup() {
@@ -3162,6 +3206,7 @@ export default {
       "SCEN - Mantenimiento - Registro Servicio Carga",
       ""
     );
+
     document.addEventListener("keydown", this.comandoteclas);
     this.$refs.methods.getData(`/paises`, `setData`, `paises`);
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
@@ -3170,6 +3215,17 @@ export default {
         menu: "registroserviciocarga",
       },
     });
+
+    // Buscamos el valor del IVA
+    api
+      .get(`/vcontrol/1`, {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        },
+      })
+      .then((res) => {
+        this.iva = res.data.valor;
+      });
   },
   methods: {
     // Metodo para validar Permisos
@@ -3190,27 +3246,33 @@ export default {
         switch (event.keyCode) {
           case 71:
             event.preventDefault();
+            this.closeDialogs();
             this.sendDataGuia();
             break;
           case 76:
             event.preventDefault();
-            this.resetFormGuia();
+            this.closeDialogs();
+            this.limpiarGuia();
             break;
           case 73:
             event.preventDefault();
+            this.closeDialogs();
             this.pdfView = true;
             break;
           case 82:
             event.preventDefault();
+            this.closeDialogs();
             this.reversar();
             break;
           case 70:
             event.preventDefault();
+            this.closeDialogs();
             this.tarificar();
             break;
           case 68:
             event.preventDefault();
-            this.validacionDetalle();
+            this.closeDialogs();
+            this.showDetalle();
             break;
           default:
             break;
@@ -3221,8 +3283,8 @@ export default {
     pdfview() {
       this.$refs.webViewer.showpdf(this.base64);
     },
-    // Metodo para validar si el Detalle de Documento puede ser mostrado
-    validacionDetalle() {
+    // Metodo para mostart el Detalle de Documento
+    showDetalle() {
       if (!this.agencias[0]) {
         this.$q.notify({
           message: "Debe Cargar una Guía",
@@ -3275,13 +3337,13 @@ export default {
           .then((res) => {
             if (res.data.data[0]) {
               this.setDataClientesParticulares(res.data.data[0]);
-              this.disabledInputs = false;
-              this.disabledRif = true;
+              this.disableInputs = false;
+              this.disableRif = true;
               return;
             } else {
-              this.disabledInputs = false;
-              this.disabledCliente = false;
-              this.disabledRif = true;
+              this.disableInputs = false;
+              this.disableCliente = false;
+              this.disableRif = true;
             }
           });
       }
@@ -3303,8 +3365,7 @@ export default {
       if (
         !(
           this.form.estatus_administra.value == "F" ||
-          this.form.estatus_administra.value == "P" ||
-          this.form.estatus_administra.value == ""
+          this.form.estatus_administra.value == "P"
         )
       ) {
         this.$q.notify({
@@ -3367,59 +3428,32 @@ export default {
       number = Math.round(number * 100) / 100;
       return number;
     },
-    updateSeguro() {
-      if (this.form.valor_declarado_seg > 0) {
-        this.disabledPorcSeguro = false;
-      } else {
-        this.disabledPorcSeguro = true;
-      }
-    },
     updateTransito() {
       if (this.form.check_transito == "0") {
-        this.disabledTransito = true;
+        this.form.cod_agencia_transito = "";
         this.form.fecha_llega_transito = null;
       } else {
-        if (!this.guiaExiste) {
-          this.disabledTransito = false;
-          this.form.fecha_llega_transito = moment().format("DD/MM/YYYY");
-        }
+        this.form.fecha_llega_transito = moment().format("DD/MM/YYYY");
       }
     },
     updateEstatusAdministra() {
-      if (this.form.estatus_administra.value == "E") {
-        this.guiaExiste = false;
-      } else {
-        this.guiaExiste = true;
-      }
+      this.disableGuia =
+        this.form.estatus_administra.value == "E" ? false : true;
     },
     // Metodo para Tarificar una Guía
     async tarificar() {
       try {
         var error = true;
         var form = JSON.parse(JSON.stringify(this.form));
-        form.nro_piezas = form.nro_piezas
-          .replaceAll(".", "")
-          .replaceAll(",", ".");
-        form.peso_kgs = form.peso_kgs.replaceAll(".", "").replaceAll(",", ".");        
-        form.porc_apl_seguro = form.porc_apl_seguro
-          .replaceAll(".", "")
-          .replaceAll(",", ".");
-        form.porc_descuento = form.porc_descuento
-          .replaceAll(".", "")
-          .replaceAll(",", ".");
-        form.carga_neta = form.carga_neta
-          .replaceAll(".", "")
-          .replaceAll(",", ".");
-        form.porc_comision = form.porc_comision
-          .replaceAll(".", "")
-          .replaceAll(",", ".");
-        form.valor_declarado_seg = form.valor_declarado_seg
-          .replaceAll(".", "")
-          .replaceAll(",", ".");  
-        form.valor_declarado_cod = form.valor_declarado_cod
-          .replaceAll(".", "")
-          .replaceAll(",", ".");
-          
+        form.nro_piezas = this.curReplace(form.nro_piezas);
+        form.peso_kgs = this.curReplace(form.peso_kgs);
+        form.porc_apl_seguro = this.curReplace(form.porc_apl_seguro);
+        form.porc_descuento = this.curReplace(form.porc_descuento);
+        form.carga_neta = this.curReplace(form.carga_neta);
+        form.porc_comision = this.curReplace(form.porc_comision);
+        form.valor_declarado_seg = this.curReplace(form.valor_declarado_seg);
+        form.valor_declarado_cod = this.curReplace(form.valor_declarado_cod);
+
         var monto_basico;
         var kgr_minimos;
         var kgs_adicionales;
@@ -3433,7 +3467,6 @@ export default {
         var monto_seguro = 0;
         var porc_cod;
         var monto_cod = 0;
-        var iva;
         var errorMessage;
         var monto_especial;
         if (this.checkbox.paquetes == "1") form.tipo_carga = "PM";
@@ -3457,7 +3490,6 @@ export default {
             message: "La guía ya fue Tarificada",
             color: "red",
           });
-          this.detalle = true;
           return;
         }
         if (this.form.estatus_administra.value == "A") {
@@ -3541,14 +3573,14 @@ export default {
           nro_item: 1,
           conceptos: {
             desc_concepto: "",
+            check_impuesto: null,
+            check_comision: null,
           },
           cod_concepto: null,
           precio_unitario: null,
           cantidad: null,
           importe_renglon: null,
           cod_concepto_oper: null,
-          check_impuesto: null,
-          check_comision: null,
         };
 
         this.showTextLoading();
@@ -3578,8 +3610,10 @@ export default {
             },
           })
           .then((res) => {
-            this.detalle_movimiento[0].check_comision = res.data.check_comision;
-            this.detalle_movimiento[0].check_impuesto = res.data.check_impuesto;
+            this.detalle_movimiento[0].conceptos.check_comision =
+              res.data.check_comision;
+            this.detalle_movimiento[0].conceptos.check_impuesto =
+              res.data.check_impuesto;
             this.detalle_movimiento[0].conceptos.desc_concepto =
               res.data.desc_concepto;
             this.detalle_movimiento[0].cod_concepto_oper =
@@ -3650,10 +3684,11 @@ export default {
               }
             }
 
-            this.detalle_movimiento[0].importe_renglon = monto_basico;
             this.detalle_movimiento[0].cantidad = kgr_minimos / 100;
             this.detalle_movimiento[0].precio_unitario =
-              (this.parseFloatN(monto_basico) / this.parseFloatN(kgr_minimos)) * 100;
+              (this.parseFloatN(monto_basico) / this.parseFloatN(kgr_minimos)) *
+              100;
+            this.detalle_movimiento[0].importe_renglon = monto_basico;
           })
           .catch((err) => {
             if (err.response) {
@@ -3669,14 +3704,14 @@ export default {
           nro_item: 2,
           conceptos: {
             desc_concepto: "",
+            check_impuesto: null,
+            check_comision: null,
           },
           cod_concepto: null,
           precio_unitario: null,
           cantidad: null,
           importe_renglon: null,
           cod_concepto_oper: null,
-          check_impuesto: null,
-          check_comision: null,
         };
 
         // tarificar kg adicionales
@@ -3704,8 +3739,10 @@ export default {
             },
           })
           .then((res) => {
-            this.detalle_movimiento[1].check_comision = res.data.check_comision;
-            this.detalle_movimiento[1].check_impuesto = res.data.check_impuesto;
+            this.detalle_movimiento[1].conceptos.check_comision =
+              res.data.check_comision;
+            this.detalle_movimiento[1].conceptos.check_impuesto =
+              res.data.check_impuesto;
             this.detalle_movimiento[1].conceptos.desc_concepto =
               res.data.desc_concepto;
             this.detalle_movimiento[1].cod_concepto_oper =
@@ -3798,9 +3835,9 @@ export default {
             }
 
             this.detalle_movimiento[1].cantidad = kgs_adicionales;
-            this.detalle_movimiento[1].importe_renglon = monto_kg_ad;
+            this.detalle_movimiento[1].importe_renglon = monto_kg_ad.toFixed(2);
             this.detalle_movimiento[1].precio_unitario =
-              res.data[0].monto_tarifa;
+              res.data[0].monto_tarifa.toFixed(2);
           })
           .catch((err) => {
             if (err.response) {
@@ -3816,14 +3853,14 @@ export default {
           nro_item: 3,
           conceptos: {
             desc_concepto: "",
+            check_impuesto: null,
+            check_comision: null,
           },
           cod_concepto: null,
           precio_unitario: null,
           cantidad: 1,
           importe_renglon: null,
           cod_concepto_oper: null,
-          check_impuesto: null,
-          check_comision: null,
         };
 
         // tarificar otros
@@ -3851,8 +3888,10 @@ export default {
             },
           })
           .then((res) => {
-            this.detalle_movimiento[2].check_comision = res.data.check_comision;
-            this.detalle_movimiento[2].check_impuesto = res.data.check_impuesto;
+            this.detalle_movimiento[2].conceptos.check_comision =
+              res.data.check_comision;
+            this.detalle_movimiento[2].conceptos.check_impuesto =
+              res.data.check_impuesto;
             this.detalle_movimiento[2].conceptos.desc_concepto =
               res.data.desc_concepto;
             this.detalle_movimiento[2].cod_concepto_oper =
@@ -3939,14 +3978,14 @@ export default {
           nro_item: 4,
           conceptos: {
             desc_concepto: "",
+            check_impuesto: null,
+            check_comision: null,
           },
           cod_concepto: null,
           precio_unitario: null,
           cantidad: 1,
           importe_renglon: null,
           cod_concepto_oper: null,
-          check_impuesto: null,
-          check_comision: null,
         };
 
         // tarificar seguro
@@ -3974,8 +4013,10 @@ export default {
             },
           })
           .then((res) => {
-            this.detalle_movimiento[3].check_comision = res.data.check_comision;
-            this.detalle_movimiento[3].check_impuesto = res.data.check_impuesto;
+            this.detalle_movimiento[3].conceptos.check_comision =
+              res.data.check_comision;
+            this.detalle_movimiento[3].conceptos.check_impuesto =
+              res.data.check_impuesto;
             this.detalle_movimiento[3].conceptos.desc_concepto =
               res.data.desc_concepto;
             this.detalle_movimiento[3].cod_concepto_oper =
@@ -4002,14 +4043,14 @@ export default {
           nro_item: 5,
           conceptos: {
             desc_concepto: "",
+            check_impuesto: null,
+            check_comision: null,
           },
           cod_concepto: null,
           precio_unitario: null,
           cantidad: 1,
           importe_renglon: null,
           cod_concepto_oper: null,
-          check_impuesto: null,
-          check_comision: null,
         };
 
         // tarificar COD
@@ -4036,8 +4077,10 @@ export default {
             },
           })
           .then((res) => {
-            this.detalle_movimiento[4].check_comision = res.data.check_comision;
-            this.detalle_movimiento[4].check_impuesto = res.data.check_impuesto;
+            this.detalle_movimiento[4].conceptos.check_comision =
+              res.data.check_comision;
+            this.detalle_movimiento[4].conceptos.check_impuesto =
+              res.data.check_impuesto;
             this.detalle_movimiento[4].conceptos.desc_concepto =
               res.data.desc_concepto;
             this.detalle_movimiento[4].cod_concepto_oper =
@@ -4079,14 +4122,14 @@ export default {
           nro_item: 6,
           conceptos: {
             desc_concepto: "",
+            check_impuesto: null,
+            check_comision: null,
           },
           cod_concepto: null,
           precio_unitario: 0,
           cantidad: 1,
           importe_renglon: 0,
           cod_concepto_oper: null,
-          check_impuesto: null,
-          check_comision: null,
         };
 
         // tarificar gastos reembolsables
@@ -4114,8 +4157,10 @@ export default {
             },
           })
           .then((res) => {
-            this.detalle_movimiento[5].check_comision = res.data.check_comision;
-            this.detalle_movimiento[5].check_impuesto = res.data.check_impuesto;
+            this.detalle_movimiento[5].conceptos.check_comision =
+              res.data.check_comision;
+            this.detalle_movimiento[5].conceptos.check_impuesto =
+              res.data.check_impuesto;
             this.detalle_movimiento[5].conceptos.desc_concepto =
               res.data.desc_concepto;
             this.detalle_movimiento[5].cod_concepto_oper =
@@ -4128,66 +4173,9 @@ export default {
             return error;
           });
 
-        // Bascamos el valor del IVA  
-        await api
-          .get(`/vcontrol/1`, {
-            headers: {
-              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            },
-          })
-          .then((res) => {
-            iva = res.data.valor;
-          })
-          .catch((err) => {
-            if (err.response) {
-              errorMessage = err.response.data.message;
-            }
-            return error;
-          });
-
         // setear los valores de los totales
-        form.monto_subtotal = 0;
-        form.monto_base = 0;
-        form.base_comision_vta_rcl = 0;
-        form.base_comision_seg = 0;
-        form.monto_impuesto = 0;
-        form.monto_total = 0;
-        for (var i = 0; i <= this.detalle_movimiento.length - 1; i++) {
-          form.monto_subtotal =
-            this.parseFloatN(form.monto_subtotal) +
-            this.parseFloatN(this.detalle_movimiento[i].importe_renglon);
-          if (this.detalle_movimiento[i].check_impuesto == 1) {
-            form.monto_base =
-              this.parseFloatN(form.monto_base) +
-              this.parseFloatN(this.detalle_movimiento[i].importe_renglon);
-          }
-          if(this.detalle_movimiento[i].check_comision == 1 && this.detalle_movimiento[i].cod_concepto_oper == 1) {
-            form.base_comision_vta_rcl =
-              this.parseFloatN(form.base_comision_vta_rcl) +
-              this.parseFloatN(this.detalle_movimiento[i].importe_renglon);
-          }
-          if(this.detalle_movimiento[i].check_comision == 1 && this.detalle_movimiento[i].cod_concepto_oper == 2) {
-            form.base_comision_seg =
-              this.parseFloatN(form.base_comision_seg) +
-              this.parseFloatN(this.detalle_movimiento[i].importe_renglon);
-          }
-          if (i == this.detalle_movimiento.length - 1) {
-            this.form.monto_subtotal = form.monto_subtotal.toFixed(2);
-            this.form.monto_base = form.monto_base.toFixed(2);
-            this.form.monto_impuesto = (
-              (this.parseFloatN(form.monto_base) * this.parseFloatN(iva)) /
-              100
-            ).toFixed(2);
-            this.form.monto_total = (
-              this.parseFloatN(this.form.monto_subtotal) +
-              this.parseFloatN(this.form.monto_impuesto)
-            ).toFixed(2);
-            this.form.porc_impuesto = iva;
-            this.form.saldo = this.form.monto_total;            
-            this.form.base_comision_vta_rcl = form.base_comision_vta_rcl.toFixed(2);
-            this.form.base_comision_seg = form.base_comision_seg.toFixed(2);         
-          }
-        }
+        this.calculaTotales();
+
         this.$q.notify({
           message: "Guia Tarificada",
           color: "green",
@@ -4254,7 +4242,6 @@ export default {
             },
           })
           .then((res) => {
-            this.guiaExiste = false;
             if (res.data.data[0]) {
               cod_agencia = res.data.data[0].cod_agencia;
               cod_cliente = res.data.data[0].cod_cliente;
@@ -4387,10 +4374,12 @@ export default {
         this.form.fecha_envio = date;
         this.form.fecha_aplicacion = "00/00/0000";
         this.form.estatus_administra = this.estatus_administrativo[0];
+        this.updateEstatusAdministra();
         this.checkbox.nacional = "1";
         this.checkbox.urbano = "1";
         this.checkbox.normal = "1";
         this.form.check_elab = 1;
+        this.checkbox.paquetes = "1";
         this.form.check_transito = "0";
         this.resetLoading();
       } catch (stopFuction) {
@@ -4434,7 +4423,6 @@ export default {
       try {
         var errorMessage;
         var res = res[0];
-        this.guiaExiste = res.estatus_administra == "E" ? false : true;
         var cod_agencia = res.cod_agencia;
         var cod_cliente_org = res.cod_cliente_org;
         var cod_agencia_dest = res.cod_agencia_dest;
@@ -4488,6 +4476,8 @@ export default {
           "estatus_administra"
         );
 
+        this.updateEstatusAdministra();
+
         if (
           !res.nro_ctrl_doc_ppal &&
           res.serie_doc_principal &&
@@ -4533,23 +4523,11 @@ export default {
             var dolar = res.data.data[0].valor;
             this.valor_dolar = (monto_total / dolar).toFixed(2);
           })
-          .catch((err) => {
+          .catch(() => {
             errorMessage =
               "Error del Sistema. No se pudo encontrar el valor del Dolar correspondiente a el dia de hoy";
             return error;
           });
-
-        if (res.estatus_administra == "E" || !res.estatus_administra) {
-          this.disabledSeguro = false;
-        } else {
-          this.disabledSeguro = true;
-        }
-
-        if (res.estatus_administra == "E" || res.val_declarado_seg > 0) {
-          this.disabledSeguro = false;
-        } else {
-          this.disabledSeguro = true;
-        }
 
         this.form.id_clte_part_dest = res.id_clte_part_dest;
         this.form.id_clte_part_orig = res.id_clte_part_orig;
@@ -4771,15 +4749,15 @@ export default {
         });
       }
     },
-    // Metodo para Enviar Datos de Guia
+    // Metodo para Guardar Datos de Guia
     async sendDataGuia() {
+      this.showTextLoading();
       var errorMessage = null;
       var guia;
       var comisionVenta;
       var comisionSeguro;
       var comVta = "";
       var comSeg = "";
-      this.showTextLoading();
       this.saveDetails = false;
       var form = JSON.parse(JSON.stringify(this.form));
       this.$refs.formData.validate().then(async (valid) => {
@@ -4791,10 +4769,13 @@ export default {
           }
           // Verifica el estatus administrativo antes de guardar
           if (
-            form.estatus_administra == "E" ||
-            form.estatus_administra == "P" ||
-            form.estatus_administra == "G" ||
-            form.estatus_administra == "F"
+            this.reversada != true &&
+            !(
+              form.estatus_administra.value == "E" ||
+              form.estatus_administra.value == "P" ||
+              form.estatus_administra.value == "G" ||
+              form.estatus_administra.value == "F"
+            )
           ) {
             errorMessage =
               "La guía no puede ser modificada bajo el estatus administrativo en el que se encuentra...";
@@ -4826,7 +4807,7 @@ export default {
                 });
             } else {
               this.resetFormClientes();
-              this.disabledRif = false;
+              this.disableRif = false;
               this.clienteLabelBox = true;
               this.destino = false;
               this.clienteLabel = "origen";
@@ -4882,7 +4863,7 @@ export default {
                 color: "red",
               });
               this.resetFormClientes();
-              this.disabledRif = false;
+              this.disableRif = false;
               this.clienteLabelBox = true;
               this.destino = true;
               this.clienteLabel = "destino";
@@ -4916,9 +4897,15 @@ export default {
           form.cod_cliente_dest = form.cod_cliente_dest.id;
           form.cod_cliente_org = form.cod_cliente_org.id;
           form.cod_agencia_dest = form.cod_agencia_dest.id;
-          form.cod_agencia_transito = form.cod_agencia_transito.id;
-          form.cod_zona_dest = form.cod_zona_dest.id;
-          form.cod_proveedor = form.cod_proveedor.id;
+          form.cod_agencia_transito = form.cod_agencia_transito
+            ? form.cod_agencia_transito.id
+            : null;
+          form.cod_zona_dest = form.cod_zona_dest
+            ? form.cod_zona_dest.id
+            : null;
+          form.cod_proveedor = form.cod_proveedor
+            ? form.cod_proveedor.id
+            : null;
           if (this.checkbox.paquetes == "1") form.tipo_carga = "PM";
           if (this.checkbox.sobres == "1") form.tipo_carga = "SB";
           if (this.checkbox.nacional == "1") form.tipo_servicio = "N";
@@ -4929,57 +4916,42 @@ export default {
           if (this.checkbox.normal == "1") form.tipo_urgencia = "N";
           if (this.checkbox.emergencia == "1") form.tipo_urgencia = "E";
           form.modalidad_pago = form.modalidad_pago.value;
+          form.desc_contenido = form.desc_contenido
+            ? form.desc_contenido.value
+            : null;
           form.pagado_en = form.pagado_en.value;
+
           if (form.fecha_envio)
             form.fecha_envio = form.fecha_envio.split("/").reverse().join("-");
           if (form.valor_declarado_cod)
-            form.valor_declarado_cod = form.valor_declarado_cod
-              .replaceAll(".", "")
-              .replaceAll(",", ".");
+            form.valor_declarado_cod = this.curReplace(
+              form.valor_declarado_cod
+            );
           if (form.valor_declarado_seg)
-            form.valor_declarado_seg = form.valor_declarado_seg
-              .replaceAll(".", "")
-              .replaceAll(",", ".");
+            form.valor_declarado_seg = this.curReplace(
+              form.valor_declarado_seg
+            );
           if (form.monto_ref_cte_sin_imp)
-            form.monto_ref_cte_sin_imp = form.monto_ref_cte_sin_imp
-              .replaceAll(".", "")
-              .replaceAll(",", ".");
+            form.monto_ref_cte_sin_imp = this.curReplace(
+              form.monto_ref_cte_sin_imp
+            );
           if (form.nro_piezas)
-            form.nro_piezas = form.nro_piezas
-              .replaceAll(".", "")
-              .replaceAll(",", ".");
-          if (form.peso_kgs)
-            form.peso_kgs = form.peso_kgs
-              .replaceAll(".", "")
-              .replaceAll(",", ".");
+            form.nro_piezas = this.curReplace(form.nro_piezas);
+          if (form.peso_kgs) form.peso_kgs = this.curReplace(form.peso_kgs);
           if (form.monto_subtotal)
-            form.monto_subtotal = form.monto_subtotal
-              .replaceAll(".", "")
-              .replaceAll(",", ".");
+            form.monto_subtotal = this.curReplace(form.monto_subtotal);
           if (form.monto_impuesto)
-            form.monto_impuesto = form.monto_impuesto
-              .replaceAll(".", "")
-              .replaceAll(",", ".");
+            form.monto_impuesto = this.curReplace(form.monto_impuesto);
           if (form.monto_total)
-            form.monto_total = form.monto_total
-              .replaceAll(".", "")
-              .replaceAll(",", ".");
+            form.monto_total = this.curReplace(form.monto_total);
           if (form.monto_base)
-            form.monto_base = form.monto_base
-              .replaceAll(".", "")
-              .replaceAll(",", ".");
+            form.monto_base = this.curReplace(form.monto_base);
           if (form.porc_apl_seguro)
-            form.porc_apl_seguro = form.porc_apl_seguro
-              .replaceAll(".", "")
-              .replaceAll(",", ".");
+            form.porc_apl_seguro = this.curReplace(form.porc_apl_seguro);
           if (form.porc_descuento)
-            form.porc_descuento = form.porc_descuento
-              .replaceAll(".", "")
-              .replaceAll(",", ".");
+            form.porc_descuento = this.curReplace(form.porc_descuento);
           if (form.carga_neta)
-            form.carga_neta = form.carga_neta
-              .replaceAll(".", "")
-              .replaceAll(",", ".");
+            form.carga_neta = this.curReplace(form.carga_neta);
           if (form.fecha_aplicacion)
             form.fecha_aplicacion =
               form.fecha_aplicacion != "00/00/0000"
@@ -5003,17 +4975,19 @@ export default {
           // Si la guia tiene detalles, valida el mismo
           if (this.detalle_movimiento[0]) {
             this.validateDetails = false;
-            this.validateDetallesPopUp = true;
-            await this.until(
-              (_) =>
-                this.validateDetails == true || this.validateDetails == null
-            );
-            if (this.validateDetails == null) return stopFuction;
+            if (this.reversada != true) {
+              this.validateDetallesPopUp = true;
+              await this.until(
+                (_) =>
+                  this.validateDetails == true || this.validateDetails == null
+              );
+              if (this.validateDetails == null) return stopFuction;
+            }
             for (var i = 0; i <= this.detalle_movimiento.length - 1; i++) {
               if (
                 this.$refs.rulesVue.isMax(
                   this.detalle_movimiento[i].cantidad,
-                  12,
+                  9,
                   false
                 ) ||
                 this.$refs.rulesVue.isReq(
@@ -5027,7 +5001,7 @@ export default {
               if (
                 this.$refs.rulesVue.isMax(
                   this.detalle_movimiento[i].importe_renglon,
-                  18,
+                  15,
                   false
                 ) ||
                 this.$refs.rulesVue.isReq(
@@ -5041,7 +5015,7 @@ export default {
               if (
                 this.$refs.rulesVue.isMax(
                   this.detalle_movimiento[i].precio_unitario,
-                  18,
+                  15,
                   false
                 ) ||
                 this.$refs.rulesVue.isReq(
@@ -5054,9 +5028,12 @@ export default {
               }
             }
 
+            this.detalle = false;
+
             if (!form.cod_agente_venta) {
               this.$q.notify({
-                message: "Error de Usuario. Debe ingresar el agente que recolecto la carga antes de completar la guía",
+                message:
+                  "Error de Usuario. Debe ingresar el agente que recolecto la carga antes de completar la guía",
                 color: "red",
               });
               return;
@@ -5084,9 +5061,9 @@ export default {
                       (this.parseFloatN(res.data.porc_comision_venta) *
                         this.parseFloatN(form.base_comision_vta_rcl)) /
                       100
-                    ).toFixed(2); 
+                    ).toFixed(2);
                   }
-                });                          
+                });
             }
 
             // Se genera la comisión del seguro
@@ -5098,7 +5075,7 @@ export default {
                     Authorization: `Bearer ${LocalStorage.getItem("token")}`,
                   },
                 })
-                .then((res) => {                  
+                .then((res) => {
                   if (
                     !res.data.porc_comision_seguro ||
                     res.data.porc_comision_seguro == 0
@@ -5111,9 +5088,9 @@ export default {
                       (this.parseFloatN(res.data.porc_comision_seguro) *
                         this.parseFloatN(form.base_comision_seg)) /
                       100
-                    ).toFixed(2); 
+                    ).toFixed(2);
                   }
-                });              
+                });
             }
 
             if (form.estatus_administra !== "G") form.estatus_administra = "F";
@@ -5136,10 +5113,10 @@ export default {
                   },
                 })
                 .then((res) => {
-                  if (res.length > 0) {
+                  if (res.data.length > 0) {
                     form.cod_fpo = res.data[0].cod_fpo;
                     form.monto_fpo = res.data[0].valor;
-                  }                  
+                  }
                 });
             }
           } else {
@@ -5196,11 +5173,21 @@ export default {
             if (this.reversada == true) {
               form.estatus_administra = "E";
               form.check_elab = 1;
-              form.fecha_emision = form.fecha_emision
-                .split("/")
-                .reverse()
-                .join("-");
+              this.disableGuia = false;
+            } else {
+              this.disableGuia = true;
             }
+
+            this.filterAndSet(
+              "estatus_administrativo",
+              "value",
+              form.estatus_administra,
+              "form",
+              "estatus_administra"
+            );
+
+            this.updateEstatusAdministra();
+
             await api
               .put(`/mmovimientos/${form.id}`, form, {
                 headers: {
@@ -5235,7 +5222,7 @@ export default {
               })
               .then((res) => {
                 this.setDataGuia(res.data.data);
-                this.form.id = res.id;                
+                this.form.id = res.id;
               })
               .catch(() => {
                 errorMessage =
@@ -5245,14 +5232,13 @@ export default {
           }
 
           // Si tiene detalles, lo guarda y guarda las comisiones
-          if (this.detalle_movimiento[0]) {
+          if (this.detalle_movimiento.length > 0) {
             // Busca la comision de Venta
             await api
               .get(`/ccomisiones`, {
                 headers: {
                   Authorization: `Bearer ${LocalStorage.getItem("token")}`,
                   cod_movimiento: this.form.id,
-                  mayor: "S",
                   tipo: "V",
                 },
               })
@@ -5266,7 +5252,7 @@ export default {
                     fecha_emision: form.fecha_emision,
                     monto_comision: form.comision_venta,
                     estatus: 0,
-                  };                  
+                  };
                 } else {
                   comisionVenta = {
                     cod_agencia: form.cod_agencia,
@@ -5276,7 +5262,7 @@ export default {
                     monto_comision: form.comision_venta,
                     tipo_comision: "V",
                     estatus: 0,
-                  };                  
+                  };
                 }
               })
               .catch(() => {
@@ -5284,34 +5270,31 @@ export default {
                   "Error del Sistema. Problemas al encontrar comisiones. Comuníquese con el proveedor del Sistemas";
                 return stopFuction;
               });
-            
+
             // Guarda la comision de Ventas
             if (comVta != "") {
-              await api.put(`/ccomisiones/${comVta}`, comisionVenta, {
+              await api
+                .put(`/ccomisiones/${comVta}`, comisionVenta, {
                   headers: {
-                    Authorization: `Bearer ${LocalStorage.getItem(
-                      "token"
-                    )}`,
+                    Authorization: `Bearer ${LocalStorage.getItem("token")}`,
                   },
                 })
                 .catch(() => {
                   errorMessage =
                     "Error del Sistema. Problemas al Actualizar comisión del Ventas. Comuníquese con el proveedor del Sistemas";
-                  return stopFuction;                  
+                  return stopFuction;
                 });
             } else {
               await api
                 .post(`/ccomisiones/`, comisionVenta, {
                   headers: {
-                    Authorization: `Bearer ${LocalStorage.getItem(
-                      "token"
-                    )}`,
+                    Authorization: `Bearer ${LocalStorage.getItem("token")}`,
                   },
                 })
                 .catch(() => {
                   errorMessage =
                     "Error del Sistema. Problemas al Crear comisión del Ventas. Comuníquese con el proveedor del Sistemas";
-                  return stopFuction;                  
+                  return stopFuction;
                 });
             }
 
@@ -5321,7 +5304,6 @@ export default {
                 headers: {
                   Authorization: `Bearer ${LocalStorage.getItem("token")}`,
                   cod_movimiento: this.form.id,
-                  mayor: "S",
                   tipo: "S",
                 },
               })
@@ -5335,7 +5317,7 @@ export default {
                     fecha_emision: form.fecha_emision,
                     monto_comision: form.comision_seg_vta,
                     estatus: 0,
-                  };                  
+                  };
                 } else {
                   comisionSeguro = {
                     cod_agencia: form.cod_agencia,
@@ -5345,7 +5327,7 @@ export default {
                     monto_comision: form.comision_seg_vta,
                     tipo_comision: "S",
                     estatus: 0,
-                  };                  
+                  };
                 }
               })
               .catch(() => {
@@ -5357,63 +5339,56 @@ export default {
             // Guarda la comision de Seguro
             if (comSeg != "") {
               await api
-                .put(
-                  `/ccomisiones/${comSeg}`,
-                  comisionSeguro,
-                  {
-                    headers: {
-                      Authorization: `Bearer ${LocalStorage.getItem(
-                        "token"
-                      )}`,
-                    },
-                  }
-                )
+                .put(`/ccomisiones/${comSeg}`, comisionSeguro, {
+                  headers: {
+                    Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                  },
+                })
                 .catch(() => {
                   errorMessage =
                     "Error del Sistema. Problemas al Actualizar comisión del Seguro. Comuníquese con el proveedor del Sistemas";
-                  return stopFuction;                  
+                  return stopFuction;
                 });
             } else {
               await api
                 .post(`/ccomisiones/`, comisionSeguro, {
                   headers: {
-                    Authorization: `Bearer ${LocalStorage.getItem(
-                      "token"
-                    )}`,
+                    Authorization: `Bearer ${LocalStorage.getItem("token")}`,
                   },
                 })
                 .catch(() => {
                   errorMessage =
                     "Error del Sistema. Problemas al Crear comisión del Seguro. Comuníquese con el proveedor del Sistemas";
-                  return stopFuction;                  
+                  return stopFuction;
                 });
             }
 
-            // Guarda el Detalle            
-            var detalleTemp = JSON.parse(JSON.stringify(this.detalle_movimiento));
+            // Guarda el Detalle
+            var detalleTemp = JSON.parse(
+              JSON.stringify(this.detalle_movimiento)
+            );
             for (var i = 0; i <= detalleTemp.length - 1; i++) {
               detalleTemp[i].cod_movimiento = this.form.id;
-              detalleTemp[i].cantidad = detalleTemp[i].cantidad
-                .replaceAll(".", "")
-                .replaceAll(",", ".");
-              detalleTemp[i].precio_unitario =
+              detalleTemp[i].cantidad = await this.curReplace(
+                detalleTemp[i].cantidad
+              );
+              detalleTemp[i].precio_unitario = await this.curReplace(
                 detalleTemp[i].precio_unitario
-                  .replaceAll(".", "")
-                  .replaceAll(",", ".");
-              detalleTemp[i].importe_renglon =
+              );
+              detalleTemp[i].importe_renglon = await this.curReplace(
                 detalleTemp[i].importe_renglon
-                  .replaceAll(".", "")
-                  .replaceAll(",", ".");
-              delete detalleTemp[i].conceptos;    
+              );
+              delete detalleTemp[i].conceptos;
               if (detalleTemp[i].id == 0) {
                 delete detalleTemp[i].id;
-                delete detalleTemp[i].check_comision;
-                delete detalleTemp[i].check_impuesto;
-                api
+                await api
                   .post(`/dmovimientos`, detalleTemp[i], {
                     headers: {
                       Authorization: `Bearer ${LocalStorage.getItem("token")}`,
                     },
+                  })
+                  .then((res) => {
+                    this.detalle_movimiento[i].id = res.data.id;
                   })
                   .catch(() => {
                     errorMessage =
@@ -5421,7 +5396,7 @@ export default {
                     return stopFuction;
                   });
               } else {
-                api
+                await api
                   .put(`/dmovimientos/${detalleTemp[i].id}`, detalleTemp[i], {
                     headers: {
                       Authorization: `Bearer ${LocalStorage.getItem("token")}`,
@@ -5435,6 +5410,7 @@ export default {
               }
             }
           }
+
           this.resetLoading();
           this.$q.notify({
             message: "Actualización Exitosa...",
@@ -5476,7 +5452,7 @@ export default {
         } else {
           this.formClientesParticulares.cod_agencia =
             this.form.cod_agencia_dest;
-          this.disabledRif = false;
+          this.disableRif = false;
           this.clienteLabelBox = true;
         }
       } else {
@@ -5496,7 +5472,7 @@ export default {
         } else {
           this.formClientesParticulares.cod_agencia =
             this.form.cod_agencia_dest;
-          this.disabledRif = false;
+          this.disableRif = false;
           this.clienteLabelBox = true;
         }
       }
@@ -5594,56 +5570,57 @@ export default {
                   })
                   .then((res) => {
                     this.parroquias = res.data.data;
-                    this.filterAndSet(
-                      "parroquias",
-                      "id",
-                      cod_parroquia,
-                      "formClientes",
-                      "cod_parroquia",
-                      "nb_parroquia"
-                    );
+                    if (cod_parroquia) {
+                      this.filterAndSet(
+                        "parroquias",
+                        "id",
+                        cod_parroquia,
+                        "formClientes",
+                        "cod_parroquia",
+                        "nb_parroquia"
+                      );
+                    }
                   });
               }
             });
             api.get(`/localidades`, axiosConfig).then((res) => {
               this.localidades = res.data.data;
-              this.filterAndSet(
-                "localidades",
-                "id",
-                cod_localidad,
-                "formClientes",
-                "cod_localidad",
-                "desc_localidad"
-              );
+              if (cod_localidad) {
+                this.filterAndSet(
+                  "localidades",
+                  "id",
+                  cod_localidad,
+                  "formClientes",
+                  "cod_localidad",
+                  "desc_localidad"
+                );
+              }
             });
           });
       }
     },
     // Metodo para Crear o Editar Clientes
     sendDataClientes() {
-      this.formClientes.cod_localidad = this.formClientes.cod_localidad.id;
-      this.formClientes.cod_municipio = this.formClientes.cod_municipio.id;
-      this.formClientes.cod_parroquia = this.formClientes.cod_parroquia.id;
-      this.formClientes.cod_ciudad = this.ciudad.id;
-      this.formClientes.cod_agencia = this.formClientes.cod_agencia.id;
-      this.formClientes.cod_agente = this.formClientes.cod_agente.id;
-      if (!this.formClientes.id) {
-        this.$refs.methods.createData(
-          `/clientes`,
-          this.formClientes,
-          "getData"
-        );
-        this.clientesBox = false;
-        this.resetFormClientes();
-      } else {
-        this.$refs.methods.putData(
-          `/clientes/${this.formClientes.id}`,
-          this.formClientes,
-          "getData"
-        );
-        this.clientesBox = false;
-        this.resetFormClientes();
-      }
+      var formClientesTemp = {};
+      formClientesTemp.id = this.formClientes.id;
+      formClientesTemp.cod_agencia = this.formClientes.cod_agencia.id;
+      formClientesTemp.cod_ciudad = this.formClientes.cod_ciudad.id;
+      formClientesTemp.cod_localidad = this.formClientes.cod_localidad.id;
+      formClientesTemp.cod_municipio = this.formClientes.cod_municipio.id;
+      formClientesTemp.cod_parroquia = this.formClientes.cod_parroquia.id;
+      formClientesTemp.nb_cliente = this.formClientes.nb_cliente;
+      formClientesTemp.rif_cedula = this.formClientes.rif_cedula;
+      formClientesTemp.dir_fiscal = this.formClientes.dir_fiscal;
+      formClientesTemp.razon_social = this.formClientes.razon_social;
+      formClientesTemp.tipo_persona = this.formClientes.tipo_persona;
+      formClientesTemp.modalidad_pago = this.formClientes.modalidad_pago;
+      this.$refs.methods.putData(
+        `/clientes/${formClientesTemp.id}`,
+        formClientesTemp,
+        "getData"
+      );
+      this.clientesBox = false;
+      this.resetFormClientes();
       this.$refs.methods.getData(`/clientes`, "setData", "clientes_origen", {
         headers: {
           Authorization: ``,
@@ -5660,7 +5637,7 @@ export default {
     // Metodo para Setear Clientes Particulares
     setDataClientesParticulares(res) {
       this.formClientesParticulares.id = res.id;
-      this.disabledInputs = false;
+      this.disableInputs = false;
       this.formClientesParticulares.direccion = res.direccion;
       this.formClientesParticulares.nb_cliente = res.nb_cliente;
       this.formClientesParticulares.rif_ci = res.rif_ci;
@@ -5839,9 +5816,178 @@ export default {
       this.clienteLabelBox = false;
       this.resetFormClientes();
     },
+    // Metodo para calcular el detalle del documento
+    async calculaDetalle(field, row) {
+      let cantidad;
+      let importe_renglon;
+      let precio_unitario;
+      switch (field) {
+        case "cantidad":
+          cantidad = await this.curReplace(row.cantidad);
+          precio_unitario = await this.curReplace(row.precio_unitario);
+          row.importe_renglon = (cantidad * precio_unitario).toFixed(2);
+          this.calculaTotales();
+          break;
+        case "precio_unitario":
+          cantidad = await this.curReplace(row.cantidad);
+          precio_unitario = await this.curReplace(row.precio_unitario);
+          row.importe_renglon = (cantidad * precio_unitario).toFixed(2);
+          this.calculaTotales();
+          break;
+        case "importe_renglon":
+          cantidad = await this.curReplace(row.cantidad);
+          importe_renglon = await this.curReplace(row.importe_renglon);
+          row.precio_unitario = (importe_renglon / cantidad).toFixed(2);
+          this.calculaTotales();
+          break;
+        default:
+          break;
+      }
+    },
+    // Metodo para calcular los totales del detalle del documento
+    async calculaTotales() {
+      let subtotal = 0;
+      let monto_base = 0;
+      let monto_impuesto = 0;
+      let monto_total = 0;
+      let base_comision_vta_rcl = 0;
+      let base_comision_seg = 0;
+      for (var i = 0; i <= this.detalle_movimiento.length - 1; i++) {
+        let importe_renglon = await this.curReplace(
+          this.detalle_movimiento[i].importe_renglon
+        );
+        let check_impuesto = await this.detalle_movimiento[i].conceptos
+          .check_impuesto;
+        let check_comision = await this.detalle_movimiento[i].conceptos
+          .check_comision;
+        let cod_concepto_oper = await this.detalle_movimiento[i].conceptos
+          .cod_concepto;
+
+        subtotal += this.parseFloatN(importe_renglon);
+        monto_base +=
+          check_impuesto == 1 ? await this.parseFloatN(importe_renglon) : 0;
+        base_comision_vta_rcl +=
+          check_comision == 1 && cod_concepto_oper == 1
+            ? this.parseFloatN(importe_renglon)
+            : 0;
+        base_comision_seg +=
+          check_comision == 1 && cod_concepto_oper == 2
+            ? this.parseFloatN(importe_renglon)
+            : 0;
+
+        if (i == this.detalle_movimiento.length - 1) {
+          monto_impuesto =
+            ((await this.parseFloatN(monto_base)) *
+              this.parseFloatN(this.iva)) /
+            100;
+          monto_total =
+            (await this.parseFloatN(subtotal)) +
+            this.parseFloatN(monto_impuesto);
+          this.form.monto_subtotal = subtotal.toFixed(2);
+          this.form.monto_base = monto_base.toFixed(2);
+          this.form.monto_impuesto = monto_impuesto.toFixed(2);
+          this.form.monto_total = monto_total.toFixed(2);
+          this.form.porc_impuesto = this.iva;
+          this.form.saldo = monto_total.toFixed(2);
+          this.form.base_comision_vta_rcl = base_comision_vta_rcl.toFixed(2);
+          this.form.base_comision_seg = base_comision_seg.toFixed(2);
+        }
+      }
+    },
+    setMontoRef() {
+      this.form.valor_declarado_seg = this.curReplace(
+        this.form.monto_ref_cte_sin_imp
+      );
+      this.calculaPorcSeguro();
+    },
+    // Metodo para calcular el monto del seguro
+    async calculaPorcSeguro() {
+      // Si monto declarado es 0 ponemos el % en 0
+      if (
+        !this.form.porc_apl_seguro ||
+        this.curReplace(this.form.valor_declarado_seg) == 0.0
+      ) {
+        this.form.porc_apl_seguro = "";
+      } else {
+        // Buscamos el valor del % del seguro
+        await api
+          .get(`/vcontrol/11`, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            },
+          })
+          .then((res) => {
+            this.form.porc_apl_seguro = res.data.valor * 100;
+          });
+      }
+      this.setDataSeguro();
+    },
+    // Metodo para setear el detalle del Seguro
+    async setDataSeguro() {
+      if (this.detalle_movimiento[3]) {
+        let valor_declarado_seg = await this.parseFloatN(
+          this.curReplace(this.form.valor_declarado_seg)
+        );
+        let porc_apl_seguro = await this.parseFloatN(
+          this.curReplace(this.form.porc_apl_seguro)
+        );
+        let monto_seguro = (valor_declarado_seg * porc_apl_seguro) / 100;
+        this.detalle_movimiento[3].precio_unitario = monto_seguro.toFixed(2);
+        this.detalle_movimiento[3].importe_renglon = monto_seguro.toFixed(2);
+        this.calculaTotales();
+      }
+    },
+    async calculaCod() {
+      if (this.detalle_movimiento[4]) {
+        await api
+          .get(`/vcontrol/10`, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            },
+          })
+          .then((res) => {
+            let porc_cod = res.data.valor;
+            let valor_declarado_cod = this.curReplace(
+              this.form.valor_declarado_cod
+            );
+            let monto_cod =
+              (this.parseFloatN(valor_declarado_cod) *
+                this.parseFloatN(porc_cod)) /
+              100;
+            this.detalle_movimiento[4].precio_unitario = monto_cod.toFixed(2);
+            this.detalle_movimiento[4].importe_renglon = monto_cod.toFixed(2);
+          });
+
+        this.calculaTotales();
+      }
+    },
+    // Metodo para convertir a Currency los String
+    curReplace(amount) {
+      return amount.indexOf(",") < 0
+        ? amount
+        : amount.replaceAll(".", "").replaceAll(",", ".");
+    },
+    // Metodo para Limpiar Datos de la Guia
+    limpiarGuia() {
+      this.form.nro_documento = "";
+      this.closeDialogs();
+      this.resetFormGuia();
+    },
+    // Metodo para cerrar todos los dialogs
+    closeDialogs() {
+      this.reversarPopUp = false;
+      this.saveDetallesPopUp = false;
+      this.validateDetails = null;
+      this.saveDetails = null;
+      this.validateDetallesPopUp = false;
+      this.clientesDeletePopUp = false;
+      this.pdfView = false;
+      this.clientesBox = false;
+      this.detalle = false;
+      this.clienteLabelBox = false;
+    },
     // Metodo para Resetear Datos de Guia
     resetFormGuia() {
-      this.disabledSeguro = true;
       this.nro_doc = "";
       this.nro_ref = "";
       this.reversada = false;
@@ -5909,10 +6055,10 @@ export default {
     resetFormClientes() {
       delete this.formClientes.id;
       delete this.formClientesParticulares.id;
-      this.disabledAgencia = true;
-      this.disabledRif = true;
-      this.disabledCliente = true;
-      this.disabledInputs = true;
+      this.disableAgencia = true;
+      this.disableRif = true;
+      this.disableCliente = true;
+      this.disableInputs = true;
       this.formClientes.id = "";
       this.formClientes.nb_cliente = "";
       this.formClientes.rif_cedula = "";

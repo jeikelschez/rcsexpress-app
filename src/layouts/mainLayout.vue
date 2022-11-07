@@ -19,7 +19,7 @@
         <!-- Boton usuario y Logout -->
         <q-btn flat dense>
           <q-avatar size="42px">
-            <img :src="url" />
+            <img src="~assets/avatar.jpg" />
           </q-avatar>
           <q-menu transition-show="flip-right" transition-hide="flip-left" auto-close>
             <q-list style="min-width: 100px">
@@ -162,7 +162,6 @@ export default {
       miniState: false,
       intervalLogout: null,
       dashboard: this.$t("Menu.dashboard"),
-      url: ref("https://joshuaproject.net/assets/img/chatbot/default.jpg")
     };
   },
   mounted() {

@@ -19,7 +19,7 @@
         </q-btn>
         <q-btn flat dense style="margin-right: 10px">
           <q-avatar size="42px">
-            <img :src="url" />
+            <img src="~assets/avatar.jpg" />
           </q-avatar>
           <q-menu
             transition-show="flip-right"
@@ -1508,12 +1508,9 @@ export default defineComponent({
       drawer: false,
       miniState: false,
       dashboard: this.$t("Menu.dashboard"),
-      picture:
-        "https://www.thepeakid.com/wp-content/uploads/2016/03/default-profile-picture.jpg",
     };
   },
   setup() {
-    const url = ref("https://joshuaproject.net/assets/img/chatbot/default.jpg");
     return {
       url,
       desplegable: ref(false),
