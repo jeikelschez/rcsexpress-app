@@ -477,7 +477,7 @@
           <div class="row col-md-12 col-xs-12"
             style="margin-top: 20px"
           >
-            <div class="col-md-12 col-xs-6">
+            <div class="col-md-12 col-xs-12">
               <q-input
                 outlined
                 v-model="form.nro_documento"
