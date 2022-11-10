@@ -33,7 +33,7 @@ const routes = [
       {
         path: '/registrodecostos',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('src/pages/registrodecostos.vue')}]
+        children: [{ path: "", component: () => import('src/pages/Registrodecostos.vue')}]
       },
       {
         path: '/reportedecostos',

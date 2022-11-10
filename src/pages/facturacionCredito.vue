@@ -1,99 +1,220 @@
 <template>
   <q-page class="pagina q-pa-md">
+
     <q-dialog v-model="dialog">
-      <q-card class="q-pa-md" bordered style="width: 900px; max-width: 80vw">
-        <q-card-section>
-          <q-form @submit="sendData" class="q-gutter-md">
-            <div class="row">
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  upper-case
-                  outlined
-                  v-model="form.control_inicio"
-                  label="Primer Correlativo"
-                  class="pcform"
-                  hint=""
-                  lazy-rules
-                  :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val),
-                    (val) => this.$refs.rulesVue.isMax(val, 10),
-                  ]"
-                  type="number"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="apartment" />
+      <q-card class="q-pa-md" bordered style="width: 1400px; max-width: 100vw">
+        <q-table
+              :rows="datos"
+              :loading="loading"
+              binary-state-sort
+              row-key="id"
+              virtual-scroll
+              :columns="columns"
+              selection="multiple"
+              :separator="separator"
+              :filter="filter"
+              :pagination="pagination"
+              style="width: 100%; height: 450px; margin-bottom: 20px;"
+              hide-bottom
+            >
+              <template v-slot:body-cell-action="props">
+                    <q-td :props="props">
+                      <q-btn
+                        dense
+                        round
+                        flat
+                        color="primary"
+                        icon="edit"
+                        :disabled="this.allowOption(3)"
+                        @click="
+                          this.$refs.methods.getData(
+                            `/paises/${props.row.id}`,
+                            'setDataPaisesEdit',
+                            'formPaises'
+                          );
+                          paisesDialog = true;
+                        "
+                      ></q-btn>
+                      <q-btn
+                        dense
+                        round
+                        flat
+                        color="primary"
+                        icon="delete"
+                        :disabled="this.allowOption(4)"
+                        @click="selected = props.row.id"
+                        @click.capture="paisesDelete = true"
+                      ></q-btn>
+                    </q-td>
                   </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="form.control_final"
-                  label="Ultimo Correlativo"
-                  :rules="[
-                    (val) => this.$refs.rulesVue.isReq(val),
-                    (val) => this.$refs.rulesVue.isMax(val, 10),
-                    (val) => this.reglasSegundoCorrelativo(val),
-                  ]"
-                  hint=""
-                  class="pcform"
-                  lazy-rules
-                  type="number"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="account_circle" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="form.serie_doc"
-                  label="Serie Lote"
-                  hint=""
-                  class="pcform"
-                  lazy-rules
-                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 1)]"
-                  @update:model-value="
-                    form.serie_doc = form.serie_doc.toUpperCase()
-                  "
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="pin_drop" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="form.ult_doc_referencia"
-                  label="Ultimo Numero Asignado"
-                  hint=""
-                  class="pcform"
-                  type="number"
-                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 10)]"
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-            </div>
-
-            <div class="row justify-center items-center content-center">
+                  <template v-slot:loading>
+                <q-inner-loading showing color="primary" class="loading" />
+              </template>
+              <template v-slot:top="props">
+                <div class="col-md-4 col-xs-12">
+                  <p style="font-size: 18px; padding-right: 10px" class="text-secondary">
+                  <strong>ASIGNAR LAS GUIAS PENDIENTES POR FACTURAR</strong>
+                  </p>
+                </div>
+                <div class="col-md-4 col-xs-12 texto">
+                  <p style="font-size: 17px; padding-right: 10px">
+                    <strong class="text-secondary">AGENCIA:</strong> <strong> {{this.selectedAgencia.nb_agencia}} </strong>
+                  </p>
+                </div>
+                <div class="col-md-4 col-xs-12 texto">
+                  <p style="font-size: 17px">
+                    <strong class="text-secondary">AGENCIA:</strong> <strong> {{this.selectedAgencia.nb_agencia}} </strong>
+                  </p>
+                </div>
+              </template>
+            </q-table>
+                <div class="row" style="margin-bottom:10px; margin-top:10px">
+                  <div class="col-md-2 col-xs-12">
+                  <p style="font-size: 17px;margin-top:5px">
+                    <strong class="text-secondary">TOTALES</strong>
+                  </p>
+                  </div>
+                  <div class="col-md-3 col-xs-12">
+                    <q-input
+                      outlined
+                      v-model="form.monto_subtotal"
+                      label="Monto Subtotal:"
+                      hint=""
+                      dense
+                      input-class="text-right"
+                      style="padding-bottom: 10px"
+                      class="pcform"
+                      :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
+                      lazy-rules
+                    >
+                    </q-input>
+                  </div>
+                  <div class="col-md-3 col-xs-12">
+                    <q-input
+                      outlined
+                      v-model="form.monto_impuesto"
+                      label="Base Impuesto:"
+                      hint=""
+                      class="pcform"
+                      :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
+                      dense
+                      input-class="text-right"
+                      style="padding-bottom: 10px"
+                      lazy-rules
+                    >
+                    </q-input>
+                  </div>
+                  <div class="col-md-2 col-xs-12">
+                    <q-input
+                      outlined
+                      v-model="form.monto_base"
+                      label="Impuesto:"
+                      input-class="text-right"
+                      hint=""
+                      :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
+                      dense
+                      style="padding-bottom: 10px"
+                      class="pcform"
+                      lazy-rules
+                    >
+                    </q-input>
+                  </div>
+                  <div class="col-md-2 col-xs-12">
+                    <q-input
+                      outlined
+                      v-model="form.monto_total"
+                      label="Monto Total:"
+                      input-class="text-right"
+                      class="pcform"
+                      hint=""
+                      :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
+                      dense
+                      style="padding-bottom: 10px"
+                      lazy-rules
+                    >
+                    </q-input>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-2 col-xs-12">
+                  <p style="font-size: 17px;margin-top:5px">
+                    <strong class="text-secondary">SELECCIONADOS</strong>
+                  </p>
+                  </div>
+                  <div class="col-md-3 col-xs-12">
+                    <q-input
+                      outlined
+                      v-model="form.monto_subtotal"
+                      label="Monto Subtotal:"
+                      hint=""
+                      dense
+                      input-class="text-right"
+                      style="padding-bottom: 10px"
+                      class="pcform"
+                      :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
+                      lazy-rules
+                    >
+                    </q-input>
+                  </div>
+                  <div class="col-md-3 col-xs-12">
+                    <q-input
+                      outlined
+                      v-model="form.monto_impuesto"
+                      label="Base Impuesto:"
+                      hint=""
+                      class="pcform"
+                      :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
+                      dense
+                      input-class="text-right"
+                      style="padding-bottom: 10px"
+                      lazy-rules
+                    >
+                    </q-input>
+                  </div>
+                  <div class="col-md-2 col-xs-12">
+                    <q-input
+                      outlined
+                      v-model="form.monto_base"
+                      label="Impuesto:"
+                      input-class="text-right"
+                      hint=""
+                      :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
+                      dense
+                      style="padding-bottom: 10px"
+                      class="pcform"
+                      lazy-rules
+                    >
+                    </q-input>
+                  </div>
+                  <div class="col-md-2 col-xs-12">
+                    <q-input
+                      outlined
+                      v-model="form.monto_total"
+                      label="Monto Total:"
+                      input-class="text-right"
+                      class="pcform"
+                      hint=""
+                      :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
+                      dense
+                      style="padding-bottom: 10px"
+                      lazy-rules
+                    >
+                    </q-input>
+                  </div>
+                </div>
+                <div
+              class="row justify-center items-center content-center"
+              style="margin-bottom: 6px; margin-top: 10px"
+            >
               <q-btn
-                label="Enviar"
+                label="Asignar"
                 type="submit"
                 color="primary"
                 class="col-md-5 col-sm-5 col-xs-12"
-                icon="person_add"
+                icon="add"
               />
               <q-btn
-                label="Cerrar"
+                label="Regresar"
                 color="primary"
                 flat
                 class="col-md-5 col-sm-5 col-xs-12 btnmovil"
@@ -101,35 +222,63 @@
                 v-close-popup
               />
             </div>
-          </q-form>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog v-model="reference">
+      <q-card style="width: 900px">
+        <q-card-section>
+          <div class="row justify-center items-center">
+            <div
+              class="col-md-12 col-xs-12"
+              style="margin-bottom: 6px; margin-top: 10px"
+            >
+              <p
+                style="font-size: 17px; text-align: center"
+                class="text-secondary"
+              >
+                <strong>ACTUALIZAR LA DESCRIPCION DEL ITEM SELECCIONADO</strong>
+              </p>
+            </div>
+            <div class="col-md-12 col-xs-12">
+              <q-input
+                outlined
+                v-model="form.nro_documento"
+                label="Referencia Item"
+                type="textarea"
+                input-class="textArea"
+              >
+              </q-input>
+            </div>
+            <div
+              class="col-md-12 col-xs-12"
+              style="margin-top: 23px; margin-bottom: 10px; text-align: center"
+            >
+              <q-btn label="Guardar" color="primary" style="width: 300px" />
+            </div>
+          </div>
         </q-card-section>
       </q-card>
     </q-dialog>
 
-    <q-page-sticky
-      position="bottom-right"
-      class="z-top"
-      style="margin-right: 20px; margin-bottom: 20px"
-    >
-      <q-btn round color="primary" icon="description" @click="saveData()" />
-    </q-page-sticky>
-
     <div class="q-pa-sm justify-center">
       <div
-        class="row justify-end col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12" style="margin-top: 14px"
+        class="row col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
+        style="margin-top: 14px"
       >
-        <div class="col-md-3 col-xl-2 col-lg-2 col-xs-12 col-sm-12 movilTitle"
+        <div
+          class="col-md-3 col-xl-2 col-lg-2 col-xs-12 col-sm-12 movilTitle"
           style="align-self: center; text-align: center"
         >
           <p style="font-size: 20px" class="text-secondary">
             <strong>VENTAS - FACTURACION CREDITO, CONTADO Y OTROS</strong>
           </p>
         </div>
-        <div class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 cardMargin selectMobile2"
-          style="align-self: center; text-align: center"
+        <div class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 selectMobile"
         >
           <q-select
             rounded
+            class="pcform"
             dense
             transition-show="flip-up"
             transition-hide="flip-down"
@@ -181,12 +330,44 @@
             </template>
           </q-select>
         </div>
-        <div class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-6 cardMargin selectMobile2"
+        <div class="col-md-3 col-xl-3 col-lg-3 col-xs-6 col-sm-6 selectMobile"
           style="align-self: center; text-align: center"
         >
           <q-input
             outlined
-            label="Guia Hasta"
+            label="NRO. Control"
+            hint=""
+            dense
+            class="pcform pcmovil"
+            rounded
+            style="padding-bottom: 0px"
+            v-model="form.fecha_asignacion"
+            lazy-rules
+          >
+          </q-input>
+        </div>
+        <div class="col-md-3 col-xl-3 col-lg-3 col-xs-6 col-sm-6 selectMobile"
+          style="align-self: center; text-align: center"
+        >
+          <q-input
+            outlined
+            label="NRO. Interno"
+            hint=""
+            class="pcform"
+            dense
+            rounded
+            style="padding-bottom: 0px"
+            v-model="form.fecha_asignacion"
+            lazy-rules
+          >
+          </q-input>
+        </div>
+        <div class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 selectMobile"
+          style="align-self: center; text-align: center"
+        >
+          <q-input
+            outlined
+            label="REF."
             hint=""
             dense
             rounded
@@ -196,37 +377,314 @@
           >
           </q-input>
         </div>
-        <div class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-6 cardMargin selectMobile2"
-          style="align-self: center; text-align: center"
-        >
-          <q-input
+        <div class="col-md-3 col-xs-12">
+          <q-select
             outlined
-            label="Guia Hasta"
+            v-model="form.nro_documento"
+            label="Cliente"
+            class="pcform"
             hint=""
             dense
             rounded
-            style="padding-bottom: 0px"
-            v-model="form.fecha_asignacion"
-            lazy-rules
           >
-          </q-input>
+          </q-select>
         </div>
-        <div class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 cardMargin selectMobile2"
-          style="align-self: center; text-align: center"
-        >
+        <div class="col-md-3 col-xs-12">
+          <q-select
+            outlined
+            v-model="form.nro_documento"
+            label="Tipo de Facturacion"
+            hint=""
+            rounded
+            class="pcform"
+            :options="facturacion"
+            dense
+          >
+          </q-select>
+        </div>
+        <div class="col-md-2 col-xs-12">
           <q-input
             outlined
-            label="Guia Hasta"
+            label="Fecha Emision"
             hint=""
-            dense
+            v-model="form.fecha_emision"
+            :tabindex="2"
             rounded
-            style="padding-bottom: 0px"
-            v-model="form.fecha_asignacion"
+            :disable="this.disableGuia"
             lazy-rules
+            dense
+            class="pcform"
+            mask="##/##/####"
           >
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy
+                  ref="qDateProxy"
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
+                  <q-date
+                    v-model="form.fecha_emision"
+                    mask="DD/MM/YYYY"
+                    @update:model-value="this.$refs.qDateProxy.hide()"
+                  ></q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
           </q-input>
         </div>
-        <div class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
+        <div class="col-md-2 col-xs-6">
+          <q-input
+            outlined
+            rounded
+            v-model="form.peso_kgs"
+            ref="formKGS"
+            label="Descuento"
+            class="pcform"
+            :rules="[
+              (val) => this.$refs.rulesVue.isReqCurrency(val, ''),
+              (val) => this.$refs.rulesVue.isMax(val, 9, ''),
+            ]"
+            input-class="text-right"
+            dense
+            style="padding-bottom: 10px"
+            hide-buttom-space
+            lazy-rules
+          >
+            <template v-slot:append>
+              <q-icon name="percent" class="cursor-pointer"> </q-icon>
+            </template>
+          </q-input>
+        </div>
+        <div class="col-md-1 col-xs-3">
+          <q-checkbox
+            size="lg"
+            true-value="1"
+            false-value="0"
+            style="font-size: 13px; margin-top: -5px; margin-left: 10px;"
+            label="CR"
+          />
+        </div>
+        <div class="col-md-1 col-xs-3">
+          <q-checkbox
+            size="lg"
+            true-value="1"
+            false-value="0"
+            style="font-size: 13px; margin-top: -5px"
+            label="CO"
+          />
+        </div>
+        <div
+            class="col-md-12 col-xs-12 lastboxStyle"
+            style="margin-bottom: 20px;"
+          >
+            <q-card
+              class="q-pa-md col-md-12 col-xs-12"
+              bordered
+              style="padding: 5px"
+            >
+              <q-card-section
+                style="
+                  padding-bottom: 5px;
+                  padding-left: 10px;
+                  padding-right: 10px;
+                "
+              >
+                <div class="row">
+                  <div class="col-md-6 col-xs-12">
+              <q-select
+                upper-case
+                outlined
+                v-model="form.control_inicio"
+                label="Tipo Concepto"
+                class="pcform"
+                hint=""
+                lazy-rules
+                dense
+                :rules="[
+                  (val) => this.$refs.rulesVue.isReq(val),
+                  (val) => this.$refs.rulesVue.isMax(val, 10),
+                ]"
+                type="number"
+              >
+                <template v-slot:prepend>
+                  <q-icon name="apartment" />
+                </template>
+              </q-select>
+            </div>
+
+            <div class="col-md-6 col-xs-12">
+              <q-select
+                outlined
+                v-model="form.control_final"
+                label="Concepto"
+                dense
+                :rules="[
+                  (val) => this.$refs.rulesVue.isReq(val),
+                  (val) => this.$refs.rulesVue.isMax(val, 10),
+                  (val) => this.reglasSegundoCorrelativo(val),
+                ]"
+                hint=""
+                lazy-rules
+                type="number"
+              >
+                <template v-slot:prepend>
+                  <q-icon name="account_circle" />
+                </template>
+              </q-select>
+            </div>
+            <q-table
+              :rows="datos"
+              :loading="loading"
+              binary-state-sort
+              row-key="id"
+              :pagination="pagination"
+              virtual-scroll
+              :columns="columns"
+              :separator="separator"
+              :filter="filter"
+              style="width: 100%; height: 270px; margin-bottom: 20px;"
+              hide-bottom
+            >
+              <template v-slot:loading>
+                <q-inner-loading showing color="primary" class="loading" />
+              </template>
+              <template v-slot:body-cell-action="props">
+                    <q-td :props="props">
+                      <q-btn
+                        dense
+                        round
+                        flat
+                        color="primary"
+                        icon="edit"
+                        :disabled="this.allowOption(3)"
+                        @click="
+                          this.$refs.methods.getData(
+                            `/paises/${props.row.id}`,
+                            'setDataPaisesEdit',
+                            'formPaises'
+                          );
+                          paisesDialog = true;
+                        "
+                      ></q-btn>
+                      <q-btn
+                        dense
+                        round
+                        flat
+                        color="primary"
+                        icon="delete"
+                        :disabled="this.allowOption(4)"
+                        @click="selected = props.row.id"
+                        @click.capture="paisesDelete = true"
+                      ></q-btn>
+                    </q-td>
+                  </template>
+            </q-table>
+                  <div class="col-md-2 col-xs-12">
+                    <q-input
+                      outlined
+                      v-model="form.monto_subtotal"
+                      label="Monto Subtotal:"
+                      hint=""
+                      dense
+                      input-class="text-right"
+                      style="padding-bottom: 10px"
+                      class="pcform"
+                      :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
+                      lazy-rules
+                    >
+                    </q-input>
+                  </div>
+                  <div class="col-md-2 col-xs-12">
+                    <q-input
+                      outlined
+                      v-model="form.monto_impuesto"
+                      label="Descuento:"
+                      hint=""
+                      class="pcform"
+                      :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
+                      dense
+                      input-class="text-right"
+                      style="padding-bottom: 10px"
+                      lazy-rules
+                    >
+                    </q-input>
+                  </div>
+                  <div class="col-md-2 col-xs-12">
+                    <q-input
+                      outlined
+                      v-model="form.monto_base"
+                      label="Monto Base:"
+                      input-class="text-right"
+                      hint=""
+                      :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
+                      dense
+                      style="padding-bottom: 10px"
+                      class="pcform"
+                      lazy-rules
+                    >
+                    </q-input>
+                  </div>
+                  <div class="col-md-2 col-xs-12">
+                    <q-input
+                      outlined
+                      v-model="form.monto_total"
+                      label="Monto Impuesto:"
+                      input-class="text-right"
+                      class="pcform"
+                      hint=""
+                      :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
+                      dense
+                      style="padding-bottom: 10px"
+                      lazy-rules
+                    >
+                    </q-input>
+                  </div>
+                  <div class="col-md-2 col-xs-12">
+                    <q-input
+                      outlined
+                      v-model="form.monto_total"
+                      label="FPO:"
+                      class="pcform"
+                      input-class="text-right"
+                      hint=""
+                      :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
+                      dense
+                      style="padding-bottom: 10px"
+                      lazy-rules
+                    >
+                    </q-input>
+                  </div>
+                  <div class="col-md-2 col-xs-12">
+                    <q-input
+                      outlined
+                      v-model="form.monto_total"
+                      label="Monto Total:"
+                      input-class="text-right"
+                      hint=""
+                      :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
+                      dense
+                      style="padding-bottom: 10px"
+                      lazy-rules
+                    >
+                    </q-input>
+                  </div>
+                </div>
+              </q-card-section>
+            </q-card>
+          </div>
+        <div class="col-md-9 col-xs-12">
+            <q-input
+              outlined
+              v-model="form.nro_documento"
+              label="Observacion Factura"
+              type="textarea"
+              input-class="textArea"
+            >
+            </q-input>
+        </div>
+        <div
+          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 buttons"
           style="align-self: center; text-align: center"
         >
           <q-btn
@@ -236,15 +694,7 @@
             padding="sm"
             style="margin-right: 15px"
             @click="
-              selectedAgencia = [];
-              selectedCliente = [];
-              selectedAgente = [];
-              selectedGuiaCarga = '';
-              selectedGuiaFactura = '';
-              selectedCulminado = '';
-              guia_desde = '';
-              guia_hasta = '';
-              getDataTable();
+             dialog= true
             "
           >
             <q-icon size="25px" name="save" color="white"> </q-icon>
@@ -316,317 +766,17 @@
       </div>
     </div>
 
-    <div
-      class="row q-pa-sm justify-center"
-      style="padding-bottom: 0px; padding-top: 0px"
-    >
-      <q-form ref="formData">
-        <div class="row items-center pageStyle">
-          <div class="row col-md-12 col-xs-12"
-            style="margin-bottom: 10px; margin-top: 20px"
-          >
-            <div class="col-md-12 col-xs-12">
-              <q-select
-                outlined
-                v-model="form.nro_documento"
-                label="Cliente"
-                hint=""
-                dense
-              >
-              </q-select>
-            </div>
-          </div>
-          <div
-            class="col-md-5 col-xs-12 cardMenus boxStyle"
-            style="margin-bottom: 0px; padding-bottom: 5px"
-          >
-            <q-card
-              class="q-pa-md col-md-12 col-xs-12"
-              bordered
-              style="
-                padding-top: 5px;
-                padding-bottom: 5px;
-                padding-left: 6px;
-                padding-right: 0px;
-              "
-            >
-              <q-card-section
-                class="row col-md-12 col-xs-12"
-                style="
-                  padding-bottom: 6px;
-                  padding-top: 10px;
-                  padding-left: 6px;
-                "
-              >
-                <div
-                  class="col-md-4 col-xs-12"
-                  style="margin-bottom: 6px"
-                >
-                  <q-checkbox
-                    size="lg"
-                    true-value="1"
-                    false-value="0"
-                    style="font-size: 13px"
-                    label="Facturacion Credito"
-                  />
-                </div>
-                <div class="col-md-4 col-xs-12" style="margin-bottom: 6px">
-                  <q-checkbox
-                    size="lg"
-                    true-value="1"
-                    false-value="0"
-                    style="font-size: 13px"
-                    label="Facturacion Contado"
-                  />
-                </div>
-                <div
-                  class="col-md-4 col-xs-12"
-                  style="margin-bottom: 6px"
-                >
-                  <q-checkbox
-                    size="lg"
-                    true-value="1"
-                    false-value="0"
-                    style="font-size: 13px"
-                    label="Facturacion Otros Ingresos"
-                  />
-                </div>
-              </q-card-section>
-            </q-card>
-          </div>
-          <div
-            class="col-md-7 col-xs-12 boxStyle"
-            style="margin-bottom: 5px; padding-top: 0px"
-          >
-            <q-card
-              class="q-pa-md col-md-4 col-xs-12"
-              bordered
-              style="padding: 5px; padding-top: 10px"
-            >
-              <q-card-section
-                style="
-                  padding-bottom: 7px;
-                  padding-left: 10px;
-                  padding-right: 10px;
-                  padding-top: 10px;
-                "
-              >
-                <div class="row">
-                  <div class="col-md-4 col-xs-12">
-                    <q-input
-                      outlined
-                      dense
-                      style="padding-bottom: 10px"
-                      v-model="form.nro_piezas"
-                      label="Fecha Emision"
-                      class="pcform"
-                      input-class="text-right"
-                      :rules="[
-                        (val) => this.$refs.rulesVue.isReqCurrency(val, ''),
-                        (val) => this.$refs.rulesVue.isMax(val, 3, ''),
-                      ]"
-                      hide-buttom-space
-                      lazy-rules
-                    >
-                    </q-input>
-                  </div>
-
-                  <div class="col-md-4 col-xs-12">
-                    <q-input
-                      outlined
-                      v-model="form.peso_kgs"
-                      ref="formKGS"
-                      label="Peso KGS"
-                      class="pcform"
-                      :rules="[
-                        (val) => this.$refs.rulesVue.isReqCurrency(val, ''),
-                        (val) => this.$refs.rulesVue.isMax(val, 9, ''),
-                      ]"
-                      input-class="text-right"
-                      dense
-                      style="padding-bottom: 10px"
-                      hide-buttom-space
-                      lazy-rules
-                    >
-                    </q-input>
-                  </div>
-
-                  <div class="col-md-2 col-xs-6">
-                    <q-checkbox
-                      size="lg"
-                      true-value="1"
-                      false-value="0"
-                      style="font-size: 13px;margin-top: -5px;"
-                      label="Credito"
-                    />
-                  </div>
-
-                  <div class="col-md-2 col-xs-6">
-                    <q-checkbox
-                      size="lg"
-                      true-value="1"
-                      false-value="0"
-                      style="font-size: 13px; margin-top: -5px;"
-                      label="Contado"
-                    />
-                  </div>
-                </div>
-              </q-card-section>
-            </q-card>
-          </div>
-          <div class="row col-md-12 col-xs-12"
-            style="margin-top: 20px"
-          >
-            <div class="col-md-12 col-xs-6">
-              <q-input
-                outlined
-                v-model="form.nro_documento"
-                label="Observacion Factura"
-                type="textarea"
-                input-class="textArea"
-              >
-              </q-input>
-            </div>
-          </div>
-          <div
-            class="col-md-12 col-xs-12 lastboxStyle"
-            style="margin-top: 20px"
-          >
-            <q-card
-              class="q-pa-md col-md-12 col-xs-12 cardMenus"
-              bordered
-              style="padding: 5px"
-            >
-              <q-card-section
-                style="
-                  padding-bottom: 5px;
-                  padding-left: 10px;
-                  padding-right: 10px;
-                "
-              >
-                <div class="row">
-                  <div class="col-md-2 col-xs-12">
-                    <q-input
-                      outlined
-                      v-model="form.monto_subtotal"
-                      label="Monto Subtotal"
-                      hint=""
-                      dense
-                      input-class="text-right"
-                      style="padding-bottom: 10px"
-                      class="pcform"
-                      :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
-                      lazy-rules
-                    >
-                    </q-input>
-                  </div>
-                  <div class="col-md-2 col-xs-12">
-                    <q-input
-                      outlined
-                      v-model="form.monto_impuesto"
-                      label="Descuento"
-                      hint=""
-                      class="pcform"
-                      :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
-                      dense
-                      input-class="text-right"
-                      style="padding-bottom: 10px"
-                      lazy-rules
-                    >
-                    </q-input>
-                  </div>
-                  <div class="col-md-2 col-xs-12">
-                    <q-input
-                      outlined
-                      v-model="form.monto_base"
-                      label="Monto Base"
-                      input-class="text-right"
-                      hint=""
-                      :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
-                      dense
-                      style="padding-bottom: 10px"
-                      class="pcform"
-                      lazy-rules
-                    >
-                    </q-input>
-                  </div>
-                  <div class="col-md-2 col-xs-12">
-                    <q-input
-                      outlined
-                      v-model="form.monto_total"
-                      label="Monto Impuesto"
-                      input-class="text-right"
-                      class="pcform"
-                      hint=""
-                      :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
-                      dense
-                      style="padding-bottom: 10px"
-                      lazy-rules
-                    >
-                    </q-input>
-                  </div>
-                  <div class="col-md-2 col-xs-12">
-                    <q-input
-                      outlined
-                      v-model="form.monto_total"
-                      label="FPO"
-                      class="pcform"
-                      input-class="text-right"
-                      hint=""
-                      :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
-                      dense
-                      style="padding-bottom: 10px"
-                      lazy-rules
-                    >
-                    </q-input>
-                  </div>
-                  <div class="col-md-2 col-xs-12">
-                    <q-input
-                      outlined
-                      v-model="form.monto_total"
-                      label="Monto Total"
-                      input-class="text-right"
-                      hint=""
-                      :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
-                      dense
-                      style="padding-bottom: 10px"
-                      lazy-rules
-                    >
-                    </q-input>
-                  </div>
-                </div>
-              </q-card-section>
-            </q-card>
-          </div>
-          <q-inner-loading :showing="visible">
-            <q-spinner-gears size="50px" color="primary" />
-          </q-inner-loading>
-        </div>
-      </q-form>
-    </div>
-
     <q-dialog v-model="deletePopup">
       <q-card style="width: 700px">
         <q-card-section>
           <div class="text-h5" style="font-size: 18px">
-            ¿Estás seguro que quieres eliminar este elemento?
+            ¿Desea Eliminar el Registro?...
           </div>
         </q-card-section>
 
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="primary" v-close-popup />
-          <q-btn
-            flat
-            label="Aceptar"
-            color="primary"
-            v-close-popup
-            @click="
-              this.$refs.methods.deleteData(
-                `/correlativo/${selected}`,
-                'getDataTable'
-              )
-            "
-          />
+          <q-btn flat label="Aceptar" color="primary" v-close-popup />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -660,44 +810,47 @@ export default {
     return {
       columns: [
         {
-          name: "control_inicio",
-          label: "Primer Correlativo",
-          field: "control_inicio",
+          name: "nb_agencia",
+          label: "NRO.",
+          field: "nb_agencia",
           align: "left",
           sortable: true,
         },
         {
-          name: "control_final",
-          label: "Ultimo Correlativo",
-          field: "control_final",
+          name: "tlf_agencia",
+          label: "Concepto",
+          field: "tlf_agencia",
           align: "left",
           sortable: true,
         },
         {
-          name: "serie_doc",
-          label: "Serie Lote",
-          field: "serie_doc",
+          name: "id",
+          label: "Cantidad",
+          field: "id",
           align: "left",
           sortable: true,
         },
         {
-          name: "ult_doc_referencia",
-          label: "Ultimo Numero Asignado",
-          field: "ult_doc_referencia",
+          name: "tlf_agencia",
+          label: "Costo Unitario",
+          field: "tlf_agencia",
           align: "left",
           type: "string",
           sortable: true,
         },
         {
-          name: "estatus_lote",
-          label: "Estatus",
+          name: "tlf_agencia",
+          label: "Sub-Total",
+          field: "tlf_agencia",
           align: "center",
           sortable: true,
         },
         {
           name: "action",
           label: "Acciones",
+          field: "action",
           align: "center",
+          sortable: true,
         },
       ],
       form: {
@@ -714,20 +867,15 @@ export default {
         { label: "ACTIVO", value: "A" },
         { label: "INACTIVO", value: "I" },
       ],
-      pagination: {
-        page: 1,
-        rowsPerPage: 5,
-        sortBy: "control_final",
-        descending: true,
-        filter:
-          "control_inicio,control_final,serie_doc,ult_doc_referencia,estatus_lote",
-        filterValue: "",
-        rowsNumber: "",
-      },
+      facturacion: [
+        { label: "FACTURACION CREDITO", value: "C" },
+        { label: "FACTURACION CONTADO", value: "A" },
+        { label: "FACTURACION OTROS INGRESOS", value: "I" },
+      ],
       correlativos: [],
       correlativosAll: [],
       agencias: [],
-      tipos: [],
+      datos: [],
       selectedAgencia: [],
       selectedTipo: [],
       agenciasSelected: [],
@@ -739,9 +887,13 @@ export default {
   setup() {
     const $q = useQuasar();
     return {
+      pagination: ref({
+        rowsPerPage: 0,
+      }),
       loading: ref(false),
       separator: ref("vertical"),
       dialog: ref(false),
+      reference: ref(false),
       deletePopup: ref(false),
       activoExistente() {
         $q.notify({
@@ -752,9 +904,13 @@ export default {
     };
   },
   mounted() {
-    this.$emit("changeTitle", "SCEN - Ventas - Facturacion Credito, Contado y Otros", "");
+    this.$emit(
+      "changeTitle",
+      "SCEN - Ventas - Facturacion Credito, Contado y Otros",
+      ""
+    );
     this.$refs.methods.getData("/agencias", "setDataInit", "agencias");
-
+    this.$refs.methods.getData("/agencias", "setDataTable", "datos");
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
         rol: LocalStorage.getItem("tokenTraducido").usuario.roles.id,
@@ -824,18 +980,6 @@ export default {
     setDataInit(res, dataRes) {
       this[dataRes] = res.data;
       this.selectedAgencia = this.agencias[0];
-      api
-        .get(`/tipos`, {
-          headers: {
-            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            fuente: "CR",
-          },
-        })
-        .then((res) => {
-          this.tipos = res.data;
-          this.selectedTipo = this.tipos[0];
-          this.getDataTable();
-        });
     },
     // Metodo para Extraer Datos de Tabla
     getDataTable(props) {
@@ -863,10 +1007,6 @@ export default {
     // Metodo para Setear Datos de Tabla
     setDataTable(res, dataRes) {
       this[dataRes] = res.data ? res.data : res;
-      this.pagination.page = res.currentPage;
-      this.currentPage = res.currentPage;
-      this.pagination.rowsNumber = res.total;
-      this.pagination.rowsPerPage = res.limit;
     },
     // Metodo para Extraer Todos los Datos de Tabla
     getDataTableAll() {
@@ -960,11 +1100,36 @@ export default {
 </script>
 
 <style>
-.textArea {
-  min-height: 155px !important;
+.q-textarea.q-field--labeled .q-field__control-container {
+  height: 100px !important;
 }
 @media screen and (min-width: 600px) {
   .movilTitle {
+    display: none;
+  }
+}
+@media screen and (min-width: 600px) {
+  .selectMobile {
+    margin-bottom: 20px;
+  }
+}
+@media screen and (min-width: 1024px) {
+  .texto {
+    text-align: right;
+  }
+}
+@media screen and (max-width: 1024px) {
+  .buttons {
+    margin-top: 20px;
+  }
+}
+@media screen and (min-width: 600px) {
+  .itemMovil {
+    display: none;
+  }
+}
+@media screen and (max-width: 600px) {
+  .itemPC {
     display: none;
   }
 }

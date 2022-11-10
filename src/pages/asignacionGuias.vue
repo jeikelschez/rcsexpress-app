@@ -1130,6 +1130,7 @@ export default {
         .get(`/cguias/generatePDF`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            id: this.selected 
           },
         })
         .then((res) => {
