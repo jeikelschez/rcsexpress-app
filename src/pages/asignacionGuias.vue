@@ -140,7 +140,7 @@
                   :options="agenciasSelected"
                   :loading="agenciasLoading"
                   :disable="agenciasLoading"
-                  :readonly="this.selectedAgente.id ? true : false"
+                  :readonly="this.selectedAgencia.id ? true : false"
                   @filter="
                     (val, update) =>
                       filterArray(
