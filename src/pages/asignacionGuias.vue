@@ -136,9 +136,11 @@
                   v-model="form.cod_agencia"
                   label="Agencia"
                   hint=""
-                  :readonly="this.selectedAgencia.id ? true : false"
                   :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
                   :options="agenciasSelected"
+                  :loading="agenciasLoading"
+                  :disable="agenciasLoading"
+                  :readonly="this.selectedAgente.id ? true : false"
                   @filter="
                     (val, update) =>
                       filterArray(
@@ -157,6 +159,10 @@
                   option-label="nb_agencia"
                   option-value="id"
                   @update:model-value="
+                    this.agentesLoading = true;
+                    this.clientesLoading = true;
+                    this.form.cod_agente = null;
+                    this.form.cod_cliente = null;
                     this.$refs.methods.getData(
                       `/agentes`,
                       'setData',
@@ -177,8 +183,6 @@
                         },
                       }
                     );
-                    this.form.cod_cliente = '';
-                    this.form.cod_agente = '';
                   "
                 >
                   <template v-slot:no-option>
@@ -191,6 +195,9 @@
                   <template v-slot:prepend>
                     <q-icon name="south_america" />
                   </template>
+                  <template v-slot:agenciasLoading>
+                    <q-inner-loading showing color="primary" class="loading" />
+                  </template>
                 </q-select>
               </div>
               <div class="col-md-6 col-xs-12">
@@ -202,6 +209,8 @@
                   hint=""
                   :readonly="this.selectedAgente.id ? true : false"
                   :options="agentesSelected"
+                  :loading="agentesLoading"
+                  :disable="agentesLoading"
                   @filter="
                     (val, update) =>
                       filterArray(
@@ -229,16 +238,21 @@
                   <template v-slot:prepend>
                     <q-icon name="south_america" />
                   </template>
+                  <template v-slot:agentesLoading>
+                    <q-inner-loading showing color="primary" class="loading" />
+                  </template>
                 </q-select>
               </div>
               <div class="col-md-6 col-xs-12">
                 <q-select
                   outlined
                   v-model="form.cod_cliente"
-                  :readonly="this.selectedCliente.id ? true : false"
                   label="Cliente"
                   hint=""
+                  :readonly="this.selectedCliente.id ? true : false"
                   :options="clientesSelected"
+                  :loading="clientesLoading"
+                  :disable="clientesLoading"
                   @filter="
                     (val, update) =>
                       filterArray(
@@ -265,6 +279,9 @@
                   </template>
                   <template v-slot:prepend>
                     <q-icon name="south_america" />
+                  </template>
+                  <template v-slot:clientesLoading>
+                    <q-inner-loading showing color="primary" class="loading" />
                   </template>
                 </q-select>
               </div>
@@ -336,10 +353,14 @@
             v-model="selectedAgencia"
             outlined
             standout
+            :loading="agenciasLoading"
+            :disable="agenciasLoading"
             label="Agencia"
             @update:model-value="
-              this.selectedCliente = [];
-              this.selectedAgente = [];
+              this.agentesLoading = true;
+              this.clientesLoading = true;
+              this.agentesSelected = [];
+              this.clientesSelected = [];
               getDataTable();
               this.$refs.methods.getData(`/agentes`, 'setData', 'agentes', {
                 headers: {
@@ -358,6 +379,9 @@
                   Sin resultados
                 </q-item-section>
               </q-item>
+            </template>
+            <template v-slot:agenciasLoading>
+              <q-inner-loading showing color="primary" class="loading" />
             </template>
             <template v-slot:prepend>
               <q-icon name="search" />
@@ -388,6 +412,8 @@
             hide-selected
             fill-input
             input-debounce="0"
+            :loading="agentesLoading"
+            :disable="agentesLoading"
             option-label="persona_responsable"
             option-value="id"
             v-model="selectedAgente"
@@ -404,6 +430,9 @@
             </template>
             <template v-slot:prepend>
               <q-icon name="search" />
+            </template>
+            <template v-slot:agentesLoading>
+              <q-inner-loading showing color="primary" class="loading" />
             </template>
           </q-select>
         </div>
@@ -433,6 +462,8 @@
             input-debounce="0"
             option-label="nb_cliente"
             option-value="id"
+            :loading="clientesLoading"
+            :disable="clientesLoading"
             v-model="selectedCliente"
             outlined
             standout
@@ -447,6 +478,9 @@
             </template>
             <template v-slot:prepend>
               <q-icon name="search" />
+            </template>
+            <template v-slot:clientesLoading>
+              <q-inner-loading showing color="primary" class="loading" />
             </template>
           </q-select>
         </div>
@@ -571,17 +605,7 @@
             round
             padding="sm"
             style="margin-right: 25px"
-            @click="
-              selectedAgencia = [];
-              selectedCliente = [];
-              selectedAgente = [];
-              selectedGuiaCarga = '';
-              selectedGuiaFactura = '';
-              selectedCulminado = '';
-              guia_desde = '';
-              guia_hasta = '';
-              getDataTable();
-            "
+            @click="this.resetFilters()"
           >
             <q-icon size="25px" name="filter_alt_off" color="white"> </q-icon>
             <q-tooltip
@@ -632,7 +656,11 @@
         <template v-slot:body-cell-cod_agente="props">
           <q-td :props="props">
             {{
-              findIndex("agentesAll", props.row.cod_agente, "persona_responsable")
+              findIndex(
+                "agentesAll",
+                props.row.cod_agente,
+                "persona_responsable"
+              )
             }}
           </q-td>
         </template>
@@ -902,18 +930,13 @@ export default {
       agentes: [],
       agenciasSelected: [],
       agentesSelected: [],
-      agentesFormSelected: [],
       clientesSelected: [],
-      clientesFormSelected: [],
-      clientesForm: [],
-      agentesForm: [],
       selected: [],
-      selectedAgencia: [],
       selectedGuiaCarga: "20",
-      selectedGuiaFactura: "",
       selectedCulminado: "",
       guia_desde: "",
       guia_hasta: "",
+      selectedAgencia: [],
       selectedCliente: [],
       selectedAgente: [],
       disabledAgencia: true,
@@ -921,13 +944,15 @@ export default {
       disabledCliente: false,
       disabledInputsEdit: false,
       base64: "",
+      agenciasLoading: false,
+      agentesLoading: false,
+      clientesLoading: false,
     };
   },
   setup() {
     const $q = useQuasar();
-    moment.locale("es");
     return {
-      dateInit: moment().format("L"),
+      dateInit: moment().format("DD/MM/YYYY"),
       loading: ref(false),
       separator: ref("vertical"),
       deletePopup: ref(false),
@@ -937,6 +962,7 @@ export default {
   },
   mounted() {
     this.$emit("changeTitle", "SCEN - Mantenimiento - Asignacion de Guias", "");
+    this.agenciasLoading = true;
     this.$refs.methods.getData("/agencias", "setData", "agencias");
     this.$refs.methods.getData("/clientes", "setData", "clientesAll");
     this.$refs.methods.getData("/agentes", "setData", "agentesAll");
@@ -1009,6 +1035,7 @@ export default {
 
     // Metodo para Setear Datos Iniciales
     setData(res, dataRes) {
+      eval("this." + dataRes + "Loading = false");
       this[dataRes] = res.data ? res.data : res;
     },
     // Metodo para Extraer Datos de Tabla
@@ -1063,9 +1090,20 @@ export default {
         .split("/")
         .reverse()
         .join("-");
-      this.form.cod_cliente = this.form.cod_cliente.id;
-      this.form.cod_agente = this.form.cod_agente.id;
-      this.form.cod_agencia = this.form.cod_agencia.id;
+
+      this.form.cod_agencia = this.selectedAgencia.id
+        ? this.selectedAgencia.id
+        : this.form.cod_agencia.id;
+      this.form.cod_agente = this.selectedAgente.id
+        ? this.selectedAgente.id
+        : this.form.cod_agente
+        ? this.form.cod_agente.id
+        : null;
+      this.form.cod_cliente = this.selectedCliente.id
+        ? this.selectedCliente.id
+        : this.form.cod_cliente
+        ? this.form.cod_cliente.id
+        : null;
 
       this.$refs.methods.createData(`/cguias`, this.form, "getDataTable");
       this.dialog = false;
@@ -1097,6 +1135,23 @@ export default {
         .then((res) => {
           this.$refs.webViewer.showpdf(res.data.base64);
         });
+    },
+    // Metodo para Resetear Filtros
+    resetFilters() {
+      this.selectedAgencia = [];
+      this.selectedCliente = [];
+      this.selectedAgente = [];
+      this.agenciasSelected = [];
+      this.agentesSelected = [];
+      this.clientesSelected = [];
+      this.agentes = [];
+      this.clientes = [];
+      this.selectedGuiaCarga = "";
+      this.selectedCulminado = "";
+      this.guia_desde = "";
+      this.guia_hasta = "";
+      this.getDataTable();
+      this.resetForm();
     },
     // Metodo para Resetear Datos
     resetForm() {

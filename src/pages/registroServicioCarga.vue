@@ -506,7 +506,7 @@
     <q-dialog v-model="detalle">
       <q-card
         class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
-        style="width: 900px; max-width: 80vw"
+        style="width: 1000px; max-width: 80vw"
       >
         <q-table
           :rows="detalle_movimiento"
@@ -699,7 +699,7 @@
             padding-top: 30px;
           "
         >
-          <div class="col-md-3 col-xs-12">
+          <div class="col-md-2 col-xs-12">
             <q-input
               outlined
               v-model="form.valor_declarado_cod"
@@ -714,7 +714,7 @@
             >
             </q-input>
           </div>
-          <div class="col-md-3 col-xs-12">
+          <div class="col-md-2 col-xs-12">
             <q-input
               outlined
               v-model="form.valor_declarado_seg"
@@ -729,11 +729,11 @@
             >
             </q-input>
           </div>
-          <div class="col-md-3 col-xs-12">
+          <div class="col-md-2 col-xs-12">
             <q-input
               outlined
               v-model="form.porc_apl_seguro"
-              label="Porcentaje"
+              label="% Seguro"
               :readonly="true"
               v-money="money"
               input-class="text-right"
@@ -744,7 +744,7 @@
             >
             </q-input>
           </div>
-          <div class="col-md-3 col-xs-12">
+          <div class="col-md-2 col-xs-12">
             <q-input
               outlined
               dense
@@ -753,27 +753,13 @@
               input-class="text-right"
               label="Sub Total:"
               :readonly="true"
-              lazy-rules
-              hint=""
-            >
-            </q-input>
-          </div>
-          <div class="col-md-3 col-xs-12">
-            <q-input
-              outlined
-              dense
-              v-model="form.monto_base"
-              v-money="money"
-              input-class="text-right"
-              label="Monto Base:"
-              :readonly="true"
               class="pcform"
               lazy-rules
               hint=""
             >
             </q-input>
           </div>
-          <div class="col-md-3 col-xs-12">
+          <div class="col-md-2 col-xs-12">
             <q-input
               outlined
               dense
@@ -783,6 +769,20 @@
               v-money="money"
               input-class="text-right"
               class="pcform"
+              lazy-rules
+              hint=""
+            >
+            </q-input>
+          </div>
+          <div class="col-md-2 col-xs-12">
+            <q-input
+              outlined
+              dense
+              v-model="form.monto_base"
+              v-money="money"
+              input-class="text-right"
+              label="Monto Base:"
+              :readonly="true"
               lazy-rules
               hint=""
             >
@@ -813,6 +813,47 @@
               input-class="text-right"
               lazy-rules
               dense
+              hint=""
+            >
+            </q-input>
+          </div>
+          <div class="col-md-2 col-xs-12">
+            <h4
+              style="
+                font-size: 12px;
+                margin-top: 0px;
+                margin-bottom: 0px;
+                padding-left: 30px; 
+              "
+            >
+              VALOR DÍA
+            </h4>
+          </div>
+          <div class="col-md-2 col-xs-12">
+            <q-input
+              outlined
+              dense
+              v-model="valor_dolar"
+              label="Valor Ref:"
+              :readonly="true"
+              v-money="money"
+              input-class="text-right"
+              class="pcform"
+              lazy-rules
+              hint=""
+            >
+            </q-input>
+          </div>
+          <div class="col-md-2 col-xs-12">
+            <q-input
+              outlined
+              dense
+              v-model="total_ref"
+              v-money="money"
+              input-class="text-right"
+              label="Total Ref:"
+              :readonly="true"
+              lazy-rules
               hint=""
             >
             </q-input>
@@ -857,6 +898,7 @@
                   :rules="[(val) => this.$refs.rulesVue.isMin(val, 3, '')]"
                   :readonly="this.disableRif"
                   @blur="this.validateExistingClient()"
+                  @keyup.enter="this.validateExistingClient()"
                   hint=""
                   lazy-rules
                   class="pcform"
@@ -1891,6 +1933,11 @@
                       option-label="nb_cliente"
                       option-value="id"
                       lazy-rules
+                      @update:model-value="
+                        if (this.form.cod_cliente_org.cte_decontado == 1) {
+                          this.clienteClick(false);
+                        }
+                      "
                     >
                       <template v-slot:no-option>
                         <q-item>
@@ -2050,6 +2097,11 @@
                       lazy-rules
                       option-label="nb_cliente"
                       option-value="id"
+                      @update:model-value="
+                        if (this.form.cod_cliente_dest.cte_decontado == 1) {
+                          this.clienteClick(true);
+                        }
+                      "
                     >
                       <template v-slot:no-option>
                         <q-item>
@@ -2648,6 +2700,10 @@
               outlined
               label="Fecha Llegada Transito"
               :tabindex="32"
+              hint=""
+              use-input
+              hide-selected
+              fill-input
               :disable="
                 this.disableGuia
                   ? true
@@ -2655,13 +2711,11 @@
                   ? true
                   : false
               "
-              hint=""
               dense
               style="padding-bottom: 10px"
               v-model="form.fecha_llega_transito"
               mask="##/##/####"
               lazy-rules
-              class="pcform"
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
@@ -2711,7 +2765,7 @@
             >
             </q-select>
           </div>
-          <div class="col-md-3 col-xs-12">
+          <div class="col-md-2 col-xs-12">
             <q-input
               outlined
               v-model="form.monto_ref_cte_sin_imp"
@@ -2725,6 +2779,13 @@
               :rules="[(val) => this.$refs.rulesVue.isMax(val, 17, '')]"
               class="pcform"
               lazy-rules
+              @update:model-value="
+                this.monto_ref = (
+                  this.parseFloatN(
+                    this.curReplace(this.form.monto_ref_cte_sin_imp)
+                  ) / this.parseFloatN(this.valor_dolar)
+                ).toFixed(2)
+              "
             >
               <template v-slot:append>
                 <q-btn
@@ -2735,6 +2796,21 @@
                   @click="this.setMontoRef()"
                 />
               </template>
+            </q-input>
+          </div>
+          <div class="col-md-1 col-xs-12">
+            <q-input
+              outlined
+              v-model="monto_ref"
+              label="Monto Referencia"
+              :disable="true"
+              dense
+              hint=""
+              v-money="money"
+              input-class="text-right"
+              class="pcform"
+              lazy-rules
+            >
             </q-input>
           </div>
           <div class="col-md-1 col-xs-5">
@@ -2762,6 +2838,7 @@
               :disable="this.disableGuia"
               v-money="money"
               input-class="text-right"
+              class="pcform pcmovil"
               hint=""
               :rules="[(val) => this.$refs.rulesVue.isMax(val, 7, '')]"
               dense
@@ -3083,7 +3160,6 @@ export default {
       estado: "",
       ciudad: "",
       clienteLabel: "",
-      valor_dolar: "",
       destino: false,
       cliente: false,
       base64:
@@ -3159,6 +3235,9 @@ export default {
       },
       nroRef: "",
       iva: 0,
+      monto_ref: 0,
+      total_ref: 0,
+      valor_dolar: 0,
     };
   },
   setup() {
@@ -3411,18 +3490,6 @@ export default {
     filterAndReturn(array, codigo, searched) {
       return this[array].findIndex((item) => item[codigo] == searched);
     },
-    // Metodo para Buscar Item en Array de Objetos, retornar True al conseguirlo y False al no encontrarlo
-    validateRules(form, error) {
-      if (this.$refs[form].validate()) {
-        return true;
-      } else {
-        this.$q.notify({
-          message: error,
-          color: "red",
-        });
-        return;
-      }
-    },
     // Pasar un numero a numero con dos decimales en formato correcto para efectuar operaciones
     parseFloatN(number) {
       number = Math.round(number * 100) / 100;
@@ -3492,7 +3559,7 @@ export default {
           });
           return;
         }
-        if (this.form.estatus_administra.value == "A") {
+        if (form.estatus_administra.value == "A") {
           this.$q.notify({
             message:
               "La Guía no puede ser tarifeada cuando se encuentra anulada",
@@ -3500,30 +3567,56 @@ export default {
           });
           return;
         }
-        this.validateRules(
-          "formAgencia",
-          "Debe ingresar la Agencia Origen antes de tarifear"
-        );
-        this.validateRules(
-          "formAgenciaDestino",
-          "Debe ingresar la Agencia Destino antes de tarifear"
-        );
-        this.validateRules(
-          "formClienteDestino",
-          "Debe ingresar el Cliente Destino antes de tarifear"
-        );
-        this.validateRules(
-          "formKGS",
-          "Debe ingresar la cantidad de KG antes de tarifear"
-        );
-        this.validateRules(
-          "formModalidadPago",
-          "Debe ingresar la modalidad de pago antes de tarifear"
-        );
-        this.validateRules(
-          "formPagado",
-          "Debe ingresar donde será pagada la guía antes de tarifear"
-        );
+        if (!form.cod_agencia) {
+          this.$q.notify({
+            message: "Debe ingresar la Agencia Origen antes de tarifear",
+            color: "red",
+          });
+          return;
+        }
+        if (!form.cod_cliente_org) {
+          this.$q.notify({
+            message: "Debe ingresar el Cliente Origen antes de tarifear",
+            color: "red",
+          });
+          return;
+        }
+        if (!form.cod_agencia_dest) {
+          this.$q.notify({
+            message: "Debe ingresar la Agencia Destino antes de tarifear",
+            color: "red",
+          });
+          return;
+        }
+        if (!form.cod_cliente_dest) {
+          this.$q.notify({
+            message: "Debe ingresar el Cliente Destino antes de tarifear",
+            color: "red",
+          });
+          return;
+        }
+        if (form.peso_kgs == 0.0) {
+          this.$q.notify({
+            message: "Debe ingresar la cantidad de KG antes de tarifear",
+            color: "red",
+          });
+          return;
+        }
+        if (!form.modalidad_pago) {
+          this.$q.notify({
+            message: "Debe ingresar la modalidad de pago antes de tarifear",
+            color: "red",
+          });
+          return;
+        }
+        if (!form.pagado_en) {
+          this.$q.notify({
+            message:
+              "Debe ingresar donde será pagada la guía antes de tarifear",
+            color: "red",
+          });
+          return;
+        }
         if (
           !(this.checkbox.extra_urbano !== "0" || this.checkbox.urbano !== "0")
         ) {
@@ -3830,14 +3923,18 @@ export default {
               monto_kg_ad = 0;
             } else {
               monto_kg_ad =
-                this.parseFloatN(kgs_adicionales) *
+                this.parseFloatN(Math.round(kgs_adicionales)) *
                 this.parseFloatN(res.data[0].monto_tarifa);
             }
 
-            this.detalle_movimiento[1].cantidad = kgs_adicionales;
-            this.detalle_movimiento[1].importe_renglon = monto_kg_ad.toFixed(2);
-            this.detalle_movimiento[1].precio_unitario =
-              res.data[0].monto_tarifa.toFixed(2);
+            this.detalle_movimiento[1].cantidad = this.parseFloatN(
+              Math.round(kgs_adicionales)
+            ).toFixed(0);
+            this.detalle_movimiento[1].importe_renglon =
+              this.parseFloatN(monto_kg_ad).toFixed(2);
+            this.detalle_movimiento[1].precio_unitario = this.parseFloatN(
+              res.data[0].monto_tarifa
+            ).toFixed(2);
           })
           .catch((err) => {
             if (err.response) {
@@ -3917,7 +4014,7 @@ export default {
             },
           })
           .then((res) => {
-            monto_especial = !res.data[0] ? 0 : res.data[0].monto_tarifa;
+            monto_especial = !res.data[0] ? 0 : res.data[0].monto_tarifa;            
 
             //Se incluye este aparte para calcular el diferencial del minimo y el valor declarado
             if (form.peso_kgs > 30) {
@@ -3934,8 +4031,8 @@ export default {
                 : 0;
               porc_otros = form.porc_comision;
               comision =
-                (this.parseFloatN(val_declarado_otros) *
-                  this.parseFloatN(porc_otros)) /
+                (this.curReplace(val_declarado_otros) *
+                  this.curReplace(porc_otros)) /
                 100;
               monto_base =
                 this.parseFloatN(monto_basico) + this.parseFloatN(monto_kg_ad);
@@ -4361,6 +4458,22 @@ export default {
             return stopFuction;
           });
 
+        await api
+          .get(`/hdolar/`, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              fecha: moment().format("YYYY-MM-DD"),
+            },
+          })
+          .then((res) => {
+            this.valor_dolar = res.data.data[0].valor;
+          })
+          .catch(() => {
+            errorMessage =
+              "Error del Sistema. No se pudo encontrar el valor del Dolar correspondiente a la fecha del día";
+            return error;
+          });
+
         this.form.tipo_servicio = "N";
         this.form.tipo_ubicacion = "U";
         this.form.tipo_urgencia = "N";
@@ -4495,7 +4608,6 @@ export default {
               "00-000000"
             );
         }
-        var monto_total = res.monto_total;
 
         if (!res.nro_ctrl_doc_ppal) {
           this.nro_ref = "";
@@ -4509,23 +4621,19 @@ export default {
           this.nro_doc = res.nro_ctrl_doc_ppal.padStart(4, "0000");
         }
 
-        moment.locale("es");
-
         await api
           .get(`/hdolar/`, {
             headers: {
               Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-              // fecha: moment().format("L").split("/").reverse().join("/")
-              fecha: "2019-05-20",
+              fecha: res.fecha_emision,
             },
           })
           .then((res) => {
-            var dolar = res.data.data[0].valor;
-            this.valor_dolar = (monto_total / dolar).toFixed(2);
+            this.valor_dolar = res.data.data[0].valor;
           })
           .catch(() => {
             errorMessage =
-              "Error del Sistema. No se pudo encontrar el valor del Dolar correspondiente a el dia de hoy";
+              "Error del Sistema. No se pudo encontrar el valor del Dolar correspondiente a la fecha de Emisión de esta Guía";
             return error;
           });
 
@@ -4543,6 +4651,7 @@ export default {
         this.form.porc_descuento = res.porc_descuento;
         this.form.base_comision_vta_rcl = res.base_comision_vta_rcl;
         this.form.base_comision_seg = res.base_comision_seg;
+        this.total_ref = (res.monto_total / this.valor_dolar).toFixed(2);
 
         if (res.fecha_emision)
           this.form.fecha_emision = res.fecha_emision
@@ -4952,6 +5061,8 @@ export default {
             form.porc_descuento = this.curReplace(form.porc_descuento);
           if (form.carga_neta)
             form.carga_neta = this.curReplace(form.carga_neta);
+            if (form.porc_comision)
+            form.porc_comision = this.curReplace(form.porc_comision);  
           if (form.fecha_aplicacion)
             form.fecha_aplicacion =
               form.fecha_aplicacion != "00/00/0000"
@@ -5094,16 +5205,11 @@ export default {
             }
 
             if (form.estatus_administra !== "G") form.estatus_administra = "F";
-
             form.check_pxfac = 1;
-            form.fecha_pxfac = moment()
-              .format("DD/MM/YYYY")
-              .split("/")
-              .reverse()
-              .join("-");
+            form.fecha_pxfac = moment().format("YYYY-MM-DD");
 
             // Guarda el FPO
-            if (form.peso_kgs >= 0.001) {
+            if (this.curReplace(form.peso_kgs) >= 0.001) {
               await api
                 .get(`/fpos`, {
                   headers: {
@@ -5167,7 +5273,6 @@ export default {
 
           // Guarda la guia
           if (form.id !== "") {
-            delete form.porc_comision;
             if (form.id_clte_part_dest == "") delete form.id_clte_part_dest;
             if (form.id_clte_part_orig == "") delete form.id_clte_part_orig;
             if (this.reversada == true) {
@@ -5211,7 +5316,6 @@ export default {
               });
           } else {
             delete form.id;
-            delete form.porc_comision;
             if (form.id_clte_part_dest == "") delete form.id_clte_part_dest;
             if (form.id_clte_part_orig == "") delete form.id_clte_part_orig;
             await api
@@ -5221,8 +5325,7 @@ export default {
                 },
               })
               .then((res) => {
-                this.setDataGuia(res.data.data);
-                this.form.id = res.id;
+                this.form.id = res.data.id;
               })
               .catch(() => {
                 errorMessage =
@@ -5891,6 +5994,7 @@ export default {
           this.form.saldo = monto_total.toFixed(2);
           this.form.base_comision_vta_rcl = base_comision_vta_rcl.toFixed(2);
           this.form.base_comision_seg = base_comision_seg.toFixed(2);
+          this.total_ref = (monto_total / this.curReplace(this.valor_dolar)).toFixed(2);
         }
       }
     },
@@ -5990,6 +6094,8 @@ export default {
     resetFormGuia() {
       this.nro_doc = "";
       this.nro_ref = "";
+      this.monto_ref = 0;
+      this.total_ref = 0;
       this.reversada = false;
       this.destino = false;
       this.cliente = false;
@@ -6029,7 +6135,7 @@ export default {
       this.form.check_transito = "0";
       this.form.estatus_operativo = "";
       this.form.estatus_administra = "";
-      this.form.monto_ref_cte_sin_imp = "";
+      this.form.monto_ref_cte_sin_imp = "";      
       this.form.id_clte_part_dest = "";
       this.form.porc_comision = "";
       this.form.porc_descuento = "";
