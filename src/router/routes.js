@@ -33,7 +33,7 @@ const routes = [
       {
         path: '/registrodecostos',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('src/pages/Registrodecostos.vue')}]
+        children: [{ path: "", component: () => import('src/pages/registroDeCostos.vue')}]
       },
       {
         path: '/reportedecostos',
@@ -356,7 +356,7 @@ const routes = [
       {
         path: '/m_registrodecostos',
         component: () => import("layouts/manualLayout.vue"),
-        children: [{ path: "", component: () => import('pages/manuals/m_registrodecostos.vue')}]
+        children: [{ path: "", component: () => import('pages/manuals/m_registroDeCostos.vue')}]
       },
       {
         path: '/m_reportedecostos',
