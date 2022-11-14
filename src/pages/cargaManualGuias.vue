@@ -3,7 +3,7 @@
     <q-dialog v-model="dialog">
       <q-card class="q-pa-md" bordered style="width: 999px; max-width: 80vw">
         <q-card-section>
-          <q-form @submit="sendData()">
+          <q-form @submit="this.sendData()">
             <div class="row">
               <div class="col-md-4 col-xs-12">
                 <q-input
@@ -20,7 +20,7 @@
                   </template>
                 </q-input>
               </div>
-              <div class="col-md-4 col-xs-12">
+              <div class="col-md-2 col-xs-12">
                 <q-input
                   outlined
                   label="Fecha de Factura"
@@ -28,6 +28,7 @@
                   class="pcform"
                   v-model="form.fecha_factura"
                   lazy-rules
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val)]"
                   mask="##/##/####"
                 >
                   <template v-slot:append>
@@ -47,27 +48,27 @@
                   </template>
                 </q-input>
               </div>
-              <div class="col-md-4 col-xs-12">
+              <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.nb_cliente"
                   label="Cliente"
                   hint=""
-                  @update:model-value="form.nit = form.nit.toUpperCase()"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val)]"
                 >
                   <template v-slot:prepend>
                     <q-icon name="pin" />
                   </template>
                 </q-input>
               </div>
-              <div class="col-md-4 col-xs-12">
+              <div class="col-md-3 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.ci_rif"
                   label="CI/RIF"
                   hint=""
                   class="pcform"
-                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val)]"
                   lazy-rules
                 >
                   <template v-slot:prepend>
@@ -82,11 +83,10 @@
                   :options="estadoSelected"
                   class="pcform"
                   @filter="
-                    (val, update, abort) =>
+                    (val, update) =>
                       filterArray(
                         val,
                         update,
-                        abort,
                         'estadoSelected',
                         'estados',
                         'desc_estado'
@@ -102,14 +102,20 @@
                   outlined
                   standout
                   label="Estado"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
                   @update:model-value="
                     this.selectedCiudad = [];
                     this.ciudades = [];
-                    getData(`/ciudades`, 'setData', 'ciudades', {
-                      headers: {
-                        estado: this.selectedEstado.id,
-                      },
-                    });
+                    this.$refs.methods.getData(
+                      `/ciudades`,
+                      'setData',
+                      'ciudades',
+                      {
+                        headers: {
+                          estado: this.selectedEstado.id,
+                        },
+                      }
+                    );
                   "
                   ><template v-slot:no-option>
                     <q-item>
@@ -121,30 +127,18 @@
                   <template v-slot:prepend>
                     <q-icon name="search" />
                   </template>
-                  <template v-slot:append>
-                    <q-icon
-                      @click.stop.prevent="
-                        this.selectedEstado = [];
-                        this.ciudades = [];
-                        this.selectedCiudad = [];
-                      "
-                      class="cursor-pointer"
-                      name="filter_alt_off"
-                    />
-                  </template>
                 </q-select>
               </div>
-              <div class="col-md-4 col-xs-12">
+              <div class="col-md-3 col-xs-12">
                 <q-select
                   transition-show="flip-up"
                   transition-hide="flip-down"
                   :options="ciudadSelected"
                   @filter="
-                    (val, update, abort) =>
+                    (val, update) =>
                       filterArray(
                         val,
                         update,
-                        abort,
                         'ciudadSelected',
                         'ciudades',
                         'desc_ciudad'
@@ -153,6 +147,7 @@
                   use-input
                   hide-selected
                   fill-input
+                  class="pcform"
                   input-debounce="0"
                   option-label="desc_ciudad"
                   option-value="id"
@@ -160,6 +155,7 @@
                   outlined
                   standout
                   label="Ciudad"
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
                   ><template v-slot:no-option>
                     <q-item>
                       <q-item-section class="text-grey">
@@ -167,26 +163,20 @@
                       </q-item-section>
                     </q-item>
                   </template>
-                  <template v-slot:append>
-                    <q-icon
-                      @click.stop.prevent="this.selectedCliente = []"
-                      class="cursor-pointer"
-                      name="filter_alt_off"
-                    />
-                  </template>
                   <template v-slot:prepend>
                     <q-icon name="search" />
                   </template>
                 </q-select>
               </div>
-              <div class="col-md-4 col-xs-12">
+              <div class="col-md-2 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.bultos"
                   label="Bultos"
                   v-money="moneyNotDecimal"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val)]"
+                  input-class="text-right"
                   hint=""
-                  class="pcform"
                   lazy-rules
                 >
                   <template v-slot:prepend>
@@ -194,12 +184,13 @@
                   </template>
                 </q-input>
               </div>
-              <div class="col-md-4 col-xs-12">
+              <div class="col-md-3 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.telefono"
                   label="Telefono"
                   hint=""
+                  mask="(####) ### - ####"
                   class="pcform"
                   lazy-rules
                 >
@@ -208,13 +199,16 @@
                   </template>
                 </q-input>
               </div>
-              <div class="col-md-4 col-xs-12">
+              <div class="col-md-3 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.monto"
                   label="Monto Factura"
+                  input-class="text-right"
                   v-money="money"
                   hint=""
+                  class="pcform"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val)]"
                   lazy-rules
                 >
                   <template v-slot:prepend>
@@ -222,13 +216,15 @@
                   </template>
                 </q-input>
               </div>
-              <div class="col-md-4 col-xs-12">
+              <div class="col-md-3 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.peso"
                   label="Peso"
                   class="pcform"
-                  v-money="moneyNotDecimal"
+                  input-class="text-right"
+                  v-money="money"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val)]"
                   hint=""
                   lazy-rules
                 >
@@ -237,27 +233,14 @@
                   </template>
                 </q-input>
               </div>
-              <div class="col-md-4 col-xs-12">
+              <div class="col-md-3 col-xs-12">
                 <q-input
                   outlined
                   v-model="form.carga_neta"
                   label="Carga Neta"
+                  input-class="text-right"
                   v-money="money"
-                  class="pcform"
-                  hint=""
-                  lazy-rules
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="visibility" />
-                  </template>
-                </q-input>
-              </div>
-              <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="form.porc_comision"
-                  v-money="money"
-                  label="% Comision"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val)]"
                   hint=""
                   lazy-rules
                 >
@@ -271,6 +254,7 @@
                   outlined
                   v-model="form.direccion"
                   label="Direccion Entrega"
+                  :rules="[(val) => this.$refs.rulesVue.isReq(val)]"
                   hint=""
                   lazy-rules
                 >
@@ -306,14 +290,6 @@
       </q-card>
     </q-dialog>
 
-    <q-page-sticky
-      position="bottom-right"
-      class="z-top"
-      style="margin-right: 20px; margin-bottom: 20px"
-    >
-      <q-btn round color="primary" icon="save" @click="saveData()" />
-    </q-page-sticky>
-
     <div class="q-pa-sm justify-center">
       <div
         class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 text-secondary movilTitle"
@@ -332,7 +308,7 @@
         style="align-self: center; text-align: center; padding-bottom: 10px"
       >
         <div
-          class="col-md-5 col-xl-8 col-lg-8 col-xs-12 col-sm-12 cardMarginFilter selectMobile"
+          class="col-md-6 col-xl-8 col-lg-8 col-xs-12 col-sm-12 cardMarginFilter selectMobile"
           style="align-self: center; text-align: center"
         >
           <q-file
@@ -348,15 +324,14 @@
               this.datos = [];
             "
             accept=".txt, .TXT"
-            @rejected="onRejected"
+            @rejected="
+              this.$q.notify({
+                color: 'red',
+                message: `El archivo a cargar debe ser un TXT`,
+              })
+            "
           >
-            <template v-slot:append>
-              <q-icon
-                v-if="file !== null"
-                name="close"
-                @click.stop.prevent="file = null"
-                class="cursor-pointer"
-              />
+            <template v-slot:append v-if="!this.allowOption(2)">
               <q-icon
                 name="file_upload"
                 @click="this.$refs.txtFile.pickFiles()"
@@ -365,7 +340,6 @@
             <template v-slot:hint> </template>
           </q-file>
         </div>
-
         <div
           class="col-md-6 col-xl-4 col-lg-4 col-xs-12 col-sm-12 botonesGuias"
           style="text-align: right; align-self: center"
@@ -375,36 +349,12 @@
             color="primary"
             :disabled="this.allowOption(2)"
             round
-            @click=""
-            padding="sm"
-            style="margin-right: 25px; margin-bottom: 6px"
-          >
-            <q-icon size="25px" name="find_in_page" color="white"> </q-icon>
-            <q-tooltip
-              class="bg-primary"
-              style="max-height: 30px"
-              transition-show="scale"
-              transition-hide="scale"
-              color="primary"
-              >Agregar Control</q-tooltip
-            >
-          </q-btn>
-
-          <q-btn
-            dense
-            color="primary"
-            round
             padding="sm"
             style="margin-right: 25px; margin-bottom: 6px"
             @click="
-              selectedAgencia = [];
-              selectedCliente = [];
-              selectedAgente = [];
-              file = [];
-              clientes = [];
-              agentes = [];
-              form = [];
-              datos = [];
+              this.file = [];
+              this.selectedAgencia = [];
+              this.resetFilters();
             "
           >
             <q-icon size="25px" name="filter_alt_off" color="white"> </q-icon>
@@ -414,72 +364,19 @@
               transition-show="scale"
               transition-hide="scale"
               color="primary"
-              >Eliminar Filtros</q-tooltip
+              >Limpiar Filtros</q-tooltip
             >
           </q-btn>
-
           <q-btn
             dense
             color="primary"
-            round
-            padding="sm"
-            style="margin-right: 25px; margin-bottom: 6px"
-            @click="
-              selectedCliente = [];
-              selectedAgente = [];
-              selectedGuiaCarga = '';
-              selectedGuiaFactura = '';
-              selectedCulminado = '';
-              guia_desde = '';
-              guia_hasta = '';
-              getDataGuias();
-            "
-          >
-            <q-icon size="25px" name="content_paste_search" color="white">
-            </q-icon>
-            <q-tooltip
-              class="bg-primary"
-              style="max-height: 30px"
-              transition-show="scale"
-              transition-hide="scale"
-              color="primary"
-              >Eliminar Filtros</q-tooltip
-            >
-          </q-btn>
-
-          <q-btn
-            dense
-            color="primary"
+            :disabled="this.allowOption(2)"
             round
             padding="sm"
             style="margin-right: 25px; margin-bottom: 6px"
             @click="this.asignarGuia()"
           >
-            <q-icon size="25px" name="file_open" color="white"> </q-icon>
-            <q-tooltip
-              class="bg-primary"
-              style="max-height: 30px"
-              transition-show="scale"
-              transition-hide="scale"
-              color="primary"
-              >Eliminar Filtros</q-tooltip
-            >
-          </q-btn>
-
-          <q-btn
-            dense
-            color="primary"
-            round
-            padding="sm"
-            style="margin-right: 25px; margin-bottom: 6px"
-            @click="
-              selectedCliente = [];
-              selectedAgente = [];
-              selectedAgencia = [];
-              getDataGuias();
-            "
-          >
-            <q-icon size="25px" name="collections_bookmark" color="white">
+            <q-icon size="25px" name="assignment_returned" color="white">
             </q-icon>
             <q-tooltip
               class="bg-primary"
@@ -487,26 +384,53 @@
               transition-show="scale"
               transition-hide="scale"
               color="primary"
-              >Eliminar Filtros</q-tooltip
+              >Asignar Nro Guías</q-tooltip
             >
           </q-btn>
-
           <q-btn
             dense
             color="primary"
+            :disabled="this.allowOption(2)"
             round
             padding="sm"
             style="margin-right: 25px; margin-bottom: 6px"
-            @click="
-              selectedCliente = [];
-              selectedAgente = [];
-              selectedGuiaCarga = '';
-              selectedGuiaFactura = '';
-              selectedCulminado = '';
-              guia_desde = '';
-              guia_hasta = '';
-              getDataGuias();
-            "
+            @click="this.cargarGuias()"
+          >
+            <q-icon size="25px" name="find_in_page" color="white"> </q-icon>
+            <q-tooltip
+              class="bg-primary"
+              style="max-height: 30px"
+              transition-show="scale"
+              transition-hide="scale"
+              color="primary"
+              >Cargar Guías</q-tooltip
+            >
+          </q-btn>
+          <q-btn
+            dense
+            color="primary"
+            :disabled="this.allowOption(2)"
+            round
+            padding="sm"
+            style="margin-right: 25px; margin-bottom: 6px"
+          >
+            <q-icon size="25px" name="fact_check" color="white"> </q-icon>
+            <q-tooltip
+              class="bg-primary"
+              style="max-height: 30px"
+              transition-show="scale"
+              transition-hide="scale"
+              color="primary"
+              >Imprimir Lote</q-tooltip
+            >
+          </q-btn>
+          <q-btn
+            dense
+            color="primary"
+            :disabled="this.allowOption(2)"
+            round
+            padding="sm"
+            style="margin-right: 25px; margin-bottom: 6px"
           >
             <q-icon size="25px" name="print" color="white"> </q-icon>
             <q-tooltip
@@ -515,13 +439,13 @@
               transition-show="scale"
               transition-hide="scale"
               color="primary"
-              >Eliminar Filtros</q-tooltip
+              >Imprimir Guia Individual</q-tooltip
             >
           </q-btn>
-
           <q-btn
             dense
             color="white"
+            :disabled="this.allowOption(2)"
             round
             padding="sm"
             style="margin-bottom: 6px"
@@ -533,7 +457,7 @@
               style="max-height: 30px"
               transition-hide="scale"
               color="primary"
-              >Carta para el Cliente</q-tooltip
+              >Imprimir Lote Anterior</q-tooltip
             >
           </q-btn>
         </div>
@@ -554,11 +478,10 @@
             transition-hide="flip-down"
             :options="agenciasSelected"
             @filter="
-              (val, update, abort) =>
+              (val, update) =>
                 filterArray(
                   val,
                   update,
-                  abort,
                   'agenciasSelected',
                   'agencias',
                   'nb_agencia'
@@ -570,6 +493,7 @@
             input-debounce="0"
             option-label="nb_agencia"
             option-value="id"
+            ref="agencia"
             v-model="selectedAgencia"
             outlined
             standout
@@ -579,12 +503,12 @@
               this.selectedAgente = [];
               this.clientes = [];
               this.agentes = [];
-              getData(`/agentes`, 'setData', 'agentes', {
+              this.$refs.methods.getData(`/agentes`, 'setData', 'agentes', {
                 headers: {
                   agencia: this.selectedAgencia.id,
                 },
               });
-              getData(`/clientes`, 'setData', 'clientes', {
+              this.$refs.methods.getData(`/clientes`, 'setData', 'clientes', {
                 headers: {
                   agencia: this.selectedAgencia.id,
                 },
@@ -600,19 +524,6 @@
             <template v-slot:prepend>
               <q-icon name="search" />
             </template>
-            <template v-slot:append>
-              <q-icon
-                @click.stop.prevent="
-                  this.selectedAgencia = [];
-                  this.selectedCliente = [];
-                  this.selectedAgente = [];
-                  this.clientes = [];
-                  this.agentes = [];
-                "
-                class="cursor-pointer"
-                name="filter_alt_off"
-              />
-            </template>
           </q-select>
         </div>
 
@@ -627,11 +538,10 @@
             transition-hide="flip-down"
             :options="clientesSelected"
             @filter="
-              (val, update, abort) =>
+              (val, update) =>
                 filterArray(
                   val,
                   update,
-                  abort,
                   'clientesSelected',
                   'clientes',
                   'nb_cliente'
@@ -643,6 +553,7 @@
             input-debounce="0"
             option-label="nb_cliente"
             option-value="id"
+            ref="cliente"
             v-model="selectedCliente"
             outlined
             standout
@@ -653,13 +564,6 @@
                   Sin resultados
                 </q-item-section>
               </q-item>
-            </template>
-            <template v-slot:append>
-              <q-icon
-                @click.stop.prevent="this.selectedCliente = []"
-                class="cursor-pointer"
-                name="filter_alt_off"
-              />
             </template>
             <template v-slot:prepend>
               <q-icon name="search" />
@@ -678,11 +582,10 @@
             transition-hide="flip-down"
             :options="agentesSelected"
             @filter="
-              (val, update, abort) =>
+              (val, update) =>
                 filterArray(
                   val,
                   update,
-                  abort,
                   'agentesSelected',
                   'agentes',
                   'nb_agente'
@@ -705,13 +608,6 @@
                 </q-item-section>
               </q-item>
             </template>
-            <template v-slot:append>
-              <q-icon
-                @click.stop.prevent="this.selectedAgente = []"
-                class="cursor-pointer"
-                name="filter_alt_off"
-              />
-            </template>
             <template v-slot:prepend>
               <q-icon name="search" />
             </template>
@@ -728,12 +624,12 @@
         :columns="columns"
         :loading="loading"
         :separator="separator"
-        style="width: 100%"
+        style="width: 100%; height: 500px"
         :grid="$q.screen.xs"
         :rows-per-page-options="[0]"
       >
         <template v-slot:loading>
-          <q-inner-loading showing color="primary" style="padding-top: 46px" />
+          <q-inner-loading showing color="primary" style="padding-top: 60px" />
         </template>
         <template v-slot:body-cell-nro_guia="props">
           <q-td :props="props">
@@ -742,6 +638,13 @@
               dense
               style="min-width: 120px"
               v-model="props.row.nro_guia"
+              ref="nro_guia"
+              mask="##########"
+              :input-style="{ color: props.row.colorGuia }"
+              @blur="this.validateGuia(props.row.nro_guia, props.rowIndex)"
+              @keyup.enter="
+                this.validateGuia(props.row.nro_guia, props.rowIndex)
+              "
             >
             </q-input>
           </q-td>
@@ -751,51 +654,25 @@
             <q-input
               outlined
               dense
+              input-class="text-right"
+              v-money="money"
+              ref="porc_zona"
+              style="min-width: 80px"
               v-model="props.row.porc_zona"
-              @blur="validationPorcZona(props.row, props.rowIndex)"
-              :input-style="{ color: 'blue' }"
-              v-if="props.row.porc_zona_status == false"
-            >
-            </q-input>
-            <q-input
-              outlined
-              dense
-              v-model="props.row.porc_zona"
-              @blur="validationPorcZona(props.row, props.rowIndex)"
-              :input-style="{ color: 'red' }"
-              v-else-if="props.row.porc_zona_status == true"
-            >
-            </q-input>
-            <q-input
-              outlined
-              dense
-              @blur="validationPorcZona(props.row, props.rowIndex)"
-              v-model="props.row.porc_zona"
-              v-else
+              @blur="this.validatePorcZona(props.row, props.rowIndex)"
+              @keyup.enter="this.validatePorcZona(props.row, props.rowIndex)"
+              :input-style="{ color: props.row.colorZona }"
             >
             </q-input>
           </q-td>
         </template>
         <template v-slot:body-cell-ciudad="props">
-          <q-td
-            :props="props"
-            style="color: blue"
-            v-if="props.row.ciudadExist == true && !props.row.zonaExist"
-          >
-            {{ props.row.ciudad }}
-          </q-td>
-          <q-td :props="props" v-else-if="props.row.zonaExist == true">
-            {{ props.row.ciudad }}
-          </q-td>
-          <q-td :props="props" style="color: red" v-else>
+          <q-td :props="props" :style="{ color: props.row.colorCiudad }">
             {{ props.row.ciudad }}
           </q-td>
         </template>
         <template v-slot:body-cell-estado="props">
-          <q-td :props="props" style="color: red" v-if="!props.row.estadoExist">
-            {{ props.row.estado }}
-          </q-td>
-          <q-td :props="props" v-else>
+          <q-td :props="props" :style="{ color: props.row.colorEstado }">
             {{ props.row.estado }}
           </q-td>
         </template>
@@ -808,11 +685,7 @@
               color="primary"
               icon="edit"
               :disabled="this.allowOption(3)"
-              @click="
-                this.resetForm();
-                this.setDataEdit(props.row);
-                dialog = true;
-              "
+              @click="this.setDataEdit(props.row)"
             ></q-btn>
             <q-btn
               dense
@@ -874,11 +747,7 @@
                       color="primary"
                       icon="edit"
                       :disabled="this.allowOption(3)"
-                      @click="
-                        this.resetForm();
-                        this.setDataEdit(props.row);
-                        dialog = true;
-                      "
+                      @click="this.setDataEdit(props.row)"
                     ></q-btn>
                     <q-btn
                       v-if="col.name === 'action'"
@@ -908,6 +777,33 @@
       </q-inner-loading>
     </div>
 
+    <q-dialog v-model="confirmUploadPopUp" persistent>
+      <q-card style="width: 700px">
+        <q-card-section>
+          <div class="text-h5" style="font-size: 18px">
+            Desea ingresar los datos mostrados al registro de Ventas de RCS
+            Express, C.A. ?
+          </div>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn
+            flat
+            label="Cancelar"
+            color="primary"
+            @click="this.confirmUpload = false"
+            v-close-popup
+          />
+          <q-btn
+            flat
+            label="Guardar"
+            color="primary"
+            v-close-popup
+            @click="this.confirmUpload = true"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
     <q-dialog v-model="deletePopup">
       <q-card style="width: 700px">
         <q-card-section>
@@ -922,26 +818,7 @@
             label="Aceptar"
             color="primary"
             v-close-popup
-            @click="deleteData(selected)"
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-
-    <q-dialog v-model="information">
-      <q-card style="width: 700px">
-        <q-card-section>
-          <div class="text-h5" style="font-size: 18px">
-            {{ information }}
-          </div>
-        </q-card-section>
-        <q-card-actions align="center">
-          <q-btn
-            flat
-            label="Aceptar"
-            color="primary"
-            v-close-popup
-            @click="deleteData(selected)"
+            @click="this.datos.splice(selected, 1)"
           />
         </q-card-actions>
       </q-card>
@@ -951,7 +828,6 @@
       ref="methods"
       @set-Data="setData"
       @set-Data-Edit="setDataEdit"
-      @reset-Loading="resetLoading"
       @set-Data-Init="setDataInit"
       @set-Data-Permisos="setDataPermisos"
     ></methods>
@@ -963,8 +839,8 @@
 <script>
 import { ref } from "vue";
 import { api } from "boot/axios";
-import rulesVue from "src/components/rules.vue";
 import moment from "moment";
+import rulesVue from "src/components/rules.vue";
 import { VMoney } from "v-money";
 import { useQuasar, LocalStorage } from "quasar";
 import methodsVue from "src/components/methods.vue";
@@ -1001,111 +877,131 @@ export default {
           label: "Nro. Factura",
           field: "nro_factura",
           align: "left",
-          required: true,
         },
         {
           name: "fecha_factura",
           label: "Fecha Factura",
           field: "fecha_factura",
           align: "left",
-          required: true,
         },
         {
           name: "nb_cliente",
           label: "Nombre Cliente",
           field: "nb_cliente",
           align: "left",
-          required: true,
         },
         {
           name: "ci_rif",
           label: "CI-RIF",
           field: "ci_rif",
           align: "left",
-          required: true,
         },
         {
           name: "direccion",
           label: "Dirección Entrega",
           field: "direccion",
           align: "left",
-          required: true,
         },
         {
           name: "estado",
           label: "Estado Entrega",
           field: "estado",
           align: "left",
-          required: true,
         },
         {
           name: "ciudad",
           label: "Ciudad Entrega",
           field: "ciudad",
           align: "left",
-          required: true,
         },
         {
           name: "bultos",
           label: "Bultos",
           field: "bultos",
-          align: "left",
-          required: true,
+          align: "right",
         },
         {
           name: "telefono",
           label: "Teléfono",
           field: "telefono",
           align: "left",
-          required: true,
         },
         {
           name: "monto",
           label: "Monto Factura",
           field: "monto",
-          align: "left",
-          required: true,
+          align: "right",
+          format: (val) =>
+            new Intl.NumberFormat("de-DE", {
+              style: "currency",
+              currency: "EUR",
+              currencyDisplay: "code",
+            })
+              .format(val)
+              .replace("EUR", "")
+              .trim(),
         },
         {
           name: "peso",
           label: "Peso Kgs",
           field: "peso",
-          align: "left",
-          required: true,
+          align: "right",
+          format: (val) =>
+            new Intl.NumberFormat("de-DE", {
+              style: "currency",
+              currency: "EUR",
+              currencyDisplay: "code",
+            })
+              .format(val)
+              .replace("EUR", "")
+              .trim(),
         },
         {
           name: "carga_neta",
           label: "Carga Neta",
           field: "carga_neta",
-          align: "left",
-          required: true,
+          align: "right",
+          format: (val) =>
+            new Intl.NumberFormat("de-DE", {
+              style: "currency",
+              currency: "EUR",
+              currencyDisplay: "code",
+            })
+              .format(val)
+              .replace("EUR", "")
+              .trim(),
         },
         {
           name: "porc_zona",
           label: "% Por Zona",
           field: "porc_zona",
-          align: "left",
-          required: true,
+          align: "right",
+          format: (val) =>
+            new Intl.NumberFormat("de-DE", {
+              style: "currency",
+              currency: "EUR",
+              currencyDisplay: "code",
+            })
+              .format(val)
+              .replace("EUR", "")
+              .trim(),
         },
         {
           name: "nro_guia",
           label: "Nro. Guia",
           field: "nro_guia",
           align: "left",
-          required: true,
         },
         {
           name: "last_nro_factura",
           label: "Nro. Factura",
           field: "nro_factura",
           align: "left",
-          required: true,
         },
         {
           name: "action",
           label: "Acciones",
           align: "center",
-          required: false,
         },
       ],
       form: {
@@ -1122,14 +1018,11 @@ export default {
         monto: "",
         peso: "",
         carga_neta: "",
-        porc_comision: "",
-        nro_guia: "",
-        porc_zona: "",
       },
       datos: [],
       loadingPage: false,
+      confirmUpload: false,
       file: null,
-      validate: null,
       agencias: [],
       rpermisos: [],
       menus: [],
@@ -1148,14 +1041,11 @@ export default {
       selectedAgente: [],
       estados: [],
       ciudades: [],
-      error: "",
       content: null,
     };
   },
   setup() {
     const $q = useQuasar();
-    const loading = ref(false);
-    const order = ref(false);
     return {
       anulate: ref(false),
       fileSelector: false,
@@ -1163,6 +1053,7 @@ export default {
       dialog: ref(false),
       loading: ref(false),
       deletePopup: ref(false),
+      confirmUploadPopUp: ref(false),
     };
   },
   mounted() {
@@ -1174,7 +1065,7 @@ export default {
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
         rol: LocalStorage.getItem("tokenTraducido").usuario.roles.id,
-        menu: "asignacionguias",
+        menu: "cargamanualguias",
       },
     });
     this.$refs.methods.getData("/estados", "setData", "estados", {
@@ -1185,117 +1076,8 @@ export default {
     this.$refs.methods.getData("/agencias", "setDataInit", "agencias");
   },
   methods: {
-    // Metodo para Interpretar Archivos Subidos
-    readFile() {
-      this.loadingPage = true;
-      const reader = new FileReader();
-      reader.onerror = (err) => console.log(err);
-      reader.readAsText(this.file);
-      reader.onload = async (res) => {
-        this.content = res.target.result;
-        var lines = this.content.split("\n");
-        for (var i = 0; i < lines.length - 1; i++) {
-          var form = {};
-          var estadoID = null;
-          var columns = lines[i].split("\t");
-          form.nro_factura = columns[0];
-          form.fecha_factura = columns[1];
-          form.nb_cliente = columns[2];
-          form.ci_rif = columns[3];
-          form.direccion = columns[4];
-          form.ciudad = columns[5];
-          form.estado = columns[6];
-          form.bultos = columns[7];
-          form.telefono = columns[8];
-          form.monto = columns[9];
-          form.peso = columns[10];
-          form.carga_neta = columns[11];
-          await api
-            .get(`/estados`, {
-              headers: {
-                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                desc: form.estado,
-                pais: 1,
-              },
-            })
-            .then((res) => {
-              if (res.data.data[0]) {
-                form.estadoExist = true;
-                estadoID = res.data.data[0].id;
-              } else {
-                form.estadoExist = false;
-              }
-            })
-            .catch((err) => {
-              if (err.response) {
-                form.estadoExist = false;
-              }
-            });
-          if (estadoID) {
-            await api
-              .get(`/ciudades`, {
-                headers: {
-                  Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                  desc: form.ciudad,
-                  estado: estadoID,
-                },
-              })
-              .then((res) => {
-                if (res.data.data[0]) {
-                  form.ciudadExist = true;
-                } else {
-                  form.ciudadExist = false;
-                }
-              })
-              .catch((err) => {
-                if (err.response) {
-                  form.ciudadExist = false;
-                }
-              });
-            if (form.ciudadExist) {
-              await api
-                .get(`/zonas`, {
-                  headers: {
-                    Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                    desc: form.ciudad,
-                  },
-                })
-                .then((res) => {
-                  if (res.data[0]) {
-                    form.zonaExist = true;
-                  }
-                });
-            }
-          }
-          this.datos.push(form);
-        }
-        this.loadingPage = false;
-      };
-    },
-    // Metodo para Manejar Errores al Subir Archivos
-    onRejected() {
-      this.$q.notify({
-        type: "negative",
-        message: `El archivo a cargar debe ser un TXT`,
-      });
-    },
-    // Metodo para Actualizar Datos de Tabla
-    setDataInit(res, dataRes) {
-      this[dataRes] = res.data;
-      this.selectedAgencia = this.agencias[0];
-      this.$refs.methods.getData("/clientes", "setData", "clientes", {
-        headers: {
-          agencia: this.agencias[0].id,
-        },
-      });
-      this.$refs.methods.getData("/agentes", "setData", "agentes", {
-        headers: {
-          agencia: this.agencias[0].id,
-        },
-      });
-    },
     // Metodo para Filtrar Selects
-    filterArray(val, update, abort, pagina, array, element) {
+    filterArray(val, update, pagina, array, element) {
       if (val === "") {
         update(() => {
           this[pagina] = this[array];
@@ -1316,10 +1098,6 @@ export default {
         }
       });
     },
-    // Metodo para Resetear Carga
-    resetLoading() {
-      this.loading = false;
-    },
     // Metodo de Permisos
     allowOption(option) {
       return (
@@ -1332,61 +1110,127 @@ export default {
       if (this.rpermisos.findIndex((item) => item.acciones.accion == 1) < 0)
         this.$router.push("/error403");
     },
-    // Pasar un numero a numero con dos decimales en formato correcto para efectuar operaciones
-    parseFloatN(number) {
-      number = Math.round(number * 100) / 100;
-      return number;
-    },
-    async asignarGuia() {
-      try {
-        var errorMessage;
-        if(this.datos[0].nro_guia == null) {
-          errorMessage = 'Debe ingresar el Primer Número de Guía';
-          return stopFuction
-        } else {
-          for (var i = 1; i <= this.datos.length - 1; i++) {
-            this.datos[i].nro_guia = parseInt(this.datos[i - 1].nro_guia,0) + 1
-          }
-        }
-      } catch (stopFuction) {
-        console.log(stopFuction)
-        if (errorMessage) {
-          this.$q.notify({
-            message: errorMessage,
-            color: "red",
-          });
-        }
-      }
-    },
+
     // METODOS DE PAGINA
 
-    // Metodo para hacer Get de Datos
-    getData(url, call, dataRes, axiosConfig) {
-      this.$refs.methods.getData(url, call, dataRes, axiosConfig);
+    // Metodo para Leer Archivos Subidos
+    async readFile() {
+      this.datos = [];
+      this.loadingPage = true;
+      const reader = new FileReader();
+      reader.onerror = (err) => console.log(err);
+      reader.readAsText(this.file, "ISO-8859-1");
+      reader.onload = async (res) => {
+        try {
+          var errorMessage;
+          this.content = res.target.result;
+          var lines = this.content.split("\n");
+          for (var i = 0; i < lines.length - 1; i++) {
+            var form = {};
+            var estadoId = null;
+            var columns = lines[i].split("\t");
+            form.id = i;
+            form.colorCiudad = "black";
+            form.colorEstado = "black";
+            form.colorGuia = "blue";
+            form.nro_factura = columns[0];
+            form.fecha_factura = columns[1];
+            form.nb_cliente = columns[2];
+            form.ci_rif = columns[3];
+            form.direccion = columns[4];
+            form.ciudad = columns[5];
+            form.estado = columns[6];
+            form.bultos = this.curReplace(columns[7]);
+            form.telefono = columns[8];
+            form.monto = this.curReplace(columns[9]);
+            if (!columns[10]) {
+              errorMessage = "Error al leer el Peso";
+              return stopFuction;
+            }
+            form.peso = this.curReplace(columns[10]);
+            form.colorZona = "red";
+            if (!columns[11]) {
+              errorMessage = "Error al leer la Carga Neta";
+              return stopFuction;
+            }
+            form.carga_neta = this.curReplace(columns[11].replace("\r", ""));
+            await api
+              .get(`/estados`, {
+                headers: {
+                  Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                  desc: form.estado,
+                  pais: 1,
+                },
+              })
+              .then((res) => {
+                if (!res.data.data[0]) {
+                  form.colorEstado = "red";
+                  form.colorCiudad = "red";
+                } else {
+                  estadoId = res.data.data[0].id;
+                }
+              })
+              .catch(() => {
+                form.colorEstado = "red";
+                form.colorCiudad = "red";
+              });
+            if (estadoId) {
+              await api
+                .get(`/ciudades`, {
+                  headers: {
+                    Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                    desc: form.ciudad,
+                    estado: estadoId,
+                  },
+                })
+                .then((res) => {
+                  if (!res.data.data[0]) form.colorCiudad = "red";
+                })
+                .catch(() => {
+                  form.colorCiudad = "red";
+                });
+              if (form.colorCiudad == "black") {
+                await api
+                  .get(`/zonas`, {
+                    headers: {
+                      Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                      desc: form.ciudad,
+                    },
+                  })
+                  .then((res) => {
+                    if (!res.data[0]) form.colorCiudad = "blue";
+                  })
+                  .catch(() => {
+                    form.colorCiudad = "blue";
+                  });
+              }
+            }
+            this.datos.push(form);
+          }
+          this.loadingPage = false;
+        } catch (stopFuction) {
+          this.loadingPage = false;
+          if (errorMessage) {
+            this.$q.notify({
+              message: errorMessage,
+              color: "red",
+            });
+          }
+        }
+      };
     },
-    // Metodo para hacer Get de Guias
-    getDataGuias() {
-      var cliente = "";
-      var agente = "";
-      var sortBy = this.pagination.sortBy;
-      var orderDirection = this.orderDirection;
-      if (this.selectedCliente.id) cliente = this.selectedCliente.id;
-      if (this.selectedAgente.id) agente = this.selectedAgente.id;
-      if (!sortBy) sortBy = "control_inicio";
-      if (orderDirection == "") orderDirection = "DESC";
-      this.$refs.methods.getData(`/cguias`, "setDataTable", "datos", {
+    // Metodo para Actualizar Datos de Tabla
+    setDataInit(res, dataRes) {
+      this[dataRes] = res.data;
+      this.selectedAgencia = this.agencias[0];
+      this.$refs.methods.getData("/clientes", "setData", "clientes", {
         headers: {
-          page: 1,
-          limit: 5,
-          order_by: sortBy,
-          order_direction: orderDirection,
-          agencia: this.selectedAgencia.id,
-          agente: agente,
-          cliente: cliente,
-          disp: this.selectedCulminado,
-          tipo: "20",
-          desde: this.guia_desde,
-          hasta: this.guia_hasta,
+          agencia: this.agencias[0].id,
+        },
+      });
+      this.$refs.methods.getData("/agentes", "setData", "agentes", {
+        headers: {
+          agencia: this.agencias[0].id,
         },
       });
     },
@@ -1397,24 +1241,23 @@ export default {
     // Metodo para Setear Datos Seleccionados
     async setDataEdit(dataRes) {
       try {
+        this.resetForm();
+        this.dialog = true;
         this.loadingPage = true;
         var form = dataRes;
-        (this.form.id = form.id),
-          (this.form.nro_factura = form.nro_factura),
-          (this.form.fecha_factura = form.fecha_factura),
-          (this.form.nb_cliente = form.nb_cliente),
-          (this.form.ci_rif = form.ci_rif),
-          (this.form.direccion = form.direccion),
-          (this.form.estado = form.estado),
-          (this.form.ciudad = form.ciudad),
-          (this.form.bultos = form.bultos),
-          (this.form.telefono = form.telefono),
-          (this.form.monto = form.monto),
-          (this.form.peso = form.peso),
-          (this.form.carga_neta = form.carga_neta),
-          (this.form.porc_comision = form.porc_comision),
-          (this.form.nro_guia = form.nro_guia);
-        this.form.porc_zona = form.porc_zona;
+        this.form.id = form.id;
+        this.form.nro_factura = form.nro_factura;
+        this.form.fecha_factura = form.fecha_factura;
+        this.form.nb_cliente = form.nb_cliente;
+        this.form.ci_rif = form.ci_rif;
+        this.form.direccion = form.direccion;
+        this.form.estado = form.estado;
+        this.form.ciudad = form.ciudad;
+        this.form.bultos = form.bultos;
+        this.form.telefono = form.telefono;
+        this.form.monto = form.monto * 100;
+        this.form.peso = form.peso * 100;
+        this.form.carga_neta = form.carga_neta * 100;
         await api
           .get(`/estados`, {
             headers: {
@@ -1423,54 +1266,45 @@ export default {
             },
           })
           .then((res) => {
-            if (!res.data.data[0]) {
-              errorMessage = `Problemas al ubicar el Estado Seleccionado... Seleccione uno manualmente`;
+            if (res.data.data[0]) this.selectedEstado = res.data.data[0];
+          })
+          .catch((err) => {
+            if (err.response) errorMessage = err.response.data.message;
+            return stopFuction;
+          });
+        if (this.selectedEstado.id) {
+          await api
+            .get(`/ciudades`, {
+              headers: {
+                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                estado: this.selectedEstado.id,
+              },
+            })
+            .then((res) => {
+              this.ciudades = res.data.data;
+            })
+            .catch((err) => {
+              if (err.response) {
+                errorMessage = err.response.data.message;
+              }
               return stopFuction;
-            }
-            this.selectedEstado = res.data.data[0];
-          })
-          .catch((err) => {
-            if (err.response) {
-              errorMessage = err.response.data.message;
-            }
-            return stopFuction;
-          });
-        await api
-          .get(`/ciudades`, {
-            headers: {
-              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-              estado: this.selectedEstado.id,
-            },
-          })
-          .then((res) => {
-            this.ciudades = res.data.data;
-          })
-          .catch((err) => {
-            if (err.response) {
-              errorMessage = err.response.data.message;
-            }
-            return stopFuction;
-          });
-        await api
-          .get(`/ciudades`, {
-            headers: {
-              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-              desc: form.ciudad,
-            },
-          })
-          .then((res) => {
-            if (!res.data.data[0]) {
-              errorMessage = `Problemas al ubicar la Ciudad Seleccionada... Seleccione una manualmente`;
+            });
+
+          await api
+            .get(`/ciudades`, {
+              headers: {
+                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                desc: form.ciudad,
+              },
+            })
+            .then((res) => {
+              if (res.data.data[0]) this.selectedCiudad = res.data.data[0];
+            })
+            .catch((err) => {
+              if (err.response) errorMessage = err.response.data.message;
               return stopFuction;
-            }
-            this.selectedCiudad = res.data.data[0];
-          })
-          .catch((err) => {
-            if (err.response) {
-              errorMessage = err.response.data.message;
-            }
-            return stopFuction;
-          });
+            });
+        }
         this.dialog = true;
         this.loadingPage = false;
       } catch (stopFuction) {
@@ -1483,55 +1317,58 @@ export default {
         }
       }
     },
-    // Metodo para Eliminar Datos Seleccionados
-    deleteData(idpost) {
-      this.datos.splice(idpost, 1);
-    },
-    // Metodo para Editar o Crear Datos
     async sendData() {
-      try {
-        this.loadingPage = true;
-        var errorMessage;
-        var form;
-        form = JSON.parse(JSON.stringify(this.form));
-        this.datos[form.id] = form;
-        this.dialog = false;
-      } catch (stopFuction) {
-        this.loadingPage = false;
-        if (errorMessage) {
-          this.$q.notify({
-            message: errorMessage,
-            color: "red",
-          });
-        }
-      }
+      this.datos[this.form.id].colorCiudad = "black";
+      this.datos[this.form.id].colorEstado = "black";
+      this.datos[this.form.id].nro_factura = this.form.nro_factura;
+      this.datos[this.form.id].fecha_factura = this.form.fecha_factura;
+      this.datos[this.form.id].nb_cliente = this.form.nb_cliente;
+      this.datos[this.form.id].ci_rif = this.form.ci_rif;
+      this.datos[this.form.id].direccion = this.form.direccion;
+      this.datos[this.form.id].estado = this.selectedEstado.desc_estado;
+      this.datos[this.form.id].ciudad = this.selectedCiudad.desc_ciudad;
+      this.datos[this.form.id].telefono = this.form.telefono;
+      this.datos[this.form.id].bultos = this.curReplace(this.form.bultos);
+      this.datos[this.form.id].monto = this.curReplace(this.form.monto);
+      this.datos[this.form.id].peso = this.curReplace(this.form.peso);
+      this.datos[this.form.id].carga_neta = this.curReplace(
+        this.form.carga_neta
+      );
+      await api
+        .get(`/zonas`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            desc: this.selectedCiudad.desc_ciudad,
+          },
+        })
+        .then((res) => {
+          if (!res.data[0]) this.datos[this.form.id].colorCiudad = "blue";
+        })
+        .catch(() => {
+          this.datos[this.form.id].colorCiudad = "blue";
+        });
+      this.validatePorcZona(this.datos[this.form.id], this.form.id);
+      this.dialog = false;
     },
-    // Metodo para Validaciones del Porc Zona al Editarlo en la Tabla
-    async validationPorcZona(formRes, index) {
+    // Metodo para Validacion del Porc Zona al Editarlo en la Tabla
+    async validatePorcZona(formRes, index) {
       try {
-        this.loadingPage = true;
         var errorMessage;
         var monto_basico = null;
-        var kgs_adicionales = null;
         var kgr_minimos = null;
-        var monto_kg_ad = null;
         var monto_kg_adicional = null;
-        var monto_comision = null;
-        var monto_base = null;
-        var form = formRes;
-        var datos;
-        datos = JSON.parse(JSON.stringify(this.datos));
 
-        if (form.bultos)
-          form.bultos = form.bultos.replaceAll(".", "").replaceAll(",", ".");
-        if (form.monto)
-          form.monto = form.monto.replaceAll(".", "").replaceAll(",", ".");
-        if (form.peso)
-          form.peso = form.peso.replaceAll(".", "").replaceAll(",", ".");
-        if (form.carga_neta)
-          form.carga_neta = form.carga_neta
-            .replaceAll(".", "")
-            .replaceAll(",", ".");
+        var kgs_adicionales = 0;
+        var monto_kg_ad = 0;
+        var monto_comision = 0;
+        var monto_base = 0;
+        var form = formRes;
+
+        if (form.bultos) form.bultos = this.curReplace(form.bultos);
+        if (form.monto) form.monto = this.curReplace(form.monto);
+        if (form.peso) form.peso = this.curReplace(form.peso);
+        if (form.carga_neta) form.carga_neta = this.curReplace(form.carga_neta);
+        if (form.porc_zona) form.porc_zona = this.curReplace(form.porc_zona);
 
         if (form.peso < 30) {
           // Buscar tarifa kg adicionales – De aquí sacar monto_kg_adicional
@@ -1611,61 +1448,33 @@ export default {
               }
               return stopFuction;
             });
-        }
-        console.log("monto_basico " + monto_basico);
-        console.log("kgs_adicionales " + kgs_adicionales);
-        console.log("kgr_minimos " + kgr_minimos);
-        console.log("monto_kg_ad " + monto_kg_ad);
-        console.log("monto_kg_adicional " + monto_kg_adicional);
-        console.log("monto_comision " + monto_comision);
-        console.log("monto_base " + monto_base);
-        if (
-          datos[index].peso > kgr_minimos &&
-          kgr_minimos &&
-          datos[index].peso
-        ) {
-          kgs_adicionales =
-            this.parseFloatN(datos[index].peso) -
-            this.parseFloatN(kgr_minimos);
-        } else {
-          kgs_adicionales = 0;
-        }
 
-        if (monto_kg_adicional && kgs_adicionales)
+          if (form.peso > kgr_minimos)
+            kgs_adicionales =
+              this.parseFloatN(form.peso) - this.parseFloatN(kgr_minimos);
+
           monto_kg_ad =
             this.parseFloatN(kgs_adicionales) *
             this.parseFloatN(monto_kg_adicional);
-
-        if (datos[index].monto && datos[index].porc_zona)
           monto_comision =
-            (this.parseFloatN(datos[index].monto) *
-              this.parseFloatN(datos[index].porc_zona)) /
+            (this.parseFloatN(form.monto) *
+              this.parseFloatN(this.curReplace(form.porc_zona))) /
             100;
-
-        if (monto_basico && monto_kg_ad)
           monto_base =
             this.parseFloatN(monto_basico) + this.parseFloatN(monto_kg_ad);
 
-        if (monto_base > monto_comision && monto_base && monto_comision) {
-          if (kgs_adicionales == 0) {
-            this.datos[index].porc_zona_status = true;
+          if (monto_base > monto_comision && kgs_adicionales > 0) {
+            this.datos[index].colorZona = "red";
           } else {
-            this.datos[index].porc_zona_status = false;
+            this.datos[index].colorZona =
+              this.curReplace(form.porc_zona) > 0 ? "blue" : "red";
           }
+        } else {
+          this.datos[index].colorZona =
+            this.curReplace(form.porc_zona) > 0 ? "blue" : "red";
         }
-        console.log("RESULTADOS");
-        console.log("monto_basico " + monto_basico);
-        console.log("kgs_adicionales " + kgs_adicionales);
-        console.log("kgr_minimos " + kgr_minimos);
-        console.log("monto_kg_ad " + monto_kg_ad);
-        console.log("monto_kg_adicional " + monto_kg_adicional);
-        console.log("monto_comision " + monto_comision);
-        console.log("monto_base " + monto_base);
-        this.loadingPage = false;
-        this.dialog = false;
       } catch (stopFuction) {
-        console.log(stopFuction);
-        this.loadingPage = false;
+        this.datos[index].colorZona = "red";
         if (errorMessage) {
           this.$q.notify({
             message: errorMessage,
@@ -1674,46 +1483,21 @@ export default {
         }
       }
     },
-    // Metodo para Guardar Datos de Item Seleccionado
-    async saveData() {
+    // Metodo para asignar consecutivos al nro de guia
+    async asignarGuia() {
       try {
-        this.loadingPage = true;
         var errorMessage;
-        var datos;
-        datos = JSON.parse(JSON.stringify(this.datos));
-        if (datos[0]) {
-          for (var i = 0; i <= datos.length - 1; i++) {
-            datos[i].bultos = datos[i].bultos
-              .replaceAll(".", "")
-              .replaceAll(",", ".");
-            datos[i].monto = datos[i].monto
-              .replaceAll(".", "")
-              .replaceAll(",", ".");
-            datos[i].peso = datos[i].peso
-              .replaceAll(".", "")
-              .replaceAll(",", ".");
-            datos[i].carga_neta = datos[i].carga_neta
-              .replaceAll(".", "")
-              .replaceAll(",", ".");
-            datos[i].porc_comision = datos[i].porc_comision
-              .replaceAll(".", "")
-              .replaceAll(",", ".");
-            if (this.$refs.rulesVue.isReq(datos[i].porc_zona, false)) {
-              errorMessage = `Error. El % Porc por Zona es Requerido en factura NRO ${datos[i].nro_factura}`;
-              return stopFuction;
-            }
-            if (this.$refs.rulesVue.isReq(datos[i].nro_guia, false)) {
-              errorMessage = `Error en Nro de Guia de factura NRO ${datos[i].nro_factura}`;
-              return stopFuction;
-            }
-          }
-        } else {
-          errorMessage = `Error. No hay un Documento Cargado`;
+        if (this.datos[0].nro_guia == null) {
+          errorMessage = "Debe ingresar el Primer Número de Guía";
           return stopFuction;
+        } else {
+          for (var i = 1; i <= this.datos.length - 1; i++) {
+            this.datos[i].nro_guia =
+              parseInt(this.datos[i - 1].nro_guia, 0) + 1;
+            this.validateGuia(this.datos[i].nro_guia, i);
+          }
         }
-        this.loadingPage = false;
       } catch (stopFuction) {
-        this.loadingPage = false;
         if (errorMessage) {
           this.$q.notify({
             message: errorMessage,
@@ -1721,6 +1505,272 @@ export default {
           });
         }
       }
+    },
+    // Metodo para cargar las Guias al maestro
+    async cargarGuias() {
+      // Valida la data
+      if (this.file == null || this.file.length == 0) {
+        this.$refs.txtFile.$el.focus();
+        this.errorMessage(
+          "Debe cargar un Archivo antes de transferir los Datos"
+        );
+        return;
+      }
+      if (this.selectedAgencia.length == 0) {
+        this.$refs.agencia.$el.focus();
+        this.errorMessage(
+          "Debe ingresar la Agencia antes de transferir los Datos"
+        );
+        return;
+      }
+      if (this.selectedCliente.length == 0) {
+        this.$refs.cliente.$el.focus();
+        this.errorMessage(
+          "Debe ingresar el Cliente antes de transferir los Datos"
+        );
+        return;
+      }
+
+      // Valida el Detalle
+      for (var i = 0; i <= this.datos.length - 1; i++) {
+        if (this.datos[i].colorEstado == "red") {
+          this.setDataEdit(this.datos[i]);
+          this.errorMessage("Debe Seleccionar el Estado correcto");
+          return;
+        }
+        if (this.datos[i].colorCiudad == "red") {
+          this.setDataEdit(this.datos[i]);
+          this.errorMessage("Debe Seleccionar la Ciudad correcta");
+          return;
+        }
+        if (this.datos[i].colorCiudad == "blue") {
+          this.setDataEdit(this.datos[i]);
+          this.errorMessage("La ciudad seleccionada no tiene Zonas asignadas");
+          return;
+        }
+        if (this.curReplace(this.datos[i].peso) == 0.0) {
+          this.setDataEdit(this.datos[i]);
+          this.errorMessage("Debe ingresar el Peso");
+          return;
+        }
+        if (this.curReplace(this.datos[i].carga_neta) == 0.0) {
+          this.setDataEdit(this.datos[i]);
+          this.errorMessage("Debe ingresar la Carga Neta");
+          return;
+        }
+        await this.validatePorcZona(this.datos[i], i);
+        if (this.datos[i].colorZona == "red") {
+          this.$refs.porc_zona.$el.focus();
+          this.errorMessage(
+            "Uno de los registros posee un % de Comisión invalido"
+          );
+          return;
+        }
+        if (!this.datos[i].nro_guia) {
+          this.$refs.nro_guia.$el.focus();
+          this.errorMessage("Debe ingresar el numero de Guía");
+          return;
+        }
+        await this.validateGuia(this.datos[i].nro_guia, i);
+        if (this.datos[i].colorGuia == "red") {
+          this.$refs.nro_guia.$el.focus();
+          this.errorMessage(
+            "Uno de los registros posee un Número de Guía invalido"
+          );
+          return;
+        }
+      }
+
+      this.confirmUploadPopUp = true;
+      await this.until((_) => this.confirmUpload == true);
+      if (!this.confirmUpload) {
+        return;
+      } else {
+        this.confirmUpload = false;
+      }
+
+      // Guarda el Detalle
+      for (var i = 0; i <= this.datos.length - 1; i++) {
+        // Buscamos el id de la ciudad
+        var ciudadDest;
+        await api
+          .get(`/ciudades`, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              desc: this.datos[i].ciudad,
+            },
+          })
+          .then((res) => {
+            ciudadDest = res.data.data[0].id;
+          });
+
+        // Buscamos la Zona y la Agencia Destino
+        var agenciaDest;
+        var zonaDest;
+        await api
+          .get(`/zonas`, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              desc: this.datos[i].ciudad,
+            },
+          })
+          .then((res) => {
+            agenciaDest = res.data[0].cod_agencia;
+            zonaDest = res.data[0].id;
+          });
+
+        // Buscamos el codigo del cliente particular de agencia destino
+        var codParticular;
+        await api
+          .get(`/clientes`, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              agencia: agenciaDest,
+              particular: "S",
+              activo: "S",
+            },
+          })
+          .then((res) => {
+            codParticular = res.data.data[0].id;
+          });
+
+        // Buscamos si existe el cliente Particular
+        var idParticular = null;
+        await api
+          .get(`/cparticulares`, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              agencia: agenciaDest,
+              cod_cliente: codParticular,
+              rif: this.datos[i].ci_rif.toUpperCase(),
+              activo: "S",
+            },
+          })
+          .then((res) => {
+            if (res.data.data[0]) idParticular = res.data.data[0].id;
+          });
+
+        // Si existe Cliente Particular Actualizamos, si no lo creamos
+        var formParticulares = {};
+        formParticulares.cod_agencia = agenciaDest;
+        formParticulares.cod_ciudad = ciudadDest;
+        formParticulares.cod_cliente = codParticular;
+        formParticulares.rif_ci = this.datos[i].ci_rif.toUpperCase();
+        formParticulares.nb_cliente = this.datos[i].nb_cliente;
+        formParticulares.direccion = this.datos[i].direccion;
+        if (this.datos[i].telefono)
+          formParticulares.telefonos = this.datos[i].telefono;
+        formParticulares.estatus = "A";
+        if (idParticular) {
+          await api.put(`/cparticulares/${idParticular}`, formParticulares, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            },
+          });
+        } else {
+          await api
+            .post(`/cparticulares`, formParticulares, {
+              headers: {
+                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              },
+            })
+            .then((res) => {
+              idParticular = res.data.id;
+            });
+        }
+
+        // Creamos la Guia Carga
+        var formGuia = {};
+
+        formGuia.nro_documento = this.datos[i].nro_guia;
+        formGuia.fecha_emision = moment().format("YYYY-MM-DD");
+        formGuia.fecha_envio = moment().format("YYYY-MM-DD");
+        formGuia.t_de_documento = "GC";
+        formGuia.tipo_carga = "PM";
+        formGuia.nro_piezas = this.curReplace(this.datos[i].bultos);
+        formGuia.peso_kgs = this.curReplace(this.datos[i].peso);
+        formGuia.carga_neta = this.curReplace(this.datos[i].carga_neta);
+        formGuia.porc_comision = this.curReplace(this.datos[i].porc_zona);
+        formGuia.modalidad_pago = "CR";
+        formGuia.pagado_en = "O";
+        formGuia.cod_agencia = this.selectedAgencia.id;
+        formGuia.cod_cliente_org = this.selectedCliente
+          ? this.selectedCliente.id
+          : null;
+        formGuia.cod_agencia_dest = agenciaDest;
+        formGuia.check_transito = 0;
+        formGuia.monto_ref_cte_sin_imp = this.curReplace(this.datos[i].monto);
+        formGuia.cod_zona_dest = zonaDest;
+        formGuia.cod_agente_venta = this.selectedAgente
+          ? this.selectedAgente.id
+          : null;
+        formGuia.cod_cliente_dest = codParticular;
+        formGuia.ci_rif_cte_conta_dest = this.datos[i].ci_rif;
+        formGuia.id_clte_part_dest = idParticular;
+        formGuia.tipo_servicio = "N";
+        formGuia.tipo_ubicacion = "U";
+        formGuia.tipo_urgencia = "N";
+        formGuia.porc_apl_seguro = 0;
+        formGuia.estatus_operativo = "PR";
+        formGuia.estatus_administra = "E";
+        formGuia.saldo = 0;
+        formGuia.cod_proveedor = 11;
+        formGuia.dimensiones = this.datos[i].nro_factura;
+        formGuia.desc_contenido = this.datos[i].nro_factura;
+        formGuia.observacion =
+          this.datos[i].nro_guia + "  " + this.datos[i].telefono;
+
+        await api
+          .post(`/mmovimientos`, formGuia, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            },
+          })
+          .catch(() => {
+            this.errorMessage(
+              "Error del Sistema. Problemas al crear la Guía" +
+                this.datos[i].nro_guia +
+                ". Comuníquese con el proveedor del Sistemas..."
+            );
+            return;
+          });
+      }
+
+      this.file = [];
+      this.selectedAgencia = [];
+      this.resetFilters();
+
+      this.$q.notify({
+        message:
+          "Las Guías cargas que no presentaron problemas, fueron guardadas exitosamente en la base de datos SCEN...",
+        color: "green",
+      });
+    },
+    // Metodo para Validacion del Nro de Guia al Editarlo en la Tabla
+    async validateGuia(nroGuia, index) {
+      var find = this.datos.find((item) => item.nro_guia == nroGuia);
+      if (find.id != index) {
+        this.errorMessage(
+          "El número de Guia " + nroGuia + " está repetido en la carga"
+        );
+        this.datos[index].colorGuia = "red";
+        return;
+      }
+      await api
+        .get(`/mmovimientos`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            nro_documento: nroGuia,
+          },
+        })
+        .then((res) => {
+          if (res.data.data[0]) {
+            this.errorMessage("Ya fue cargada la Guía Número " + nroGuia);
+            this.datos[index].colorGuia = "red";
+          } else {
+            this.datos[index].colorGuia = "blue";
+          }
+        });
     },
     // Metodo para Resetear Datos
     resetForm() {
@@ -1732,126 +1782,51 @@ export default {
       this.form.direccion = "";
       this.form.estado = [];
       this.form.ciudad = [];
+      this.selectedEstado = [];
+      this.selectedCiudad = [];
       this.form.bultos = "";
       this.form.telefono = "";
       this.form.monto = "";
       this.form.peso = "";
       this.form.carga_neta = "";
-      this.form.porc_comision = "";
-      this.form.nro_guia = "";
+    },
+    // Metodo para Resetear Filtros
+    resetFilters() {
+      this.selectedCliente = [];
+      this.selectedAgente = [];
+      this.selectedEstado = [];
+      this.selectedCiudad = [];
+      this.clientes = [];
+      this.agentes = [];
+      this.form = [];
+      this.datos = [];
+    },
+    // Pasar un numero a numero con dos decimales en formato correcto para efectuar operaciones
+    parseFloatN(number) {
+      number = Math.round(number * 100) / 100;
+      return number;
+    },
+    // Metodo para convertir a Currency los String
+    curReplace(amount) {
+      return amount.indexOf(",") < 0
+        ? amount
+        : amount.replaceAll(".", "").replaceAll(",", ".");
+    },
+    // Metodo para imprimir mensajes de error
+    errorMessage(message) {
+      this.$q.notify({
+        message: message,
+        color: "red",
+      });
+    },
+    // Metodo para que una funcion no avance hasta que se cumpla una condicion
+    async until(conditionFunction) {
+      const poll = (resolve) => {
+        if (conditionFunction()) resolve();
+        else setTimeout((_) => poll(resolve), 400);
+      };
+      return new Promise(poll);
     },
   },
 };
 </script>
-
-<style>
-.input {
-  color: red;
-}
-.hide {
-  display: none;
-}
-
-@media screen and (min-width: 1024px) {
-  .inputMenuGuias {
-    margin-right: 20px;
-  }
-}
-
-@media screen and (min-width: 600px) {
-  .menuFilter {
-    padding-bottom: 1px;
-  }
-}
-
-@media screen and (max-width: 1024px) {
-  .inputMenuGuias {
-    margin-top: 14px;
-  }
-}
-
-@media screen and (min-width: 600px) and (max-width: 1024px) {
-  .titleMenu {
-    padding-bottom: 1px;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .titleMenu {
-    margin-top: 15px;
-  }
-}
-
-@media screen and (max-width: 1024px) {
-  .checkboxGuias {
-    margin-top: 14px;
-  }
-}
-
-@media screen and (max-width: 1024px) {
-  .checkboxGuias {
-    margin-left: 10px;
-  }
-}
-
-@media screen and (max-width: 1024px) {
-  .botonesGuias {
-    margin-top: 7px;
-  }
-}
-
-@media screen and (min-width: 600px) {
-  .movilTitle {
-    display: none;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .movilTitle {
-    display: block;
-  }
-}
-
-@media screen and (min-width: 600px) {
-  .cardMargin {
-    padding-right: 20px !important;
-  }
-}
-
-@media screen and (min-width: 1024px) {
-  .cardMarginFilter {
-    padding-right: 20px !important;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .cajaMobile {
-    padding: 5px !important;
-  }
-}
-
-@media screen and (max-width: 1024px) {
-  .selectMobile {
-    margin-bottom: 15px !important;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .selectMobile2 {
-    margin-bottom: 15px;
-  }
-}
-
-@media screen and (min-width: 1024px) {
-  .checkboxCulminado {
-    margin-top: -6px;
-  }
-}
-
-@media screen and (min-width: 600px) and (max-width: 1024px) {
-  .checkboxCulminado {
-    margin-top: 8px;
-    text-align: center;
-  }
-}
-</style>

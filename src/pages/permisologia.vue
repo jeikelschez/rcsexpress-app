@@ -369,6 +369,8 @@ export default {
       },
       pagination: {
         rowsPerPage: 200,
+        sortBy: 'label',
+        descending: false,
       },
       permisos: [],
       agencias: [],

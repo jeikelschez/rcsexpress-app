@@ -823,7 +823,7 @@
                 font-size: 12px;
                 margin-top: 0px;
                 margin-bottom: 0px;
-                padding-left: 30px; 
+                padding-left: 30px;
               "
             >
               VALOR DÍA
@@ -1388,6 +1388,7 @@
                 hint=""
                 :autofocus="true"
                 :tabindex="1"
+                mask="##########"
                 @keyup.enter="
                   if (
                     form.nro_documento !== '' &&
@@ -2621,7 +2622,9 @@
               :disable="
                 this.disableGuia
                   ? true
-                  : this.curReplace(this.form.valor_declarado_seg) > 0
+                  : this.form.valor_declarado_seg
+                  ? this.curReplace(this.form.valor_declarado_seg) > 0
+                  : false
                   ? false
                   : true
               "
@@ -4014,7 +4017,7 @@ export default {
             },
           })
           .then((res) => {
-            monto_especial = !res.data[0] ? 0 : res.data[0].monto_tarifa;            
+            monto_especial = !res.data[0] ? 0 : res.data[0].monto_tarifa;
 
             //Se incluye este aparte para calcular el diferencial del minimo y el valor declarado
             if (form.peso_kgs > 30) {
@@ -4717,14 +4720,16 @@ export default {
           .get(`/agentes`, axiosConfig)
           .then((res) => {
             this.agentes = res.data.data;
-            this.filterAndSet(
-              "agentes",
-              "id",
-              cod_agente_venta,
-              "form",
-              "cod_agente_venta",
-              "nb_agente"
-            );
+            if (cod_agente_venta) {
+              this.filterAndSet(
+                "agentes",
+                "id",
+                cod_agente_venta,
+                "form",
+                "cod_agente_venta",
+                "nb_agente"
+              );
+            }
           })
           .catch((err) => {
             if (err.response) {
@@ -5061,8 +5066,8 @@ export default {
             form.porc_descuento = this.curReplace(form.porc_descuento);
           if (form.carga_neta)
             form.carga_neta = this.curReplace(form.carga_neta);
-            if (form.porc_comision)
-            form.porc_comision = this.curReplace(form.porc_comision);  
+          if (form.porc_comision)
+            form.porc_comision = this.curReplace(form.porc_comision);
           if (form.fecha_aplicacion)
             form.fecha_aplicacion =
               form.fecha_aplicacion != "00/00/0000"
@@ -5994,7 +5999,9 @@ export default {
           this.form.saldo = monto_total.toFixed(2);
           this.form.base_comision_vta_rcl = base_comision_vta_rcl.toFixed(2);
           this.form.base_comision_seg = base_comision_seg.toFixed(2);
-          this.total_ref = (monto_total / this.curReplace(this.valor_dolar)).toFixed(2);
+          this.total_ref = (
+            monto_total / this.curReplace(this.valor_dolar)
+          ).toFixed(2);
         }
       }
     },
@@ -6135,7 +6142,7 @@ export default {
       this.form.check_transito = "0";
       this.form.estatus_operativo = "";
       this.form.estatus_administra = "";
-      this.form.monto_ref_cte_sin_imp = "";      
+      this.form.monto_ref_cte_sin_imp = "";
       this.form.id_clte_part_dest = "";
       this.form.porc_comision = "";
       this.form.porc_descuento = "";
