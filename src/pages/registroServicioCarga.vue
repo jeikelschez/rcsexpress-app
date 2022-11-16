@@ -2624,9 +2624,9 @@
                   ? true
                   : this.form.valor_declarado_seg
                   ? this.curReplace(this.form.valor_declarado_seg) > 0
+                    ? false
+                    : true
                   : false
-                  ? false
-                  : true
               "
               v-money="money"
               input-class="text-right"

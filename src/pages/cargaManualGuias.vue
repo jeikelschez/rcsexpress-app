@@ -293,7 +293,7 @@
     <div class="q-pa-sm justify-center">
       <div
         class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 text-secondary movilTitle"
-        style="
+        style=" 
           align-self: center;
           text-align: center;
           font-size: 20px;
@@ -638,7 +638,7 @@
               dense
               style="min-width: 120px"
               v-model="props.row.nro_guia"
-              ref="nro_guia"
+              :ref="'nro_guia' + props.rowIndex"
               mask="##########"
               :input-style="{ color: props.row.colorGuia }"
               @blur="this.validateGuia(props.row.nro_guia, props.rowIndex)"
@@ -656,7 +656,7 @@
               dense
               input-class="text-right"
               v-money="money"
-              ref="porc_zona"
+              :ref="'porc_zona' + props.rowIndex"
               style="min-width: 80px"
               v-model="props.row.porc_zona"
               @blur="this.validatePorcZona(props.row, props.rowIndex)"
@@ -1560,23 +1560,19 @@ export default {
         }
         await this.validatePorcZona(this.datos[i], i);
         if (this.datos[i].colorZona == "red") {
-          this.$refs.porc_zona.$el.focus();
-          this.errorMessage(
-            "Uno de los registros posee un % de Comisión invalido"
-          );
+          eval("this.$refs.porc_zona" + i + ".$el.focus()");
+          this.errorMessage("Debe ingresar un % de Comisión válido");
           return;
         }
         if (!this.datos[i].nro_guia) {
-          this.$refs.nro_guia.$el.focus();
-          this.errorMessage("Debe ingresar el numero de Guía");
+          eval("this.$refs.nro_guia" + i + ".$el.focus()");
+          this.errorMessage("Debe ingresar el Número de Guía");
           return;
         }
         await this.validateGuia(this.datos[i].nro_guia, i);
         if (this.datos[i].colorGuia == "red") {
-          this.$refs.nro_guia.$el.focus();
-          this.errorMessage(
-            "Uno de los registros posee un Número de Guía invalido"
-          );
+          eval("this.$refs.nro_guia" + i + ".$el.focus()");
+          this.errorMessage("Debe ingresar un Número de Guía válido");
           return;
         }
       }
@@ -1756,21 +1752,44 @@ export default {
         this.datos[index].colorGuia = "red";
         return;
       }
-      await api
-        .get(`/mmovimientos`, {
-          headers: {
-            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            nro_documento: nroGuia,
-          },
-        })
-        .then((res) => {
-          if (res.data.data[0]) {
-            this.errorMessage("Ya fue cargada la Guía Número " + nroGuia);
-            this.datos[index].colorGuia = "red";
-          } else {
-            this.datos[index].colorGuia = "blue";
-          }
-        });
+
+      // Validamos que la guia tenga lote
+      if (nroGuia) {
+        await api
+          .get(`/cguias`, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              desde_fact: nroGuia,
+              hasta_fact: nroGuia,
+            },
+          })
+          .then((res) => {
+            if (!res.data.data[0]) {
+              this.errorMessage("No existe Lote para esta Guía");
+              this.datos[index].colorGuia = "red";
+              nroGuia = null;
+            }
+          });
+      }
+
+      // Validamos que la guia no haya sido utilizada
+      if (nroGuia) {
+        await api
+          .get(`/mmovimientos`, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              nro_documento: nroGuia,
+            },
+          })
+          .then((res) => {
+            if (res.data.data[0]) {
+              this.errorMessage("Ya fue cargada la Guía Número " + nroGuia);
+              this.datos[index].colorGuia = "red";
+            } else {
+              this.datos[index].colorGuia = "blue";
+            }
+          });
+      }
     },
     // Metodo para Resetear Datos
     resetForm() {
