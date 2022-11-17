@@ -316,6 +316,13 @@
         <template v-slot:loading>
           <q-inner-loading showing color="primary" class="loading" />
         </template>
+        <template v-slot:body-cell-nro_documento="props">
+          <q-td :props="props">
+            {{
+              buildNroDoc(props.row.nro_documento)
+            }}
+          </q-td>
+        </template>
         <template v-slot:body-cell-cod_cliente_org="props">
           <q-td :props="props">
             {{
@@ -675,6 +682,11 @@ export default {
       this[dataRes].estatus_lote = this.filterDesc("estatus", res.estatus_lote);
       this[dataRes].serie_doc = res.serie_doc;
       this[dataRes].cod_agencia = res.cod_agencia;
+    },
+    // Arma el numero de documento
+    buildNroDoc(nroDoc) {
+      console.log(nroDoc)
+      return "234234"
     },
     // Metodos para Resetear Datos
     resetForm() {
