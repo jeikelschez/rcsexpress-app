@@ -3210,6 +3210,7 @@ export default {
         { label: "PENDIENTE DE COBRAR", value: "P" },
         { label: "CANCELADA", value: "C" },
         { label: "PENDIENTE POR IMPRIMIR", value: "I" },
+        { label: "MODIFICADA", value: "M" },
       ],
       pagado_en: [
         { label: "ORIGEN", value: "O" },
