@@ -798,7 +798,7 @@
     </q-dialog>
 
     <q-dialog v-model="pdfView" @show="this.printPending()">
-      <div style="width: 100%; max-width: 80vw">
+      <div style="width: 700px; height: 700px; ">
         <webViewer ref="webViewer"></webViewer>
       </div>
     </q-dialog>
@@ -1135,6 +1135,7 @@ export default {
         })
         .then((res) => {
           this.$refs.webViewer.showpdf(res.data.base64);
+          this.$refs.webViewer.design(1);
         });
     },
     // Metodo para Resetear Filtros
