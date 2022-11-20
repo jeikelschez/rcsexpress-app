@@ -298,7 +298,7 @@ export default {
             clearInterval(_this.intervalLogout);
             LocalStorage.remove("currentTimeLogout");
             LocalStorage.remove("targetTimeLogout");
-            this.$refs.component.logoutUser();
+            _this.$refs.component.logoutUser();
           } else {
             currentTime = new Date();
             localStorage.setItem("currentTimeLogout", currentTime);
