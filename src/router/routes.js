@@ -38,7 +38,7 @@ const routes = [
       {
         path: '/reportedecostos',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('src/pages/Reportedecostos.vue')}]
+        children: [{ path: "", component: () => import('src/pages/reporteDeCostos.vue')}]
       },
       {
         path: '/pruebasentrega',
@@ -163,7 +163,7 @@ const routes = [
       {
         path: '/reporteventas',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('src/pages/Reporteventas.vue')}]
+        children: [{ path: "", component: () => import('src/pages/reporteVentas.vue')}]
       },
       {
         path: '/librocompras',
@@ -361,7 +361,7 @@ const routes = [
       {
         path: '/m_reportedecostos',
         component: () => import("layouts/manualLayout.vue"),
-        children: [{ path: "", component: () => import('pages/manuals/m_reportedecostos.vue')}]
+        children: [{ path: "", component: () => import('pages/manuals/m_reporteDeCostos.vue')}]
       },
       {
         path: '/m_pruebasentrega',
@@ -481,7 +481,7 @@ const routes = [
       {
         path: '/m_reporteventas',
         component: () => import("layouts/manualLayout.vue"),
-        children: [{ path: "", component: () => import('pages/manuals/m_reporteventas.vue')}]
+        children: [{ path: "", component: () => import('pages/manuals/m_reporteVentas.vue')}]
       },
       {
         path: '/m_librocompras',
