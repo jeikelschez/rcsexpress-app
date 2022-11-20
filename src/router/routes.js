@@ -38,7 +38,7 @@ const routes = [
       {
         path: '/reportedecostos',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('src/pages/reportedecostos.vue')}]
+        children: [{ path: "", component: () => import('src/pages/Reportedecostos.vue')}]
       },
       {
         path: '/pruebasentrega',
@@ -163,7 +163,7 @@ const routes = [
       {
         path: '/reporteventas',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('src/pages/reporteventas.vue')}]
+        children: [{ path: "", component: () => import('src/pages/Reporteventas.vue')}]
       },
       {
         path: '/librocompras',

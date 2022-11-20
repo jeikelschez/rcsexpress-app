@@ -1,5 +1,5 @@
 <template>
-  <div id="WebViewer" ref="viewer" style="width: 100%; max-width: 80vw; height: 700px"></div>
+  <div id="WebViewer" ref="viewer" style="width: 100%; height: 100%"></div>
 </template>
 
 <script>
@@ -32,7 +32,24 @@ export default {
       const path = `${process.env.publicPath}/webViewer`;
       const licenseKey = 'atkUT8UOiniAvAWUG1rN';
       WebViewer({ path, licenseKey }, this.viewer).then(instance => {
-        instance.UI.loadDocument(this.base64ToBlob(pdf), { filename: 'myfile.pdf' });
+        instance.UI.setLanguage('es');
+        instance.UI.loadDocument(this.base64ToBlob(pdf), { filename: 'REPORTE SCEN.pdf' });
+        instance.UI.setHeaderItems(header => {
+        header.push({
+          type: 'actionButton',
+          img: "https://i.ibb.co/3RdScYv/1.png",
+          onClick: () => {
+            instance.print()
+          }
+        });
+        header.push({
+          type: 'actionButton',
+          img: "https://i.ibb.co/cr5CYSB/2.png",
+          onClick: () => {
+            instance.downloadPdf()
+          }
+        });
+      });
       });
     },
   },

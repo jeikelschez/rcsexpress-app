@@ -308,7 +308,7 @@
         style="align-self: center; text-align: center; padding-bottom: 10px"
       >
         <div
-          class="col-md-6 col-xl-8 col-lg-8 col-xs-12 col-sm-12 cardMarginFilter selectMobile"
+          class="col-md-6 col-xl-8 col-lg-8 col-xs-12 col-sm-12 cardMarginFile selectMobile"
           style="align-self: center; text-align: center"
         >
           <q-file
@@ -318,6 +318,7 @@
             ref="txtFile"
             dense
             label="Archivo TXT"
+            style="margin-bottom: 10px"
             max-files="1"
             @update:model-value="
               readFile();
@@ -341,8 +342,8 @@
           </q-file>
         </div>
         <div
-          class="col-md-6 col-xl-4 col-lg-4 col-xs-12 col-sm-12 botonesGuias"
-          style="text-align: right; align-self: center"
+          class="col-md-6 col-xl-4 col-lg-4 col-xs-12 col-sm-12 botonesGuias justify-center"
+          style="text-align: center; align-self: center"
         >
           <q-btn
             dense
@@ -350,7 +351,7 @@
             :disabled="this.allowOption(2)"
             round
             padding="sm"
-            style="margin-right: 25px; margin-bottom: 6px"
+            style="margin-right: 25px; margin-bottom: 10px"
             @click="
               this.file = [];
               this.selectedAgencia = [];
@@ -373,7 +374,7 @@
             :disabled="this.allowOption(2)"
             round
             padding="sm"
-            style="margin-right: 25px; margin-bottom: 6px"
+            style="margin-right: 25px; margin-bottom: 10px"
             @click="this.asignarGuia()"
           >
             <q-icon size="25px" name="assignment_returned" color="white">
@@ -393,7 +394,7 @@
             :disabled="this.allowOption(2)"
             round
             padding="sm"
-            style="margin-right: 25px; margin-bottom: 6px"
+            style="margin-right: 25px; margin-bottom: 10px"
             @click="this.cargarGuias()"
           >
             <q-icon size="25px" name="find_in_page" color="white"> </q-icon>
@@ -412,7 +413,7 @@
             :disabled="this.allowOption(2)"
             round
             padding="sm"
-            style="margin-right: 25px; margin-bottom: 6px"
+            style="margin-right: 25px; margin-bottom: 10px"
           >
             <q-icon size="25px" name="fact_check" color="white"> </q-icon>
             <q-tooltip
@@ -430,7 +431,7 @@
             :disabled="this.allowOption(2)"
             round
             padding="sm"
-            style="margin-right: 25px; margin-bottom: 6px"
+            style="margin-right: 25px; margin-bottom: 10px"
           >
             <q-icon size="25px" name="print" color="white"> </q-icon>
             <q-tooltip
@@ -448,7 +449,7 @@
             :disabled="this.allowOption(2)"
             round
             padding="sm"
-            style="margin-bottom: 6px"
+            style="margin-bottom: 10px"
           >
             <q-icon size="25px" name="print" color="primary"> </q-icon>
             <q-tooltip
@@ -468,7 +469,7 @@
         style="align-self: center; text-align: center"
       >
         <div
-          class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 cardMarginFilter selectMobile"
+          class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 cardMarginFilter selectMobile2"
           style="align-self: center; text-align: center"
         >
           <q-select
@@ -1849,3 +1850,8 @@ export default {
   },
 };
 </script>
+
+<style>
+@media screen and (max-width: 1024px) {.cardMarginFile {margin-bottom: 20px}}
+
+</style>

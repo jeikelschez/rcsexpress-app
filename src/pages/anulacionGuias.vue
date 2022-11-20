@@ -94,7 +94,7 @@
           </p>
         </div>
         <div
-          class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-12 cardMargin selectMobile2"
+          class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 cardMargin selectMobile2"
           style="align-self: center; text-align: center"
         >
           <q-select
@@ -213,7 +213,7 @@
           </q-input>
         </div>
         <div
-          class="col-md-2 col-xl-2 col-lg2 col-xs-12 col-sm-12 cardMargin selectMobile2"
+          class="col-md-3 col-xl-3 col-lg-3 col-xs-10 col-sm-10 cardMargin"
           style="align-self: center; text-align: center"
         >
           <q-select
@@ -256,7 +256,7 @@
           </q-select>
         </div>
         <div
-          class="col-md-1 col-xl-1 col-lg-1 col-xs-4 col-sm-4"
+          class="col-md-1 col-xl-1 col-lg-1 col-xs-2 col-sm-2"
           style="align-self: center; text-align: center"
         >
           <q-btn
@@ -264,6 +264,7 @@
             color="primary"
             round
             padding="sm"
+            style="margin-left: 15px"
             @click="resetFilters()"
           >
             <q-icon size="25px" name="filter_alt_off" color="white"> </q-icon>
@@ -368,6 +369,11 @@
                   <q-item-section>
                     <q-item-label>{{ col.label }}</q-item-label>
                   </q-item-section>
+                  <q-item-section side>
+                    <q-item-label>
+                      {{ col.value }}
+                    </q-item-label>
+                  </q-item-section>
                   <q-item-section side class="itemMovilSide">
                     <q-btn
                       dense
@@ -387,9 +393,6 @@
                         dialog = true;
                       "
                     ></q-btn>
-                    <q-item-label>
-                      {{ col.value }}
-                    </q-item-label>
                   </q-item-section>
                 </q-item>
               </q-list>
