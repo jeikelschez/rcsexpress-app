@@ -3764,15 +3764,15 @@ export default {
             // Se incluye este aparte para calcular el diferencial del minimo y el valor declarado
             if (form.peso_kgs > 30) {
               val_declarado_otros = form.monto_ref_cte_sin_imp
-                ? form.monto_ref_cte_sin_imp
+                ? this.curReplace(form.monto_ref_cte_sin_imp)
                 : 0;
-              porc_otros = form.porc_comision;
+              porc_otros = this.curReplace(form.porc_comision);
               comision =
-                (this.parseFloatN(val_declarado_otros) *
+                ((this.parseFloatN(val_declarado_otros) *
                   this.parseFloatN(porc_otros)) /
-                100;
+                100).toFixed(2);
               dif_comision =
-                this.parseFloatN(comision) - this.parseFloatN(monto_basico);
+                this.parseFloatN(comision) - this.parseFloatN(monto_basico);              
 
               if (dif_comision >= 0) {
                 monto_basico =
@@ -3785,7 +3785,7 @@ export default {
             this.detalle_movimiento[0].precio_unitario =
               (this.parseFloatN(monto_basico) / this.parseFloatN(kgr_minimos)) *
               100;
-            this.detalle_movimiento[0].importe_renglon = monto_basico;
+            this.detalle_movimiento[0].importe_renglon = this.parseFloatN(monto_basico).toFixed(2);
           })
           .catch((err) => {
             if (err.response) {

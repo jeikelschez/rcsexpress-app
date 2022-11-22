@@ -395,7 +395,7 @@
     </div>
 
     <q-dialog v-model="pdfView" @show="this.printLetter()">
-      <div style="width: 100%; max-width: 80vw">
+      <div style="width: 700px; height: 700px">
         <webViewer ref="webViewer"></webViewer>
       </div>
     </q-dialog>
@@ -710,13 +710,17 @@ export default {
       this.getDataClientes();
     },
     // Imprimir Carta
-    printLetter() {   
-      this.dialog = false;   
+    printLetter() {
+      var factArray = [];
+      this.dialog = false;
+      for (var i = 0; i <= this.selected.length - 1; i++) {
+        factArray.push(this.selected[i].id)
+      }
       api
         .get(`/mmovimientos/letterPDF`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            data: this.selected,
+            data: factArray,
             contacto: this.form.contacto,
             cargo: this.form.cargo,
           },
@@ -724,7 +728,7 @@ export default {
         .then((res) => {
           this.$refs.webViewer.showpdf(res.data.base64);
           this.resetForm();
-        });        
+        });
     },
     // Metodo para Resetear Datos
     resetForm() {
