@@ -539,6 +539,7 @@ export default {
       tipoUrgencia: [
         { label: "NORMAL", value: "N" },
         { label: "EMERGENCIA", value: "E" },
+        { label: "BASICA", value: "B" },
       ],
       tipoTarifa: [
         { label: "BÁSICA", value: "BA" },
@@ -547,6 +548,7 @@ export default {
       tipoUbicacion: [
         { label: "URBANA", value: "U" },
         { label: "EXTRA-URBANA", value: "E" },
+        { label: "FORANEA", value: "F" },
       ],
       tipoCarga: [
         { label: "PAQUETES", value: "PM" },
