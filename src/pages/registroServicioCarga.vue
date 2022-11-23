@@ -4466,7 +4466,7 @@ export default {
           .get(`/hdolar/`, {
             headers: {
               Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-              fecha: moment().format("YYYY-MM-DD"),
+              fecha: moment(this.form.fecha_emision, "DD/MM/YYYY").format("YYYY-MM-DD"),
             },
           })
           .then((res) => {

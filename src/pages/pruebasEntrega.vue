@@ -1,763 +1,19 @@
 <template>
   <q-page class="pagina q-pa-md">
-    <q-dialog v-model="form">
-      <q-card class="q-pa-md" bordered style="width: 1400px; max-width: 200vw">
-        <q-card-section>
-          <q-form @submit="createDataClientes()">
-            <div class="row">
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  label="Cliente Origen"
-                  hint=""
-                  class="pcform"
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  label="Cliente Destino"
-                  hint=""
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  label="Fecha Emision"
-                  hint=""
-                  v-model="form.f_val"
-                  mask="date"
-                  :rules="['date']"
-                  class="pcform"
-                  lazy-rules
-                >
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy
-                        cover
-                        transition-show="scale"
-                        transition-hide="scale"
-                      >
-                        <q-date v-model="form.f_val">
-                          <div class="row items-center justify-end">
-                            <q-btn
-                              v-close-popup
-                              label="Close"
-                              color="primary"
-                              flat
-                            />
-                          </div>
-                        </q-date>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-6 col-xs-12">
-                <q-input
-                  outlined
-                  label="Fecha Envio"
-                  hint=""
-                  v-model="form.f_val"
-                  mask="date"
-                  :rules="['date']"
-                  lazy-rules
-                >
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy
-                        cover
-                        transition-show="scale"
-                        transition-hide="scale"
-                      >
-                        <q-date v-model="form.f_val">
-                          <div class="row items-center justify-end">
-                            <q-btn
-                              v-close-popup
-                              label="Close"
-                              color="primary"
-                              flat
-                            />
-                          </div>
-                        </q-date>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  label="NRO. Guía"
-                  hint=""
-                  class="pcform"
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  label="Forma de Pago"
-                  hint=""
-                  class="pcform"
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  label="Pagado En"
-                  hint=""
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-5 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  label="Estatus"
-                  hint=""
-                  class="pcform"
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-select>
-              </div>
-
-              <div class="col-md-5 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  label="Persona que Recibió"
-                  hint=""
-                  class="pcform"
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-2 col-xs-12" style="margin-bottom: 20px">
-                <q-checkbox
-                  size="lg"
-                  v-model="formClientes.cte_decontado"
-                  true-value="1"
-                  false-value="0"
-                  style="font-size: 13px"
-                  label="Check Pagado"
-                />
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  label="Identificación"
-                  hint=""
-                  class="pcform"
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  label="Fecha Entrega"
-                  hint=""
-                  v-model="form.f_val"
-                  mask="date"
-                  :rules="['date']"
-                  class="pcform"
-                  lazy-rules
-                >
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy
-                        cover
-                        transition-show="scale"
-                        transition-hide="scale"
-                      >
-                        <q-date v-model="form.f_val">
-                          <div class="row items-center justify-end">
-                            <q-btn
-                              v-close-popup
-                              label="Close"
-                              color="primary"
-                              flat
-                            />
-                          </div>
-                        </q-date>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  label="Hora Entrega"
-                  hint=""
-                  v-model="form.f_val"
-                  mask="time"
-                  :rules="['time']"
-                  lazy-rules
-                >
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy
-                        cover
-                        transition-show="scale"
-                        transition-hide="scale"
-                      >
-                        <q-time v-model="form.f_val">
-                          <div class="row items-center justify-end">
-                            <q-btn
-                              v-close-popup
-                              label="Close"
-                              color="primary"
-                              flat
-                            />
-                          </div>
-                        </q-time>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-4 col-xs-12 inputMovil">
-                <q-select
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  label="Agente Entrega"
-                  hint=""
-                  hide-bottom-space
-                  class="pcform"
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-select>
-              </div>
-
-              <div class="col-md-3 col-xs-12 inputMovil">
-                <q-input
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  label="Dias de Entrega"
-                  hint=""
-                  hide-bottom-space
-                  class="pcform"
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-4 col-xs-10 inputMovil">
-                <q-select
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  label="Motivo de Retraso en Entrega"
-                  hint=""
-                  class="pcform"
-                  hide-bottom-space
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-select>
-              </div>
-
-              <div
-                class="col-md-1 col-xs-1 inputMovilBtn"
-                style="text-align: center; align-self: center"
-              >
-                <q-btn
-                  dense
-                  color="primary"
-                  round
-                  href="/conceptosoperacion"
-                  target="_blank"
-                  padding="sm"
-                >
-                  <q-icon size="25px" name="book" color="white"> </q-icon>
-                  <q-tooltip
-                    class="bg-primary"
-                    style="max-height: 30px"
-                    transition-show="scale"
-                    transition-hide="scale"
-                    color="primary"
-                    >Ver Mas</q-tooltip
-                  >
-                </q-btn>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-select
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  label="Agencia Transito"
-                  hint=""
-                  class="pcform"
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-select>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  label="Fecha Llegada Transito"
-                  hint=""
-                  v-model="form.f_val"
-                  mask="time"
-                  class="pcform"
-                  :rules="['time']"
-                  lazy-rules
-                >
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy
-                        cover
-                        transition-show="scale"
-                        transition-hide="scale"
-                      >
-                        <q-time v-model="form.f_val">
-                          <div class="row items-center justify-end">
-                            <q-btn
-                              v-close-popup
-                              label="Close"
-                              color="primary"
-                              flat
-                            />
-                          </div>
-                        </q-time>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-4 col-xs-12">
-                <q-input
-                  outlined
-                  label="Fecha Salida Transito"
-                  hint=""
-                  v-model="form.f_val"
-                  mask="time"
-                  :rules="['time']"
-                  lazy-rules
-                >
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy
-                        cover
-                        transition-show="scale"
-                        transition-hide="scale"
-                      >
-                        <q-time v-model="form.f_val">
-                          <div class="row items-center justify-end">
-                            <q-btn
-                              v-close-popup
-                              label="Close"
-                              color="primary"
-                              flat
-                            />
-                          </div>
-                        </q-time>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-md-12 col-xs-12">
-                <q-input
-                  outlined
-                  v-model="formClientes.nb_cliente"
-                  label="Observaciones de Prueba de Entrega"
-                  hint=""
-                  @update:model-value="
-                    formClientes.nb_cliente =
-                      formClientes.nb_cliente.toUpperCase()
-                  "
-                  lazy-rules
-                  :rules="[reglasNotNull100]"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-input>
-              </div>
-            </div>
-
-            <div
-              class="row justify-center items-center content-center"
-              style="margin-bottom: 6px"
-            >
-              <q-btn
-                label="Añadir Prueba de Entrega"
-                type="submit"
-                color="primary"
-                class="col-md-5 col-sm-5 col-xs-12"
-                icon="person_add"
-              />
-              <q-btn
-                label="Cerrar"
-                color="primary"
-                flat
-                class="col-md-5 col-sm-5 col-xs-12 btnmovil"
-                icon="close"
-                v-close-popup
-              />
-            </div>
-          </q-form>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
-
     <div class="q-pa-sm justify-center">
       <div
         class="row justify-end q-pa-md col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
       >
-        <div class="col-md-3 col-xl-2 col-lg-2 col-xs-12 col-sm-12 movilTitle"
+        <div
+          class="col-md-3 col-xl-2 col-lg-2 col-xs-12 col-sm-12 movilTitle"
           style="align-self: center; text-align: center"
         >
           <p style="font-size: 20px" class="text-secondary">
             <strong>MANTENIMIENTO - PRUEBAS DE ENTREGA</strong>
           </p>
         </div>
-        <div class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 cardMargin selectMobile2"
-          style="align-self: center; text-align: center"
-        >
-          <q-input
-                    outlined
-                    label="Desde"
-                    hint=""
-                    dense
-                    rounded
-                    style="padding-bottom:0px"
-                    v-model="form.fecha_asignacion"
-                    lazy-rules
-                    :rules="[(val) => this.$refs.rulesVue.checkDate(val)]"
-                  >
-                    <template v-slot:append>
-                      <q-icon name="event" class="cursor-pointer">
-                        <q-popup-proxy
-                          ref="qDateProxy"
-                          transition-show="scale"
-                          transition-hide="scale"
-                        >
-                          <q-date
-                            v-model="form.fecha_asignacion"
-                            mask="DD/MM/YYYY"
-                            style="padding-bottom:0px"
-                            @update:model-value="this.$refs.qDateProxy.hide()"
-                          ></q-date>
-                        </q-popup-proxy>
-                      </q-icon>
-                    </template>
-          </q-input>
-        </div>
-        <div class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 cardMargin selectMobile2"
-          style="align-self: center; text-align: center"
-        >
-          <q-input
-                    outlined
-                    label="Hasta"
-                    hint=""
-                    dense
-                    rounded
-                    style="padding-bottom:0px"
-                    v-model="form.fecha_asignacion"
-                    lazy-rules
-                    :rules="[(val) => this.$refs.rulesVue.checkDate(val)]"
-                  >
-                    <template v-slot:append>
-                      <q-icon name="event" class="cursor-pointer">
-                        <q-popup-proxy
-                          ref="qDateProxy"
-                          transition-show="scale"
-                          transition-hide="scale"
-                        >
-                          <q-date
-                            v-model="form.fecha_asignacion"
-                            mask="DD/MM/YYYY"
-                            style="padding-bottom:0px"
-                            @update:model-value="this.$refs.qDateProxy.hide()"
-                          ></q-date>
-                        </q-popup-proxy>
-                      </q-icon>
-                    </template>
-          </q-input>
-        </div>
-        <div class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 cardMargin selectMobile2"
-          style="align-self: center; text-align: center"
-        >
-          <q-input
-              rounded
-              dense
-              input-debounce="0"
-              v-model="selectedCliente"
-              outlined
-              standout
-              label="NRO. Guia"
-              @update:model-value="getDataTable()"
-              >
-            </q-input>
-        </div>
-        <div class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 cardMargin selectMobile2"
-          style="align-self: center; text-align: center"
-        >
-          <q-input
-            rounded
-            dense
-            input-debounce="0"
-            v-model="selectedCliente"
-            outlined
-            standout
-            label="Estatus"
-            @update:model-value="getDataTable()"
-            >
-          </q-input>
-        </div>
-        <div class="col-md-1 col-xl-1 col-lg-1 col-xs-6 col-sm-6 selectMobile2"
-          style="align-self: center; text-align: center"
-        >
-          <q-field
-            hide-bottom-space
-            borderless
-            @update:model-value="
-              this.axiosConfig.headers.tipo_guia_carga =
-                this.selectedGuiaCarga.value;
-              getData(`/cguias`, 'setData', 'datos');
-            "
-            dense
-            v-model="selectedGuiaCarga"
-          >
-            <template v-slot:control>
-              <q-checkbox
-                size="md"
-                v-model="selectedGuiaCarga"
-                true-value="1"
-                false-value="0"
-                style="font-size: 13px"
-                label="GC"
-              />
-            </template>
-          </q-field>
-        </div>
-        <div class="col-md-1 col-xl-1 col-lg-1 col-xs-6 col-sm-6 selectMobile2"
-          style="align-self: center; text-align: center; padding-left:0px"
-        >
-          <q-field
-            hide-bottom-space
-            borderless
-            @update:model-value="
-              this.axiosConfig.headers.tipo_guia_carga =
-                this.selectedGuiaCarga.value;
-              getData(`/cguias`, 'setData', 'datos');
-            "
-            dense
-            style="padding-left:0px"
-            v-model="selectedGuiaCarga"
-          >
-            <template v-slot:control>
-              <q-checkbox
-                size="md"
-                v-model="selectedGuiaCarga"
-                true-value="1"
-                false-value="0"
-                style="font-size: 13px"
-                label="En transito"
-              />
-            </template>
-          </q-field>
-        </div>
-        <div class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 buttonsDiv"
-        style="align-self: center; text-align: center"
-        >
-          <q-btn
-            dense
-            color="primary"
-            round
-            @click="
-              this.dialog = true;
-              this.form.cod_agencia = findIndex(
-                'agencias',
-                this.selectedAgencia.id,
-                'nb_agencia'
-              );
-              this.form.cod_agente = findIndex(
-                'agentes',
-                this.selectedAgente.id,
-                'persona_responsable'
-              );
-              this.form.cod_cliente = findIndex(
-                'clientes',
-                this.selectedCliente.id,
-                'nb_cliente'
-              );
-              this.form.fecha_asignacion = this.dateInit;
-            "
-            padding="sm"
-            style="margin-right: 25px"
-          >
-            <q-icon size="25px" name="add" color="white"> </q-icon>
-            <q-tooltip
-              class="bg-primary"
-              style="max-height: 30px"
-              transition-show="scale"
-              transition-hide="scale"
-              color="primary"
-              >Agregar Control</q-tooltip
-            >
-          </q-btn>
-          <q-btn
-            dense
-            color="primary"
-            round
-            padding="sm"
-            @click="
-              selectedAgencia = [];
-              selectedCliente = [];
-              selectedAgente = [];
-              selectedGuiaCarga = '';
-              selectedGuiaFactura = '';
-              selectedCulminado = '';
-              guia_desde = '';
-              guia_hasta = '';
-              getDataTable();
-            "
-          >
-            <q-icon size="25px" name="filter_alt_off" color="white"> </q-icon>
-            <q-tooltip
-              class="bg-primary"
-              style="max-height: 30px"
-              transition-show="scale"
-              transition-hide="scale"
-              color="primary"
-              >Eliminar Filtros</q-tooltip
-            >
-          </q-btn>
-        </div>
-      </div>
-      <div
-        class="row q-pa-md col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
-        style="align-self: center; text-align: center; margin-top: -10px"
-      >
-        <div class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 cardMargin selectMobile2"
+        <div
+          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 cardMargin selectMobile2"
           style="align-self: center; text-align: center"
         >
           <q-select
@@ -788,18 +44,13 @@
             label="Agencia Origen"
             @update:model-value="
               this.selectedCliente = [];
-              this.selectedAgente = [];
-              getDataTable();
-              this.$refs.methods.getData(`/agentes`, 'setData', 'agentes', {
-                headers: {
-                  agencia: this.selectedAgencia.id,
-                },
-              });
+              this.clientesLoading = true;
               this.$refs.methods.getData(`/clientes`, 'setData', 'clientes', {
                 headers: {
                   agencia: this.selectedAgencia.id,
                 },
               });
+              this.getDataTable();
             "
             ><template v-slot:no-option>
               <q-item>
@@ -813,7 +64,8 @@
             </template>
           </q-select>
         </div>
-        <div class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 cardMargin selectMobile2"
+        <div
+          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 cardMargin selectMobile2"
           style="align-self: center; text-align: center"
         >
           <q-select
@@ -838,24 +90,24 @@
             input-debounce="0"
             option-label="nb_agencia"
             option-value="id"
-            v-model="selectedAgencia"
+            v-model="selectedAgenciaDestino"
             outlined
             standout
             label="Agencia Destino"
             @update:model-value="
-              this.selectedCliente = [];
-              this.selectedAgente = [];
-              getDataTable();
-              this.$refs.methods.getData(`/agentes`, 'setData', 'agentes', {
-                headers: {
-                  agencia: this.selectedAgencia.id,
-                },
-              });
-              this.$refs.methods.getData(`/clientes`, 'setData', 'clientes', {
-                headers: {
-                  agencia: this.selectedAgencia.id,
-                },
-              });
+              this.selectedClienteDestino = [];
+              this.clientesDestinoLoading = true;
+              this.$refs.methods.getData(
+                `/clientes`,
+                'setData',
+                'clientesDestino',
+                {
+                  headers: {
+                    agencia: this.selectedAgenciaDestino.id,
+                  },
+                }
+              );
+              this.getDataTable();
             "
             ><template v-slot:no-option>
               <q-item>
@@ -869,7 +121,105 @@
             </template>
           </q-select>
         </div>
-        <div class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 cardMargin selectMobile2"
+        <div
+          class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 cardMargin selectMobile2"
+          style="align-self: center; text-align: center"
+        >
+          <q-input
+            outlined
+            label="Desde"
+            hint=""
+            dense
+            rounded
+            style="padding-bottom: 0px"
+            v-model="fecha_desde"
+            lazy-rules
+            mask="##/##/####"
+            :rules="[(val) => this.$refs.rulesVue.checkDate(val)]"
+            @update:model-value="getDataTable()"
+          >
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy
+                  ref="qDateProxy"
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
+                  <q-date
+                    v-model="fecha_desde"
+                    mask="DD/MM/YYYY"
+                    style="padding-bottom: 0px"
+                    @update:model-value="
+                      this.$refs.qDateProxy.hide();
+                      getDataTable();
+                    "
+                  ></q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+        </div>
+        <div
+          class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 cardMargin selectMobile2"
+          style="align-self: center; text-align: center"
+        >
+          <q-input
+            outlined
+            label="Hasta"
+            hint=""
+            dense
+            rounded
+            style="padding-bottom: 0px"
+            v-model="fecha_hasta"
+            lazy-rules
+            mask="##/##/####"
+            :rules="[(val) => this.$refs.rulesVue.checkDate(val)]"
+            @update:model-value="getDataTable()"
+          >
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy
+                  ref="qDateProxy"
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
+                  <q-date
+                    v-model="fecha_hasta"
+                    mask="DD/MM/YYYY"
+                    style="padding-bottom: 0px"
+                    @update:model-value="
+                      this.$refs.qDateProxy.hide();
+                      getDataTable();
+                    "
+                  ></q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+        </div>
+        <div
+          class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 cardMargin selectMobile2"
+          style="align-self: center; text-align: center"
+        >
+          <q-input
+            rounded
+            dense
+            input-debounce="0"
+            v-model="nro_guia"
+            outlined
+            standout
+            label="NRO. Guia"
+            @update:model-value="getDataTable()"
+          >
+          </q-input>
+        </div>
+      </div>
+      <div
+        class="row q-pa-md col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
+        style="align-self: center; text-align: center; margin-top: -25px"
+      >
+        <div
+          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 cardMargin selectMobile2"
           style="align-self: center; text-align: center"
         >
           <q-select
@@ -877,42 +227,114 @@
             dense
             transition-show="flip-up"
             transition-hide="flip-down"
-            :options="agenciasSelected"
+            :options="clientesSelected"
+            :loading="clientesLoading"
+            :disable="clientesLoading"
             @filter="
               (val, update) =>
                 filterArray(
                   val,
                   update,
-                  'agenciasSelected',
-                  'agencias',
-                  'nb_agencia'
+                  'clientesSelected',
+                  'clientes',
+                  'nb_cliente'
                 )
             "
             use-input
             hide-selected
             fill-input
             input-debounce="0"
-            option-label="nb_agencia"
+            option-label="nb_cliente"
             option-value="id"
-            v-model="selectedAgencia"
+            v-model="selectedCliente"
             outlined
             standout
             label="Cliente Origen"
-            @update:model-value="
-              this.selectedCliente = [];
-              this.selectedAgente = [];
-              getDataTable();
-              this.$refs.methods.getData(`/agentes`, 'setData', 'agentes', {
-                headers: {
-                  agencia: this.selectedAgencia.id,
-                },
-              });
-              this.$refs.methods.getData(`/clientes`, 'setData', 'clientes', {
-                headers: {
-                  agencia: this.selectedAgencia.id,
-                },
-              });
+            @update:model-value="getDataTable()"
+            ><template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  Sin resultados
+                </q-item-section>
+              </q-item>
+            </template>
+            <template v-slot:prepend>
+              <q-icon name="search" />
+            </template>
+            <template v-slot:clientesLoading>
+              <q-inner-loading showing color="primary" class="loading" />
+            </template>
+          </q-select>
+        </div>
+        <div
+          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 cardMargin"
+          style="align-self: center; text-align: center"
+        >
+          <q-select
+            rounded
+            dense
+            transition-show="flip-up"
+            transition-hide="flip-down"
+            :options="clientesDestinoSelected"
+            :loading="clientesDestinoLoading"
+            :disable="clientesDestinoLoading"
+            @filter="
+              (val, update) =>
+                filterArray(
+                  val,
+                  update,
+                  'clientesDestinoSelected',
+                  'clientesDestino',
+                  'nb_cliente'
+                )
             "
+            use-input
+            hide-selected
+            fill-input
+            input-debounce="0"
+            option-label="nb_cliente"
+            option-value="id"
+            v-model="selectedClienteDestino"
+            outlined
+            standout
+            label="Cliente Destino"
+            @update:model-value="getDataTable()"
+            ><template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  Sin resultados
+                </q-item-section>
+              </q-item>
+            </template>
+            <template v-slot:prepend>
+              <q-icon name="search" />
+            </template>
+            <template v-slot:clientesDestinoLoading>
+              <q-inner-loading showing color="primary" class="loading" />
+            </template>
+          </q-select>
+        </div>
+        <div
+          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 cardMargin selectMobile2"
+          style="align-self: center; text-align: center"
+        >
+        <q-select
+            rounded
+            dense
+            transition-show="flip-up"
+            transition-hide="flip-down"
+            :options="estatusSelected"
+            use-input
+            hide-selected
+            fill-input
+            option-label="label"
+            option-value="value"
+            input-debounce="0"
+            v-model="selectedEstatus"
+            outlined
+            standout
+            label="Estatus"
+            @update:model-value="getDataTable();"
             ><template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey">
@@ -925,1480 +347,311 @@
             </template>
           </q-select>
         </div>
-        <div class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 cardMargin"
+        <div
+          class="col-md-1 col-xl-1 col-lg-1 col-xs-6 col-sm-6 selectMobile2"
+          style="align-self: center; text-align: center; padding-left: 0px"
+        >
+          <q-field
+            hide-bottom-space
+            borderless
+            @update:model-value="getDataTable()"
+            dense
+            style="padding-left: 50px"
+            v-model="checkTransito"
+          >
+            <template v-slot:control>
+              <q-checkbox
+                size="md"
+                v-model="checkTransito"
+                true-value="1"
+                false-value="0"
+                style="font-size: 13px"
+                label="TRANSITO"
+              />
+            </template>
+          </q-field>
+        </div>
+        <div
+          class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
           style="align-self: center; text-align: center"
         >
-          <q-select
-            rounded
+          <q-btn
             dense
-            transition-show="flip-up"
-            transition-hide="flip-down"
-            :options="agenciasSelected"
-            @filter="
-              (val, update) =>
-                filterArray(
-                  val,
-                  update,
-                  'agenciasSelected',
-                  'agencias',
-                  'nb_agencia'
-                )
-            "
-            use-input
-            hide-selected
-            fill-input
-            input-debounce="0"
-            option-label="nb_agencia"
-            option-value="id"
-            v-model="selectedAgencia"
-            outlined
-            standout
-            label="Cliente Destino"
-            @update:model-value="
-              this.selectedCliente = [];
-              this.selectedAgente = [];
-              getDataTable();
-              this.$refs.methods.getData(`/agentes`, 'setData', 'agentes', {
-                headers: {
-                  agencia: this.selectedAgencia.id,
-                },
-              });
-              this.$refs.methods.getData(`/clientes`, 'setData', 'clientes', {
-                headers: {
-                  agencia: this.selectedAgencia.id,
-                },
-              });
-            "
-            ><template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  Sin resultados
-                </q-item-section>
-              </q-item>
-            </template>
-            <template v-slot:prepend>
-              <q-icon name="search" />
-            </template>
-          </q-select>
+            color="primary"
+            round
+            padding="sm"
+            @click="this.resetFilters()"
+            style="margin-right: 15px"
+          >
+            <q-icon size="25px" name="filter_alt_off" color="white"> </q-icon>
+            <q-tooltip
+              class="bg-primary"
+              style="max-height: 30px"
+              transition-show="scale"
+              transition-hide="scale"
+              color="primary"
+              >Eliminar Filtros</q-tooltip
+            >
+          </q-btn>
+          <q-btn
+            dense
+            color="primary"
+            round
+            padding="sm"
+            style="margin-right: 5px"
+          >
+            <q-icon size="25px" name="print" color="white"> </q-icon>
+            <q-tooltip
+              class="bg-primary"
+              style="max-height: 30px"
+              transition-show="scale"
+              transition-hide="scale"
+              color="primary"
+              >Imprimir Reporte</q-tooltip
+            >
+          </q-btn>
         </div>
       </div>
     </div>
 
-    <div class="q-pa-md justify-center">
+    <div class="q-pa-md justify-center" style="margin-top: -25px">
       <q-table
-          :rows="clientes"
-          dense
-          :columns="columnsClientes"
-          binary-state-sort
-          :virtual-scroll="null"
-          :separator="separator"
-          row-key="action"
-          :loading="loading"
-          class="my-sticky-header-column-table"
-          :filter="filter"
-          style="width: 100%"
-          :grid="$q.screen.xs"
-          v-model:pagination="pagination"
-        >
-          <template v-slot:loading>
-            <q-inner-loading showing color="primary" />
-          </template>
-
-          <template v-slot:body-cell-action="props">
-            <q-td :props="props">
-              <q-btn
-                dense
-                round
-                flat
-                color="primary"
-                icon="save"
-                :disabled="this.disabledDelete"
-                @click="selected = props.row.id"
-                @click.capture="permisosDelete = true"
-              ></q-btn>
-            </q-td>
-          </template>
-
-          <template v-slot:body-cell-check="props">
-            <q-td :props="props">
-              <q-checkbox
-                size="lg"
-                v-model="props.row.cte_decontado"
-                true-value="1"
-                false-value="0"
-                style="font-size: 13px"
-              />
-            </q-td>
-          </template>
-
-          <template v-slot:body-cell-estatus_select="props">
-            <q-td :props="props">
-              <q-select
-                outlined
-                v-model="props.row.rif_cedula"
-                :options="estatus"
-              >
-              </q-select>
-            </q-td>
-          </template>
-
-          <template v-slot:body-cell-persona_recibio_input="props">
-            <q-td :props="props">
-              <q-input
-                outlined
-                v-model="props.row.nb_cliente"
-                :input-style="{
-                  width: `${props.row.nb_cliente.length / 2 + 2}em`,
-                  minWidth: '30px',
-                }"
-              >
-              </q-input>
-            </q-td>
-          </template>
-
-          <template v-slot:body-cell-ci_input="props">
-            <q-td :props="props">
-              <q-input
-                outlined
-                v-model="props.row.rif_cedula"
-                :input-style="{
-                  width: `${props.row.rif_cedula.length / 2 + 2}em`,
-                  minWidth: '30px',
-                }"
-                @update:model-value="
-                  getData(props.row.id, 'putDatoSelect');
-                  this.formEdit.estatus_lote = props.row.rif_cedula.value;
-                "
-              >
-              </q-input>
-            </q-td>
-          </template>
-
-          <template v-slot:body-cell-fecha_entrega_input="props">
-            <q-td :props="props">
-              <q-input
-                outlined
-                hint=""
-                style="padding-bottom: 0px"
-                :input-style="{ minWidth: '100px' }"
-                v-model="formClientes.nit"
-                mask="date"
-                :rules="['date']"
-                lazy-rules
-              >
-                <template v-slot:append>
-                  <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy
-                      cover
-                      transition-show="scale"
-                      transition-hide="scale"
-                    >
-                      <q-date v-model="formClientes.nit">
-                        <div class="row items-center justify-end">
-                          <q-btn
-                            v-close-popup
-                            label="Close"
-                            color="primary"
-                            flat
-                          />
-                        </div>
-                      </q-date>
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
-              </q-input>
-            </q-td>
-          </template>
-
-          <template v-slot:body-cell-agente_select="props">
-            <q-td :props="props">
-              <q-select
-                outlined
-                v-model="props.row.persona_contacto"
-                :options="estatus"
-              >
-              </q-select>
-            </q-td>
-          </template>
-
-          <template v-slot:body-cell-dias_entrega_input="props">
-            <q-td :props="props">
-              <q-input
-                outlined
-                :input-style="{
-                  width: `${props.row.id.length / 2 + 2}em`,
-                  minWidth: '10px',
-                }"
-                v-model="props.row.id"
-                :options="estatus"
-              >
-              </q-input>
-            </q-td>
-          </template>
-
-          <template v-slot:body-cell-motivo_retraso_select="props">
-            <q-td :props="props">
-              <q-select
-                outlined
-                v-model="props.row.dir_fiscal"
-                :options="estatus"
-              >
-              </q-select>
-            </q-td>
-          </template>
-
-          <template v-slot:body-cell-agencia_trafico_select="props">
-            <q-td :props="props">
-              <q-select
-                outlined
-                v-model="props.row.dir_correo"
-                :options="estatus"
-              >
-              </q-select>
-            </q-td>
-          </template>
-
-          <template v-slot:body-cell-fecha_llega_transito_input="props">
-            <q-td :props="props">
-              <q-input
-                outlined
-                hint=""
-                style="padding-bottom: 0px"
-                :input-style="{ minWidth: '100px' }"
-                v-model="formClientes.nit"
-                mask="date"
-                :rules="['date']"
-                lazy-rules
-              >
-                <template v-slot:append>
-                  <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy
-                      cover
-                      transition-show="scale"
-                      transition-hide="scale"
-                    >
-                      <q-date v-model="formClientes.nit">
-                        <div class="row items-center justify-end">
-                          <q-btn
-                            v-close-popup
-                            label="Close"
-                            color="primary"
-                            flat
-                          />
-                        </div>
-                      </q-date>
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
-              </q-input>
-            </q-td>
-          </template>
-
-          <template v-slot:body-cell-fecha_sale_transito_input="props">
-            <q-td :props="props">
-              <q-input
-                outlined
-                hint=""
-                style="padding-bottom: 0px"
-                :input-style="{ minWidth: '100px' }"
-                v-model="formClientes.nit"
-                mask="date"
-                :rules="['date']"
-                lazy-rules
-              >
-                <template v-slot:append>
-                  <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy
-                      cover
-                      transition-show="scale"
-                      transition-hide="scale"
-                    >
-                      <q-date v-model="formClientes.nit">
-                        <div class="row items-center justify-end">
-                          <q-btn
-                            v-close-popup
-                            label="Close"
-                            color="primary"
-                            flat
-                          />
-                        </div>
-                      </q-date>
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
-              </q-input>
-            </q-td>
-          </template>
-
-          <template v-slot:body-cell-observacion_input="props">
-            <q-td :props="props">
-              <q-input
-                outlined
-                :input-style="{
-                  width: `${props.row.razon_social.length / 2 + 2}em`,
-                  minWidth: '100px',
-                }"
-                v-model="props.row.razon_social"
-                :options="estatus"
-              >
-              </q-input>
-            </q-td>
-          </template>
-
-          <template v-slot:item="props">
-            <div
-              class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
-              :style="props.selected ? 'transform: scale(0.95);' : ''"
-            >
-              <q-card :class="props.selected ? 'bg-grey-2' : ''">
-                <q-list dense>
-                  <q-item v-for="col in props.cols" :key="col.name">
-                    <q-item-section>
-                      <q-item-label>{{ col.label }}</q-item-label>
-                    </q-item-section>
-
-                    <q-item-section side class="itemMovilSide">
-                      <q-btn
-                        v-if="col.name === 'action'"
-                        dense
-                        round
-                        flat
-                        color="primary"
-                        icon="save"
-                        :disabled="this.disabledDelete"
-                        @click="selected = props.row.id"
-                        @click.capture="permisosDelete = true"
-                      ></q-btn>
-
-                      <q-item-section>
-                      <q-item-label>{{ col.value }}</q-item-label>
-                    </q-item-section>
-
-                      <q-checkbox
-                        v-if="col.name === 'check'"
-                        size="lg"
-                        v-model="props.row.cte_decontado"
-                        true-value="1"
-                        false-value="0"
-                        style="font-size: 13px"
-                      />
-
-                      <q-select
-                        v-if="col.name === 'estatus_select'"
-                        outlined
-                        autogrow
-                        v-model="props.row.estatus_desc"
-                        :options="estatus"
-                        label="Estatus"
-                        @update:model-value="
-                          getData(props.row.id, 'putDatoSelect');
-                          this.formEdit.estatus_lote =
-                            props.row.estatus_desc.value;
-                        "
-                      >
-                      </q-select>
-
-                      <q-input
-                        v-if="col.name === 'persona_recibio_input'"
-                        outlined
-                        v-model="props.row.estatus_desc"
-                        :options="estatus"
-                        label="Persona que Recibio"
-                        @update:model-value="
-                          getData(props.row.id, 'putDatoSelect');
-                          this.formEdit.estatus_lote =
-                            props.row.estatus_desc.value;
-                        "
-                      >
-                      </q-input>
-
-                      <q-input
-                        v-if="col.name === 'ci_input'"
-                        outlined
-                        v-model="props.row.estatus_desc"
-                        :options="estatus"
-                        label="C.I."
-                        @update:model-value="
-                          getData(props.row.id, 'putDatoSelect');
-                          this.formEdit.estatus_lote =
-                            props.row.estatus_desc.value;
-                        "
-                      >
-                      </q-input>
-
-                      <q-input
-                        v-if="col.name === 'fecha_entrega_input'"
-                        outlined
-                        label="Fecha Entrega"
-                        hint=""
-                        style="padding-bottom: 0px"
-                        v-model="form.fecha_ini_val"
-                        mask="date"
-                        :rules="['date']"
-                        class="pcform"
-                        lazy-rules
-                      >
-                        <template v-slot:append>
-                          <q-icon name="event" class="cursor-pointer">
-                            <q-popup-proxy
-                              cover
-                              transition-show="scale"
-                              transition-hide="scale"
-                            >
-                              <q-date v-model="form.fecha_ini_val">
-                                <div class="row items-center justify-end">
-                                  <q-btn
-                                    v-close-popup
-                                    label="Close"
-                                    color="primary"
-                                    flat
-                                  />
-                                </div>
-                              </q-date>
-                            </q-popup-proxy>
-                          </q-icon>
-                        </template>
-                      </q-input>
-
-                      <q-select
-                        v-if="col.name === 'agente_select'"
-                        outlined
-                        autogrow
-                        v-model="props.row.estatus_desc"
-                        :options="estatus"
-                        label="Agente Entrega"
-                        @update:model-value="
-                          getData(props.row.id, 'putDatoSelect');
-                          this.formEdit.estatus_lote =
-                            props.row.estatus_desc.value;
-                        "
-                      >
-                      </q-select>
-
-                      <q-input
-                        v-if="col.name === 'dias_entrega_input'"
-                        outlined
-                        v-model="props.row.estatus_desc"
-                        :options="estatus"
-                        label="Dias de Entrega"
-                        @update:model-value="
-                          getData(props.row.id, 'putDatoSelect');
-                          this.formEdit.estatus_lote =
-                            props.row.estatus_desc.value;
-                        "
-                      >
-                      </q-input>
-
-                      <q-select
-                        autogrow
-                        v-if="col.name === 'motivo_retraso_select'"
-                        outlined
-                        v-model="props.row.estatus_desc"
-                        :options="estatus"
-                        label="Motivo de Retraso"
-                        @update:model-value="
-                          getData(props.row.id, 'putDatoSelect');
-                          this.formEdit.estatus_lote =
-                            props.row.estatus_desc.value;
-                        "
-                      >
-                      </q-select>
-
-                      <q-select
-                        v-if="col.name === 'agencia_trafico_select'"
-                        outlined
-                        autogrow
-                        v-model="props.row.estatus_desc"
-                        :options="estatus"
-                        label="Agencia Transito"
-                        @update:model-value="
-                          getData(props.row.id, 'putDatoSelect');
-                          this.formEdit.estatus_lote =
-                            props.row.estatus_desc.value;
-                        "
-                      >
-                      </q-select>
-
-                      <q-input
-                        v-if="col.name === 'fecha_llega_transito_input'"
-                        outlined
-                        label="Llega a Transito"
-                        hint=""
-                        v-model="form.fecha_ini_val"
-                        style="padding-bottom: 0px"
-                        mask="date"
-                        :rules="['date']"
-                        class="pcform"
-                        lazy-rules
-                      >
-                        <template v-slot:append>
-                          <q-icon name="event" class="cursor-pointer">
-                            <q-popup-proxy
-                              cover
-                              transition-show="scale"
-                              transition-hide="scale"
-                            >
-                              <q-date v-model="form.fecha_ini_val">
-                                <div class="row items-center justify-end">
-                                  <q-btn
-                                    v-close-popup
-                                    label="Close"
-                                    color="primary"
-                                    flat
-                                  />
-                                </div>
-                              </q-date>
-                            </q-popup-proxy>
-                          </q-icon>
-                        </template>
-                      </q-input>
-
-                      <q-input
-                        v-if="col.name === 'fecha_sale_transito_input'"
-                        outlined
-                        label="Llega de Transito"
-                        style="padding-bottom: 0px"
-                        hint=""
-                        v-model="form.fecha_ini_val"
-                        mask="date"
-                        :rules="['date']"
-                        class="pcform"
-                        lazy-rules
-                      >
-                        <template v-slot:append>
-                          <q-icon name="event" class="cursor-pointer">
-                            <q-popup-proxy
-                              cover
-                              transition-show="scale"
-                              transition-hide="scale"
-                            >
-                              <q-date v-model="form.fecha_ini_val">
-                                <div class="row items-center justify-end">
-                                  <q-btn
-                                    v-close-popup
-                                    label="Close"
-                                    color="primary"
-                                    flat
-                                  />
-                                </div>
-                              </q-date>
-                            </q-popup-proxy>
-                          </q-icon>
-                        </template>
-                      </q-input>
-
-                      <q-input
-                        v-if="col.name === 'observacion_input'"
-                        outlined
-                        v-model="props.row.estatus_desc"
-                        :options="estatus"
-                        label="Observacion"
-                        style="padding-bottom:10px"
-                        @update:model-value="
-                          getData(props.row.id, 'putDatoSelect');
-                          this.formEdit.estatus_lote =
-                            props.row.estatus_desc.value;
-                        "
-                      >
-                      </q-input>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-card>
-            </div>
-          </template>
+        :rows="guias"
+        :columns="columns"
+        binary-state-sort
+        :separator="separator"
+        row-key="id"
+        :loading="loading"
+        :rows-per-page-options="[5, 10, 15, 20, 50]"
+        style="width: 100%; height: 580px"
+        :grid="$q.screen.xs"
+        v-model:pagination="pagination"
+        @request="getDataTable"
+      >
+        <template v-slot:loading>
+          <q-inner-loading showing color="primary" class="loading" />
+        </template>
       </q-table>
     </div>
 
-    <q-dialog v-model="clientesDelete">
-      <q-card style="width: 700px">
-        <q-card-section>
-          <div class="text-h5" style="font-size: 18px">
-            ¿Estas seguro que quieres eliminar este elemento?
-          </div>
-        </q-card-section>
-
-        <q-card-actions align="right">
-          <q-btn flat label="Cancelar" color="primary" v-close-popup />
-          <q-btn
-            flat
-            label="Aceptar"
-            color="primary"
-            v-close-popup
-            @click="deleteData(selected)"
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-
     <methods
       ref="methods"
-      @get-data="
-        this.axiosConfig.headers.agencia = this.selectedAgencia.id;
-        getData(`/clientes`, 'setDataClientes', 'clientes');
-      "
-      @reset-Loading="resetLoading"
-      @set-Data-Clientes="setDataClientes"
-      @set-Data-Edit="setDataEdit"
-      @set-Data-Iniciar="setDataIniciar"
-      @set-Data-Localidades="setDataLocalidades"
-      @set-Data-Municipios="setDataMunicipios"
-      @set-Data-Parroquias="setDataParroquias"
-      @set-Data-Estados="setDataEstados"
-      @set-Data-Ciudades="setDataCiudades"
-      @set-Data-Paises="setDataPaises"
-      @set-Data-Agentes="setDataAgentes"
+      @set-Data="setData"
+      @get-Data-Table="getDataTable"
+      @set-Data-Table="setDataTable"
+      @set-Data-Permisos="setDataPermisos"
     ></methods>
+
+    <rules-vue ref="rulesVue"></rules-vue>
   </q-page>
 </template>
 
 <script>
 import { ref } from "vue";
-import { api } from "boot/axios";
-import { useQuasar } from "quasar";
+import moment from "moment";
+import rulesVue from "src/components/rules.vue";
+import { useQuasar, LocalStorage } from "quasar";
 import methodsVue from "src/components/methods.vue";
 
 export default {
-  components: { methods: methodsVue },
-  name: "Clientes",
+  components: {
+    methods: methodsVue,
+    rulesVue,
+  },
   data() {
     return {
-      columnsClientes: [
+      columns: [
         {
-          name: "action",
-          label: "Guardar",
-          field: "action",
-          align: "center",
-          required: true,
-          sortable: true,
-        },
-        {
-          name: "nb_cliente",
-          label: "Cliente Origen",
-          field: "nb_cliente",
+          name: "nro_documento",
+          label: "N° Control",
+          field: "nro_documento",
           align: "left",
           sortable: true,
-          required: true,
         },
         {
-          name: "rif_cedula",
-          label: "Cliente Destino",
-          field: "rif_cedula",
+          name: "nro_fact",
+          label: "N° Fact.",
+          field: "nro_fact",
           align: "left",
-          sortable: true,
-          required: true,
         },
         {
-          name: "activo_desc",
-          label: "Fecha Emision",
-          field: "activo_desc",
+          name: "fecha_emision",
+          label: "Emisión",
+          field: "fecha_emision",
           align: "left",
+          format: (val) => val.split("-").reverse().join("/"),
           sortable: true,
-          required: true,
         },
         {
-          name: "cte_decontado",
-          label: "Fecha Envio",
-          field: "cte_decontado",
-          align: "center",
+          name: "monto_total",
+          label: "Monto Total",
+          field: "monto_total",
+          align: "right",
           sortable: true,
-          required: true,
+          format: (val) =>
+            new Intl.NumberFormat("de-DE", {
+              style: "currency",
+              currency: "EUR",
+              currencyDisplay: "code",
+            })
+              .format(val)
+              .replace("EUR", "")
+              .trim(),
         },
         {
-          name: "cte_decontado",
-          label: "NRO. Guia",
-          field: "cte_decontado",
-          align: "center",
-          sortable: true,
-          required: true,
+          name: "observacion_entrega",
+          label: "Descripción",
+          field: "observacion_entrega",
+          align: "left",
         },
         {
-          name: "cte_decontado",
-          label: "Forma Pago",
-          field: "cte_decontado",
-          align: "center",
-          sortable: true,
-          required: true,
-        },
-        {
-          name: "cte_decontado",
-          label: "Pagado En",
-          field: "cte_decontado",
-          align: "center",
-          sortable: true,
-          required: true,
-        },
-        {
-          name: "check",
-          label: "Pagado",
-          align: "center",
-          sortable: true,
-          required: true,
-        },
-        {
-          name: "estatus_select",
-          label: "Estatus",
-          align: "center",
-          sortable: true,
-          required: true,
-        },
-        {
-          name: "persona_recibio_input",
-          label: "Persona que Recibió",
-          align: "center",
-          sortable: true,
-          required: true,
-        },
-        {
-          name: "ci_input",
-          label: "C.I.",
-          align: "center",
-          sortable: true,
-          required: true,
-        },
-        {
-          name: "fecha_entrega_input",
-          label: "Fecha Entrega",
-          align: "center",
-          sortable: true,
-          required: true,
-        },
-        {
-          name: "agente_select",
-          label: "Agente Entrega",
-          align: "center",
-          sortable: true,
-          required: true,
-        },
-        {
-          name: "dias_entrega_input",
-          label: "Dias de Entrega",
-          align: "center",
-          sortable: true,
-          required: true,
-        },
-        {
-          name: "motivo_retraso_select",
-          label: "Motivo de Retraso en Entrega",
-          align: "center",
-          sortable: true,
-          required: true,
-        },
-        {
-          name: "agencia_trafico_select",
-          label: "Agencia Transito",
-          align: "center",
-          sortable: true,
-          required: true,
-        },
-        {
-          name: "fecha_llega_transito_input",
-          label: "Fecha Llega Transito",
-          align: "center",
-          sortable: true,
-          required: true,
-        },
-        {
-          name: "fecha_sale_transito_input",
-          label: "Fecha Sale Transito",
-          align: "center",
-          sortable: true,
-          required: true,
-        },
-        {
-          name: "observacion_input",
-          label: "Observacion",
-          align: "center",
-          sortable: true,
-          required: true,
+          name: "observacion_adic",
+          label: "Observación Adicional",
+          field: "observacion_adic",
+          align: "left",
         },
       ],
-      columnsConceptos: [
-        {
-          name: "id",
-          label: "Codigo",
-          field: "id",
-          align: "left",
-          sortable: true,
-          required: true,
-        },
-        {
-          name: "nb_cliente",
-          label: "Nombre",
-          field: "nb_cliente",
-          align: "left",
-          sortable: true,
-          required: true,
-        },
-        {
-          name: "rif_cedula",
-          label: "RIF",
-          field: "rif_cedula",
-          align: "left",
-          sortable: true,
-          required: true,
-        },
-        {
-          name: "activo_desc",
-          label: "Estatus",
-          field: "activo_desc",
-          align: "left",
-          sortable: true,
-          required: true,
-        },
-        {
-          name: "cte_decontado",
-          label: "Cliente Particular",
-          field: "cte_decontado",
-          align: "center",
-          sortable: true,
-        },
+      pagination: {
+        page: 1,
+        rowsPerPage: 10,
+        sortBy: "nro_documento",
+        descending: true,
+        filter: "",
+        filterValue: "",
+        rowsNumber: "",
+      },
+      estatusSelected: [
+        { label: "EN PROCESO DE ENVÍO", value: "PR" },
+        { label: "PENDIENTE POR ENTREGA", value: "PE" },
+        { label: "ENTREGA CONFORME", value: "CO" },
+        { label: "ENTREGA NO CONFORME", value: "NC" },
       ],
-      formClientes: {
-        nb_cliente: "",
-        rif_cedula: "",
-        nit: "",
-        dir_correo: "",
-        dir_fiscal: "",
-        email: "",
-        tlf_cliente: "",
-        fax: "",
-        razon_social: "",
-        tipo_persona: "",
-        modalidad_pago: "",
-        persona_contacto: "",
-        observacion: "",
-        cte_decontado: "",
-        tipo_persona_new: "",
-        flag_activo: "",
-        cod_agencia: [],
-        cod_ciudad: [],
-        cod_agente: [],
-        cod_municipio: [],
-        cod_parroquia: [],
-        cod_localidad: [],
-      },
-      formEditClientes: {
-        descripcion: "",
-        nb_cliente: "",
-        rif_cedula: "",
-        nit: "",
-        dir_correo: "",
-        dir_fiscal: "",
-        email: "",
-        tlf_cliente: "",
-        fax: "",
-        razon_social: "",
-        tipo_persona: "",
-        modalidad_pago: "",
-        persona_contacto: "",
-        observacion: "",
-        cte_decontado: "",
-        tipo_persona_new: "",
-        flag_activo: "",
-        cod_agencia: [],
-        cod_agente: [],
-        cod_ciudad: [],
-        cod_municipio: [],
-        cod_parroquia: [],
-        cod_localidad: [],
-        id: "",
-      },
-      pais: "",
-      estado: "",
-      ciudad: "",
-      location_input: "",
+      guias: [],
       agencias: [],
+      agenciasDestino: [],
       clientes: [],
-      estados: [],
-      ciudades: [],
-      municipios: [],
-      parroquias: [],
-      localidades: [],
-      conceptos: [],
-      agentes: [],
-      selected: [],
+      clientesDestino: [],
+      agenciasSelected: [],
+      agenciasDestinoSelected: [],
       selectedAgencia: [],
-      tipo_persona: [
-        { label: "JURÍDICA", value: "J" },
-        { label: "NATURAL", value: "N" },
-      ],
-      modalidad_pago: [
-        { label: "CONTADO", value: "CO" },
-        { label: "CREDITO", value: "CR" },
-      ],
-      estatus: [
-        { label: "ACTIVO", value: "1" },
-        { label: "INACTIVO", value: "0" },
-      ],
-      error: "",
-      disabledCreate: true,
-      disabledEdit: true,
-      disabledDelete: true,
-      axiosConfig: {
-        headers: {
-          Authorization: `
-          `,
-          agencia: "",
-          pais: "",
-          estado: "",
-          municipio: "",
-        },
-      },
+      selectedAgenciaDestino: [],
+      clientesSelected: [],
+      selectedCliente: [],
+      clientesLoading: false,
+      clientesDestinoSelected: [],
+      selectedClienteDestino: [],
+      clientesDestinoLoading: false,
+      selectedEstatus: [],
+      checkTransito: "0",
+      nro_guia: "",
+      estatus: "",
+      fecha_desde: moment().format("DD/MM/YYYY"),
+      fecha_hasta: moment().format("DD/MM/YYYY"),
     };
   },
   setup() {
     const $q = useQuasar();
-    const pagination = ref({
-      sortBy: "desc",
-      descending: false,
-      page: 2,
-      control: 0,
-      rowsPerPage: 5,
-      // rowsNumber: xx if getting data from a server
-    });
     return {
-      pagination: ref({
-        rowsPerPage: 5,
-      }),
-      paginationConceptos: ref({
-        rowsPerPage: 4,
-      }),
-      separator: ref("cell"),
-      form: ref(false),
       loading: ref(false),
-      formEdit: ref(false),
-      clientesDelete: ref(false),
-      conceptosBox: ref(false),
-      filter: ref(""),
-      clienteParticularExistente() {
-        $q.notify({
-          message: "Solo puede haber un Cliente Particular por Agencia",
-          color: "red",
-        });
-      },
+      separator: ref("vertical"),
+      dialog: ref(false),
     };
   },
   mounted() {
     this.$emit("changeTitle", "SCEN - Mantenimiento - Pruebas de Entrega", "");
-    this.$refs.methods.getData(
-      "/clientes",
-      "setDataIniciar",
-      "clientes",
-      this.axiosConfig
-    );
+    this.$refs.methods.getData("/agencias", "setData", "agencias");
+
+    this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
+      headers: {
+        rol: LocalStorage.getItem("tokenTraducido").usuario.roles.id,
+        menu: "pruebasentrega",
+      },
+    });
   },
   methods: {
-    resetLoading() {
-      this.loading = false;
-    },
-    desactivarCrud(createItem, readItem, deleteItem, updateItem) {
-      if (readItem == true) {
-        if (createItem == true) {
-          this.disabledCreate = false;
-        }
-        if (deleteItem == true) {
-          this.disabledDelete = false;
-        }
-        if (updateItem == true) {
-          this.disabledEdit = false;
-        }
-      } else this.$router.push("/error403");
-    },
-    // Reglas
-    reglasSelect(val) {
-      if (val === null) {
-        return "Debes Seleccionar Algo";
-      }
+    // Metodo para filtrar opciones de Selects
+    filterArray(val, update, pagina, array, element) {
       if (val === "") {
-        return "Debes Seleccionar Algo";
-      }
-    },
-    reglasInputs(val) {
-      if (val === null) {
-        return "Debes Seleccionar Algo";
-      }
-      if (val === "") {
-        return "Debes Seleccionar Algo";
-      }
-    },
-    reglasNotNull100(val) {
-      if ((val !== null) !== "") {
-        if (val.length < 3) {
-          return "Deben ser minimo 3 caracteres";
-        }
-        if (val.length > 99) {
-          return "Deben ser Maximo 100 caracteres";
-        }
-      }
-    },
-    reglasNotNull20(val) {
-      if ((val !== null) !== "") {
-        if (val.length < 3) {
-          return "Deben ser minimo 3 caracteres";
-        }
-        if (val.length > 19) {
-          return "Deben ser Maximo 19 caracteres";
-        }
-      }
-    },
-    reglasNotNull200(val) {
-      if ((val !== null) !== "") {
-        if (val.length < 3) {
-          return "Deben ser minimo 3 caracteres";
-        }
-        if (val.length > 199) {
-          return "Deben ser Maximo 200 caracteres";
-        }
-      }
-    },
-    reglasAllowNull20(val) {
-      if (val !== null) {
-        if (val.length > 0) {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-          if (val.length > 19) {
-            return "Deben ser Maximo 20 caracteres";
-          }
-        }
-      }
-    },
-    reglasAllowNull100(val) {
-      if (val !== null) {
-        if (val.length > 0) {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-          if (val.length > 99) {
-            return "Deben ser Maximo 100 caracteres";
-          }
-        }
-      }
-    },
-    reglasAllowNull65(val) {
-      if (val !== null) {
-        if (val.length > 0) {
-          if (val.length < 3) {
-            return "Deben ser minimo 3 caracteres";
-          }
-          if (val.length > 64) {
-            return "Deben ser Maximo 65 caracteres";
-          }
-        }
-      }
-    },
-    desactivarCrudClientes(createItem, deleteItem, updateItem) {
-      if (createItem == true) {
-        this.disabledCreate = false;
-      }
-      if (deleteItem == true) {
-        this.disabledDelete = false;
-      }
-      if (updateItem == true) {
-        this.disabledEdit = false;
-      }
-    },
-
-    getData(url, call, dataRes) {
-      this.$refs.methods.getData(url, call, dataRes, this.axiosConfig);
-      this.loading = true;
-    },
-    setDataIniciar(res, dataRes) {
-      this[dataRes] = res.data;
-      this.getDataIniciar();
-      this.loading = false;
-    },
-    setDataClientes(res, dataRes) {
-      this[dataRes] = res;
-      for (var e = 0, len = this.clientes.length; e < len; e++) {
-        if (this.clientes[e].cte_decontado === "1") {
-          this.clientes[e].cte_decontado = "🏴";
-        }
-        if (this.clientes[e].cte_decontado === "0") {
-          this.clientes[e].cte_decontado = "";
-        }
-        if (e == this.clientes.length - 1) break;
-      }
-      this.loading = false;
-    },
-    setDataEdit(res, dataRes) {
-      this.resetFormEdit();
-      this[dataRes].id = res.id;
-      this[dataRes].descripcion = res.descripcion;
-      this[dataRes].nb_cliente = res.nb_cliente;
-      this[dataRes].rif_cedula = res.rif_cedula;
-      this[dataRes].nit = res.nit;
-      this[dataRes].dir_correo = res.dir_correo;
-      this[dataRes].dir_fiscal = res.dir_fiscal;
-      this[dataRes].tlf_cliente = res.tlf_cliente;
-      this[dataRes].fax = res.fax;
-      this[dataRes].razon_social = res.razon_social;
-      this[dataRes].tipo_persona = res.tipo_desc;
-      this[dataRes].modalidad_pago = res.modalidad_desc;
-      this[dataRes].persona_contacto = res.persona_contacto;
-      this[dataRes].cte_decontado = res.cte_decontado;
-      this[dataRes].flag_activo = res.activo_desc;
-      this[dataRes].cod_agencia = res.cod_agencia;
-      this[dataRes].cod_ciudad = res.cod_ciudad;
-      var cod_agente = res.cod_agente;
-      var cod_parroquia = res.cod_parroquia;
-      var cod_localidad = res.cod_localidad;
-      api
-        .get(`/municipios/${res.cod_municipio}`, this.axiosConfig)
-        .then((res) => {
-          this.formEditClientes.cod_municipio = res.data.desc_municipio;
-          var cod_municipio = res.data.id;
-          var cod_estado = res.data.cod_estado;
-          var cod_ciudad = this[dataRes].cod_ciudad;
-
-          this.axiosConfig.headers.estado = cod_estado;
-          api.get(`/municipios`, this.axiosConfig).then((res) => {
-            this.municipios = res.data;
-          });
-
-          this.axiosConfig.headers.municipio = cod_municipio;
-          api.get(`/parroquias`, this.axiosConfig).then((res) => {
-            this.parroquias = res.data;
-          });
-
-          api.get(`/localidades`, this.axiosConfig).then((res) => {
-            this.localidades = res.data;
-          });
-
-          api.get(`/ciudades`, this.axiosConfig).then((res) => {
-            this.ciudades = res.data;
-          });
-
-          api.get(`/ciudades/${cod_ciudad}`, this.axiosConfig).then((res) => {
-            this.ciudad = res.data.desc_ciudad;
-          });
-
-          api.get(`/estados/${cod_estado}`, this.axiosConfig).then((res) => {
-            this.estado = res.data.desc_estado;
-            this.axiosConfig.headers.pais = res.data.cod_pais;
-            api.get(`/estados`, this.axiosConfig).then((res) => {
-              this.estados = res.data;
-              this.pais = res.data[0].paises.desc_pais;
-            });
-          });
-
-          api.get(`/agentes/${cod_agente}`, this.axiosConfig).then((res) => {
-            this.formEditClientes.cod_agente = res.data.persona_responsable;
-          });
-
-          api
-            .get(`/parroquias/${cod_parroquia}`, this.axiosConfig)
-            .then((res) => {
-              this.formEditClientes.cod_parroquia = res.data.desc_parroquia;
-            });
-
-          api
-            .get(`/localidades/${cod_localidad}`, this.axiosConfig)
-            .then((res) => {
-              this.formEditClientes.cod_localidad = res.data.desc_localidad;
-            });
+        update(() => {
+          this[pagina] = this[array];
         });
-    },
-    deleteData(idpost) {
-      this.$refs.methods.deleteData(
-        `/clientes/${idpost}`,
-        "getData",
-        this.axiosConfig
-      );
-      this.loading = true;
-    },
-    createDataClientes() {
-      this.formClientes.cod_agencia = this.selectedAgencia.id;
-      this.formClientes.cod_agente = this.formClientes.cod_agente.id;
-      this.formClientes.cod_localidad = this.formClientes.cod_localidad.id;
-      this.formClientes.cod_municipio = this.formClientes.cod_municipio.id;
-      this.formClientes.cod_parroquia = this.formClientes.cod_parroquia.id;
-      this.formClientes.cod_ciudad = this.ciudad.id;
-      this.formClientes.modalidad_pago = this.formClientes.modalidad_pago.value;
-      this.formClientes.flag_activo = this.formClientes.flag_activo.value;
-      if (this.formClientes.cte_decontado === "1") {
-        for (var e = 0, len = this.clientes.length; e < len; e++) {
-          if (this.clientes[e].cte_decontado === "🏴") {
-            this.clienteParticularExistente();
-            this.form = false;
-            this.resetForm();
-            return;
-          }
-          if (e == this.clientes.length - 1) break;
-        }
+        return;
       }
-      this.formClientes.tipo_persona = this.formClientes.tipo_persona.value;
-      this.$refs.methods.createData(
-        `/clientes`,
-        this.formClientes,
-        "getData",
-        this.axiosConfig
-      );
-      this.form = false;
-      this.loading = true;
-    },
-    putDataClientes() {
-      this.formEditClientes.cod_agencia = this.selectedAgencia.id;
-      this.formEditClientes.cod_agente = this.formEditClientes.cod_agente.id;
-      this.formEditClientes.cod_localidad =
-        this.formEditClientes.cod_localidad.id;
-      this.formEditClientes.cod_municipio =
-        this.formEditClientes.cod_municipio.id;
-      this.formEditClientes.cod_parroquia =
-        this.formEditClientes.cod_parroquia.id;
-      this.formEditClientes.cod_ciudad = this.ciudad.id;
-      this.formEditClientes.modalidad_pago =
-        this.formEditClientes.modalidad_pago.value;
-      this.formEditClientes.flag_activo =
-        this.formEditClientes.flag_activo.value;
-      if (this.formEditClientes.cte_decontado === "1") {
-        for (var e = 0, len = this.clientes.length; e < len; e++) {
-          if (this.clientes[e].cte_decontado === "🏴") {
-            if (this.formEditClientes.id !== this.clientes[e].id) {
-              this.clienteParticularExistente();
-              this.formEdit = false;
-              this.resetFormEdit();
-              return;
-            }
+      update(() => {
+        const needle = val.toUpperCase();
+        var notEqual = [];
+        for (var i = 0; i <= this[array].length - 1; i++) {
+          if (this[array][i][element].indexOf(needle) > -1) {
+            notEqual.push(this[array][i]);
           }
-          if (e == this.clientes.length - 1) break;
+          if (i == this[array].length - 1) {
+            this[pagina] = notEqual;
+            break;
+          }
         }
-      }
-      this.formEditClientes.tipo_persona =
-        this.formEditClientes.tipo_persona.value;
-      this.$refs.methods.putData(
-        `/clientes/${this.formEditClientes.id}`,
-        this.formEditClientes,
-        "getData",
-        this.axiosConfig
-      );
-      this.formEdit = false;
-      this.loading = true;
+      });
     },
-    resetFormEdit() {
-      (this.formEditClientes.nb_cliente = ""),
-        (this.formEditClientes.rif_cedula = ""),
-        (this.formEditClientes.nit = ""),
-        (this.formEditClientes.dir_correo = ""),
-        (this.formEditClientes.dir_fiscal = ""),
-        (this.formEditClientes.email = ""),
-        (this.formEditClientes.tlf_cliente = ""),
-        (this.formEditClientes.fax = ""),
-        (this.formEditClientes.razon_social = ""),
-        (this.formEditClientes.tipo_persona = ""),
-        (this.formEditClientes.modalidad_pago = ""),
-        (this.formEditClientes.persona_contacto = ""),
-        (this.formEditClientes.observacion = ""),
-        (this.formEditClientes.cte_decontado = ""),
-        (this.formEditClientes.tipo_persona_new = ""),
-        (this.formEditClientes.flag_activo = ""),
-        (this.formEditClientes.cod_agencia = ""),
-        (this.formEditClientes.cod_agente = ""),
-        (this.formEditClientes.cod_municipio = ""),
-        (this.formEditClientes.cod_parroquia = ""),
-        (this.formEditClientes.cod_localidad = ""),
-        (this.pais = ""),
-        (this.estado = ""),
-        (this.ciudad = "");
+    // Metodo para traer el value de los Selects y Columns
+    findIndex(array, value, field) {
+      var find = this[array].findIndex((item) => item.id == value);
+      return find >= 0 ? this[array][find][field] : null;
     },
-    resetForm() {
-      (this.formClientes.nb_cliente = ""),
-        (this.formClientes.rif_cedula = ""),
-        (this.formClientes.nit = ""),
-        (this.formClientes.dir_correo = ""),
-        (this.formClientes.dir_fiscal = ""),
-        (this.formClientes.email = ""),
-        (this.formClientes.tlf_cliente = ""),
-        (this.formClientes.fax = ""),
-        (this.formClientes.razon_social = ""),
-        (this.formClientes.tipo_persona = ""),
-        (this.formClientes.modalidad_pago = ""),
-        (this.formClientes.persona_contacto = ""),
-        (this.formClientes.observacion = ""),
-        (this.formClientes.cte_decontado = ""),
-        (this.formClientes.tipo_persona_new = ""),
-        (this.formClientes.flag_activo = ""),
-        (this.formClientes.cod_agencia = ""),
-        (this.formClientes.cod_agente = ""),
-        (this.formClientes.cod_municipio = ""),
-        (this.formClientes.cod_parroquia = ""),
-        (this.formClientes.cod_localidad = ""),
-        (this.formClientes.cte_decontado = "0"),
-        (this.pais = ""),
-        (this.estado = ""),
-        (this.ciudad = "");
+    // Metodo para validar Permisos
+    allowOption(option) {
+      return (
+        this.rpermisos.findIndex((item) => item.acciones.accion == option) < 0
+      );
     },
-    // Metodos para colocar valores iniciales
-    getDataIniciar() {
-      this.agenciaRef = this.agencias[0].id;
-      this.selectedAgencia = this.agencias[0];
-      this.$refs.methods.getData(
-        `/paises`,
-        `setDataPaises`,
-        `paises`,
-        this.axiosConfig
-      );
-      this.axiosConfig.headers.agencia = this.agenciaRef;
-      this.$refs.methods.getData(
-        `/clientes`,
-        "setDataClientes",
-        `clientes`,
-        this.axiosConfig
-      );
-      this.$refs.methods.getData(
-        `/agentes`,
-        `setDataAgentes`,
-        `agentes`,
-        this.axiosConfig
-      );
+    // Metodo para Setear Datos Permisos
+    setDataPermisos(res, dataRes) {
+      this[dataRes] = res;
+      if (this.rpermisos.findIndex((item) => item.acciones.accion == 1) < 0)
+        this.$router.push("/error403");
     },
 
-    getDataLocalidades(sub_location, update) {
-      this.$refs.methods.getData(
-        `/${sub_location}`,
-        `${update}`,
-        `${sub_location}`,
-        this.axiosConfig
-      );
+    // METODOS DE PAGINA
+
+    // Metodo para Setear Datos Generales
+    setData(res, dataRes) {
+      eval("this." + dataRes + "Loading = false");
+      this[dataRes] = res.data ? res.data : res;
     },
-    setDataAgentes(res, dataRes) {
-      this[dataRes] = res;
+    // Metodo para Extraer Datos de Tabla
+    getDataTable(props) {
+      this.loading = true;
+      if (props) this.pagination = props.pagination;
+      this.$refs.methods.getData(`/mmovimientos`, "setDataTable", "guias", {
+        headers: {
+          agencia: this.selectedAgencia.id ? this.selectedAgencia.id : "",
+          cliente_orig: this.selectedCliente.id ? this.selectedCliente.id : "",
+          agencia_dest: this.selectedAgenciaDestino.id
+            ? this.selectedAgenciaDestino.id
+            : "",
+          cliente_dest: this.selectedClienteDestino.id
+            ? this.selectedClienteDestino.id
+            : "",
+          desde: moment(this.fecha_desde, "DD/MM/YYYY").format("YYYY-MM-DD"),
+          hasta: moment(this.fecha_hasta, "DD/MM/YYYY").format("YYYY-MM-DD"),
+          tipo: "GC",
+          estatus_admin_ex: "A",
+          page: this.pagination.page,
+          limit: this.pagination.rowsPerPage,
+          order_by: this.pagination.sortBy,
+          order_direction: this.pagination.descending ? "DESC" : "ASC",
+          filter: this.pagination.filter,
+          filter_value: this.pagination.filterValue,
+        },
+      });
     },
-    setDataPaises(res, dataRes) {
-      this[dataRes] = res;
-    },
-    setDataCiudades(res, dataRes) {
-      this[dataRes] = res;
-      this.ciudad = "";
-      this.formEditClientes.cod_localidad = "";
-      this.formClientes.cod_localidad = "";
-    },
-    setDataEstados(res, dataRes) {
-      this[dataRes] = res;
-      this.estado = "";
-      this.ciudad = "";
-      this.localidades = [];
-      this.municipios = [];
-      this.parroquias = [];
-      this.ciudades = [];
-      this.formEditClientes.cod_localidad = "";
-      this.formEditClientes.cod_municipio = "";
-      this.formEditClientes.cod_parroquia = "";
-      this.formClientes.cod_localidad = "";
-      this.formClientes.cod_municipio = "";
-      this.formClientes.cod_parroquia = "";
-    },
-    setDataMunicipios(res, dataRes) {
-      this[dataRes] = res;
-      this.formEditClientes.cod_parroquia = "";
-      this.formEditClientes.cod_municipio = "";
-      this.formClientes.cod_parroquia = "";
-      this.formClientes.cod_municipio = "";
-    },
-    setDataParroquias(res, dataRes) {
-      this[dataRes] = res;
-      this.formEditClientes.cod_parroquia = "";
-      this.formClientes.cod_parroquia = "";
-    },
-    setDataLocalidades(res, dataRes) {
-      this[dataRes] = res;
+    // Metodo para Setear Datos de Tabla
+    setDataTable(res, dataRes) {
+      this[dataRes] = res.data ? res.data : res;
+      this.pagination.page = res.currentPage;
+      this.currentPage = res.currentPage;
+      this.pagination.rowsNumber = res.total;
+      this.pagination.rowsPerPage = res.limit;
+      this.loading = false;
     },
   },
 };
 </script>
-
-<style lang="sass">
-.my-sticky-header-column-table
-
-  td:first-child
-    /* bg color is important for td; just specify one */
-    background-color: #fff !important
-
-  tr th
-    position: sticky
-    /* higher than z-index for td below */
-    z-index: 2
-    /* bg color is important; just specify one */
-    background: #fff
-
-  /* this will be the loading indicator */
-  thead tr:last-child th
-    /* height of all previous header rows */
-    top: 48px
-    /* highest z-index */
-    z-index: 3
-  thead tr:first-child th
-    top: 0
-    z-index: 1
-  tr:first-child th:first-child
-    /* highest z-index */
-    z-index: 3
-
-  td:first-child
-    z-index: 1
-
-  td:first-child, th:first-child
-    position: sticky
-    left: 0
-</style>
-<style>
-.hide {
-  display: none;
-}
-@media screen and (min-width: 600px) and (max-width: 1024px) {
-  .titleMenu {
-    padding-bottom: 1px;
-  }
-}
-@media screen and (min-width: 1024px) {
-  .buttonsDiv {
-    padding-left: 50px;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .titleMenu {
-    margin-top: 15px;
-  }
-}
-
-@media screen and (max-width: 1024px) {
-  .titleCard {
-    margin-top: 10px; margin-bottom: 10px
-  }
-}
-
-@media screen and (min-width: 600px) {
-  .SelectClienteAgencia {
-    padding-right: 10px;
-  }
-}
-
-@media screen and (min-width: 600px) {
-  .movilTitle {
-    display: none;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .movilTitle {
-    display: block;
-  }
-}
-
-@media screen and (min-width: 1024px) {
-  .cardMargin {
-    padding-right: 20px !important;
-  }
-}
-  .selectMobile {
-    margin-bottom: 15px !important;
-  }
-
-@media screen and (min-width: 600px) and (max-width: 600px) {
-  .marginSelect {
-    padding-right: 15px;
-  }
-}
-</style>
