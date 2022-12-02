@@ -882,7 +882,7 @@
               </div>
               <div
                 class="col-md-12 col-xs-12"
-                v-if="this.destino == false"
+                v-else
                 style="align-self: center; text-align: left; margin-top: -30px"
               >
                 <h4 style="font-size: 20px" class="text-secondary">
@@ -3050,6 +3050,8 @@ export default {
         serie_documento: "",
         id_clte_part_dest: "",
         id_clte_part_orig: "",
+        ci_rif_cte_conta_dest: "",
+        ci_rif_cte_conta_org: "",
         fecha_emision: moment().format("DD/MM/YYYY"),
         fecha_envio: moment().format("DD/MM/YYYY"),
         fecha_aplicacion: "00/00/0000",
@@ -3129,7 +3131,6 @@ export default {
         cod_parroquia: [],
         cod_cliente: "",
         direccion: "",
-        estatus: "",
         fax: "",
         id: "",
         nb_cliente: "",
@@ -3413,8 +3414,9 @@ export default {
           .get(`/cparticulares`, {
             headers: {
               Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-              agencia: this.form.cod_agencia_dest.id,
+              agencia: this.destino ? this.form.cod_agencia_dest.id : this.form.cod_agencia.id,
               rif: this.formClientesParticulares.rif_ci,
+              activo: "S"
             },
           })
           .then((res) => {
@@ -5544,13 +5546,14 @@ export default {
         this.destino = false;
       }
       this.resetFormClientes();
-      if (this.destino == true) {
+      if (this.destino) {
         if (this.form.id_clte_part_dest) {
           api
             .get(`/cparticulares/${this.form.id_clte_part_dest}`, {
               headers: {
                 Authorization: `Bearer ${LocalStorage.getItem("token")}`,
                 agencia: this.form.cod_agencia_dest.id,
+                activo: "S"
               },
             })
             .then((res) => {
@@ -5571,6 +5574,7 @@ export default {
               headers: {
                 Authorization: `Bearer ${LocalStorage.getItem("token")}`,
                 agencia: this.form.cod_agencia.id,
+                activo: "S"
               },
             })
             .then((res) => {
@@ -5580,7 +5584,7 @@ export default {
             });
         } else {
           this.formClientesParticulares.cod_agencia =
-            this.form.cod_agencia_dest;
+            this.form.cod_agencia;
           this.disableRif = false;
           this.clienteLabelBox = true;
         }
@@ -5880,10 +5884,12 @@ export default {
               message: "Cliente Particular Actualizado Exitosamente",
               color: "green",
             });
-            if (this.destino == true) {
+            if (this.destino) {
               this.form.id_clte_part_dest = res.data.id;
+              this.form.ci_rif_cte_conta_dest = res.data.rif_ci;
             } else {
               this.form.id_clte_part_orig = res.data.id;
+              this.form.ci_rif_cte_conta_org = res.data.rif_ci;
             }
             return;
           });
@@ -5904,8 +5910,10 @@ export default {
             });
             if (this.clienteLabel == "destino") {
               this.form.id_clte_part_dest = res.data.id;
+              this.form.ci_rif_cte_conta_dest = res.data.rif_ci;
             } else {
               this.form.id_clte_part_orig = res.data.id;
+              this.form.ci_rif_cte_conta_org = res.data.rif_ci;
             }
             return;
           });
@@ -6145,6 +6153,9 @@ export default {
       this.form.estatus_administra = "";
       this.form.monto_ref_cte_sin_imp = "";
       this.form.id_clte_part_dest = "";
+      this.form.id_clte_part_orig = "";
+      this.form.ci_rif_cte_conta_dest = "";
+      this.form.ci_rif_cte_conta_org = "";
       this.form.porc_comision = "";
       this.form.porc_descuento = "";
       this.checkbox.guia_factura = "0";
@@ -6206,7 +6217,6 @@ export default {
       this.formClientesParticulares.cod_municipio = [];
       this.formClientesParticulares.cod_parroquia = [];
       this.formClientesParticulares.direccion = "";
-      this.formClientesParticulares.estatus = "";
       this.formClientesParticulares.fax = "";
       this.formClientesParticulares.id = "";
       this.formClientesParticulares.nb_cliente = "";

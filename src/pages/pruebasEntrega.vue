@@ -209,7 +209,8 @@
             outlined
             standout
             label="NRO. Guia"
-            @update:model-value="getDataTable()"
+            @blur="getDataTable()"
+            @keyup.enter="getDataTable()"
           >
           </q-input>
         </div>
@@ -318,7 +319,7 @@
           class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 cardMargin selectMobile2"
           style="align-self: center; text-align: center"
         >
-        <q-select
+          <q-select
             rounded
             dense
             transition-show="flip-up"
@@ -334,7 +335,7 @@
             outlined
             standout
             label="Estatus"
-            @update:model-value="getDataTable();"
+            @update:model-value="getDataTable()"
             ><template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey">
@@ -354,9 +355,8 @@
           <q-field
             hide-bottom-space
             borderless
-            @update:model-value="getDataTable()"
             dense
-            style="padding-left: 50px"
+            style="padding-left: 15px"
             v-model="checkTransito"
           >
             <template v-slot:control>
@@ -367,6 +367,7 @@
                 false-value="0"
                 style="font-size: 13px"
                 label="TRANSITO"
+                @click="getDataTable()"
               />
             </template>
           </q-field>
@@ -398,6 +399,24 @@
             color="primary"
             round
             padding="sm"
+            @click="this.resetFilters()"
+            style="margin-right: 15px"
+          >
+            <q-icon size="25px" name="save" color="white"> </q-icon>
+            <q-tooltip
+              class="bg-primary"
+              style="max-height: 30px"
+              transition-show="scale"
+              transition-hide="scale"
+              color="primary"
+              >Guardar Selección</q-tooltip
+            >
+          </q-btn>
+          <q-btn
+            dense
+            color="primary"
+            round
+            padding="sm"
             style="margin-right: 5px"
           >
             <q-icon size="25px" name="print" color="white"> </q-icon>
@@ -422,7 +441,7 @@
         :separator="separator"
         row-key="id"
         :loading="loading"
-        :rows-per-page-options="[5, 10, 15, 20, 50]"
+        :rows-per-page-options="[]"
         style="width: 100%; height: 580px"
         :grid="$q.screen.xs"
         v-model:pagination="pagination"
@@ -431,12 +450,205 @@
         <template v-slot:loading>
           <q-inner-loading showing color="primary" class="loading" />
         </template>
+        <template v-slot:header="props">
+          <q-tr :props="props">
+            <q-th v-for="col in props.cols" :key="col.name" :props="props">
+              {{ col.label }}
+            </q-th>
+          </q-tr>
+        </template>
+        <template v-slot:body="props">
+          <q-tr :props="props" v-if="props.rowIndex == 0">
+            <q-td colspan="100%" style="font-size: 20px; color: #283593">
+              <div class="text-left">
+                <strong> {{ "ORIGEN: " }} </strong>
+                {{
+                  this.findIndex(
+                    "agencias",
+                    this.guias[props.rowIndex].cod_agencia,
+                    "nb_agencia"
+                  ) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                }}
+                <strong> {{ "DESTINO: " }} </strong>
+                {{
+                  this.findIndex(
+                    "agencias",
+                    this.guias[props.rowIndex].cod_agencia_dest,
+                    "nb_agencia"
+                  )
+                }}
+              </div>
+            </q-td>
+          </q-tr>
+          <q-tr
+            :props="props"
+            v-else-if="
+              props.rowIndex > 0 &&
+              this.guias[props.rowIndex].cod_agencia +
+                '-' +
+                this.guias[props.rowIndex].cod_agencia_dest !=
+                this.guias[props.rowIndex - 1].cod_agencia +
+                  '-' +
+                  this.guias[props.rowIndex - 1].cod_agencia_dest
+            "
+          >
+            <q-td colspan="100%" style="font-size: 20px; color: #283593">
+              <div class="text-left">
+                <strong> {{ "ORIGEN: " }} </strong>
+                {{
+                  this.findIndex(
+                    "agencias",
+                    this.guias[props.rowIndex].cod_agencia,
+                    "nb_agencia"
+                  ) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                }}
+                <strong> {{ "DESTINO: " }} </strong>
+                {{
+                  this.findIndex(
+                    "agencias",
+                    this.guias[props.rowIndex].cod_agencia_dest,
+                    "nb_agencia"
+                  )
+                }}
+              </div>
+            </q-td>
+          </q-tr>
+          <q-tr :props="props">
+            <q-td v-for="col in props.cols" :key="col.name" :props="props">
+              <div v-if="col.name == 'modalidad_pago'">
+                {{ filterDesc("modalidadPago", props.row.modalidad_pago) }}
+              </div>
+              <div v-else-if="col.name == 'pagado_en'">
+                {{ filterDesc("pagadoEn", props.row.pagado_en) }}
+              </div>
+              <div v-else-if="col.name == 'check_pagado'">
+                <q-checkbox
+                  size="md"
+                  v-model="props.row.check_pagado"
+                  true-value="1"
+                  false-value="0"
+                  :disable="true"
+                  style="font-size: 13px"
+                />
+              </div>
+              <div v-else-if="col.name == 'estatus_oper_desc'">
+                <q-select
+                  dense
+                  outlined
+                  :options="estatusSelected"
+                  option-label="label"
+                  option-value="value"
+                  v-model="props.row.estatus_oper_desc"
+                />
+              </div>
+              <div v-else-if="col.name == 'persona_recibio'">
+                <q-input
+                  dense
+                  outlined
+                  v-model="props.row.persona_recibio"
+                  lazy-rules
+                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 50)]"
+                  style="padding-top: 20px; min-width: 250px"
+                />
+              </div>
+              <div v-else-if="col.name == 'ci_persona_recibio'">
+                <q-input
+                  dense
+                  outlined
+                  v-model="props.row.ci_persona_recibio"
+                  lazy-rules
+                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 12)]"
+                  style="padding-top: 20px; min-width: 150px"
+                />
+              </div>
+              <div v-else-if="col.name == 'fecha_recepcion_format'">
+                <q-input
+                  dense
+                  outlined
+                  v-model="props.row.fecha_recepcion_format"
+                  lazy-rules
+                  mask="##/##/####"
+                  :rules="[(val) => this.$refs.rulesVue.checkDate(val)]"
+                  style="padding-top: 20px; min-width: 150px"
+                >
+                  <template v-slot:append>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy ref="qDateProxy">
+                        <q-date
+                          v-model="props.row.fecha_recepcion_format"
+                          mask="DD/MM/YYYY"
+                        ></q-date>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
+              </div>
+              <div v-else-if="col.name == 'hora_recepcion'">
+                <q-input
+                  dense
+                  outlined
+                  v-model="props.row.hora_recepcion"
+                  mask="fulltime"
+                  :rules="['fulltime']"
+                  style="padding-top: 20px; min-width: 120px"
+                >
+                  <template v-slot:append>
+                    <q-icon name="access_time" class="cursor-pointer">
+                      <q-popup-proxy ref="qDateProxy">
+                        <q-time
+                          v-model="props.row.hora_recepcion"
+                          with-seconds
+                          format24h
+                        >
+                          <div class="row items-center justify-end">
+                            <q-btn
+                              v-close-popup
+                              label="Close"
+                              color="primary"
+                              flat
+                            />
+                          </div>
+                        </q-time>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
+              </div>
+              <div v-else-if="col.name == 'agentes'">
+                <q-select
+                  dense
+                  outlined
+                  :options="this.agentes[props.row.cod_agencia_dest - 1]"
+                  use-input
+                  :loading="agentesLoading"
+                  :disable="agentesLoading"
+                  hide-selected
+                  fill-input
+                  option-label="persona_responsable"
+                  option-value="id"
+                  v-model="props.row.agentes_entrega"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="search" />
+                  </template>
+                  <template v-slot:agentesLoading>
+                    <q-inner-loading showing color="primary" class="loading" />
+                  </template>
+                </q-select>
+              </div>
+              <div v-else>
+                {{ col.value }}
+              </div>
+            </q-td>
+          </q-tr>
+        </template>
       </q-table>
     </div>
 
     <methods
       ref="methods"
       @set-Data="setData"
+      @set-Data-Init="setDataInit"
       @get-Data-Table="getDataTable"
       @set-Data-Table="setDataTable"
       @set-Data-Permisos="setDataPermisos"
@@ -449,6 +661,7 @@
 <script>
 import { ref } from "vue";
 import moment from "moment";
+import { api } from "boot/axios";
 import rulesVue from "src/components/rules.vue";
 import { useQuasar, LocalStorage } from "quasar";
 import methodsVue from "src/components/methods.vue";
@@ -462,72 +675,111 @@ export default {
     return {
       columns: [
         {
-          name: "nro_documento",
-          label: "N° Control",
-          field: "nro_documento",
+          name: "cliente_orig_desc",
+          label: "Cliente Origen",
+          field: "cliente_orig_desc",
           align: "left",
-          sortable: true,
         },
         {
-          name: "nro_fact",
-          label: "N° Fact.",
-          field: "nro_fact",
+          name: "cliente_dest_desc",
+          label: "Cliente Destino",
+          field: "cliente_dest_desc",
           align: "left",
         },
         {
           name: "fecha_emision",
-          label: "Emisión",
+          label: "Fecha Emisión",
           field: "fecha_emision",
           align: "left",
           format: (val) => val.split("-").reverse().join("/"),
-          sortable: true,
         },
         {
-          name: "monto_total",
-          label: "Monto Total",
-          field: "monto_total",
-          align: "right",
-          sortable: true,
-          format: (val) =>
-            new Intl.NumberFormat("de-DE", {
-              style: "currency",
-              currency: "EUR",
-              currencyDisplay: "code",
-            })
-              .format(val)
-              .replace("EUR", "")
-              .trim(),
+          name: "fecha_envio",
+          label: "Fecha Envío",
+          field: "fecha_envio",
+          align: "left",
+          format: (val) => val.split("-").reverse().join("/"),
         },
         {
-          name: "observacion_entrega",
-          label: "Descripción",
-          field: "observacion_entrega",
+          name: "nro_documento",
+          label: "Nro. Guía",
+          field: "nro_documento",
           align: "left",
         },
         {
-          name: "observacion_adic",
-          label: "Observación Adicional",
-          field: "observacion_adic",
+          name: "modalidad_pago",
+          label: "Forma Pago",
+          field: "modalidad_pago",
+          align: "left",
+        },
+        {
+          name: "pagado_en",
+          label: "Pagado En",
+          field: "pagado_en",
+          align: "left",
+        },
+        {
+          name: "check_pagado",
+          label: "Check Pagado",
+          field: "check_pagado",
+          align: "center",
+        },
+        {
+          name: "estatus_oper_desc",
+          label: "Estatus Operativo",
+          field: "estatus_oper_desc",
+          align: "left",
+        },
+        {
+          name: "persona_recibio",
+          label: "Persona que Recibió",
+          field: "persona_recibio",
+          align: "left",
+        },
+        {
+          name: "ci_persona_recibio",
+          label: "C:I Persona Recibió",
+          field: "ci_persona_recibio",
+          align: "left",
+        },
+        {
+          name: "fecha_recepcion_format",
+          label: "Fecha Entrega",
+          field: "fecha_recepcion_format",
+          align: "left",
+          format: (val) => (val ? val.split("-").reverse().join("/") : ""),
+        },
+        {
+          name: "hora_recepcion",
+          label: "Hora Entrega",
+          field: "hora_recepcion",
+          align: "left",
+        },
+        {
+          name: "agentes",
+          label: "Agente Entrega",
+          field: (row) => row.agentes_entrega.persona_responsable,
           align: "left",
         },
       ],
-      pagination: {
-        page: 1,
-        rowsPerPage: 10,
-        sortBy: "nro_documento",
-        descending: true,
-        filter: "",
-        filterValue: "",
-        rowsNumber: "",
-      },
       estatusSelected: [
         { label: "EN PROCESO DE ENVÍO", value: "PR" },
         { label: "PENDIENTE POR ENTREGA", value: "PE" },
         { label: "ENTREGA CONFORME", value: "CO" },
         { label: "ENTREGA NO CONFORME", value: "NC" },
       ],
+      modalidadPago: [
+        { label: "CONTADO", value: "CO" },
+        { label: "CREDITO", value: "CR" },
+        { label: "PREPAGADA", value: "PP" },
+      ],
+      pagadoEn: [
+        { label: "ORIGEN", value: "O" },
+        { label: "DESTINO", value: "D" },
+      ],
       guias: [],
       agencias: [],
+      agentes: [],
       agenciasDestino: [],
       clientes: [],
       clientesDestino: [],
@@ -541,8 +793,10 @@ export default {
       clientesDestinoSelected: [],
       selectedClienteDestino: [],
       clientesDestinoLoading: false,
+      agentesLoading: true,
       selectedEstatus: [],
       checkTransito: "0",
+      pagado_en: "0",
       nro_guia: "",
       estatus: "",
       fecha_desde: moment().format("DD/MM/YYYY"),
@@ -555,11 +809,21 @@ export default {
       loading: ref(false),
       separator: ref("vertical"),
       dialog: ref(false),
+      pagination: {
+        page: 1,
+        rowsPerPage: 0,
+      },
     };
   },
   mounted() {
     this.$emit("changeTitle", "SCEN - Mantenimiento - Pruebas de Entrega", "");
-    this.$refs.methods.getData("/agencias", "setData", "agencias");
+    this.$refs.methods.getData("/agencias", "setDataInit", "agencias");
+    this.$refs.methods.getData("/agentes", "setData", "agentes", {
+      headers: {
+        rol: LocalStorage.getItem("tokenTraducido").usuario.roles.id,
+        group_ag: "S",
+      },
+    });
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
@@ -596,6 +860,11 @@ export default {
       var find = this[array].findIndex((item) => item.id == value);
       return find >= 0 ? this[array][find][field] : null;
     },
+    // Metodo para traer el value de los Selects y Columns
+    filterDesc(array, value) {
+      var find = this[array].findIndex((item) => item.value == value);
+      return find >= 0 ? this[array][find].label : null;
+    },
     // Metodo para validar Permisos
     allowOption(option) {
       return (
@@ -612,14 +881,19 @@ export default {
     // METODOS DE PAGINA
 
     // Metodo para Setear Datos Generales
+    async setDataInit(res, dataRes) {
+      this.loading = true;
+      this[dataRes] = res.data ? res.data : res;
+      this.getDataTable();
+    },
+    // Metodo para Setear Datos Generales
     setData(res, dataRes) {
       eval("this." + dataRes + "Loading = false");
       this[dataRes] = res.data ? res.data : res;
     },
     // Metodo para Extraer Datos de Tabla
-    getDataTable(props) {
+    getDataTable() {
       this.loading = true;
-      if (props) this.pagination = props.pagination;
       this.$refs.methods.getData(`/mmovimientos`, "setDataTable", "guias", {
         headers: {
           agencia: this.selectedAgencia.id ? this.selectedAgencia.id : "",
@@ -632,25 +906,74 @@ export default {
             : "",
           desde: moment(this.fecha_desde, "DD/MM/YYYY").format("YYYY-MM-DD"),
           hasta: moment(this.fecha_hasta, "DD/MM/YYYY").format("YYYY-MM-DD"),
+          nro_documento: this.nro_guia ? this.nro_guia : "",
+          estatus_oper: this.selectedEstatus.value
+            ? this.selectedEstatus.value
+            : "",
+          transito: this.checkTransito == "1" ? this.checkTransito : "",
           tipo: "GC",
           estatus_admin_ex: "A",
-          page: this.pagination.page,
-          limit: this.pagination.rowsPerPage,
-          order_by: this.pagination.sortBy,
-          order_direction: this.pagination.descending ? "DESC" : "ASC",
-          filter: this.pagination.filter,
-          filter_value: this.pagination.filterValue,
+          order_pe: "S",
         },
       });
     },
     // Metodo para Setear Datos de Tabla
     setDataTable(res, dataRes) {
       this[dataRes] = res.data ? res.data : res;
-      this.pagination.page = res.currentPage;
-      this.currentPage = res.currentPage;
-      this.pagination.rowsNumber = res.total;
-      this.pagination.rowsPerPage = res.limit;
       this.loading = false;
+    },
+    // Metodo para armar el nombre del cliente Origen
+    buildNbCliente(type, row) {
+      if (type == "cod_cliente_org") {
+        if (!row.ci_rif_cte_conta_org || row.ci_rif_cte_conta_org == "") {
+          return this.findIndex(
+            "clientesAll",
+            row.cod_cliente_org,
+            "nb_cliente"
+          );
+        } else {
+          var find = this.clientesParticularesAll.findIndex(
+            (item) =>
+              item.cod_agencia == row.cod_agencia &&
+              item.cod_cliente == row.cod_cliente_org &&
+              item.rif_ci == row.ci_rif_cte_conta_org
+          );
+          return find >= 0
+            ? this.clientesParticularesAll[find]["nb_cliente"]
+            : null;
+        }
+      } else {
+        if (!row.ci_rif_cte_conta_dest || row.ci_rif_cte_conta_dest == "") {
+          return this.findIndex(
+            "clientesAll",
+            row.cod_cliente_dest,
+            "nb_cliente"
+          );
+        } else {
+          var find = this.clientesParticularesAll.findIndex(
+            (item) =>
+              item.cod_agencia == row.cod_agencia_dest &&
+              item.cod_cliente == row.cod_cliente_dest &&
+              item.rif_ci == row.ci_rif_cte_conta_dest
+          );
+          return find >= 0
+            ? this.clientesParticularesAll[find]["nb_cliente"]
+            : null;
+        }
+      }
+    },
+    // Metodo para resetaer la data de los filtros
+    resetFilters() {
+      this.selectedAgencia = [];
+      this.selectedAgenciaDestino = [];
+      this.selectedCliente = [];
+      this.selectedClienteDestino = [];
+      this.selectedEstatus = [];
+      this.fecha_desde = moment().format("DD/MM/YYYY");
+      this.fecha_hasta = moment().format("DD/MM/YYYY");
+      this.checkTransito = "0";
+      this.nro_guia = "";
+      this.getDataTable();
     },
   },
 };
