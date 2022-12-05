@@ -467,6 +467,7 @@ import { ref } from "vue";
 import { LocalStorage } from "quasar";
 import rulesVue from "src/components/rules.vue";
 import { VMoney } from "v-money";
+import moment from "moment";
 import methodsVue from "src/components/methods.vue";
 
 export default {
@@ -562,7 +563,6 @@ export default {
           field: "fecha_fin_val",
           align: "left",
           sortable: true,
-          format: (val) => val.split("-").reverse().join("/"),
         },
         {
           name: "action",
@@ -706,27 +706,13 @@ export default {
         "tipoPersona",
         res.cod_tipo_persona
       );
-      if (res.fecha_ini_val)
-        this[dataRes].fecha_ini_val = res.fecha_ini_val
-          .split("-")
-          .reverse()
-          .join("/");
-      if (res.fecha_fin_val)
-        this[dataRes].fecha_fin_val = res.fecha_fin_val
-          .split("-")
-          .reverse()
-          .join("/");
+      if (res.fecha_ini_val) this[dataRes].fecha_ini_val = res.fecha_ini_val;
+      if (res.fecha_fin_val) this[dataRes].fecha_fin_val = res.fecha_fin_val;
     },
     // Metodo para Editar o Crear Datos
     sendData() {
-      this.form.fecha_ini_val = this.form.fecha_ini_val
-        .split("/")
-        .reverse()
-        .join("-");
-      this.form.fecha_fin_val = this.form.fecha_fin_val
-        .split("/")
-        .reverse()
-        .join("-");
+      this.form.fecha_ini_val = moment(this.form.fecha_ini_val, "DD/MM/YYYY").format("YYYY-MM-DD");
+      this.form.fecha_fin_val = moment(this.form.fecha_fin_val, "DD/MM/YYYY").format("YYYY-MM-DD");
       this.form.porc_base = this.form.porc_base
         .replaceAll(".", "")
         .replaceAll(",", ".");

@@ -79,7 +79,7 @@
                     <div
                       class="col-md-12 col-xs-12"
                       style="
-                        align-self: center; 
+                        align-self: center;
                         text-align: left;
                         margin-top: -30px;
                       "
@@ -427,6 +427,7 @@
 import { ref } from "vue";
 import { LocalStorage } from "quasar";
 import { VMoney } from "v-money";
+import moment from "moment";
 import methodsVue from "src/components/methods.vue";
 import rulesVue from "src/components/rules.vue";
 
@@ -461,14 +462,13 @@ export default {
           field: "desc_tipo",
           align: "left",
           sortable: true,
-        },       
+        },
         {
           name: "f_val",
           label: "Valido Desde",
           field: "f_val",
           align: "left",
           sortable: true,
-          format: (val) => val.split("-").reverse().join("/"),
         },
         {
           name: "f_anul",
@@ -476,7 +476,6 @@ export default {
           field: "f_anul",
           align: "left",
           sortable: true,
-          format: (val) => val.split("-").reverse().join("/"),
         },
         {
           name: "valor",
@@ -579,8 +578,8 @@ export default {
       this[dataRes].cod_fpo = res.cod_fpo;
       this[dataRes].desc_tipo = res.desc_tipo;
       this[dataRes].valor = res.valor;
-      this[dataRes].f_val = res.f_val.split("-").reverse().join("/");
-      this[dataRes].f_anul = res.f_anul.split("-").reverse().join("/");
+      this[dataRes].f_val = res.f_val;
+      this[dataRes].f_anul = res.f_anul;
       this[dataRes].peso_inicio = res.peso_inicio;
       this[dataRes].peso_fin = res.peso_fin;
       this[dataRes].valor = res.valor;
@@ -596,8 +595,12 @@ export default {
       this.form.peso_fin = this.form.peso_fin
         .replaceAll(".", "")
         .replaceAll(",", ".");
-      this.form.f_val = this.form.f_val.split("/").reverse().join("-");
-      this.form.f_anul = this.form.f_anul.split("/").reverse().join("-");
+      this.form.f_val = moment(this.form.f_val, "DD/MM/YYYY").format(
+        "YYYY-MM-DD"
+      );
+      this.form.f_anul = moment(this.form.f_anul, "DD/MM/YYYY").format(
+        "YYYY-MM-DD"
+      );
       if (!this.form.id) {
         this.$refs.methods.createData("/fpos", this.form, "getDataTable");
         this.resetForm();

@@ -154,11 +154,7 @@
                 icon="edit"
                 :disabled="this.allowOption(3)"
                 @click="
-                  this.$refs.methods.getData(
-                    `/hdolar/${props.row.fecha}`,
-                    `setDataEdit`,
-                    'form'
-                  );
+                  getDataDolar(props.row.fecha);
                   fechaNoEditable = true;
                   dialog = true;
                 "
@@ -196,11 +192,7 @@
                         icon="edit"
                         :disabled="this.allowOption(3)"
                         @click="
-                          this.$refs.methods.getData(
-                            `/hdolar/${props.row.fecha}`,
-                            `setDataEdit`,
-                            'form'
-                          );
+                          getDataDolar(props.row.fecha);
                           dialog = true;
                         "
                       ></q-btn>
@@ -271,6 +263,7 @@
 import { ref } from "vue";
 import { VMoney } from "v-money";
 import rulesVue from "src/components/rules.vue";
+import moment from "moment";
 import { LocalStorage } from "quasar";
 import methodsVue from "src/components/methods.vue";
 
@@ -286,7 +279,6 @@ export default {
           field: "fecha",
           align: "left",
           sortable: true,
-          format: (val) => val.split("-").reverse().join("/"),
         },
         {
           name: "valor",
@@ -399,7 +391,6 @@ export default {
     dateDuplicate(val) {
       if (!this.fechaNoEditable) {
         var fecha = val;
-        fecha = fecha.split("/").reverse().join("-");
         var find = this.historicoAll.findIndex((item) => item.fecha == fecha);
         return find >= 0 ? "Esta Fecha ya está Registrada!" : true;
       }
@@ -428,6 +419,11 @@ export default {
       this.loading = true;
       this.$refs.methods.getData("/hdolar", "setDataTableAll", "historicoAll");
     },
+    // Metodo para Extraer Todos los Datos de Tabla
+    getDataDolar(fecha) {
+      fecha = moment(fecha, "DD/MM/YYYY").format("YYYY-MM-DD");
+      this.$refs.methods.getData(`/hdolar/${fecha}`, `setDataEdit`, "form");
+    },
     // Metodo para Setear Todos los Datos de Tabla
     setDataTableAll(res, dataRes) {
       this[dataRes] = res.data ? res.data : res;
@@ -444,13 +440,13 @@ export default {
     // Metodos para Setear Datos Seleccionados
     setDataEdit(res, dataRes) {
       this[dataRes].id = res.id;
-      this[dataRes].fecha = res.fecha.split("-").reverse().join("/");
+      this[dataRes].fecha = res.fecha;
       this[dataRes].valor = res.valor;
     },
     // Metodos para Crear y Editar Datos
     sendData() {
       var form = JSON.parse(JSON.stringify(this.form));
-      form.fecha = form.fecha.split("/").reverse().join("-");
+      form.fecha = moment(form.fecha, "DD/MM/YYYY").format("YYYY-MM-DD");
       form.valor = form.valor.replaceAll(".", "").replaceAll(",", ".");
       if (this.dateDuplicate(form.fecha) === true) {
         this.$refs.methods.createData("/hdolar", form, "getDataTable");

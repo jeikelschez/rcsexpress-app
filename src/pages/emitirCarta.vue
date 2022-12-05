@@ -450,7 +450,6 @@ export default {
           label: "Emisión",
           field: "fecha_emision",
           align: "left",
-          format: (val) => val.split("-").reverse().join("/"),
           sortable: true,
         },
         {

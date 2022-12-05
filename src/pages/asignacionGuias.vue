@@ -891,7 +891,6 @@ export default {
           field: "fecha_asignacion",
           align: "left",
           sortable: true,
-          format: (val) => val.split("-").reverse().join("/"),
         },
         {
           name: "action",
@@ -1086,11 +1085,7 @@ export default {
     },
     // Metodo para Crear Datos
     sendData() {
-      this.form.fecha_asignacion = this.form.fecha_asignacion
-        .split("/")
-        .reverse()
-        .join("-");
-
+      this.form.fecha_asignacion = this.form.fecha_asignacion;
       this.form.cod_agencia = this.selectedAgencia.id
         ? this.selectedAgencia.id
         : this.form.cod_agencia.id;

@@ -1388,6 +1388,7 @@
                 hint=""
                 :autofocus="true"
                 :tabindex="1"
+                lazy-rules
                 mask="##########"
                 @keyup.enter="
                   if (
@@ -3414,9 +3415,11 @@ export default {
           .get(`/cparticulares`, {
             headers: {
               Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-              agencia: this.destino ? this.form.cod_agencia_dest.id : this.form.cod_agencia.id,
+              agencia: this.destino
+                ? this.form.cod_agencia_dest.id
+                : this.form.cod_agencia.id,
               rif: this.formClientesParticulares.rif_ci,
-              activo: "S"
+              activo: "S",
             },
           })
           .then((res) => {
@@ -3769,12 +3772,13 @@ export default {
                 ? this.curReplace(form.monto_ref_cte_sin_imp)
                 : 0;
               porc_otros = this.curReplace(form.porc_comision);
-              comision =
-                ((this.parseFloatN(val_declarado_otros) *
+              comision = (
+                (this.parseFloatN(val_declarado_otros) *
                   this.parseFloatN(porc_otros)) /
-                100).toFixed(2);
+                100
+              ).toFixed(2);
               dif_comision =
-                this.parseFloatN(comision) - this.parseFloatN(monto_basico);              
+                this.parseFloatN(comision) - this.parseFloatN(monto_basico);
 
               if (dif_comision >= 0) {
                 monto_basico =
@@ -3787,7 +3791,8 @@ export default {
             this.detalle_movimiento[0].precio_unitario =
               (this.parseFloatN(monto_basico) / this.parseFloatN(kgr_minimos)) *
               100;
-            this.detalle_movimiento[0].importe_renglon = this.parseFloatN(monto_basico).toFixed(2);
+            this.detalle_movimiento[0].importe_renglon =
+              this.parseFloatN(monto_basico).toFixed(2);
           })
           .catch((err) => {
             if (err.response) {
@@ -4468,7 +4473,9 @@ export default {
           .get(`/hdolar/`, {
             headers: {
               Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-              fecha: moment(this.form.fecha_emision, "DD/MM/YYYY").format("YYYY-MM-DD"),
+              fecha: moment(this.form.fecha_emision, "DD/MM/YYYY").format(
+                "YYYY-MM-DD"
+              ),
             },
           })
           .then((res) => {
@@ -4631,7 +4638,9 @@ export default {
           .get(`/hdolar/`, {
             headers: {
               Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-              fecha: res.fecha_emision,
+              fecha: moment(res.fecha_emision, "DD/MM/YYYY").format(
+                "YYYY-MM-DD"
+              ),
             },
           })
           .then((res) => {
@@ -4659,25 +4668,14 @@ export default {
         this.form.base_comision_seg = res.base_comision_seg;
         this.total_ref = (res.monto_total / this.valor_dolar).toFixed(2);
 
-        if (res.fecha_emision)
-          this.form.fecha_emision = res.fecha_emision
-            .split("-")
-            .reverse()
-            .join("/");
-        if (res.fecha_envio)
-          this.form.fecha_envio = res.fecha_envio
-            .split("-")
-            .reverse()
-            .join("/");
+        if (res.fecha_emision) this.form.fecha_emision = res.fecha_emision;
+        if (res.fecha_envio) this.form.fecha_envio = res.fecha_envio;
         if (res.fecha_aplicacion)
           this.form.fecha_aplicacion = res.fecha_aplicacion
-            ? res.fecha_aplicacion.split("-").reverse().join("/")
+            ? res.fecha_aplicacion
             : "00/00/0000";
         if (res.fecha_llega_transito)
-          this.form.fecha_llega_transito = res.fecha_llega_transito
-            .split("-")
-            .reverse()
-            .join("/");
+          this.form.fecha_llega_transito = res.fecha_llega_transito;
 
         if (res.tipo_carga == "PM") this.checkbox.paquetes = "1";
         if (res.tipo_carga == "SB") this.checkbox.sobres = "1";
@@ -5039,7 +5037,9 @@ export default {
           form.pagado_en = form.pagado_en.value;
 
           if (form.fecha_envio)
-            form.fecha_envio = form.fecha_envio.split("/").reverse().join("-");
+            form.fecha_envio = moment(form.fecha_envio, "DD/MM/YYYY").format(
+              "YYYY-MM-DD"
+            );
           if (form.valor_declarado_cod)
             form.valor_declarado_cod = this.curReplace(
               form.valor_declarado_cod
@@ -5074,22 +5074,30 @@ export default {
           if (form.fecha_aplicacion)
             form.fecha_aplicacion =
               form.fecha_aplicacion != "00/00/0000"
-                ? form.fecha_aplicacion.split("/").reverse().join("-")
+                ? moment(form.fecha_aplicacion, "DD/MM/YYYY").format(
+                    "YYYY-MM-DD"
+                  )
                 : null;
           if (form.fecha_emision)
-            form.fecha_emision = form.fecha_emision
-              .split("/")
-              .reverse()
-              .join("-");
+            form.fecha_emision = moment(
+              form.fecha_emision,
+              "DD/MM/YYYY"
+            ).format("YYYY-MM-DD");
           if (form.fecha_llega_transito)
             form.fecha_llega_transito =
               form.fecha_llega_transito != "00/00/0000"
-                ? form.fecha_llega_transito.split("/").reverse().join("-")
+                ? moment(form.fecha_llega_transito, "DD/MM/YYYY").format(
+                    "YYYY-MM-DD"
+                  )
                 : null;
           if (form.fecha_pe)
-            form.fecha_pe = form.fecha_pe.split("/").reverse().join("-");
+            form.fecha_pe = moment(form.fecha_pe, "DD/MM/YYYY").format(
+              "YYYY-MM-DD"
+            );
           if (form.fecha_elab)
-            form.fecha_elab = form.fecha_elab.split("/").reverse().join("-");
+            form.fecha_elab = moment(form.fecha_elab, "DD/MM/YYYY").format(
+              "YYYY-MM-DD"
+            );
 
           // Si la guia tiene detalles, valida el mismo
           if (this.detalle_movimiento[0]) {
@@ -5553,7 +5561,7 @@ export default {
               headers: {
                 Authorization: `Bearer ${LocalStorage.getItem("token")}`,
                 agencia: this.form.cod_agencia_dest.id,
-                activo: "S"
+                activo: "S",
               },
             })
             .then((res) => {
@@ -5574,7 +5582,7 @@ export default {
               headers: {
                 Authorization: `Bearer ${LocalStorage.getItem("token")}`,
                 agencia: this.form.cod_agencia.id,
-                activo: "S"
+                activo: "S",
               },
             })
             .then((res) => {
@@ -5583,8 +5591,7 @@ export default {
               return;
             });
         } else {
-          this.formClientesParticulares.cod_agencia =
-            this.form.cod_agencia;
+          this.formClientesParticulares.cod_agencia = this.form.cod_agencia;
           this.disableRif = false;
           this.clienteLabelBox = true;
         }

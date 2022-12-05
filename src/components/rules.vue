@@ -34,6 +34,10 @@ export default {
       if (moment(val, "DD/MM/YYYY", true)._isValid == false)
         return ret !== false ? ret : `Fecha Invalida`;
     },
+    checkHour(val, ret = false) {
+      if (moment(val, "HH:mm:mm", true)._isValid == false)
+        return ret !== false ? ret : `Hora Invalida`;
+    },
   },
 };
 </script>
