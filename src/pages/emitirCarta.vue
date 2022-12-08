@@ -7,6 +7,7 @@
             <div class="row">
               <div class="col-md-12 col-xs-12">
                 <q-input
+                  upper-case
                   outlined
                   v-model="form.contacto"
                   label="Contacto"
@@ -16,6 +17,9 @@
                     (val) => this.$refs.rulesVue.isMin(val, 3),
                     (val) => this.$refs.rulesVue.isMax(val, 100),
                   ]"
+                  @update:model-value="
+                    form.contacto = form.contacto.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="pin_drop" />
@@ -24,6 +28,7 @@
               </div>
               <div class="col-md-12 col-xs-12">
                 <q-input
+                  upper-case
                   outlined
                   v-model="form.cargo"
                   label="Cargo"
@@ -33,6 +38,9 @@
                     (val) => this.$refs.rulesVue.isMin(val, 3),
                     (val) => this.$refs.rulesVue.isMax(val, 100),
                   ]"
+                  @update:model-value="
+                    form.cargo = form.cargo.toUpperCase()
+                  "
                 >
                   <template v-slot:prepend>
                     <q-icon name="pin_drop" />
@@ -713,15 +721,17 @@ export default {
       var factArray = [];
       this.dialog = false;
       for (var i = 0; i <= this.selected.length - 1; i++) {
-        factArray.push(this.selected[i].id)
+        factArray.push(this.selected[i].id);
       }
       api
         .get(`/mmovimientos/letterPDF`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
             data: factArray,
+            cliente: this.selectedCliente.nb_cliente,
             contacto: this.form.contacto,
             cargo: this.form.cargo,
+            ciudad: this.selectedAgencia.ciudades.desc_ciudad,
           },
         })
         .then((res) => {
