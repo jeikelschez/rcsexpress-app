@@ -1,5 +1,5 @@
 <template>
-  <q-page class="pagina q-pa-md">
+  <q-page class="pagina q-pa-md" style="width: 100%">
     <q-dialog v-model="dialog">
       <q-card class="q-pa-md" bordered style="width: 900px; max-width: 80vw">
         <q-card-section>
@@ -243,7 +243,7 @@
           </div>
         </div>
         <div
-          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 cardMargin selectMobile2"
+          class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 selectMobile2"
           style="align-self: center; text-align: center"
         >
           <q-select
@@ -291,7 +291,7 @@
           </q-select>
         </div>
         <div
-          class="col-md-1 col-xl-1 col-lg-1 col-xs-12 col-sm-12"
+          class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
           style="align-self: center; text-align: center"
         >
           <q-btn
@@ -342,6 +342,7 @@
         row-key="id"
         :columns="columns"
         :loading="loading"
+        class="tableHeight"
         selection="multiple"
         :separator="separator"
         :grid="$q.screen.xs"
@@ -380,7 +381,7 @@
             </q-input>
           </q-td>
         </template>
-        <template v-slot:item="props">
+        <template v-slot:item="props" style="margin-bottom: 20px">
           <div
             class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
             :style="props.selected ? 'transform: scale(0.95);' : ''"
@@ -389,10 +390,34 @@
               <q-list dense>
                 <q-item v-for="col in props.cols" :key="col.name">
                   <q-item-section>
-                    <q-item-label>{{ col.label }}</q-item-label>
+                    <q-item-section v-if="col.name === 'nro_documento'">{{
+                      buildNroDoc("nro_documento", props.row)
+                    }}</q-item-section>
+                  </q-item-section>
+                  <q-item-section v-if="col.name === 'nro_fact'">
+                    <q-item-section>{{
+                      buildNroDoc("nro_fact", props.row)
+                    }}</q-item-section>
+                  </q-item-section>
+                  <q-item-section v-if="col.name === 'observacion_adic'">
+                    <q-input
+                      outlined
+                      v-model="props.row.observacion_adic"
+                      dense
+                      hint=""
+                      :rules="[
+                        (val) => this.$refs.rulesVue.isMax(val, 100),
+                        (val) => this.$refs.rulesVue.isMin(val, 3),
+                      ]"
+                      lazy-rules
+                    >
+                    </q-input>
                   </q-item-section>
                   <q-item-section side class="itemMovilSide">
-                    <q-item-label>{{ col.value }}</q-item-label>
+                    <q-item-label
+                      style="padding-left: 15px; text-align: right"
+                      >{{ col.value }}</q-item-label
+                    >
                   </q-item-section>
                 </q-item>
               </q-list>
@@ -404,7 +429,7 @@
 
     <q-dialog v-model="pdfView" @show="this.printLetter()">
       <div style="width: 700px; height: 700px">
-        <webViewer ref="webViewer"></webViewer>
+        <webViewer ref="webViewer" @close-pdf="closePdf"></webViewer>
       </div>
     </q-dialog>
 
@@ -422,6 +447,13 @@
   </q-page>
 </template>
 
+<style>
+@media screen and (max-width: 1080px) {
+  .tableHeight {
+    height: 100% !important;
+  }
+}
+</style>
 <script>
 import { ref } from "vue";
 import { api } from "boot/axios";
@@ -542,6 +574,9 @@ export default {
     });
   },
   methods: {
+    closePdf() {
+      this.pdfView = false;
+    },
     // Metodo para filtrar opciones de Selects
     filterArray(val, update, pagina, array, element) {
       if (val === "") {

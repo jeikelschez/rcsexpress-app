@@ -30,11 +30,17 @@ export default {
     },
     showpdf(pdf) {
       const path = `${process.env.publicPath}/webViewer`;
-      const licenseKey = 'atkUT8UOiniAvAWUG1rN';
-      WebViewer({ path, licenseKey }, this.viewer).then(instance => {
-        instance.UI.setLanguage('es');
-        instance.UI.loadDocument(this.base64ToBlob(pdf), { filename: 'REPORTE SCEN.pdf' });
+      WebViewer({ path, licenseKey: 'atkUT8UOiniAvAWUG1rN', }, this.viewer).then(instance => {
+        instance.UI.disableElements(['panToolButton']);
+        instance.UI.disableElements(['textSelectButton']);
         instance.UI.setHeaderItems(header => {
+        header.push({
+          type: 'actionButton',
+          img: "https://i.ibb.co/cr5CYSB/2.png",
+          onClick: () => {
+            instance.downloadPdf()
+          }
+        });
         header.push({
           type: 'actionButton',
           img: "https://i.ibb.co/3RdScYv/1.png",
@@ -44,12 +50,14 @@ export default {
         });
         header.push({
           type: 'actionButton',
-          img: "https://i.ibb.co/cr5CYSB/2.png",
+          img: "https://i.ibb.co/qJqLZTd/close.png",
           onClick: () => {
-            instance.downloadPdf()
+            this.$emit('closePdf')
           }
         });
       });
+        instance.UI.loadDocument(this.base64ToBlob(pdf), { filename: 'REPORTE SCEN.pdf' });
+        instance.UI.setLanguage('es');
       });
     },
   },

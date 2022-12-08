@@ -1359,7 +1359,7 @@
 
     <q-dialog v-model="pdfView" @show="this.printPending()">
       <div style="width: 100%; max-width: 80vw">
-        <webViewer ref="webViewer"></webViewer>
+        <webViewer ref="webViewer" @close-pdf="closePdf"></webViewer>
       </div>
     </q-dialog>
 
@@ -1704,6 +1704,9 @@ export default {
     );
   },
   methods: {
+    closePdf() {
+      this.pdfView = false;
+    },
     resetLoading() {
       this.loading = false;
     },

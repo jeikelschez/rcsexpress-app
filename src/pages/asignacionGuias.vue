@@ -799,7 +799,7 @@
 
     <q-dialog v-model="pdfView" @show="this.printPending()">
       <div style="width: 700px; height: 700px; ">
-        <webViewer ref="webViewer"></webViewer>
+        <webViewer ref="webViewer" @close-pdf="closePdf"></webViewer>
       </div>
     </q-dialog>
 
@@ -975,6 +975,9 @@ export default {
     });
   },
   methods: {
+    closePdf() {
+      this.pdfView = false;
+    },
     // Metodo para filtrar opciones de Selects
     filterArray(val, update, pagina, array, element) {
       if (val === "") {
