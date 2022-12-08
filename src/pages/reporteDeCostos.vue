@@ -426,7 +426,7 @@
     <div class="q-pa-md q-gutter-y-md justify-center"
       style="width: 100%; height: 580px; margin-top: -30px;"
     >
-      <webViewer ref="webViewer"></webViewer>
+      <webViewer ref="webViewer" @close-pdf="closePdf"></webViewer>
     </div>
 
     <q-dialog v-model="deletePopup">
@@ -505,6 +505,9 @@ export default {
     this.printPending();
   },
   methods: {
+    closePdf() {
+      this.pdfView = false;
+    },
     printPending() {
       api
         .get(`/cguias/generatePDF`, {
