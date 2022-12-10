@@ -1,5 +1,5 @@
 <template>
-  <q-page class="pagina q-pa-md" style="width: 100%">
+  <q-page class="pagina q-pa-md">
     <q-dialog v-model="dialog">
       <q-card class="q-pa-md" bordered style="width: 900px; max-width: 80vw">
         <q-card-section>
@@ -38,9 +38,7 @@
                     (val) => this.$refs.rulesVue.isMin(val, 3),
                     (val) => this.$refs.rulesVue.isMax(val, 100),
                   ]"
-                  @update:model-value="
-                    form.cargo = form.cargo.toUpperCase()
-                  "
+                  @update:model-value="form.cargo = form.cargo.toUpperCase()"
                 >
                   <template v-slot:prepend>
                     <q-icon name="pin_drop" />
@@ -390,16 +388,50 @@
               <q-list dense>
                 <q-item v-for="col in props.cols" :key="col.name">
                   <q-item-section>
-                    <q-item-section v-if="col.name === 'nro_documento'">{{
-                      buildNroDoc("nro_documento", props.row)
-                    }}</q-item-section>
+                    <q-item-label>{{ col.label }}</q-item-label>
                   </q-item-section>
-                  <q-item-section v-if="col.name === 'nro_fact'">
-                    <q-item-section>{{
-                      buildNroDoc("nro_fact", props.row)
-                    }}</q-item-section>
+                  <q-item-section
+                    side
+                    class="itemMovilSide"
+                    v-if="col.name === 'nro_documento'"
+                  >
+                    {{ buildNroDoc("nro_documento", props.row) }}
                   </q-item-section>
-                  <q-item-section v-if="col.name === 'observacion_adic'">
+                  <q-item-section
+                    side
+                    class="itemMovilSide"
+                    v-if="col.name === 'nro_fact'"
+                  >
+                    {{ buildNroDoc("nro_fact", props.row) }}
+                  </q-item-section>
+                  <q-item-section
+                    side
+                    class="itemMovilSide"
+                    v-if="col.name === 'fecha_emision'"
+                  >
+                    {{ props.row.fecha_emision }}
+                  </q-item-section>
+                  <q-item-section
+                    side
+                    class="itemMovilSide"
+                    v-if="col.name === 'monto_total'"
+                  >
+                    {{ props.row.monto_total }}
+                  </q-item-section>
+                  <q-item-section
+                    side
+                    class="itemMovilSide"
+                    v-if="col.name === 'observacion_entrega'"
+                    style="text-align: right !important"
+                  >
+                    {{ props.row.observacion_entrega }}
+                  </q-item-section>
+                  <q-item-section
+                    side
+                    class="itemMovilSide"
+                    v-if="col.name === 'observacion_adic'"
+                    style="text-align: right !important; align-self: center;"
+                  >
                     <q-input
                       outlined
                       v-model="props.row.observacion_adic"
@@ -412,12 +444,6 @@
                       lazy-rules
                     >
                     </q-input>
-                  </q-item-section>
-                  <q-item-section side class="itemMovilSide">
-                    <q-item-label
-                      style="padding-left: 15px; text-align: right"
-                      >{{ col.value }}</q-item-label
-                    >
                   </q-item-section>
                 </q-item>
               </q-list>
@@ -447,13 +473,6 @@
   </q-page>
 </template>
 
-<style>
-@media screen and (max-width: 1080px) {
-  .tableHeight {
-    height: 100% !important;
-  }
-}
-</style>
 <script>
 import { ref } from "vue";
 import { api } from "boot/axios";
@@ -789,3 +808,11 @@ export default {
   },
 };
 </script>
+
+<style>
+@media screen and (max-width: 1080px) {
+  .tableHeight {
+    height: 100% !important;
+  }
+}
+</style>

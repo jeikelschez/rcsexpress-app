@@ -474,7 +474,7 @@
           </q-select>
         </div>
         <div
-          class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 cardMargin"
+          class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 cardMargin selectMobile2"
           style="align-self: center; text-align: center"
         >
           <q-input
@@ -764,7 +764,7 @@
             </q-card-section>
           </q-card>
         </div>
-        <div class="col-md-9 col-xs-12">
+        <div class="col-md-9 col-xs-12 cardMargin selectMobile2">
           <q-input
             outlined
             v-model="form.nro_documento"
@@ -774,6 +774,40 @@
           >
           </q-input>
         </div>
+        <div class="row col-md-3 col-xs-12">
+          <div class="col-md-12 col-xs-12 align-center" style="align-self: center; text-align: center;"> 
+            <p style="font-size: 15px; margin-bottom: 7px;" class="text-secondary">
+            <strong>Ultima Factura Registrada</strong>
+          </p>
+          </div>
+          <div class="col-md-12 col-xs-12 align-center" style="align-self: center; text-align: center"> 
+            <q-input
+              outlined
+              v-model="form.nro_documento"
+              label="Nro. Control"
+              dense
+              input-class="textArea"
+              style="margin-bottom:10px"
+            >
+            </q-input>
+          </div>
+          <div class="col-md-7 col-xs-7">
+            <q-input
+              outlined
+              v-model="form.nro_documento"
+              dense
+              label="Nro. Interno"
+              class="pcform pcmovil"
+              style="margin-bottom:10px"
+            >
+            </q-input>
+        </div>
+        <div class="col-md-5 col-xs-5" style="align-self: center !important; margin-bottom: 10px;">
+          <p style="font-size: 15px;margin-bottom: 0px" class="text-secondary">
+            <strong>Ref.</strong> {{123123}}
+          </p>
+        </div>
+      </div>
       </div>
     </div>
 
@@ -1015,6 +1049,6 @@ export default {
 
 <style>
 .q-textarea.q-field--labeled .q-field__control-container {
-  height: 100px !important;
+  height: 120px !important;
 }
 </style>

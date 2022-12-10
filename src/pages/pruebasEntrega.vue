@@ -1261,7 +1261,10 @@ export default {
               .fecha_sale_transito
               ? moment(this.guias[i].fecha_sale_transito, "DD/MM/YYYY").format(
                   "YYYY-MM-DD"
-                )
+                ) != 'Invalid date' 
+                  ? moment(this.guias[i].fecha_sale_transito, "DD/MM/YYYY").format(
+                    "YYYY-MM-DD"
+                  ): null
               : null;
             formPruebaEntrega.observacion_entrega =
               this.guias[i].observacion_entrega;
