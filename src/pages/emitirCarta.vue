@@ -442,6 +442,8 @@
                         (val) => this.$refs.rulesVue.isMin(val, 3),
                       ]"
                       lazy-rules
+                      hide-bottom-space
+                      style="padding-top: 20px"
                     >
                     </q-input>
                   </q-item-section>
