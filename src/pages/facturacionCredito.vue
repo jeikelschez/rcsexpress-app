@@ -1,230 +1,250 @@
 <template>
   <q-page class="pagina q-pa-md">
-    <q-dialog v-model="dialog">
+    <q-dialog v-model="asignDialog">
       <q-card class="q-pa-md" bordered style="width: 1400px; max-width: 100vw">
-        <q-table
-          :rows="datos"
-          :loading="loading"
-          binary-state-sort
-          row-key="id"
-          virtual-scroll
-          :columns="columns"
-          selection="multiple"
-          :separator="separator"
-          :pagination="pagination"
-          style="width: 100%; height: 450px; margin-bottom: 20px"
-          hide-bottom
-        >
-          <template v-slot:body-cell-action="props">
-            <q-td :props="props">
-              <q-btn
+        <q-card-section>
+          <div class="text-h5">
+            <p style="font-size: 24px">
+              <strong>ASIGNAR LAS GUIAS PENDIENTES POR FACTURAR</strong>
+            </p>
+          </div>
+        </q-card-section>
+        <q-card-section style="margin-top: -30px">
+          <q-table
+            :rows="guiasCarga"
+            :loading="loading"
+            binary-state-sort
+            row-key="id"
+            :columns="columns"
+            selection="multiple"
+            :separator="separator"
+            :pagination="paginationGuia"
+            :rows-per-page-options="[]"
+            style="width: 100%; height: 450px; margin-bottom: 20px"
+            v-model:selected="selected"
+            :selected.sync="selected"
+            @selection="onSelection"
+          >
+            <template v-slot:body-cell-action="props">
+              <q-td :props="props">
+                <q-btn
+                  dense
+                  round
+                  flat
+                  color="primary"
+                  icon="edit"
+                  :disabled="this.allowOption(3)"
+                  @click="
+                    this.$refs.methods.getData(
+                      `/paises/${props.row.id}`,
+                      'setDataPaisesEdit',
+                      'formPaises'
+                    );
+                    paisesDialog = true;
+                  "
+                ></q-btn>
+                <q-btn
+                  dense
+                  round
+                  flat
+                  color="primary"
+                  icon="delete"
+                  :disabled="this.allowOption(4)"
+                  @click="selected = props.row.id"
+                  @click.capture="paisesDelete = true"
+                ></q-btn>
+              </q-td>
+            </template>
+            <template v-slot:loading>
+              <q-inner-loading showing color="primary" class="loading" />
+            </template>
+            <template v-slot:top="props">
+              <div class="col-md-4 col-xs-12 texto">
+                <p style="font-size: 20px; padding-right: 10px">
+                  <strong class="text-secondary">AGENCIA: </strong>
+                  <strong> {{ this.selectedAgencia.nb_agencia }} </strong>
+                </p>
+              </div>
+              <div class="col-md-4 col-xs-12 texto">
+                <p style="font-size: 20px">
+                  <strong class="text-secondary">CLIENTE: </strong>
+                  <strong> {{ this.selectedCliente.nb_cliente }} </strong>
+                </p>
+              </div>
+            </template>
+            <template v-slot:body-cell-nro_documento="props">
+              <q-td :props="props">
+                {{ props.row.t_de_documento + "-" + props.row.nro_documento }}
+              </q-td>
+            </template>
+            <template v-slot:body-cell-pagado_en="props">
+              <q-td :props="props">
+                {{ filterDesc("pagadoEn", props.row.pagado_en) }}
+              </q-td>
+            </template>
+          </q-table>
+          <div class="row" style="margin-bottom: 10px; margin-top: 10px">
+            <div class="col-md-2 col-xs-12">
+              <p style="font-size: 17px; margin-top: 5px">
+                <strong class="text-secondary">Totales</strong>
+              </p>
+            </div>
+            <div class="col-md-3 col-xs-12">
+              <q-input
+                outlined
+                v-model="monto_subtotal"
+                label="Monto Subtotal:"
+                hint=""
                 dense
-                round
-                flat
-                color="primary"
-                icon="edit"
-                :disabled="this.allowOption(3)"
-                @click="
-                  this.$refs.methods.getData(
-                    `/paises/${props.row.id}`,
-                    'setDataPaisesEdit',
-                    'formPaises'
-                  );
-                  paisesDialog = true;
-                "
-              ></q-btn>
-              <q-btn
-                dense
-                round
-                flat
-                color="primary"
-                icon="delete"
-                :disabled="this.allowOption(4)"
-                @click="selected = props.row.id"
-                @click.capture="paisesDelete = true"
-              ></q-btn>
-            </q-td>
-          </template>
-          <template v-slot:loading>
-            <q-inner-loading showing color="primary" class="loading" />
-          </template>
-          <template v-slot:top="props">
-            <div class="col-md-4 col-xs-12">
-              <p
-                style="font-size: 18px; padding-right: 10px"
-                class="text-secondary"
+                v-money="money"
+                input-class="text-right"
+                style="padding-bottom: 10px"
+                class="pcform"
+                :readonly="true"
+                lazy-rules
               >
-                <strong>ASIGNAR LAS GUIAS PENDIENTES POR FACTURAR</strong>
+              </q-input>
+            </div>
+            <div class="col-md-3 col-xs-12">
+              <q-input
+                outlined
+                v-model="monto_base"
+                label="Base Impuesto:"
+                hint=""
+                class="pcform"
+                dense
+                v-money="money"
+                input-class="text-right"
+                style="padding-bottom: 10px"
+                :readonly="true"
+                lazy-rules
+              >
+              </q-input>
+            </div>
+            <div class="col-md-2 col-xs-12">
+              <q-input
+                outlined
+                v-model="monto_impuesto"
+                label="Impuesto:"
+                input-class="text-right"
+                hint=""
+                v-money="money"
+                dense
+                style="padding-bottom: 10px"
+                class="pcform"
+                :readonly="true"
+                lazy-rules
+              >
+              </q-input>
+            </div>
+            <div class="col-md-2 col-xs-12">
+              <q-input
+                outlined
+                v-model="monto_total"
+                label="Monto Total:"
+                input-class="text-right"
+                class="pcform"
+                hint=""
+                dense
+                v-money="money"
+                :readonly="true"
+                style="padding-bottom: 10px"
+                lazy-rules
+              >
+              </q-input>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-2 col-xs-12">
+              <p style="font-size: 17px; margin-top: 5px">
+                <strong class="text-secondary">Seleccionados</strong>
               </p>
             </div>
-            <div class="col-md-4 col-xs-12 texto">
-              <p style="font-size: 17px; padding-right: 10px">
-                <strong class="text-secondary">AGENCIA:</strong>
-                <strong> {{ this.selectedAgencia.nb_agencia }} </strong>
-              </p>
+            <div class="col-md-3 col-xs-12">
+              <q-input
+                outlined
+                v-model="monto_subtotal_select"
+                :input-style="{ color: '#06065B' }"
+                label="Monto Subtotal:"
+                hint=""
+                dense
+                input-class="text-right"
+                style="padding-bottom: 10px"
+                v-money="money"
+                :readonly="true"
+                class="pcform"
+                lazy-rules
+              >
+              </q-input>
             </div>
-            <div class="col-md-4 col-xs-12 texto">
-              <p style="font-size: 17px">
-                <strong class="text-secondary">AGENCIA:</strong>
-                <strong> {{ this.selectedAgencia.nb_agencia }} </strong>
-              </p>
+            <div class="col-md-3 col-xs-12">
+              <q-input
+                outlined
+                v-model="monto_base_select"
+                :input-style="{ color: '#06065B' }"
+                label="Base Impuesto:"
+                hint=""
+                class="pcform"
+                dense
+                input-class="text-right"
+                style="padding-bottom: 10px"
+                v-money="money"
+                :readonly="true"
+                lazy-rules
+              >
+              </q-input>
             </div>
-          </template>
-        </q-table>
-        <div class="row" style="margin-bottom: 10px; margin-top: 10px">
-          <div class="col-md-2 col-xs-12">
-            <p style="font-size: 17px; margin-top: 5px">
-              <strong class="text-secondary">TOTALES</strong>
-            </p>
+            <div class="col-md-2 col-xs-12">
+              <q-input
+                outlined
+                v-model="monto_impuesto_select"
+                :input-style="{ color: '#06065B' }"
+                label="Impuesto:"
+                input-class="text-right"
+                hint=""
+                dense
+                style="padding-bottom: 10px"
+                v-money="money"
+                :readonly="true"
+                class="pcform"
+                lazy-rules
+              >
+              </q-input>
+            </div>
+            <div class="col-md-2 col-xs-12">
+              <q-input
+                outlined
+                v-model="monto_total_select"
+                :input-style="{ color: '#06065B' }"
+                label="Monto Total:"
+                input-class="text-right"
+                class="pcform"
+                hint=""
+                v-money="money"
+                :readonly="true"
+                dense
+                style="padding-bottom: 10px"
+                lazy-rules
+              >
+              </q-input>
+            </div>
           </div>
-          <div class="col-md-3 col-xs-12">
-            <q-input
-              outlined
-              v-model="form.monto_subtotal"
-              label="Monto Subtotal:"
-              hint=""
-              dense
-              input-class="text-right"
-              style="padding-bottom: 10px"
-              class="pcform"
-              :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
-              lazy-rules
-            >
-            </q-input>
+          <div class="float-right" style="margin-bottom: 6px; margin-top: 10px">
+            <q-btn
+              label="Asignar"
+              @click="this.asignarGuias()"
+              color="primary"
+              icon="add"
+            />
+            <q-btn
+              label="Regresar"
+              color="primary"
+              flat
+              icon="close"
+              v-close-popup
+            />
           </div>
-          <div class="col-md-3 col-xs-12">
-            <q-input
-              outlined
-              v-model="form.monto_impuesto"
-              label="Base Impuesto:"
-              hint=""
-              class="pcform"
-              :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
-              dense
-              input-class="text-right"
-              style="padding-bottom: 10px"
-              lazy-rules
-            >
-            </q-input>
-          </div>
-          <div class="col-md-2 col-xs-12">
-            <q-input
-              outlined
-              v-model="form.monto_base"
-              label="Impuesto:"
-              input-class="text-right"
-              hint=""
-              :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
-              dense
-              style="padding-bottom: 10px"
-              class="pcform"
-              lazy-rules
-            >
-            </q-input>
-          </div>
-          <div class="col-md-2 col-xs-12">
-            <q-input
-              outlined
-              v-model="form.monto_total"
-              label="Monto Total:"
-              input-class="text-right"
-              class="pcform"
-              hint=""
-              :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
-              dense
-              style="padding-bottom: 10px"
-              lazy-rules
-            >
-            </q-input>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-2 col-xs-12">
-            <p style="font-size: 17px; margin-top: 5px">
-              <strong class="text-secondary">SELECCIONADOS</strong>
-            </p>
-          </div>
-          <div class="col-md-3 col-xs-12">
-            <q-input
-              outlined
-              v-model="form.monto_subtotal"
-              label="Monto Subtotal:"
-              hint=""
-              dense
-              input-class="text-right"
-              style="padding-bottom: 10px"
-              class="pcform"
-              :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
-              lazy-rules
-            >
-            </q-input>
-          </div>
-          <div class="col-md-3 col-xs-12">
-            <q-input
-              outlined
-              v-model="form.monto_impuesto"
-              label="Base Impuesto:"
-              hint=""
-              class="pcform"
-              :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
-              dense
-              input-class="text-right"
-              style="padding-bottom: 10px"
-              lazy-rules
-            >
-            </q-input>
-          </div>
-          <div class="col-md-2 col-xs-12">
-            <q-input
-              outlined
-              v-model="form.monto_base"
-              label="Impuesto:"
-              input-class="text-right"
-              hint=""
-              :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
-              dense
-              style="padding-bottom: 10px"
-              class="pcform"
-              lazy-rules
-            >
-            </q-input>
-          </div>
-          <div class="col-md-2 col-xs-12">
-            <q-input
-              outlined
-              v-model="form.monto_total"
-              label="Monto Total:"
-              input-class="text-right"
-              class="pcform"
-              hint=""
-              :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
-              dense
-              style="padding-bottom: 10px"
-              lazy-rules
-            >
-            </q-input>
-          </div>
-        </div>
-        <div
-          class="row justify-center items-center content-center"
-          style="margin-bottom: 6px; margin-top: 10px"
-        >
-          <q-btn
-            label="Asignar"
-            type="submit"
-            color="primary"
-            class="col-md-5 col-sm-5 col-xs-12"
-            icon="add"
-          />
-          <q-btn
-            label="Regresar"
-            color="primary"
-            flat
-            class="col-md-5 col-sm-5 col-xs-12 btnmovil"
-            icon="close"
-            v-close-popup
-          />
-        </div>
+        </q-card-section>
       </q-card>
     </q-dialog>
 
@@ -312,6 +332,7 @@
               this.$refs.methods.getData(`/clientes`, 'setData', 'clientes', {
                 headers: {
                   agencia: this.selectedAgencia.id,
+                  activo: 'S',
                 },
               });
             "
@@ -347,6 +368,7 @@
             outlined
             standout
             label="Tipo Servicio"
+            @update:model-value="setConceptos()"
           >
             <template v-slot:prepend>
               <q-icon name="search" />
@@ -380,9 +402,7 @@
                     v-model="fecha_desde"
                     mask="DD/MM/YYYY"
                     style="padding-bottom: 0px"
-                    @update:model-value="
-                      this.$refs.qDateProxy.hide();
-                    "
+                    @update:model-value="this.$refs.qDateProxy.hide()"
                   ></q-date>
                 </q-popup-proxy>
               </q-icon>
@@ -458,6 +478,7 @@
             outlined
             standout
             label="Cliente"
+            @update:model-value="setGuiasCarga()"
             ><template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey">
@@ -583,45 +604,51 @@
               "
             >
               <div class="row">
-                <div class="col-md-6 col-xs-12">
+                <div class="col-md-6 col-xs-12" style="padding-left: 20px">
                   <q-select
-                    upper-case
+                    dense
+                    transition-show="flip-up"
+                    transition-hide="flip-down"
+                    :options="tiposConcepto"
+                    use-input
+                    hide-selected
+                    fill-input
+                    input-debounce="0"
+                    option-label="desc_concepto"
+                    option-value="id"
+                    v-model="selectedTiposConcepto"
+                    :readonly="true"
                     outlined
-                    v-model="form.control_inicio"
+                    standout
                     label="Tipo Concepto"
                     class="pcform"
-                    hint=""
-                    lazy-rules
-                    dense
-                    :rules="[
-                      (val) => this.$refs.rulesVue.isReq(val),
-                      (val) => this.$refs.rulesVue.isMax(val, 10),
-                    ]"
-                    type="number"
                   >
                     <template v-slot:prepend>
                       <q-icon name="apartment" />
                     </template>
                   </q-select>
                 </div>
-
-                <div class="col-md-6 col-xs-12">
+                <div class="col-md-6 col-xs-12" style="margin-bottom: 20px">
                   <q-select
-                    outlined
-                    v-model="form.control_final"
-                    label="Concepto"
                     dense
-                    :rules="[
-                      (val) => this.$refs.rulesVue.isReq(val),
-                      (val) => this.$refs.rulesVue.isMax(val, 10),
-                      (val) => this.reglasSegundoCorrelativo(val),
-                    ]"
-                    hint=""
-                    lazy-rules
-                    type="number"
+                    transition-show="flip-up"
+                    transition-hide="flip-down"
+                    :options="conceptos"
+                    use-input
+                    hide-selected
+                    fill-input
+                    input-debounce="0"
+                    option-label="desc_concepto"
+                    option-value="id"
+                    v-model="selectedConcepto"
+                    :disable="!selectedCliente.id ? true : false"
+                    outlined
+                    standout
+                    label="Concepto"
+                    class="pcform"
                   >
                     <template v-slot:prepend>
-                      <q-icon name="account_circle" />
+                      <q-icon name="apartment" />
                     </template>
                   </q-select>
                 </div>
@@ -649,14 +676,6 @@
                         color="primary"
                         icon="edit"
                         :disabled="this.allowOption(3)"
-                        @click="
-                          this.$refs.methods.getData(
-                            `/paises/${props.row.id}`,
-                            'setDataPaisesEdit',
-                            'formPaises'
-                          );
-                          paisesDialog = true;
-                        "
                       ></q-btn>
                       <q-btn
                         dense
@@ -775,53 +794,80 @@
           </q-input>
         </div>
         <div class="row col-md-3 col-xs-12">
-          <div class="col-md-12 col-xs-12 align-center" style="align-self: center; text-align: center;"> 
-            <p style="font-size: 15px; margin-bottom: 7px;" class="text-secondary">
-            <strong>Ultima Factura Registrada</strong>
-          </p>
+          <div
+            class="col-md-12 col-xs-12 align-center"
+            style="align-self: center; text-align: center"
+          >
+            <p
+              style="font-size: 15px; margin-bottom: 7px"
+              class="text-secondary"
+            >
+              <strong>Ultima Factura Registrada</strong>
+            </p>
           </div>
-          <div class="col-md-12 col-xs-12 align-center" style="align-self: center; text-align: center"> 
+          <div
+            class="col-md-12 col-xs-12 align-center"
+            style="align-self: center; text-align: center"
+          >
             <q-input
               outlined
-              v-model="form.nro_documento"
+              v-model="ultNroControl"
               label="Nro. Control"
               dense
-              input-class="textArea"
-              style="margin-bottom:10px"
+              :disable="true"
+              style="margin-bottom: 10px"
             >
             </q-input>
           </div>
           <div class="col-md-7 col-xs-7">
             <q-input
               outlined
-              v-model="form.nro_documento"
+              v-model="ultNroInterno"
               dense
+              :disable="true"
               label="Nro. Interno"
               class="pcform pcmovil"
-              style="margin-bottom:10px"
+              style="margin-bottom: 10px"
             >
             </q-input>
+          </div>
+          <div
+            class="col-md-5 col-xs-5"
+            style="align-self: center !important; margin-bottom: 10px"
+          >
+            <p
+              style="font-size: 15px; margin-bottom: 0px"
+              class="text-secondary"
+            >
+              <strong>Ref. </strong> {{ ultNroRef }}
+            </p>
+          </div>
         </div>
-        <div class="col-md-5 col-xs-5" style="align-self: center !important; margin-bottom: 10px;">
-          <p style="font-size: 15px;margin-bottom: 0px" class="text-secondary">
-            <strong>Ref.</strong> {{123123}}
-          </p>
-        </div>
-      </div>
       </div>
     </div>
 
-    <q-dialog v-model="deletePopup">
+    <q-dialog v-model="confirmPopUp" persistent>
       <q-card style="width: 700px">
         <q-card-section>
           <div class="text-h5" style="font-size: 18px">
-            ¿Desea Eliminar el Registro?...
+            ¿Está seguro de asociar las Guías a la Factura a generar?
           </div>
         </q-card-section>
-
         <q-card-actions align="right">
-          <q-btn flat label="Cancelar" color="primary" v-close-popup />
-          <q-btn flat label="Aceptar" color="primary" v-close-popup />
+          <q-btn
+            flat
+            label="Cancelar"
+            color="primary"
+            @click="this.confirmAsign = false"
+            v-close-popup
+          />
+          <q-btn
+            flat
+            label="Guardar"
+            color="primary"
+            v-close-popup
+            @click="this.confirmAsign = true"
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -830,8 +876,7 @@
       ref="methods"
       @set-Data="setData"
       @set-Data-Init="setDataInit"
-      @get-Data-Table="getDataTable"
-      @set-Data-Table="setDataTable"
+      @set-Ultima-Fact="setUltimaFact"
       @set-Data-Permisos="setDataPermisos"
     ></methods>
 
@@ -843,56 +888,102 @@
 import { ref } from "vue";
 import rulesVue from "src/components/rules.vue";
 import moment from "moment";
+import { VMoney } from "v-money";
+import { api } from "boot/axios";
 import { useQuasar, LocalStorage } from "quasar";
 import methodsVue from "src/components/methods.vue";
 
 export default {
+  directives: { money: VMoney },
   components: { methods: methodsVue, rulesVue },
   data() {
     return {
+      money: {
+        decimal: ",",
+        thousands: ".",
+        prefix: "",
+        suffix: "",
+        precision: 2,
+        masked: false,
+      },
       columns: [
         {
-          name: "nb_agencia",
-          label: "NRO.",
-          field: "nb_agencia",
+          name: "nro_documento",
+          label: "Nro. Guía",
+          field: "nro_documento",
           align: "left",
-          sortable: true,
         },
         {
-          name: "tlf_agencia",
-          label: "Concepto",
-          field: "tlf_agencia",
+          name: "fecha_emision",
+          label: "Emisión",
+          field: "fecha_emision",
           align: "left",
-          sortable: true,
         },
         {
-          name: "id",
-          label: "Cantidad",
-          field: "id",
+          name: "pagado_en",
+          label: "Pagado En",
+          field: "pagado_en",
           align: "left",
-          sortable: true,
         },
         {
-          name: "tlf_agencia",
-          label: "Costo Unitario",
-          field: "tlf_agencia",
-          align: "left",
-          type: "string",
-          sortable: true,
+          name: "monto_subtotal",
+          label: "Sub-total",
+          field: "monto_subtotal",
+          align: "right",
+          format: (val) =>
+            new Intl.NumberFormat("de-DE", {
+              style: "currency",
+              currency: "EUR",
+              currencyDisplay: "code",
+            })
+              .format(val)
+              .replace("EUR", "")
+              .trim(),
         },
         {
-          name: "tlf_agencia",
-          label: "Sub-Total",
-          field: "tlf_agencia",
-          align: "center",
-          sortable: true,
+          name: "monto_base",
+          label: "Base Impuesto",
+          field: "monto_base",
+          align: "right",
+          format: (val) =>
+            new Intl.NumberFormat("de-DE", {
+              style: "currency",
+              currency: "EUR",
+              currencyDisplay: "code",
+            })
+              .format(val)
+              .replace("EUR", "")
+              .trim(),
         },
         {
-          name: "action",
-          label: "Acciones",
-          field: "action",
-          align: "center",
-          sortable: true,
+          name: "monto_impuesto",
+          label: "Impuesto",
+          field: "monto_impuesto",
+          align: "right",
+          format: (val) =>
+            new Intl.NumberFormat("de-DE", {
+              style: "currency",
+              currency: "EUR",
+              currencyDisplay: "code",
+            })
+              .format(val)
+              .replace("EUR", "")
+              .trim(),
+        },
+        {
+          name: "monto_total",
+          label: "Monto Total",
+          field: "monto_total",
+          align: "right",
+          format: (val) =>
+            new Intl.NumberFormat("de-DE", {
+              style: "currency",
+              currency: "EUR",
+              currencyDisplay: "code",
+            })
+              .format(val)
+              .replace("EUR", "")
+              .trim(),
         },
       ],
       form: {
@@ -909,12 +1000,29 @@ export default {
         { label: "CRÉDITO", value: "CR" },
       ],
       tipoFacturacion: [
-        { label: "FACTURACION CREDITO", value: "C" },
-        { label: "FACTURACION CONTADO", value: "A" },
-        { label: "FACTURACION OTROS INGRESOS", value: "I" },
+        { label: "FACTURACION CREDITO", value: "C", tipo: 22, formaPago: "CR" },
+        { label: "FACTURACION CONTADO", value: "A", tipo: 22, formaPago: "CO" },
+        {
+          label: "FACTURACION OTROS INGRESOS",
+          value: "I",
+          tipo: 3,
+          formaPago: "",
+        },
       ],
+      pagadoEn: [
+        { label: "ORIGEN", value: "O" },
+        { label: "DESTINO", value: "D" },
+      ],
+      paginationGuia: {
+        page: 1,
+        rowsPerPage: 0,
+        sortBy: "fecha_emision",
+        descending: false,
+      },
       agencias: [],
       datos: [],
+      guiasCarga: [],
+      ultimaFact: [],
       selectedAgencia: [],
       selectedCliente: [],
       selectedTipo: [],
@@ -924,8 +1032,24 @@ export default {
       fechaSelected: moment().format("DD/MM/YYYY"),
       descuentoSelected: "",
       clientesSelected: [],
+      conceptos: [],
+      selectedConcepto: [],
+      tiposConcepto: [],
+      selectedTiposConcepto: [],
+      ultNroControl: "",
+      ultNroInterno: "",
+      ultNroRef: "",
       clientesLoading: true,
+      monto_subtotal: 0,
+      monto_base: 0,
+      monto_impuesto: 0,
+      monto_total: 0,
+      monto_subtotal_select: 0,
+      monto_base_select: 0,
+      monto_impuesto_select: 0,
+      monto_total_select: 0,
       rpermisos: [],
+      confirmAsign: false,
     };
   },
   setup() {
@@ -933,8 +1057,10 @@ export default {
     return {
       loading: ref(false),
       separator: ref("vertical"),
-      dialog: ref(false),
+      asignDialog: ref(false),
       reference: ref(false),
+      confirmPopUp: ref(false),
+      selected: ref([]),
       deletePopup: ref(false),
       pagination: {
         page: 1,
@@ -999,6 +1125,11 @@ export default {
 
     // METODOS PARA PAGINA
 
+    // Metodo para Setear Datos Generales
+    setData(res, dataRes) {
+      eval("this." + dataRes + "Loading = false");
+      this[dataRes] = res.data ? res.data : res;
+    },
     // Metodos para Setear Datos al Iniciar
     setDataInit(res, dataRes) {
       this[dataRes] = res.data;
@@ -1008,40 +1139,246 @@ export default {
       this.$refs.methods.getData(`/clientes`, "setData", "clientes", {
         headers: {
           agencia: this.selectedAgencia.id,
+          activo: "S",
         },
       });
-    },
-    // Metodo para Setear Datos Generales
-    setData(res, dataRes) {
-      eval("this." + dataRes + "Loading = false");
-      this[dataRes] = res.data ? res.data : res;
-    },
-    // Metodo para Extraer Datos de Tabla
-    getDataTable(props) {
-      this.loading = true;
-      if (props) this.pagination = props.pagination;
-      /*this.$refs.methods.getData(
-        `/correlativo`,
-        "setDataTable",
-        "correlativos",
+
+      // Seteamos los tipos de concepto
+      api
+        .get(`/coperacion`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            tipo: 8,
+          },
+        })
+        .then((res) => {
+          this.tiposConcepto = res.data;
+          this.setConceptos();
+        });
+
+      // Seteamos los datos de la ultima Factura
+      this.$refs.methods.getData(
+        "/mmovimientos",
+        "setUltimaFact",
+        "ultimaFact",
         {
           headers: {
-            agencia: this.selectedAgencia.id,
-            tipo: this.selectedTipo.id,
-            page: this.pagination.page,
-            limit: this.pagination.rowsPerPage,
-            order_by: this.pagination.sortBy,
-            order_direction: this.pagination.descending ? "DESC" : "ASC",
-            filter: this.pagination.filter,
-            filter_value: this.pagination.filterValue,
+            tipo: "FA",
+            page: 0,
+            limit: 1,
+            order_by: "nro_control",
+            order_direction: "DESC",
           },
         }
-      );*/
+      );
     },
-    // Metodo para Setear Datos de Tabla
-    setDataTable(res, dataRes) {
-      this[dataRes] = res.data ? res.data : res;
+    // Seteamos guias carga del cliente
+    async setGuiasCarga() {
+      if (this.selectedTipo.formaPago == "" || !this.selectedCliente.id) return;
+
+      this.resetForm();
+      this.loading = true;
+
+      // Extraigo las pagadas en Origen con Cliente Origen
+      await api
+        .get(`/mmovimientos`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            cliente_orig: this.selectedCliente.id,
+            tipo: "GC",
+            pagado_en: "O",
+            modalidad: this.selectedTipo.formaPago,
+            estatus_admin_in: "F",
+          },
+        })
+        .then((res) => {
+          if (res.data.data.length > 0) {
+            this.guiasCarga = res.data.data;
+          }
+        });
+
+      // Extraigo las pagadas en Destino con Cliente Destino
+      await api
+        .get(`/mmovimientos`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            cliente_dest: this.selectedCliente.id,
+            tipo: "GC",
+            pagado_en: "D",
+            modalidad: this.selectedTipo.formaPago,
+            estatus_admin_in: "F",
+          },
+        })
+        .then((res) => {
+          if (res.data.data.length > 0) {
+            for (var i = 0; i <= res.data.data.length - 1; i++) {
+              this.guiasCarga.push(res.data.data[i]);
+            }
+          }
+        });
+
+      if (this.guiasCarga.length > 0) {
+        this.asignDialog = true;
+      } else {
+        this.errorMessage(
+          "No existen Guías pendientes de Facturar para el Cliente seleccionado"
+        );
+        this.loading = false;
+        return;
+      }
+
+      this.guiasCarga.sort((a, b) => a.nro_documento - b.nro_documento);
+      for (var i = 0; i < this.guiasCarga.length; i++) {
+        this.monto_subtotal += this.parseFloatN(
+          this.guiasCarga[i].monto_subtotal
+        );
+        this.monto_base += this.parseFloatN(this.guiasCarga[i].monto_base);
+        this.monto_impuesto += this.parseFloatN(
+          this.guiasCarga[i].monto_impuesto
+        );
+        this.monto_total += this.parseFloatN(this.guiasCarga[i].monto_total);
+      }
+
+      this.monto_subtotal = this.monto_subtotal.toFixed(2);
+      this.monto_base = this.monto_base.toFixed(2);
+      this.monto_impuesto = this.monto_impuesto.toFixed(2);
+      this.monto_total = this.monto_total.toFixed(2);
+
       this.loading = false;
+    },
+    // Asignar las guias Carga a la Factura
+    async asignarGuias() {
+      if (this.selected.length == 0) {
+        this.errorMessage("Debe seleccionar al menos una Guía para poder asignarlas a la Factura a Generar");
+        return;
+      }
+      
+      this.confirmPopUp = true;
+      await this.until((_) => this.confirmAsign == true);
+      if (!this.confirmAsign) {
+        return;
+      }
+
+      this.confirmAsign = false;
+      this.asignDialog = false;
+
+      console.log(this.selected)
+    },
+    // Metodo para Setear Datos de la ultima Factura
+    setUltimaFact(res, dataRes) {
+      this[dataRes] = res.data;
+      this.ultNroInterno = this.ultimaFact[0].nro_control.padStart(4, "0000");
+      this.ultNroRef =
+        this.ultimaFact[0].cod_agencia + "-" + this.ultimaFact[0].nro_documento;
+      this.ultNroControl = this.ultimaFact[0].serie_documento
+        ? this.ultimaFact[0].serie_documento + " "
+        : "" + this.ultimaFact[0].nro_control_new.padStart(9, "00-000000");
+    },
+    // Metodo para Setear los conceptos por Tipo
+    setConceptos() {
+      this.conceptos = [];
+      var find = this.tiposConcepto.findIndex(
+        (item) => item.id == this.selectedTipo.tipo
+      );
+      this.selectedTiposConcepto = this.tiposConcepto[find];
+
+      api
+        .get(`/cfacturacion`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            cod_concepto: this.selectedTiposConcepto.id,
+          },
+        })
+        .then((res) => {
+          this.conceptos = res.data;
+        });
+
+      this.setGuiasCarga();
+    },
+    async onSelection({ rows, added }) {
+      let monto_subtotal = 0;
+      let monto_base = 0;
+      let monto_impuesto = 0;
+      let monto_total = 0;
+
+      for (var i = 0; i < rows.length; i++) {
+        monto_subtotal += this.parseFloatN(rows[i].monto_subtotal);
+        monto_base += this.parseFloatN(rows[i].monto_base);
+        monto_impuesto += this.parseFloatN(rows[i].monto_impuesto);
+        monto_total += this.parseFloatN(rows[i].monto_total);
+      }
+
+      if (added) {
+        this.monto_subtotal_select = (
+          this.parseFloatN(this.curReplace(this.monto_subtotal_select)) +
+          monto_subtotal
+        ).toFixed(2);
+        this.monto_base_select = (
+          this.parseFloatN(this.curReplace(this.monto_base_select)) + monto_base
+        ).toFixed(2);
+        this.monto_impuesto_select = (
+          this.parseFloatN(this.curReplace(this.monto_impuesto_select)) +
+          monto_impuesto
+        ).toFixed(2);
+        this.monto_total_select = (
+          this.parseFloatN(this.curReplace(this.monto_total_select)) +
+          monto_total
+        ).toFixed(2);
+      } else {
+        this.monto_subtotal_select = (
+          this.parseFloatN(this.curReplace(this.monto_subtotal_select)) -
+          monto_subtotal
+        ).toFixed(2);
+        this.monto_base_select = (
+          this.parseFloatN(this.curReplace(this.monto_base_select)) - monto_base
+        ).toFixed(2);
+        this.monto_impuesto_select = (
+          this.parseFloatN(this.curReplace(this.monto_impuesto_select)) -
+          monto_impuesto
+        ).toFixed(2);
+        this.monto_total_select = (
+          this.parseFloatN(this.curReplace(this.monto_total_select)) -
+          monto_total
+        ).toFixed(2);
+      }
+    },
+    // Metodo para imprimir mensajes de error
+    errorMessage(message) {
+      this.$q.notify({
+        message: message,
+        color: "red",
+      });
+    },
+    // Pasar un numero a numero con dos decimales en formato correcto para efectuar operaciones
+    parseFloatN(number) {
+      number = Math.round(number * 100) / 100;
+      return number;
+    },
+    // Metodo para convertir a Currency los String
+    curReplace(amount) {
+      return amount.indexOf(",") < 0
+        ? amount
+        : amount.replaceAll(".", "").replaceAll(",", ".");
+    },
+    resetForm() {
+      this.guiasCarga = [];
+      this.selected = [];
+      this.monto_subtotal = 0;
+      this.monto_base = 0;
+      this.monto_impuesto = 0;
+      this.monto_total = 0;
+      this.monto_subtotal_select = 0;
+      this.monto_base_select = 0;
+      this.monto_impuesto_select = 0;
+      this.monto_total_select = 0;
+    },
+    // Metodo para que una funcion no avance hasta que se cumpla una condicion
+    async until(conditionFunction) {
+      const poll = (resolve) => {
+        if (conditionFunction()) resolve();
+        else setTimeout((_) => poll(resolve), 400);
+      };
+      return new Promise(poll);
     },
   },
 };
