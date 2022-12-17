@@ -430,7 +430,7 @@
                     side
                     class="itemMovilSide"
                     v-if="col.name === 'observacion_adic'"
-                    style="text-align: right !important; align-self: center;"
+                    style="text-align: right !important; align-self: center"
                   >
                     <q-input
                       outlined
@@ -777,7 +777,11 @@ export default {
       var factArray = [];
       this.dialog = false;
       for (var i = 0; i <= this.selected.length - 1; i++) {
-        factArray.push(this.selected[i].id);
+        factArray.push(
+          this.selected[i].id + "/" + (this.selected[i].observacion_adic
+            ? this.selected[i].observacion_adic.toUpperCase()
+            : "")
+        );
       }
       api
         .get(`/mmovimientos/letterPDF`, {
