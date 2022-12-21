@@ -139,7 +139,8 @@
             lazy-rules
             mask="##/##/####"
             :rules="[(val) => this.$refs.rulesVue.checkDate(val)]"
-            @update:model-value="getDataClientes()"
+            @blur="getDataClientes()"
+            @keyup.enter="getDataClientes()"
           >
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
@@ -152,10 +153,9 @@
                     v-model="fecha_desde"
                     mask="DD/MM/YYYY"
                     style="padding-bottom: 0px"
-                    @update:model-value="
-                      this.$refs.qDateProxy.hide();
-                      getDataClientes();
-                    "
+                    @blur="getDataClientes()"
+                    @keyup.enter="getDataClientes()"
+                    @update:model-value="this.$refs.qDateProxy.hide()"
                   ></q-date>
                 </q-popup-proxy>
               </q-icon>
@@ -177,7 +177,8 @@
             lazy-rules
             mask="##/##/####"
             :rules="[(val) => this.$refs.rulesVue.checkDate(val)]"
-            @update:model-value="getDataClientes()"
+            @blur="getDataClientes()"
+            @keyup.enter="getDataClientes()"
           >
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
@@ -190,10 +191,9 @@
                     v-model="fecha_hasta"
                     mask="DD/MM/YYYY"
                     style="padding-bottom: 0px"
-                    @update:model-value="
-                      this.$refs.qDateProxy.hide();
-                      getDataClientes();
-                    "
+                    @blur="getDataClientes()"
+                    @keyup.enter="getDataClientes()"
+                    @update:model-value="getDataClientes()"
                   ></q-date>
                 </q-popup-proxy>
               </q-icon>
@@ -778,9 +778,11 @@ export default {
       this.dialog = false;
       for (var i = 0; i <= this.selected.length - 1; i++) {
         factArray.push(
-          this.selected[i].id + "/" + (this.selected[i].observacion_adic
-            ? this.selected[i].observacion_adic.toUpperCase()
-            : "")
+          this.selected[i].id +
+            "/" +
+            (this.selected[i].observacion_adic
+              ? this.selected[i].observacion_adic.toUpperCase()
+              : "")
         );
       }
       api

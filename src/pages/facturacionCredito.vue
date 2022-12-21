@@ -241,6 +241,10 @@
               color="primary"
               flat
               icon="close"
+              @click="
+                this.selectedTipo = this.tipoFacturacion[2];
+                setConceptos();
+              "
               v-close-popup
             />
           </div>
@@ -478,7 +482,13 @@
             outlined
             standout
             label="Cliente"
-            @update:model-value="setGuiasCarga()"
+            @update:model-value="
+              if (this.selectedCliente.cte_decontado == 1) {
+                popupCliente();
+              } else {
+                setGuiasCarga();
+              }
+            "
             ><template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey">
@@ -503,9 +513,14 @@
             dense
             input-debounce="0"
             v-model="descuentoSelected"
+            v-money="money"
+            :rules="[(val) => this.$refs.rulesVue.isMax(val, 7, '')]"
+            style="padding-bottom: 0px"
+            input-class="text-right"
             outlined
             standout
             label="Descuento"
+            @update:model-value="calculaTotales()"
           >
             <template v-slot:append>
               <q-icon name="percent" class="cursor-pointer"> </q-icon>
@@ -520,7 +535,11 @@
             rounded
             dense
             input-debounce="0"
-            v-model="descuentoSelected"
+            v-model="cobradoSelected"
+            v-money="money"
+            input-class="text-right"
+            :rules="[(val) => this.$refs.rulesVue.isMax(val, 10, '')]"
+            style="padding-bottom: 0px"
             outlined
             standout
             label="Cobrado"
@@ -642,6 +661,7 @@
                     option-value="id"
                     v-model="selectedConcepto"
                     :disable="!selectedCliente.id ? true : false"
+                    @update:model-value="addConcepto()"
                     outlined
                     standout
                     label="Concepto"
@@ -653,13 +673,13 @@
                   </q-select>
                 </div>
                 <q-table
-                  :rows="datos"
+                  :rows="detalles"
                   :loading="loading"
                   binary-state-sort
                   row-key="id"
                   :pagination="pagination"
                   virtual-scroll
-                  :columns="columns"
+                  :columns="columnsDetalle"
                   :separator="separator"
                   style="width: 100%; height: 300px; margin-bottom: 20px"
                   hide-bottom
@@ -700,7 +720,8 @@
                     input-class="text-right"
                     style="padding-bottom: 10px"
                     class="pcform"
-                    :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
+                    v-money="money"
+                    :readonly="true"
                     lazy-rules
                   >
                   </q-input>
@@ -708,11 +729,12 @@
                 <div class="col-md-2 col-xs-12">
                   <q-input
                     outlined
-                    v-model="form.monto_impuesto"
+                    v-model="form.monto_descuento"
                     label="Descuento:"
                     hint=""
                     class="pcform"
-                    :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
+                    v-money="money"
+                    :readonly="true"
                     dense
                     input-class="text-right"
                     style="padding-bottom: 10px"
@@ -727,7 +749,8 @@
                     label="Monto Base:"
                     input-class="text-right"
                     hint=""
-                    :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
+                    v-money="money"
+                    :readonly="true"
                     dense
                     style="padding-bottom: 10px"
                     class="pcform"
@@ -738,12 +761,13 @@
                 <div class="col-md-2 col-xs-12">
                   <q-input
                     outlined
-                    v-model="form.monto_total"
+                    v-model="form.monto_impuesto"
                     label="Monto Impuesto:"
                     input-class="text-right"
                     class="pcform"
                     hint=""
-                    :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
+                    v-money="money"
+                    :readonly="true"
                     dense
                     style="padding-bottom: 10px"
                     lazy-rules
@@ -753,12 +777,13 @@
                 <div class="col-md-2 col-xs-12">
                   <q-input
                     outlined
-                    v-model="form.monto_total"
+                    v-model="form.monto_fpo"
                     label="FPO:"
                     class="pcform"
                     input-class="text-right"
                     hint=""
-                    :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
+                    v-money="money"
+                    :readonly="true"
                     dense
                     style="padding-bottom: 10px"
                     lazy-rules
@@ -772,7 +797,8 @@
                     label="Monto Total:"
                     input-class="text-right"
                     hint=""
-                    :rules="[(val) => this.$refs.rulesVue.isMax(val, 15, '')]"
+                    v-money="money"
+                    :readonly="true"
                     dense
                     style="padding-bottom: 10px"
                     lazy-rules
@@ -845,6 +871,381 @@
         </div>
       </div>
     </div>
+
+    <q-dialog v-model="clienteBox">
+      <q-card
+        class="q-pa-md"
+        bordered
+        style="width: 999px; max-width: 80vw; padding-bottom: 0px"
+      >
+        <q-card-section>
+          <q-form @submit="setClienteParticular()">
+            <div class="row">
+              <div
+                class="col-md-12 col-xs-12"
+                style="align-self: center; text-align: left; margin-top: -30px"
+              >
+                <h4 style="font-size: 20px" class="text-secondary">
+                  <strong>CLIENTE PARTICULAR</strong>
+                </h4>
+              </div>
+              <div class="col-md-4 col-xs-12">
+                <q-input
+                  outlined
+                  v-model="formClientesParticulares.rif_ci"
+                  label="RIF/CI"
+                  dense
+                  :rules="
+                    ([(val) => this.$refs.rulesVue.isMin(val, 3, '')],
+                    [(val) => this.$refs.rulesVue.isReq(val, '')])
+                  "
+                  :readonly="this.disableRif"
+                  @blur="this.validateExistingClient()"
+                  @keyup.enter="this.validateExistingClient()"
+                  hint=""
+                  lazy-rules
+                  class="pcform"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="person" />
+                  </template>
+                </q-input>
+              </div>
+              <div class="col-md-4 col-xs-12">
+                <q-select
+                  outlined
+                  v-model="formClientesParticulares.cod_agencia"
+                  label="Agencia"
+                  :readonly="true"
+                  hint=""
+                  dense
+                  class="pcform"
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
+                  lazy-rules
+                  option-label="nb_agencia"
+                  option-value="id"
+                  ><template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        Sin resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                  <template v-slot:prepend>
+                    <q-icon name="south_america" />
+                  </template>
+                </q-select>
+              </div>
+
+              <div class="col-md-4 col-xs-12">
+                <q-input
+                  outlined
+                  v-model="formClientesParticulares.nb_cliente"
+                  label="Cliente"
+                  :readonly="this.disableCliente"
+                  dense
+                  :rules="
+                    ([(val) => this.$refs.rulesVue.isMin(val, 3, '')],
+                    [(val) => this.$refs.rulesVue.isReq(val, '')])
+                  "
+                  lazy-rules
+                  hint=""
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="person" />
+                  </template>
+                </q-input>
+              </div>
+              <div class="col-md-4 col-xs-12">
+                <q-select
+                  outlined
+                  v-model="formClientesParticulares.pais"
+                  label="Pais"
+                  :readonly="true"
+                  hint=""
+                  dense
+                  class="pcform"
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
+                  lazy-rules
+                  option-label="desc_pais"
+                  option-value="id"
+                  ><template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        Sin resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                  <template v-slot:prepend>
+                    <q-icon name="south_america" />
+                  </template>
+                </q-select>
+              </div>
+              <div class="col-md-4 col-xs-12">
+                <q-select
+                  outlined
+                  v-model="formClientesParticulares.estado"
+                  dense
+                  label="Estado"
+                  class="pcform"
+                  hint=""
+                  :readonly="true"
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
+                  lazy-rules
+                  option-label="desc_estado"
+                  option-value="id"
+                  ><template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        Sin resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                  <template v-slot:prepend>
+                    <q-icon name="south_america" />
+                  </template>
+                </q-select>
+              </div>
+              <div class="col-md-4 col-xs-12">
+                <q-select
+                  outlined
+                  v-model="formClientesParticulares.ciudad"
+                  label="Ciudad"
+                  dense
+                  hint=""
+                  :readonly="true"
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
+                  lazy-rules
+                  option-label="desc_ciudad"
+                  option-value="id"
+                  ><template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        Sin resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                  <template v-slot:prepend>
+                    <q-icon name="south_america" />
+                  </template>
+                </q-select>
+              </div>
+
+              <div class="col-md-4 col-xs-12">
+                <q-select
+                  outlined
+                  v-model="formClientesParticulares.cod_municipio"
+                  label="Municipio"
+                  hint=""
+                  class="pcform"
+                  dense
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, '')]"
+                  :options="municipiosSelected"
+                  @filter="
+                    (val, update) =>
+                      filterArray(
+                        val,
+                        update,
+                        'municipiosSelected',
+                        'municipios',
+                        'desc_municipio'
+                      )
+                  "
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
+                  option-label="desc_municipio"
+                  option-value="id"
+                  lazy-rules
+                  @update:model-value="
+                    this.formClientesParticulares.cod_parroquia = [];
+                    this.$refs.methods.getData(
+                      'parroquias',
+                      'setData',
+                      'parroquias',
+                      {
+                        headers: {
+                          Authorization: ``,
+                          municipio:
+                            this.formClientesParticulares.cod_municipio.id,
+                        },
+                      }
+                    );
+                  "
+                >
+                  <template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        Sin resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                  <template v-slot:prepend>
+                    <q-icon name="south_america" />
+                  </template>
+                </q-select>
+              </div>
+              <div class="col-md-4 col-xs-12">
+                <q-select
+                  outlined
+                  v-model="formClientesParticulares.cod_parroquia"
+                  label="Parroquia"
+                  hint=""
+                  class="pcform"
+                  dense
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, '')]"
+                  :options="parroquiasFiltered"
+                  @filter="
+                    (val, update) =>
+                      filterArray(
+                        val,
+                        update,
+                        'parroquiasFiltered',
+                        'parroquias',
+                        'desc_parroquia'
+                      )
+                  "
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
+                  option-label="desc_parroquia"
+                  option-value="id"
+                  lazy-rules
+                  ><template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        Sin resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                  <template v-slot:prepend>
+                    <q-icon name="south_america" />
+                  </template>
+                </q-select>
+              </div>
+              <div class="col-md-4 col-xs-12">
+                <q-select
+                  outlined
+                  v-model="formClientesParticulares.cod_localidad"
+                  label="Localidad"
+                  hint=""
+                  dense
+                  :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, '')]"
+                  :options="localidadesSelected"
+                  @filter="
+                    (val, update) =>
+                      filterArray(
+                        val,
+                        update,
+                        'localidadesSelected',
+                        'localidades',
+                        'desc_localidad'
+                      )
+                  "
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
+                  option-label="desc_localidad"
+                  option-value="id"
+                  lazy-rules
+                  ><template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        Sin resultados
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                  <template v-slot:prepend>
+                    <q-icon name="south_america" />
+                  </template>
+                </q-select>
+              </div>
+              <div class="col-md-6 col-xs-12">
+                <q-input
+                  outlined
+                  v-model="formClientesParticulares.telefonos"
+                  label="Telefono"
+                  :rules="[(val) => this.$refs.rulesVue.isMin(val, 3, '')]"
+                  class="pcform"
+                  dense
+                  hint=""
+                  lazy-rules
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="person" />
+                  </template>
+                </q-input>
+              </div>
+              <div class="col-md-6 col-xs-12">
+                <q-input
+                  outlined
+                  v-model="formClientesParticulares.fax"
+                  label="Fax"
+                  dense
+                  hint=""
+                  :rules="[(val) => this.$refs.rulesVue.isMin(val, 3, '')]"
+                  lazy-rules
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="person" />
+                  </template>
+                </q-input>
+              </div>
+              <div class="col-md-12 col-xs-12">
+                <q-input
+                  outlined
+                  v-model="formClientesParticulares.direccion"
+                  label="Direccion"
+                  :rules="[(val) => this.$refs.rulesVue.isMin(val, 3, '')]"
+                  dense
+                  hint=""
+                  lazy-rules
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="person" />
+                  </template>
+                </q-input>
+              </div>
+            </div>
+            <div
+              class="row justify-center items-center content-center"
+              style="margin-bottom: 6px; margin-top: 10px"
+            >
+              <q-btn
+                label="Seleccionar Cliente"
+                type="submit"
+                color="primary"
+                class="col-md-5 col-sm-5 col-xs-12"
+                icon="person_add"
+              />
+              <q-btn
+                label="Cerrar"
+                color="primary"
+                flat
+                class="col-md-5 col-sm-5 col-xs-12 btnmovil"
+                icon="close"
+                v-close-popup
+              />
+            </div>
+          </q-form>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
 
     <q-dialog v-model="confirmPopUp" persistent>
       <q-card style="width: 700px">
@@ -986,14 +1387,77 @@ export default {
               .trim(),
         },
       ],
+      columnsDetalle: [
+        {
+          name: "nro_item",
+          label: "Nro",
+          field: "nro_item",
+          align: "center",
+        },
+        {
+          name: "concepto",
+          label: "Concepto",
+          field: "concepto",
+          align: "left",
+        },
+        {
+          name: "cod_concepto",
+          label: "Codigo",
+          field: "cod_concepto",
+          classes: "hidden",
+          headerClasses: "hidden",
+        },
+        {
+          name: "check_impuesto",
+          label: "Check Impuesto",
+          field: "check_impuesto",
+          classes: "hidden",
+          headerClasses: "hidden",
+        },
+        {
+          name: "cantidad",
+          label: "Cantidad",
+          field: "cantidad",
+          align: "right",
+        },
+        {
+          name: "costo_unitario",
+          label: "Costo Unitario",
+          field: "costo_unitario",
+          align: "right",
+          format: (val) =>
+            new Intl.NumberFormat("de-DE", {
+              style: "currency",
+              currency: "EUR",
+              currencyDisplay: "code",
+            })
+              .format(val)
+              .replace("EUR", "")
+              .trim(),
+        },
+        {
+          name: "subtotal",
+          label: "Sub-Total",
+          field: "subtotal",
+          align: "right",
+          format: (val) =>
+            new Intl.NumberFormat("de-DE", {
+              style: "currency",
+              currency: "EUR",
+              currencyDisplay: "code",
+            })
+              .format(val)
+              .replace("EUR", "")
+              .trim(),
+        },
+      ],
       form: {
-        tipo: "",
-        control_inicio: "",
-        control_final: "",
-        ult_doc_referencia: "",
-        estatus_lote: "",
-        serie_doc: "",
-        cod_agencia: "",
+        monto_subtotal: 0,
+        monto_descuento: 0,
+        monto_base: 0,
+        monto_impuesto: 0,
+        monto_fpo: 0,
+        monto_total: 0,
       },
       formaPago: [
         { label: "CONTADO", value: "CO" },
@@ -1019,8 +1483,34 @@ export default {
         sortBy: "fecha_emision",
         descending: false,
       },
+      formClientesParticulares: {
+        pais: "",
+        estado: "",
+        ciudad: "",
+        cod_agencia: [],
+        cod_ciudad: [],
+        cod_localidad: [],
+        cod_municipio: [],
+        cod_parroquia: [],
+        cod_cliente: "",
+        direccion: "",
+        fax: "",
+        id: "",
+        nb_cliente: "",
+        rif_ci: "",
+        telefonos: "",
+      },
+      fpoConceptos: [15, 16, 17, 18, 19, 20, 21, 22],
+      ci_rif_cte_conta_org: null,
+      id_clte_part_orig: null,
+      cliente_id_temp: "",
+      disableCliente: true,
+      disableRif: false,
+      municipiosSelected: [],
+      parroquiasFiltered: [],
+      localidadesSelected: [],
       agencias: [],
-      datos: [],
+      detalles: [],
       guiasCarga: [],
       ultimaFact: [],
       selectedAgencia: [],
@@ -1030,7 +1520,8 @@ export default {
       agenciasSelected: [],
       tiposSelected: [],
       fechaSelected: moment().format("DD/MM/YYYY"),
-      descuentoSelected: "",
+      descuentoSelected: 0,
+      cobradoSelected: 0,
       clientesSelected: [],
       conceptos: [],
       selectedConcepto: [],
@@ -1060,6 +1551,7 @@ export default {
       asignDialog: ref(false),
       reference: ref(false),
       confirmPopUp: ref(false),
+      clienteBox: ref(false),
       selected: ref([]),
       deletePopup: ref(false),
       pagination: {
@@ -1223,6 +1715,8 @@ export default {
         this.errorMessage(
           "No existen Guías pendientes de Facturar para el Cliente seleccionado"
         );
+        this.selectedTipo = this.tipoFacturacion[2];
+        this.setConceptos();
         this.loading = false;
         return;
       }
@@ -1246,13 +1740,164 @@ export default {
 
       this.loading = false;
     },
+    // Setear cliente Particular
+    popupCliente() {
+      this.$q.notify({
+        message: "El cliente es Particular, debe ingresar los datos del mismo",
+        color: "green",
+      });
+
+      this.cliente_id_temp = this.selectedCliente.id
+        ? this.selectedCliente.id
+        : this.cliente_id_temp;
+      this.selectedCliente.id = "";
+
+      this.formClientesParticulares.cod_agencia =
+        this.selectedAgencia.nb_agencia;
+      this.formClientesParticulares.pais =
+        this.selectedAgencia.ciudades.estados.paises.desc_pais;
+      this.formClientesParticulares.estado =
+        this.selectedAgencia.ciudades.estados.desc_estado;
+      this.formClientesParticulares.ciudad =
+        this.selectedAgencia.ciudades.desc_ciudad;
+
+      api
+        .get(`/municipios/`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            estado: this.selectedAgencia.ciudades.estados.id,
+          },
+        })
+        .then((res) => {
+          if (res.data.data.length) {
+            this.municipios = res.data.data;
+          }
+        });
+
+      api
+        .get(`/localidades/`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            estado: this.selectedAgencia.ciudades.estados.id,
+          },
+        })
+        .then((res) => {
+          if (res.data.data.length) {
+            this.localidades = res.data.data;
+          }
+        });
+
+      this.clienteBox = true;
+    },
+    // Metodo para validar por RIF si un cliente ya existe
+    validateExistingClient() {
+      if (this.formClientesParticulares.rif_ci !== "") {
+        api
+          .get(`/cparticulares`, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              agencia: this.selectedAgencia.id,
+              rif: this.formClientesParticulares.rif_ci,
+              activo: "S",
+            },
+          })
+          .then((res) => {
+            if (res.data.data[0]) {
+              this.formClientesParticulares.id = res.data.data[0].id;
+              this.formClientesParticulares.nb_cliente =
+                res.data.data[0].nb_cliente;
+              this.formClientesParticulares.cod_municipio = res.data.data[0]
+                .cod_municipio
+                ? this.municipios[
+                    this.municipios.findIndex(
+                      (item) => item.id == res.data.data[0].cod_municipio
+                    )
+                  ]
+                : null;
+              if (res.data.data[0].cod_municipio) {
+                api
+                  .get(`/parroquias/`, {
+                    headers: {
+                      Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                      municipio: res.data.data[0].cod_municipio,
+                    },
+                  })
+                  .then((parroquia) => {
+                    if (parroquia.data.data.length) {
+                      this.parroquias = parroquia.data.data;
+                      this.formClientesParticulares.cod_parroquia = res.data
+                        .data[0].cod_parroquia
+                        ? this.parroquias[
+                            this.parroquias.findIndex(
+                              (item) =>
+                                item.id == res.data.data[0].cod_parroquia
+                            )
+                          ]
+                        : null;
+                    }
+                  });
+              }
+              this.formClientesParticulares.cod_localidad = res.data.data[0]
+                .cod_localidad
+                ? this.localidades[
+                    this.localidades.findIndex(
+                      (item) => item.id == res.data.data[0].cod_localidad
+                    )
+                  ]
+                : null;
+            } else {
+              this.disableCliente = false;
+            }
+            this.disableRif = true;
+          });
+      }
+    },
+    // Setear datos del cliente particular
+    async setClienteParticular() {
+      this.clienteBox = false;
+      this.selectedCliente.id = this.cliente_id_temp;
+
+      if (!this.formClientesParticulares.id) {
+        let formPart = {};
+        formPart.cod_agencia = this.selectedAgencia.id;
+        formPart.cod_cliente = this.selectedCliente.id;
+        formPart.nb_cliente = this.formClientesParticulares.nb_cliente;
+        formPart.rif_ci = this.formClientesParticulares.rif_ci;
+        formPart.cod_ciudad = this.selectedAgencia.ciudades.id;
+        formPart.direccion = this.formClientesParticulares.direccion;
+        formPart.telefonos = this.formClientesParticulares.telefonos;
+        formPart.fax = this.formClientesParticulares.fax;
+        formPart.estatus = "A";
+        formPart.cod_municipio = this.formClientesParticulares.cod_municipio.id;
+        formPart.cod_parroquia = this.formClientesParticulares.cod_parroquia.id;
+        formPart.cod_localidad = this.formClientesParticulares.cod_localidad.id;
+        await api
+          .post(`/cparticulares`, formPart, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            },
+          })
+          .then((res) => {
+            this.$q.notify({
+              message: "Cliente Particular Creado Exitosamente",
+              color: "green",
+            });
+            this.id_clte_part_orig = res.data.id;
+          });
+      } else {
+        this.id_clte_part_orig = this.formClientesParticulares.id;
+      }
+      this.ci_rif_cte_conta_org = this.formClientesParticulares.rif_ci;
+    },
     // Asignar las guias Carga a la Factura
     async asignarGuias() {
       if (this.selected.length == 0) {
-        this.errorMessage("Debe seleccionar al menos una Guía para poder asignarlas a la Factura a Generar");
+        this.errorMessage(
+          "Debe seleccionar al menos una Guía para poder asignarlas a la Factura a Generar"
+        );
         return;
       }
-      
+
       this.confirmPopUp = true;
       await this.until((_) => this.confirmAsign == true);
       if (!this.confirmAsign) {
@@ -1261,8 +1906,37 @@ export default {
 
       this.confirmAsign = false;
       this.asignDialog = false;
+      let form = {};
+      let cod_concepto;
 
-      console.log(this.selected)
+      await api
+        .get(`/vcontrol/15`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => {
+          cod_concepto = res.data.valor;
+        });
+
+      await api
+        .get(`/cfacturacion/${cod_concepto}`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => {
+          form.concepto = res.data.desc_concepto;
+          form.cod_concepto = res.data.id;
+          form.check_impuesto = res.data.check_impuesto;
+        });
+
+      form.nro_item = 1;
+      form.cantidad = this.selected.length;
+      form.costo_unitario = 0;
+      form.subtotal = this.curReplace(this.monto_total_select);
+      this.detalles.push(form);
+      this.calculaTotales();
     },
     // Metodo para Setear Datos de la ultima Factura
     setUltimaFact(res, dataRes) {
@@ -1295,6 +1969,26 @@ export default {
 
       this.setGuiasCarga();
     },
+    addConcepto() {
+      for (var i = 0; i < this.detalles.length; i++) {
+        if (this.selectedConcepto.id == this.detalles[i].cod_concepto) {
+          this.errorMessage("El concepto de Facturación ya fue Insertado");
+          return;
+        }
+      }
+
+      let form = {};
+      form.concepto = this.selectedConcepto.desc_concepto;
+      form.cod_concepto = this.selectedConcepto.id;
+      form.check_impuesto = this.selectedConcepto.check_impuesto;
+      form.nro_item = this.detalles.length + 1;
+      form.cantidad = 0;
+      form.costo_unitario = 0;
+      form.subtotal = 0;
+      this.detalles.push(form);
+      this.calculaTotales();
+    },
+    // Metodo para setar los valores totales y seleccionados
     async onSelection({ rows, added }) {
       let monto_subtotal = 0;
       let monto_base = 0;
@@ -1341,6 +2035,51 @@ export default {
           monto_total
         ).toFixed(2);
       }
+    },
+    // Metodo para calcular los totales del detalle del documento
+    async calculaTotales() {
+      let subtotal = 0;
+      let descuento = 0;
+      let base = 0;
+      let iva = 0;
+      let impuesto = 0;
+      let fpo = 0;
+      let monto_total = 0;
+
+      // Buscamos el valor del IVA
+      await api
+        .get(`/vcontrol/1`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => {
+          iva = res.data.valor;
+        });
+
+      for (var i = 0; i < this.detalles.length; i++) {        
+        subtotal += await this.parseFloatN(this.detalles[i].subtotal);
+        descuento +=
+          (subtotal *
+            this.parseFloatN(this.curReplace(this.descuentoSelected))) /
+          100;
+        base += subtotal - descuento;
+
+        if (
+          this.fpoConceptos.find(
+            (item) => item == this.detalles[i].cod_concepto
+          )
+        ) {
+          fpo += base;
+        } else {
+          if (this.detalles[i].check_impuesto == 1)
+          impuesto += (base * iva) / 100;
+        }        
+      }
+      this.form.monto_subtotal = subtotal.toFixed(2);
+      this.form.monto_descuento = descuento.toFixed(2);
+      this.form.monto_base = base.toFixed(2);
+      this.form.monto_impuesto = impuesto.toFixed(2);
     },
     // Metodo para imprimir mensajes de error
     errorMessage(message) {
