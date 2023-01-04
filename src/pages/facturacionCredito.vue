@@ -21,40 +21,10 @@
             :pagination="paginationGuia"
             :rows-per-page-options="[]"
             style="width: 100%; height: 450px; margin-bottom: 20px"
-            v-model:selected="selected"
-            :selected.sync="selected"
+            v-model:selected="selectedGuias"
+            :selected.sync="selectedGuias"
             @selection="onSelection"
           >
-            <template v-slot:body-cell-action="props">
-              <q-td :props="props">
-                <q-btn
-                  dense
-                  round
-                  flat
-                  color="primary"
-                  icon="edit"
-                  :disabled="this.allowOption(3)"
-                  @click="
-                    this.$refs.methods.getData(
-                      `/paises/${props.row.id}`,
-                      'setDataPaisesEdit',
-                      'formPaises'
-                    );
-                    paisesDialog = true;
-                  "
-                ></q-btn>
-                <q-btn
-                  dense
-                  round
-                  flat
-                  color="primary"
-                  icon="delete"
-                  :disabled="this.allowOption(4)"
-                  @click="selected = props.row.id"
-                  @click.capture="paisesDelete = true"
-                ></q-btn>
-              </q-td>
-            </template>
             <template v-slot:loading>
               <q-inner-loading showing color="primary" class="loading" />
             </template>
@@ -270,10 +240,11 @@
             <div class="col-md-12 col-xs-12">
               <q-input
                 outlined
-                v-model="form.nro_documento"
+                v-model="referencia"
                 label="Referencia Item"
                 type="textarea"
                 input-class="textArea"
+                @update:model-value="referencia = referencia.toUpperCase()"
               >
               </q-input>
             </div>
@@ -281,11 +252,64 @@
               class="col-md-12 col-xs-12"
               style="margin-top: 23px; margin-bottom: 10px; text-align: center"
             >
-              <q-btn label="Guardar" color="primary" style="width: 300px" />
+              <q-btn
+                label="Generar"
+                color="primary"
+                style="width: 300px"
+                @click="
+                  this.detalles[selected].reference = this.referencia;
+                  this.reference = false;
+                "
+              />
             </div>
           </div>
         </q-card-section>
       </q-card>
+    </q-dialog>
+
+    <q-dialog v-model="printFactura" @show="this.pdfview()">
+      <q-card class="q-pa-md" bordered style="width: 1000px; max-width: 600vw">
+        <q-card-section>
+          <div style="width: 100%; height: 600px">
+            <webViewer ref="webViewer" @close-pdf="closePrint()"></webViewer>
+          </div>
+          <div class="float-left" style="margin-bottom: 6px; margin-top: 10px">
+            <q-btn
+              label="Imprimir"
+              @click="printData()"
+              color="primary"
+              icon="print"
+            />
+            <q-btn
+              :label="
+                this.selectedTipo.formaPago == 'CR' ? 'Salir' : 'Cancelar'
+              "
+              color="primary"
+              flat
+              icon="close"
+              @click="closePrint()"
+            />
+          </div>
+          <div
+            class="float-right"
+            style="margin-bottom: 6px; margin-top: 10px"
+            v-show="this.selectedTipo.formaPago == 'CR'"
+          >
+            <q-btn
+              label="Imprimir Anexo"
+              @click="printDataAnexo()"
+              color="primary"
+              icon="print"
+            />
+          </div>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog v-model="printAnexo" @show="this.pdfview()">
+      <div style="width: 1000px">
+        <webViewer ref="webViewer" @close-pdf="printAnexo = false"></webViewer>
+      </div>
     </q-dialog>
 
     <div class="q-pa-sm justify-center">
@@ -330,6 +354,7 @@
             outlined
             standout
             label="Agencia"
+            :disable="this.detalles.length > 0 ? true : false"
             @update:model-value="
               this.selectedCliente = [];
               this.clientesLoading = true;
@@ -365,6 +390,7 @@
             use-input
             hide-selected
             fill-input
+            :disable="this.detalles.length > 0 ? true : false"
             option-label="label"
             option-value="value"
             input-debounce="0"
@@ -403,7 +429,7 @@
                   transition-hide="scale"
                 >
                   <q-date
-                    v-model="fecha_desde"
+                    v-model="fechaSelected"
                     mask="DD/MM/YYYY"
                     style="padding-bottom: 0px"
                     @update:model-value="this.$refs.qDateProxy.hide()"
@@ -461,7 +487,13 @@
             transition-hide="flip-down"
             :options="clientesSelected"
             :loading="clientesLoading"
-            :disable="clientesLoading"
+            :disable="
+              !clientesLoading
+                ? this.detalles.length > 0
+                  ? true
+                  : false
+                : true
+            "
             @filter="
               (val, update) =>
                 filterArray(
@@ -568,7 +600,7 @@
               transition-show="scale"
               transition-hide="scale"
               color="primary"
-              >Eliminar Filtros</q-tooltip
+              >Limpiar Filtros</q-tooltip
             >
           </q-btn>
           <q-btn
@@ -576,7 +608,7 @@
             color="primary"
             round
             padding="sm"
-            @click="this.sendData()"
+            @click="printDialog()"
             style="margin-right: 15px"
           >
             <q-icon size="25px" name="save" color="white"> </q-icon>
@@ -586,24 +618,7 @@
               transition-show="scale"
               transition-hide="scale"
               color="primary"
-              >Guardar Selección</q-tooltip
-            >
-          </q-btn>
-          <q-btn
-            dense
-            color="primary"
-            round
-            padding="sm"
-            style="margin-right: 5px"
-          >
-            <q-icon size="25px" name="print" color="white"> </q-icon>
-            <q-tooltip
-              class="bg-primary"
-              style="max-height: 30px"
-              transition-show="scale"
-              transition-hide="scale"
-              color="primary"
-              >Imprimir Reporte</q-tooltip
+              >Generar Factura</q-tooltip
             >
           </q-btn>
         </div>
@@ -687,6 +702,80 @@
                   <template v-slot:loading>
                     <q-inner-loading showing color="primary" class="loading" />
                   </template>
+                  <template v-slot:body-cell-cantidad="props">
+                    <q-td :props="props">
+                      <q-input
+                        outlined
+                        input-class="text-right"
+                        dense
+                        v-money="moneyNotDecimal"
+                        v-model="props.row.cantidad"
+                        :disable="
+                          props.row.cod_concepto == this.conceptoTransporte
+                            ? true
+                            : false
+                        "
+                        :ref="'cantidad' + (props.row.nro_item - 1)"
+                        :rules="[
+                          (val) => this.$refs.rulesVue.isReq(val, ''),
+                          (val) => this.$refs.rulesVue.isMax(val, 3, ''),
+                        ]"
+                        hide-bottom-space
+                        @keyup="this.calculaDetalle('cantidad', props.row)"
+                      >
+                      </q-input>
+                    </q-td>
+                  </template>
+                  <template v-slot:body-cell-costo_unitario="props">
+                    <q-td :props="props">
+                      <q-input
+                        outlined
+                        input-class="text-right"
+                        dense
+                        v-money="money"
+                        v-model="props.row.costo_unitario"
+                        :disable="
+                          props.row.cod_concepto == this.conceptoTransporte
+                            ? true
+                            : false
+                        "
+                        ref="costo_unitario"
+                        :rules="[
+                          (val) => this.$refs.rulesVue.isReq(val, ''),
+                          (val) => this.$refs.rulesVue.isMax(val, 9, ''),
+                        ]"
+                        hide-bottom-space
+                        @keyup="
+                          this.calculaDetalle('costo_unitario', props.row)
+                        "
+                      >
+                      </q-input>
+                    </q-td>
+                  </template>
+                  <template v-slot:body-cell-subtotal="props">
+                    <q-td :props="props">
+                      <q-input
+                        outlined
+                        input-class="text-right"
+                        dense
+                        v-money="money"
+                        v-model="props.row.subtotal"
+                        :disable="
+                          props.row.cod_concepto == this.conceptoTransporte
+                            ? true
+                            : false
+                        "
+                        ref="subtotal"
+                        :rules="[
+                          (val) => this.$refs.rulesVue.isReq(val, ''),
+                          (val) => this.$refs.rulesVue.isMax(val, 9, ''),
+                        ]"
+                        hide-bottom-space
+                        @keyup="this.calculaDetalle('subtotal', props.row)"
+                      >
+                      </q-input>
+                    </q-td>
+                  </template>
                   <template v-slot:body-cell-action="props">
                     <q-td :props="props">
                       <q-btn
@@ -694,8 +783,17 @@
                         round
                         flat
                         color="primary"
-                        icon="edit"
+                        icon="reset_tv"
                         :disabled="this.allowOption(3)"
+                        @click="selected = props.row.nro_item - 1"
+                        @click.capture="
+                          this.referencia = this.detalles[
+                            props.row.nro_item - 1
+                          ]
+                            ? this.detalles[props.row.nro_item - 1].reference
+                            : '';
+                          this.reference = true;
+                        "
                       ></q-btn>
                       <q-btn
                         dense
@@ -703,9 +801,14 @@
                         flat
                         color="primary"
                         icon="delete"
+                        :disable="
+                          props.row.cod_concepto == this.conceptoTransporte
+                            ? true
+                            : false
+                        "
                         :disabled="this.allowOption(4)"
-                        @click="selected = props.row.id"
-                        @click.capture="paisesDelete = true"
+                        @click="selected = props.row.nro_item - 1"
+                        @click.capture="deletePopup = true"
                       ></q-btn>
                     </q-td>
                   </template>
@@ -812,7 +915,7 @@
         <div class="col-md-9 col-xs-12 cardMargin selectMobile2">
           <q-input
             outlined
-            v-model="form.nro_documento"
+            v-model="form.observacion"
             label="Observacion Factura"
             type="textarea"
             input-class="textArea"
@@ -1264,10 +1367,93 @@
           />
           <q-btn
             flat
-            label="Guardar"
+            label="Asociar"
             color="primary"
             v-close-popup
             @click="this.confirmAsign = true"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog v-model="confirmSavePopUp" persistent>
+      <q-card style="width: 700px">
+        <q-card-section>
+          <div class="text-h5" style="font-size: 18px">
+            ¿Desea Generar la Factura?
+          </div>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn
+            flat
+            label="Cancelar"
+            color="primary"
+            @click="this.confirmSave = false"
+            v-close-popup
+          />
+          <q-btn
+            flat
+            label="Generar"
+            color="primary"
+            v-close-popup
+            @click="this.confirmSave = true"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog v-model="confirmPrintPopUp" persistent>
+      <q-card style="width: 700px">
+        <q-card-section>
+          <div class="text-h5" style="font-size: 18px">
+            Estas seguro de Imprimir la Factura con Nro. Control
+            {{
+              this.correlativo.serie_doc
+                ? this.correlativo.serie_doc + " "
+                : "" +
+                  this.correlativo.ult_doc_referencia
+                    .toString()
+                    .padStart(9, "00-000000")
+            }}?.
+          </div>
+          <div class="text-h5" style="font-size: 18px">
+            Verifique que se encuentre en la Impresora.
+          </div>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn
+            flat
+            label="Imprimir"
+            color="primary"
+            @click="this.confirmPrint = true"
+            v-close-popup
+          />
+          <q-btn
+            flat
+            label="Cancelar"
+            color="primary"
+            v-close-popup
+            @click="this.confirmPrint = false"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog v-model="deletePopup">
+      <q-card style="width: 700px">
+        <q-card-section>
+          <div class="text-h5" style="font-size: 18px">
+            ¿Desea eliminar el Registro?
+          </div>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn flat label="Cancelar" color="primary" v-close-popup />
+          <q-btn
+            flat
+            label="Aceptar"
+            color="primary"
+            v-close-popup
+            @click="deleteConcepto(selected)"
           />
         </q-card-actions>
       </q-card>
@@ -1291,12 +1477,17 @@ import rulesVue from "src/components/rules.vue";
 import moment from "moment";
 import { VMoney } from "v-money";
 import { api } from "boot/axios";
+import webViewerVue from "src/components/webViewer.vue";
 import { useQuasar, LocalStorage } from "quasar";
 import methodsVue from "src/components/methods.vue";
 
 export default {
   directives: { money: VMoney },
-  components: { methods: methodsVue, rulesVue },
+  components: {
+    methods: methodsVue,
+    rulesVue,
+    webViewer: webViewerVue,
+  },
   data() {
     return {
       money: {
@@ -1305,6 +1496,14 @@ export default {
         prefix: "",
         suffix: "",
         precision: 2,
+        masked: false,
+      },
+      moneyNotDecimal: {
+        decimal: ",",
+        thousands: ".",
+        prefix: "",
+        suffix: "",
+        precision: 0,
         masked: false,
       },
       columns: [
@@ -1399,6 +1598,7 @@ export default {
           label: "Concepto",
           field: "concepto",
           align: "left",
+          style: "width: 700px",
         },
         {
           name: "cod_concepto",
@@ -1450,6 +1650,11 @@ export default {
               .replace("EUR", "")
               .trim(),
         },
+        {
+          name: "action",
+          label: "Acciones",
+          align: "center",
+        },
       ],
       form: {
         monto_subtotal: 0,
@@ -1458,19 +1663,39 @@ export default {
         monto_impuesto: 0,
         monto_fpo: 0,
         monto_total: 0,
+        observacion: "",
       },
       formaPago: [
         { label: "CONTADO", value: "CO" },
         { label: "CRÉDITO", value: "CR" },
       ],
       tipoFacturacion: [
-        { label: "FACTURACION CREDITO", value: "C", tipo: 22, formaPago: "CR" },
-        { label: "FACTURACION CONTADO", value: "A", tipo: 22, formaPago: "CO" },
+        {
+          label: "FACTURACION CREDITO",
+          value: "C",
+          tipo: 22,
+          formaPago: "CR",
+          tipoFact: "FG",
+          formaindex: 1,
+          vcontrol: 15,
+        },
+        {
+          label: "FACTURACION CONTADO",
+          value: "A",
+          tipo: 22,
+          formaPago: "CO",
+          tipoFact: "FC",
+          formaindex: 0,
+          vcontrol: 21,
+        },
         {
           label: "FACTURACION OTROS INGRESOS",
           value: "I",
           tipo: 3,
           formaPago: "",
+          tipoFact: "FO",
+          formaindex: 0,
+          vcontrol: 15,
         },
       ],
       pagadoEn: [
@@ -1513,6 +1738,7 @@ export default {
       detalles: [],
       guiasCarga: [],
       ultimaFact: [],
+      selected: [],
       selectedAgencia: [],
       selectedCliente: [],
       selectedTipo: [],
@@ -1541,6 +1767,16 @@ export default {
       monto_total_select: 0,
       rpermisos: [],
       confirmAsign: false,
+      confirmSave: false,
+      confirmPrint: false,
+      conceptoTransporte: "",
+      referencia: "",
+      imprimio: false,
+      imprimioAnexo: false,
+      iva: 0,
+      correlativo: {},
+      nro_documento: 0,
+      nro_interno: "",
     };
   },
   setup() {
@@ -1551,9 +1787,13 @@ export default {
       asignDialog: ref(false),
       reference: ref(false),
       confirmPopUp: ref(false),
+      confirmSavePopUp: ref(false),
+      confirmPrintPopUp: ref(false),
       clienteBox: ref(false),
-      selected: ref([]),
+      selectedGuias: ref([]),
       deletePopup: ref(false),
+      printFactura: ref(false),
+      printAnexo: ref(false),
       pagination: {
         page: 1,
         rowsPerPage: 0,
@@ -1648,6 +1888,17 @@ export default {
           this.setConceptos();
         });
 
+      // Buscamos el valor del IVA
+      api
+        .get(`/vcontrol/1`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => {
+          this.iva = res.data.valor;
+        });
+
       // Seteamos los datos de la ultima Factura
       this.$refs.methods.getData(
         "/mmovimientos",
@@ -1663,6 +1914,435 @@ export default {
           },
         }
       );
+    },
+    // Metodos para mostrar el preimpreso de la Factura
+    async printDialog() {
+      // Verifico que tenga detalle
+      if (this.detalles.length == 0) {
+        this.errorMessage(
+          "No es posible generar la Factura si esta no posee Detalle"
+        );
+        return;
+      }
+
+      // Verifico que el detalle no este vacio
+      for (var i = 0; i < this.detalles.length; i++) {
+        if (this.detalles[i].subtotal == "0,00") {
+          eval("this.$refs.cantidad" + i + ".$el.focus()");
+          this.errorMessage(
+            "Debe ingresar los datos completos en el detalle, antes de generar la Factura"
+          );
+          return;
+        }
+      }
+
+      this.confirmSavePopUp = true;
+      await this.until((_) => this.confirmSave == true);
+      if (!this.confirmSave) {
+        return;
+      }
+
+      this.loading = true;
+
+      //se define que agencia maneja el correlativo
+      let agencia_ctrl;
+      await api
+        .get(`/vcontrol/20`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => {
+          agencia_ctrl = res.data.valor;
+        });
+
+      //se define el tipo de formato que usa la factura
+      let formato_fa;
+      let tipo_formato;
+      await api
+        .get(`/vcontrol/22`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => {
+          formato_fa = res.data.valor;
+        });
+
+      await api
+        .get(`/tipos/`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            fuente: "CR",
+            codigo: formato_fa,
+          },
+        })
+        .then((res) => {
+          tipo_formato = res.data[0].id;
+        });
+
+      //buscar el control correlativo de la factura
+      await api
+        .get(`/correlativo/`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            agencia: agencia_ctrl,
+            tipo: tipo_formato,
+            estatus: "A",
+          },
+        })
+        .then((res) => {
+          this.correlativo = res.data.data[0];
+        });
+
+      if (this.correlativo) {
+        //Pregunto si el valor que hay en el campo "control_inicio" de la tabla CONTROL_CORRELATIVO es Null
+        delete this.correlativo.estatus_desc;
+        if (this.correlativo.ult_doc_referencia == 0) {
+          //Igualo el valor que tiene el campo "control_inicio" en la tabla CONTROL_CORRELATIVO a la variable li_inicio
+          this.correlativo.ult_doc_referencia = this.correlativo.control_inicio;
+        } else {
+          //Verificar el ultimo numero del Control Preimpreso
+          this.correlativo.ult_doc_referencia =
+            this.parseFloatN(this.correlativo.ult_doc_referencia) + 1;
+          if (
+            this.correlativo.ult_doc_referencia ==
+            this.correlativo.control_final
+          ) {
+            this.errorMessage(
+              "Atención: el Número Correlativo del Control Preimpreso Activo ha llegado al último Número asignado al mismo"
+            );
+            this.errorMessage(
+              "Para Registrar otra factura Ingrese un nuevo Control Correlativo y asignele estatus [Activo]"
+            );
+
+            //Actualiza la tabla CONTROL_CORRELATIVO y asigna estatus 'C'=Culminado
+            this.correlativo.estatus_lote = "C";
+          } else if (
+            this.correlativo.ult_doc_referencia > this.correlativo.control_final
+          ) {
+            this.errorMessage(
+              "Atención: no existe un Número Correlativo Activo del Control Preimpreso de Facturas"
+            );
+            this.errorMessage(
+              "Para Registrar otra factura Ingrese un nuevo Control Correlativo y asignele estatus [Activo]"
+            );
+            this.loading = false;
+            return;
+          }
+        }
+      } else {
+        this.errorMessage(
+          "La Factura no se puede generar porque no hay un N° de Control Inicio Preimpreso"
+        );
+        this.errorMessage(
+          "SOLUCION: Registre un Control Correlativo en el Módulo de Mantenimiento Sub Módulo Datos Generales y vuelva a generar la Factura."
+        );
+        this.loading = false;
+        return;
+      }
+
+      //Busca y Genera el código del documento
+      this.nro_documento = 0;
+      await api
+        .get(`/mmovimientos/`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            agencia: this.selectedAgencia.id,
+            tipo: "FA",
+            page: 0,
+            limit: 1,
+            estatus: "A",
+            order_by: "nro_documento",
+            order_direction: "DESC",
+          },
+        })
+        .then((res) => {
+          this.nro_documento = res.data.data[0].nro_documento;
+          this.nro_documento = this.parseFloatN(this.nro_documento) + 1;
+        });
+
+      //Busca y Genera ultimo numero interno de las facturas
+      this.nro_interno = this.parseFloatN(this.ultimaFact[0].nro_control) + 1;
+
+      // Hacer el Preview de la factura
+      this.confirmSave = false;
+      this.printFactura = true;
+      this.loading = false;
+    },
+    // Metodo para imprimir la Factura
+    async printData() {
+      this.confirmPrintPopUp = true;
+      await this.until((_) => this.confirmPrint == true);
+      if (!this.confirmPrint) {
+        return;
+      }
+
+      this.confirmPrint = false;
+      this.errorMessage("Aqui imprimo la factura");
+      
+      if (this.selectedTipo.formaPago == "CR") {
+        this.imprimio = true;        
+      } else {
+        this.sendData();
+        this.printFactura = false;
+      }
+    },
+    // Metodo para imprimir el Anexo
+    async printDataAnexo() {
+      if(!this.imprimio) {
+        this.errorMessage("Debe Imprimir la Factura antes de imprimir el reporte Anexo...");
+        return;
+      }
+
+      this.$q.notify({
+        message: "Recuerde Imprimir el reporte Anexo a la Factura",
+        color: "green",
+      });
+
+      this.printAnexo = true;
+      this.printFactura = false;
+      this.sendData();
+    },
+    // Metodo para cerrar el print de la Factura
+    closePrint() {
+      if (this.selectedTipo.formaPago == "CR" && this.imprimio && !this.imprimioAnexo) {
+        this.errorMessage("Debe Imprimir el Reporte Anexo antes de Salir...");
+        return;
+      } else {
+        this.printFactura = false;
+        this.imprimio = false;
+      }
+    },
+    // Metodos para guardar la Factura
+    async sendData() {
+      this.imprimio = false;
+      this.loading = true;
+
+      // Actualizo el correlativo
+      await api.put(`/correlativo/${this.correlativo.id}`, this.correlativo, {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        },
+      });
+
+      let descuento = this.curReplace(this.descuentoSelected);
+
+      // Si es contado o credito, setea las facturas asociadas
+      if (
+        this.selectedTipo.formaPago == "CR" ||
+        this.selectedTipo.formaPago == "CO"
+      ) {
+        for (var i = 0; i < this.selectedGuias.length; i++) {
+          let formGuiasCarga = {};
+
+          if (descuento > 0) {
+            let comisionVenta = {};
+            let cod_comision;
+            let cod_agente;
+
+            let monto_base = (
+              this.selectedGuias[i].monto_base *
+              (1 - descuento / 100)
+            ).toFixed(2);
+            let monto_impuesto = (
+              this.selectedGuias[i].monto_impuesto *
+              (1 - descuento / 100)
+            ).toFixed(2);
+            let monto_descuento = (monto_base * (descuento / 100)).toFixed(2);
+            let monto_total = (
+              this.parseFloatN(monto_base) +
+              this.parseFloatN(monto_impuesto) -
+              this.parseFloatN(monto_descuento)
+            ).toFixed(2);
+            let monto_comision = 0;
+
+            // Busco la comision de Venta para extraer el ID y el agente
+            await api
+              .get(`/ccomisiones`, {
+                headers: {
+                  Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                  cod_movimiento: this.selectedGuias[i].id,
+                  tipo: "V",
+                },
+              })
+              .then((res) => {
+                if (res.data.data[0]) {
+                  cod_comision = res.data.data[0].id;
+                  cod_agente = res.data.data[0].cod_agente;
+                }
+              });
+
+            // Busco la comision del Agente de ventas
+            if (cod_agente) {
+              await api
+                .get(`/agentes/${cod_agente}`, {
+                  headers: {
+                    Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                  },
+                })
+                .then((res) => {
+                  monto_comision = (
+                    (res.data.porc_comision_venta * monto_base) /
+                    100
+                  ).toFixed(2);
+                  comisionVenta = {
+                    monto_comision: monto_comision,
+                  };
+                });
+            }
+
+            // Actualizo la comision de Ventas
+            if (monto_comision > 0) {
+              await api
+                .put(`/ccomisiones/${cod_comision}`, comisionVenta, {
+                  headers: {
+                    Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                  },
+                })
+                .catch(() => {
+                  this.errorMessage(
+                    "Error al Actualizar las Comisiones de las Cargas asociadas a la Factura!..."
+                  );
+                  return;
+                });
+            }
+
+            formGuiasCarga.porc_descuento = descuento;
+            formGuiasCarga.monto_base = monto_base;
+            formGuiasCarga.monto_subtotal = monto_base;
+            formGuiasCarga.monto_impuesto = monto_impuesto;
+            formGuiasCarga.monto_descuento = monto_descuento;
+            formGuiasCarga.base_comision_vta_rcl = monto_base;
+            formGuiasCarga.comision_venta = monto_comision;
+            formGuiasCarga.monto_total = monto_total;
+          }
+
+          formGuiasCarga.estatus_administra = "G";
+          formGuiasCarga.tipo_doc_principal = "FA";
+          formGuiasCarga.nro_doc_principal = this.nro_documento;
+          formGuiasCarga.serie_doc_principal = this.correlativo.serie_doc;
+          formGuiasCarga.nro_ctrl_doc_ppal = this.nro_interno;
+          formGuiasCarga.cod_ag_doc_ppal = this.selectedAgencia.id;
+          formGuiasCarga.nro_ctrl_doc_ppal_new =
+            this.correlativo.ult_doc_referencia;
+          formGuiasCarga.check_cfacgen = 1;
+          formGuiasCarga.fecha_cfacgen = moment().format("YYYY-MM-DD");
+
+          await api
+            .put(`/mmovimientos/${this.selectedGuias[i].id}`, formGuiasCarga, {
+              headers: {
+                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              },
+            })
+            .catch(() => {
+              this.errorMessage(
+                "Error al Actualizar las Guias Carga asociadas a la Factura!..."
+              );
+              return;
+            });
+        }
+      }
+
+      // Setear los datos en el maestro
+      let formFactura = {};
+
+      formFactura.cod_agencia = this.selectedAgencia.id;
+      formFactura.nro_documento = this.nro_documento;
+      formFactura.t_de_documento = "FA";
+      formFactura.fecha_emision = moment(
+        this.fechaSelected,
+        "DD/MM/YYYY"
+      ).format("YYYY-MM-DD");
+      formFactura.cod_cliente_org = this.selectedCliente.id;
+      formFactura.modalidad_pago = this.selectedForma.value;
+      formFactura.porc_impuesto = this.iva;
+      formFactura.monto_subtotal = this.curReplace(this.form.monto_subtotal);
+      formFactura.monto_base = this.curReplace(this.form.monto_base);
+      formFactura.monto_impuesto = this.curReplace(this.form.monto_impuesto);
+      formFactura.monto_total = this.curReplace(this.form.monto_total);
+      formFactura.saldo = this.curReplace(this.form.monto_total);
+      formFactura.estatus_administra = "P";
+      formFactura.observacion = this.form.observacion;
+      formFactura.tipo_factura = this.selectedTipo.tipoFact;
+      formFactura.nro_control = this.nro_interno;
+      formFactura.nro_control_new = this.correlativo.ult_doc_referencia;
+      formFactura.porc_descuento = descuento;
+      formFactura.monto_descuento = this.curReplace(this.form.monto_descuento);
+      formFactura.monto_divisas_igtf = this.curReplace(this.cobradoSelected);
+
+      let idFact;
+      await api
+        .post(`/mmovimientos`, formFactura, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => {
+          idFact = res.data.id;
+        })
+        .catch(() => {
+          this.errorMessage(
+            "Error del Sistema. Problemas al actualizar el maestro de la factura. Comuníquese con el proveedor del Sistemas..."
+          );
+          return;
+        });
+
+      // Setear los datos en el detalle
+      for (var i = 0; i < this.detalles.length; i++) {
+        let formDetalle = {};
+        formDetalle.cod_movimiento = idFact;
+        formDetalle.nro_item = this.detalles[i].nro_item;
+        formDetalle.cod_concepto = this.detalles[i].cod_concepto;
+        formDetalle.precio_unitario = this.curReplace(
+          this.detalles[i].costo_unitario
+        );
+        formDetalle.cantidad = this.parseFloatN(this.detalles[i].cantidad);
+        formDetalle.importe_renglon = this.curReplace(
+          this.detalles[i].subtotal
+        );
+        formDetalle.descripcion = this.detalles[i].reference
+          ? this.detalles[i].reference
+          : null;
+        formDetalle.porc_descuento = descuento;
+
+        await api
+          .post(`/dmovimientos`, formDetalle, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            },
+          })
+          .catch(() => {
+            this.errorMessage(
+              "Error del Sistema. Problemas al actualizar el detalle de la factura. Comuníquese con el proveedor del Sistemas..."
+            );
+            return;
+          });
+      }
+
+      this.$q.notify({
+        message: "La Factura ha sido generada Exitosamente",
+        color: "green",
+      });
+
+      await this.resetFilters();
+      this.loading = false;
+
+      // Seteamos los datos de la ultima Factura
+      this.$refs.methods.getData(
+        "/mmovimientos",
+        "setUltimaFact",
+        "ultimaFact",
+        {
+          headers: {
+            tipo: "FA",
+            page: 0,
+            limit: 1,
+            order_by: "nro_control",
+            order_direction: "DESC",
+          },
+        }
+      );      
     },
     // Seteamos guias carga del cliente
     async setGuiasCarga() {
@@ -1891,7 +2571,7 @@ export default {
     },
     // Asignar las guias Carga a la Factura
     async asignarGuias() {
-      if (this.selected.length == 0) {
+      if (this.selectedGuias.length == 0) {
         this.errorMessage(
           "Debe seleccionar al menos una Guía para poder asignarlas a la Factura a Generar"
         );
@@ -1907,20 +2587,27 @@ export default {
       this.confirmAsign = false;
       this.asignDialog = false;
       let form = {};
-      let cod_concepto;
+
+      for (var i = 0; i < this.selectedGuias.length; i++) {
+        if (this.selectedTipo.formaPago == "CO") {
+          if (this.form.observacion == "") {
+            if (this.selected.length > 1) {
+              this.form.observacion =
+                "MERCANCIA CORRESPONDIENTE A LA(S) GUIA(S) CARGA: " +
+                this.selectedGuias[i].nro_documento;
+            } else {
+              this.form.observacion =
+                "MERCANCIA CORRESPONDIENTE A LA GUIA CARGA: " +
+                this.selectedGuias[i].nro_documento;
+            }
+          } else {
+            this.form.observacion += ", " + this.selectedGuias[i].nro_documento;
+          }
+        }
+      }
 
       await api
-        .get(`/vcontrol/15`, {
-          headers: {
-            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-          },
-        })
-        .then((res) => {
-          cod_concepto = res.data.valor;
-        });
-
-      await api
-        .get(`/cfacturacion/${cod_concepto}`, {
+        .get(`/cfacturacion/${this.conceptoTransporte}`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
           },
@@ -1932,10 +2619,11 @@ export default {
         });
 
       form.nro_item = 1;
-      form.cantidad = this.selected.length;
+      form.cantidad = this.selectedGuias.length;
       form.costo_unitario = 0;
       form.subtotal = this.curReplace(this.monto_total_select);
       this.detalles.push(form);
+      this.selectedForma = this.formaPago[this.selectedTipo.formaindex];
       this.calculaTotales();
     },
     // Metodo para Setear Datos de la ultima Factura
@@ -1956,6 +2644,17 @@ export default {
       );
       this.selectedTiposConcepto = this.tiposConcepto[find];
 
+      // Seteamos el concepto de Transporte de Mercancia
+      api
+        .get(`/vcontrol/${this.selectedTipo.vcontrol}`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => {
+          this.conceptoTransporte = res.data.valor;
+        });
+
       api
         .get(`/cfacturacion`, {
           headers: {
@@ -1969,6 +2668,7 @@ export default {
 
       this.setGuiasCarga();
     },
+    // Metodos para Agregar conceptos
     addConcepto() {
       for (var i = 0; i < this.detalles.length; i++) {
         if (this.selectedConcepto.id == this.detalles[i].cod_concepto) {
@@ -1988,8 +2688,13 @@ export default {
       this.detalles.push(form);
       this.calculaTotales();
     },
+    // Metodos para Eliminar conceptos
+    async deleteConcepto(selected) {
+      this.detalles.splice(selected, 1);
+      this.calculaTotales();
+    },
     // Metodo para setar los valores totales y seleccionados
-    async onSelection({ rows, added }) {
+    onSelection({ rows, added }) {
       let monto_subtotal = 0;
       let monto_base = 0;
       let monto_impuesto = 0;
@@ -2036,50 +2741,102 @@ export default {
         ).toFixed(2);
       }
     },
+    // Metodo para calcular el detalle del documento
+    async calculaDetalle(field, row) {
+      let cantidad;
+      let subtotal;
+      let costo_unitario;
+      switch (field) {
+        case "cantidad":
+          cantidad = await this.curReplace(row.cantidad);
+          costo_unitario = await this.curReplace(row.costo_unitario);
+          row.subtotal = (cantidad * costo_unitario).toFixed(2);
+          this.calculaTotales();
+          break;
+        case "costo_unitario":
+          cantidad = await this.curReplace(row.cantidad);
+          costo_unitario = await this.curReplace(row.costo_unitario);
+          row.subtotal = (cantidad * costo_unitario).toFixed(2);
+          this.calculaTotales();
+          break;
+        case "subtotal":
+          cantidad = await this.curReplace(row.cantidad);
+          subtotal = await this.curReplace(row.subtotal);
+          row.costo_unitario = (subtotal / cantidad).toFixed(2);
+          this.calculaTotales();
+          break;
+        default:
+          break;
+      }
+    },
     // Metodo para calcular los totales del detalle del documento
     async calculaTotales() {
       let subtotal = 0;
       let descuento = 0;
+      let subtotal_base = 0;
+      let descuento_base = 0;
       let base = 0;
-      let iva = 0;
-      let impuesto = 0;
       let fpo = 0;
-      let monto_total = 0;
+      let impuesto = 0;
 
-      // Buscamos el valor del IVA
-      await api
-        .get(`/vcontrol/1`, {
-          headers: {
-            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-          },
-        })
-        .then((res) => {
-          iva = res.data.valor;
-        });
+      this.form = {
+        monto_subtotal: 0,
+        monto_descuento: 0,
+        monto_base: 0,
+        monto_impuesto: 0,
+        monto_fpo: 0,
+        monto_total: 0,
+      };
 
-      for (var i = 0; i < this.detalles.length; i++) {        
-        subtotal += await this.parseFloatN(this.detalles[i].subtotal);
-        descuento +=
-          (subtotal *
-            this.parseFloatN(this.curReplace(this.descuentoSelected))) /
-          100;
-        base += subtotal - descuento;
+      for (var i = 0; i <= this.detalles.length - 1; i++) {
+        subtotal +=
+          this.detalles[i].subtotal != "0"
+            ? await this.parseFloatN(this.curReplace(this.detalles[i].subtotal))
+            : 0;
 
+        // Calculamos el FPO
         if (
           this.fpoConceptos.find(
             (item) => item == this.detalles[i].cod_concepto
           )
         ) {
-          fpo += base;
-        } else {
-          if (this.detalles[i].check_impuesto == 1)
-          impuesto += (base * iva) / 100;
-        }        
+          fpo +=
+            this.detalles[i].subtotal != "0"
+              ? await this.parseFloatN(
+                  this.curReplace(this.detalles[i].subtotal)
+                )
+              : 0;
+        }
+
+        // Calculamos el Monto base
+        if (this.detalles[i].check_impuesto == 1) {
+          subtotal_base +=
+            this.detalles[i].subtotal != "0"
+              ? await this.parseFloatN(
+                  this.curReplace(this.detalles[i].subtotal)
+                )
+              : 0;
+          descuento_base =
+            (subtotal_base *
+              this.parseFloatN(this.curReplace(this.descuentoSelected))) /
+            100;
+          base = subtotal_base - descuento_base;
+        }
+
+        if (i == this.detalles.length - 1) {
+          this.form.monto_subtotal = subtotal.toFixed(2);
+          descuento =
+            (subtotal *
+              this.parseFloatN(this.curReplace(this.descuentoSelected))) /
+            100;
+          this.form.monto_descuento = descuento.toFixed(2);
+          this.form.monto_base = base.toFixed(2);
+          impuesto = (base * this.iva) / 100;
+          this.form.monto_impuesto = impuesto.toFixed(2);
+          this.form.monto_fpo = fpo.toFixed(2);
+          this.form.monto_total = (subtotal - descuento + impuesto).toFixed(2);
+        }
       }
-      this.form.monto_subtotal = subtotal.toFixed(2);
-      this.form.monto_descuento = descuento.toFixed(2);
-      this.form.monto_base = base.toFixed(2);
-      this.form.monto_impuesto = impuesto.toFixed(2);
     },
     // Metodo para imprimir mensajes de error
     errorMessage(message) {
@@ -2099,9 +2856,10 @@ export default {
         ? amount
         : amount.replaceAll(".", "").replaceAll(",", ".");
     },
+    // Metodo para limpiar el formulario
     resetForm() {
       this.guiasCarga = [];
-      this.selected = [];
+      this.selectedGuias = [];
       this.monto_subtotal = 0;
       this.monto_base = 0;
       this.monto_impuesto = 0;
@@ -2111,6 +2869,34 @@ export default {
       this.monto_impuesto_select = 0;
       this.monto_total_select = 0;
     },
+    // Metodo para limpiar los filtros
+    resetFilters() {
+      this.resetForm();
+      this.selectedAgencia = this.agencias[0];
+      this.selectedTipo = this.tipoFacturacion[2];
+      this.selectedForma = this.formaPago[0];
+      this.fechaSelected = moment().format("DD/MM/YYYY");
+      this.detalles = [];
+      this.descuentoSelected = 0;
+      this.cobradoSelected = 0;
+      this.form = {
+        monto_subtotal: 0,
+        monto_descuento: 0,
+        monto_base: 0,
+        monto_impuesto: 0,
+        monto_fpo: 0,
+        monto_total: 0,
+        observacion: "",
+      };
+      this.selectedCliente = [];
+      this.clientesLoading = true;
+      this.$refs.methods.getData(`/clientes`, "setData", "clientes", {
+        headers: {
+          agencia: this.selectedAgencia.id,
+          activo: "S",
+        },
+      });
+    },
     // Metodo para que una funcion no avance hasta que se cumpla una condicion
     async until(conditionFunction) {
       const poll = (resolve) => {
@@ -2118,6 +2904,10 @@ export default {
         else setTimeout((_) => poll(resolve), 400);
       };
       return new Promise(poll);
+    },
+    // Metodo para mostrar PDF en funcion de BASE 64
+    pdfview() {
+      this.$refs.webViewer.showpdf(this.base64);
     },
   },
 };
