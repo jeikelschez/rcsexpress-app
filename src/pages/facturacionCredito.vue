@@ -1,89 +1,16 @@
 <template>
   <q-page class="pagina q-pa-md">
     <q-dialog v-model="asignDialog">
-      <q-card class="q-pa-md" bordered style="width: 1400px; max-width: 100vw">
+      <q-card class="q-pa-md" bordered style="width: 1400px; max-width: 100vw; padding-bottom: 0px;">
         <q-card-section>
           <div class="text-h5">
-            <p style="font-size: 24px">
+            <p style="font-size: 24px; margin-bottom: 20px" class="text-secondary">
               <strong>ASIGNAR LAS GUIAS PENDIENTES POR FACTURAR</strong>
             </p>
           </div>
         </q-card-section>
         <q-card-section style="margin-top: -30px">
-          <q-table
-            :rows="guiasCarga"
-            :loading="loading"
-            binary-state-sort
-            row-key="id"
-            :columns="columns"
-            selection="multiple"
-            :separator="separator"
-            :pagination="paginationGuia"
-            :rows-per-page-options="[]"
-            style="width: 100%; height: 450px; margin-bottom: 20px"
-            v-model:selected="selected"
-            :selected.sync="selected"
-            @selection="onSelection"
-          >
-            <template v-slot:body-cell-action="props">
-              <q-td :props="props">
-                <q-btn
-                  dense
-                  round
-                  flat
-                  color="primary"
-                  icon="edit"
-                  :disabled="this.allowOption(3)"
-                  @click="
-                    this.$refs.methods.getData(
-                      `/paises/${props.row.id}`,
-                      'setDataPaisesEdit',
-                      'formPaises'
-                    );
-                    paisesDialog = true;
-                  "
-                ></q-btn>
-                <q-btn
-                  dense
-                  round
-                  flat
-                  color="primary"
-                  icon="delete"
-                  :disabled="this.allowOption(4)"
-                  @click="selected = props.row.id"
-                  @click.capture="paisesDelete = true"
-                ></q-btn>
-              </q-td>
-            </template>
-            <template v-slot:loading>
-              <q-inner-loading showing color="primary" class="loading" />
-            </template>
-            <template v-slot:top="props">
-              <div class="col-md-4 col-xs-12 texto">
-                <p style="font-size: 20px; padding-right: 10px">
-                  <strong class="text-secondary">AGENCIA: </strong>
-                  <strong> {{ this.selectedAgencia.nb_agencia }} </strong>
-                </p>
-              </div>
-              <div class="col-md-4 col-xs-12 texto">
-                <p style="font-size: 20px">
-                  <strong class="text-secondary">CLIENTE: </strong>
-                  <strong> {{ this.selectedCliente.nb_cliente }} </strong>
-                </p>
-              </div>
-            </template>
-            <template v-slot:body-cell-nro_documento="props">
-              <q-td :props="props">
-                {{ props.row.t_de_documento + "-" + props.row.nro_documento }}
-              </q-td>
-            </template>
-            <template v-slot:body-cell-pagado_en="props">
-              <q-td :props="props">
-                {{ filterDesc("pagadoEn", props.row.pagado_en) }}
-              </q-td>
-            </template>
-          </q-table>
-          <div class="row" style="margin-bottom: 10px; margin-top: 10px">
+          <div class="row pc" style="margin-bottom: 10px; margin-top: 10px">
             <div class="col-md-2 col-xs-12">
               <p style="font-size: 17px; margin-top: 5px">
                 <strong class="text-secondary">Totales</strong>
@@ -154,7 +81,7 @@
               </q-input>
             </div>
           </div>
-          <div class="row">
+          <div class="row pc">
             <div class="col-md-2 col-xs-12">
               <p style="font-size: 17px; margin-top: 5px">
                 <strong class="text-secondary">Seleccionados</strong>
@@ -229,23 +156,295 @@
               </q-input>
             </div>
           </div>
-          <div class="float-right" style="margin-bottom: 6px; margin-top: 10px">
+          <div class="row pc" style="margin-bottom: 6px; margin-top: 10px">
             <q-btn
               label="Asignar"
               @click="this.asignarGuias()"
               color="primary"
               icon="add"
+              class="col-md-6 col-xl-6 col-lg-6 col-xs-12 col-sm-12"
+              style="margin-bottom: 10px"
             />
             <q-btn
               label="Regresar"
               color="primary"
               flat
               icon="close"
+              class="col-md-6 col-xl-6 col-lg-6 col-xs-12 col-sm-12"
               @click="
                 this.selectedTipo = this.tipoFacturacion[2];
                 setConceptos();
               "
               v-close-popup
+              style="margin-bottom: 1px"
+            />
+          </div>
+          <q-table
+            :rows="guiasCarga"
+            :loading="loading"
+            binary-state-sort
+            row-key="id"
+            :columns="columns"
+            selection="multiple"
+            :separator="separator"
+            :pagination="paginationGuia"
+            :grid="$q.screen.xs"
+            :rows-per-page-options="[]"
+            style="width: 100%; height: 450px; margin-bottom: 20px"
+            v-model:selected="selected"
+            :selected.sync="selected"
+            @selection="onSelection"
+          >
+            <template v-slot:body-cell-action="props">
+              <q-td :props="props">
+                <q-btn
+                  dense
+                  round
+                  flat
+                  color="primary"
+                  icon="edit"
+                  :disabled="this.allowOption(3)"
+                  @click="
+                    this.$refs.methods.getData(
+                      `/paises/${props.row.id}`,
+                      'setDataPaisesEdit',
+                      'formPaises'
+                    );
+                    paisesDialog = true;
+                  "
+                ></q-btn>
+                <q-btn
+                  dense
+                  round
+                  flat
+                  color="primary"
+                  icon="delete"
+                  :disabled="this.allowOption(4)"
+                  @click="selected = props.row.id"
+                  @click.capture="paisesDelete = true"
+                ></q-btn>
+              </q-td>
+            </template>
+            <template v-slot:loading>
+              <q-inner-loading showing color="primary" class="loading" />
+            </template>
+            <template v-slot:top="props">
+              <div class="col-md-4 col-xs-12 texto">
+                <p style="font-size: 20px; padding-right: 10px">
+                  <strong class="text-secondary">AGENCIA: </strong>
+                  <strong> {{ this.selectedAgencia.nb_agencia }} </strong>
+                </p>
+              </div>
+              <div class="col-md-4 col-xs-12 texto">
+                <p style="font-size: 20px">
+                  <strong class="text-secondary">CLIENTE: </strong>
+                  <strong> {{ this.selectedCliente.nb_cliente }} </strong>
+                </p>
+              </div>
+            </template>
+            <template v-slot:body-cell-nro_documento="props">
+              <q-td :props="props">
+                {{ props.row.t_de_documento + "-" + props.row.nro_documento }}
+              </q-td>
+            </template>
+            <template v-slot:body-cell-pagado_en="props">
+              <q-td :props="props">
+                {{ filterDesc("pagadoEn", props.row.pagado_en) }}
+              </q-td>
+            </template>
+            <template v-slot:item="props">
+            <div
+              class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+              :style="props.selected ? 'transform: scale(0.95);' : ''"
+            >
+            <q-card :class="props.selected ? 'bg-grey-2' : ''">
+            <q-card-section>
+              <q-checkbox dense v-model="props.selected" :label="props.row.name" />
+            </q-card-section>
+            <q-separator />
+                <q-list dense>
+                  <q-item v-for="col in props.cols" :key="col.name">
+                    <q-item-section>
+                      <q-item-label>{{ col.label }}</q-item-label>
+                    </q-item-section>
+                    <q-item-section side class="itemMovilSide">
+                      <q-item-label>
+                        {{ col.value }}
+                      </q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-card>
+            </div>
+          </template>
+          </q-table>
+          <div class="row movil" style="margin-bottom: 10px; margin-top: 10px">
+            <div class="col-md-2 col-xs-12">
+              <p style="font-size: 17px; margin-top: 5px">
+                <strong class="text-secondary">Totales</strong>
+              </p>
+            </div>
+            <div class="col-md-3 col-xs-12">
+              <q-input
+                outlined
+                v-model="monto_subtotal"
+                label="Monto Subtotal:"
+                hint=""
+                dense
+                v-money="money"
+                input-class="text-right"
+                style="padding-bottom: 10px"
+                class="pcform"
+                :readonly="true"
+                lazy-rules
+              >
+              </q-input>
+            </div>
+            <div class="col-md-3 col-xs-12">
+              <q-input
+                outlined
+                v-model="monto_base"
+                label="Base Impuesto:"
+                hint=""
+                class="pcform"
+                dense
+                v-money="money"
+                input-class="text-right"
+                style="padding-bottom: 10px"
+                :readonly="true"
+                lazy-rules
+              >
+              </q-input>
+            </div>
+            <div class="col-md-2 col-xs-12">
+              <q-input
+                outlined
+                v-model="monto_impuesto"
+                label="Impuesto:"
+                input-class="text-right"
+                hint=""
+                v-money="money"
+                dense
+                style="padding-bottom: 10px"
+                class="pcform"
+                :readonly="true"
+                lazy-rules
+              >
+              </q-input>
+            </div>
+            <div class="col-md-2 col-xs-12">
+              <q-input
+                outlined
+                v-model="monto_total"
+                label="Monto Total:"
+                input-class="text-right"
+                class="pcform"
+                hint=""
+                dense
+                v-money="money"
+                :readonly="true"
+                style="padding-bottom: 10px"
+                lazy-rules
+              >
+              </q-input>
+            </div>
+          </div>
+          <div class="row movil">
+            <div class="col-md-2 col-xs-12">
+              <p style="font-size: 17px; margin-top: 5px">
+                <strong class="text-secondary">Seleccionados</strong>
+              </p>
+            </div>
+            <div class="col-md-3 col-xs-12">
+              <q-input
+                outlined
+                v-model="monto_subtotal_select"
+                :input-style="{ color: '#06065B' }"
+                label="Monto Subtotal:"
+                hint=""
+                dense
+                input-class="text-right"
+                style="padding-bottom: 10px"
+                v-money="money"
+                :readonly="true"
+                class="pcform"
+                lazy-rules
+              >
+              </q-input>
+            </div>
+            <div class="col-md-3 col-xs-12">
+              <q-input
+                outlined
+                v-model="monto_base_select"
+                :input-style="{ color: '#06065B' }"
+                label="Base Impuesto:"
+                hint=""
+                class="pcform"
+                dense
+                input-class="text-right"
+                style="padding-bottom: 10px"
+                v-money="money"
+                :readonly="true"
+                lazy-rules
+              >
+              </q-input>
+            </div>
+            <div class="col-md-2 col-xs-12">
+              <q-input
+                outlined
+                v-model="monto_impuesto_select"
+                :input-style="{ color: '#06065B' }"
+                label="Impuesto:"
+                input-class="text-right"
+                hint=""
+                dense
+                style="padding-bottom: 10px"
+                v-money="money"
+                :readonly="true"
+                class="pcform"
+                lazy-rules
+              >
+              </q-input>
+            </div>
+            <div class="col-md-2 col-xs-12">
+              <q-input
+                outlined
+                v-model="monto_total_select"
+                :input-style="{ color: '#06065B' }"
+                label="Monto Total:"
+                input-class="text-right"
+                class="pcform"
+                hint=""
+                v-money="money"
+                :readonly="true"
+                dense
+                style="padding-bottom: 10px"
+                lazy-rules
+              >
+              </q-input>
+            </div>
+          </div>
+          <div class="row movil" style="margin-bottom: 6px; margin-top: 10px">
+            <q-btn
+              label="Asignar"
+              @click="this.asignarGuias()"
+              color="primary"
+              icon="add"
+              class="col-md-6 col-xl-6 col-lg-6 col-xs-12 col-sm-12"
+              style="margin-bottom: 10px"
+            />
+            <q-btn
+              label="Regresar"
+              color="primary"
+              flat
+              icon="close"
+              class="col-md-6 col-xl-6 col-lg-6 col-xs-12 col-sm-12"
+              @click="
+                this.selectedTipo = this.tipoFacturacion[2];
+                setConceptos();
+              "
+              v-close-popup
+              style="margin-bottom: 1px"
             />
           </div>
         </q-card-section>
@@ -623,7 +822,7 @@
               "
             >
               <div class="row">
-                <div class="col-md-6 col-xs-12" style="padding-left: 20px">
+                <div class="col-md-6 col-xs-12 selectMobile2">
                   <q-select
                     dense
                     transition-show="flip-up"
@@ -665,14 +864,14 @@
                     outlined
                     standout
                     label="Concepto"
-                    class="pcform"
                   >
                     <template v-slot:prepend>
                       <q-icon name="apartment" />
                     </template>
                   </q-select>
                 </div>
-                <q-table
+                <div class="table">
+                  <q-table
                   :rows="detalles"
                   :loading="loading"
                   binary-state-sort
@@ -680,13 +879,34 @@
                   :pagination="pagination"
                   virtual-scroll
                   :columns="columnsDetalle"
+                  :grid="$q.screen.xs"
                   :separator="separator"
-                  style="width: 100%; height: 300px; margin-bottom: 20px"
                   hide-bottom
                 >
                   <template v-slot:loading>
                     <q-inner-loading showing color="primary" class="loading" />
                   </template>
+                  <template v-slot:item="props">
+            <div
+              class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+              :style="props.selected ? 'transform: scale(0.95);' : ''"
+            >
+              <q-card :class="props.selected ? 'bg-grey-2' : ''">
+                <q-list dense>
+                  <q-item v-for="col in props.cols" :key="col.name">
+                    <q-item-section>
+                      <q-item-label>{{ col.label }}</q-item-label>
+                    </q-item-section>
+                    <q-item-section side class="itemMovilSide">
+                      <q-item-label>
+                        {{ col.value }}
+                      </q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-card>
+            </div>
+          </template>
                   <template v-slot:body-cell-action="props">
                     <q-td :props="props">
                       <q-btn
@@ -709,7 +929,9 @@
                       ></q-btn>
                     </q-td>
                   </template>
+                 
                 </q-table>
+                </div>
                 <div class="col-md-2 col-xs-12">
                   <q-input
                     outlined
@@ -2127,4 +2349,16 @@ export default {
 .q-textarea.q-field--labeled .q-field__control-container {
   height: 120px !important;
 }
+@media screen and (min-width: 1080px) {.table {
+  width: 100%; height: 300px; margin-bottom: 20px
+}}
+@media screen and (max-width: 1080px) {.table {
+  height: 100%; margin-bottom: 20px
+}}
+@media screen and (min-width: 1080px) {.pc {
+  display: none;
+}}
+@media screen and (max-width: 1080px) {.movil {
+  display: none;
+}}
 </style>
