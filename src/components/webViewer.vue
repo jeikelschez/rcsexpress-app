@@ -28,7 +28,7 @@ export default {
 
       return new Blob([bytes], { type: 'application/pdf' });
     },
-    showpdf(pdf) {
+    showpdf(pdf, confirmPrint) {
       const path = `${process.env.publicPath}/webViewer`;
       WebViewer({ path, licenseKey: 'atkUT8UOiniAvAWUG1rN', }, this.viewer).then(instance => {
         instance.UI.disableElements(['panToolButton']);
@@ -45,7 +45,11 @@ export default {
           type: 'actionButton',
           img: "https://i.ibb.co/3RdScYv/1.png",
           onClick: () => {
-            instance.print()
+            if(confirmPrint == true) {
+              instance.print()
+            } else {
+              this.$emit('printPdf') 
+            }
           }
         });
         header.push({

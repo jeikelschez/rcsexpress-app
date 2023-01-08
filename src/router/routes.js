@@ -123,12 +123,12 @@ const routes = [
       {
         path: '/generarcomisiones',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('src/pages/generarcomisiones.vue')}]
+        children: [{ path: "", component: () => import('src/pages/Generarcomisiones.vue')}]
       },
       {
         path: '/pagocomisiones',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('src/pages/pagocomisiones.vue')}]
+        children: [{ path: "", component: () => import('src/pages/Pagocomisiones.vue')}]
       },
       {
         path: '/retencioncomprador',

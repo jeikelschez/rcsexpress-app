@@ -1,10 +1,17 @@
 <template>
   <q-page class="pagina q-pa-md">
     <q-dialog v-model="asignDialog">
-      <q-card class="q-pa-md" bordered style="width: 1400px; max-width: 100vw; padding-bottom: 0px;">
+      <q-card
+        class="q-pa-md"
+        bordered
+        style="width: 1400px; max-width: 100vw; padding-bottom: 0px"
+      >
         <q-card-section>
           <div class="text-h5">
-            <p style="font-size: 24px; margin-bottom: 20px" class="text-secondary">
+            <p
+              style="font-size: 24px; margin-bottom: 20px"
+              class="text-secondary"
+            >
               <strong>ASIGNAR LAS GUIAS PENDIENTES POR FACTURAR</strong>
             </p>
           </div>
@@ -223,30 +230,34 @@
               </q-td>
             </template>
             <template v-slot:item="props">
-            <div
-              class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
-              :style="props.selected ? 'transform: scale(0.95);' : ''"
-            >
-            <q-card :class="props.selected ? 'bg-grey-2' : ''">
-            <q-card-section>
-              <q-checkbox dense v-model="props.selected" :label="props.row.name" />
-            </q-card-section>
-            <q-separator />
-                <q-list dense>
-                  <q-item v-for="col in props.cols" :key="col.name">
-                    <q-item-section>
-                      <q-item-label>{{ col.label }}</q-item-label>
-                    </q-item-section>
-                    <q-item-section side class="itemMovilSide">
-                      <q-item-label>
-                        {{ col.value }}
-                      </q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-card>
-            </div>
-          </template>
+              <div
+                class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+                :style="props.selected ? 'transform: scale(0.95);' : ''"
+              >
+                <q-card :class="props.selected ? 'bg-grey-2' : ''">
+                  <q-card-section>
+                    <q-checkbox
+                      dense
+                      v-model="props.selected"
+                      :label="props.row.name"
+                    />
+                  </q-card-section>
+                  <q-separator />
+                  <q-list dense>
+                    <q-item v-for="col in props.cols" :key="col.name">
+                      <q-item-section>
+                        <q-item-label>{{ col.label }}</q-item-label>
+                      </q-item-section>
+                      <q-item-section side class="itemMovilSide">
+                        <q-item-label>
+                          {{ col.value }}
+                        </q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-card>
+              </div>
+            </template>
           </q-table>
           <div class="row movil" style="margin-bottom: 10px; margin-top: 10px">
             <div class="col-md-2 col-xs-12">
@@ -470,27 +481,10 @@
       <q-card class="q-pa-md" bordered style="width: 1000px; max-width: 600vw">
         <q-card-section>
           <div style="width: 100%; height: 600px">
-            <webViewer ref="webViewer" @close-pdf="closePrint()"></webViewer>
-          </div>
-          <div class="float-left" style="margin-bottom: 6px; margin-top: 10px">
-            <q-btn
-              label="Imprimir"
-              @click="printData()"
-              color="primary"
-              icon="print"
-            />
-            <q-btn
-              :label="
-                this.selectedTipo.formaPago == 'CR' ? 'Salir' : 'Cancelar'
-              "
-              color="primary"
-              flat
-              icon="close"
-              @click="closePrint()"
-            />
+            <webViewer ref="webViewer" @print-pdf="this.printData()"></webViewer>
           </div>
           <div
-            class="float-right"
+            class="float-center"
             style="margin-bottom: 6px; margin-top: 10px"
             v-show="this.selectedTipo.formaPago == 'CR'"
           >
@@ -887,153 +881,268 @@
                 </div>
                 <div class="table">
                   <q-table
-                  :rows="detalles"
-                  :loading="loading"
-                  binary-state-sort
-                  row-key="id"
-                  :pagination="pagination"
-                  virtual-scroll
-                  :columns="columnsDetalle"
-                  :grid="$q.screen.xs"
-                  :separator="separator"
-                  hide-bottom
-                >
-                  <template v-slot:loading>
-                    <q-inner-loading showing color="primary" class="loading" />
-                  </template>
-                  <template v-slot:item="props">
-            <div
-              class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
-              :style="props.selected ? 'transform: scale(0.95);' : ''"
-            >
-              <q-card :class="props.selected ? 'bg-grey-2' : ''">
-                <q-list dense>
-                  <q-item v-for="col in props.cols" :key="col.name">
-                    <q-item-section>
-                      <q-item-label>{{ col.label }}</q-item-label>
-                    </q-item-section>
-                    <q-item-section side class="itemMovilSide">
-                      <q-item-label>
-                        {{ col.value }}
-                      </q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-card>
-            </div>
-          </template>
-                  <template v-slot:body-cell-cantidad="props">
-                    <q-td :props="props">
-                      <q-input
-                        outlined
-                        input-class="text-right"
-                        dense
-                        v-money="moneyNotDecimal"
-                        v-model="props.row.cantidad"
-                        :disable="
-                          props.row.cod_concepto == this.conceptoTransporte
-                            ? true
-                            : false
-                        "
-                        :ref="'cantidad' + (props.row.nro_item - 1)"
-                        :rules="[
-                          (val) => this.$refs.rulesVue.isReq(val, ''),
-                          (val) => this.$refs.rulesVue.isMax(val, 3, ''),
-                        ]"
-                        hide-bottom-space
-                        @keyup="this.calculaDetalle('cantidad', props.row)"
-                      >
-                      </q-input>
-                    </q-td>
-                  </template>
-                  <template v-slot:body-cell-costo_unitario="props">
-                    <q-td :props="props">
-                      <q-input
-                        outlined
-                        input-class="text-right"
-                        dense
-                        v-money="money"
-                        v-model="props.row.costo_unitario"
-                        :disable="
-                          props.row.cod_concepto == this.conceptoTransporte
-                            ? true
-                            : false
-                        "
-                        ref="costo_unitario"
-                        :rules="[
-                          (val) => this.$refs.rulesVue.isReq(val, ''),
-                          (val) => this.$refs.rulesVue.isMax(val, 9, ''),
-                        ]"
-                        hide-bottom-space
-                        @keyup="
-                          this.calculaDetalle('costo_unitario', props.row)
-                        "
-                      >
-                      </q-input>
-                    </q-td>
-                  </template>
-                  <template v-slot:body-cell-subtotal="props">
-                    <q-td :props="props">
-                      <q-input
-                        outlined
-                        input-class="text-right"
-                        dense
-                        v-money="money"
-                        v-model="props.row.subtotal"
-                        :disable="
-                          props.row.cod_concepto == this.conceptoTransporte
-                            ? true
-                            : false
-                        "
-                        ref="subtotal"
-                        :rules="[
-                          (val) => this.$refs.rulesVue.isReq(val, ''),
-                          (val) => this.$refs.rulesVue.isMax(val, 9, ''),
-                        ]"
-                        hide-bottom-space
-                        @keyup="this.calculaDetalle('subtotal', props.row)"
-                      >
-                      </q-input>
-                    </q-td>
-                  </template>
-                  <template v-slot:body-cell-action="props">
-                    <q-td :props="props">
-                      <q-btn
-                        dense
-                        round
-                        flat
+                    :rows="detalles"
+                    :loading="loading"
+                    binary-state-sort
+                    row-key="id"
+                    :pagination="pagination"
+                    virtual-scroll
+                    :columns="columnsDetalle"
+                    :grid="$q.screen.xs"
+                    :separator="separator"
+                    hide-bottom
+                  >
+                    <template v-slot:loading>
+                      <q-inner-loading
+                        showing
                         color="primary"
-                        icon="reset_tv"
-                        :disabled="this.allowOption(3)"
-                        @click="selected = props.row.nro_item - 1"
-                        @click.capture="
-                          this.referencia = this.detalles[
-                            props.row.nro_item - 1
-                          ]
-                            ? this.detalles[props.row.nro_item - 1].reference
-                            : '';
-                          this.reference = true;
-                        "
-                      ></q-btn>
-                      <q-btn
-                        dense
-                        round
-                        flat
-                        color="primary"
-                        icon="delete"
-                        :disable="
-                          props.row.cod_concepto == this.conceptoTransporte
-                            ? true
-                            : false
-                        "
-                        :disabled="this.allowOption(4)"
-                        @click="selected = props.row.nro_item - 1"
-                        @click.capture="deletePopup = true"
-                      ></q-btn>
-                    </q-td>
-                  </template>
-                 
-                </q-table>
+                        class="loading"
+                      />
+                    </template>
+                    <template v-slot:item="props">
+                      <div
+                        class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+                        :style="props.selected ? 'transform: scale(0.95);' : ''"
+                      >
+                        <q-card :class="props.selected ? 'bg-grey-2' : ''">
+                          <q-list dense>
+                            <q-item v-for="col in props.cols" :key="col.name">
+                              <q-item-section v-if="col.name !== 'check_impuesto' && col.name !== 'cod_concepto'">
+                                <q-item-label>{{ col.label }}</q-item-label>
+                              </q-item-section>
+                              <q-item-section side class="itemMovilSide">
+                                <q-input
+                                  v-if="col.name === 'cantidad'"
+                                  outlined
+                                  input-class="text-right"
+                                  dense
+                                  v-money="moneyNotDecimal"
+                                  v-model="props.row.cantidad"
+                                  :disable="
+                                    props.row.cod_concepto ==
+                                    this.conceptoTransporte
+                                      ? true
+                                      : false
+                                  "
+                                  :ref="'cantidad' + (props.row.nro_item - 1)"
+                                  :rules="[
+                                    (val) => this.$refs.rulesVue.isReq(val, ''),
+                                    (val) =>
+                                      this.$refs.rulesVue.isMax(val, 3, ''),
+                                  ]"
+                                  hide-bottom-space
+                                  @keyup="
+                                    this.calculaDetalle('cantidad', props.row)
+                                  "
+                                >
+                                </q-input>
+                                <q-input
+                                  outlined
+                                  v-if="col.name === 'costo_unitario'"
+                                  input-class="text-right"
+                                  dense
+                                  v-money="money"
+                                  v-model="props.row.costo_unitario"
+                                  :disable="
+                                    props.row.cod_concepto ==
+                                    this.conceptoTransporte
+                                      ? true
+                                      : false
+                                  "
+                                  ref="costo_unitario"
+                                  :rules="[
+                                    (val) => this.$refs.rulesVue.isReq(val, ''),
+                                    (val) =>
+                                      this.$refs.rulesVue.isMax(val, 9, ''),
+                                  ]"
+                                  hide-bottom-space
+                                  @keyup="
+                                    this.calculaDetalle(
+                                      'costo_unitario',
+                                      props.row
+                                    )
+                                  "
+                                >
+                                </q-input>
+                                <q-input
+                                  v-if="col.name === 'subtotal'"
+                                  outlined
+                                  input-class="text-right"
+                                  dense
+                                  v-money="money"
+                                  v-model="props.row.subtotal"
+                                  :disable="
+                                    props.row.cod_concepto ==
+                                    this.conceptoTransporte
+                                      ? true
+                                      : false
+                                  "
+                                  ref="subtotal"
+                                  :rules="[
+                                    (val) => this.$refs.rulesVue.isReq(val, ''),
+                                    (val) =>
+                                      this.$refs.rulesVue.isMax(val, 9, ''),
+                                  ]"
+                                  hide-bottom-space
+                                  @keyup="
+                                    this.calculaDetalle('subtotal', props.row)
+                                  "
+                                >
+                                </q-input>
+                                <q-btn
+                                  v-if="col.name === 'action'"
+                                  dense
+                                  round
+                                  flat
+                                  color="primary"
+                                  icon="reset_tv"
+                                  :disabled="this.allowOption(3)"
+                                  @click="selected = props.row.nro_item - 1"
+                                  @click.capture="
+                                    this.referencia = this.detalles[
+                                      props.row.nro_item - 1
+                                    ]
+                                      ? this.detalles[props.row.nro_item - 1]
+                                          .reference
+                                      : '';
+                                    this.reference = true;
+                                  "
+                                ></q-btn>
+                                <q-btn
+                                  v-if="col.name === 'action'"
+                                  dense
+                                  round
+                                  flat
+                                  color="primary"
+                                  icon="delete"
+                                  :disable="
+                                    props.row.cod_concepto ==
+                                    this.conceptoTransporte
+                                      ? true
+                                      : false
+                                  "
+                                  :disabled="this.allowOption(4)"
+                                  @click="selected = props.row.nro_item - 1"
+                                  @click.capture="deletePopup = true"
+                                ></q-btn>
+                                <q-item-label v-if="col.name === 'nro_item' || col.name === 'concepto'">{{ col.value }}</q-item-label>
+                              </q-item-section>
+                            </q-item>
+                          </q-list>
+                        </q-card>
+                      </div>
+                    </template>
+                    <template v-slot:body-cell-cantidad="props">
+                      <q-td :props="props">
+                        <q-input
+                          outlined
+                          input-class="text-right"
+                          dense
+                          v-money="moneyNotDecimal"
+                          v-model="props.row.cantidad"
+                          :disable="
+                            props.row.cod_concepto == this.conceptoTransporte
+                              ? true
+                              : false
+                          "
+                          :ref="'cantidad' + (props.row.nro_item - 1)"
+                          :rules="[
+                            (val) => this.$refs.rulesVue.isReq(val, ''),
+                            (val) => this.$refs.rulesVue.isMax(val, 3, ''),
+                          ]"
+                          hide-bottom-space
+                          @keyup="this.calculaDetalle('cantidad', props.row)"
+                        >
+                        </q-input>
+                      </q-td>
+                    </template>
+                    <template v-slot:body-cell-costo_unitario="props">
+                      <q-td :props="props">
+                        <q-input
+                          outlined
+                          input-class="text-right"
+                          dense
+                          v-money="money"
+                          v-model="props.row.costo_unitario"
+                          :disable="
+                            props.row.cod_concepto == this.conceptoTransporte
+                              ? true
+                              : false
+                          "
+                          ref="costo_unitario"
+                          :rules="[
+                            (val) => this.$refs.rulesVue.isReq(val, ''),
+                            (val) => this.$refs.rulesVue.isMax(val, 9, ''),
+                          ]"
+                          hide-bottom-space
+                          @keyup="
+                            this.calculaDetalle('costo_unitario', props.row)
+                          "
+                        >
+                        </q-input>
+                      </q-td>
+                    </template>
+                    <template v-slot:body-cell-subtotal="props">
+                      <q-td :props="props">
+                        <q-input
+                          outlined
+                          input-class="text-right"
+                          dense
+                          v-money="money"
+                          v-model="props.row.subtotal"
+                          :disable="
+                            props.row.cod_concepto == this.conceptoTransporte
+                              ? true
+                              : false
+                          "
+                          ref="subtotal"
+                          :rules="[
+                            (val) => this.$refs.rulesVue.isReq(val, ''),
+                            (val) => this.$refs.rulesVue.isMax(val, 9, ''),
+                          ]"
+                          hide-bottom-space
+                          @keyup="this.calculaDetalle('subtotal', props.row)"
+                        >
+                        </q-input>
+                      </q-td>
+                    </template>
+                    <template v-slot:body-cell-action="props">
+                      <q-td :props="props">
+                        <q-btn
+                          dense
+                          round
+                          flat
+                          color="primary"
+                          icon="reset_tv"
+                          :disabled="this.allowOption(3)"
+                          @click="selected = props.row.nro_item - 1"
+                          @click.capture="
+                            this.referencia = this.detalles[
+                              props.row.nro_item - 1
+                            ]
+                              ? this.detalles[props.row.nro_item - 1].reference
+                              : '';
+                            this.reference = true;
+                          "
+                        ></q-btn>
+                        <q-btn
+                          dense
+                          round
+                          flat
+                          color="primary"
+                          icon="delete"
+                          :disable="
+                            props.row.cod_concepto == this.conceptoTransporte
+                              ? true
+                              : false
+                          "
+                          :disabled="this.allowOption(4)"
+                          @click="selected = props.row.nro_item - 1"
+                          @click.capture="deletePopup = true"
+                        ></q-btn>
+                      </q-td>
+                    </template>
+                  </q-table>
                 </div>
                 <div class="col-md-2 col-xs-12">
                   <q-input
@@ -1810,6 +1919,13 @@ export default {
       ],
       columnsDetalle: [
         {
+          name: "check_impuesto",
+          label: "Check Impuesto",
+          field: "check_impuesto",
+          classes: "hidden",
+          headerClasses: "hidden",
+        },
+        {
           name: "nro_item",
           label: "Nro",
           field: "nro_item",
@@ -1821,20 +1937,6 @@ export default {
           field: "concepto",
           align: "left",
           style: "width: 700px",
-        },
-        {
-          name: "cod_concepto",
-          label: "Codigo",
-          field: "cod_concepto",
-          classes: "hidden",
-          headerClasses: "hidden",
-        },
-        {
-          name: "check_impuesto",
-          label: "Check Impuesto",
-          field: "check_impuesto",
-          classes: "hidden",
-          headerClasses: "hidden",
         },
         {
           name: "cantidad",
@@ -1876,6 +1978,13 @@ export default {
           name: "action",
           label: "Acciones",
           align: "center",
+        },
+        {
+          name: "cod_concepto",
+          label: "Codigo",
+          field: "cod_concepto",
+          classes: "hidden",
+          headerClasses: "hidden",
         },
       ],
       form: {
@@ -2302,9 +2411,9 @@ export default {
 
       this.confirmPrint = false;
       this.errorMessage("Aqui imprimo la factura");
-      
+
       if (this.selectedTipo.formaPago == "CR") {
-        this.imprimio = true;        
+        this.imprimio = true;
       } else {
         this.sendData();
         this.printFactura = false;
@@ -2312,8 +2421,10 @@ export default {
     },
     // Metodo para imprimir el Anexo
     async printDataAnexo() {
-      if(!this.imprimio) {
-        this.errorMessage("Debe Imprimir la Factura antes de imprimir el reporte Anexo...");
+      if (!this.imprimio) {
+        this.errorMessage(
+          "Debe Imprimir la Factura antes de imprimir el reporte Anexo..."
+        );
         return;
       }
 
@@ -2328,7 +2439,11 @@ export default {
     },
     // Metodo para cerrar el print de la Factura
     closePrint() {
-      if (this.selectedTipo.formaPago == "CR" && this.imprimio && !this.imprimioAnexo) {
+      if (
+        this.selectedTipo.formaPago == "CR" &&
+        this.imprimio &&
+        !this.imprimioAnexo
+      ) {
         this.errorMessage("Debe Imprimir el Reporte Anexo antes de Salir...");
         return;
       } else {
@@ -2564,7 +2679,7 @@ export default {
             order_direction: "DESC",
           },
         }
-      );      
+      );
     },
     // Seteamos guias carga del cliente
     async setGuiasCarga() {
@@ -3129,7 +3244,7 @@ export default {
     },
     // Metodo para mostrar PDF en funcion de BASE 64
     pdfview() {
-      this.$refs.webViewer.showpdf(this.base64);
+      this.$refs.webViewer.showpdf(this.base64, true);
     },
   },
 };
@@ -3139,16 +3254,28 @@ export default {
 .q-textarea.q-field--labeled .q-field__control-container {
   height: 120px !important;
 }
-@media screen and (min-width: 1080px) {.table {
-  width: 100%; height: 300px; margin-bottom: 20px
-}}
-@media screen and (max-width: 1080px) {.table {
-  height: 100%; margin-bottom: 20px
-}}
-@media screen and (min-width: 1080px) {.pc {
-  display: none;
-}}
-@media screen and (max-width: 1080px) {.movil {
-  display: none;
-}}
+@media screen and (min-width: 1080px) {
+  .table {
+    width: 100%;
+    height: 100%;
+    margin-bottom: 20px;
+  }
+}
+@media screen and (max-width: 1080px) {
+  .table {
+    height: 100%;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+}
+@media screen and (min-width: 1080px) {
+  .pc {
+    display: none;
+  }
+}
+@media screen and (max-width: 1080px) {
+  .movil {
+    display: none;
+  }
+}
 </style>

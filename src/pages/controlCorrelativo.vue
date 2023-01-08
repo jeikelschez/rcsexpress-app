@@ -355,9 +355,6 @@
                         "
                       >
                       </q-select>
-                      <q-item-label>
-                        {{ col.value }}
-                      </q-item-label>
                     </q-item-section>
                   </q-item>
                 </q-list>
