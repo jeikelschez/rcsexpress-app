@@ -145,7 +145,7 @@
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy
-                  ref="qDateProxy"
+                  ref="qDateProxy1"
                   transition-show="scale"
                   transition-hide="scale"
                 >
@@ -155,7 +155,7 @@
                     style="padding-bottom: 0px"
                     @blur="getDataClientes()"
                     @keyup.enter="getDataClientes()"
-                    @update:model-value="this.$refs.qDateProxy.hide()"
+                    @update:model-value="getDataClientes(); this.$refs.qDateProxy1.hide()"
                   ></q-date>
                 </q-popup-proxy>
               </q-icon>
@@ -183,7 +183,7 @@
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy
-                  ref="qDateProxy"
+                  ref="qDateProxy2"
                   transition-show="scale"
                   transition-hide="scale"
                 >
@@ -193,7 +193,7 @@
                     style="padding-bottom: 0px"
                     @blur="getDataClientes()"
                     @keyup.enter="getDataClientes()"
-                    @update:model-value="getDataClientes()"
+                    @update:model-value="getDataClientes(); this.$refs.qDateProxy2.hide() "
                   ></q-date>
                 </q-popup-proxy>
               </q-icon>
@@ -786,7 +786,7 @@ export default {
         );
       }
       api
-        .get(`/mmovimientos/letterPDF`, {
+        .get(`/reports/cartaCliente`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
             data: factArray,

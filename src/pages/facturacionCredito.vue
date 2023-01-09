@@ -477,11 +477,15 @@
       </q-card>
     </q-dialog>
 
-    <q-dialog v-model="printFactura" @show="this.pdfview()">
+    <q-dialog v-model="dialogFactura" @show="this.printFactura()">
       <q-card class="q-pa-md" bordered style="width: 1000px; max-width: 600vw">
         <q-card-section>
           <div style="width: 100%; height: 600px">
-            <webViewer ref="webViewer" @print-pdf="this.printData()"></webViewer>
+            <webViewer
+              ref="webViewer"
+              @close-pdf="dialogFactura = false"
+              @print-pdf="this.printData()"
+            ></webViewer>
           </div>
           <div
             class="float-center"
@@ -499,9 +503,9 @@
       </q-card>
     </q-dialog>
 
-    <q-dialog v-model="printAnexo" @show="this.pdfview()">
-      <div style="width: 1000px">
-        <webViewer ref="webViewer" @close-pdf="printAnexo = false"></webViewer>
+    <q-dialog v-model="dialogAnexo" @show="this.printAnexo()">
+      <div style="width: 100%; height: 700px">
+        <webViewer ref="webViewer" @close-pdf="dialogAnexo = false"></webViewer>
       </div>
     </q-dialog>
 
@@ -890,6 +894,7 @@
                     :columns="columnsDetalle"
                     :grid="$q.screen.xs"
                     :separator="separator"
+                    style="width: 100%; height: 280px"
                     hide-bottom
                   >
                     <template v-slot:loading>
@@ -907,7 +912,12 @@
                         <q-card :class="props.selected ? 'bg-grey-2' : ''">
                           <q-list dense>
                             <q-item v-for="col in props.cols" :key="col.name">
-                              <q-item-section v-if="col.name !== 'check_impuesto' && col.name !== 'cod_concepto'">
+                              <q-item-section
+                                v-if="
+                                  col.name !== 'check_impuesto' &&
+                                  col.name !== 'cod_concepto'
+                                "
+                              >
                                 <q-item-label>{{ col.label }}</q-item-label>
                               </q-item-section>
                               <q-item-section side class="itemMovilSide">
@@ -1025,7 +1035,13 @@
                                   @click="selected = props.row.nro_item - 1"
                                   @click.capture="deletePopup = true"
                                 ></q-btn>
-                                <q-item-label v-if="col.name === 'nro_item' || col.name === 'concepto'">{{ col.value }}</q-item-label>
+                                <q-item-label
+                                  v-if="
+                                    col.name === 'nro_item' ||
+                                    col.name === 'concepto'
+                                  "
+                                  >{{ col.value }}</q-item-label
+                                >
                               </q-item-section>
                             </q-item>
                           </q-list>
@@ -2123,8 +2139,8 @@ export default {
       clienteBox: ref(false),
       selectedGuias: ref([]),
       deletePopup: ref(false),
-      printFactura: ref(false),
-      printAnexo: ref(false),
+      dialogFactura: ref(false),
+      dialogAnexo: ref(false),
       pagination: {
         page: 1,
         rowsPerPage: 0,
@@ -2398,7 +2414,7 @@ export default {
 
       // Hacer el Preview de la factura
       this.confirmSave = false;
-      this.printFactura = true;
+      this.dialogFactura = true;
       this.loading = false;
     },
     // Metodo para imprimir la Factura
@@ -2416,7 +2432,7 @@ export default {
         this.imprimio = true;
       } else {
         this.sendData();
-        this.printFactura = false;
+        this.dialogFactura = false;
       }
     },
     // Metodo para imprimir el Anexo
@@ -2433,8 +2449,8 @@ export default {
         color: "green",
       });
 
-      this.printAnexo = true;
-      this.printFactura = false;
+      this.dialogAnexo = true;
+      this.dialogFactura = false;
       this.sendData();
     },
     // Metodo para cerrar el print de la Factura
@@ -2447,7 +2463,7 @@ export default {
         this.errorMessage("Debe Imprimir el Reporte Anexo antes de Salir...");
         return;
       } else {
-        this.printFactura = false;
+        this.dialogFactura = false;
         this.imprimio = false;
       }
     },
@@ -3242,9 +3258,31 @@ export default {
       };
       return new Promise(poll);
     },
-    // Metodo para mostrar PDF en funcion de BASE 64
-    pdfview() {
-      this.$refs.webViewer.showpdf(this.base64, true);
+    // Imprimir Factura en PDF
+    printFactura() {
+      api
+        .get(`/reports/facturaPreimpreso`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => {
+          this.$refs.webViewer.showpdf(res.data.base64);
+          this.resetForm();
+        });
+    },
+    // Imprimir Anexo en PDF
+    printAnexo() {
+      api
+        .get(`/reports/anexoFactura`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => {
+          this.$refs.webViewer.showpdf(res.data.base64);
+          this.resetForm();
+        });
     },
   },
 };
