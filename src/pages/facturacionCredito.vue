@@ -894,7 +894,7 @@
                     :columns="columnsDetalle"
                     :grid="$q.screen.xs"
                     :separator="separator"
-                    style="width: 100%; height: 280px"
+                    style="width: 100%; height: 230px"
                     hide-bottom
                   >
                     <template v-slot:loading>
@@ -3259,11 +3259,14 @@ export default {
       return new Promise(poll);
     },
     // Imprimir Factura en PDF
-    printFactura() {
+    async printFactura() {
+      let factArray = {};
+      factArray.cliente_orig = await this.selectedCliente.id;
       api
         .get(`/reports/facturaPreimpreso`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            data: JSON.stringify(factArray),
           },
         })
         .then((res) => {
