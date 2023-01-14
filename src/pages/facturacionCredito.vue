@@ -1207,6 +1207,13 @@
                     lazy-rules
                   >
                   </q-input>
+                  <q-input
+                    v-show="false"
+                    v-model="form.monto_exento"
+                    input-class="text-right"
+                    v-money="money"
+                  >
+                  </q-input>
                 </div>
                 <div class="col-md-2 col-xs-12">
                   <q-input
@@ -2007,6 +2014,7 @@ export default {
         monto_subtotal: 0,
         monto_descuento: 0,
         monto_base: 0,
+        monto_exento: 0,
         monto_impuesto: 0,
         monto_fpo: 0,
         monto_total: 0,
@@ -2607,7 +2615,13 @@ export default {
         this.fechaSelected,
         "DD/MM/YYYY"
       ).format("YYYY-MM-DD");
+
       formFactura.cod_cliente_org = this.selectedCliente.id;
+      if (this.selectedCliente.cte_decontado == 1) {
+        formFactura.ci_rif_cte_conta_org = this.ci_rif_cte_conta_org;
+        formFactura.id_clte_part_orig = this.id_clte_part_orig;
+      }
+
       formFactura.modalidad_pago = this.selectedForma.value;
       formFactura.porc_impuesto = this.iva;
       formFactura.monto_subtotal = this.curReplace(this.form.monto_subtotal);
@@ -2616,8 +2630,9 @@ export default {
       formFactura.monto_total = this.curReplace(this.form.monto_total);
       formFactura.saldo = this.curReplace(this.form.monto_total);
       formFactura.estatus_administra = "P";
-      formFactura.observacion = this.form.observacion;
+      formFactura.observacion_entrega = this.form.observacion;
       formFactura.tipo_factura = this.selectedTipo.tipoFact;
+      formFactura.serie_documento = this.correlativo.serie_doc;
       formFactura.nro_control = this.nro_interno;
       formFactura.nro_control_new = this.correlativo.ult_doc_referencia;
       formFactura.porc_descuento = descuento;
@@ -2839,6 +2854,11 @@ export default {
               this.formClientesParticulares.id = res.data.data[0].id;
               this.formClientesParticulares.nb_cliente =
                 res.data.data[0].nb_cliente;
+              this.formClientesParticulares.telefonos =
+                res.data.data[0].telefonos;
+              this.formClientesParticulares.fax = res.data.data[0].fax;
+              this.formClientesParticulares.direccion =
+                res.data.data[0].direccion;
               this.formClientesParticulares.cod_municipio = res.data.data[0]
                 .cod_municipio
                 ? this.municipios[
@@ -2890,20 +2910,21 @@ export default {
       this.clienteBox = false;
       this.selectedCliente.id = this.cliente_id_temp;
 
+      let formPart = {};
+      formPart.cod_ciudad = this.selectedAgencia.ciudades.id;
+      formPart.direccion = this.formClientesParticulares.direccion;
+      formPart.telefonos = this.formClientesParticulares.telefonos;
+      formPart.fax = this.formClientesParticulares.fax;
+      formPart.estatus = "A";
+      formPart.cod_municipio = this.formClientesParticulares.cod_municipio.id;
+      formPart.cod_parroquia = this.formClientesParticulares.cod_parroquia.id;
+      formPart.cod_localidad = this.formClientesParticulares.cod_localidad.id;
+
       if (!this.formClientesParticulares.id) {
-        let formPart = {};
         formPart.cod_agencia = this.selectedAgencia.id;
         formPart.cod_cliente = this.selectedCliente.id;
         formPart.nb_cliente = this.formClientesParticulares.nb_cliente;
         formPart.rif_ci = this.formClientesParticulares.rif_ci;
-        formPart.cod_ciudad = this.selectedAgencia.ciudades.id;
-        formPart.direccion = this.formClientesParticulares.direccion;
-        formPart.telefonos = this.formClientesParticulares.telefonos;
-        formPart.fax = this.formClientesParticulares.fax;
-        formPart.estatus = "A";
-        formPart.cod_municipio = this.formClientesParticulares.cod_municipio.id;
-        formPart.cod_parroquia = this.formClientesParticulares.cod_parroquia.id;
-        formPart.cod_localidad = this.formClientesParticulares.cod_localidad.id;
         await api
           .post(`/cparticulares`, formPart, {
             headers: {
@@ -2918,7 +2939,19 @@ export default {
             this.id_clte_part_orig = res.data.id;
           });
       } else {
-        this.id_clte_part_orig = this.formClientesParticulares.id;
+        await api
+          .put(`/cparticulares/${this.formClientesParticulares.id}`, formPart, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            },
+          })
+          .then(() => {
+            this.$q.notify({
+              message: "Cliente Particular Actualizado Exitosamente",
+              color: "green",
+            });
+            this.id_clte_part_orig = this.formClientesParticulares.id;
+          });
       }
       this.ci_rif_cte_conta_org = this.formClientesParticulares.rif_ci;
     },
@@ -3127,8 +3160,11 @@ export default {
       let subtotal = 0;
       let descuento = 0;
       let subtotal_base = 0;
+      let subtotal_exento = 0;
       let descuento_base = 0;
+      let descuento_exento = 0;
       let base = 0;
+      let exento = 0;
       let fpo = 0;
       let impuesto = 0;
 
@@ -3136,6 +3172,7 @@ export default {
         monto_subtotal: 0,
         monto_descuento: 0,
         monto_base: 0,
+        monto_exento: 0,
         monto_impuesto: 0,
         monto_fpo: 0,
         monto_total: 0,
@@ -3174,6 +3211,18 @@ export default {
               this.parseFloatN(this.curReplace(this.descuentoSelected))) /
             100;
           base = subtotal_base - descuento_base;
+        } else {
+          subtotal_exento +=
+            this.detalles[i].subtotal != "0"
+              ? await this.parseFloatN(
+                  this.curReplace(this.detalles[i].subtotal)
+                )
+              : 0;
+          descuento_exento =
+            (subtotal_exento *
+              this.parseFloatN(this.curReplace(this.descuentoSelected))) /
+            100;
+          exento = subtotal_exento - descuento_exento;
         }
 
         if (i == this.detalles.length - 1) {
@@ -3184,6 +3233,7 @@ export default {
             100;
           this.form.monto_descuento = descuento.toFixed(2);
           this.form.monto_base = base.toFixed(2);
+          this.form.monto_exento = exento.toFixed(2);
           impuesto = (base * this.iva) / 100;
           this.form.monto_impuesto = impuesto.toFixed(2);
           this.form.monto_fpo = fpo.toFixed(2);
@@ -3236,6 +3286,7 @@ export default {
         monto_subtotal: 0,
         monto_descuento: 0,
         monto_base: 0,
+        monto_exento: 0,
         monto_impuesto: 0,
         monto_fpo: 0,
         monto_total: 0,
@@ -3261,7 +3312,68 @@ export default {
     // Imprimir Factura en PDF
     async printFactura() {
       let factArray = {};
+      let valor_dolar = 0;
       factArray.cliente_orig = await this.selectedCliente.id;
+      if (this.selectedCliente.cte_decontado == 1) {
+        factArray.ci_rif_cte_conta_org = this.ci_rif_cte_conta_org;
+        factArray.id_clte_part_orig = this.id_clte_part_orig;
+      }
+      let serie_doc = this.correlativo.serie_doc
+        ? this.correlativo.serie_doc + "-"
+        : "";
+      factArray.nroControl =
+        serie_doc +
+        (this.nro_interno
+          ? this.nro_interno.toString().padStart(4, "0000")
+          : this.nro_documento.toString().padStart(4, "0000"));
+      let agencia = this.selectedAgencia.id + "-";
+      factArray.nroDocumento =
+        "F " + this.nro_interno
+          ? agencia + this.nro_documento
+          : serie_doc
+          ? serie_doc + this.nro_documento
+          : agencia + this.nro_documento;
+      factArray.formaPago = this.selectedForma == "CR" ? "CREDITO" : "CONTADO";
+      factArray.fecha_emision = this.fechaSelected;
+      factArray.detalles = this.detalles;
+      factArray.iva = this.iva.replace(".", ",");
+      factArray.subtotal = this.form.monto_subtotal;
+      factArray.base = this.form.monto_base;
+      factArray.porc_desc = this.descuentoSelected;
+      factArray.descuento = this.form.monto_descuento;
+      factArray.exento = this.form.monto_exento;
+      factArray.impuesto = this.form.monto_impuesto;
+      factArray.fpo = this.form.monto_fpo;
+      factArray.total = this.form.monto_total;
+      factArray.totalString = this.form.monto_total.replaceAll(".", "");
+      factArray.observacion = this.form.observacion;
+      factArray.monto_divisas = this.cobradoSelected;
+      let monto_igtf = (this.curReplace(this.cobradoSelected) * 0.03).toFixed(
+        2
+      );
+      factArray.monto_igtf = monto_igtf
+        .replaceAll(",", "")
+        .replaceAll(".", ",");
+
+      await api
+        .get(`/hdolar/`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            fecha: moment(this.fechaSelected, "DD/MM/YYYY").format(
+              "YYYY-MM-DD"
+            ),
+          },
+        })
+        .then((res) => {
+          if (res.data.data.length > 0) {
+            valor_dolar = res.data.data[0].valor;
+          }
+        });
+
+      factArray.valor_dolar = valor_dolar;
+      let igtf_bs = (monto_igtf * valor_dolar).toFixed(2);
+      factArray.igtf_bs = igtf_bs.replaceAll(",", "").replaceAll(".", ",");
+
       api
         .get(`/reports/facturaPreimpreso`, {
           headers: {
