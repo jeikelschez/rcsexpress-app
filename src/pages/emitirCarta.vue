@@ -794,6 +794,7 @@ export default {
             contacto: this.form.contacto,
             cargo: this.form.cargo,
             ciudad: this.selectedAgencia.ciudades.desc_ciudad,
+            usuario: LocalStorage.getItem('tokenTraducido').usuario.nombre,
           },
         })
         .then((res) => {

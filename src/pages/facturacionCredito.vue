@@ -483,7 +483,7 @@
           <div style="width: 100%; height: 600px">
             <webViewer
               ref="webViewer"
-              @close-pdf="dialogFactura = false"
+              @close-pdf="this.closePrint()"
               @print-pdf="this.printData()"
             ></webViewer>
           </div>
@@ -2438,10 +2438,10 @@ export default {
 
       if (this.selectedTipo.formaPago == "CR") {
         this.imprimio = true;
-      } else {
-        this.sendData();
+      } else {        
         this.dialogFactura = false;
       }
+      this.sendData();
     },
     // Metodo para imprimir el Anexo
     async printDataAnexo() {
@@ -2458,8 +2458,7 @@ export default {
       });
 
       this.dialogAnexo = true;
-      this.dialogFactura = false;
-      this.sendData();
+      this.dialogFactura = false;      
     },
     // Metodo para cerrar el print de la Factura
     closePrint() {
@@ -2693,7 +2692,7 @@ export default {
         color: "green",
       });
 
-      await this.resetFilters();
+      this.resetFilters();
       this.loading = false;
 
       // Seteamos los datos de la ultima Factura
@@ -3278,6 +3277,7 @@ export default {
       this.selectedAgencia = this.agencias[0];
       this.selectedTipo = this.tipoFacturacion[2];
       this.selectedForma = this.formaPago[0];
+      this.selectedConcepto = [];
       this.fechaSelected = moment().format("DD/MM/YYYY");
       this.detalles = [];
       this.descuentoSelected = 0;
@@ -3382,16 +3382,23 @@ export default {
           },
         })
         .then((res) => {
-          this.$refs.webViewer.showpdf(res.data.base64);
-          this.resetForm();
+          this.$refs.webViewer.showpdf(res.data.base64);          
         });
     },
     // Imprimir Anexo en PDF
-    printAnexo() {
+    async printAnexo() {
+      let factArray = {};
+      factArray.cliente_orig = await this.selectedCliente.id;
+      if (this.selectedCliente.cte_decontado == 1) {
+        factArray.ci_rif_cte_conta_org = this.ci_rif_cte_conta_org;
+        factArray.id_clte_part_orig = this.id_clte_part_orig;
+      }
       api
         .get(`/reports/anexoFactura`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            data: JSON.stringify(factArray),
+            detalle: JSON.stringify(this.selectedGuias),
           },
         })
         .then((res) => {
