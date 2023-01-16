@@ -29,7 +29,7 @@
                 v-model="monto_subtotal"
                 label="Monto Subtotal:"
                 hint=""
-                dense
+                densethis.detalles
                 v-money="money"
                 input-class="text-right"
                 style="padding-bottom: 10px"
@@ -405,13 +405,16 @@
               </q-input>
             </div>
           </div>
-          <div class="row movil" style="margin-bottom: 6px; margin-top: 10px">
+          <div
+            class="justify-end row movil"
+            style="margin-bottom: 6px; margin-top: 10px"
+          >
             <q-btn
               label="Asignar"
               @click="this.asignarGuias()"
               color="primary"
               icon="add"
-              class="col-md-6 col-xl-6 col-lg-6 col-xs-12 col-sm-12"
+              class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
               style="margin-bottom: 10px"
             />
             <q-btn
@@ -419,7 +422,7 @@
               color="primary"
               flat
               icon="close"
-              class="col-md-6 col-xl-6 col-lg-6 col-xs-12 col-sm-12"
+              class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
               @click="
                 this.selectedTipo = this.tipoFacturacion[2];
                 setConceptos();
@@ -483,27 +486,15 @@
           <div style="width: 100%; height: 600px">
             <webViewer
               ref="webViewer"
-              @close-pdf="this.closePrint()"
               @print-pdf="this.printData()"
+              @close-pdf="dialogFactura = false"
             ></webViewer>
-          </div>
-          <div
-            class="float-center"
-            style="margin-bottom: 6px; margin-top: 10px"
-            v-show="this.selectedTipo.formaPago == 'CR'"
-          >
-            <q-btn
-              label="Imprimir Anexo"
-              @click="printDataAnexo()"
-              color="primary"
-              icon="print"
-            />
           </div>
         </q-card-section>
       </q-card>
     </q-dialog>
 
-    <q-dialog v-model="dialogAnexo" @show="this.printAnexo()">
+    <q-dialog v-model="dialogAnexo">
       <div style="width: 100%; height: 700px">
         <webViewer ref="webViewer" @close-pdf="dialogAnexo = false"></webViewer>
       </div>
@@ -2126,8 +2117,6 @@ export default {
       confirmPrint: false,
       conceptoTransporte: "",
       referencia: "",
-      imprimio: false,
-      imprimioAnexo: false,
       iva: 0,
       correlativo: {},
       nro_documento: 0,
@@ -2434,49 +2423,12 @@ export default {
       }
 
       this.confirmPrint = false;
+      this.dialogFactura = false;
       this.errorMessage("Aqui imprimo la factura");
-
-      if (this.selectedTipo.formaPago == "CR") {
-        this.imprimio = true;
-      } else {        
-        this.dialogFactura = false;
-      }
       this.sendData();
-    },
-    // Metodo para imprimir el Anexo
-    async printDataAnexo() {
-      if (!this.imprimio) {
-        this.errorMessage(
-          "Debe Imprimir la Factura antes de imprimir el reporte Anexo..."
-        );
-        return;
-      }
-
-      this.$q.notify({
-        message: "Recuerde Imprimir el reporte Anexo a la Factura",
-        color: "green",
-      });
-
-      this.dialogAnexo = true;
-      this.dialogFactura = false;      
-    },
-    // Metodo para cerrar el print de la Factura
-    closePrint() {
-      if (
-        this.selectedTipo.formaPago == "CR" &&
-        this.imprimio &&
-        !this.imprimioAnexo
-      ) {
-        this.errorMessage("Debe Imprimir el Reporte Anexo antes de Salir...");
-        return;
-      } else {
-        this.dialogFactura = false;
-        this.imprimio = false;
-      }
     },
     // Metodos para guardar la Factura
     async sendData() {
-      this.imprimio = false;
       this.loading = true;
 
       // Actualizo el correlativo
@@ -2692,8 +2644,43 @@ export default {
         color: "green",
       });
 
-      this.resetFilters();
+      // Imprimir Anexo en PDF
+      if (this.selectedTipo.formaPago == "CR") {
+        this.$q.notify({
+          message: "Recuerde Imprimir el reporte Anexo a la Factura",
+          color: "green",
+        });
+        this.dialogAnexo = true;
+
+        formFactura.cod_movimiento = idFact;
+        let serie_doc = this.correlativo.serie_doc
+        ? this.correlativo.serie_doc + "-"
+        : "";
+        formFactura.nroFact =
+          serie_doc +
+          (this.nro_interno
+            ? this.nro_interno.toString().padStart(4, "0000")
+            : this.nro_documento.toString().padStart(4, "0000"));
+        formFactura.nroControl =
+          serie_doc +
+          this.correlativo.ult_doc_referencia
+            .toString()
+            .padStart(9, "00-000000");
+
+        await api
+          .get(`/reports/anexoFactura`, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              data: JSON.stringify(formFactura),
+            },
+          })
+          .then((res) => {
+            this.$refs.webViewer.showpdf(res.data.base64);
+          });
+      }
+
       this.loading = false;
+      this.resetFilters();
 
       // Seteamos los datos de la ultima Factura
       this.$refs.methods.getData(
@@ -3382,28 +3369,7 @@ export default {
           },
         })
         .then((res) => {
-          this.$refs.webViewer.showpdf(res.data.base64);          
-        });
-    },
-    // Imprimir Anexo en PDF
-    async printAnexo() {
-      let factArray = {};
-      factArray.cliente_orig = await this.selectedCliente.id;
-      if (this.selectedCliente.cte_decontado == 1) {
-        factArray.ci_rif_cte_conta_org = this.ci_rif_cte_conta_org;
-        factArray.id_clte_part_orig = this.id_clte_part_orig;
-      }
-      api
-        .get(`/reports/anexoFactura`, {
-          headers: {
-            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            data: JSON.stringify(factArray),
-            detalle: JSON.stringify(this.selectedGuias),
-          },
-        })
-        .then((res) => {
           this.$refs.webViewer.showpdf(res.data.base64);
-          this.resetForm();
         });
     },
   },
