@@ -149,7 +149,7 @@
             </q-select>
           </div>
           <div
-            class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 cardMargin selectMobile"
+            class="col-md-6 col-xl-6 col-lg-6 col-xs-12 col-sm-6 cardMargin selectMobile"
             style="align-self: center; text-align: center; margin-bottom: 15px"
           >
             <q-select
@@ -197,7 +197,7 @@
             </q-select>
           </div>
           <div
-            class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 cardMargin selectMobile"
+            class="col-md-6 col-xl-6 col-lg-6 col-xs-12 col-sm-6 cardMargin selectMobile"
             style="align-self: center; text-align: center; margin-bottom: 15px"
           >
             <q-select
@@ -428,7 +428,7 @@
             </q-select>
           </div>
           <div
-            class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 cardMargin selectMobile2"
+            class="col-md-6 col-xl-162 col-lg-6 col-xs-12 col-sm-6 cardMargin selectMobile2"
             style="align-self: center; text-align: center; margin-bottom: 15px"
           >
             <q-select
@@ -476,7 +476,7 @@
             </q-select>
           </div>
           <div
-            class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 cardMargin selectMobile2"
+            class="col-md-6 col-xl-6 col-lg-6 col-xs-12 col-sm-6 cardMargin selectMobile2"
             style="align-self: center; text-align: center; margin-bottom: 15px"
           >
             <q-select

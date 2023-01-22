@@ -23,12 +23,12 @@ const routes = [
       {
         path: '/operativa',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('src/pages/operativa.vue')}]
+        children: [{ path: "", component: () => import('src/pages/Operativa.vue')}]
       },
       {
         path: '/costos',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('src/pages/costos.vue')}]
+        children: [{ path: "", component: () => import('src/pages/Costos.vue')}]
       },
       {
         path: '/registrodecostos',
