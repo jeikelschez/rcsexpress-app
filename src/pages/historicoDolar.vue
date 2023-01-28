@@ -316,7 +316,7 @@ export default {
       },
       pagination: {
         page: 1,
-        rowsPerPage: 5,
+        rowsPerPage: 10,
         sortBy: "fecha",
         descending: true,
         filter: "fecha,valor",

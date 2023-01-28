@@ -394,7 +394,7 @@ export default {
         sueldo: "",
       },
       pagination: {
-        rowsPerPage: 5,
+        rowsPerPage: 10,
       },
       empleados: [],
       selected: [],

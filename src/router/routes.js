@@ -21,14 +21,9 @@ const routes = [
         children: [{ path: "", component: () => import('pages/manuals/m_login.vue')}]
       },
       {
-        path: '/operativa',
+        path: '/relaciondespacho',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('src/pages/Operativa.vue')}]
-      },
-      {
-        path: '/costos',
-        component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('src/pages/Costos.vue')}]
+        children: [{ path: "", component: () => import('src/pages/relacionDespacho.vue')}]
       },
       {
         path: '/registrodecostos',
@@ -344,14 +339,9 @@ const routes = [
     component: () => import('layouts/manualLayout.vue'),
     children: [
       {
-        path: '/m_operativa',
+        path: '/m_relaciondespacho',
         component: () => import("layouts/manualLayout.vue"),
-        children: [{ path: "", component: () => import('pages/manuals/m_operativa.vue')}]
-      },
-      {
-        path: '/m_costos',
-        component: () => import("layouts/manualLayout.vue"),
-        children: [{ path: "", component: () => import('pages/manuals/m_costos.vue')}]
+        children: [{ path: "", component: () => import('pages/manuals/m_relacionDespacho.vue')}]
       },
       {
         path: '/m_registrodecostos',

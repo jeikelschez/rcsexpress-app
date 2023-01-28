@@ -303,7 +303,7 @@ export default {
         cod_agencia: [],
       },
       pagination: {
-        rowsPerPage: 5,
+        rowsPerPage: 10,
       },
       agencias: [],
       roles: [],

@@ -73,26 +73,7 @@
                 label="Relacion de despacho"
                 expanded="desplegable2"
                 v-model="desplegable2"
-              >
-                <q-item clickable tag="a" to="/m_operativa" exact>
-                  <q-item-section avatar>
-                    <q-tooltip
-                      v-if="miniState"
-                      anchor="center right"
-                      self="center left"
-                      :offset="[10, 10]"
-                      transition-show="scale"
-                      transition-hide="scale"
-                    >
-                      <div class="tool">{{ $t("Menu.Operativa") }}</div>
-                    </q-tooltip>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{ $t("Menu.Operativa") }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
-                </q-item>
-
+              >       
                 <q-item clickable tag="a" to="/m_costos" exact>
                   <q-item-section avatar>
                     <q-tooltip

@@ -347,7 +347,7 @@ export default {
         { label: "EXTRA URBANA", value: "E" },
       ],
       pagination: {
-        rowsPerPage: 5,
+        rowsPerPage: 10,
       },
       rpermisos: [],
       agencias: [],

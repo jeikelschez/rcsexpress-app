@@ -335,7 +335,7 @@ export default {
         afecta_estado: "N",
       },
       pagination: {
-        rowsPerPage: 5,
+        rowsPerPage: 10,
       },
       tipoOperacion: [],
       conceptos: [],

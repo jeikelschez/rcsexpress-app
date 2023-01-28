@@ -368,7 +368,7 @@ export default {
         { label: "ENTERO LARGO", value: "5" },
       ],
       pagination: {
-        rowsPerPage: 5,
+        rowsPerPage: 8,
       },
       variables: [],
       rpermisos: [],

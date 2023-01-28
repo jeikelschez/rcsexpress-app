@@ -435,7 +435,7 @@ export default {
         { label: "INACTIVO", value: "I" },
       ],
       pagination: {
-        rowsPerPage: 5,
+        rowsPerPage: 10,
       },
       receptores: [],
       selected: [],

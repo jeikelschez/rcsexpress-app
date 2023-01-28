@@ -320,7 +320,7 @@ export default {
         descripcion: "",
       },
       pagination: {
-        rowsPerPage: 5,
+        rowsPerPage: 10,
       },
       unidades: [],
       selected: [],

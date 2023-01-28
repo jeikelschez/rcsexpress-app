@@ -428,7 +428,7 @@ export default {
         { label: "INACTIVO", value: "0" },
       ],
       pagination: {
-        rowsPerPage: 5, 
+        rowsPerPage: 10, 
       },
       agencias: [],
       roles: [],

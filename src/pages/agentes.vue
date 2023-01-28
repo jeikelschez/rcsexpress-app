@@ -590,7 +590,7 @@ export default {
       ],
       pagination: {
         page: 1,
-        rowsPerPage: 5,
+        rowsPerPage: 10,
         sortBy: "persona_responsable",
         descending: false,
         filter: "nb_agente,persona_responsable",

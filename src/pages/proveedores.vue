@@ -637,7 +637,7 @@ export default {
       ],
       pagination: {
         page: 1,
-        rowsPerPage: 5,
+        rowsPerPage: 10,
         sortBy: "nb_proveedor",
         descending: false,
         filter: "nb_proveedor,condicion_pago,flag_activo",

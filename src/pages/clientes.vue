@@ -1003,7 +1003,7 @@ export default {
       ],
       pagination: {
         page: 1,
-        rowsPerPage: 5,
+        rowsPerPage: 10,
         sortBy: "nb_cliente",
         descending: false,
         filter: "nb_cliente,rif_cedula,flag_activo",

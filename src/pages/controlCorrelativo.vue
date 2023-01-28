@@ -475,7 +475,7 @@ export default {
       ],
       pagination: {
         page: 1,
-        rowsPerPage: 5,
+        rowsPerPage: 8,
         sortBy: "control_final",
         descending: true,
         filter:

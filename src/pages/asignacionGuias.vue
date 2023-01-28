@@ -911,7 +911,7 @@ export default {
       },
       pagination: {
         page: 1,
-        rowsPerPage: 5,
+        rowsPerPage: 8,
         sortBy: "control_inicio",
         descending: true,
         filter: "",

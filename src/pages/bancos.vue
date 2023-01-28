@@ -394,7 +394,7 @@ export default {
         email_banco: "",
       },
       pagination: {
-        rowsPerPage: 5,
+        rowsPerPage: 10,
       },
       bancos: [],
       selected: [],

@@ -413,7 +413,7 @@ export default {
         { label: "CORRIENTE", value: "C" },
       ],
       pagination: {
-        rowsPerPage: 5,
+        rowsPerPage: 10,
       },
       bancos: [],
       cuentas: [],

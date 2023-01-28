@@ -514,7 +514,7 @@ export default {
         peso_fin: 0,
       },
       pagination: {
-        rowsPerPage: 5,
+        rowsPerPage: 10,
       },
       conceptos: [],
       selected: [],

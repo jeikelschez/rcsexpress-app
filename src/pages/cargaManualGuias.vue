@@ -293,7 +293,7 @@
     <div class="q-pa-sm justify-center">
       <div
         class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 text-secondary movilTitle"
-        style=" 
+        style="
           align-self: center;
           text-align: center;
           font-size: 20px;
@@ -458,15 +458,15 @@
               style="max-height: 30px"
               transition-hide="scale"
               color="primary"
-              >Imprimir Lote Anterior</q-tooltip
-            >
+              >Imprimir Lote Anterior
+            </q-tooltip>
           </q-btn>
         </div>
       </div>
 
       <div
         class="row q-pa-md col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
-        style="align-self: center; text-align: center"
+        style="align-self: center; text-align: center; margin-top: -20px"
       >
         <div
           class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 cardMarginFilter selectMobile2"
@@ -625,7 +625,7 @@
         :columns="columns"
         :loading="loading"
         :separator="separator"
-        style="width: 100%; height: 480px"
+        style="width: 100%; height: 500px"
         :grid="$q.screen.xs"
         :rows-per-page-options="[0]"
       >
@@ -1852,6 +1852,9 @@ export default {
 </script>
 
 <style>
-@media screen and (max-width: 1024px) {.cardMarginFile {margin-bottom: 20px}}
-
+@media screen and (max-width: 1024px) {
+  .cardMarginFile {
+    margin-bottom: 20px;
+  }
+}
 </style>

@@ -369,7 +369,7 @@ export default {
         cod_concepto: "",
       },
       pagination: {
-        rowsPerPage: 5,
+        rowsPerPage: 10,
       },
       conceptos: [],
       conceptosFac: [],

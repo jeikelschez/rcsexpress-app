@@ -1182,7 +1182,7 @@ export default {
       },
       paginationEstados: {
         page: 1,
-        rowsPerPage: 5,
+        rowsPerPage: 10,
         sortBy: "desc_estado",
         descending: false,
         filter: "desc_estado,siglas",
@@ -1191,7 +1191,7 @@ export default {
       },
       paginationCiudades: {
         page: 1,
-        rowsPerPage: 5,
+        rowsPerPage: 8,
         sortBy: "desc_ciudad",
         descending: false,
         filter: "desc_ciudad,siglas",

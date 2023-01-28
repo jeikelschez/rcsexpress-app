@@ -568,7 +568,7 @@ export default {
         { label: "ORIENTAL", value: "OR" },
       ],
       pagination: {
-        rowsPerPage: 5,
+        rowsPerPage: 10,
       },
       tarifas: [],
       selected: [],
