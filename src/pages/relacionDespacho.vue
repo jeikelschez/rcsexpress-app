@@ -805,7 +805,125 @@
     <div
       class="q-pa-md col-md-12 col-xs-12 justify-center table cardMargin"
     >
-      <webViewer ref="webViewer"></webViewer>
+    <q-table
+        :rows="guias"
+        binary-state-sort
+        row-key="id"
+        :columns="columns"
+        :loading="loading"
+        class="tableHeight"
+        selection="multiple"
+        :separator="separator"
+        :grid="$q.screen.xs"
+        :rows-per-page-options="[0]"
+        :pagination.sync="pagination"
+        style="width: 100%; height: 560px"
+        hide-bottom
+        v-model:selected="selected"
+      >
+        <template v-slot:loading>
+          <q-inner-loading showing color="primary" class="loading" />
+        </template>
+        <template v-slot:body-cell-nro_documento="props">
+          <q-td :props="props">
+            {{ buildNroDoc("nro_documento", props.row) }}
+          </q-td>
+        </template>
+        <template v-slot:body-cell-nro_fact="props">
+          <q-td :props="props">
+            {{ buildNroDoc("nro_fact", props.row) }}
+          </q-td>
+        </template>
+        <template v-slot:body-cell-observacion_adic="props">
+          <q-td :props="props" style="padding-top: 30px">
+            <q-input
+              outlined
+              v-model="props.row.observacion_adic"
+              dense
+              hint=""
+              :rules="[
+                (val) => this.$refs.rulesVue.isMax(val, 100),
+                (val) => this.$refs.rulesVue.isMin(val, 3),
+              ]"
+              lazy-rules
+            >
+            </q-input>
+          </q-td>
+        </template>
+        <template v-slot:item="props" style="margin-bottom: 20px">
+          <div
+            class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+            :style="props.selected ? 'transform: scale(0.95);' : ''"
+          >
+            <q-card :class="props.selected ? 'bg-grey-2' : ''">
+              <q-list dense>
+                <q-item v-for="col in props.cols" :key="col.name">
+                  <q-item-section>
+                    <q-item-label>{{ col.label }}</q-item-label>
+                  </q-item-section>
+                  <q-item-section
+                    side
+                    class="itemMovilSide"
+                    v-if="col.name === 'nro_documento'"
+                  >
+                    {{ buildNroDoc("nro_documento", props.row) }}
+                  </q-item-section>
+                  <q-item-section
+                    side
+                    class="itemMovilSide"
+                    v-if="col.name === 'nro_fact'"
+                  >
+                    {{ buildNroDoc("nro_fact", props.row) }}
+                  </q-item-section>
+                  <q-item-section
+                    side
+                    class="itemMovilSide"
+                    v-if="col.name === 'fecha_emision'"
+                  >
+                    {{ props.row.fecha_emision }}
+                  </q-item-section>
+                  <q-item-section
+                    side
+                    class="itemMovilSide"
+                    v-if="col.name === 'monto_total'"
+                  >
+                    {{ props.row.monto_total }}
+                  </q-item-section>
+                  <q-item-section
+                    side
+                    class="itemMovilSide"
+                    v-if="col.name === 'observacion_entrega'"
+                    style="text-align: right !important"
+                  >
+                    {{ props.row.observacion_entrega }}
+                  </q-item-section>
+                  <q-item-section
+                    side
+                    class="itemMovilSide"
+                    v-if="col.name === 'observacion_adic'"
+                    style="text-align: right !important; align-self: center"
+                  >
+                    <q-input
+                      outlined
+                      v-model="props.row.observacion_adic"
+                      dense
+                      hint=""
+                      :rules="[
+                        (val) => this.$refs.rulesVue.isMax(val, 100),
+                        (val) => this.$refs.rulesVue.isMin(val, 3),
+                      ]"
+                      lazy-rules
+                      hide-bottom-space
+                      style="padding-top: 20px"
+                    >
+                    </q-input>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </q-card>
+          </div>
+        </template>
+      </q-table>
     </div>
 
     <methods
@@ -837,6 +955,56 @@ export default {
         { label: "VISIBLE", value: "C" },
         { label: "NO VISIBLE", value: "A" },
       ],
+      columns: [
+        {
+          name: "nro_documento",
+          label: "N° Control",
+          field: "nro_documento",
+          align: "left",
+          sortable: true,
+        },
+        {
+          name: "nro_fact",
+          label: "N° Fact.",
+          field: "nro_fact",
+          align: "left",
+        },
+        {
+          name: "fecha_emision",
+          label: "Emisión",
+          field: "fecha_emision",
+          align: "left",
+          sortable: true,
+        },
+        {
+          name: "monto_total",
+          label: "Monto Total",
+          field: "monto_total",
+          align: "right",
+          sortable: true,
+          format: (val) =>
+            new Intl.NumberFormat("de-DE", {
+              style: "currency",
+              currency: "EUR",
+              currencyDisplay: "code",
+            })
+              .format(val)
+              .replace("EUR", "")
+              .trim(),
+        },
+        {
+          name: "observacion_entrega",
+          label: "Descripción",
+          field: "observacion_entrega",
+          align: "left",
+        },
+        {
+          name: "observacion_adic",
+          label: "Observación Adicional",
+          field: "observacion_adic",
+          align: "left",
+        },
+      ],
       reportes: [
         { label: "GPA", value: "C", slot: 'one'},
         { label: "APZ", value: "S", slot: 'two' },
@@ -846,6 +1014,7 @@ export default {
         { label: "CARGA NETA", value: "C", slot: 'one'},
         { label: "SIN CARGA NETA", value: "S", slot: 'two'},
       ],
+      guias: [],
       selectedReport: "C",
       selectedVenta: "A",
       selectedCosto: "S",
@@ -871,7 +1040,6 @@ export default {
       ""
     );
     this.$refs.methods.getData("/agencias", "setDataInit", "agencias");
-    this.$refs.webViewer.showpdf(this.base64);
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
