@@ -1,11 +1,11 @@
 <template>
   <q-page class="pagina q-pa-md">
     <q-dialog v-model="dialog">
-      <q-card class="q-pa-md" bordered style="width: 700px; max-width: 80vw">
+      <q-card class="q-pa-md" bordered style="width: 999px; max-width: 80vw">
         <q-card-section>
           <q-form class="q-gutter-md" @submit="pdfView = true">
-            <div class="row">
-              <div class="col-md-12 col-xs-12">
+            <div class="row" style="text-align: center">
+              <div class="col-md-6 col-xs-12 pcform" style="margin-bottom: 10px">
                 <q-select
                   :options="agentesSelected"
                   @filter="
@@ -35,7 +35,7 @@
                   </template>
                 </q-select>
               </div>
-              <div class="col-md-12 col-xs-12">
+              <div class="col-md-6 col-xs-12" style="margin-bottom: 10px">
                 <q-select
                   :options="unidadesSelected"
                   @filter="
@@ -65,7 +65,7 @@
                   </template>
                 </q-select>
               </div>
-              <div class="col-md-12 col-xs-12">
+              <div class="col-md-6 col-xs-12 pcform" style="margin-bottom: 10px">
                 <q-select
                   :options="ayudantesSelected"
                   @filter="
@@ -95,7 +95,7 @@
                   </template>
                 </q-select>
               </div>
-              <div class="col-md-12 col-xs-12">
+              <div class="col-md-6 col-xs-12" style="margin-bottom: 10px">
                 <q-select
                   :options="receptoresSelected"
                   @filter="
@@ -125,7 +125,7 @@
                   </template>
                 </q-select>
               </div>
-              <div class="col-md-6 col-xs-12">
+              <div class="col-md-6 col-xs-12 pcform" style="margin-bottom: 10px">
                 <q-btn-toggle
                   v-model="selectedVisible"
                   spread
@@ -140,7 +140,7 @@
                 >
                 </q-btn-toggle>
               </div>
-              <div class="col-md-4 col-xs-12">
+              <div class="col-md-5 col-xs-12" style="margin-bottom: 10px">
                 <q-btn-toggle
                   v-model="selectedNeta"
                   spread
@@ -155,7 +155,7 @@
                 >
                 </q-btn-toggle>
               </div>
-              <div class="col-md-2 col-xs-12">
+              <div class="col-md-1 col-xs-12" style="margin-bottom: 10px">
                 <q-checkbox
                   v-model="selectedDolar"
                   label="$"
