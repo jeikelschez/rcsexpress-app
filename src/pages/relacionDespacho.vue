@@ -5,7 +5,10 @@
         <q-card-section>
           <q-form class="q-gutter-md" @submit="pdfView = true">
             <div class="row" style="text-align: center">
-              <div class="col-md-6 col-xs-12 pcform" style="margin-bottom: 10px">
+              <div
+                class="col-md-6 col-xs-12 pcform"
+                style="margin-bottom: 10px"
+              >
                 <q-select
                   :options="agentesSelected"
                   @filter="
@@ -65,7 +68,10 @@
                   </template>
                 </q-select>
               </div>
-              <div class="col-md-6 col-xs-12 pcform" style="margin-bottom: 10px">
+              <div
+                class="col-md-6 col-xs-12 pcform"
+                style="margin-bottom: 10px"
+              >
                 <q-select
                   :options="ayudantesSelected"
                   @filter="
@@ -125,7 +131,10 @@
                   </template>
                 </q-select>
               </div>
-              <div class="col-md-6 col-xs-12 pcform" style="margin-bottom: 10px">
+              <div
+                class="col-md-6 col-xs-12 pcform"
+                style="margin-bottom: 10px"
+              >
                 <q-btn-toggle
                   v-model="selectedVisible"
                   spread
@@ -246,9 +255,9 @@
                     </q-input>
                   </div>
                   <q-table
-                    :rows="clientes"
+                    :rows="agencias"
                     dense
-                    :columns="columnsClientes"
+                    :columns="columnsAgencia"
                     binary-state-sort
                     :virtual-scroll="null"
                     :separator="separator"
@@ -260,30 +269,7 @@
                   >
                     <template v-slot:loading>
                       <q-inner-loading showing color="primary" />
-                    </template>
-
-                    <template v-slot:body-cell-action="props">
-                      <q-td :props="props">
-                        <q-btn
-                          dense
-                          round
-                          flat
-                          color="primary"
-                          icon="save"
-                          :disabled="this.disabledDelete"
-                          @click="selected = props.row.id"
-                          @click.capture="permisosDelete = true"
-                        ></q-btn>
-                        <q-btn
-                          dense
-                          round
-                          flat
-                          color="primary"
-                          icon="edit"
-                          @click="this.dialog = true"
-                        ></q-btn>
-                      </q-td>
-                    </template>
+                    </template>                    
                   </q-table>
                 </div>
               </q-card-section>
@@ -421,45 +407,21 @@
                     </q-input>
                   </div>
                   <q-table
-                    :rows="clientes"
+                    :rows="agencias"
                     dense
-                    :columns="columnsClientes"
+                    :columns="columnsAgencia"
                     binary-state-sort
                     :virtual-scroll="null"
                     :separator="separator"
                     row-key="action"
                     :loading="loading"
                     class="my-sticky-header-column-table"
-                    :filter="filter"
                     style="width: 100%; height: 350px"
                     v-model:pagination="pagination"
                   >
                     <template v-slot:loading>
                       <q-inner-loading showing color="primary" />
-                    </template>
-
-                    <template v-slot:body-cell-action="props">
-                      <q-td :props="props">
-                        <q-btn
-                          dense
-                          round
-                          flat
-                          color="primary"
-                          icon="save"
-                          :disabled="this.disabledDelete"
-                          @click="selected = props.row.id"
-                          @click.capture="permisosDelete = true"
-                        ></q-btn>
-                        <q-btn
-                          dense
-                          round
-                          flat
-                          color="primary"
-                          icon="edit"
-                          @click="this.dialog = true"
-                        ></q-btn>
-                      </q-td>
-                    </template>
+                    </template>                    
                   </q-table>
                 </div>
               </q-card-section>
@@ -699,7 +661,7 @@
           color="white"
           text-color="black"
           :options="reportes"
-          @update:model-value=""
+          @update:model-value="changeReporte()"
         >
           <template v-slot:one>
             <q-tooltip
@@ -801,6 +763,7 @@
           color="primary"
           padding="sm"
           @click.capture="this.dialog = true"
+          :disabled="this.guias.length > 0 ? false : true"
         >
           <q-icon size="25px" name="print" color="white"> </q-icon>
           <q-tooltip
@@ -818,31 +781,77 @@
     <div class="q-pa-md col-md-12 col-xs-12 justify-center cardMargin">
       <q-table
         :rows="guias"
-        binary-state-sort
-        row-key="id"
         :columns="columns"
         :loading="loading"
         class="tableHeight"
         selection="multiple"
+        binary-state-sort
         :separator="separator"
+        row-key="id"
         :grid="$q.screen.xs"
         :rows-per-page-options="[0]"
         :pagination.sync="pagination"
         style="width: 100%; height: 520px"
+        :visible-columns="visibleColumns"
         v-model:selected="selected"
+        v-model:pagination="pagination"
       >
         <template v-slot:loading>
           <q-inner-loading showing color="primary" class="loading" />
         </template>
-        <template v-slot:body-cell-cod_agencia="props">
-          <q-td :props="props">
-            {{ this.findSiglas("agencias", props.row.cod_agencia) }}
-          </q-td>
+        <template v-slot:header="props">
+          <q-tr :props="props">
+            <q-th auto-width>
+              <q-checkbox v-model="props.selected" />
+            </q-th>
+            <q-th v-for="col in props.cols" :key="col.name" :props="props">
+              {{ col.label }}
+            </q-th>
+          </q-tr>
         </template>
-        <template v-slot:body-cell-cod_agencia_dest="props">
-          <q-td :props="props">
-            {{ this.findSiglas("agencias", props.row.cod_agencia_dest) }}
-          </q-td>
+        <template v-slot:body="props" style="margin-bottom: 20px">
+          <q-tr
+            :props="props"
+            v-if="selectedReporte == 'APZ' && props.rowIndex * -1 == 0"
+          >
+            <q-td colspan="100%" style="font-size: 20px; color: #283593">
+              <div class="text-left">
+                <strong> {{ "Zona Destino: " }} </strong>
+                {{ this.guias[props.rowIndex].zonas_dest.nb_zona }}
+              </div>
+            </q-td>
+          </q-tr>
+          <q-tr
+            :props="props"
+            v-else-if="
+              selectedReporte == 'APZ' &&
+              this.guias[props.rowIndex].zonas_dest.nb_zona !=
+                this.guias[props.rowIndex - 1].zonas_dest.nb_zona
+            "
+          >
+            <q-td colspan="100%" style="font-size: 20px; color: #283593">
+              <div class="text-left">
+                <strong> {{ "Zona Destino: " }} </strong>
+                {{ this.guias[props.rowIndex].zonas_dest.nb_zona }}
+              </div>
+            </q-td>
+          </q-tr>
+          <q-tr :props="props">
+            <q-td>
+              <q-checkbox v-model="props.selected" />
+            </q-td>
+            <q-td v-for="col in props.cols" :key="col.name" :props="props">
+              <div v-if="col.name == 'cod_agencia'">
+                {{ this.findSiglas("agencias", props.row.cod_agencia) }}
+              </div>
+              <div v-else-if="col.name == 'cod_agencia_dest'">
+                {{ this.findSiglas("agencias", props.row.cod_agencia_dest) }}
+              </div>
+              <div v-else>
+                {{ col.value }}
+              </div>
+            </q-td>
+          </q-tr>
         </template>
       </q-table>
     </div>
@@ -898,39 +907,60 @@ export default {
           name: "nro_documento",
           label: "Guía",
           field: "nro_documento",
+          required: true,
           align: "left",
         },
         {
           name: "fecha_emision",
           label: "Emisión",
           field: "fecha_emision",
+          required: true,
           align: "left",
         },
         {
           name: "cod_agencia",
           label: "Origen",
           field: "cod_agencia",
+          required: true,
           align: "left",
         },
         {
           name: "cod_agencia_dest",
           label: "Destino",
           field: "cod_agencia_dest",
+          required: true,
           align: "left",
         },
         {
           name: "cliente_orig_desc",
           label: "Remitente",
           field: "cliente_orig_desc",
+          required: true,
+          align: "left",
+        },
+        {
+          name: "zona_dest",
+          label: "Zona",
+          field: (row) => row.zonas_dest.nb_zona,
           align: "left",
         },
         {
           name: "cliente_dest_desc",
           label: "Destinatario",
           field: "cliente_dest_desc",
+          required: true,
           align: "left",
         },
       ],
+      columnsAgencia: [
+        {
+          name: "nb_agencia",
+          label: "Agencia",
+          field: "nb_agencia",
+          align: "left",
+        }
+      ],
+      visibleColumns: ["zona_dest"],
       optionSerie: [
         {
           label: "Serie 44",
@@ -970,8 +1000,9 @@ export default {
       selectedAyudante: [],
       receptoresSelected: [],
       selectedReceptor: [],
-      fecha_desde: moment().format("DD/MM/YYYY"),
-      fecha_hasta: moment().format("DD/MM/YYYY"),
+      guia_desde: "",
+      fecha_desde: moment("2022-05-01").format("DD/MM/YYYY"),
+      fecha_hasta: moment("2022-05-30").format("DD/MM/YYYY"),
     };
   },
   setup() {
@@ -1083,6 +1114,7 @@ export default {
           tipo: "GC",
           estatus_admin_ex: "A",
           estatus_oper: this.selectedTipo == "C" ? "PR" : "",
+          include_zona: "S",
           order_by: this.pagination.sortBy,
           order_direction: this.pagination.descending ? "DESC" : "ASC",
         },
@@ -1111,6 +1143,33 @@ export default {
       this.fecha_desde = moment().format("DD/MM/YYYY");
       this.fecha_hasta = moment().format("DD/MM/YYYY");
       this.getDataClientes();
+    },
+    // Metodo para cambiar el tipo de Reporte
+    changeReporte() {
+      switch (this.selectedReporte) {
+        case "GPA":
+          this.visibleColumns = ["zona_dest"];
+          this.pagination.sortBy = "nro_documento";
+          this.getDataTable();
+          break;
+        case "APZ":
+          this.visibleColumns = [];
+          this.pagination.sortBy = JSON.stringify([
+            ["cod_zona_dest", "ASC"],
+            ["nro_documento", "ASC"],
+          ]);
+          this.getDataTable();
+          break;
+        case "MAD":
+          this.dialogAgencias = true;
+          //this.visibleColumns = ["zona_dest"];
+          break;
+        case "MAG":
+          this.visibleColumns = ["zona_dest"];
+          break;
+        default:
+          break;
+      }
     },
   },
 };
