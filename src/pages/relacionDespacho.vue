@@ -193,243 +193,7 @@
           </q-form>
         </q-card-section>
       </q-card>
-    </q-dialog>
-
-    <q-dialog
-      v-model="dialogAgencias"
-      style="max-width: 100vw"
-      class="row justify-center items-center"
-    >
-      <q-card style="max-width: 100vw">
-        <div class="row justify-center items-center" style="padding: 10px">
-          <div class="col-md-6 col-xs-12 boxStyle Cards">
-            <q-card
-              class="q-pa-md col-md-4 col-xs-12"
-              bordered
-              style="padding: 10px"
-            >
-              <q-card-section
-                style="
-                  padding-bottom: 5px;
-                  padding-left: 10px;
-                  padding-right: 10px;
-                "
-              >
-                <div class="row">
-                  <div
-                    class="col-md-12 col-xs-12"
-                    style="
-                      align-self: center;
-                      text-align: left;
-                      margin-top: -30px;
-                    "
-                  >
-                    <h4
-                      style="font-size: 19px; margin-bottom: 20px"
-                      class="text-secondary"
-                    >
-                      <strong>Lista de Agencias</strong>
-                    </h4>
-                  </div>
-                  <div
-                    class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 cardMargin selectMobile2"
-                    style="align-self: center; text-align: center"
-                  >
-                    <q-input
-                      v-model="guia_desde"
-                      rounded
-                      dense
-                      outlined
-                      standout
-                      label="Guia Desde"
-                      @keyup.enter="getDataTable()"
-                      mask="##########"
-                    >
-                      <template v-slot:append>
-                        <q-icon
-                          @click="getDataTable()"
-                          class="cursor-pointer"
-                          name="search"
-                        />
-                      </template>
-                    </q-input>
-                  </div>
-                  <q-table
-                    :rows="agencias"
-                    dense
-                    :columns="columnsAgencia"
-                    binary-state-sort
-                    :virtual-scroll="null"
-                    :separator="separator"
-                    row-key="action"
-                    :loading="loading"
-                    class="my-sticky-header-column-table"
-                    style="width: 100%; height: 350px"
-                    v-model:pagination="pagination"
-                  >
-                    <template v-slot:loading>
-                      <q-inner-loading showing color="primary" />
-                    </template>                    
-                  </q-table>
-                </div>
-              </q-card-section>
-            </q-card>
-          </div>
-          <div
-            class="row col-md-1 col-xs-12 buttonsMobile"
-            style="text-align: center"
-          >
-            <div class="col-md-12 col-xs-3">
-              <q-btn padding="md" color="primary" round icon="chevron_right" />
-            </div>
-            <div class="col-md-12 col-xs-3 buttonsCard">
-              <q-btn padding="md" color="primary" round icon="chevron_left" />
-            </div>
-
-            <div class="col-md-12 col-xs-3 buttonsCard">
-              <q-btn
-                padding="md"
-                color="primary"
-                round
-                icon="close"
-                @click="this.dialog = false"
-              />
-            </div>
-            <div class="col-md-12 col-xs-3 buttonsCard">
-              <q-btn
-                padding="md"
-                color="primary"
-                round
-                icon="keyboard_double_arrow_right"
-              />
-            </div>
-
-            <div class="col-md-12 col-xs-3 buttonsCard">
-              <q-btn
-                padding="md"
-                color="primary"
-                round
-                icon="keyboard_double_arrow_left"
-              />
-            </div>
-            <div class="col-md-12 col-xs-3 buttonsCard">
-              <q-btn padding="md" round color="primary" icon="check" />
-            </div>
-          </div>
-          <div
-            class="row col-md-1 col-xs-12 buttonsMenu buttonsMobile"
-            style="text-align: center"
-          >
-            <div class="col-md-12 col-xs-3">
-              <q-btn padding="md" color="primary" round icon="expand_less" />
-            </div>
-            <div class="col-md-12 col-xs-3 buttonsCard">
-              <q-btn padding="md" color="primary" round icon="expand_more" />
-            </div>
-            <div class="col-md-12 col-xs-3 buttonsCard">
-              <q-btn
-                padding="md"
-                color="primary"
-                round
-                icon="keyboard_double_arrow_up"
-              />
-            </div>
-            <div class="col-md-12 col-xs-3 buttonsCard">
-              <q-btn
-                padding="md"
-                color="primary"
-                round
-                icon="keyboard_double_arrow_down"
-              />
-            </div>
-            <div
-              class="col-md-12 col-xs-6 buttonsCard"
-              style="margin-top: 20px"
-            >
-              <q-btn
-                padding="md"
-                color="primary"
-                round
-                icon="close"
-                @click="this.dialog = false"
-              />
-            </div>
-            <div
-              class="col-md-12 col-xs-6 buttonsCard"
-              style="margin-top: 20px"
-            >
-              <q-btn padding="md" round color="primary" icon="check" />
-            </div>
-          </div>
-          <div class="col-md-6 col-xs-12 Cards">
-            <q-card
-              class="q-pa-md col-md-4 col-xs-12"
-              bordered
-              style="padding: 10px"
-            >
-              <q-card-section
-                style="
-                  padding-bottom: 5px;
-                  padding-left: 10px;
-                  padding-right: 10px;
-                "
-              >
-                <div class="row">
-                  <div
-                    class="col-md-12 col-xs-12"
-                    style="
-                      align-self: center;
-                      text-align: left;
-                      margin-top: -30px;
-                    "
-                  >
-                    <h4
-                      style="font-size: 19px; margin-bottom: 20px"
-                      class="text-secondary"
-                    >
-                      <strong>Agencias Seleccionadas</strong>
-                    </h4>
-                  </div>
-                  <div
-                    class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 cardMargin selectMobile2"
-                    style="align-self: center; text-align: center"
-                  >
-                    <q-input
-                      v-model="guia_desde"
-                      rounded
-                      dense
-                      outlined
-                      standout
-                      label="Buscar:"
-                      @keyup.enter="getDataTable()"
-                      mask="##########"
-                    >
-                    </q-input>
-                  </div>
-                  <q-table
-                    :rows="agencias"
-                    dense
-                    :columns="columnsAgencia"
-                    binary-state-sort
-                    :virtual-scroll="null"
-                    :separator="separator"
-                    row-key="action"
-                    :loading="loading"
-                    class="my-sticky-header-column-table"
-                    style="width: 100%; height: 350px"
-                    v-model:pagination="pagination"
-                  >
-                    <template v-slot:loading>
-                      <q-inner-loading showing color="primary" />
-                    </template>                    
-                  </q-table>
-                </div>
-              </q-card-section>
-            </q-card>
-          </div>
-        </div>
-      </q-card>
-    </q-dialog>
+    </q-dialog>    
 
     <div
       class="q-pa-md row col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
@@ -446,6 +210,54 @@
       <div
         class="col-md-4 col-xs-12 selectMobile2 cardMargin"
         style="margin-bottom: 10px"
+        v-if="selectedReporte == 'MAD'"
+      >
+        <q-select
+          rounded
+          dense
+          transition-show="flip-up"
+          transition-hide="flip-down"
+          :options="agenciasSelected"
+          @filter="
+            (val, update) =>
+              filterArray(
+                val,
+                update,
+                'agenciasSelected',
+                'agencias',
+                'nb_agencia'
+              )
+          "
+          use-input
+          fill-input
+          multiple
+          use-chips=""
+          emit-value
+          map-options
+          input-debounce="0"
+          option-label="nb_agencia"
+          option-value="id"
+          v-model="selectedAgenciaDestino"
+          outlined
+          standout
+          label="Agencia Destino"
+          @update:model-value="getDataTable()"
+          ><template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                Sin resultados
+              </q-item-section>
+            </q-item>
+          </template>
+          <template v-slot:prepend>
+            <q-icon name="search" />
+          </template>
+        </q-select>
+      </div>
+      <div
+        class="col-md-4 col-xs-12 selectMobile2 cardMargin"
+        style="margin-bottom: 10px"
+        v-else
       >
         <q-select
           rounded
@@ -486,6 +298,7 @@
           </template>
         </q-select>
       </div>
+
       <div class="col-md-4 col-xs-12 selectMobile2 cardMargin">
         <q-select
           rounded
@@ -817,7 +630,11 @@
             <q-td colspan="100%" style="font-size: 20px; color: #283593">
               <div class="text-left">
                 <strong> {{ "Zona Destino: " }} </strong>
-                {{ this.guias[props.rowIndex].zonas_dest.nb_zona }}
+                {{
+                  this.guias[props.rowIndex].zonas_dest
+                    ? this.guias[props.rowIndex].zonas_dest.nb_zona
+                    : "SIN ZONA DEFINIDA"
+                }}
               </div>
             </q-td>
           </q-tr>
@@ -825,14 +642,60 @@
             :props="props"
             v-else-if="
               selectedReporte == 'APZ' &&
-              this.guias[props.rowIndex].zonas_dest.nb_zona !=
-                this.guias[props.rowIndex - 1].zonas_dest.nb_zona
+              (this.guias[props.rowIndex].zonas_dest
+                ? this.guias[props.rowIndex].zonas_dest.nb_zona
+                : 'SIN ZONA DEFINIDA') !=
+                (this.guias[props.rowIndex - 1].zonas_dest
+                  ? this.guias[props.rowIndex - 1].zonas_dest.nb_zona
+                  : 'SIN ZONA DEFINIDA')
             "
           >
             <q-td colspan="100%" style="font-size: 20px; color: #283593">
               <div class="text-left">
                 <strong> {{ "Zona Destino: " }} </strong>
-                {{ this.guias[props.rowIndex].zonas_dest.nb_zona }}
+                {{
+                  this.guias[props.rowIndex].zonas_dest
+                    ? this.guias[props.rowIndex].zonas_dest.nb_zona
+                    : "SIN ZONA DEFINIDA"
+                }}
+              </div>
+            </q-td>
+          </q-tr>
+          <q-tr
+            :props="props"
+            v-if="selectedReporte == 'MAD' && props.rowIndex * -1 == 0"
+          >
+            <q-td colspan="100%" style="font-size: 20px; color: #283593">
+              <div class="text-left">
+                <strong> {{ "Agencia Destino: " }} </strong>
+                {{
+                  this.findIndex(
+                      "agencias",
+                      this.guias[props.rowIndex].cod_agencia_dest,
+                      "nb_agencia"
+                    )
+                }}
+              </div>
+            </q-td>
+          </q-tr>
+          <q-tr
+            :props="props"
+            v-else-if="
+              selectedReporte == 'MAD' &&
+              this.guias[props.rowIndex].cod_agencia_dest !=
+                this.guias[props.rowIndex - 1].cod_agencia_dest
+            "
+          >
+            <q-td colspan="100%" style="font-size: 20px; color: #283593">
+              <div class="text-left">
+                <strong> {{ "Agencia Destino: " }} </strong>
+                {{
+                  this.findIndex(
+                      "agencias",
+                      this.guias[props.rowIndex].cod_agencia_dest,
+                      "nb_agencia"
+                    )
+                }}
               </div>
             </q-td>
           </q-tr>
@@ -896,7 +759,6 @@ export default {
         { label: "GPA", value: "GPA", slot: "one" },
         { label: "APZ", value: "APZ", slot: "two" },
         { label: "MAD", value: "MAD", slot: "three" },
-        { label: "MAG", value: "MAG", slot: "four" },
       ],
       cargaNeta: [
         { label: "KG+NETA", value: "K", slot: "one" },
@@ -932,16 +794,17 @@ export default {
           align: "left",
         },
         {
+          name: "zona_dest",
+          label: "Zona",
+          field: (row) =>
+            row.zonas_dest ? row.zonas_dest.nb_zona : "SIN ZONA DEFINIDA",
+          align: "left",
+        },
+        {
           name: "cliente_orig_desc",
           label: "Remitente",
           field: "cliente_orig_desc",
           required: true,
-          align: "left",
-        },
-        {
-          name: "zona_dest",
-          label: "Zona",
-          field: (row) => row.zonas_dest.nb_zona,
           align: "left",
         },
         {
@@ -958,7 +821,7 @@ export default {
           label: "Agencia",
           field: "nb_agencia",
           align: "left",
-        }
+        },
       ],
       visibleColumns: ["zona_dest"],
       optionSerie: [
@@ -1000,9 +863,8 @@ export default {
       selectedAyudante: [],
       receptoresSelected: [],
       selectedReceptor: [],
-      guia_desde: "",
-      fecha_desde: moment("2022-05-01").format("DD/MM/YYYY"),
-      fecha_hasta: moment("2022-05-30").format("DD/MM/YYYY"),
+      fecha_desde: moment().format("DD/MM/YYYY"),
+      fecha_hasta: moment().format("DD/MM/YYYY"),
     };
   },
   setup() {
@@ -1097,7 +959,7 @@ export default {
     },
     // Metodo para Extraer Datos de Tabla
     getDataTable(props) {
-      if (!this.selectedAgencia.id && !this.selectedAgenciaDestino.id) return;
+      if (!this.selectedAgencia.id && this.selectedAgenciaDestino.length == 0) return;      
       this.loading = true;
       if (props) this.pagination = props.pagination;
       this.$refs.methods.getData(`/mmovimientos`, "setDataTable", "guias", {
@@ -1106,6 +968,8 @@ export default {
           cliente_orig: this.selectedCliente.id ? this.selectedCliente.id : "",
           agencia_dest: this.selectedAgenciaDestino.id
             ? this.selectedAgenciaDestino.id
+            : this.selectedAgenciaDestino
+            ? this.selectedAgenciaDestino
             : "",
           desde: moment(this.fecha_desde, "DD/MM/YYYY").format("YYYY-MM-DD"),
           hasta: moment(this.fecha_hasta, "DD/MM/YYYY").format("YYYY-MM-DD"),
@@ -1142,15 +1006,16 @@ export default {
       this.selectedReporte = "GPA";
       this.fecha_desde = moment().format("DD/MM/YYYY");
       this.fecha_hasta = moment().format("DD/MM/YYYY");
-      this.getDataClientes();
     },
     // Metodo para cambiar el tipo de Reporte
     changeReporte() {
+      this.selectedAgenciaDestino = [];
+      this.guias = [];
+
       switch (this.selectedReporte) {
         case "GPA":
           this.visibleColumns = ["zona_dest"];
           this.pagination.sortBy = "nro_documento";
-          this.getDataTable();
           break;
         case "APZ":
           this.visibleColumns = [];
@@ -1158,18 +1023,18 @@ export default {
             ["cod_zona_dest", "ASC"],
             ["nro_documento", "ASC"],
           ]);
-          this.getDataTable();
           break;
         case "MAD":
-          this.dialogAgencias = true;
-          //this.visibleColumns = ["zona_dest"];
-          break;
-        case "MAG":
           this.visibleColumns = ["zona_dest"];
+          this.pagination.sortBy = JSON.stringify([
+            ["cod_agencia_dest", "ASC"],
+            ["nro_documento", "ASC"],
+          ]);          
           break;
         default:
           break;
       }
+      this.getDataTable();
     },
   },
 };
