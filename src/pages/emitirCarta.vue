@@ -49,11 +49,11 @@
 
             <div class="row justify-center items-center content-center">
               <q-btn
-                label="Enviar"
+                label="Imprimir"
                 type="submit"
                 color="primary"
                 class="col-md-5 col-sm-5 col-xs-12"
-                icon="person_add"
+                icon="print"
               />
               <q-btn
                 label="Cerrar"
@@ -457,7 +457,7 @@
 
     <q-dialog v-model="pdfView" @show="this.printLetter()">
       <div style="width: 700px; height: 700px">
-        <webViewer ref="webViewer" @close-pdf="closePdf"></webViewer>
+        <webViewer ref="webViewer" @close-pdf="this.pdfView = false"></webViewer>
       </div>
     </q-dialog>
 
@@ -595,9 +595,6 @@ export default {
     });
   },
   methods: {
-    closePdf() {
-      this.pdfView = false;
-    },
     // Metodo para filtrar opciones de Selects
     filterArray(val, update, pagina, array, element) {
       if (val === "") {

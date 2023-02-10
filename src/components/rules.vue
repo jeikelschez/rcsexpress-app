@@ -35,7 +35,7 @@ export default {
         return ret !== false ? ret : `Fecha Invalida`;
     },
     checkHour(val, ret = false) {
-      if (moment(val, "HH:mm:mm", true)._isValid == false)
+      if (moment(val, "HH:mm", true)._isValid == false)
         return ret !== false ? ret : `Hora Invalida`;
     },
   },

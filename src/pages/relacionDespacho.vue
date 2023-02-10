@@ -145,7 +145,6 @@
                   color="white"
                   text-color="black"
                   :options="visible"
-                  @update:model-value=""
                 >
                 </q-btn-toggle>
               </div>
@@ -160,7 +159,6 @@
                   color="white"
                   text-color="black"
                   :options="cargaNeta"
-                  @update:model-value=""
                 >
                 </q-btn-toggle>
               </div>
@@ -175,11 +173,11 @@
             </div>
             <div class="row justify-center items-center content-center">
               <q-btn
-                label="Enviar"
+                label="Imprimir"
                 type="submit"
                 color="primary"
                 class="col-md-5 col-sm-5 col-xs-12"
-                icon="person_add"
+                icon="print"
               />
               <q-btn
                 label="Cerrar"
@@ -719,6 +717,12 @@
       </q-table>
     </div>
 
+    <q-dialog v-model="pdfView" @show="this.printReport()">
+      <div style="width: 700px; height: 700px">
+        <webViewer ref="webViewer" @close-pdf="this.pdfView = false"></webViewer>
+      </div>
+    </q-dialog>
+
     <methods
       ref="methods"
       @set-Data="setData"
@@ -734,6 +738,7 @@
 <script>
 import { ref } from "vue";
 import moment from "moment";
+import { api } from "boot/axios";
 import rulesVue from "src/components/rules.vue";
 import { useQuasar, LocalStorage } from "quasar";
 import methodsVue from "src/components/methods.vue";
@@ -874,6 +879,7 @@ export default {
       separator: ref("vertical"),
       dialog: ref(false),
       dialogAgencias: ref(false),
+      pdfView: ref(false),
     };
   },
   mounted() {
@@ -993,6 +999,26 @@ export default {
       this.pagination.rowsPerPage = res.limit;
       this.selected = this.guias;
       this.loading = false;
+    },
+    // Imprimir Reporte
+    printReport() {
+      var factArray = [];
+      this.dialog = false;
+      for (var i = 0; i <= this.selected.length - 1; i++) {
+        factArray.push(this.selected[i].nro_documento);
+      }
+      api
+        .get(`/reports/relacionDespacho`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            data: factArray,
+            usuario: LocalStorage.getItem('tokenTraducido').usuario.nombre,
+          },
+        })
+        .then((res) => {
+          this.$refs.webViewer.showpdf(res.data.base64);
+          this.resetForm();
+        });
     },
     // Metodo para Resetear Filtros
     resetFilters() {

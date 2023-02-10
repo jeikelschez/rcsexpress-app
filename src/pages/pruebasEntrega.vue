@@ -692,7 +692,7 @@
                     outlined
                     v-model="props.row.hora_recepcion"
                     lazy-rules
-                    mask="fulltime"
+                    mask="time"
                     :rules="[
                       (val) =>
                         formRules(
@@ -715,8 +715,7 @@
                         >
                           <q-time
                             v-model="props.row.hora_recepcion"
-                            with-seconds
-                            format24h
+                            :format24h="false"
                             @update:model-value="
                               this.$refs.qTimeProxy[0].hide()
                             "
@@ -1068,7 +1067,7 @@
                     outlined
                     v-model="props.row.hora_recepcion"
                     lazy-rules
-                    mask="fulltime"
+                    mask="time"
                     :rules="[
                       (val) =>
                         formRules(
@@ -1092,8 +1091,7 @@
                         >
                           <q-time
                             v-model="props.row.hora_recepcion"
-                            with-seconds
-                            format24h
+                            :format24h="false"
                             @update:model-value="
                               this.$refs.qTimeProxy[0].hide()
                             "

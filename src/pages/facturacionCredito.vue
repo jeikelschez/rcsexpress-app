@@ -3072,12 +3072,20 @@ export default {
       let monto_impuesto = 0;
       let monto_total = 0;
 
+      if(rows.length > 1) {
+        this.monto_subtotal_select = "0,00";
+        this.monto_base_select = "0,00";
+        this.monto_impuesto_select = "0,00";
+        this.monto_total_select = "0,00";
+        if (!added) return;
+      }
+
       for (var i = 0; i < rows.length; i++) {
         monto_subtotal += this.parseFloatN(rows[i].monto_subtotal);
         monto_base += this.parseFloatN(rows[i].monto_base);
         monto_impuesto += this.parseFloatN(rows[i].monto_impuesto);
         monto_total += this.parseFloatN(rows[i].monto_total);
-      }
+      }      
 
       if (added) {
         this.monto_subtotal_select = (
