@@ -868,8 +868,8 @@ export default {
       selectedAyudante: [],
       receptoresSelected: [],
       selectedReceptor: [],
-      fecha_desde: moment().format("DD/MM/YYYY"),
-      fecha_hasta: moment().format("DD/MM/YYYY"),
+      fecha_desde: moment("2022-05-01").format("DD/MM/YYYY"),
+      fecha_hasta: moment("2022-05-15").format("DD/MM/YYYY"),
     };
   },
   setup() {
@@ -1002,22 +1002,29 @@ export default {
     },
     // Imprimir Reporte
     printReport() {
-      var factArray = [];
+      var factArray = {};
+      var detalleArray = [];
       this.dialog = false;
+      
       for (var i = 0; i <= this.selected.length - 1; i++) {
-        factArray.push(this.selected[i].nro_documento);
+        detalleArray.push(this.selected[i].nro_documento);
       }
+
+      factArray.fecha_desde = this.fecha_desde;
+      factArray.fecha_hasta = this.fecha_hasta;
+      factArray.usuario = LocalStorage.getItem("tokenTraducido").usuario.nombre;
+
       api
         .get(`/reports/relacionDespacho`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            data: factArray,
+            data: JSON.stringify(factArray),
+            detalle: detalleArray,
             usuario: LocalStorage.getItem('tokenTraducido').usuario.nombre,
           },
         })
         .then((res) => {
           this.$refs.webViewer.showpdf(res.data.base64);
-          this.resetForm();
         });
     },
     // Metodo para Resetear Filtros
