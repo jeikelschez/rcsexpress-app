@@ -132,7 +132,7 @@
                 </q-select>
               </div>
               <div
-                class="col-md-6 col-xs-12 pcform"
+                class="col-md-3 col-xs-12 pcform"
                 style="margin-bottom: 10px"
               >
                 <q-btn-toggle
@@ -148,7 +148,7 @@
                 >
                 </q-btn-toggle>
               </div>
-              <div class="col-md-5 col-xs-12" style="margin-bottom: 10px">
+              <div class="col-md-3 col-xs-12" style="margin-bottom: 10px">
                 <q-btn-toggle
                   v-model="selectedNeta"
                   spread
@@ -169,6 +169,9 @@
                   color="primary"
                   left-label
                 />
+              </div>
+              <div class="col-md-5 col-xs-12" style="margin-bottom: 10px">
+                <q-input v-model="text" filled autogrow />
               </div>
             </div>
             <div class="row justify-center items-center content-center">
@@ -191,7 +194,7 @@
           </q-form>
         </q-card-section>
       </q-card>
-    </q-dialog>    
+    </q-dialog>
 
     <div
       class="q-pa-md row col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
@@ -668,10 +671,10 @@
                 <strong> {{ "Agencia Destino: " }} </strong>
                 {{
                   this.findIndex(
-                      "agencias",
-                      this.guias[props.rowIndex].cod_agencia_dest,
-                      "nb_agencia"
-                    )
+                    "agencias",
+                    this.guias[props.rowIndex].cod_agencia_dest,
+                    "nb_agencia"
+                  )
                 }}
               </div>
             </q-td>
@@ -689,10 +692,10 @@
                 <strong> {{ "Agencia Destino: " }} </strong>
                 {{
                   this.findIndex(
-                      "agencias",
-                      this.guias[props.rowIndex].cod_agencia_dest,
-                      "nb_agencia"
-                    )
+                    "agencias",
+                    this.guias[props.rowIndex].cod_agencia_dest,
+                    "nb_agencia"
+                  )
                 }}
               </div>
             </q-td>
@@ -719,7 +722,10 @@
 
     <q-dialog v-model="pdfView" @show="this.printReport()">
       <div style="width: 700px; height: 700px">
-        <webViewer ref="webViewer" @close-pdf="this.pdfView = false"></webViewer>
+        <webViewer
+          ref="webViewer"
+          @close-pdf="this.pdfView = false"
+        ></webViewer>
       </div>
     </q-dialog>
 
@@ -766,8 +772,8 @@ export default {
         { label: "MAD", value: "MAD", slot: "three" },
       ],
       cargaNeta: [
-        { label: "KG+NETA", value: "K", slot: "one" },
-        { label: "NETA", value: "N", slot: "two" },
+        { label: "PESO KGS", value: "K", slot: "one" },
+        { label: "PESO NETO", value: "N", slot: "two" },
       ],
       columns: [
         {
@@ -852,7 +858,7 @@ export default {
       selectedVisible: "V",
       selectedSerie: ["44", "55"],
       selectedDolar: false,
-      selectedNeta: "",
+      selectedNeta: "K",
       agencias: [],
       agenciasSelected: [],
       selectedAgencia: [],
@@ -965,7 +971,8 @@ export default {
     },
     // Metodo para Extraer Datos de Tabla
     getDataTable(props) {
-      if (!this.selectedAgencia.id && this.selectedAgenciaDestino.length == 0) return;      
+      if (!this.selectedAgencia.id && this.selectedAgenciaDestino.length == 0)
+        return;
       this.loading = true;
       if (props) this.pagination = props.pagination;
       this.$refs.methods.getData(`/mmovimientos`, "setDataTable", "guias", {
@@ -1002,10 +1009,11 @@ export default {
     },
     // Imprimir Reporte
     printReport() {
+      console.log();
       var factArray = {};
       var detalleArray = [];
       this.dialog = false;
-      
+
       for (var i = 0; i <= this.selected.length - 1; i++) {
         detalleArray.push(this.selected[i].nro_documento);
       }
@@ -1013,6 +1021,28 @@ export default {
       factArray.fecha_desde = this.fecha_desde;
       factArray.fecha_hasta = this.fecha_hasta;
       factArray.usuario = LocalStorage.getItem("tokenTraducido").usuario.nombre;
+      factArray.agencia =
+        this.selectedAgenciaDestino.length == 0
+          ? this.selectedAgencia.nb_agencia
+          : this.selectedAgenciaDestino.nb_agencia;
+      factArray.visible = this.selectedVisible;
+      factArray.chofer = this.selectedAgente.id
+        ? this.selectedAgente.persona_responsable +
+          " - C.I." +
+          this.selectedAgente.rif_ci_agente
+        : "";
+      factArray.vehiculo = this.selectedUnidad.id
+        ? this.selectedUnidad.placas +
+          " - " +
+          this.selectedUnidad.descripcion +
+          " - " +
+          this.selectedUnidad.chofer
+        : "";
+      factArray.receptor = this.selectedReceptor.id
+        ? this.selectedReceptor
+        : "";
+      factArray.neta = this.selectedNeta;
+      factArray.dolar = this.selectedDolar;
 
       api
         .get(`/reports/relacionDespacho`, {
@@ -1020,7 +1050,7 @@ export default {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
             data: JSON.stringify(factArray),
             detalle: detalleArray,
-            usuario: LocalStorage.getItem('tokenTraducido').usuario.nombre,
+            usuario: LocalStorage.getItem("tokenTraducido").usuario.nombre,
           },
         })
         .then((res) => {
@@ -1062,7 +1092,7 @@ export default {
           this.pagination.sortBy = JSON.stringify([
             ["cod_agencia_dest", "ASC"],
             ["nro_documento", "ASC"],
-          ]);          
+          ]);
           break;
         default:
           break;
