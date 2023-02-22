@@ -248,6 +248,8 @@
           v-model="selectedAgenciaDestino"
           outlined
           standout
+          :loading="loading"
+          :disable="loading"
           label="Agencia Destino"
           @update:model-value="getDataTable()"
           ><template v-slot:no-option>
