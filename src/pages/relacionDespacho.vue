@@ -1,14 +1,11 @@
 <template>
   <q-page class="pagina q-pa-md">
     <q-dialog v-model="dialog">
-      <q-card class="q-pa-md" bordered style="width: 999px; max-width: 80vw">
+      <q-card class="q-pa-md" bordered style="width: 800px; max-width: 80vw">
         <q-card-section>
           <q-form class="q-gutter-md" @submit="pdfView = true">
             <div class="row" style="text-align: center">
-              <div
-                class="col-md-6 col-xs-12 pcform"
-                style="margin-bottom: 10px"
-              >
+              <div class="col-md-12 col-xs-12" style="margin-bottom: 10px">
                 <q-select
                   :options="agentesSelected"
                   @filter="
@@ -38,7 +35,7 @@
                   </template>
                 </q-select>
               </div>
-              <div class="col-md-6 col-xs-12" style="margin-bottom: 10px">
+              <div class="col-md-12 col-xs-12" style="margin-bottom: 10px">
                 <q-select
                   :options="unidadesSelected"
                   @filter="
@@ -68,10 +65,7 @@
                   </template>
                 </q-select>
               </div>
-              <div
-                class="col-md-6 col-xs-12 pcform"
-                style="margin-bottom: 10px"
-              >
+              <div class="col-md-12 col-xs-12" style="margin-bottom: 10px">
                 <q-select
                   :options="ayudantesSelected"
                   @filter="
@@ -101,7 +95,7 @@
                   </template>
                 </q-select>
               </div>
-              <div class="col-md-6 col-xs-12" style="margin-bottom: 10px">
+              <div class="col-md-12 col-xs-12" style="margin-bottom: 10px">
                 <q-select
                   :options="receptoresSelected"
                   @filter="
@@ -131,9 +125,22 @@
                   </template>
                 </q-select>
               </div>
+              <div class="col-md-12 col-xs-12" style="margin-bottom: 10px">
+                <q-select
+                  label="Guías Adicionales"
+                  v-model="selectedGuias"
+                  use-input
+                  use-chips
+                  outlined
+                  multiple
+                  hide-dropdown-icon
+                  input-debounce="0"
+                  new-value-mode="add-unique"
+                />
+              </div>
               <div
-                class="col-md-3 col-xs-12 pcform"
-                style="margin-bottom: 10px"
+                class="col-md-5 col-xs-12 pcform"
+                style="margin-bottom: 10px; padding-left: 30px"
               >
                 <q-btn-toggle
                   v-model="selectedVisible"
@@ -148,7 +155,10 @@
                 >
                 </q-btn-toggle>
               </div>
-              <div class="col-md-3 col-xs-12" style="margin-bottom: 10px">
+              <div
+                class="col-md-5 col-xs-12"
+                style="margin-bottom: 10px; padding-left: 15px"
+              >
                 <q-btn-toggle
                   v-model="selectedNeta"
                   spread
@@ -162,16 +172,13 @@
                 >
                 </q-btn-toggle>
               </div>
-              <div class="col-md-1 col-xs-12" style="margin-bottom: 10px">
+              <div class="col-md-2 col-xs-12" style="margin-bottom: 10px">
                 <q-checkbox
                   v-model="selectedDolar"
                   label="$"
                   color="primary"
                   left-label
                 />
-              </div>
-              <div class="col-md-5 col-xs-12" style="margin-bottom: 10px">
-                <q-input v-model="text" filled autogrow />
               </div>
             </div>
             <div class="row justify-center items-center content-center">
@@ -848,7 +855,7 @@ export default {
       pagination: {
         page: 1,
         rowsPerPage: 0,
-        sortBy: "nro_documento",
+        sortBy: JSON.stringify([["nro_documento", "ASC"]]),
         descending: false,
       },
       selected: [],
@@ -874,6 +881,8 @@ export default {
       selectedAyudante: [],
       receptoresSelected: [],
       selectedReceptor: [],
+      selectedGuias: [],
+      nombreReporte: "Relación de Despacho para la Agencia",
       fecha_desde: moment("2022-05-01").format("DD/MM/YYYY"),
       fecha_hasta: moment("2022-05-15").format("DD/MM/YYYY"),
     };
@@ -1009,13 +1018,16 @@ export default {
     },
     // Imprimir Reporte
     printReport() {
-      console.log();
       var factArray = {};
       var detalleArray = [];
       this.dialog = false;
 
       for (var i = 0; i <= this.selected.length - 1; i++) {
         detalleArray.push(this.selected[i].nro_documento);
+      }
+
+      for (var i = 0; i <= this.selectedGuias.length - 1; i++) {
+        detalleArray.push(this.selectedGuias[i]);
       }
 
       factArray.fecha_desde = this.fecha_desde;
@@ -1043,6 +1055,9 @@ export default {
         : "";
       factArray.neta = this.selectedNeta;
       factArray.dolar = this.selectedDolar;
+      factArray.tipoReporte = this.selectedReporte;
+      factArray.sortBy = this.pagination.sortBy;
+      factArray.nombreReporte = this.nombreReporte;
 
       api
         .get(`/reports/relacionDespacho`, {
@@ -1067,6 +1082,14 @@ export default {
       this.selectedTipo = "O";
       this.selectedSerie = ["44", "55"];
       this.selectedReporte = "GPA";
+      this.selectedAgente = [];
+      this.selectedUnidad = [];
+      this.selectedAyudante = [];
+      this.selectedReceptor = [];
+      this.selectedGuias = [];
+      this.selectedVisible = "V";
+      this.selectedDolar = false;
+      this.selectedNeta = "K";
       this.fecha_desde = moment().format("DD/MM/YYYY");
       this.fecha_hasta = moment().format("DD/MM/YYYY");
     },
@@ -1077,10 +1100,12 @@ export default {
 
       switch (this.selectedReporte) {
         case "GPA":
+          this.nombreReporte = "Relación de Despacho para la Agencia";
           this.visibleColumns = ["zona_dest"];
-          this.pagination.sortBy = "nro_documento";
+          this.pagination.sortBy = JSON.stringify([["nro_documento", "ASC"]]);
           break;
         case "APZ":
+          this.nombreReporte = "Relación de Despacho Agrupado por Zonas";
           this.visibleColumns = [];
           this.pagination.sortBy = JSON.stringify([
             ["cod_zona_dest", "ASC"],
@@ -1088,6 +1113,7 @@ export default {
           ]);
           break;
         case "MAD":
+          this.nombreReporte = "Relación de Despacho por Agencia Destino";
           this.visibleColumns = ["zona_dest"];
           this.pagination.sortBy = JSON.stringify([
             ["cod_agencia_dest", "ASC"],
