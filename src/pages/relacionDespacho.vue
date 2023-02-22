@@ -885,8 +885,8 @@ export default {
       selectedReceptor: [],
       selectedGuias: [],
       nombreReporte: "Relación de Despacho para la Agencia",
-      fecha_desde: moment("2022-05-01").format("DD/MM/YYYY"),
-      fecha_hasta: moment("2022-05-15").format("DD/MM/YYYY"),
+      fecha_desde: moment().format("DD/MM/YYYY"),
+      fecha_hasta: moment().format("DD/MM/YYYY"),
     };
   },
   setup() {
