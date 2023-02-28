@@ -26,9 +26,9 @@ const routes = [
         children: [{ path: "", component: () => import('src/pages/relacionDespacho.vue')}]
       },
       {
-        path: '/registrodecostos',
+        path: '/registrocostos',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('src/pages/registroDeCostos.vue')}]
+        children: [{ path: "", component: () => import('src/pages/registroCostos.vue')}]
       },
       {
         path: '/reportedecostos',

@@ -81,6 +81,7 @@
 @media screen and (max-width: 1024px) {.selectMobile2 {margin-bottom: 15px !important;}}
 @media(min-width:1024px) and (max-width:1440px){.selectMobile3 {margin-top: 20px !important;}}
 @media screen and (min-width: 1024px) {.Cards {width: 45% !important; padding-left: 20px !important;}}
+@media screen and (min-width: 1024px) {.Cards2 {width: 46% !important; padding-right: 20px !important;}}
 @media screen and (max-width: 1024px) {.botonesGuias {margin-top: 7px;}}
 @media screen and (min-width: 1024px) {.buttonsMobile {display: none;}}
 @media screen and (min-width: 1024px) {.buttonsCard {margin-top: 25px;}}
