@@ -28,7 +28,7 @@
               class="col-md-12 col-xs-12"
               style="margin-top: 23px; margin-bottom: 10px; text-align: center"
             >
-              <q-btn label="Imprimir" color="primary" style="width: 300px" />
+              <q-btn label="Imprimir" color="primary" style="width: 300px" @click="pdfView = true"/>
             </div>
           </div>
         </q-card-section>
@@ -1086,6 +1086,15 @@
       </q-card>
     </div>
 
+    <q-dialog v-model="pdfView" @show="this.pdfPrint()">
+      <div style="width: 700px; height: 700px">
+        <webViewer
+          ref="webViewer"
+          @close-pdf="this.pdfView = false"
+        ></webViewer>
+      </div>
+    </q-dialog>
+
     <methods
       ref="methods"
       @set-Data="setData"
@@ -1106,10 +1115,12 @@ import { VMoney } from "v-money";
 import { useQuasar, LocalStorage } from "quasar";
 import methodsVue from "src/components/methods.vue";
 import rulesVue from "src/components/rules.vue";
+import { api } from "boot/axios";
+import webViewerVue from "src/components/webViewer.vue";
 
 export default {
   directives: { money: VMoney },
-  components: { methods: methodsVue, rulesVue, VMoney },
+  components: { methods: methodsVue, rulesVue, VMoney, webViewer: webViewerVue},
   data() {
     return {
       columns: [
@@ -1234,6 +1245,7 @@ export default {
       separator: ref("vertical"),
       form: ref(false),
       loading: ref(false),
+      pdfView: ref(false),
     };
   },
   mounted() {
@@ -1369,6 +1381,16 @@ export default {
       number = Math.round(number * 100) / 100;
       return number;
     },
+    pdfPrint() {
+      api.get(`/reports/registrocostos`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => {
+          this.$refs.webViewer.showpdf(res.data.base64);
+        });
+    }
   },
 };
 </script>
