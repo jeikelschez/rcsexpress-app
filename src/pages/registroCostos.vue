@@ -1223,8 +1223,8 @@ export default {
       cantidad: 0,
       total_costo: 0,
       total_guias: 0,
-      fecha_desde: moment("2022-05-01").format("DD/MM/YYYY"),
-      fecha_hasta: moment("2022-05-15").format("DD/MM/YYYY"),
+      fecha_desde: moment().format("DD/MM/YYYY"),
+      fecha_hasta: moment().format("DD/MM/YYYY"),
     };
   },
   setup() {
@@ -1354,7 +1354,6 @@ export default {
           detalle_guias += this.parseFloatN(
             this.costos[i].detallest[k].movimientos.monto_subtotal
           );
-          console.log(detalle_guias);
         }
         this.costos[i].monto_costo = detalle_costo.toFixed(2);
         this.costos[i].monto_guias = detalle_guias.toFixed(2);
