@@ -1220,6 +1220,7 @@ export default {
       },
       visibleColumns: [],
       guia_desde: "",
+      type: 2,
       selected: [],
       agencias: [],
       agentes: [],
@@ -1385,6 +1386,7 @@ export default {
       api.get(`/reports/registrocostos`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            type: '2',
           },
         })
         .then((res) => {
