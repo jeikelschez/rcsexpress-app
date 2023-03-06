@@ -1461,7 +1461,6 @@ export default {
       agentesLoading: true,
       selectedEstatus: [],
       motivosRetraso: [],
-      personaRecibioFocus: false,
       checkTransito: "0",
       pagado_en: "0",
       nro_guia: "",
