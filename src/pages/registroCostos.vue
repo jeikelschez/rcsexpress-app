@@ -154,25 +154,56 @@
     </q-dialog>
 
     <q-dialog v-model="detalleGuiasDialog">
-      <q-card style="width: 900px">
-        <div class="row">
-          <q-table
+      <q-card style="width: 800px; max-width: 80vw">
+          <div class="row justify-center items-center content-center" style="padding: 20px">
+            <div
+              class="col-md-10 col-xs-12"
+            >
+              <p
+                style="font-size: 17px; text-align: left"
+                class="text-secondary"
+              >
+                <strong>DETALLE DE COSTOS DE TRANSPORTE</strong>
+              </p>
+            </div>
+            <div
+              class="col-md-2 col-xs-12"
+              style="margin-bottom: 16px; text-align: center"
+            >
+            <q-btn
+            dense
+            color="primary"
+            label="Insertar"
+            padding="xs"
+            style="font-size: 12px; padding: 5px"
+            @click="addData()"
+          >
+            <q-icon size="15px" name="add" color="white" style="margin-left: 5px"> </q-icon>
+          </q-btn>
+            </div>
+            <div
+              class="col-md-12 col-xs-12"
+              style="margin-bottom: 6px"
+            >
+            <q-table
             :rows="costos"
             row-key="id"
+            class="table"
             :columns="columnsDetalle"
             binary-state-sort
             :separator="separator"
             v-model:pagination="pagination"
             :grid="$q.screen.xs"
             :rows-per-page-options="[0]"
-            style="width: 100%; height: 310px"
+            style="width: 100%; max-width: 80vw"
             hide-bottom
           >            
           </q-table>
-        </div>
+            </div>
+          </div>
         <div
           class="row justify-center items-center content-center"
-          style="margin-bottom: 10px"
+          style="margin-bottom: 20px; padding: 10px"
         >
           <q-btn
             label="Enviar"
@@ -192,6 +223,498 @@
         </div>
       </q-card>
     </q-dialog>
+
+    <q-dialog v-model="detalleCostosDialog2">
+      <q-card style="width: 1200px; max-width: 120vw">
+          <div class="row justify-center items-center content-center" style="padding: 20px">
+            <div
+              class="col-md-12 col-xs-12"
+              style="margin-bottom: 6px"
+            >
+            <div class="row justify-center items-center">
+              <div class="col-md-6 col-xs-12 boxStyle Cards2">
+                <q-card
+                  class="q-pa-md col-md-4 col-xs-12"
+                  bordered
+                  style="padding: 10px"
+                >
+                  <q-card-section
+                    style="
+                      padding-bottom: 5px;
+                      padding-left: 10px;
+                      padding-right: 10px;
+                    "
+                  >
+                    <div class="row">
+                      <div
+                        class="col-md-12 col-xs-12"
+                        style="
+                          align-self: center;
+                          text-align: left;
+                          margin-top: -30px;
+                        "
+                      >
+                        <h4
+                          style="font-size: 19px; margin-bottom: 20px"
+                          class="text-secondary"
+                        >
+                          <strong
+                            >Busqueda de Guias a Enviar a su Destino</strong
+                          >
+                        </h4>
+                      </div>
+                      <div
+                        class="col-md-7 col-xl-7 col-lg-7 col-xs-12 col-sm-7 cardMargin selectMobile2"
+                        style="
+                          align-self: center;
+                          text-align: center;
+                          margin-bottom: 10px;
+                        "
+                      >
+                        <q-select
+                          v-model="guia_desde"
+                          rounded
+                          dense
+                          outlined
+                          standout
+                          label="Guia Desde"
+                          @keyup.enter="getDataTable()"
+                          mask="##########"
+                        >
+                        </q-select>
+                      </div>
+                      <div
+                        class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-5 cardMargin selectMobile2"
+                        style="
+                          align-self: center;
+                          text-align: center;
+                          margin-bottom: 10px;
+                        "
+                      >
+                        <q-input
+                          v-model="guia_desde"
+                          rounded
+                          dense
+                          outlined
+                          standout
+                          label="Guia Desde"
+                          @keyup.enter="getDataTable()"
+                          mask="##########"
+                        >
+                          <template v-slot:append>
+                            <q-icon
+                              @click="getDataTable()"
+                              class="cursor-pointer"
+                              name="search"
+                            />
+                          </template>
+                        </q-input>
+                      </div>
+                      <div
+                        class="col-md-7 col-xl-7 col-lg-7 col-xs-12 col-sm-7 cardMargin selectMobile2"
+                        style="align-self: center; text-align: center"
+                      >
+                        <q-input
+                          v-model="guia_desde"
+                          rounded
+                          dense
+                          outlined
+                          standout
+                          label="Guia Desde"
+                          @keyup.enter="getDataTable()"
+                          mask="##########"
+                        >
+                          <template v-slot:append>
+                            <q-icon
+                              @click="getDataTable()"
+                              class="cursor-pointer"
+                              name="search"
+                            />
+                          </template>
+                        </q-input>
+                      </div>
+                      <div
+                        class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-5 cardMargin selectMobile2"
+                        style="align-self: center; text-align: center"
+                      >
+                        <q-input
+                          v-model="guia_desde"
+                          rounded
+                          dense
+                          outlined
+                          standout
+                          label="Guia Desde"
+                          @keyup.enter="getDataTable()"
+                          mask="##########"
+                        >
+                          <template v-slot:append>
+                            <q-icon
+                              @click="getDataTable()"
+                              class="cursor-pointer"
+                              name="search"
+                            />
+                          </template>
+                        </q-input>
+                      </div>
+                      <q-table
+                        :rows="costos"
+                        dense
+                        :columns="columns2"
+                        binary-state-sort
+                        :virtual-scroll="null"
+                        :separator="separator"
+                        row-key="action"
+                        :loading="loading"
+                        class="my-sticky-header-column-table"
+                        style="
+                          width: 100%;
+                          margin-top: 20px;
+                          height: 290px;
+                          margin-bottom: 15px;
+                        "
+                        v-model:pagination="pagination"
+                      >
+                        <template v-slot:loading>
+                          <q-inner-loading showing color="primary" />
+                        </template>
+
+                        <template v-slot:body-cell-action="props">
+                          <q-td :props="props">
+                            <q-btn
+                              dense
+                              round
+                              flat
+                              color="primary"
+                              icon="save"
+                              :disabled="this.disabledDelete"
+                              @click="selected = props.row.id"
+                              @click.capture="permisosDelete = true"
+                            ></q-btn>
+                            <q-btn
+                              dense
+                              round
+                              flat
+                              color="primary"
+                              icon="edit"
+                              @click="this.dialog = true"
+                            ></q-btn>
+                          </q-td>
+                        </template>
+                      </q-table>
+                      <div
+                        class="col-md-6 col-xl-6 col-lg-6 col-xs-12 col-sm-6 cardMargin selectMobile2"
+                        style="align-self: center; text-align: center"
+                      >
+                        <q-input
+                          v-model="guia_desde"
+                          rounded
+                          dense
+                          outlined
+                          standout
+                          label="Cantidad:"
+                          @keyup.enter="getDataTable()"
+                          mask="##########"
+                        >
+                        </q-input>
+                      </div>
+                      <div
+                        class="col-md-6 col-xl-6 col-lg-6 col-xs-12 col-sm-6"
+                        style="align-self: center; text-align: center"
+                      >
+                        <q-input
+                          v-model="guia_desde"
+                          rounded
+                          dense
+                          outlined
+                          standout
+                          label="Totales:"
+                          @keyup.enter="getDataTable()"
+                          mask="##########"
+                        >
+                        </q-input>
+                      </div>
+                    </div>
+                  </q-card-section>
+                </q-card>
+              </div>
+              <div
+                class="row col-md-1 col-xs-12 buttonsPC"
+                style="text-align: center"
+              >
+                <div class="col-md-12 col-xs-3">
+                  <q-btn
+                    padding="md"
+                    color="primary"
+                    round
+                    icon="chevron_right"
+                  />
+                </div>
+                <div class="col-md-12 col-xs-3 buttonsCard">
+                  <q-btn
+                    padding="md"
+                    color="primary"
+                    round
+                    icon="chevron_left"
+                  />
+                </div>
+                <div class="col-md-12 col-xs-3 buttonsCard">
+                  <q-btn
+                    padding="md"
+                    color="primary"
+                    round
+                    icon="keyboard_double_arrow_right"
+                  />
+                </div>
+
+                <div class="col-md-12 col-xs-3 buttonsCard">
+                  <q-btn
+                    padding="md"
+                    color="primary"
+                    round
+                    icon="keyboard_double_arrow_left"
+                  />
+                </div>
+              </div>
+              <div
+                class="row col-md-1 col-xs-12 buttonsMenu buttonsMobile"
+                style="text-align: center"
+              >
+                <div class="col-md-12 col-xs-3">
+                  <q-btn
+                    padding="md"
+                    color="primary"
+                    round
+                    icon="expand_less"
+                  />
+                </div>
+                <div class="col-md-12 col-xs-3 buttonsCard">
+                  <q-btn
+                    padding="md"
+                    color="primary"
+                    round
+                    icon="expand_more"
+                  />
+                </div>
+                <div class="col-md-12 col-xs-3 buttonsCard">
+                  <q-btn
+                    padding="md"
+                    color="primary"
+                    round
+                    icon="keyboard_double_arrow_up"
+                  />
+                </div>
+
+                <div class="col-md-12 col-xs-3 buttonsCard">
+                  <q-btn
+                    padding="md"
+                    color="primary"
+                    round
+                    icon="keyboard_double_arrow_down"
+                  />
+                </div>
+              </div>
+              <div class="col-md-6 col-xs-12 Cards">
+                <q-card
+                  class="q-pa-md col-md-4 col-xs-12"
+                  bordered
+                  style="padding: 10px"
+                >
+                  <q-card-section
+                    style="
+                      padding-bottom: 5px;
+                      padding-left: 10px;
+                      padding-right: 10px;
+                    "
+                  >
+                    <div class="row">
+                      <div
+                        class="col-md-12 col-xs-12"
+                        style="
+                          align-self: center;
+                          text-align: left;
+                          margin-top: -30px;
+                        "
+                      >
+                        <h4
+                          style="font-size: 19px; margin-bottom: 20px"
+                          class="text-secondary"
+                        >
+                          <strong>Guias a Enviar por el Transporte</strong>
+                        </h4>
+                      </div>
+                      <div
+                        class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 cardMargin selectMobile2"
+                        style="
+                          align-self: center;
+                          text-align: center;
+                          margin-bottom: 10px;
+                        "
+                      >
+                        <q-input
+                          v-model="guia_desde"
+                          rounded
+                          dense
+                          outlined
+                          standout
+                          label="Transporte"
+                          @keyup.enter="getDataTable()"
+                          mask="##########"
+                        >
+                        </q-input>
+                      </div>
+                      <div
+                        class="col-md-7 col-xl-7 col-lg-7 col-xs-12 col-sm-7 cardMargin selectMobile2"
+                        style="align-self: center; text-align: center"
+                      >
+                        <q-input
+                          v-model="guia_desde"
+                          rounded
+                          dense
+                          outlined
+                          standout
+                          label="Guia Carga"
+                          @keyup.enter="getDataTable()"
+                          mask="##########"
+                        >
+                          <template v-slot:append>
+                            <q-icon
+                              @click="getDataTable()"
+                              class="cursor-pointer"
+                              name="search"
+                            />
+                          </template>
+                        </q-input>
+                      </div>
+                      <div
+                        class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-5 cardMargin selectMobile2"
+                        style="align-self: center; text-align: center"
+                      >
+                        <q-input
+                          v-model="guia_desde"
+                          rounded
+                          dense
+                          outlined
+                          standout
+                          label="F. Envio"
+                          @keyup.enter="getDataTable()"
+                          mask="##########"
+                        >
+                          <template v-slot:append>
+                            <q-icon
+                              @click="getDataTable()"
+                              class="cursor-pointer"
+                              name="search"
+                            />
+                          </template>
+                        </q-input>
+                      </div>
+                      <q-table
+                        :rows="detalleCostos"
+                        dense
+                        :columns="columns2"
+                        binary-state-sort
+                        :virtual-scroll="null"
+                        :separator="separator"
+                        row-key="action"
+                        :loading="loading"
+                        class="my-sticky-header-column-table"
+                        style="
+                          width: 100%;
+                          margin-top: 20px;
+                          height: 290px;
+                          margin-bottom: 15px;
+                        "
+                        v-model:pagination="pagination"
+                      >
+                        <template v-slot:loading>
+                          <q-inner-loading showing color="primary" />
+                        </template>
+
+                        <template v-slot:body-cell-action="props">
+                          <q-td :props="props">
+                            <q-btn
+                              dense
+                              round
+                              flat
+                              color="primary"
+                              icon="save"
+                              :disabled="this.disabledDelete"
+                              @click="selected = props.row.id"
+                              @click.capture="permisosDelete = true"
+                            ></q-btn>
+                            <q-btn
+                              dense
+                              round
+                              flat
+                              color="primary"
+                              icon="edit"
+                              @click="this.dialog = true"
+                            ></q-btn>
+                          </q-td>
+                        </template>
+                      </q-table>
+                      <div
+                        class="col-md-6 col-xl-6 col-lg-6 col-xs-12 col-sm-6 cardMargin selectMobile2"
+                        style="align-self: center; text-align: center"
+                      >
+                        <q-input
+                          v-model="guia_desde"
+                          rounded
+                          dense
+                          outlined
+                          standout
+                          label="Cantidad:"
+                          @keyup.enter="getDataTable()"
+                          mask="##########"
+                        >
+                        </q-input>
+                      </div>
+                      <div
+                        class="col-md-6 col-xl-6 col-lg-6 col-xs-12 col-sm-6"
+                        style="align-self: center; text-align: center"
+                      >
+                        <q-input
+                          v-model="guia_desde"
+                          rounded
+                          dense
+                          outlined
+                          standout
+                          label="Totales:"
+                          @keyup.enter="getDataTable()"
+                          mask="##########"
+                        >
+                        </q-input>
+                      </div>
+                    </div>
+                  </q-card-section>
+                </q-card>
+              </div>
+            </div>
+            </div>
+          </div>
+        <div
+          class="row justify-center items-center content-center"
+          style="margin-bottom: 20px"
+        >
+          <q-btn
+            label="Enviar"
+            type="submit"
+            color="primary"
+            class="col-md-5 col-sm-5 col-xs-12"
+            icon="person_add"
+          />
+          <q-btn
+            label="Cerrar"
+            color="primary"
+            flat
+            class="col-md-5 col-sm-5 col-xs-12 btnmovil"
+            icon="close"
+            v-close-popup
+          />
+        </div>
+      </q-card>
+    </q-dialog>
+
 
     <div class="q-pa-sm justify-center" style="margin-top: 10px">
       <div
@@ -1097,11 +1620,13 @@ export default {
       deletePopup: ref(false),
       detalleCostosDialog: ref(false),
       detalleGuiasDialog: ref(false),
+      detalleCostosDialog2: ref(false),
       disableMonto: ref(true),
       pdfView: ref(false),
     };
   },
   mounted() {
+    this.detalleGuiasDialog = true;
     this.$emit("changeTitle", "SCEN - Mantenimiento - Registro de Costos", "");
     this.$refs.methods.getData("/agencias", "setDataInit", "agencias");
     this.$refs.methods.getData("/agentes", "setData", "agentes", {
@@ -1407,3 +1932,20 @@ export default {
   },
 };
 </script>
+
+<style>
+@media screen and (min-width: 1080px) {
+  .table {
+    height: 500px;
+  }
+}
+@media screen and (max-width: 1080px) {
+  .table {
+    height: 100%;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+}
+</style>
+
+
