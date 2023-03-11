@@ -234,12 +234,7 @@
             label="Aceptar"
             color="primary"
             v-close-popup
-            @click="
-              this.$refs.methods.deleteData(
-                `/hdolar/${selected}`,
-                'getDataTable'
-              )
-            "
+            @click="deleteData(selected)"
           />
         </q-card-actions>
       </q-card>
@@ -459,7 +454,12 @@ export default {
       }
       this.resetForm();
     },
-
+    deleteData(selected) {
+      this.$refs.methods.deleteData(
+        `/hdolar/${moment(selected, "DD/MM/YYYY").format("YYYY-MM-DD")}`,
+        "getDataTable"
+      );
+    },
     // Metodos para Resetear Datos
     resetForm() {
       delete this.form.id;

@@ -995,6 +995,11 @@ export default {
             : this.selectedAgenciaDestino
             ? this.selectedAgenciaDestino
             : "",
+          agencia_dest_transito: this.selectedAgenciaDestino.id
+            ? this.selectedAgenciaDestino.id
+            : this.selectedAgenciaDestino
+            ? this.selectedAgenciaDestino
+            : "",
           desde: moment(this.fecha_desde, "DD/MM/YYYY").format("YYYY-MM-DD"),
           hasta: moment(this.fecha_hasta, "DD/MM/YYYY").format("YYYY-MM-DD"),
           prefix_nro:
@@ -1118,8 +1123,10 @@ export default {
           this.nombreReporte = "Relación de Despacho por Agencia Destino";
           this.visibleColumns = ["zona_dest"];
           this.pagination.sortBy = JSON.stringify([
-            ["cod_agencia_dest", "ASC"],
-            ["nro_documento", "ASC"],
+            { model: models.Dcostosg, as: "detallesg" },
+            { model: models.Mmovimientos, as: "movimientos" },
+            "fecha_emision",
+            "ASC",
           ]);
           break;
         default:

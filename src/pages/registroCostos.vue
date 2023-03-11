@@ -28,7 +28,12 @@
               class="col-md-12 col-xs-12"
               style="margin-top: 23px; margin-bottom: 10px; text-align: center"
             >
-              <q-btn label="Imprimir" color="primary" style="width: 300px" @click="pdfView = true"/>
+              <q-btn
+                label="Imprimir"
+                color="primary"
+                style="width: 300px"
+                @click="pdfView = true"
+              />
             </div>
           </div>
         </q-card-section>
@@ -36,110 +41,189 @@
     </q-dialog>
 
     <q-dialog v-model="detalleCostosDialog">
-      <q-card style="width: 900px">
-        <div class="row">
-          <q-table
-            :rows="detalles_costo"
-            row-key="id"
-            :columns="columnsDetalle"
-            binary-state-sort
-            :separator="separator"
-            v-model:pagination="pagination"
-            :grid="$q.screen.xs"
-            :rows-per-page-options="[0]"
-            style="width: 100%; height: 310px"
-            hide-bottom
+      <q-card style="width: 700px; max-width: 80vw">
+        <div
+          class="row justify-center items-center content-center"
+          style="padding: 20px"
+        >
+          <div class="col-md-10 col-xs-12">
+            <p style="font-size: 20px; text-align: left" class="text-secondary">
+              <strong>DETALLE COSTOS DE TRANSPORTE</strong>
+            </p>
+          </div>
+          <div
+            class="col-md-2 col-xs-12"
+            style="margin-bottom: 20px; text-align: center"
           >
-          <template v-slot:header="props">
-              <q-tr :props="props">
-                <q-th v-for="col in props.cols" :key="col.name" :props="props">
-                  {{ col.label }}
-                </q-th>
-              </q-tr>
-            </template>
-            <template v-slot:body="props" style="margin-bottom: 20px">
-              <q-tr :props="props">
-                <q-td v-for="col in props.cols" :key="col.name" :props="props"> 
-                  <div v-if="col.name == 'cod_concepto'">
-                    <q-select
-                      dense
-                      outlined
-                      fill-input
-                      input-debounce="0"
-                      :options="conceptos"
-                      option-label="desc_concepto"
-                      option-value="id"
-                      v-model="props.row.cod_concepto"
-                    >
-                      <template v-slot:selected-item="scope">
-                        {{
-                          props.row.cod_concepto.id
-                            ? props.row.cod_concepto.desc_concepto
-                            : this.findIndex(
-                                "conceptos",
-                                props.row.cod_concepto,
-                                "desc_concepto"
-                              )
-                        }}
-                      </template>
-                    </q-select>
-                  </div>                  
-                  <div v-else-if="col.name == 'monto_costo'">
-                    <q-input
-                      dense
-                      outlined
-                      v-model="props.row.monto_costo"
-                      v-money="money"
-                      input-class="text-right"
-                      style="min-width: 100px"
-                    >
-                    </q-input>
-                  </div>
-                  <div v-else-if="col.name == 'monto_dolar'">
-                    <q-input
-                      dense
-                      outlined
-                      v-model="props.row.monto_dolar"
-                      v-money="money"
-                      input-class="text-right"
-                      style="min-width: 100px"
-                    >
-                    </q-input>
-                  </div>
-                  <div v-if="col.name == 'action'">                    
-                    <q-btn
-                      dense
-                      round
-                      flat
-                      color="primary"
-                      icon="cancel_presentation"
-                      @click="selected = props.row.id"
-                      @click.capture="deletePopup = true"
-                      ><q-tooltip
-                        class="bg-primary"
-                        transition-show="scale"
-                        style="max-height: 30px"
-                        transition-hide="scale"
+            <q-btn
+              color="primary"
+              rounded
+              icon="add"
+              @click="
+                if (validateDetalle())
+                  this.costos[this.selectedCosto].detalles.push({});
+              "
+            />
+          </div>
+          <div class="col-md-12 col-xs-12">
+            <q-table
+              :rows="detalles_costo"
+              row-key="id"
+              :columns="columnsDetalle"
+              binary-state-sort
+              :separator="separator"
+              v-model:pagination="pagination"
+              :grid="$q.screen.xs"
+              :rows-per-page-options="[0]"
+              style="width: 100%; height: 350px"
+              hide-bottom
+            >
+              <template v-slot:header="props">
+                <q-tr :props="props">
+                  <q-th
+                    v-for="col in props.cols"
+                    :key="col.name"
+                    :props="props"
+                  >
+                    {{ col.label }}
+                  </q-th>
+                </q-tr>
+              </template>
+              <template v-slot:body="props" style="margin-bottom: 20px">
+                <q-tr :props="props">
+                  <q-td
+                    v-for="col in props.cols"
+                    :key="col.name"
+                    :props="props"
+                  >
+                    <div v-if="col.name == 'cod_concepto'">
+                      <q-select
+                        dense
+                        outlined
+                        fill-input
+                        input-debounce="0"
+                        :options="conceptos"
+                        option-label="desc_concepto"
+                        option-value="id"
+                        style="min-width: 250px"
+                        v-model="props.row.cod_concepto"
+                        @update:model-value="validateConcepto(props.rowIndex)"
+                      >
+                        <template v-slot:selected-item="scope">
+                          {{
+                            props.row.cod_concepto.id
+                              ? props.row.cod_concepto.desc_concepto
+                              : this.findIndex(
+                                  "conceptos",
+                                  props.row.cod_concepto,
+                                  "desc_concepto"
+                                )
+                          }}
+                        </template>
+                      </q-select>
+                    </div>
+                    <div v-else-if="col.name == 'monto_costo'">
+                      <q-input
+                        dense
+                        outlined
+                        v-model="props.row.monto_costo"
+                        v-money="money"
+                        input-class="text-right"
+                        style="min-width: 80px"
+                        @keyup="this.calculaDetalle('costo', props.rowIndex)"
+                      >
+                      </q-input>
+                    </div>
+                    <div v-else-if="col.name == 'monto_dolar'">
+                      <q-input
+                        dense
+                        outlined
+                        v-model="props.row.monto_dolar"
+                        v-money="money"
+                        input-class="text-right"
+                        style="min-width: 80px"
+                        @keyup="this.calculaDetalle('dolar', props.rowIndex)"
+                      >
+                      </q-input>
+                    </div>
+                    <div v-if="col.name == 'action'">
+                      <q-btn
+                        dense
+                        round
+                        flat
                         color="primary"
-                        >Eliminar Costo</q-tooltip
-                      ></q-btn
+                        icon="cancel_presentation"
+                        @click="
+                          this.costos[this.selectedCosto].detalles.splice(
+                            props.rowIndex,
+                            1
+                          );
+                          this.calculaTotales();
+                        "
+                        ><q-tooltip
+                          class="bg-primary"
+                          transition-show="scale"
+                          style="max-height: 30px"
+                          transition-hide="scale"
+                          color="primary"
+                          >Eliminar Costo</q-tooltip
+                        ></q-btn
+                      >
+                    </div>
+                  </q-td>
+                </q-tr>
+              </template>
+              <template
+                v-slot:bottom-row
+                v-if="this.costos[this.selectedCosto].detalles.length > 0"
+              >
+                <q-tr>
+                  <q-td>
+                    <p style="text-align: right">Total Costo</p>
+                  </q-td>
+                  <q-td>
+                    <q-input
+                      outlined
+                      v-model="total_detalle_costo"
+                      hint=""
+                      dense
+                      :disable="true"
+                      input-class="text-right"
                     >
-                  </div>
-                </q-td>
-              </q-tr>
-            </template>
-          </q-table>
+                    </q-input>
+                  </q-td>
+                  <q-td>
+                    <q-input
+                      outlined
+                      v-model="total_detalle_dolar"
+                      hint=""
+                      dense
+                      :disable="true"
+                      input-class="text-right"
+                    >
+                    </q-input>
+                  </q-td>
+                  <q-td></q-td>
+                </q-tr>
+              </template>
+            </q-table>
+          </div>
         </div>
         <div
           class="row justify-center items-center content-center"
-          style="margin-bottom: 10px"
+          style="margin-bottom: 20px"
         >
           <q-btn
-            label="Insertar"
+            label="Asignar"
             color="primary"
             class="col-md-5 col-sm-5 col-xs-12"
-            icon="add"
-            @click="addDetalle()"
+            icon="save"
+            @click="
+              if (validateDetalle()) {
+                calculaTotales();
+                this.detalleCostosDialog = false;
+              }
+            "
           />
           <q-btn
             label="Cerrar"
@@ -154,108 +238,27 @@
     </q-dialog>
 
     <q-dialog v-model="detalleGuiasDialog">
-      <q-card style="width: 800px; max-width: 80vw">
-          <div class="row justify-center items-center content-center" style="padding: 20px">
-            <div
-              class="col-md-10 col-xs-12"
-            >
-              <p
-                style="font-size: 17px; text-align: left"
-                class="text-secondary"
-              >
-                <strong>DETALLE DE COSTOS DE TRANSPORTE</strong>
-              </p>
-            </div>
-            <div
-              class="col-md-2 col-xs-12"
-              style="margin-bottom: 16px; text-align: center"
-            >
-            <q-btn
-            dense
-            color="primary"
-            label="Insertar"
-            padding="xs"
-            style="font-size: 12px; padding: 5px"
-            @click="addData()"
-          >
-            <q-icon size="15px" name="add" color="white" style="margin-left: 5px"> </q-icon>
-          </q-btn>
-            </div>
-            <div
-              class="col-md-12 col-xs-12"
-              style="margin-bottom: 6px"
-            >
-            <q-table
-            :rows="costos"
-            row-key="id"
-            class="table"
-            :columns="columnsDetalle"
-            binary-state-sort
-            :separator="separator"
-            v-model:pagination="pagination"
-            :grid="$q.screen.xs"
-            :rows-per-page-options="[0]"
-            style="width: 100%; max-width: 80vw"
-            hide-bottom
-          >            
-          </q-table>
-            </div>
-          </div>
+      <q-card style="width: 1300px; max-width: 120vw">
         <div
           class="row justify-center items-center content-center"
-          style="margin-bottom: 20px; padding: 10px"
+          style="padding: 10px"
         >
-          <q-btn
-            label="Enviar"
-            type="submit"
-            color="primary"
-            class="col-md-5 col-sm-5 col-xs-12"
-            icon="person_add"
-          />
-          <q-btn
-            label="Cerrar"
-            color="primary"
-            flat
-            class="col-md-5 col-sm-5 col-xs-12 btnmovil"
-            icon="close"
-            v-close-popup
-          />
-        </div>
-      </q-card>
-    </q-dialog>
-
-    <q-dialog v-model="detalleCostosDialog2">
-      <q-card style="width: 1200px; max-width: 120vw">
-          <div class="row justify-center items-center content-center" style="padding: 20px">
-            <div
-              class="col-md-12 col-xs-12"
-              style="margin-bottom: 6px"
-            >
+          <div class="col-md-12 col-xs-12" style="margin-bottom: 6px">
             <div class="row justify-center items-center">
               <div class="col-md-6 col-xs-12 boxStyle Cards2">
-                <q-card
-                  class="q-pa-md col-md-4 col-xs-12"
-                  bordered
-                  style="padding: 10px"
-                >
-                  <q-card-section
-                    style="
-                      padding-bottom: 5px;
-                      padding-left: 10px;
-                      padding-right: 10px;
-                    "
-                  >
+                <q-card style="margin-top: 10px">
+                  <q-card-section>
                     <div class="row">
                       <div
                         class="col-md-12 col-xs-12"
                         style="
                           align-self: center;
                           text-align: left;
-                          margin-top: -30px;
+                          margin-top: -40px;
                         "
                       >
                         <h4
-                          style="font-size: 19px; margin-bottom: 20px"
+                          style="font-size: 18px; margin-bottom: 0px"
                           class="text-secondary"
                         >
                           <strong
@@ -264,92 +267,142 @@
                         </h4>
                       </div>
                       <div
-                        class="col-md-7 col-xl-7 col-lg-7 col-xs-12 col-sm-7 cardMargin selectMobile2"
-                        style="
-                          align-self: center;
-                          text-align: center;
-                          margin-bottom: 10px;
-                        "
+                        class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-4 cardMargin2"
                       >
                         <q-select
-                          v-model="guia_desde"
                           rounded
                           dense
-                          outlined
-                          standout
-                          label="Guia Desde"
-                          @keyup.enter="getDataTable()"
-                          mask="##########"
-                        >
+                          transition-show="flip-up"
+                          transition-hide="flip-down"
+                          :options="agenciasSelected"
+                          @filter="
+                            (val, update) =>
+                              filterArray(
+                                val,
+                                update,
+                                'agenciasSelected',
+                                'agencias',
+                                'nb_agencia'
+                              )
+                          "
+                          use-input
+                          hide-selected
+                          fill-input
+                          input-debounce="0"
+                          option-label="nb_agencia"
+                          option-value="id"
+                          v-model="selectedAgenciaGuia"
+                          label="Agencia Origen"
+                          @update:model-value="getGuiasAsignar()"
+                          ><template v-slot:no-option>
+                            <q-item>
+                              <q-item-section class="text-grey">
+                                Sin resultados
+                              </q-item-section>
+                            </q-item>
+                          </template>
+                          <template v-slot:prepend>
+                            <q-icon name="search" />
+                          </template>
                         </q-select>
                       </div>
                       <div
-                        class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-5 cardMargin selectMobile2"
-                        style="
-                          align-self: center;
-                          text-align: center;
-                          margin-bottom: 10px;
-                        "
+                        class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-3 cardMargin2"
                       >
                         <q-input
-                          v-model="guia_desde"
-                          rounded
+                          v-model="fecha_desde_guias_asignar"
                           dense
-                          outlined
-                          standout
-                          label="Guia Desde"
-                          @keyup.enter="getDataTable()"
-                          mask="##########"
+                          label="Fecha Desde"
                         >
                           <template v-slot:append>
-                            <q-icon
-                              @click="getDataTable()"
-                              class="cursor-pointer"
-                              name="search"
-                            />
+                            <q-icon name="event" class="cursor-pointer">
+                              <q-popup-proxy
+                                ref="qDateProxy"
+                                transition-show="scale"
+                                transition-hide="scale"
+                              >
+                                <q-date
+                                  v-model="fecha_desde_guias_asignar"
+                                  mask="DD/MM/YYYY"
+                                  style="padding-bottom: 0px"
+                                  @update:model-value="
+                                    this.$refs.qDateProxy.hide();
+                                    getGuiasAsignar();
+                                  "
+                                ></q-date>
+                              </q-popup-proxy>
+                            </q-icon>
                           </template>
                         </q-input>
                       </div>
                       <div
-                        class="col-md-7 col-xl-7 col-lg-7 col-xs-12 col-sm-7 cardMargin selectMobile2"
-                        style="align-self: center; text-align: center"
+                        class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-3 cardMargin2"
                       >
                         <q-input
-                          v-model="guia_desde"
-                          rounded
+                          v-model="fecha_hasta_guias_asignar"
                           dense
-                          outlined
-                          standout
-                          label="Guia Desde"
-                          @keyup.enter="getDataTable()"
-                          mask="##########"
+                          label="Fecha Hasta"
                         >
                           <template v-slot:append>
-                            <q-icon
-                              @click="getDataTable()"
-                              class="cursor-pointer"
-                              name="search"
-                            />
+                            <q-icon name="event" class="cursor-pointer">
+                              <q-popup-proxy
+                                ref="qDateProxy"
+                                transition-show="scale"
+                                transition-hide="scale"
+                              >
+                                <q-date
+                                  v-model="fecha_hasta_guias_asignar"
+                                  mask="DD/MM/YYYY"
+                                  style="padding-bottom: 0px"
+                                  @update:model-value="
+                                    this.$refs.qDateProxy.hide();
+                                    getGuiasAsignar();
+                                  "
+                                ></q-date>
+                              </q-popup-proxy>
+                            </q-icon>
                           </template>
                         </q-input>
                       </div>
                       <div
-                        class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-5 cardMargin selectMobile2"
-                        style="align-self: center; text-align: center"
+                        class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-2 cardMargin2"
                       >
                         <q-input
-                          v-model="guia_desde"
+                          v-model="buscar_guia_asignar"
                           rounded
                           dense
-                          outlined
-                          standout
-                          label="Guia Desde"
-                          @keyup.enter="getDataTable()"
-                          mask="##########"
+                          label="Guía"
+                          @keyup.enter="
+                            find = this.detalles_costo_guias_asignar.findIndex(
+                              (item) =>
+                                item.nro_documento == this.buscar_guia_asignar
+                            );
+
+                            if (find >= 0) {
+                              this.selectedGuiasAsignar.push(
+                                this.detalles_costo_guias_asignar[find]
+                              );
+                              this.buscar_guia_asignar = '';
+                            }
+                          "
                         >
                           <template v-slot:append>
                             <q-icon
-                              @click="getDataTable()"
+                              @click="
+                                find =
+                                  this.detalles_costo_guias_asignar.findIndex(
+                                    (item) =>
+                                      item.nro_documento ==
+                                      this.buscar_guia_asignar
+                                  );
+
+                                if (find >= 0) {
+                                  this.selectedGuiasAsignar.push(
+                                    this.detalles_costo_guias_asignar[find]
+                                  );
+                                  this.buscar_guia_asignar = '';
+                                }
+                              "
                               class="cursor-pointer"
                               name="search"
                             />
@@ -357,251 +410,217 @@
                         </q-input>
                       </div>
                       <q-table
-                        :rows="costos"
+                        :rows="detalles_costo_guias_asignar"
                         dense
-                        :columns="columns2"
+                        selection="multiple"
+                        :columns="columnsDetalleGuiasAsignar"
                         binary-state-sort
-                        :virtual-scroll="null"
                         :separator="separator"
-                        row-key="action"
-                        :loading="loading"
-                        class="my-sticky-header-column-table"
-                        style="
-                          width: 100%;
-                          margin-top: 20px;
-                          height: 290px;
-                          margin-bottom: 15px;
-                        "
-                        v-model:pagination="pagination"
+                        :rows-per-page-options="[0]"
+                        v-model:selected="selectedGuiasAsignar"
+                        row-key="id"
+                        :loading="loadingGuias"
+                        style="width: 100%; margin-top: 10px; height: 280px"
+                        hide-bottom
                       >
-                        <template v-slot:loading>
-                          <q-inner-loading showing color="primary" />
-                        </template>
-
-                        <template v-slot:body-cell-action="props">
-                          <q-td :props="props">
-                            <q-btn
-                              dense
-                              round
-                              flat
-                              color="primary"
-                              icon="save"
-                              :disabled="this.disabledDelete"
-                              @click="selected = props.row.id"
-                              @click.capture="permisosDelete = true"
-                            ></q-btn>
-                            <q-btn
-                              dense
-                              round
-                              flat
-                              color="primary"
-                              icon="edit"
-                              @click="this.dialog = true"
-                            ></q-btn>
-                          </q-td>
+                        <template
+                          v-slot:bottom-row
+                          v-if="this.detalles_costo_guias_asignar.length > 0"
+                        >
+                          <q-tr>
+                            <q-td colspan="3">
+                              <p>
+                                <strong>{{
+                                  "Cant: " +
+                                  this.detalles_costo_guias_asignar.length
+                                }}</strong>
+                              </p>
+                            </q-td>
+                            <q-td
+                              ><strong
+                                ><p style="text-align: right">
+                                  {{
+                                    new Intl.NumberFormat("de-DE", {
+                                      style: "currency",
+                                      currency: "EUR",
+                                      currencyDisplay: "code",
+                                    })
+                                      .format(this.total_detalle_guias_asignar)
+                                      .replace("EUR", "")
+                                      .trim()
+                                  }}
+                                </p></strong
+                              >
+                            </q-td>
+                            <q-td colspan="2"> </q-td>
+                          </q-tr>
                         </template>
                       </q-table>
-                      <div
-                        class="col-md-6 col-xl-6 col-lg-6 col-xs-12 col-sm-6 cardMargin selectMobile2"
-                        style="align-self: center; text-align: center"
-                      >
-                        <q-input
-                          v-model="guia_desde"
-                          rounded
-                          dense
-                          outlined
-                          standout
-                          label="Cantidad:"
-                          @keyup.enter="getDataTable()"
-                          mask="##########"
-                        >
-                        </q-input>
-                      </div>
-                      <div
-                        class="col-md-6 col-xl-6 col-lg-6 col-xs-12 col-sm-6"
-                        style="align-self: center; text-align: center"
-                      >
-                        <q-input
-                          v-model="guia_desde"
-                          rounded
-                          dense
-                          outlined
-                          standout
-                          label="Totales:"
-                          @keyup.enter="getDataTable()"
-                          mask="##########"
-                        >
-                        </q-input>
-                      </div>
                     </div>
                   </q-card-section>
                 </q-card>
               </div>
               <div
-                class="row col-md-1 col-xs-12 buttonsPC"
-                style="text-align: center"
+                class="row col-md-1 col-xs-12"
+                style="
+                  text-align: center;
+                  margin-left: -40px;
+                  margin-right: -40px;
+                "
               >
-                <div class="col-md-12 col-xs-3">
+                <div class="col-md-12 col-xs-3" style="margin-bottom: 30px">
                   <q-btn
-                    padding="md"
+                    dense
                     color="primary"
                     round
+                    padding="sm"
+                    icon="close"
+                    v-close-popup
+                  >
+                    <q-tooltip
+                      class="bg-primary"
+                      style="max-height: 30px"
+                      transition-show="scale"
+                      transition-hide="scale"
+                      color="primary"
+                      >Cerrar</q-tooltip
+                    >
+                  </q-btn>
+                </div>
+                <div class="col-md-12 col-xs-3 buttonsCard">
+                  <q-btn
+                    color="primary"
+                    round
+                    padding="sm"
                     icon="chevron_right"
+                    @click="addSelectedGuia()"
+                    :disabled="this.loadingGuias"
                   />
                 </div>
                 <div class="col-md-12 col-xs-3 buttonsCard">
                   <q-btn
-                    padding="md"
                     color="primary"
                     round
+                    padding="sm"
                     icon="chevron_left"
+                    @click="deleteSelectedGuia()"
+                    :disabled="this.loadingGuias"
                   />
                 </div>
                 <div class="col-md-12 col-xs-3 buttonsCard">
                   <q-btn
-                    padding="md"
+                    dense
                     color="primary"
                     round
+                    padding="sm"
                     icon="keyboard_double_arrow_right"
+                    @click="
+                      this.selectedGuiasAsignar =
+                        this.detalles_costo_guias_asignar;
+                      this.addSelectedGuia();
+                    "
+                    :disabled="this.loadingGuias"
                   />
                 </div>
-
                 <div class="col-md-12 col-xs-3 buttonsCard">
                   <q-btn
-                    padding="md"
+                    dense
                     color="primary"
                     round
+                    padding="sm"
                     icon="keyboard_double_arrow_left"
-                  />
-                </div>
-              </div>
-              <div
-                class="row col-md-1 col-xs-12 buttonsMenu buttonsMobile"
-                style="text-align: center"
-              >
-                <div class="col-md-12 col-xs-3">
-                  <q-btn
-                    padding="md"
-                    color="primary"
-                    round
-                    icon="expand_less"
-                  />
-                </div>
-                <div class="col-md-12 col-xs-3 buttonsCard">
-                  <q-btn
-                    padding="md"
-                    color="primary"
-                    round
-                    icon="expand_more"
-                  />
-                </div>
-                <div class="col-md-12 col-xs-3 buttonsCard">
-                  <q-btn
-                    padding="md"
-                    color="primary"
-                    round
-                    icon="keyboard_double_arrow_up"
-                  />
-                </div>
-
-                <div class="col-md-12 col-xs-3 buttonsCard">
-                  <q-btn
-                    padding="md"
-                    color="primary"
-                    round
-                    icon="keyboard_double_arrow_down"
+                    @click="
+                      this.selectedGuias = JSON.parse(
+                        JSON.stringify(this.detalles_costo_guias)
+                      );
+                      this.deleteSelectedGuia();
+                    "
+                    :disabled="this.loadingGuias"
                   />
                 </div>
               </div>
               <div class="col-md-6 col-xs-12 Cards">
-                <q-card
-                  class="q-pa-md col-md-4 col-xs-12"
-                  bordered
-                  style="padding: 10px"
-                >
-                  <q-card-section
-                    style="
-                      padding-bottom: 5px;
-                      padding-left: 10px;
-                      padding-right: 10px;
-                    "
-                  >
+                <q-card style="margin-top: 10px">
+                  <q-card-section>
                     <div class="row">
                       <div
                         class="col-md-12 col-xs-12"
                         style="
                           align-self: center;
                           text-align: left;
-                          margin-top: -30px;
+                          margin-top: -40px;
                         "
                       >
                         <h4
-                          style="font-size: 19px; margin-bottom: 20px"
+                          style="font-size: 18px; margin-bottom: 0px"
                           class="text-secondary"
                         >
                           <strong>Guias a Enviar por el Transporte</strong>
                         </h4>
                       </div>
                       <div
-                        class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 cardMargin selectMobile2"
-                        style="
-                          align-self: center;
-                          text-align: center;
-                          margin-bottom: 10px;
-                        "
+                        class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-3 cardMargin2"
                       >
                         <q-input
-                          v-model="guia_desde"
+                          v-model="fecha_desde_guias"
                           rounded
                           dense
-                          outlined
-                          standout
+                          label="Fecha Envío"
+                          disable
+                        >
+                        </q-input>
+                      </div>
+                      <div
+                        class="col-md-6 col-xl-6 col-lg-6 col-xs-12 col-sm-6 cardMargin2"
+                      >
+                        <q-input
+                          v-model="transporte_guias"
+                          rounded
+                          dense
                           label="Transporte"
-                          @keyup.enter="getDataTable()"
-                          mask="##########"
+                          disable
                         >
                         </q-input>
                       </div>
                       <div
-                        class="col-md-7 col-xl-7 col-lg-7 col-xs-12 col-sm-7 cardMargin selectMobile2"
-                        style="align-self: center; text-align: center"
+                        class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-3"
                       >
                         <q-input
-                          v-model="guia_desde"
+                          v-model="buscar_guia"
                           rounded
                           dense
-                          outlined
-                          standout
-                          label="Guia Carga"
-                          @keyup.enter="getDataTable()"
-                          mask="##########"
+                          label="Guía"
+                          @keyup.enter="
+                            find = this.detalles_costo_guias.findIndex(
+                              (item) =>
+                                item.movimientos.nro_documento ==
+                                this.buscar_guia
+                            );
+
+                            if (find >= 0) {
+                              this.selectedGuias.push(
+                                this.detalles_costo_guias[find]
+                              );
+                              this.buscar_guia = '';
+                            }
+                          "
                         >
                           <template v-slot:append>
                             <q-icon
-                              @click="getDataTable()"
-                              class="cursor-pointer"
-                              name="search"
-                            />
-                          </template>
-                        </q-input>
-                      </div>
-                      <div
-                        class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-5 cardMargin selectMobile2"
-                        style="align-self: center; text-align: center"
-                      >
-                        <q-input
-                          v-model="guia_desde"
-                          rounded
-                          dense
-                          outlined
-                          standout
-                          label="F. Envio"
-                          @keyup.enter="getDataTable()"
-                          mask="##########"
-                        >
-                          <template v-slot:append>
-                            <q-icon
-                              @click="getDataTable()"
+                              @click="
+                                find = this.detalles_costo_guias.findIndex(
+                                  (item) =>
+                                    item.movimientos.nro_documento ==
+                                    this.buscar_guia
+                                );
+
+                                if (find >= 0) {
+                                  this.selectedGuias.push(
+                                    this.detalles_costo_guias[find]
+                                  );
+                                  this.buscar_guia = '';
+                                }
+                              "
                               class="cursor-pointer"
                               name="search"
                             />
@@ -609,112 +628,59 @@
                         </q-input>
                       </div>
                       <q-table
-                        :rows="detalleCostos"
+                        :rows="detalles_costo_guias"
                         dense
-                        :columns="columns2"
+                        selection="multiple"
+                        :columns="columnsDetalleGuias"
                         binary-state-sort
-                        :virtual-scroll="null"
                         :separator="separator"
-                        row-key="action"
-                        :loading="loading"
-                        class="my-sticky-header-column-table"
-                        style="
-                          width: 100%;
-                          margin-top: 20px;
-                          height: 290px;
-                          margin-bottom: 15px;
-                        "
-                        v-model:pagination="pagination"
+                        :rows-per-page-options="[0]"
+                        v-model:selected="selectedGuias"
+                        row-key="id"
+                        :loading="loadingGuias"
+                        style="width: 100%; margin-top: 10px; height: 280px"
+                        hide-bottom
                       >
-                        <template v-slot:loading>
-                          <q-inner-loading showing color="primary" />
-                        </template>
-
-                        <template v-slot:body-cell-action="props">
-                          <q-td :props="props">
-                            <q-btn
-                              dense
-                              round
-                              flat
-                              color="primary"
-                              icon="save"
-                              :disabled="this.disabledDelete"
-                              @click="selected = props.row.id"
-                              @click.capture="permisosDelete = true"
-                            ></q-btn>
-                            <q-btn
-                              dense
-                              round
-                              flat
-                              color="primary"
-                              icon="edit"
-                              @click="this.dialog = true"
-                            ></q-btn>
-                          </q-td>
+                        <template
+                          v-slot:bottom-row
+                          v-if="this.detalles_costo_guias.length > 0"
+                        >
+                          <q-tr>
+                            <q-td colspan="3">
+                              <p>
+                                <strong>{{
+                                  "Cant: " + this.detalles_costo_guias.length
+                                }}</strong>
+                              </p>
+                            </q-td>
+                            <q-td
+                              ><strong
+                                ><p style="text-align: right">
+                                  {{
+                                    new Intl.NumberFormat("de-DE", {
+                                      style: "currency",
+                                      currency: "EUR",
+                                      currencyDisplay: "code",
+                                    })
+                                      .format(this.total_detalle_guias)
+                                      .replace("EUR", "")
+                                      .trim()
+                                  }}
+                                </p></strong
+                              >
+                            </q-td>
+                          </q-tr>
                         </template>
                       </q-table>
-                      <div
-                        class="col-md-6 col-xl-6 col-lg-6 col-xs-12 col-sm-6 cardMargin selectMobile2"
-                        style="align-self: center; text-align: center"
-                      >
-                        <q-input
-                          v-model="guia_desde"
-                          rounded
-                          dense
-                          outlined
-                          standout
-                          label="Cantidad:"
-                          @keyup.enter="getDataTable()"
-                          mask="##########"
-                        >
-                        </q-input>
-                      </div>
-                      <div
-                        class="col-md-6 col-xl-6 col-lg-6 col-xs-12 col-sm-6"
-                        style="align-self: center; text-align: center"
-                      >
-                        <q-input
-                          v-model="guia_desde"
-                          rounded
-                          dense
-                          outlined
-                          standout
-                          label="Totales:"
-                          @keyup.enter="getDataTable()"
-                          mask="##########"
-                        >
-                        </q-input>
-                      </div>
                     </div>
                   </q-card-section>
                 </q-card>
               </div>
             </div>
-            </div>
           </div>
-        <div
-          class="row justify-center items-center content-center"
-          style="margin-bottom: 20px"
-        >
-          <q-btn
-            label="Enviar"
-            type="submit"
-            color="primary"
-            class="col-md-5 col-sm-5 col-xs-12"
-            icon="person_add"
-          />
-          <q-btn
-            label="Cerrar"
-            color="primary"
-            flat
-            class="col-md-5 col-sm-5 col-xs-12 btnmovil"
-            icon="close"
-            v-close-popup
-          />
         </div>
       </q-card>
     </q-dialog>
-
 
     <div class="q-pa-sm justify-center" style="margin-top: 10px">
       <div
@@ -970,7 +936,7 @@
                   flat
                   color="primary"
                   icon="topic"
-                  @click="detalleGuiasDialog = true"
+                  @click="onLoadDetalleGuias(props.rowIndex)"
                   ><q-tooltip
                     class="bg-primary"
                     transition-show="scale"
@@ -986,7 +952,10 @@
                   flat
                   color="primary"
                   icon="cancel_presentation"
-                  @click="selected = props.row.id"
+                  @click="
+                    selected = props.row.id;
+                    selectedIndex = props.rowIndex;
+                  "
                   @click.capture="deletePopup = true"
                   ><q-tooltip
                     class="bg-primary"
@@ -1011,7 +980,7 @@
                   ]"
                   mask="##/##/####"
                   style="
-                    padding-top: 5px; 
+                    padding-top: 5px;
                     margin-bottom: -15px;
                     min-width: 150px;
                   "
@@ -1213,6 +1182,7 @@
                   v-model="props.row.monto_costo"
                   v-money="money"
                   input-class="text-right"
+                  :input-style="{ color: '#060640' }"
                   style="min-width: 100px"
                   @keydown="onLoadDetalle(props.rowIndex)"
                   @click="onLoadDetalle(props.rowIndex)"
@@ -1282,7 +1252,7 @@
               <div class="col-md-1 col-xs-12">
                 <q-input
                   outlined
-                  v-model="this.cantidad"
+                  v-model="cantidad"
                   label="Cantidad"
                   hint=""
                   dense
@@ -1423,7 +1393,12 @@ import webViewerVue from "src/components/webViewer.vue";
 
 export default {
   directives: { money: VMoney },
-  components: { methods: methodsVue, rulesVue, VMoney, webViewer: webViewerVue},
+  components: {
+    methods: methodsVue,
+    rulesVue,
+    VMoney,
+    webViewer: webViewerVue,
+  },
   data() {
     return {
       columns: [
@@ -1558,6 +1533,76 @@ export default {
           align: "center",
         },
       ],
+      columnsDetalleGuias: [
+        {
+          name: "fecha_emision",
+          label: "Emisión",
+          field: (row) => row.movimientos.fecha_emision,
+          align: "center",
+        },
+        {
+          name: "nro_documento",
+          label: "N° Guía",
+          field: (row) => row.movimientos.nro_documento,
+          align: "center",
+        },
+        {
+          name: "monto_subtotal",
+          label: "Sub-Total",
+          field: (row) => row.movimientos.monto_subtotal,
+          align: "right",
+          format: (val) =>
+            new Intl.NumberFormat("de-DE", {
+              style: "currency",
+              currency: "EUR",
+              currencyDisplay: "code",
+            })
+              .format(val)
+              .replace("EUR", "")
+              .trim(),
+        },
+      ],
+      columnsDetalleGuiasAsignar: [
+        {
+          name: "nro_documento",
+          label: "N° Guía",
+          field: "nro_documento",
+          align: "center",
+        },
+        {
+          name: "cliente_orig_desc",
+          label: "Cliente Origen",
+          field: "cliente_orig_desc",
+          align: "center",
+        },
+        {
+          name: "monto_subtotal",
+          label: "Sub-Total",
+          field: "monto_subtotal",
+          align: "right",
+          format: (val) =>
+            new Intl.NumberFormat("de-DE", {
+              style: "currency",
+              currency: "EUR",
+              currencyDisplay: "code",
+            })
+              .format(val)
+              .replace("EUR", "")
+              .trim(),
+        },
+        {
+          name: "siglas_dest",
+          label: "Dest",
+          field: "siglas_dest",
+          align: "center",
+        },
+        {
+          name: "fecha_emision",
+          label: "Emisión",
+          field: "fecha_emision",
+          align: "center",
+        },
+      ],
       money: {
         decimal: ",",
         thousands: ".",
@@ -1582,13 +1627,12 @@ export default {
         page: 1,
         rowsPerPage: 0,
         rowsNumber: "",
-        sortBy: "fecha_envio",
-        descending: false,
       },
       visibleColumns: [],
       guia_desde: "",
       type: 2,
       selected: [],
+      selectedIndex: [],
       agencias: [],
       agentes: [],
       unidades: [],
@@ -1599,6 +1643,10 @@ export default {
       printOptions: false,
       agenciasSelected: [],
       selectedAgencia: [],
+      selectedAgenciaGuia: [],
+      selectedCosto: null,
+      selectedGuias: [],
+      selectedGuiasAsignar: [],
       conceptos: [],
       cantidad: 0,
       total_costo: 0,
@@ -1606,8 +1654,20 @@ export default {
       total_utilidad: 0,
       total_porc_costo: 0,
       total_porc_utilidad: 0,
-      fecha_desde: moment("2022-05-01").format("DD/MM/YYYY"),
-      fecha_hasta: moment("2022-05-15").format("DD/MM/YYYY"),
+      total_detalle_costo: 0,
+      total_detalle_dolar: 0,
+      total_detalle_guias: 0,
+      total_detalle_guias_asignar: 0,
+      fecha_desde: moment().format("DD/MM/YYYY"),
+      fecha_hasta: moment().format("DD/MM/YYYY"),
+      fecha_desde_guias: "",
+      fecha_desde_guias_asignar: "",
+      fecha_hasta_guias_asignar: "",
+      transporte_guias: "",
+      detalles_costo_guias: [],
+      detalles_costo_guias_asignar: [],
+      buscar_guia: "",
+      buscar_guia_asignar: "",
     };
   },
   setup() {
@@ -1617,16 +1677,15 @@ export default {
       separator: ref("vertical"),
       form: ref(false),
       loading: ref(false),
+      loadingGuias: ref(false),
       deletePopup: ref(false),
       detalleCostosDialog: ref(false),
       detalleGuiasDialog: ref(false),
-      detalleCostosDialog2: ref(false),
       disableMonto: ref(true),
       pdfView: ref(false),
     };
   },
   mounted() {
-    this.detalleGuiasDialog = true;
     this.$emit("changeTitle", "SCEN - Mantenimiento - Registro de Costos", "");
     this.$refs.methods.getData("/agencias", "setDataInit", "agencias");
     this.$refs.methods.getData("/agentes", "setData", "agentes", {
@@ -1713,8 +1772,7 @@ export default {
           agencia: this.selectedAgencia.id ? this.selectedAgencia.id : "",
           desde: moment(this.fecha_desde, "DD/MM/YYYY").format("YYYY-MM-DD"),
           hasta: moment(this.fecha_hasta, "DD/MM/YYYY").format("YYYY-MM-DD"),
-          order_by: this.pagination.sortBy,
-          order_direction: this.pagination.descending ? "DESC" : "ASC",
+          order_doc: "S",
         },
       });
     },
@@ -1743,6 +1801,8 @@ export default {
         moment().format("DD/MM/YYYY");
       this.costos[this.costos.length - 1].tipo_transporte = "I";
       this.costos[this.costos.length - 1].cod_agencia = this.selectedAgencia.id;
+      this.costos[this.costos.length - 1].detalles = [];
+      this.costos[this.costos.length - 1].detallesg = [];
     },
     // Metodo para Editar o Crear Datos
     async sendData() {
@@ -1787,6 +1847,52 @@ export default {
 
         // Actualizamos datos del movimiento
         if (this.costos[i].id) {
+          // Guardamos el detalle
+          for (var j = 0; j < this.costos[i].detalles.length; j++) {
+            var formDetalle = JSON.parse(
+              JSON.stringify(this.costos[i].detalles[j])
+            );
+            delete formDetalle.monto_dolar;
+            formDetalle.cod_concepto = formDetalle.cod_concepto.id
+              ? formDetalle.cod_concepto.id
+              : formDetalle.cod_concepto;
+            formDetalle.monto_costo = this.curReplace(formDetalle.monto_costo);
+            if (this.costos[i].detalles[j].id) {
+              // Actualizamos el Detalle
+              await api
+                .put(`/dcostos/${this.costos[i].detalles[j].id}`, formDetalle, {
+                  headers: {
+                    Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                  },
+                })
+                .catch(() => {
+                  this.$q.notify({
+                    message:
+                      "Error del Sistema. Problemas al actualizar el detalle de los Costos. Comuníquese con el proveedor del Sistemas...",
+                    color: "red",
+                  });
+                  return;
+                });
+            } else {
+              formDetalle.cod_costo = this.costos[i].id;
+              // Creamos el Detalle
+              await api
+                .post(`/dcostos`, formDetalle, {
+                  headers: {
+                    Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                  },
+                })
+                .catch(() => {
+                  this.$q.notify({
+                    message:
+                      "Error del Sistema. Problemas al crear el detalle de los Costos. Comuníquese con el proveedor del Sistemas...",
+                    color: "red",
+                  });
+                  return;
+                });
+            }
+          }
+          // Actualizamos el costo
           await api
             .put(`/costos/${this.costos[i].id}`, formCosto, {
               headers: {
@@ -1802,11 +1908,16 @@ export default {
               return;
             });
         } else {
+          // Creamos primero el costo
+          let idCosto;
           await api
             .post(`/costos`, formCosto, {
               headers: {
                 Authorization: `Bearer ${LocalStorage.getItem("token")}`,
               },
+            })
+            .then((res) => {
+              idCosto = res.data.id;
             })
             .catch(() => {
               this.$q.notify({
@@ -1816,6 +1927,38 @@ export default {
               });
               return;
             });
+
+          // Luego Creamos el detalle
+          if (this.costos[i].detalles) {
+            for (var j = 0; j < this.costos[i].detalles.length; j++) {
+              var formDetalle = JSON.parse(
+                JSON.stringify(this.costos[i].detalles[j])
+              );
+              delete formDetalle.monto_dolar;
+              formDetalle.cod_concepto = formDetalle.cod_concepto.id
+                ? formDetalle.cod_concepto.id
+                : formDetalle.cod_concepto;
+              formDetalle.monto_costo = this.curReplace(
+                formDetalle.monto_costo
+              );
+              formDetalle.cod_costo = idCosto;
+
+              await api
+                .post(`/dcostos`, formDetalle, {
+                  headers: {
+                    Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                  },
+                })
+                .catch(() => {
+                  this.$q.notify({
+                    message:
+                      "Error del Sistema. Problemas al crear el detalle de los Costos. Comuníquese con el proveedor del Sistemas...",
+                    color: "red",
+                  });
+                  return;
+                });
+            }
+          }
         }
       }
       this.$q.notify({
@@ -1825,37 +1968,347 @@ export default {
       this.getDataTable();
     },
     // Metodo al abrir el detalle del costo
-    onLoadDetalle(index) {
+    async onLoadDetalle(index) {
+      let monto_dolar = await this.valorDolar(
+        index,
+        this.costos[index].fecha_envio
+      );
+
+      if (monto_dolar == 0) {
+        this.$q.notify({
+          message: "Este Día no tiene monto de Dolar definido",
+          color: "red",
+        });
+        return;
+      }
+
+      this.selectedCosto = index;
       this.detalleCostosDialog = true;
       this.detalles_costo = this.costos[index].detalles;
+      this.calculaTotalDetalle(monto_dolar);
+    },
+    // Metodo al abrir el detalle de Guias del costo
+    async onLoadDetalleGuias(index) {
+      this.loadingGuias = true;
+      this.selectedCosto = index;
+      this.detalles_costo_guias = this.costos[index].detallesg;
+      this.fecha_desde_guias = this.costos[index].fecha_envio;
+      this.transporte_guias =
+        this.costos[index].tipo_transporte == "I"
+          ? this.findIndex(
+              "agentes",
+              this.costos[index].cod_agente,
+              "persona_responsable"
+            )
+          : this.findIndex(
+              "proveedores",
+              this.costos[index].cod_proveedor,
+              "nb_proveedor"
+            );
+      this.costos[index].tipo_transporte == "I"
+        ? this.findIndex(
+            "agentes",
+            this.costos[index].cod_agente,
+            "persona_responsable"
+          )
+        : this.findIndex(
+            "proveedores",
+            this.costos[index].cod_proveedor,
+            "nb_proveedor"
+          );
+      let total_guias = 0;
+      for (var i = 0; i < this.detalles_costo_guias.length; i++) {
+        total_guias += this.parseFloatN(
+          this.detalles_costo_guias[i].movimientos.monto_subtotal
+        );
+      }
+      this.total_detalle_guias = total_guias.toFixed(2);
+      //this.selectedAgenciaGuia = this.agencias[0];
+      this.fecha_desde_guias_asignar = this.costos[index].fecha_envio;
+      this.fecha_hasta_guias_asignar = this.costos[index].fecha_envio;
+
+      // Buscamos las guias en Proceso de Envio
+      this.getGuiasAsignar();
+      this.detalleGuiasDialog = true;
+    },
+    async getGuiasAsignar() {
+      this.loadingGuias = true;
+      this.detalles_costo_guias_asignar = [];
+      await api
+        .get(`/mmovimientos`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            agencia: this.selectedAgenciaGuia.id
+              ? this.selectedAgenciaGuia.id
+              : "",
+            agencia_transito: this.selectedAgenciaGuia.id
+              ? this.selectedAgenciaGuia.id
+              : "",
+            desde: moment(this.fecha_desde_guias_asignar, "DD/MM/YYYY").format(
+              "YYYY-MM-DD"
+            ),
+            hasta: moment(this.fecha_hasta_guias_asignar, "DD/MM/YYYY").format(
+              "YYYY-MM-DD"
+            ),
+            estatus_oper: "PR",
+            estatus_admin_ex: "A",
+          },
+        })
+        .then((res) => {
+          this.detalles_costo_guias_asignar = res.data.data;
+        });
+
+      this.calculaTotalDetalleGuias();
+    },
+    // Agrega Guias seleccionadas al detalle
+    async addSelectedGuia() {
+      if (!this.costos[this.selectedCosto].id) {
+        this.$q.notify({
+          message: "Debe guardar el Costo antes de ejecutar esta Opción",
+          color: "red",
+        });
+        return;
+      }
+
+      this.loadingGuias = true;
+      for (var i = 0; i < this.selectedGuiasAsignar.length; i++) {
+        let formDetalleGuias = {};
+        formDetalleGuias.cod_costo = this.costos[this.selectedCosto].id;
+        formDetalleGuias.cod_movimiento = this.selectedGuiasAsignar[i].id;
+        // Guardo el detalle
+        await api
+          .post(`/dcostosg`, formDetalleGuias, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            },
+          })
+          .then((res) => {
+            formDetalleGuias.id = res.data.id;
+            formDetalleGuias.movimientos = this.selectedGuiasAsignar[i];
+          })
+          .catch(() => {
+            this.$q.notify({
+              message:
+                "Error del Sistema. Problemas al crear el detalle de Guias de los Costos. Comuníquese con el proveedor del Sistemas...",
+              color: "red",
+            });
+            return;
+          });
+
+        // Actualizamos el estatus del movimiento
+        let formMovimientos = {};
+        formMovimientos.estatus_operativo = "PE";
+        await api
+          .put(
+            `/mmovimientos/${this.selectedGuiasAsignar[i].id}`,
+            formMovimientos,
+            {
+              headers: {
+                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              },
+            }
+          )
+          .catch(() => {
+            this.$q.notify({
+              message:
+                "Error del Sistema. Problemas al actualizar el estatus de la Guia. Comuníquese con el proveedor del Sistemas...",
+              color: "red",
+            });
+            return;
+          });
+
+        this.detalles_costo_guias.push(formDetalleGuias);
+      }
+      this.getGuiasAsignar();
+      this.selectedGuias = [];
+      this.selectedGuiasAsignar = [];
+    },
+    // Elimina Guias seleccionadas del detalle
+    async deleteSelectedGuia() {
+      this.loadingGuias = true;
+      for (var i = 0; i < this.selectedGuias.length; i++) {
+        // Elimino el detalle de los costos
+        await api
+          .delete(`/dcostosg/${this.selectedGuias[i].id}`, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            },
+          })
+          .catch(() => {
+            this.$q.notify({
+              message:
+                "Error del Sistema. Problemas al Eliminar el detalle de Guia de los Costos. Comuníquese con el proveedor del Sistemas...",
+              color: "red",
+            });
+            return;
+          });
+
+        // Actualizamos el estatus del movimiento
+        let formMovimientos = {};
+        formMovimientos.estatus_operativo = "PR";
+        await api
+          .put(
+            `/mmovimientos/${this.selectedGuias[i].cod_movimiento}`,
+            formMovimientos,
+            {
+              headers: {
+                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              },
+            }
+          )
+          .catch(() => {
+            this.$q.notify({
+              message:
+                "Error del Sistema. Problemas al actualizar el estatus de la Guia. Comuníquese con el proveedor del Sistemas...",
+              color: "red",
+            });
+            return;
+          });
+        var find = this.detalles_costo_guias.findIndex(
+          (item) => item.id == this.selectedGuias[i].id
+        );
+        this.detalles_costo_guias.splice(find, 1);
+      }
+      this.getGuiasAsignar();
+      this.selectedGuias = [];
+      this.selectedGuiasAsignar = [];
+    },
+    // Actualiza los totales de los detalles de Guias
+    calculaTotalDetalleGuias() {
+      let total_guias = 0;
+      let total_guias_asignar = 0;
+      for (var i = 0; i < this.detalles_costo_guias.length; i++) {
+        total_guias += this.parseFloatN(
+          this.detalles_costo_guias[i].movimientos.monto_subtotal
+        );
+      }
+      this.total_detalle_guias = total_guias.toFixed(2);
+
+      for (var i = 0; i < this.detalles_costo_guias_asignar.length; i++) {
+        total_guias_asignar += this.parseFloatN(
+          this.detalles_costo_guias_asignar[i].monto_subtotal
+        );
+      }
+      this.total_detalle_guias_asignar = total_guias_asignar.toFixed(2);
+      this.loadingGuias = false;
+      this.calculaTotales();
     },
     // Push del Costo
     async deleteCosto() {
-      await api
-        .delete(`/costos/${this.selected}`, {
-          headers: {
-            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-          },
-        })
-        .then(() => {
-          this.$q.notify({
-            message: "Costo eliminado con Exito...",
-            color: "green",
+      this.loading = true;
+      if (this.selected) {
+        // Eliminamos los detalles si tuviese
+        let detalle = [];
+        await api
+          .get(`/costos/${this.selected}`, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            },
+          })
+          .then((res) => {
+            detalle = res.data.detalles;
           });
-          this.getDataTable();
-        })
-        .catch(() => {
+
+        for (var i = 0; i < detalle.length; i++) {
+          await api
+            .delete(`/dcostos/${detalle[i].id}`, {
+              headers: {
+                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              },
+            })
+            .catch(() => {
+              this.$q.notify({
+                message:
+                  "Error del Sistema. Problemas al Eliminar el Detalle del Costo. Comuníquese con el proveedor del Sistemas...",
+                color: "red",
+              });
+              this.loading = false;
+              return;
+            });
+        }
+
+        // Eliminamos el Costo
+        await api
+          .delete(`/costos/${this.selected}`, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            },
+          })
+          .then(() => {
+            this.$q.notify({
+              message: "Costo eliminado con Exito...",
+              color: "green",
+            });
+            this.getDataTable();
+          })
+          .catch(() => {
+            this.$q.notify({
+              message:
+                "Error del Sistema. Problemas al Eliminar el Costo. Comuníquese con el proveedor del Sistemas...",
+              color: "red",
+            });
+            this.loading = false;
+            return;
+          });
+      } else {
+        this.costos.splice(this.selectedIndex, 1);
+      }
+    },
+    // Metodo para Validar detalles de Costo
+    validateDetalle() {
+      for (
+        var i = 0;
+        i < this.costos[this.selectedCosto].detalles.length;
+        i++
+      ) {
+        if (
+          !this.costos[this.selectedCosto].detalles[i].cod_concepto ||
+          this.costos[this.selectedCosto].detalles[i].monto_costo == "0,00"
+        ) {
           this.$q.notify({
-            message:
-              "Error del Sistema. Problemas al Eliminar el Costo. Comuníquese con el proveedor del Sistemas...",
+            message: "Debe completar el Detalle para poder agregar uno nuevo",
+            color: "red",
+          });
+          return false;
+        }
+      }
+      return true;
+    },
+    // Metodo para validar conceptos repetidos
+    validateConcepto(index) {
+      for (var i = 0; i < this.detalles_costo.length - 1; i++) {
+        let id = this.detalles_costo[i].cod_concepto.id
+          ? this.detalles_costo[i].cod_concepto.id
+          : this.detalles_costo[i].cod_concepto;
+        if (this.detalles_costo[index].cod_concepto.id == id) {
+          this.detalles_costo[index].cod_concepto = "";
+          this.$q.notify({
+            message: "Ya este Detalle de Costo fue insertado",
             color: "red",
           });
           return;
-        });
+        }
+      }
     },
-    // Metodo para agregar detalles de Costo
-    addDetalle() {
-      console.log("dfsdf")
+    // Metodo para salvar detalles de Costo
+    saveDetalle() {
+      for (
+        var i = 0;
+        i < this.costos[this.selectedCosto].detalles.length;
+        i++
+      ) {
+        if (
+          !this.costos[this.selectedCosto].detalles[i].cod_concepto ||
+          this.costos[this.selectedCosto].detalles[i].monto_costo == "0,00"
+        ) {
+          this.$q.notify({
+            message: "Debe completar el Detalle para poder agregar uno nuevo",
+            color: "red",
+          });
+          return;
+        }
+      }
+      this.calculaTotales();
     },
     // Metodo para resetaer la data de los filtros
     resetFilters() {
@@ -1865,7 +2318,7 @@ export default {
       this.getDataTable();
     },
     // Metodo para Calcular Totales
-    calculaTotales() {
+    async calculaTotales() {
       let monto_costo = 0;
       let monto_guias = 0;
       let monto_utilidad = 0;
@@ -1874,12 +2327,20 @@ export default {
         let detalle_guias = 0;
         for (var j = 0; j < this.costos[i].detalles.length; j++) {
           detalle_costo += this.parseFloatN(
-            this.costos[i].detalles[j].monto_costo
+            this.curReplace(this.costos[i].detalles[j].monto_costo)
           );
+          if (this.costos[i].dolar) {
+            if (this.costos[i].dolar.valor) {
+              this.costos[i].detalles[j].monto_dolar = this.parseFloatN(
+                this.curReplace(this.costos[i].detalles[j].monto_costo) /
+                  this.costos[i].dolar.valor
+              ).toFixed(2);
+            }
+          }
         }
-        for (var k = 0; k < this.costos[i].detallest.length; k++) {
+        for (var k = 0; k < this.costos[i].detallesg.length; k++) {
           detalle_guias += this.parseFloatN(
-            this.costos[i].detallest[k].movimientos.monto_subtotal
+            this.costos[i].detallesg[k].movimientos.monto_subtotal
           );
         }
         this.costos[i].monto_costo = detalle_costo.toFixed(2);
@@ -1907,6 +2368,70 @@ export default {
         100
       ).toFixed(2);
     },
+    // Metodo para Calcular Monto Costo y Dolar
+    async calculaDetalle(row, index) {
+      let monto_dolar = await this.valorDolar(
+        this.selectedCosto,
+        this.costos[this.selectedCosto].fecha_envio
+      );
+
+      if (row == "costo") {
+        this.costos[this.selectedCosto].detalles[index].monto_dolar = (
+          this.parseFloatN(
+            this.curReplace(
+              this.costos[this.selectedCosto].detalles[index].monto_costo
+            )
+          ) / monto_dolar
+        ).toFixed(2);
+      } else {
+        this.costos[this.selectedCosto].detalles[index].monto_costo = (
+          this.parseFloatN(
+            this.curReplace(
+              this.costos[this.selectedCosto].detalles[index].monto_dolar
+            )
+          ) * monto_dolar
+        ).toFixed(2);
+      }
+      this.calculaTotalDetalle(monto_dolar);
+    },
+    // Metodo para calcular los totales del Detalle
+    calculaTotalDetalle(monto_dolar) {
+      let total_costo = 0;
+      for (
+        var i = 0;
+        i < this.costos[this.selectedCosto].detalles.length;
+        i++
+      ) {
+        total_costo += this.parseFloatN(
+          this.curReplace(
+            this.costos[this.selectedCosto].detalles[i].monto_costo
+          )
+        );
+      }
+      this.total_detalle_costo = total_costo.toFixed(2);
+      this.total_detalle_dolar = (
+        this.parseFloatN(total_costo) / this.parseFloatN(monto_dolar)
+      ).toFixed(2);
+    },
+    // Metodo para extraer el valor del Dolar
+    async valorDolar(index, fecha) {
+      let monto_dolar = 0;
+      if (!this.costos[index].dolar) {
+        await api
+          .get(`/hdolar/`, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              fecha: moment(fecha, "DD/MM/YYYY").format("YYYY-MM-DD"),
+            },
+          })
+          .then((res) => {
+            if (res.data.data[0]) monto_dolar = res.data.data[0].valor;
+          });
+      } else {
+        monto_dolar = this.costos[index].dolar.valor;
+      }
+      return monto_dolar;
+    },
     // Metodo para convertir a Currency los String
     curReplace(amount) {
       return amount.indexOf(",") < 0
@@ -1919,16 +2444,17 @@ export default {
       return number;
     },
     pdfPrint() {
-      api.get(`/reports/registrocostos`, {
+      api
+        .get(`/reports/registrocostos`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            type: '2',
+            type: "2",
           },
         })
         .then((res) => {
           this.$refs.webViewer.showpdf(res.data.base64);
         });
-    }
+    },
   },
 };
 </script>
@@ -1947,5 +2473,3 @@ export default {
   }
 }
 </style>
-
-
