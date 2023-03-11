@@ -1989,6 +1989,14 @@ export default {
     },
     // Metodo al abrir el detalle de Guias del costo
     async onLoadDetalleGuias(index) {
+      if (!this.costos[index].id) {
+        this.$q.notify({
+          message: "Debe guardar el Costo antes de ejecutar esta Opción",
+          color: "red",
+        });
+        return;
+      }
+
       this.loadingGuias = true;
       this.selectedCosto = index;
       this.detalles_costo_guias = this.costos[index].detallesg;
@@ -2062,14 +2070,6 @@ export default {
     },
     // Agrega Guias seleccionadas al detalle
     async addSelectedGuia() {
-      if (!this.costos[this.selectedCosto].id) {
-        this.$q.notify({
-          message: "Debe guardar el Costo antes de ejecutar esta Opción",
-          color: "red",
-        });
-        return;
-      }
-
       this.loadingGuias = true;
       for (var i = 0; i < this.selectedGuiasAsignar.length; i++) {
         let formDetalleGuias = {};
@@ -2197,6 +2197,15 @@ export default {
     async deleteCosto() {
       this.loading = true;
       if (this.selected) {
+        if (this.costos[this.selectedIndex].detallesg.length > 0) {
+          this.$q.notify({
+            message:
+              "No es posible eliminar este Costo, pues tiene Guías asociadas. Elimine la asociación e intente nuevamente",
+            color: "red",
+          });
+          this.loading = false;
+          return;
+        }
         // Eliminamos los detalles si tuviese
         let detalle = [];
         await api
