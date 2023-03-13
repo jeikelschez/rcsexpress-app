@@ -22,6 +22,9 @@
                   option-value="id"
                   v-model="selectedAgente"
                   outlined
+                  use-input
+                  hide-selected
+                  fill-input
                   label="Chofer"
                   ><template v-slot:no-option>
                     <q-item>
@@ -51,6 +54,9 @@
                   option-label="unidad_desc"
                   option-value="id"
                   v-model="selectedUnidad"
+                  use-input
+                  hide-selected
+                  fill-input
                   outlined
                   label="Vehiculo"
                   ><template v-slot:no-option>
@@ -82,6 +88,9 @@
                   option-value="id"
                   v-model="selectedAyudante"
                   outlined
+                  use-input
+                  hide-selected
+                  fill-input
                   label="Ayudante"
                   ><template v-slot:no-option>
                     <q-item>
@@ -112,6 +121,9 @@
                   option-value="id"
                   v-model="selectedReceptor"
                   outlined
+                  use-input
+                  hide-selected
+                  fill-input
                   label="Receptor"
                   ><template v-slot:no-option>
                     <q-item>
@@ -199,6 +211,58 @@
               />
             </div>
           </q-form>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog v-model="dialogFecha">
+      <q-card style="width: 300px">
+        <q-card-section>
+          <div class="col-md-12 col-xs-12">
+            <p style="font-size: 17px" class="text-secondary">
+              <strong>ASIGNAR FECHA DEL COSTO</strong>
+            </p>
+          </div>
+          <div class="col-md-12 col-xs-12">
+            <q-input
+              outlined
+              label="Fecha Costo"
+              hint=""
+              dense
+              style="padding-bottom: 0px"
+              v-model="fecha_costo"
+              lazy-rules
+              mask="##/##/####"
+              :rules="[(val) => this.$refs.rulesVue.checkDate(val)]"
+            >
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy
+                    ref="qDateProxy"
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="fecha_costo"
+                      mask="DD/MM/YYYY"
+                      style="padding-bottom: 0px"
+                    ></q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+          </div>
+          <div
+            class="col-md-12 col-xs-12"
+            style="margin-top: 23px; text-align: center"
+          >
+            <q-btn
+              label="Asignar"
+              color="primary"
+              style="width: 100px"
+              @click="findCostos()"
+            />
+          </div>
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -413,7 +477,7 @@
           lazy-rules
           mask="##/##/####"
           :rules="[(val) => this.$refs.rulesVue.checkDate(val)]"
-          @update:model-value="getDataTable()"
+          @keyup.enter="getDataTable()"
         >
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
@@ -448,7 +512,7 @@
           lazy-rules
           mask="##/##/####"
           :rules="[(val) => this.$refs.rulesVue.checkDate(val)]"
-          @update:model-value="getDataTable()"
+          @keyup.enter="getDataTable()"
         >
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
@@ -733,9 +797,63 @@
       <div style="width: 700px; height: 700px">
         <webViewer
           ref="webViewer"
+          @print-pdf="this.sendCostos()"
           @close-pdf="this.pdfView = false"
         ></webViewer>
       </div>
+    </q-dialog>
+
+    <q-dialog v-model="confirmCostosPopUp" persistent>
+      <q-card style="width: 700px">
+        <q-card-section>
+          <div class="text-h5" style="font-size: 18px">
+            ¿Desea Trasladar esta información a Costos?
+          </div>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn
+            flat
+            label="Si"
+            color="primary"
+            v-close-popup
+            @click="this.confirmCostos = true"
+          />
+          <q-btn
+            flat
+            label="No"
+            color="primary"
+            @click="this.confirmCostos = false"
+            v-close-popup
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog v-model="confirmMezclarPopUp" persistent>
+      <q-card style="width: 700px">
+        <q-card-section>
+          <div class="text-h5" style="font-size: 18px">
+            Existe un Costo cargado para este Chofer y Vehículo en esta fecha.
+            ¿Desea unificar el Costo?
+          </div>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn
+            flat
+            label="Si"
+            color="primary"
+            v-close-popup
+            @click="this.confirmMezclar = '1'"
+          />
+          <q-btn
+            flat
+            label="No"
+            color="primary"
+            @click="this.confirmMezclar = '2'"
+            v-close-popup
+          />
+        </q-card-actions>
+      </q-card>
     </q-dialog>
 
     <methods
@@ -884,9 +1002,13 @@ export default {
       receptoresSelected: [],
       selectedReceptor: [],
       selectedGuias: [],
+      costo: [],
       nombreReporte: "Relación de Despacho para la Agencia",
       fecha_desde: moment().format("DD/MM/YYYY"),
+      fecha_costo: "",
       fecha_hasta: moment().format("DD/MM/YYYY"),
+      confirmCostos: false,
+      confirmMezclar: false,
     };
   },
   setup() {
@@ -896,7 +1018,10 @@ export default {
       separator: ref("vertical"),
       dialog: ref(false),
       dialogAgencias: ref(false),
+      dialogFecha: ref(false),
       pdfView: ref(false),
+      confirmCostosPopUp: ref(false),
+      confirmMezclarPopUp: ref(false),
     };
   },
   mounted() {
@@ -1079,6 +1204,271 @@ export default {
           this.$refs.webViewer.showpdf(res.data.base64);
         });
     },
+    // Metodo al imprimir el reporte para asociar a Costos
+    async sendCostos() {
+      if (this.selectedTipo == "C") {
+        this.confirmCostosPopUp = true;
+        await this.until((_) => this.confirmCostos == true);
+        if (this.confirmCostos) {
+          this.confirmCostos = false;
+          if (this.selectedAgenciaDestino.length == 0) {
+            this.$q.notify({
+              message:
+                "Debe seleccionar al menos un Destino para cargar el Costo",
+              color: "red",
+            });
+            return;
+          }
+          if (!this.selectedAgente.id || !this.selectedUnidad.id) {
+            this.$q.notify({
+              message:
+                "Debe seleccionar el Chofer y el Vehículo para cargar el Costo",
+              color: "red",
+            });
+            return;
+          }
+          if (this.selectedAgente.cod_agencia != 1) {
+            this.$q.notify({
+              message:
+                "El Chofer no existe para la Agencia principal de Costos",
+              color: "red",
+            });
+            return;
+          }
+          this.fecha_costo = this.fecha_desde;
+          this.dialogFecha = true;
+        }
+      }
+    },
+    // Metodo para buscar costos por chofer y vehiculo de ese dia
+    async findCostos() {
+      this.dialogFecha = false;
+      let flagCosto = false;
+      await api
+        .get(`/costos`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            desde: moment(this.fecha_costo, "DD/MM/YYYY").format("YYYY-MM-DD"),
+            hasta: moment(this.fecha_costo, "DD/MM/YYYY").format("YYYY-MM-DD"),
+            agencia: 1,
+            agente: this.selectedAgente.id,
+            transporte: this.selectedUnidad.id,
+          },
+        })
+        .then((res) => {
+          if (res.data.data.length > 0) this.costo = res.data.data;
+        });
+
+      if (this.costo.length) {
+        this.confirmMezclarPopUp = true;
+        await this.until((_) => this.confirmMezclar);
+        if (this.confirmMezclar == "1") {
+          this.mezclarCosto();
+        } else {
+          this.crearCosto();
+        }
+      } else {
+        this.crearCosto();
+      }
+      this.confirmMezclar = false;
+      flagCosto = false;
+    },
+    // Metodo para mezclar los Costos
+    async mezclarCosto() {
+      this.pdfView = false;
+      this.loading = true;
+      let destino = this.costo[0].destino;
+      if (this.selectedAgenciaDestino.length) {
+        for (var i = 0; i < this.selectedAgenciaDestino.length; i++) {
+          let find = this.agencias.findIndex(
+            (item) => item.id == this.selectedAgenciaDestino[i]
+          );
+          if (destino.indexOf(this.agencias[find].ciudades.siglas) < 0) {
+            destino += " " + this.agencias[find].ciudades.siglas;
+          }
+        }
+      } else {
+        let find = this.agencias.findIndex(
+          (item) => item.id == this.selectedAgenciaDestino.id
+        );
+        if (destino.indexOf(this.agencias[find].ciudades.siglas) < 0) {
+          destino += " " + this.agencias[find].ciudades.siglas;
+        }
+      }
+
+      var formCosto = JSON.parse(JSON.stringify(this.costo[0]));
+      formCosto.destino = destino;
+      if (this.selectedAyudante.id)
+        formCosto.cod_ayudante = this.selectedAyudante.id;
+      formCosto.fecha_envio = moment(
+        formCosto.fecha_envio,
+        "DD/MM/YYYY"
+      ).format("YYYY-MM-DD");
+      delete formCosto.detalles;
+      delete formCosto.detallesg;
+      delete formCosto.dolar;
+
+      // Actualizamos el costo
+      await api
+        .put(`/costos/${this.costo[0].id}`, formCosto, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .catch(() => {
+          this.$q.notify({
+            message:
+              "Error del Sistema. Problemas al actualizar los Costos. Comuníquese con el proveedor del Sistemas...",
+            color: "red",
+          });
+          this.loading = false;
+          return;
+        });
+
+      for (var i = 0; i < this.selected.length; i++) {
+        let formGuia = {};
+        formGuia.cod_costo = this.costo[0].id;
+        formGuia.cod_movimiento = this.selected[i].id;
+        // Guardo el detalle
+        await api
+          .post(`/dcostosg`, formGuia, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            },
+          })
+          .catch(() => {
+            this.$q.notify({
+              message:
+                "Error del Sistema. Problemas al crear el detalle de Guias de los Costos. Comuníquese con el proveedor del Sistemas...",
+              color: "red",
+            });
+            this.loading = false;
+            return;
+          });
+
+        // Actualizamos el estatus del movimiento
+        let formMovimientos = {};
+        formMovimientos.estatus_operativo = "PE";
+        await api
+          .put(`/mmovimientos/${this.selected[i].id}`, formMovimientos, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            },
+          })
+          .catch(() => {
+            this.$q.notify({
+              message:
+                "Error del Sistema. Problemas al actualizar el estatus de la Guia. Comuníquese con el proveedor del Sistemas...",
+              color: "red",
+            });
+            this.loading = false;
+            return;
+          });
+      }
+      this.$q.notify({
+        message: "Costo Actualizado con Exito",
+        color: "green",
+      });
+      this.getDataTable();
+    },
+    // Metodo para Crear el Costo
+    async crearCosto() {
+      this.pdfView = false;
+      this.loading = true;
+      let destino = "";
+      if (this.selectedAgenciaDestino.length) {
+        for (var i = 0; i < this.selectedAgenciaDestino.length; i++) {
+          let find = this.agencias.findIndex(
+            (item) => item.id == this.selectedAgenciaDestino[i]
+          );
+          destino += " " + this.agencias[find].ciudades.siglas;
+        }
+      } else {
+        let find = this.agencias.findIndex(
+          (item) => item.id == this.selectedAgenciaDestino.id
+        );
+        destino += " " + this.agencias[find].ciudades.siglas;
+      }
+
+      var formCosto = {};
+      formCosto.cod_agencia = 1;
+      formCosto.fecha_envio = moment(this.fecha_costo, "DD/MM/YYYY").format(
+        "YYYY-MM-DD"
+      );
+      formCosto.tipo_transporte = "I";
+      formCosto.cod_agente = this.selectedAgente.id;
+      formCosto.destino = destino;
+      formCosto.cod_transporte = this.selectedUnidad.id;
+      if (this.selectedAyudante.id)
+        formCosto.cod_ayudante = this.selectedAyudante.id;      
+
+      // Creamos el costo
+      let idCosto;
+      await api
+        .post(`/costos`, formCosto, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => {
+          idCosto = res.data.id;
+        })
+        .catch(() => {
+          this.$q.notify({
+            message:
+              "Error del Sistema. Problemas al Crear los Costos. Comuníquese con el proveedor del Sistemas...",
+            color: "red",
+          });
+          this.loading = false;
+          return;
+        });
+
+      for (var i = 0; i < this.selected.length; i++) {
+        let formGuia = {};
+        formGuia.cod_costo = idCosto;
+        formGuia.cod_movimiento = this.selected[i].id;
+        // Guardo el detalle
+        await api
+          .post(`/dcostosg`, formGuia, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            },
+          })
+          .catch(() => {
+            this.$q.notify({
+              message:
+                "Error del Sistema. Problemas al crear el detalle de Guias de los Costos. Comuníquese con el proveedor del Sistemas...",
+              color: "red",
+            });
+            this.loading = false;
+            return;
+          });
+
+        // Actualizamos el estatus del movimiento
+        let formMovimientos = {};
+        formMovimientos.estatus_operativo = "PE";
+        await api
+          .put(`/mmovimientos/${this.selected[i].id}`, formMovimientos, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            },
+          })
+          .catch(() => {
+            this.$q.notify({
+              message:
+                "Error del Sistema. Problemas al actualizar el estatus de la Guia. Comuníquese con el proveedor del Sistemas...",
+              color: "red",
+            });
+            this.loading = false;
+            return;
+          });
+      }
+      this.$q.notify({
+        message: "Costo Creado con Exito",
+        color: "green",
+      });
+      this.getDataTable();
+    },
     // Metodo para Resetear Filtros
     resetFilters() {
       this.guias = [];
@@ -1099,6 +1489,14 @@ export default {
       this.selectedNeta = "K";
       this.fecha_desde = moment().format("DD/MM/YYYY");
       this.fecha_hasta = moment().format("DD/MM/YYYY");
+    },
+    // Metodo para que una funcion no avance hasta que se cumpla una condicion
+    async until(conditionFunction) {
+      const poll = (resolve) => {
+        if (conditionFunction()) resolve();
+        else setTimeout((_) => poll(resolve), 400);
+      };
+      return new Promise(poll);
     },
     // Metodo para cambiar el tipo de Reporte
     changeReporte() {
@@ -1123,10 +1521,12 @@ export default {
           this.nombreReporte = "Relación de Despacho por Agencia Destino";
           this.visibleColumns = ["zona_dest"];
           this.pagination.sortBy = JSON.stringify([
-            { model: models.Dcostosg, as: "detallesg" },
-            { model: models.Mmovimientos, as: "movimientos" },
-            "fecha_emision",
-            "ASC",
+            ["cod_zona_dest", "ASC"],
+            ["nro_documento", "ASC"],
+          ]);
+          this.pagination.sortBy = JSON.stringify([
+            ["cod_agencia_dest", "ASC"],
+            ["nro_documento", "ASC"],
           ]);
           break;
         default:

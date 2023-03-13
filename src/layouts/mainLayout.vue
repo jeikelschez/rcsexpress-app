@@ -218,7 +218,8 @@ export default {
       }
     },
     logout() {
-      this.$refs.component.logoutUser();
+      LocalStorage.remove("user");
+      this.$router.push("/login");
     },
     refreshTimer() {
       let _this = this;
@@ -298,7 +299,8 @@ export default {
             clearInterval(_this.intervalLogout);
             LocalStorage.remove("currentTimeLogout");
             LocalStorage.remove("targetTimeLogout");
-            _this.$refs.component.logoutUser();
+            LocalStorage.remove("user");
+            _this.$router.push("/login");
           } else {
             currentTime = new Date();
             localStorage.setItem("currentTimeLogout", currentTime);
