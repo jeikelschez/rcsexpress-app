@@ -804,7 +804,7 @@
     </q-dialog>
 
     <q-dialog v-model="confirmCostosPopUp" persistent>
-      <q-card style="width: 700px">
+      <q-card style="width: 400px">
         <q-card-section>
           <div class="text-h5" style="font-size: 18px">
             ¿Desea Trasladar esta información a Costos?
@@ -830,7 +830,7 @@
     </q-dialog>
 
     <q-dialog v-model="confirmMezclarPopUp" persistent>
-      <q-card style="width: 700px">
+      <q-card style="width: 600px">
         <q-card-section>
           <div class="text-h5" style="font-size: 18px">
             Existe un Costo cargado para este Chofer y Vehículo en esta fecha.

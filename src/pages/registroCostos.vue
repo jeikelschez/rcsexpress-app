@@ -1,7 +1,7 @@
 <template>
   <q-page class="pagina q-pa-md">
     <q-dialog v-model="printOptions">
-      <q-card style="width: 900px">
+      <q-card style="width: 400px">
         <q-card-section>
           <div class="row justify-center items-center">
             <div
@@ -18,9 +18,10 @@
             <div class="col-md-12 col-xs-12">
               <q-select
                 outlined
-                v-model="form.nro_documento"
+                dense
+                v-model="selectedTipo"
                 label="Tipo de Impresion"
-                :options="conceptos"
+                :options="tipoImpresion"
               >
               </q-select>
             </div>
@@ -31,7 +32,7 @@
               <q-btn
                 label="Imprimir"
                 color="primary"
-                style="width: 300px"
+                style="width: 200px"
                 @click="pdfView = true"
               />
             </div>
@@ -886,6 +887,7 @@
             round
             padding="sm"
             @click="printOptions = true"
+            :disabled="this.costos.length > 0 ? false : true"
           >
             <q-icon size="25px" name="print" color="white"> </q-icon>
             <q-tooltip
@@ -1603,6 +1605,13 @@ export default {
           align: "center",
         },
       ],
+      tipoImpresion: [
+        { label: "DETALLE DE GUIAS ASOCIADAS", value: "DE" },
+        { label: "GENERAL", value: "GE" },
+        { label: "DIARIO", value: "DI" },
+        { label: "COMISIONES", value: "CO" },
+        { label: "RESUMEN", value: "RE" },
+      ],
       money: {
         decimal: ",",
         thousands: ".",
@@ -1647,6 +1656,7 @@ export default {
       selectedCosto: null,
       selectedGuias: [],
       selectedGuiasAsignar: [],
+      selectedTipo: [],
       conceptos: [],
       cantidad: 0,
       total_costo: 0,
@@ -2454,10 +2464,10 @@ export default {
     },
     pdfPrint() {
       api
-        .get(`/reports/registrocostos`, {
+        .get(`/reports/costosTransporte`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            type: "2",
+            tipo: this.selectedTipo.value,
           },
         })
         .then((res) => {
