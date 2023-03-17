@@ -890,6 +890,7 @@ export default {
           label: "Fecha de Asignación",
           field: "fecha_asignacion",
           align: "left",
+          format: (val) => moment(val, "YYYY-MM-DD").format("DD/MM/YYYY"),
           sortable: true,
         },
         {
