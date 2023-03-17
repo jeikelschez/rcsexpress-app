@@ -1088,7 +1088,7 @@ export default {
     },
     // Metodo para Crear Datos
     sendData() {
-      this.form.fecha_asignacion = this.form.fecha_asignacion;
+      this.form.fecha_asignacion = moment(this.form.fecha_asignacion, "DD/MM/YYYY").format("YYYY-MM-DD");
       this.form.cod_agencia = this.selectedAgencia.id
         ? this.selectedAgencia.id
         : this.form.cod_agencia.id;
