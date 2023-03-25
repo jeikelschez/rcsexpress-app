@@ -26,7 +26,7 @@
               </q-select>
             </div>
             <div
-              class="col-md-12 col-xs-12"
+              class="col-md-8 col-xs-12"
               style="margin-top: 23px; margin-bottom: 10px; text-align: center"
             >
               <q-btn
@@ -34,6 +34,25 @@
                 color="primary"
                 style="width: 200px"
                 @click="pdfView = true"
+              />
+            </div>
+            <div class="col-md-2 col-xs-12" style="margin-top: 5px">
+              <q-checkbox
+                v-model="selectedNeta"
+                label="Neta"
+                color="primary"
+                left-label
+              />
+            </div>
+            <div
+              class="col-md-2 col-xs-12"
+              style="margin-top: 5px; padding-left: 10px"
+            >
+              <q-checkbox
+                v-model="selectedDolar"
+                label="$"
+                color="primary"
+                left-label
               />
             </div>
           </div>
@@ -886,7 +905,10 @@
             color="primary"
             round
             padding="sm"
-            @click="printOptions = true"
+            @click="
+              this.selectedTipo = this.tipoImpresion[0];
+              printOptions = true;
+            "
             :disabled="this.costos.length > 0 ? false : true"
           >
             <q-icon size="25px" name="print" color="white"> </q-icon>
@@ -937,22 +959,6 @@
                   round
                   flat
                   color="primary"
-                  icon="topic"
-                  @click="onLoadDetalleGuias(props.rowIndex)"
-                  ><q-tooltip
-                    class="bg-primary"
-                    transition-show="scale"
-                    style="max-height: 30px"
-                    transition-hide="scale"
-                    color="primary"
-                    >Detalle de Costos</q-tooltip
-                  ></q-btn
-                >
-                <q-btn
-                  dense
-                  round
-                  flat
-                  color="primary"
                   icon="cancel_presentation"
                   @click="
                     selected = props.row.id;
@@ -966,6 +972,27 @@
                     transition-hide="scale"
                     color="primary"
                     >Eliminar Costo</q-tooltip
+                  ></q-btn
+                >
+                <q-btn
+                  dense
+                  round
+                  flat
+                  color="primary"
+                  icon="print"
+                  @click="
+                    this.selectedTipo = this.tipoImpresion[0];
+                    printOptions = true;
+                    selected = props.row.id;
+                  "
+                  :disabled="this.costos.length > 0 ? false : true"
+                  ><q-tooltip
+                    class="bg-primary"
+                    transition-show="scale"
+                    style="max-height: 30px"
+                    transition-hide="scale"
+                    color="primary"
+                    >Imprimir</q-tooltip
                   ></q-btn
                 >
               </div>
@@ -1170,10 +1197,11 @@
                   dense
                   outlined
                   v-model="props.row.monto_guias"
-                  :readonly="true"
                   v-money="money"
                   input-class="text-right"
                   style="min-width: 100px"
+                  @keydown="onLoadDetalleGuias(props.rowIndex)"
+                  @click="onLoadDetalleGuias(props.rowIndex)"
                 >
                 </q-input>
               </div>
@@ -1606,11 +1634,26 @@ export default {
         },
       ],
       tipoImpresion: [
-        { label: "DETALLE DE GUIAS ASOCIADAS", value: "DE" },
-        { label: "GENERAL", value: "GE" },
-        { label: "DIARIO", value: "DI" },
-        { label: "COMISIONES", value: "CO" },
-        { label: "RESUMEN", value: "RE" },
+        {
+          label: "DETALLE DE GUIAS ASOCIADAS",
+          value: "DE",
+        },
+        {
+          label: "RESUMEN DISTRIBUIDO POR DESTINO",
+          value: "RE",
+        },
+        {
+          label: "GENERAL",
+          value: "GE",
+        },
+        {
+          label: "DIARIO",
+          value: "DI",
+        },
+        {
+          label: "COMISIONES",
+          value: "CO",
+        },
       ],
       money: {
         decimal: ",",
@@ -1657,6 +1700,8 @@ export default {
       selectedGuias: [],
       selectedGuiasAsignar: [],
       selectedTipo: [],
+      selectedNeta: false,
+      selectedDolar: false,
       conceptos: [],
       cantidad: 0,
       total_costo: 0,
@@ -2467,7 +2512,11 @@ export default {
         .get(`/reports/costosTransporte`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            id: this.selected,
             tipo: this.selectedTipo.value,
+            agencia: this.selectedAgencia.nb_agencia,
+            neta: this.selectedNeta,
+            dolar: this.selectedDolar,
           },
         })
         .then((res) => {
