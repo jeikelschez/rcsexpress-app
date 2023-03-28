@@ -21,7 +21,7 @@
                 dense
                 v-model="selectedTipo"
                 label="Tipo de Impresion"
-                :options="tipoImpresion"
+                :options="tipoReporte == 1 ? tipoImpresion1 : tipoImpresion2"
               >
               </q-select>
             </div>
@@ -33,7 +33,7 @@
                 label="Imprimir"
                 color="primary"
                 style="width: 200px"
-                @click="pdfView = true"
+                @click="printReport()"
               />
             </div>
             <div class="col-md-2 col-xs-12" style="margin-top: 5px">
@@ -906,7 +906,8 @@
             round
             padding="sm"
             @click="
-              this.selectedTipo = this.tipoImpresion[0];
+              this.selectedTipo = this.tipoImpresion2[0];
+              this.tipoReporte = 2;
               printOptions = true;
             "
             :disabled="this.costos.length > 0 ? false : true"
@@ -981,7 +982,8 @@
                   color="primary"
                   icon="print"
                   @click="
-                    this.selectedTipo = this.tipoImpresion[0];
+                    this.selectedTipo = this.tipoImpresion1[0];
+                    this.tipoReporte = 1;
                     printOptions = true;
                     selected = props.row.id;
                   "
@@ -1633,7 +1635,7 @@ export default {
           align: "center",
         },
       ],
-      tipoImpresion: [
+      tipoImpresion1: [
         {
           label: "DETALLE DE GUIAS ASOCIADAS",
           value: "DE",
@@ -1642,6 +1644,8 @@ export default {
           label: "RESUMEN DISTRIBUIDO POR DESTINO",
           value: "RE",
         },
+      ],
+      tipoImpresion2: [
         {
           label: "GENERAL",
           value: "GE",
@@ -1700,6 +1704,7 @@ export default {
       selectedGuias: [],
       selectedGuiasAsignar: [],
       selectedTipo: [],
+      tipoReporte: "",
       selectedNeta: false,
       selectedDolar: false,
       conceptos: [],
@@ -2507,7 +2512,18 @@ export default {
       number = Math.round(number * 100) / 100;
       return number;
     },
+    printReport() {
+      if (this.selectedTipo.value == "DI" && this.fecha_desde != this.fecha_hasta) {
+        this.$q.notify({
+            message: "Debe seleccionar la misma Fecha Desde y Hasta",
+            color: "red",
+          });
+          return;
+      }
+      this.pdfView = true;
+    },
     pdfPrint() {
+      this.printOptions = false;
       api
         .get(`/reports/costosTransporte`, {
           headers: {
@@ -2515,6 +2531,8 @@ export default {
             id: this.selected,
             tipo: this.selectedTipo.value,
             agencia: this.selectedAgencia.nb_agencia,
+            desde: this.fecha_desde,
+            hasta: this.fecha_hasta,
             neta: this.selectedNeta,
             dolar: this.selectedDolar,
           },
