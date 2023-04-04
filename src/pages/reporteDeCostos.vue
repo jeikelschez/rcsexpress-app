@@ -109,7 +109,7 @@
         >
           <div
             class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 cardMargin selectMobile"
-            style="align-self: center; text-align: center; margin-bottom: 15px"
+            style="align-self: center; text-align: center; margin-bottom: 25px"
           >
             <q-select
               rounded
@@ -156,7 +156,7 @@
           </div>
           <div
             class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 cardMargin selectMobile"
-            style="align-self: center; text-align: center; margin-bottom: 15px"
+            style="align-self: center; text-align: center; margin-bottom: 25px"
           >
             <q-select
               rounded
@@ -263,7 +263,7 @@
           </div>
           <div
             class="col-md-6 col-xs-12 cardMargin selectMobile2"
-            style="align-self: center; text-align: center; margin-bottom: 15px"
+            style="align-self: center; text-align: center; margin-bottom: 25px"
           >
             <q-input
               outlined
@@ -292,7 +292,7 @@
 
           <div
             class="col-md-6 col-xs-12 cardMargin selectMobile2"
-            style="align-self: center; text-align: center; margin-bottom: 15px"
+            style="align-self: center; text-align: center; margin-bottom: 25px"
           >
             <q-input
               outlined
@@ -320,7 +320,7 @@
           </div>
           <div
             class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 cardMargin selectMobile2"
-            style="align-self: center; text-align: center; margin-bottom: 15px"
+            style="align-self: center; text-align: center; margin-bottom: 25px"
           >
             <q-btn-toggle
               v-model="selectedTipo"
@@ -342,9 +342,9 @@
 
       <div
         class="q-pa-md col-md-6 col-xs-12 q-gutter-y-md justify-center table"
-        style="margin-bottom: 20px"
+        style="margin-bottom: 20px;"
       >
-        <webViewer ref="webViewer" @close-pdf="closePdf"></webViewer>
+        <webViewer ref="webViewer" @close-pdf="closePdf" @show-pdf="printReport()"></webViewer>
       </div>
     </div>
 
@@ -509,7 +509,7 @@ export default {
     };
   },
   mounted() {
-    this.printPending();
+    this.pdfPrint();
   },
   methods: {
     closePdf() {
@@ -732,6 +732,21 @@ export default {
           break;
       }
     },
+    printReport() {
+      this.pdfView = true;
+    },
+    pdfPrint() {
+      this.printOptions = false;
+      api
+        .get(`/reports/reporteCostos`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => {
+          this.$refs.webViewer.showpdf(res.data.base64);
+        });
+    },
   },
 };
 </script>
@@ -744,7 +759,7 @@ export default {
 @media screen and (min-width: 1080px) {
   .table {
     width: 50%;
-    height: 850px;
+    height: 800px !important;
     margin-top: -30px;
   }
 }
