@@ -39,6 +39,7 @@
               fill-input
               input-debounce="0"
               v-model="selectedTipo"
+              @update:model-value="this.pdf = false"
               outlined
               standout
               label="Tipo de Reporte"
@@ -418,7 +419,27 @@
         class="q-pa-md col-md-6 col-xs-12 q-gutter-y-md justify-center"
         style="height: 650px"
       >
-        <webViewer ref="webViewer"></webViewer>
+        <webViewer ref="webViewer" v-if="this.pdf == true"></webViewer>
+
+        <q-card
+          class="bg-grey-3"
+          v-if="this.pdf == false"
+          style="padding-top: 30px; padding-bottom: 30px"
+        >
+          <q-card-section>
+            <transition
+              appear
+              enter-active-class="animated fadeIn"
+              leave-active-class="animated fadeOut"
+            >
+            </transition>
+          </q-card-section>
+
+          <q-inner-loading
+            :showing="this.pdf == false"
+            ><q-spinner-gears size="50px" color="primary" />
+          </q-inner-loading>
+        </q-card>
       </div>
     </div>
 
@@ -495,6 +516,7 @@ export default {
           value: "RVA",
         },
       ],
+      pdf: true,
       selectedNeta: "K",
       selectedTipoT: "I",
       selectedDolar: false,
@@ -529,6 +551,7 @@ export default {
     };
   },
   mounted() {
+    this.pdf = true;
     this.pdfPrint();
     this.$refs.methods.getData("/agencias", "setData", "agencias");
     this.$refs.methods.getData("/proveedores", "setData", "proveedores", {
@@ -588,6 +611,7 @@ export default {
       this[dataRes] = res.data ? res.data : res;
     },
     pdfPrint() {
+      this.pdf = true;
       api
         .get(`/reports/reporteCostos`, {
           headers: {
@@ -598,6 +622,9 @@ export default {
         .then((res) => {
           this.$refs.webViewer.showpdf(res.data.base64);
         });
+    },
+    pdfPrint2() {
+      this.pdf = false;
     },
     // Metodo para Resetear Filtros
     resetFilters() {
@@ -617,3 +644,9 @@ export default {
   },
 };
 </script>
+
+<style>
+.q-inner-loading__label {
+  margin-bottom: 10px;
+}
+</style>
