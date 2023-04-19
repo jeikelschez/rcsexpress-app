@@ -39,7 +39,6 @@
               fill-input
               input-debounce="0"
               v-model="selectedTipo"
-              @update:model-value="this.pdf = false"
               outlined
               standout
               label="Tipo de Reporte"
@@ -402,7 +401,7 @@
               class="col-md-5 col-sm-5 col-xs-12"
               icon="print"
               style="margin-right: 30px"
-              @click="pdfPrint()"
+              @click="pdfChange()"
             />
             <q-btn
               rounded
@@ -551,7 +550,6 @@ export default {
     };
   },
   mounted() {
-    this.pdf = true;
     this.pdfPrint();
     this.$refs.methods.getData("/agencias", "setData", "agencias");
     this.$refs.methods.getData("/proveedores", "setData", "proveedores", {
@@ -610,7 +608,14 @@ export default {
     setData(res, dataRes) {
       this[dataRes] = res.data ? res.data : res;
     },
-    pdfPrint() {
+    async pdfChange() {
+      await this.pdfChange2();
+      this.pdfPrint()
+    },
+    async pdfChange2() {
+      this.pdf = false; 
+    },
+    async pdfPrint() {
       this.pdf = true;
       api
         .get(`/reports/reporteCostos`, {
