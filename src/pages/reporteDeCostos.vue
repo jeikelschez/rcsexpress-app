@@ -623,9 +623,6 @@ export default {
           this.$refs.webViewer.showpdf(res.data.base64);
         });
     },
-    pdfPrint2() {
-      this.pdf = false;
-    },
     // Metodo para Resetear Filtros
     resetFilters() {
       this.agentes = [];
