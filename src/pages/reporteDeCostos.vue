@@ -42,6 +42,7 @@
               outlined
               standout
               label="Tipo de Reporte"
+              @update:model-value="pdfChange(true)"
             >
             </q-select>
           </div>
@@ -316,6 +317,7 @@
                       v-model="fecha_desde"
                       mask="DD/MM/YYYY"
                       style="padding-bottom: 0px"
+                      @update:model-value="this.$refs.qDateProxy.hide()"
                     ></q-date>
                   </q-popup-proxy>
                 </q-icon>
@@ -349,6 +351,7 @@
                       v-model="fecha_hasta"
                       mask="DD/MM/YYYY"
                       style="padding-bottom: 0px"
+                      @update:model-value="this.$refs.qDateProxy.hide()"
                     ></q-date>
                   </q-popup-proxy>
                 </q-icon>
@@ -401,7 +404,7 @@
               class="col-md-5 col-sm-5 col-xs-12"
               icon="print"
               style="margin-right: 30px"
-              @click="pdfChange()"
+              @click="pdfChange(false)"
             />
             <q-btn
               rounded
@@ -418,27 +421,7 @@
         class="q-pa-md col-md-6 col-xs-12 q-gutter-y-md justify-center"
         style="height: 650px"
       >
-        <webViewer ref="webViewer" v-if="this.pdf == true"></webViewer>
-
-        <q-card
-          class="bg-grey-3"
-          v-if="this.pdf == false"
-          style="padding-top: 30px; padding-bottom: 30px"
-        >
-          <q-card-section>
-            <transition
-              appear
-              enter-active-class="animated fadeIn"
-              leave-active-class="animated fadeOut"
-            >
-            </transition>
-          </q-card-section>
-
-          <q-inner-loading
-            :showing="this.pdf == false"
-            ><q-spinner-gears size="50px" color="primary" />
-          </q-inner-loading>
-        </q-card>
+        <webViewer ref="webViewer" v-if="pdf == true"></webViewer>
       </div>
     </div>
 
@@ -516,6 +499,7 @@ export default {
         },
       ],
       pdf: true,
+      reportValue: "",
       selectedNeta: "K",
       selectedTipoT: "I",
       selectedDolar: false,
@@ -535,7 +519,7 @@ export default {
       selectedProveedor: [],
       ayudantesSelected: [],
       selectedAyudante: [],
-      fecha_desde: moment().format("DD/MM/YYYY"),
+      fecha_desde: moment("2022-10-01").format("DD/MM/YYYY"),
       fecha_hasta: moment().format("DD/MM/YYYY"),
     };
   },
@@ -608,20 +592,26 @@ export default {
     setData(res, dataRes) {
       this[dataRes] = res.data ? res.data : res;
     },
-    async pdfChange() {
-      await this.pdfChange2();
-      this.pdfPrint()
+    async pdfChange(def) {
+      if (def && this.reportValue == "") return;
+      this.reportValue = "";
+      if (!def) this.reportValue = this.selectedTipo.value;
+      this.pdf = false;
+      setTimeout(() => {
+        this.pdfPrint();
+        this.pdf = true;
+      }, 100);
     },
-    async pdfChange2() {
-      this.pdf = false; 
-    },
-    async pdfPrint() {
-      this.pdf = true;
+    pdfPrint() {
+      var dataArray = {};
+      dataArray.fecha_desde = this.fecha_desde;
+      dataArray.fecha_hasta = this.fecha_hasta;
       api
         .get(`/reports/reporteCostos`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            tipo: this.selectedTipo.value,
+            tipo: this.reportValue,
+            data: JSON.stringify(dataArray),
           },
         })
         .then((res) => {
