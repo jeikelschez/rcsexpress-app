@@ -519,7 +519,7 @@ export default {
       selectedProveedor: [],
       ayudantesSelected: [],
       selectedAyudante: [],
-      fecha_desde: moment("2022-10-01").format("DD/MM/YYYY"),
+      fecha_desde: moment().format("DD/MM/YYYY"),
       fecha_hasta: moment().format("DD/MM/YYYY"),
     };
   },
