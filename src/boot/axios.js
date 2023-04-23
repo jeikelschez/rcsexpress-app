@@ -8,8 +8,8 @@ import axios from 'axios';
 // "export default () => {}" function below (which runs individually
 // for each client)
 const api = axios.create({
-  baseURL: 'https://scen.rcsexpress.com/api/v1',
-  //baseURL: 'http://localhost:3000/api/v1',
+  // baseURL: 'https://scen.rcsexpress.com/api/v1',
+  baseURL: 'http://localhost:3000/api/v1',
 });
 
 export default boot(({ app }) => {
