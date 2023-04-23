@@ -5877,6 +5877,7 @@ export default {
       this.formClientesParticulares.cod_parroquia =
         this.formClientesParticulares.cod_parroquia.id;
       this.formClientesParticulares.cod_ciudad = this.ciudad.id;
+      this.formClientesParticulares.estatus = "A";
       if (this.formClientesParticulares.id) {
         delete this.formClientesParticulares.cod_cliente;
         api
@@ -5918,7 +5919,7 @@ export default {
               message: "Cliente Particular Creado Exitosamente",
               color: "green",
             });
-            if (this.clienteLabel == "destino") {
+            if (this.destino) {
               this.form.id_clte_part_dest = res.data.id;
               this.form.ci_rif_cte_conta_dest = res.data.rif_ci;
             } else {
