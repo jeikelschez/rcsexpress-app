@@ -519,7 +519,7 @@ export default {
       selectedProveedor: [],
       ayudantesSelected: [],
       selectedAyudante: [],
-      fecha_desde: moment().format("DD/MM/YYYY"),
+      fecha_desde: moment("2022-10-01").format("DD/MM/YYYY"),
       fecha_hasta: moment().format("DD/MM/YYYY"),
     };
   },
@@ -606,6 +606,7 @@ export default {
       var dataArray = {};
       dataArray.fecha_desde = this.fecha_desde;
       dataArray.fecha_hasta = this.fecha_hasta;
+      dataArray.agencia = this.selectedAgencia.id;
       api
         .get(`/reports/reporteCostos`, {
           headers: {
@@ -632,6 +633,7 @@ export default {
       this.selectedDolar = false;
       this.fecha_desde = moment().format("DD/MM/YYYY");
       this.fecha_hasta = moment().format("DD/MM/YYYY");
+      this.pdfChange(0);
     },
   },
 };
