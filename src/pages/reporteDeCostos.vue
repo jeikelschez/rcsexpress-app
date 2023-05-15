@@ -519,7 +519,7 @@ export default {
       selectedProveedor: [],
       ayudantesSelected: [],
       selectedAyudante: [],
-      fecha_desde: moment("2022-10-01").format("DD/MM/YYYY"),
+      fecha_desde: moment().format("DD/MM/YYYY"),
       fecha_hasta: moment().format("DD/MM/YYYY"),
     };
   },
@@ -621,7 +621,10 @@ export default {
             return;
           } else {
             dataArray.agente = this.selectedAgente.id;
-            dataArray.nombreAgente = this.selectedAgente.nb_agente + " - " + this.selectedAgente.persona_responsable;
+            dataArray.nombreAgente =
+              this.selectedAgente.nb_agente +
+              " - " +
+              this.selectedAgente.persona_responsable;
           }
         } else {
           if (!this.selectedProveedor.id) {
@@ -635,9 +638,23 @@ export default {
             dataArray.proveedor = this.selectedProveedor.id;
             dataArray.nombreProveedor = this.selectedProveedor.nb_proveedor;
           }
-        }         
+        }
       }
-      
+
+      if (this.reportValue == "CTA") {
+        if (!this.selectedAyudante.id) {
+          this.$q.notify({
+            message:
+              "Debe seleccionar el Ayudante antes de imprimir el reporte...",
+            color: "red",
+          });
+          return;
+        } else {
+          dataArray.ayudante = this.selectedAyudante.id;
+          dataArray.nombreAyudante = this.selectedAyudante.nb_ayudante;
+        }
+      }
+
       api
         .get(`/reports/reporteCostos`, {
           headers: {
