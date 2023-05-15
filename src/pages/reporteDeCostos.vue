@@ -519,7 +519,7 @@ export default {
       selectedProveedor: [],
       ayudantesSelected: [],
       selectedAyudante: [],
-      fecha_desde: moment().format("DD/MM/YYYY"),
+      fecha_desde: moment("2022-10-01").format("DD/MM/YYYY"),
       fecha_hasta: moment().format("DD/MM/YYYY"),
     };
   },
@@ -607,6 +607,37 @@ export default {
       dataArray.fecha_desde = this.fecha_desde;
       dataArray.fecha_hasta = this.fecha_hasta;
       dataArray.agencia = this.selectedAgencia.id;
+      dataArray.dolar = this.selectedDolar;
+      dataArray.neta = this.selectedNeta;
+
+      if (this.reportValue == "CTP") {
+        if (this.selectedTipoT == "I") {
+          if (!this.selectedAgente.id) {
+            this.$q.notify({
+              message:
+                "Debe seleccionar el Agente antes de imprimir el reporte...",
+              color: "red",
+            });
+            return;
+          } else {
+            dataArray.agente = this.selectedAgente.id;
+            dataArray.nombreAgente = this.selectedAgente.nb_agente + " - " + this.selectedAgente.persona_responsable;
+          }
+        } else {
+          if (!this.selectedProveedor.id) {
+            this.$q.notify({
+              message:
+                "Debe seleccionar el Proveedor antes de imprimir el reporte...",
+              color: "red",
+            });
+            return;
+          } else {
+            dataArray.proveedor = this.selectedProveedor.id;
+            dataArray.nombreProveedor = this.selectedProveedor.nb_proveedor;
+          }
+        }         
+      }
+      
       api
         .get(`/reports/reporteCostos`, {
           headers: {

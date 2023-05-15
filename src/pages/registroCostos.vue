@@ -2091,7 +2091,6 @@ export default {
         );
       }
       this.total_detalle_guias = total_guias.toFixed(2);
-      //this.selectedAgenciaGuia = this.agencias[0];
       this.fecha_desde_guias_asignar = this.costos[index].fecha_envio;
       this.fecha_hasta_guias_asignar = this.costos[index].fecha_envio;
 
