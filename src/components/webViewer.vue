@@ -60,8 +60,12 @@ export default {
           }
         });
       });
-        instance.UI.loadDocument(this.base64ToBlob(pdf), { filename: 'REPORTE SCEN.pdf' });
-        instance.UI.setLanguage('es');
+      if(pdf) {
+        instance.UI.loadDocument(this.base64ToBlob(pdf), { filename: 'REPORTE SCEN.pdf' })
+      } else {
+        instance.UI.loadDocument('http://localhost:3000/reporte');
+      }
+      instance.UI.setLanguage('es');
       });
     },
   },
