@@ -761,7 +761,7 @@ export default {
       this.pdfView = false;
     },
     printPending() {
-      this.$refs.webViewer.showpdf();
+      this.$refs.webViewer.showpdf("base64", res.data.base64, "");
     },
     changeFilters() {
       switch (this.selectedReport.value) {

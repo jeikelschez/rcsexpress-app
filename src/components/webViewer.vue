@@ -28,7 +28,7 @@ export default {
 
       return new Blob([bytes], { type: 'application/pdf' });
     },
-    showpdf(pdf, confirmPrint) {
+    showpdf(filePath, base64) {
       const path = `${process.env.publicPath}/webViewer`;
       WebViewer({ path, licenseKey: 'atkUT8UOiniAvAWUG1rN', }, this.viewer).then(instance => {
         instance.UI.disableElements(['panToolButton']);
@@ -38,30 +38,30 @@ export default {
           type: 'actionButton',
           img: "https://i.ibb.co/cr5CYSB/2.png",
           onClick: () => {
-            instance.downloadPdf()
+            instance.downloadPdf();
           }
         });
         header.push({
           type: 'actionButton',
           img: "https://i.ibb.co/3RdScYv/1.png",
           onClick: () => {
-            if(confirmPrint == true) {
-              instance.print()
-            } else {
-              this.$emit('printPdf') 
-            }
+            this.$emit('printPdf');
           }
         });
         header.push({
           type: 'actionButton',
           img: "https://i.ibb.co/qJqLZTd/close.png",
           onClick: () => {
-            this.$emit('closePdf')
+            this.$emit('closePdf');
           }
         });
       });
-        instance.UI.loadDocument(this.base64ToBlob(pdf), { filename: 'REPORTE SCEN.pdf' });
-        instance.UI.setLanguage('es');
+      if(base64) {
+        instance.UI.loadDocument(this.base64ToBlob(base64), { filename: 'REPORTE SCEN.pdf' });
+      } else {
+        instance.UI.loadDocument(`${process.env.apiPath}/reports/loadPDF/${filePath}`);
+      }
+      instance.UI.setLanguage('es');
       });
     },
   },

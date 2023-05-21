@@ -1133,7 +1133,7 @@ export default {
           },
         })
         .then((res) => {
-          this.$refs.webViewer.showpdf(res.data.base64);
+          this.$refs.webViewer.showpdf("", res.data.base64);
           this.$refs.webViewer.design(1);
         });
     },

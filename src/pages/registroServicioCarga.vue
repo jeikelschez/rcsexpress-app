@@ -3369,7 +3369,7 @@ export default {
     },
     // Metodo para mostrar PDF en funcion de BASE 64
     pdfview() {
-      this.$refs.webViewer.showpdf(this.base64);
+      this.$refs.webViewer.showpdf("", res.data.base64);
     },
     // Metodo para mostart el Detalle de Documento
     showDetalle() {

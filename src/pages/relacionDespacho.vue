@@ -1201,7 +1201,7 @@ export default {
           },
         })
         .then((res) => {
-          this.$refs.webViewer.showpdf(res.data.base64);
+          this.$refs.webViewer.showpdf("", res.data.base64);
         });
     },
     // Metodo al imprimir el reporte para asociar a Costos
