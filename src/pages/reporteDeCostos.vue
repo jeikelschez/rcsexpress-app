@@ -493,10 +493,6 @@ export default {
           label: "REPORTE DE VIAJES POR VEHÍCULO",
           value: "RVV",
         },
-        {
-          label: "REPORTE DE VIAJES POR AGENTE",
-          value: "RVA",
-        },
       ],
       pdf: true,
       reportValue: "",
@@ -542,7 +538,7 @@ export default {
         activo: "S",
       },
     });
-    this.$refs.methods.getData("/unidades", "setData", "unidades");
+    this.$refs.methods.getData("/unidades", "setData", "unidades");    
     this.$refs.methods.getData("/ayudantes", "setData", "ayudantes", {
       headers: {
         activo: "S",
@@ -652,6 +648,20 @@ export default {
         } else {
           dataArray.ayudante = this.selectedAyudante.id;
           dataArray.nombreAyudante = this.selectedAyudante.nb_ayudante;
+        }
+      }
+
+      if (this.reportValue == "RVV") {
+        if (!this.selectedUnidad.id) {
+          this.$q.notify({
+            message:
+              "Debe seleccionar el Transporte antes de imprimir el reporte...",
+            color: "red",
+          });
+          return;
+        } else {
+          dataArray.transporte = this.selectedUnidad.id;
+          dataArray.nombreTransporte = this.selectedUnidad.unidad_desc;
         }
       }
 
