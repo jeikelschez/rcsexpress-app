@@ -1,42 +1,12 @@
 <template>
   <q-page class="pagina q-pa-md">
-    <q-dialog v-model="dialog">
-      <q-card class="q-pa-md" bordered style="max-width: 80vw">
-        <q-card-section>
-          <q-form @submit="sendData()" class="q-gutter-md">
-            <div class="row"></div>
-            <div
-              class="row justify-center items-center content-center"
-              style="margin-bottom: 10px"
-            >
-              <q-btn
-                label="Enviar"
-                type="submit"
-                color="primary"
-                class="col-md-5 col-sm-5 col-xs-12"
-                icon="person_add"
-              />
-              <q-btn
-                label="Cerrar"
-                color="primary"
-                flat
-                @click="this.resetForm()"
-                class="col-md-5 col-sm-5 col-xs-12 btnmovil"
-                icon="close"
-                v-close-popup
-              />
-            </div>
-          </q-form>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
-
     <div
       class="row justify-end q-pa-md col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
+      style="margin-left: 100px; margin-right: 120px"
     >
-      <div class="col-md-6 col-xs-12 q-pa-sm justify-center">
-        <div
-          class="row justify-end q-pa-md col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
+      <div
+          class="row q-pa-md col-md-6 col-xl-6 col-lg-6 col-xs-12 col-sm-12"
+          style="align-self: center; text-align: center; margin-top: 15px"
         >
           <div
             class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
@@ -46,12 +16,12 @@
               style="font-size: 25px; margin-bottom: 25px"
               class="text-secondary"
             >
-              <strong>CONSULTAS Y REPORTES - REPORTE DE VENTAS</strong>
+              <strong>REPORTE DE VENTAS</strong>
             </p>
           </div>
           <div
             class="col-md-11 col-xl-11 col-lg-11 col-xs-12 col-sm-12 cardMargin selectMobile2"
-            style="align-self: center; text-align: center"
+            style="align-self: center; text-align: center; margin-bottom: 15px"
           >
             <q-select
               rounded
@@ -81,7 +51,7 @@
             </q-select>
           </div>
           <div
-            class="col-md-1 col-xl-1 col-lg-1 col-xs-12 col-sm-12 justify-center" style="text-align: center"
+            class="col-md-1 col-xl-1 col-lg-1 col-xs-12 col-sm-12 justify-center" style="text-align: center; margin-bottom: 15px"
           >
             <q-btn dense color="primary" round padding="sm">
               <q-icon size="25px" name="filter_alt_off" color="white"> </q-icon>
@@ -95,12 +65,6 @@
               >
             </q-btn>
           </div>
-        </div>
-
-        <div
-          class="row q-pa-md col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
-          style="align-self: center; text-align: center; margin-top: -15px; padding-bottom: 0px"
-        >
           <div
             class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 cardMargin selectMobile"
             style="align-self: center; text-align: center; margin-bottom: 15px"
@@ -283,7 +247,6 @@
               </template>
             </q-input>
           </div>
-
           <div
             class="col-md-4 col-xs-12 cardMargin selectMobile2"
             style="align-self: center; text-align: center; margin-bottom: 15px"
@@ -583,42 +546,20 @@
             >
             </q-btn-toggle>
           </div>
-        </div>
       </div>
-
       <div
-        class="q-pa-md col-md-6 col-xs-12 q-gutter-y-md justify-center table" style="margin-bottom: 20px"
+        class="q-pa-md col-md-6 col-xs-12 q-gutter-y-md justify-center"
+        style="height: 650px"
       >
-        <webViewer ref="webViewer" @close-pdf="closePdf"></webViewer>
+        <webViewer ref="webViewer" v-if="pdf == true"></webViewer>
       </div>
     </div>
 
-    <q-dialog v-model="deletePopup">
-      <q-card style="width: 700px">
-        <q-card-section>
-          <div class="text-h5" style="font-size: 18px">
-            ¿Estás seguro que quieres eliminar este elemento?
-          </div>
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn flat label="Cancelar" color="primary" v-close-popup />
-          <q-btn
-            flat
-            label="Aceptar"
-            color="primary"
-            v-close-popup
-            @click="
-              this.$refs.methods.deleteData(
-                `/cguias/${selected}`,
-                'getDataTable'
-              )
-            "
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-
-    <methods ref="methods"></methods>
+    <methods
+      ref="methods"
+      @set-Data="setData"
+      @set-Data-Permisos="setDataPermisos"
+    ></methods>
 
     <rules-vue ref="rulesVue"></rules-vue>
   </q-page>
@@ -627,8 +568,8 @@
 <script>
 import { ref } from "vue";
 import rulesVue from "src/components/rules.vue";
-import moment from "moment";
 import { api } from "boot/axios";
+import moment from "moment";
 import { useQuasar, LocalStorage } from "quasar";
 import methodsVue from "src/components/methods.vue";
 import webViewerVue from "src/components/webViewer.vue";
@@ -740,261 +681,190 @@ export default {
       disableCC: true,
       disableCCC: true,
       selectedReport: [],
+      tipo: [
+        { label: "I", value: "I" },
+        { label: "E", value: "E" },
+      ],
+      cargaNeta: [
+        { label: "PESO KGS", value: "K", slot: "one" },
+        { label: "PESO NETO", value: "N", slot: "two" },
+      ],
+      tipoReporte: [
+        {
+          label: "RESUMEN DE COSTOS DE TRANSPORTE",
+          value: "RCT",
+        },
+        {
+          label: "COSTOS DE TRANSPORTE POR RANGO DE FECHAS",
+          value: "CTR",
+        },
+        {
+          label: "DISTRIBUCIÓN PRORRATEADA DEL COSTO DE TRANSPORTE POR CIUDAD",
+          value: "DTC",
+        },
+        {
+          label: "DISTRIBUCIÓN REAL DEL COSTO DE TRANSPORTE POR CIUDAD",
+          value: "DRC",
+        },
+        {
+          label: "COSTO DE TRANSPORTE POR AGENTE O PROVEEDORES",
+          value: "CTP",
+        },
+        {
+          label: "COSTO DE TRANSPORTE POR AYUDANTE",
+          value: "CTA",
+        },
+        {
+          label: "GUÍAS PENDIENTES POR ASOCIAR COSTOS DE TRANSPORTE",
+          value: "GPC",
+        },
+        {
+          label: "REPORTE DE VIAJES POR VEHÍCULO",
+          value: "RVV",
+        },
+        {
+          label: "REPORTE DE VIAJES POR AGENTE",
+          value: "RVA",
+        },
+      ],
+      pdf: true,
+      reportValue: "",
+      selectedNeta: "K",
+      selectedTipoT: "I",
+      selectedDolar: false,
+      selectedTipo: [],
+      agencias: [],
+      agentes: [],
+      proveedores: [],
+      unidades: [],
+      ayudantes: [],
+      agenciasSelected: [],
+      selectedAgencia: [],
+      agentesSelected: [],
+      selectedAgente: [],
+      unidadesSelected: [],
+      selectedUnidad: [],
+      proveedoresSelected: [],
+      selectedProveedor: [],
+      ayudantesSelected: [],
+      selectedAyudante: [],
+      fecha_desde: moment().format("DD/MM/YYYY"),
+      fecha_hasta: moment().format("DD/MM/YYYY"),
     };
   },
   setup() {
     const $q = useQuasar();
     return {
-      dateInit: moment().format("DD/MM/YYYY"),
       loading: ref(false),
       separator: ref("vertical"),
       deletePopup: ref(false),
       dialog: ref(false),
-      pdfView: ref(false),
+      pdfView: ref(true),
     };
   },
   mounted() {
-    this.printPending();
+    this.pdfPrint();
+    this.$refs.methods.getData("/agencias", "setData", "agencias");
+    this.$refs.methods.getData("/proveedores", "setData", "proveedores", {
+      headers: {
+        tipo_servicio: "TP",
+        activo: "S",
+      },
+    });
+    this.$refs.methods.getData("/unidades", "setData", "unidades");
+    this.$refs.methods.getData("/ayudantes", "setData", "ayudantes", {
+      headers: {
+        activo: "S",
+      },
+    });
+
+    this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
+      headers: {
+        rol: LocalStorage.getItem("tokenTraducido").usuario.roles.id,
+        menu: "reportedecostos",
+      },
+    });
   },
   methods: {
-    closePdf() {
-      this.pdfView = false;
-    },
-    printPending() {
-      this.$refs.webViewer.showpdf();
-    },
-    changeFilters() {
-      switch (this.selectedReport.value) {
-        case 'VG':
-        this.disableAgencia = false;
-        this.disablecliente = true;
-        this.disableagente = false;
-        this.disabledesde = false;
-        this.disablehasta = false;
-        this.disablevisible = false;
-        this.disablepagadoen = true;
-        this.disableestatus = true;
-        this.disabledocumento = true;
-        this.disableformapago = true;
-        this.disableordencorrelativo = true;
-        this.disableagrupadocliente = true;
-        break;
-        case 'VC':
-        this.disableAgencia = false;
-        this.disablecliente = false;
-        this.disableagente = true;
-        this.disabledesde = false;
-        this.disablehasta = false;
-        this.disablevisible = false;
-        this.disablepagadoen = true;
-        this.disableestatus = true;
-        this.disabledocumento = true;
-        this.disableformapago = true;
-        this.disableordencorrelativo = true;
-        this.disableagrupadocliente = true;
-        break;
-        case 'TV':
-        this.disableAgencia = false;
-        this.disablecliente = true;
-        this.disableagente = true;
-        this.disabledesde = false;
-        this.disablehasta = false;
-        this.disablevisible = false;
-        this.disablepagadoen = true;
-        this.disableestatus = true;
-        this.disabledocumento = true;
-        this.disableformapago = true;
-        this.disableordencorrelativo = true;
-        this.disableagrupadocliente = false;
-        break;
-        case 'TRD':
-        this.disableAgencia = false;
-        this.disablecliente = false;
-        this.disableagente = true;
-        this.disabledesde = false;
-        this.disablehasta = false;
-        this.disablevisible = false;
-        this.disablepagadoen = true;
-        this.disableestatus = true;
-        this.disabledocumento = true;
-        this.disableformapago = true;
-        this.disableordencorrelativo = true;
-        this.disableagrupadocliente = true;
-        break;
-        case 'GC':
-        this.disableAgencia = false;
-        this.disablecliente = false;
-        this.disableagente = true;
-        this.disabledesde = false;
-        this.disablehasta = false;
-        this.disablevisible = false;
-        this.disablepagadoen = false;
-        this.disableestatus = false;
-        this.disabledocumento = true;
-        this.disableformapago = false;
-        this.disableordencorrelativo = false;
-        this.disableagrupadocliente = true;
-        break;
-        case 'GF':
-        this.disableAgencia = false;
-        this.disablecliente = false;
-        this.disableagente = true;
-        this.disabledesde = false;
-        this.disablehasta = false;
-        this.disablevisible = true;
-        this.disablepagadoen = true;
-        this.disableestatus = false;
-        this.disabledocumento = true;
-        this.disableformapago = true;
-        this.disableordencorrelativo = false;
-        this.disableagrupadocliente = true;
-        break;
-        case 'F':
-        this.disableAgencia = false;
-        this.disablecliente = true;
-        this.disableagente = false;
-        this.disabledesde = false;
-        this.disablehasta = false;
-        this.disablevisible = false;
-        this.disablepagadoen = true;
-        this.disableestatus = false;
-        this.disabledocumento = true;
-        this.disableformapago = false;
-        this.disableordencorrelativo = false;
-        this.disableagrupadocliente = true;
-        break;
-        case 'FFPO':
-        this.disableAgencia = false;
-        this.disablecliente = true;
-        this.disableagente = true;
-        this.disabledesde = false;
-        this.disablehasta = false;
-        this.disablevisible = false;
-        this.disablepagadoen = true;
-        this.disableestatus = true;
-        this.disabledocumento = true;
-        this.disableformapago = true;
-        this.disableordencorrelativo = true;
-        this.disableagrupadocliente = true;
-        break;
-        case 'NC':
-        this.disableAgencia = false;
-        this.disablecliente = true;
-        this.disableagente = true;
-        this.disabledesde = false;
-        this.disablehasta = false;
-        this.disablevisible = false;
-        this.disablepagadoen = true;
-        this.disableestatus = true;
-        this.disabledocumento = true;
-        this.disableformapago = true;
-        this.disableordencorrelativo = true;
-        this.disableagrupadocliente = true;
-        break;
-        case 'ND':
-        this.disableAgencia = false;
-        this.disablecliente = true;
-        this.disableagente = true;
-        this.disabledesde = false;
-        this.disablehasta = false;
-        this.disablevisible = false;
-        this.disablepagadoen = true;
-        this.disableestatus = true;
-        this.disabledocumento = true;
-        this.disableformapago = true;
-        this.disableordencorrelativo = true;
-        this.disableagrupadocliente = true;
-        break;
-        case 'DE':
-        this.disableAgencia = false;
-        this.disablecliente = true;
-        this.disableagente = true;
-        this.disabledesde = false;
-        this.disablehasta = false;
-        this.disablevisible = false;
-        this.disablepagadoen = true;
-        this.disableestatus = true;
-        this.disabledocumento = true;
-        this.disableformapago = true;
-        this.disableordencorrelativo = true;
-        this.disableagrupadocliente = true;
-        break;
-        case 'GC':
-        this.disableAgencia = false;
-        this.disablecliente = true;
-        this.disableagente = true;
-        this.disabledesde = false;
-        this.disablehasta = false;
-        this.disablevisible = true;
-        this.disablepagadoen = true;
-        this.disableestatus = true;
-        this.disabledocumento = true;
-        this.disableformapago = true;
-        this.disableordencorrelativo = true;
-        this.disableagrupadocliente = true;
-        break;
-        case 'GD':
-        this.disableAgencia = false;
-        this.disablecliente = false;
-        this.disableagente = true;
-        this.disabledesde = false;
-        this.disablehasta = false;
-        this.disablevisible = false;
-        this.disablepagadoen = true;
-        this.disableestatus = false;
-        this.disabledocumento = false;
-        this.disableformapago = true;
-        this.disableordencorrelativo = true;
-        this.disableagrupadocliente = true;
-        break;
-        case 'CC':
-        this.disableAgencia = false;
-        this.disablecliente = true;
-        this.disableagente = true;
-        this.disabledesde = false;
-        this.disablehasta = false;
-        this.disablevisible = true;
-        this.disablepagadoen = true;
-        this.disableestatus = true;
-        this.disabledocumento = true;
-        this.disableformapago = true;
-        this.disableordencorrelativo = true;
-        this.disableagrupadocliente = true;
-        break;
-        case 'CCC':
-        this.disableAgencia = false;
-        this.disablecliente = false;
-        this.disableagente = true;
-        this.disabledesde = false;
-        this.disablehasta = false;
-        this.disablevisible = true;
-        this.disablepagadoen = true;
-        this.disableestatus = true;
-        this.disabledocumento = true;
-        this.disableformapago = true;
-        this.disableordencorrelativo = true;
-        this.disableagrupadocliente = true;
-        break;
+    // Metodo para filtrar opciones de Selects
+    filterArray(val, update, pagina, array, element) {
+      if (val === "") {
+        update(() => {
+          this[pagina] = this[array];
+        });
+        return;
       }
-    }
+      update(() => {
+        const needle = val.toUpperCase();
+        var notEqual = [];
+        for (var i = 0; i <= this[array].length - 1; i++) {
+          if (this[array][i][element].indexOf(needle) > -1) {
+            notEqual.push(this[array][i]);
+          }
+          if (i == this[array].length - 1) {
+            this[pagina] = notEqual;
+            break;
+          }
+        }
+      });
+    },
+    // Metodo para Setear Datos Permisos
+    setDataPermisos(res, dataRes) {
+      this[dataRes] = res;
+      if (this.rpermisos.findIndex((item) => item.acciones.accion == 1) < 0)
+        this.$router.push("/error403");
+    },
+
+    // METODOS DE PAGINA
+
+    // Metodo para Setear Datos Iniciales
+    setData(res, dataRes) {
+      this[dataRes] = res.data ? res.data : res;
+    },
+    async pdfChange(def) {
+      if (def && this.reportValue == "") return;
+      this.reportValue = "";
+      if (!def) this.reportValue = this.selectedTipo.value;
+      this.pdf = false;
+      setTimeout(() => {
+        this.pdfPrint();
+        this.pdf = true;
+      }, 100);
+    },
+    pdfPrint() {
+      api
+        .get(`/reports/reporteVentas`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            tipo: 'RCT',
+          },
+        })
+        .then((res) => {
+          this.$refs.webViewer.showpdf(res.data.base64);
+        });
+    },
+    // Metodo para Resetear Filtros
+    resetFilters() {
+      this.agentes = [];
+      this.selectedTipo = [];
+      this.selectedAgencia = [];
+      this.selectedAgente = [];
+      this.selectedAyudante = [];
+      this.selectedProveedor = [];
+      this.selectedUnidad = [];
+      this.selectedNeta = "K";
+      this.selectedTipoT = "I";
+      this.selectedDolar = false;
+      this.fecha_desde = moment().format("DD/MM/YYYY");
+      this.fecha_hasta = moment().format("DD/MM/YYYY");
+      this.pdfChange(0);
+    },
   },
 };
 </script>
 
 <style>
-.q-field__bottom {
-  display: none;
-}
-
-@media screen and (min-width: 1080px) {
-  .table {
-  width: 50%; height: 850px; margin-top: -30px
-  }
-}
-
-@media screen and (max-width: 1080px) {
-  .table {
-  height: 500px !important
-  }
+.q-inner-loading__label {
+  margin-bottom: 10px;
 }
 </style>
