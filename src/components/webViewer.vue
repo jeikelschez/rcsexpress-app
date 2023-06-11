@@ -36,21 +36,24 @@ export default {
         instance.UI.setHeaderItems(header => {
         header.push({
           type: 'actionButton',
-          img: "https://i.ibb.co/cr5CYSB/2.png",
+          title: 'Descargar',
+          img: "icon-header-download",
           onClick: () => {
             instance.downloadPdf();
           }
         });
         header.push({
           type: 'actionButton',
-          img: "https://i.ibb.co/3RdScYv/1.png",
+          title: 'Imprimir',
+          img: "icon-header-print-line",
           onClick: () => {
             this.$emit('printPdf');
           }
         });
         header.push({
           type: 'actionButton',
-          img: "https://i.ibb.co/qJqLZTd/close.png",
+          title: 'Cerrar',
+          img: "icon-close",
           onClick: () => {
             this.$emit('closePdf');
           }

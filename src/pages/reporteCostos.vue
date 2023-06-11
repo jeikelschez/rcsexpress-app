@@ -548,7 +548,7 @@ export default {
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
         rol: LocalStorage.getItem("tokenTraducido").usuario.roles.id,
-        menu: "reportedecostos",
+        menu: "reportecostos",
       },
     });
   },
@@ -696,9 +696,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.q-inner-loading__label {
-  margin-bottom: 10px;
-}
-</style>

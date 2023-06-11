@@ -1,624 +1,608 @@
 <template>
   <q-page class="pagina q-pa-md">
-    <q-dialog v-model="dialog">
-      <q-card class="q-pa-md" bordered style="max-width: 80vw">
-        <q-card-section>
-          <q-form @submit="sendData()" class="q-gutter-md">
-            <div class="row"></div>
-            <div
-              class="row justify-center items-center content-center"
-              style="margin-bottom: 10px"
-            >
-              <q-btn
-                label="Enviar"
-                type="submit"
-                color="primary"
-                class="col-md-5 col-sm-5 col-xs-12"
-                icon="person_add"
-              />
-              <q-btn
-                label="Cerrar"
-                color="primary"
-                flat
-                @click="this.resetForm()"
-                class="col-md-5 col-sm-5 col-xs-12 btnmovil"
-                icon="close"
-                v-close-popup
-              />
-            </div>
-          </q-form>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
-
     <div
       class="row justify-end q-pa-md col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
+      style="margin-left: 100px; margin-right: 120px"
     >
-      <div class="col-md-6 col-xs-12 q-pa-sm justify-center">
+      <div
+        class="row q-pa-md col-md-6 col-xl-6 col-lg-6 col-xs-12 col-sm-12"
+        style="align-self: center; text-align: center; margin-top: 15px"
+      >
         <div
-          class="row justify-end q-pa-md col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
+          class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
+          style="align-self: center; text-align: center"
         >
-          <div
-            class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
-            style="align-self: center; text-align: center"
+          <p
+            style="font-size: 25px; margin-bottom: 25px"
+            class="text-secondary"
           >
-            <p
-              style="font-size: 25px; margin-bottom: 25px"
-              class="text-secondary"
-            >
-              <strong>CONSULTAS Y REPORTES - REPORTE DE VENTAS</strong>
-            </p>
-          </div>
-          <div
-            class="col-md-11 col-xl-11 col-lg-11 col-xs-12 col-sm-12 cardMargin selectMobile2"
-            style="align-self: center; text-align: center"
-          >
-            <q-select
-              rounded
-              dense
-              transition-show="flip-up"
-              transition-hide="flip-down"
-              :options="tipos_reportes"
-              use-input
-              hide-selected
-              fill-input
-              input-debounce="0"
-              v-model="selectedReport"
-              outlined
-              standout
-              label="Tipo de Reporte"
-              @update:model-value="changeFilters()"
-              ><template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    Sin resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-              <template v-slot:prepend>
-                <q-icon name="search" />
-              </template>
-            </q-select>
-          </div>
-          <div
-            class="col-md-1 col-xl-1 col-lg-1 col-xs-12 col-sm-12 justify-center" style="text-align: center"
-          >
-            <q-btn dense color="primary" round padding="sm">
-              <q-icon size="25px" name="filter_alt_off" color="white"> </q-icon>
-              <q-tooltip
-                class="bg-primary"
-                style="max-height: 30px"
-                transition-show="scale"
-                transition-hide="scale"
-                color="primary"
-                >Limpiar Filtros</q-tooltip
-              >
-            </q-btn>
-          </div>
+            <strong>REPORTE DE VENTAS</strong>
+          </p>
         </div>
-
         <div
-          class="row q-pa-md col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
-          style="align-self: center; text-align: center; margin-top: -15px; padding-bottom: 0px"
+          class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 cardMargin selectMobile2"
+          style="align-self: center; text-align: center; margin-bottom: 15px"
         >
-          <div
-            class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 cardMargin selectMobile"
-            style="align-self: center; text-align: center; margin-bottom: 15px"
+          <q-select
+            rounded
+            dense
+            transition-show="flip-up"
+            transition-hide="flip-down"
+            :options="tipoReporte"
+            use-input
+            hide-selected
+            fill-input
+            input-debounce="0"
+            v-model="selectedTipo"
+            outlined
+            standout
+            label="Tipo de Reporte"
+            @update:model-value="pdfChange(true)"
           >
-            <q-select
-              rounded
-              dense
-              transition-show="flip-up"
-              transition-hide="flip-down"
-              :options="reportType"
-              @filter="
-                (val, update) =>
-                  filterArray(
-                    val,
-                    update,
-                    'clientesSelected',
-                    'clientes',
-                    'nb_cliente'
-                  )
-              "
-              use-input
-              hide-selected
-              fill-input
-              input-debounce="0"
-              option-label="nb_cliente"
-              option-value="id"
-              :disable="disableAgencia"
-              v-model="selectedCliente"
-              outlined
-              standout
-              label="Agencia"
-              @update:model-value="getDataTable()"
-              ><template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    Sin resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-              <template v-slot:prepend>
-                <q-icon name="search" />
-              </template>
-              <template v-slot:clientesLoading>
-                <q-inner-loading showing color="primary" class="loading" />
-              </template>
-            </q-select>
-          </div>
-          <div
-            class="col-md-6 col-xl-6 col-lg-6 col-xs-12 col-sm-6 cardMargin selectMobile"
-            style="align-self: center; text-align: center; margin-bottom: 15px"
+          </q-select>
+        </div>
+        <div
+          class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 cardMargin selectMobile"
+          style="align-self: center; text-align: center; margin-bottom: 15px"
+        >
+          <q-select
+            rounded
+            dense
+            transition-show="flip-up"
+            transition-hide="flip-down"
+            :options="agenciasSelected"
+            @filter="
+              (val, update) =>
+                filterArray(
+                  val,
+                  update,
+                  'agenciasSelected',
+                  'agencias',
+                  'nb_agencia'
+                )
+            "
+            use-input
+            hide-selected
+            fill-input
+            input-debounce="0"
+            option-label="nb_agencia"
+            option-value="id"
+            v-model="selectedAgencia"
+            outlined
+            standout
+            label="Agencia"
+            @update:model-value="
+              this.agentesLoading = true;
+              this.selectedAgente = [];
+              this.agentes = [];
+              this.$refs.methods.getData(`/agentes`, 'setData', 'agentes', {
+                headers: {
+                  agencia: this.selectedAgencia.id,
+                },
+              });
+              this.clientesLoading = true;
+              this.selectedCliente = [];
+              this.clientes = [];
+              this.$refs.methods.getData(`/clientes`, 'setData', 'clientes', {
+                headers: {
+                  agencia: this.selectedAgencia.id,
+                  activo: 'S',
+                },
+              });
+            "
+            ><template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  Sin resultados
+                </q-item-section>
+              </q-item>
+            </template>
+            <template v-slot:prepend>
+              <q-icon name="search" />
+            </template>
+          </q-select>
+        </div>
+        <div
+          class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 cardMargin selectMobile"
+          style="align-self: center; text-align: center; margin-bottom: 15px"
+        >
+          <q-select
+            v-if="selectedTipo.value == 'VG'"
+            rounded
+            dense
+            transition-show="flip-up"
+            transition-hide="flip-down"
+            :options="agentesSelected"
+            :loading="agentesLoading"
+            :disable="agentesLoading"
+            @filter="
+              (val, update) =>
+                filterArray(
+                  val,
+                  update,
+                  'agentesSelected',
+                  'agentes',
+                  'persona_responsable'
+                )
+            "
+            use-input
+            hide-selected
+            fill-input
+            input-debounce="0"
+            option-label="persona_responsable"
+            option-value="id"
+            v-model="selectedAgente"
+            outlined
+            standout
+            label="Agente"
+            ><template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  Sin resultados
+                </q-item-section>
+              </q-item>
+            </template>
+            <template v-slot:prepend>
+              <q-icon name="search" />
+            </template>
+          </q-select>
+          <q-select
+            v-else-if="
+              selectedTipo.value == 'VC' ||
+              selectedTipo.value == 'RD' ||
+              selectedTipo.value == 'GC' ||
+              selectedTipo.value == 'FA' ||
+              selectedTipo.value == 'CD' ||
+              selectedTipo.value == 'CCC'
+            "
+            rounded
+            dense
+            transition-show="flip-up"
+            transition-hide="flip-down"
+            :options="clientesSelected"
+            :loading="clientesLoading"
+            :disable="clientesLoading"
+            @filter="
+              (val, update) =>
+                filterArray(
+                  val,
+                  update,
+                  'clientesSelected',
+                  'clientes',
+                  'nb_cliente'
+                )
+            "
+            use-input
+            hide-selected
+            fill-input
+            input-debounce="0"
+            option-label="nb_cliente"
+            option-value="id"
+            v-model="selectedCliente"
+            outlined
+            standout
+            label="Cliente"
+            ><template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  Sin resultados
+                </q-item-section>
+              </q-item>
+            </template>
+            <template v-slot:prepend>
+              <q-icon name="search" />
+            </template>
+          </q-select>
+          <div v-else style="margin-bottom: 40px"></div>
+        </div>
+        <div
+          class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12"
+          style="align-self: center; text-align: center"
+        >
+          <p
+            style="font-size: 20px; margin-bottom: 0px; margin-bottom: 15px"
+            class="text-secondary"
           >
-            <q-select
-              rounded
-              dense
-              transition-show="flip-up"
-              transition-hide="flip-down"
-              :options="reportType"
-              @filter="
-                (val, update) =>
-                  filterArray(
-                    val,
-                    update,
-                    'clientesSelected',
-                    'clientes',
-                    'nb_cliente'
-                  )
-              "
-              use-input
-              hide-selected
-              fill-input
-              input-debounce="0"
-              option-label="nb_cliente"
-              option-value="id"
-              :loading="clientesLoading"
-              :disable="disablecliente"
-              v-model="selectedCliente"
-              outlined
-              standout
-              label="Cliente"
-              @update:model-value="getDataTable()"
-              ><template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    Sin resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-              <template v-slot:prepend>
-                <q-icon name="search" />
-              </template>
-              <template v-slot:clientesLoading>
-                <q-inner-loading showing color="primary" class="loading" />
-              </template>
-            </q-select>
-          </div>
-          <div
-            class="col-md-6 col-xl-6 col-lg-6 col-xs-12 col-sm-6 cardMargin selectMobile"
-            style="align-self: center; text-align: center; margin-bottom: 15px"
+            <strong>Periodo Consultado</strong>
+          </p>
+        </div>
+        <div
+          class="col-md-4 col-xs-12 cardMargin selectMobile2"
+          style="align-self: center; text-align: center; margin-bottom: 15px"
+        >
+          <q-input
+            outlined
+            label="Fecha Desde"
+            hint=""
+            dense
+            rounded
+            style="padding-bottom: 0px"
+            v-model="fecha_desde"
+            lazy-rules
+            mask="##/##/####"
+            :rules="[(val) => this.$refs.rulesVue.checkDate(val)]"
           >
-            <q-select
-              rounded
-              dense
-              transition-show="flip-up"
-              transition-hide="flip-down"
-              :options="reportType"
-              @filter="
-                (val, update) =>
-                  filterArray(
-                    val,
-                    update,
-                    'clientesSelected',
-                    'clientes',
-                    'nb_cliente'
-                  )
-              "
-              use-input
-              hide-selected
-              fill-input
-              input-debounce="0"
-              option-label="nb_cliente"
-              option-value="id"
-              :loading="clientesLoading"
-              :disable="disableagente"
-              v-model="selectedCliente"
-              outlined
-              standout
-              label="Agente"
-              @update:model-value="getDataTable()"
-              ><template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    Sin resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-              <template v-slot:prepend>
-                <q-icon name="search" />
-              </template>
-              <template v-slot:clientesLoading>
-                <q-inner-loading showing color="primary" class="loading" />
-              </template>
-            </q-select>
-          </div>
-          <div
-            class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12"
-            style="align-self: center; text-align: center"
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy
+                  ref="qDateProxy"
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
+                  <q-date
+                    v-model="fecha_desde"
+                    mask="DD/MM/YYYY"
+                    style="padding-bottom: 0px"
+                    @update:model-value="this.$refs.qDateProxy.hide()"
+                  ></q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+        </div>
+        <div
+          class="col-md-4 col-xs-12 cardMargin selectMobile2"
+          style="align-self: center; text-align: center; margin-bottom: 15px"
+        >
+          <q-input
+            outlined
+            label="Fecha Hasta"
+            hint=""
+            dense
+            rounded
+            style="padding-bottom: 0px"
+            v-model="fecha_hasta"
+            lazy-rules
+            mask="##/##/####"
+            :rules="[(val) => this.$refs.rulesVue.checkDate(val)]"
           >
-            <p
-              style="font-size: 25px; margin-bottom: 0px; margin-bottom: 15px"
-              class="text-secondary"
-            >
-              <strong>Periodo Consultado</strong>
-            </p>
-          </div>
-          <div
-            class="col-md-4 col-xs-12 cardMargin selectMobile2"
-            style="align-self: center; text-align: center; margin-bottom: 15px"
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy
+                  ref="qDateProxy"
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
+                  <q-date
+                    v-model="fecha_hasta"
+                    mask="DD/MM/YYYY"
+                    style="padding-bottom: 0px"
+                    @update:model-value="this.$refs.qDateProxy.hide()"
+                  ></q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+        </div>
+        <div
+          class="col-md-4 col-xl-4 col-lg-4 col-xs-4 col-sm-4 cardMargin selectMobile2"
+          style="align-self: center; text-align: center; margin-bottom: 15px"
+        >
+          <q-select
+            v-if="
+              selectedTipo.value == 'GC' ||
+              selectedTipo.value == 'FA' ||
+              selectedTipo.value == 'CD'
+            "
+            rounded
+            dense
+            transition-show="flip-up"
+            transition-hide="flip-down"
+            :options="estatus"
+            use-input
+            hide-selected
+            fill-input
+            input-debounce="0"
+            option-label="label"
+            option-value="value"
+            v-model="selectedEstatus"
+            outlined
+            standout
+            label="Estatus"
           >
-            <q-input
-              outlined
-              label="Fecha Desde:"
-              hint=""
-              rounded
-              style="padding-bottom: 0px"
-              :disable="disabledesde"
-              lazy-rules
-              dense
-              mask="##/##/####"
-            >
-              <template v-slot:append>
-                <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy
-                    ref="qDateProxy"
-                    transition-show="scale"
-                    transition-hide="scale"
-                  >
-                    <q-date mask="DD/MM/YYYY"></q-date>
-                  </q-popup-proxy>
-                </q-icon>
-              </template>
-            </q-input>
-          </div>
-
-          <div
-            class="col-md-4 col-xs-12 cardMargin selectMobile2"
-            style="align-self: center; text-align: center; margin-bottom: 15px"
+          </q-select>
+          <div v-else style="margin-bottom: 40px"></div>
+        </div>
+        <div
+          class="col-md-4 col-xl-4 col-lg-4 col-xs-4 col-sm-4 cardMargin selectMobile2"
+          style="align-self: center; text-align: center; margin-bottom: 15px"
+        >
+          <q-select
+            v-if="selectedTipo.value == 'CD'"
+            rounded
+            dense
+            transition-show="flip-up"
+            transition-hide="flip-down"
+            :options="tipoDoc"
+            use-input
+            hide-selected
+            fill-input
+            input-debounce="0"
+            option-label="label"
+            option-value="value"
+            v-model="selectedTipoDoc"
+            outlined
+            standout
+            label="Tipo de Documento"
           >
-            <q-input
-              outlined
-              label="Fecha Hasta:"
-              hint=""
-              rounded
-              :disable="disablehasta"
-              lazy-rules
-              dense
-              style="padding-bottom: 0px"
-              mask="##/##/####"
-            >
-              <template v-slot:append>
-                <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy
-                    ref="qDateProxy"
-                    transition-show="scale"
-                    transition-hide="scale"
-                  >
-                    <q-date mask="DD/MM/YYYY"></q-date>
-                  </q-popup-proxy>
-                </q-icon>
-              </template>
-            </q-input>
-          </div>
-          <div
-            class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 cardMargin selectMobile2"
-            style="align-self: center; text-align: center; margin-bottom: 15px"
+          </q-select>
+          <q-select
+            v-else-if="selectedTipo.value == 'GC' || selectedTipo.value == 'FA'"
+            rounded
+            dense
+            transition-show="flip-up"
+            transition-hide="flip-down"
+            :options="formaPago"
+            use-input
+            hide-selected
+            fill-input
+            input-debounce="0"
+            option-label="label"
+            option-value="value"
+            v-model="selectedForma"
+            outlined
+            standout
+            label="Forma de Pago"
           >
-            <q-btn-toggle
-              v-model="selectedTipo"
-              spread
-              class="my-custom-toggle"
-              rounded
-              :disable="disablevisible"
-              unelevated
-              toggle-color="primary"
-              color="white"
-              text-color="black"
-              :options="monto_venta"
-              @update:model-value="getDataClientes()"
-            >
-            </q-btn-toggle>
-          </div>
-          <div
-            class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 cardMargin selectMobile2"
-            style="align-self: center; text-align: center; margin-bottom: 15px"
+          </q-select>
+          <div v-else style="margin-bottom: 40px"></div>
+        </div>
+        <div
+          class="col-md-4 col-xl-4 col-lg-4 col-xs-4 col-sm-4 cardMargin selectMobile2"
+          style="align-self: center; text-align: center; margin-bottom: 15px"
+        >
+          <q-select
+            v-if="selectedTipo.value == 'GC'"
+            rounded
+            dense
+            transition-show="flip-up"
+            transition-hide="flip-down"
+            :options="pagadoEn"
+            use-input
+            hide-selected
+            fill-input
+            input-debounce="0"
+            option-label="label"
+            option-value="value"
+            v-model="selectedPagado"
+            outlined
+            standout
+            label="Pagado En"
           >
-            <q-select
-              rounded
-              dense
-              transition-show="flip-up"
-              transition-hide="flip-down"
-              :options="clientesSelected"
-              @filter="
-                (val, update) =>
-                  filterArray(
-                    val,
-                    update,
-                    'clientesSelected',
-                    'clientes',
-                    'nb_cliente'
-                  )
-              "
-              use-input
-              hide-selected
-              fill-input
-              input-debounce="0"
-              option-label="nb_cliente"
-              option-value="id"
-              :loading="clientesLoading"
-              :disable="disableestatus"
-              v-model="selectedCliente"
-              outlined
-              standout
-              label="Estatus"
-              @update:model-value="getDataTable()"
-              ><template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    Sin resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-              <template v-slot:prepend>
-                <q-icon name="search" />
-              </template>
-              <template v-slot:clientesLoading>
-                <q-inner-loading showing color="primary" class="loading" />
-              </template>
-            </q-select>
-          </div>
-          <div
-            class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 cardMargin selectMobile2"
-            style="align-self: center; text-align: center; margin-bottom: 15px"
+          </q-select>
+          <div v-else style="margin-bottom: 40px"></div>
+        </div>
+        <div
+          class="col-md-3 col-xl-3 col-lg-3 col-xs-3 col-sm-3"
+          style="align-self: center; text-align: center"
+        >
+          <p
+            style="font-size: 20px; margin-bottom: 15px"
+            class="text-secondary"
+            v-if="
+              selectedTipo.value != 'CG' &&
+              selectedTipo.value != 'CC' &&
+              selectedTipo.value != 'CCC'
+            "
           >
-            <q-select
-              rounded
-              dense
-              transition-show="flip-up"
-              transition-hide="flip-down"
-              :options="clientesSelected"
-              @filter="
-                (val, update) =>
-                  filterArray(
-                    val,
-                    update,
-                    'clientesSelected',
-                    'clientes',
-                    'nb_cliente'
-                  )
-              "
-              use-input
-              hide-selected
-              fill-input
-              input-debounce="0"
-              option-label="nb_cliente"
-              option-value="id"
-              :loading="clientesLoading"
-              :disable="disabledocumento"
-              v-model="selectedCliente"
-              outlined
-              standout
-              label="Tipo de Documento"
-              @update:model-value="getDataTable()"
-              ><template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    Sin resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-              <template v-slot:prepend>
-                <q-icon name="search" />
-              </template>
-              <template v-slot:clientesLoading>
-                <q-inner-loading showing color="primary" class="loading" />
-              </template>
-            </q-select>
-          </div>
-          <div
-            class="col-md-6 col-xl-162 col-lg-6 col-xs-12 col-sm-6 cardMargin selectMobile2"
-            style="align-self: center; text-align: center; margin-bottom: 15px"
+            <strong>Montos Venta</strong>
+          </p>
+          <div v-else style="margin-bottom: 40px"></div>
+        </div>
+        <div
+          class="col-md-3 col-xl-3 col-lg-3 col-xs-3 col-sm-3 cardMargin selectMobile2"
+          style="align-self: center; text-align: center; margin-bottom: 15px"
+        >
+          <q-btn-toggle
+            v-if="
+              selectedTipo.value != 'CG' &&
+              selectedTipo.value != 'CC' &&
+              selectedTipo.value != 'CCC'
+            "
+            v-model="selectedMonto"
+            spread
+            class="my-custom-toggle"
+            rounded
+            unelevated
+            toggle-color="primary"
+            color="white"
+            text-color="black"
+            :options="montoVenta"
           >
-            <q-select
-              rounded
-              dense
-              transition-show="flip-up"
-              transition-hide="flip-down"
-              :options="clientesSelected"
-              @filter="
-                (val, update) =>
-                  filterArray(
-                    val,
-                    update,
-                    'clientesSelected',
-                    'clientes',
-                    'nb_cliente'
-                  )
-              "
-              use-input
-              hide-selected
-              fill-input
-              input-debounce="0"
-              option-label="nb_cliente"
-              :disable="disableformapago"
-              option-value="id"
-              :loading="clientesLoading"
-              v-model="selectedCliente"
-              outlined
-              standout
-              label="Forma de Pago"
-              @update:model-value="getDataTable()"
-              ><template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    Sin resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-              <template v-slot:prepend>
-                <q-icon name="search" />
-              </template>
-              <template v-slot:clientesLoading>
-                <q-inner-loading showing color="primary" class="loading" />
-              </template>
-            </q-select>
-          </div>
-          <div
-            class="col-md-6 col-xl-6 col-lg-6 col-xs-12 col-sm-6 cardMargin selectMobile2"
-            style="align-self: center; text-align: center; margin-bottom: 15px"
+          </q-btn-toggle>
+          <div v-else style="margin-bottom: 40px"></div>
+        </div>
+        <div
+          class="col-md-3 col-xl-3 col-lg-3 col-xs-3 col-sm-3"
+          style="align-self: center; text-align: center"
+        >
+          <p
+            style="font-size: 20px; margin-bottom: 15px"
+            class="text-secondary"
+            v-if="selectedTipo.value == 'GC' || selectedTipo.value == 'FA'"
           >
-            <q-select
-              rounded
-              dense
-              transition-show="flip-up"
-              transition-hide="flip-down"
-              :options="clientesSelected"
-              @filter="
-                (val, update) =>
-                  filterArray(
-                    val,
-                    update,
-                    'clientesSelected',
-                    'clientes',
-                    'nb_cliente'
-                  )
-              "
-              use-input
-              hide-selected
-              fill-input
-              input-debounce="0"
-              option-label="nb_cliente"
-              :disable="disablepagadoen"
-              option-value="id"
-              :loading="clientesLoading"
-              v-model="selectedCliente"
-              outlined
-              standout
-              label="Pagado En"
-              @update:model-value="getDataTable()"
-              ><template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    Sin resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-              <template v-slot:prepend>
-                <q-icon name="search" />
-              </template>
-              <template v-slot:clientesLoading>
-                <q-inner-loading showing color="primary" class="loading" />
-              </template>
-            </q-select>
-          </div>
-          <div
-            class="col-md-6 col-xl-6 col-lg-6 col-xs-6 col-sm-6"
-            style="align-self: center; text-align: center"
+            <strong>Orden Correlativo</strong>
+          </p>
+          <div v-else style="margin-bottom: 40px"></div>
+        </div>
+        <div
+          class="col-md-1 col-xl-1 col-lg-1 col-xs-1 col-sm-1 cardMargin selectMobile2"
+          style="align-self: center; text-align: center; margin-bottom: 15px"
+        >
+          <q-checkbox
+            v-if="
+              selectedTipo.value == 'GC' ||
+              selectedTipo.value == 'GF' ||
+              selectedTipo.value == 'FA'
+            "
+            v-model="selectedCorrelativo"
+            color="primary"
+            left-label
+          />
+          <div v-else style="margin-bottom: 40px"></div>
+        </div>
+        <div
+          class="col-md-1 col-xl-1 col-lg-1 col-xs-1 col-sm-1"
+          style="align-self: center; text-align: center"
+        >
+          <p
+            style="font-size: 20px; margin-bottom: 15px"
+            class="text-secondary"
+            v-if="
+              selectedTipo.value == 'VG' ||
+              selectedTipo.value == 'VC' ||
+              selectedTipo.value == 'TV' ||
+              selectedTipo.value == 'RD'
+            "
           >
-            <p
-              style="font-size: 25px; margin-bottom: 15px"
-              class="text-secondary"
-            >
-              <strong>Orden Correlativo</strong>
-            </p>
-          </div>
-          <div
-            class="col-md-6 col-xl-6 col-lg-6 col-xs-6 col-sm-6 cardMargin selectMobile2"
-            style="align-self: center; text-align: center; margin-bottom: 15px"
+            <strong>$</strong>
+          </p>
+          <div v-else style="margin-bottom: 40px"></div>
+        </div>
+        <div
+          class="col-md-1 col-xl-1 col-lg-1 col-xs-1 col-sm-1 cardMargin selectMobile2"
+          style="
+            align-self: center;
+            text-align: center;
+            margin-bottom: 15px;
+            margin-left: -15px;
+          "
+        >
+          <q-checkbox
+            v-if="
+              selectedTipo.value == 'VG' ||
+              selectedTipo.value == 'VC' ||
+              selectedTipo.value == 'TV' ||
+              selectedTipo.value == 'RD'
+            "
+            v-model="selectedDolar"
+            color="primary"
+            left-label
+          />
+          <div v-else style="margin-bottom: 40px"></div>
+        </div>
+        <div
+          class="col-md-1 col-xl-1 col-lg-1 col-xs-1 col-sm-1"
+          style="align-self: center; text-align: center"
+        >
+          <div style="margin-bottom: 40px"></div>
+        </div>
+        <div
+          class="col-md-4 col-xl-4 col-lg-4 col-xs-4 col-sm-4"
+          style="align-self: center; text-align: center"
+        >
+          <p
+            style="font-size: 20px; margin-bottom: 15px"
+            class="text-secondary"
+            v-if="selectedTipo.value == 'VC'"
           >
-            <q-btn-toggle
-              v-model="selectedTipo"
-              spread
-              class="my-custom-toggle"
-              rounded
-              unelevated
-              :disable="disableordencorrelativo"
-              toggle-color="primary"
-              color="white"
-              text-color="black"
-              :options="tipos"
-              @update:model-value="getDataClientes()"
-            >
-            </q-btn-toggle>
-          </div>
-          <div
-            class="col-md-6 col-xl-6 col-lg-6 col-xs-6 col-sm-6"
-            style="align-self: center; text-align: center"
+            <strong>Agrupado Mes</strong>
+          </p>
+          <p
+            style="font-size: 20px; margin-bottom: 15px"
+            class="text-secondary"
+            v-else-if="selectedTipo.value == 'TV'"
           >
-            <p
-              style="font-size: 25px; margin-bottom: 15px"
-              class="text-secondary"
-            >
-              <strong>Agrupado Cliente</strong>
-            </p>
-          </div>
-          <div
-            class="col-md-6 col-xl-6 col-lg-6 col-xs-6 col-sm-6 cardMargin selectMobile2"
-            style="align-self: center; text-align: center; margin-bottom: 15px"
+            <strong>Agrupado Clientes</strong>
+          </p>
+          <div v-else style="margin-bottom: 40px"></div>
+        </div>
+        <div
+          class="col-md-1 col-xl-1 col-lg-1 col-xs-1 col-sm-1 cardMargin selectMobile2"
+          style="
+            align-self: center;
+            text-align: center;
+            margin-bottom: 15px;
+            margin-left: -20px;
+          "
+        >
+          <q-checkbox
+            v-if="selectedTipo.value == 'VC'"
+            v-model="selectedAgrMes"
+            color="primary"
+            left-label
+          />
+          <q-checkbox
+            v-else-if="selectedTipo.value == 'TV'"
+            v-model="selectedAgrCli"
+            color="primary"
+            left-label
+          />
+          <div v-else style="margin-bottom: 40px"></div>
+        </div>
+        <div
+          class="col-md-4 col-xl-4 col-lg-4 col-xs-4 col-sm-4"
+          style="align-self: center; text-align: center"
+        >
+          <p
+            style="font-size: 20px; margin-bottom: 15px"
+            class="text-secondary"
+            v-if="selectedTipo.value == 'VC' || selectedTipo.value == 'TV'"
           >
-            <q-btn-toggle
-              v-model="selectedTipo"
-              spread
-              class="my-custom-toggle"
-              rounded
-              unelevated
-              :disable="disableagrupadocliente"
-              toggle-color="primary"
-              color="white"
-              text-color="black"
-              :options="tipos"
-              @update:model-value="getDataClientes()"
-            >
-            </q-btn-toggle>
-          </div>
+            <strong>Agrupado Días</strong>
+          </p>
+          <div v-else style="margin-bottom: 40px"></div>
+        </div>
+        <div
+          class="col-md-1 col-xl-1 col-lg-1 col-xs-1 col-sm-1 cardMargin selectMobile2"
+          style="
+            align-self: center;
+            text-align: center;
+            margin-bottom: 15px;
+            margin-left: -20px;
+          "
+        >
+          <q-checkbox
+            v-if="selectedTipo.value == 'VC' || selectedTipo.value == 'TV'"
+            v-model="selectedAgrDia"
+            color="primary"
+            left-label
+          />
+          <div v-else style="margin-bottom: 40px"></div>
+        </div>
+        <div
+          class="col-md-1 col-xl-1 col-lg-1 col-xs-1 col-sm-1 cardMargin selectMobile2"
+          style="align-self: center; text-align: center; margin-bottom: 15px"
+        >
+          <div style="margin-bottom: 40px"></div>
+        </div>
+        <div
+          class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 cardMargin selectMobile2"
+          style="align-self: center; text-align: center"
+        >
+          <q-btn
+            rounded
+            label="Imprimir"
+            type="submit"
+            color="primary"
+            class="col-md-5 col-sm-5 col-xs-12"
+            icon="print"
+            style="margin-right: 30px"
+            @click="pdfChange(false)"
+          />
+          <q-btn
+            rounded
+            label="Limpiar"
+            color="primary"
+            class="col-md-5 col-sm-5 col-xs-12 btnmovil"
+            icon="filter_alt_off"
+            @click="resetFilters()"
+          />
         </div>
       </div>
-
       <div
-        class="q-pa-md col-md-6 col-xs-12 q-gutter-y-md justify-center table" style="margin-bottom: 20px"
+        class="q-pa-md col-md-6 col-xs-12 q-gutter-y-md justify-center"
+        style="height: 650px"
       >
-        <webViewer ref="webViewer" @close-pdf="closePdf"></webViewer>
+        <webViewer ref="webViewer" v-if="pdf == true"></webViewer>
       </div>
     </div>
 
-    <q-dialog v-model="deletePopup">
-      <q-card style="width: 700px">
-        <q-card-section>
-          <div class="text-h5" style="font-size: 18px">
-            ¿Estás seguro que quieres eliminar este elemento?
-          </div>
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn flat label="Cancelar" color="primary" v-close-popup />
-          <q-btn
-            flat
-            label="Aceptar"
-            color="primary"
-            v-close-popup
-            @click="
-              this.$refs.methods.deleteData(
-                `/cguias/${selected}`,
-                'getDataTable'
-              )
-            "
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-
-    <methods ref="methods"></methods>
+    <methods
+      ref="methods"
+      @set-Data="setData"
+      @set-Data-Permisos="setDataPermisos"
+    ></methods>
 
     <rules-vue ref="rulesVue"></rules-vue>
   </q-page>
@@ -627,8 +611,8 @@
 <script>
 import { ref } from "vue";
 import rulesVue from "src/components/rules.vue";
-import moment from "moment";
 import { api } from "boot/axios";
+import moment from "moment";
 import { useQuasar, LocalStorage } from "quasar";
 import methodsVue from "src/components/methods.vue";
 import webViewerVue from "src/components/webViewer.vue";
@@ -641,29 +625,19 @@ export default {
   },
   data() {
     return {
-      reportType: [
-        { label: "RESUMEN", value: "C" },
-        { label: "RANGO DE FECHAS", value: "A" },
-        { label: "DISTRIBUCION PRORRATEADA POR CIUDAD", value: "A" },
-        { label: "DISTRIBUCION REAL POR CIUDAD", value: "A" },
-        { label: "AGENTES O PROVEEDORES", value: "A" },
-        { label: "AYUDANTE", value: "A" },
-        { label: "GUIAS PENDIENTES POR ASOCIAR COSTO", value: "A" },
-        { label: "REPORTE DE VIAJES POR VEHICULO", value: "A" },
-        { label: "REPORTE DE VIAJES POR AGENTE", value: "A" },
-      ],
       tipos: [
         { label: "Si", value: "C", slot: "clte" },
         { label: "No", value: "P", slot: "part" },
       ],
-      monto_venta: [
-        { label: "Visible", value: "C", slot: "clte" },
-        { label: "No Visible", value: "P", slot: "part" },
+      montoVenta: [
+        { label: "SI", value: "SI" },
+        { label: "NO", value: "NO" },
       ],
-      tipos_reportes: [
+      tipoReporte: [
         {
           label: "VENTAS GENERALES",
           value: "VG",
+          agentes: true,
         },
         {
           label: "VENTAS POR CLIENTES",
@@ -675,23 +649,19 @@ export default {
         },
         {
           label: "TOTALES RELACIÓN DESPACHO",
-          value: "TRD",
+          value: "RD",
         },
         {
           label: "GUÍAS CARGAS",
           value: "GC",
         },
         {
-          label: "GUÍAS FACTURAS",
-          value: "GF",
-        },
-        {
           label: "FACTURAS",
-          value: "F",
+          value: "FA",
         },
         {
           label: "FACTURAS FPO",
-          value: "FFPO",
+          value: "FPO",
         },
         {
           label: "NOTAS DE CRÉDITO",
@@ -722,279 +692,165 @@ export default {
           value: "CCC",
         },
       ],
-      selectedTipo: 'C',
-      disable: true,
-      disableVG: true,
-      disableVC: true,
-      disableTV: true,
-      disableTRD: true,
-      disableGC: true,
-      disableGF: true,
-      disableF: true,
-      disableFFPO: true,
-      disableNC: true,
-      disableND: true,
-      disableDE: true,
-      disableGC: true,
-      disableGD: true,
-      disableCC: true,
-      disableCCC: true,
-      selectedReport: [],
+      estatus: [
+        { label: "Pendientes por Cobrar", value: "PC" },
+        { label: "Pendientes por Facturar", value: "PF" },
+        { label: "Canceladas", value: "CA" },
+        { label: "Anuladas", value: "AN" },
+        { label: "En Elaboración", value: "EE" },
+        { label: "Facturadas", value: "FA" },
+      ],
+      tipoDoc: [
+        { label: "Guías Carga", value: "GC" },
+        { label: "Facturas", value: "FA" },
+      ],
+      formaPago: [
+        { label: "Crédito", value: "CR" },
+        { label: "Contado", value: "CO" },
+      ],
+      pagadoEn: [
+        { label: "Origen", value: "OR" },
+        { label: "Destino", value: "DE" },
+      ],
+      cargaNeta: [
+        { label: "PESO KGS", value: "K", slot: "one" },
+        { label: "PESO NETO", value: "N", slot: "two" },
+      ],
+      selectedTipo: "",
+      pdf: true,
+      agenciasSelected: [],
+      selectedAgencia: [],
+      agencias: [],
+      clientesSelected: [],
+      selectedCliente: [],
+      clientesLoading: false,
+      clientes: [],
+      agentesSelected: [],
+      selectedAgente: [],
+      agentesLoading: false,
+      agentes: [],
+      selectedEstatus: [],
+      selectedTipoDoc: [],
+      selectedForma: [],
+      selectedPagado: [],
+      reportValue: "",
+      selectedMonto: "SI",
+      selectedDolar: false,
+      selectedCorrelativo: false,
+      selectedAgrMes: false,
+      selectedAgrCli: false,
+      selectedAgrDia: false,
+      fecha_desde: moment().format("DD/MM/YYYY"),
+      fecha_hasta: moment().format("DD/MM/YYYY"),
     };
   },
   setup() {
     const $q = useQuasar();
     return {
-      dateInit: moment().format("DD/MM/YYYY"),
       loading: ref(false),
       separator: ref("vertical"),
       deletePopup: ref(false),
       dialog: ref(false),
-      pdfView: ref(false),
+      pdfView: ref(true),
     };
   },
   mounted() {
-    this.printPending();
+    this.pdfPrint();
+    this.$refs.methods.getData("/agencias", "setData", "agencias");
+
+    this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
+      headers: {
+        rol: LocalStorage.getItem("tokenTraducido").usuario.roles.id,
+        menu: "reporteventas",
+      },
+    });
   },
   methods: {
-    closePdf() {
-      this.pdfView = false;
-    },
-    printPending() {
-      this.$refs.webViewer.showpdf("base64", res.data.base64, "");
-    },
-    changeFilters() {
-      switch (this.selectedReport.value) {
-        case 'VG':
-        this.disableAgencia = false;
-        this.disablecliente = true;
-        this.disableagente = false;
-        this.disabledesde = false;
-        this.disablehasta = false;
-        this.disablevisible = false;
-        this.disablepagadoen = true;
-        this.disableestatus = true;
-        this.disabledocumento = true;
-        this.disableformapago = true;
-        this.disableordencorrelativo = true;
-        this.disableagrupadocliente = true;
-        break;
-        case 'VC':
-        this.disableAgencia = false;
-        this.disablecliente = false;
-        this.disableagente = true;
-        this.disabledesde = false;
-        this.disablehasta = false;
-        this.disablevisible = false;
-        this.disablepagadoen = true;
-        this.disableestatus = true;
-        this.disabledocumento = true;
-        this.disableformapago = true;
-        this.disableordencorrelativo = true;
-        this.disableagrupadocliente = true;
-        break;
-        case 'TV':
-        this.disableAgencia = false;
-        this.disablecliente = true;
-        this.disableagente = true;
-        this.disabledesde = false;
-        this.disablehasta = false;
-        this.disablevisible = false;
-        this.disablepagadoen = true;
-        this.disableestatus = true;
-        this.disabledocumento = true;
-        this.disableformapago = true;
-        this.disableordencorrelativo = true;
-        this.disableagrupadocliente = false;
-        break;
-        case 'TRD':
-        this.disableAgencia = false;
-        this.disablecliente = false;
-        this.disableagente = true;
-        this.disabledesde = false;
-        this.disablehasta = false;
-        this.disablevisible = false;
-        this.disablepagadoen = true;
-        this.disableestatus = true;
-        this.disabledocumento = true;
-        this.disableformapago = true;
-        this.disableordencorrelativo = true;
-        this.disableagrupadocliente = true;
-        break;
-        case 'GC':
-        this.disableAgencia = false;
-        this.disablecliente = false;
-        this.disableagente = true;
-        this.disabledesde = false;
-        this.disablehasta = false;
-        this.disablevisible = false;
-        this.disablepagadoen = false;
-        this.disableestatus = false;
-        this.disabledocumento = true;
-        this.disableformapago = false;
-        this.disableordencorrelativo = false;
-        this.disableagrupadocliente = true;
-        break;
-        case 'GF':
-        this.disableAgencia = false;
-        this.disablecliente = false;
-        this.disableagente = true;
-        this.disabledesde = false;
-        this.disablehasta = false;
-        this.disablevisible = true;
-        this.disablepagadoen = true;
-        this.disableestatus = false;
-        this.disabledocumento = true;
-        this.disableformapago = true;
-        this.disableordencorrelativo = false;
-        this.disableagrupadocliente = true;
-        break;
-        case 'F':
-        this.disableAgencia = false;
-        this.disablecliente = true;
-        this.disableagente = false;
-        this.disabledesde = false;
-        this.disablehasta = false;
-        this.disablevisible = false;
-        this.disablepagadoen = true;
-        this.disableestatus = false;
-        this.disabledocumento = true;
-        this.disableformapago = false;
-        this.disableordencorrelativo = false;
-        this.disableagrupadocliente = true;
-        break;
-        case 'FFPO':
-        this.disableAgencia = false;
-        this.disablecliente = true;
-        this.disableagente = true;
-        this.disabledesde = false;
-        this.disablehasta = false;
-        this.disablevisible = false;
-        this.disablepagadoen = true;
-        this.disableestatus = true;
-        this.disabledocumento = true;
-        this.disableformapago = true;
-        this.disableordencorrelativo = true;
-        this.disableagrupadocliente = true;
-        break;
-        case 'NC':
-        this.disableAgencia = false;
-        this.disablecliente = true;
-        this.disableagente = true;
-        this.disabledesde = false;
-        this.disablehasta = false;
-        this.disablevisible = false;
-        this.disablepagadoen = true;
-        this.disableestatus = true;
-        this.disabledocumento = true;
-        this.disableformapago = true;
-        this.disableordencorrelativo = true;
-        this.disableagrupadocliente = true;
-        break;
-        case 'ND':
-        this.disableAgencia = false;
-        this.disablecliente = true;
-        this.disableagente = true;
-        this.disabledesde = false;
-        this.disablehasta = false;
-        this.disablevisible = false;
-        this.disablepagadoen = true;
-        this.disableestatus = true;
-        this.disabledocumento = true;
-        this.disableformapago = true;
-        this.disableordencorrelativo = true;
-        this.disableagrupadocliente = true;
-        break;
-        case 'DE':
-        this.disableAgencia = false;
-        this.disablecliente = true;
-        this.disableagente = true;
-        this.disabledesde = false;
-        this.disablehasta = false;
-        this.disablevisible = false;
-        this.disablepagadoen = true;
-        this.disableestatus = true;
-        this.disabledocumento = true;
-        this.disableformapago = true;
-        this.disableordencorrelativo = true;
-        this.disableagrupadocliente = true;
-        break;
-        case 'GC':
-        this.disableAgencia = false;
-        this.disablecliente = true;
-        this.disableagente = true;
-        this.disabledesde = false;
-        this.disablehasta = false;
-        this.disablevisible = true;
-        this.disablepagadoen = true;
-        this.disableestatus = true;
-        this.disabledocumento = true;
-        this.disableformapago = true;
-        this.disableordencorrelativo = true;
-        this.disableagrupadocliente = true;
-        break;
-        case 'GD':
-        this.disableAgencia = false;
-        this.disablecliente = false;
-        this.disableagente = true;
-        this.disabledesde = false;
-        this.disablehasta = false;
-        this.disablevisible = false;
-        this.disablepagadoen = true;
-        this.disableestatus = false;
-        this.disabledocumento = false;
-        this.disableformapago = true;
-        this.disableordencorrelativo = true;
-        this.disableagrupadocliente = true;
-        break;
-        case 'CC':
-        this.disableAgencia = false;
-        this.disablecliente = true;
-        this.disableagente = true;
-        this.disabledesde = false;
-        this.disablehasta = false;
-        this.disablevisible = true;
-        this.disablepagadoen = true;
-        this.disableestatus = true;
-        this.disabledocumento = true;
-        this.disableformapago = true;
-        this.disableordencorrelativo = true;
-        this.disableagrupadocliente = true;
-        break;
-        case 'CCC':
-        this.disableAgencia = false;
-        this.disablecliente = false;
-        this.disableagente = true;
-        this.disabledesde = false;
-        this.disablehasta = false;
-        this.disablevisible = true;
-        this.disablepagadoen = true;
-        this.disableestatus = true;
-        this.disabledocumento = true;
-        this.disableformapago = true;
-        this.disableordencorrelativo = true;
-        this.disableagrupadocliente = true;
-        break;
+    // Metodo para filtrar opciones de Selects
+    filterArray(val, update, pagina, array, element) {
+      if (val === "") {
+        update(() => {
+          this[pagina] = this[array];
+        });
+        return;
       }
-    }
+      update(() => {
+        const needle = val.toUpperCase();
+        var notEqual = [];
+        for (var i = 0; i <= this[array].length - 1; i++) {
+          if (this[array][i][element].indexOf(needle) > -1) {
+            notEqual.push(this[array][i]);
+          }
+          if (i == this[array].length - 1) {
+            this[pagina] = notEqual;
+            break;
+          }
+        }
+      });
+    },
+    // Metodo para Setear Datos Permisos
+    setDataPermisos(res, dataRes) {
+      this[dataRes] = res;
+      if (this.rpermisos.findIndex((item) => item.acciones.accion == 1) < 0)
+        this.$router.push("/error403");
+    },
+
+    // METODOS DE PAGINA
+
+    // Metodo para Setear Datos Iniciales
+    setData(res, dataRes) {
+      eval("this." + dataRes + "Loading = false");
+      this[dataRes] = res.data ? res.data : res;
+    },
+    async pdfChange(def) {
+      if (def && this.reportValue == "") return;
+      this.reportValue = "";
+      if (!def) this.reportValue = this.selectedTipo.value;
+      this.pdf = false;
+      setTimeout(() => {
+        this.pdfPrint();
+        this.pdf = true;
+      }, 100);
+    },
+    pdfPrint() {
+      var dataArray = {};
+
+      api
+        .get(`/reports/reporteVentas`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            tipo: this.reportValue,
+            data: JSON.stringify(dataArray),
+          },
+        })
+        .then((res) => {
+          this.$refs.webViewer.showpdf(res.data.base64);
+        });
+    },
+    // Metodo para Resetear Filtros
+    resetFilters() {
+      this.agentes = [];
+      this.clientes = [];
+      this.selectedTipo = "";
+      this.reportValue = "";
+      this.selectedAgencia = [];
+      this.selectedAgente = [];
+      this.selectedCliente = [];
+      this.selectedEstatus = [];
+      this.selectedTipoDoc = [];
+      this.selectedForma = [];
+      this.selectedPagado = [];
+      this.selectedDolar = false;
+      this.selectedMonto = "SI";
+      this.selectedDolar = false;
+      this.selectedCorrelativo = false;
+      this.selectedAgrMes = false;
+      this.selectedAgrCli = false;
+      this.selectedAgrDia = false;
+      this.fecha_desde = moment().format("DD/MM/YYYY");
+      this.fecha_hasta = moment().format("DD/MM/YYYY");
+      this.pdfChange(0);
+    },
   },
 };
 </script>
-
-<style>
-.q-field__bottom {
-  display: none;
-}
-
-@media screen and (min-width: 1080px) {
-  .table {
-  width: 50%; height: 850px; margin-top: -30px
-  }
-}
-
-@media screen and (max-width: 1080px) {
-  .table {
-  height: 500px !important
-  }
-}
-</style>
