@@ -417,9 +417,20 @@
           style="align-self: center; text-align: center"
         >
           <p
+            style="font-size: 20px; margin-bottom: 15px; margin-left: -80px"
+            class="text-secondary"
+            v-if="
+              selectedTipo.value == 'VC' ||
+              selectedTipo.value == 'TV' ||
+              selectedTipo.value == 'RD'
+            "
+          >
+            <strong>Serie</strong>
+          </p>
+          <p
             style="font-size: 20px; margin-bottom: 15px"
             class="text-secondary"
-            v-if="selectedTipo.value == 'GC' || selectedTipo.value == 'FA'"
+            v-else-if="selectedTipo.value == 'GC' || selectedTipo.value == 'FA'"
           >
             <strong>Orden Correlativo</strong>
           </p>
@@ -431,6 +442,31 @@
         >
           <q-checkbox
             v-if="
+              selectedTipo.value == 'VC' ||
+              selectedTipo.value == 'TV' ||
+              selectedTipo.value == 'RD'
+            "
+            v-model="selectedSerie"
+            color="primary"
+            left-label
+            val="44"
+            label="44"
+            style="margin-left: -80px"
+          />
+          <q-checkbox
+            v-if="
+              selectedTipo.value == 'VC' ||
+              selectedTipo.value == 'TV' ||
+              selectedTipo.value == 'RD'
+            "
+            v-model="selectedSerie"
+            color="primary"
+            left-label
+            val="55"
+            label="55"
+          />
+          <q-checkbox
+            v-else-if="
               selectedTipo.value == 'GC' ||
               selectedTipo.value == 'GF' ||
               selectedTipo.value == 'FA'
@@ -482,12 +518,6 @@
           <div v-else style="margin-bottom: 40px"></div>
         </div>
         <div
-          class="col-md-1 col-xl-1 col-lg-1 col-xs-1 col-sm-1"
-          style="align-self: center; text-align: center"
-        >
-          <div style="margin-bottom: 40px"></div>
-        </div>
-        <div
           class="col-md-4 col-xl-4 col-lg-4 col-xs-4 col-sm-4"
           style="align-self: center; text-align: center"
         >
@@ -513,7 +543,7 @@
             align-self: center;
             text-align: center;
             margin-bottom: 15px;
-            margin-left: -20px;
+            margin-left: -30px;
           "
         >
           <q-checkbox
@@ -521,12 +551,14 @@
             v-model="selectedAgrMes"
             color="primary"
             left-label
+            @update:model-value="if (selectedAgrMes) selectedAgrDia = false;"
           />
           <q-checkbox
             v-else-if="selectedTipo.value == 'TV'"
             v-model="selectedAgrCli"
             color="primary"
             left-label
+            @update:model-value="if (selectedAgrCli) selectedAgrDia = false;"
           />
           <div v-else style="margin-bottom: 40px"></div>
         </div>
@@ -535,7 +567,7 @@
           style="align-self: center; text-align: center"
         >
           <p
-            style="font-size: 20px; margin-bottom: 15px"
+            style="font-size: 20px; margin-bottom: 15px; margin-left: -40px"
             class="text-secondary"
             v-if="selectedTipo.value == 'VC' || selectedTipo.value == 'TV'"
           >
@@ -549,7 +581,7 @@
             align-self: center;
             text-align: center;
             margin-bottom: 15px;
-            margin-left: -20px;
+            margin-left: -50px;
           "
         >
           <q-checkbox
@@ -557,14 +589,52 @@
             v-model="selectedAgrDia"
             color="primary"
             left-label
+            @update:model-value="
+              if (selectedAgrDia) {
+                selectedAgrMes = false;
+                selectedAgrCli = false;
+              }
+            "
           />
           <div v-else style="margin-bottom: 40px"></div>
         </div>
         <div
-          class="col-md-1 col-xl-1 col-lg-1 col-xs-1 col-sm-1 cardMargin selectMobile2"
-          style="align-self: center; text-align: center; margin-bottom: 15px"
+          class="col-md-1 col-xl-1 col-lg-1 col-xs-1 col-sm-1"
+          style="align-self: center; text-align: center"
         >
-          <div style="margin-bottom: 40px"></div>
+          <p
+            style="font-size: 20px; margin-bottom: 15px; margin-left: 40px"
+            class="text-secondary"
+            v-if="
+              selectedTipo.value == 'VC' ||
+              selectedTipo.value == 'TV' ||
+              selectedTipo.value == 'RD'
+            "
+          >
+            <strong>Neta</strong>
+          </p>
+          <div v-else style="margin-bottom: 40px"></div>
+        </div>
+        <div
+          class="col-md-1 col-xl-1 col-lg-1 col-xs-1 col-sm-1 cardMargin selectMobile2"
+          style="
+            align-self: center;
+            text-align: center;
+            margin-bottom: 15px;
+            margin-left: 35px;
+          "
+        >
+          <q-checkbox
+            v-if="
+              selectedTipo.value == 'VC' ||
+              selectedTipo.value == 'TV' ||
+              selectedTipo.value == 'RD'
+            "
+            v-model="selectedNeta"
+            color="primary"
+            left-label
+          />
+          <div v-else style="margin-bottom: 40px"></div>
         </div>
         <div
           class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 cardMargin selectMobile2"
@@ -595,6 +665,7 @@
         style="height: 650px"
       >
         <webViewer ref="webViewer" v-if="pdf == true"></webViewer>
+        <q-inner-loading :showing="loading" color="primary" class="loading" />
       </div>
     </div>
 
@@ -632,6 +703,10 @@ export default {
       montoVenta: [
         { label: "SI", value: "SI" },
         { label: "NO", value: "NO" },
+      ],
+      serieGuias: [
+        { label: "44", value: "44" },
+        { label: "55", value: "55" },
       ],
       tipoReporte: [
         {
@@ -735,6 +810,8 @@ export default {
       selectedPagado: [],
       reportValue: "",
       selectedMonto: "SI",
+      selectedNeta: false,
+      selectedSerie: ["44", "55"],
       selectedDolar: false,
       selectedCorrelativo: false,
       selectedAgrMes: false,
@@ -805,6 +882,7 @@ export default {
     async pdfChange(def) {
       if (def && this.reportValue == "") return;
       this.reportValue = "";
+      this.loading = true;
       if (!def) this.reportValue = this.selectedTipo.value;
       this.pdf = false;
       setTimeout(() => {
@@ -814,6 +892,60 @@ export default {
     },
     pdfPrint() {
       var dataArray = {};
+      dataArray.fecha_desde = this.fecha_desde;
+      dataArray.fecha_hasta = this.fecha_hasta;
+      dataArray.agencia = this.selectedAgencia.id;
+      dataArray.agente = this.selectedAgente.id;
+      dataArray.dolar = this.selectedDolar;
+      dataArray.visible = this.selectedMonto;
+      dataArray.neta = this.selectedNeta;
+
+      if (this.reportValue == "VC") {
+        if (this.selectedAgrMes) this.reportValue = "VCM";
+        if (this.selectedAgrDia) this.reportValue = "VCD";
+        if (!this.selectedAgencia.id) {
+          this.$q.notify({
+            message:
+              "Debe seleccionar la Agencia antes de imprimir el reporte...",
+            color: "red",
+          });
+          this.reportValue = "";
+        } else if (!this.selectedCliente.id) {
+          this.$q.notify({
+            message:
+              "Debe seleccionar el Cliente antes de imprimir el reporte...",
+            color: "red",
+          });
+          this.reportValue = "";
+        } else {
+          dataArray.agencia = this.selectedAgencia.id;
+          dataArray.cliente = this.selectedCliente.id;
+        }
+      }
+
+      if (this.reportValue == "TV") {
+        if (this.selectedAgrCli) this.reportValue = "TVC";
+        if (this.selectedAgrDia) this.reportValue = "TVD";
+      }
+
+      if (
+        this.reportValue == "VC" ||
+        this.reportValue == "VCM" ||
+        this.reportValue == "VCD" ||
+        this.reportValue == "TV" ||
+        this.reportValue == "TVC" ||
+        this.reportValue == "TVD"
+      ) {
+        if (this.selectedSerie.length == 0) {
+          this.$q.notify({
+            message: "Debe seleccionar al menos una serie...",
+            color: "red",
+          });
+          this.reportValue = "";
+        } else {
+          dataArray.serie = this.selectedSerie;
+        }
+      }
 
       api
         .get(`/reports/reporteVentas`, {
@@ -824,7 +956,21 @@ export default {
           },
         })
         .then((res) => {
-          this.$refs.webViewer.showpdf(res.data.base64);
+          if (!res.data.validDoc) {
+            this.$q.notify({
+              message: "No existen registros para este conjunto de Filtos",
+              color: "red",
+            });
+          }
+          this.$refs.webViewer.showpdf(res.data.pdfPath);
+          this.loading = false;
+        })
+        .catch((err) => {
+          this.$q.notify({
+            message: err.message,
+            color: "red",
+          });
+          this.loading = false;
         });
     },
     // Metodo para Resetear Filtros
@@ -842,6 +988,7 @@ export default {
       this.selectedPagado = [];
       this.selectedDolar = false;
       this.selectedMonto = "SI";
+      this.selectedSerie = ["44", "55"];
       this.selectedDolar = false;
       this.selectedCorrelativo = false;
       this.selectedAgrMes = false;

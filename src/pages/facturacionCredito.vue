@@ -2654,8 +2654,8 @@ export default {
 
         formFactura.cod_movimiento = idFact;
         let serie_doc = this.correlativo.serie_doc
-        ? this.correlativo.serie_doc + "-"
-        : "";
+          ? this.correlativo.serie_doc + "-"
+          : "";
         formFactura.nroFact =
           serie_doc +
           (this.nro_interno
@@ -2675,7 +2675,23 @@ export default {
             },
           })
           .then((res) => {
-            this.$refs.webViewer.showpdf("", res.data.base64);
+            if (!res.data.validDoc) {
+              this.$q.notify({
+                message: "No existen registros para este conjunto de Filtos",
+                color: "red",
+              });
+              this.dialogAnexo = false;
+              return;
+            }
+            this.$refs.webViewer.showpdf(res.data.pdfPath);
+          })
+          .catch((err) => {
+            this.$q.notify({
+              message: err.message,
+              color: "red",
+            });
+            this.dialogAnexo = false;
+            return;
           });
       }
 
@@ -3072,7 +3088,7 @@ export default {
       let monto_impuesto = 0;
       let monto_total = 0;
 
-      if(rows.length > 1) {
+      if (rows.length > 1) {
         this.monto_subtotal_select = "0,00";
         this.monto_base_select = "0,00";
         this.monto_impuesto_select = "0,00";
@@ -3085,7 +3101,7 @@ export default {
         monto_base += this.parseFloatN(rows[i].monto_base);
         monto_impuesto += this.parseFloatN(rows[i].monto_impuesto);
         monto_total += this.parseFloatN(rows[i].monto_total);
-      }      
+      }
 
       if (added) {
         this.monto_subtotal_select = (
@@ -3377,7 +3393,23 @@ export default {
           },
         })
         .then((res) => {
-          this.$refs.webViewer.showpdf("", res.data.base64);
+          if (!res.data.validDoc) {
+            this.$q.notify({
+              message: "No existen registros para este conjunto de Filtos",
+              color: "red",
+            });
+            this.dialogFactura = false;
+            return;
+          }
+          this.$refs.webViewer.showpdf(res.data.pdfPath);
+        })
+        .catch((err) => {
+          this.$q.notify({
+            message: err.message,
+            color: "red",
+          });
+          this.dialogFactura = false;
+          return;
         });
     },
   },

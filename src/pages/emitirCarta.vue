@@ -795,8 +795,25 @@ export default {
           },
         })
         .then((res) => {
-          this.$refs.webViewer.showpdf("", res.data.base64);
+          if (!res.data.validDoc) {
+            this.$q.notify({
+              message: "No existen registros para este conjunto de Filtos",
+              color: "red",
+            });
+            this.resetForm();
+            this.pdfView = false
+            return;
+          }
+          this.$refs.webViewer.showpdf(res.data.pdfPath);
+        })
+        .catch((err) => {
+          this.$q.notify({
+            message: err.message,
+            color: "red",
+          });
           this.resetForm();
+          this.pdfView = false
+          return;
         });
     },
     // Metodo para Resetear Datos

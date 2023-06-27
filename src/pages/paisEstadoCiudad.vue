@@ -1435,7 +1435,6 @@ export default {
         "checkUrbano",
         res.check_urbano
       );
-      console.log(this.formCiudades.check_urbano);
     },
     // Metodos para Editar o Crear Ciudades
     sendDataCiudades() {

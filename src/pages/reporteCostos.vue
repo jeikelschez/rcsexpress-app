@@ -422,6 +422,7 @@
         style="height: 650px"
       >
         <webViewer ref="webViewer" v-if="pdf == true"></webViewer>
+        <q-inner-loading :showing="loading" color="primary" class="loading" />
       </div>
     </div>
 
@@ -591,6 +592,7 @@ export default {
     async pdfChange(def) {
       if (def && this.reportValue == "") return;
       this.reportValue = "";
+      this.loading = true;
       if (!def) this.reportValue = this.selectedTipo.value;
       this.pdf = false;
       setTimeout(() => {
@@ -614,6 +616,7 @@ export default {
                 "Debe seleccionar el Agente antes de imprimir el reporte...",
               color: "red",
             });
+            this.loading = false;
             return;
           } else {
             dataArray.agente = this.selectedAgente.id;
@@ -629,6 +632,7 @@ export default {
                 "Debe seleccionar el Proveedor antes de imprimir el reporte...",
               color: "red",
             });
+            this.loading = false;
             return;
           } else {
             dataArray.proveedor = this.selectedProveedor.id;
@@ -644,6 +648,7 @@ export default {
               "Debe seleccionar el Ayudante antes de imprimir el reporte...",
             color: "red",
           });
+          this.loading = false;
           return;
         } else {
           dataArray.ayudante = this.selectedAyudante.id;
@@ -658,6 +663,7 @@ export default {
               "Debe seleccionar el Transporte antes de imprimir el reporte...",
             color: "red",
           });
+          this.loading = false;
           return;
         } else {
           dataArray.transporte = this.selectedUnidad.id;
@@ -674,7 +680,21 @@ export default {
           },
         })
         .then((res) => {
+          if (!res.data.validDoc) {
+            this.$q.notify({
+              message: "No existen registros para este conjunto de Filtos",
+              color: "red",
+            });
+          }
           this.$refs.webViewer.showpdf(res.data.pdfPath);
+          this.loading = false;
+        })
+        .catch((err) => {
+          this.$q.notify({
+            message: err.message,
+            color: "red",
+          });
+          this.loading = false;
         });
     },
     // Metodo para Resetear Filtros
