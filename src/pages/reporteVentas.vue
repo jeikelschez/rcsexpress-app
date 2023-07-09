@@ -696,10 +696,6 @@ export default {
   },
   data() {
     return {
-      tipos: [
-        { label: "Si", value: "C", slot: "clte" },
-        { label: "No", value: "P", slot: "part" },
-      ],
       montoVenta: [
         { label: "SI", value: "SI" },
         { label: "NO", value: "NO" },
@@ -768,24 +764,26 @@ export default {
         },
       ],
       estatus: [
-        { label: "Pendientes por Cobrar", value: "PC" },
-        { label: "Pendientes por Facturar", value: "PF" },
-        { label: "Canceladas", value: "CA" },
-        { label: "Anuladas", value: "AN" },
-        { label: "En Elaboración", value: "EE" },
-        { label: "Facturadas", value: "FA" },
+        { label: "PENDIENTES POR COBRAR", value: "P" },
+        { label: "PENDIENTES POR FACTURAR", value: "F" },
+        { label: "CANCELADAS", value: "C" },
+        { label: "ANULADAS", value: "A" },
+        { label: "EN ELABORACIÓN", value: "E" },
+        { label: "FACTURADAS", value: "G" },
+        { label: 'PENDIENTES POR IMPRIMIR', value: 'I' },
+        { label: 'MODIFICADAS', value: 'M' },
       ],
       tipoDoc: [
-        { label: "Guías Carga", value: "GC" },
-        { label: "Facturas", value: "FA" },
+        { label: "GUÍAS CARGA", value: "GC" },
+        { label: "FACTURAS", value: "FA" },
       ],
       formaPago: [
-        { label: "Crédito", value: "CR" },
-        { label: "Contado", value: "CO" },
+        { label: "CRÉDITO", value: "CR" },
+        { label: "CONTADO", value: "CO" },
       ],
       pagadoEn: [
-        { label: "Origen", value: "OR" },
-        { label: "Destino", value: "DE" },
+        { label: "ORIGEN", value: "O" },
+        { label: "DESTINO", value: "D" },
       ],
       cargaNeta: [
         { label: "PESO KGS", value: "K", slot: "one" },
@@ -895,10 +893,15 @@ export default {
       dataArray.fecha_desde = this.fecha_desde;
       dataArray.fecha_hasta = this.fecha_hasta;
       dataArray.agencia = this.selectedAgencia.id;
+      dataArray.cliente = this.selectedCliente.id;
       dataArray.agente = this.selectedAgente.id;
       dataArray.dolar = this.selectedDolar;
       dataArray.visible = this.selectedMonto;
       dataArray.neta = this.selectedNeta;
+      dataArray.estatus_admin = this.selectedEstatus.value;
+      dataArray.modalidad = this.selectedForma.value;
+      dataArray.pagado_en = this.selectedPagado.value;
+      dataArray.correlativo = this.selectedCorrelativo;
 
       if (this.reportValue == "VC") {
         if (this.selectedAgrMes) this.reportValue = "VCM";
@@ -934,7 +937,8 @@ export default {
         this.reportValue == "VCD" ||
         this.reportValue == "TV" ||
         this.reportValue == "TVC" ||
-        this.reportValue == "TVD"
+        this.reportValue == "TVD" ||
+        this.reportValue == "RD"
       ) {
         if (this.selectedSerie.length == 0) {
           this.$q.notify({
