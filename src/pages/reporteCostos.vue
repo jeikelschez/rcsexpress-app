@@ -417,10 +417,7 @@
           </div>
         </div>
       </div>
-      <div
-        class="q-pa-md col-md-6 col-xs-12 q-gutter-y-md justify-center"
-        style="height: 650px"
-      >
+      <div>
         <webViewer ref="webViewer" v-if="pdf == true"></webViewer>
         <q-inner-loading :showing="loading" color="primary" class="loading" />
       </div>

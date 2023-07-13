@@ -1,5 +1,5 @@
 <template>
-  <div id="WebViewer" ref="viewer" style="width: 100%; height: 100%"></div>
+  <div id="WebViewer" ref="viewer" style="width: 1400px; height: 900px; max-width: 1400px;"></div>
 </template>
 
 <script>
@@ -47,7 +47,7 @@ export default {
           title: 'Imprimir',
           img: "icon-header-print-line",
           onClick: () => {
-            this.$emit('printPdf');
+            instance.print();
           }
         });
         header.push({
@@ -65,6 +65,7 @@ export default {
         instance.UI.loadDocument(`${process.env.apiPath}/reports/loadPDF/${filePath}`);
       }
       instance.UI.setLanguage('es');
+      instance.UI.setZoomLevel('150%'); 
       });
     },
   },

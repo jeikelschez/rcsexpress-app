@@ -70,6 +70,7 @@
 .displayHide {display: none;}
 .displayShow {display: block;}
 .loading {padding-top: 50px;}
+.pdf {height: 1000px !important}
 
 @media screen and (min-width: 600px) {.movilTitle {display: none;}}
 @media screen and (max-width: 600px) {.movilTitle {display: block;}}

@@ -793,14 +793,12 @@
       </q-table>
     </div>
 
-    <q-dialog v-model="pdfView" @show="this.printReport()">
-      <div style="width: 700px; height: 700px">
+    <q-dialog v-model="pdfView" @show="this.printReport()" style="width: 1500px; height: 900px;">
         <webViewer
           ref="webViewer"
           @print-pdf="this.sendCostos()"
           @close-pdf="this.pdfView = false"
         ></webViewer>
-      </div>
     </q-dialog>
 
     <q-dialog v-model="confirmCostosPopUp" persistent>
