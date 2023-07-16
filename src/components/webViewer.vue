@@ -1,5 +1,5 @@
 <template>
-  <div id="WebViewer" ref="viewer" style="width: 1400px; height: 900px; max-width: 1400px;"></div>
+  <div id="WebViewer" ref="viewer" style="width: 600px; height: 600px;"></div>
 </template>
 
 <script>
@@ -64,8 +64,7 @@ export default {
       } else {
         instance.UI.loadDocument(`${process.env.apiPath}/reports/loadPDF/${filePath}`);
       }
-      instance.UI.setLanguage('es');
-      instance.UI.setZoomLevel('150%'); 
+      instance.UI.setLanguage('es'); 
       });
     },
   },

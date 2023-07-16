@@ -793,7 +793,7 @@
       </q-table>
     </div>
 
-    <q-dialog v-model="pdfView" @show="this.printReport()" style="width: 1500px; height: 900px;">
+    <q-dialog v-model="pdfView" @show="this.printReport()">
         <webViewer
           ref="webViewer"
           @print-pdf="this.sendCostos()"

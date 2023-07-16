@@ -902,6 +902,7 @@ export default {
       dataArray.modalidad = this.selectedForma.value;
       dataArray.pagado_en = this.selectedPagado.value;
       dataArray.correlativo = this.selectedCorrelativo;
+      dataArray.tipo_doc = this.selectedTipoDoc.value;
 
       if (this.reportValue == "VC") {
         if (this.selectedAgrMes) this.reportValue = "VCM";
