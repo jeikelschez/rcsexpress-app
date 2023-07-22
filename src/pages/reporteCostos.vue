@@ -1,10 +1,10 @@
 <template>
   <q-page class="pagina q-pa-md">
     <div
-      class="row justify-end q-pa-md col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
-      style="margin-left: 100px; margin-right: 120px"
+      class="row q-pa-md col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
+      style="margin-left: 20px;"
     >
-      <div class="col-md-6 col-xs-12 q-pa-sm justify-center">
+      <div class="col-md-4 col-xs-12 q-pa-sm justify-center">
         <div
           class="row justify-end q-pa-md col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
         >
@@ -417,8 +417,12 @@
           </div>
         </div>
       </div>
-      <div>
-        <webViewer ref="webViewer" v-if="pdf == true"></webViewer>
+      <div class="q-pa-md col-md-8 col-xs-12 q-gutter-y-md justify-center">
+        <webViewer
+          ref="webViewer"
+          v-if="pdf == true"
+          style="width: 960px; height: 620px; max-width: 960px"
+        ></webViewer>
         <q-inner-loading :showing="loading" color="primary" class="loading" />
       </div>
     </div>
@@ -462,34 +466,42 @@ export default {
         {
           label: "RESUMEN DE COSTOS DE TRANSPORTE",
           value: "RCT",
+          zoom: 1.3,
         },
         {
           label: "COSTOS DE TRANSPORTE POR RANGO DE FECHAS",
           value: "CTR",
+          zoom: 1.3,
         },
         {
           label: "DISTRIBUCIÓN PRORRATEADA DEL COSTO DE TRANSPORTE POR CIUDAD",
           value: "DTC",
+          zoom: 1.3,
         },
         {
           label: "DISTRIBUCIÓN REAL DEL COSTO DE TRANSPORTE POR CIUDAD",
           value: "DRC",
+          zoom: 1.3,
         },
         {
           label: "COSTO DE TRANSPORTE POR AGENTE O PROVEEDORES",
           value: "CTP",
+          zoom: 1.3,
         },
         {
           label: "COSTO DE TRANSPORTE POR AYUDANTE",
           value: "CTA",
+          zoom: 1,
         },
         {
           label: "GUÍAS PENDIENTES POR ASOCIAR COSTOS DE TRANSPORTE",
           value: "GPC",
+          zoom: 1.3,
         },
         {
           label: "REPORTE DE VIAJES POR VEHÍCULO",
           value: "RVV",
+          zoom: 1,
         },
       ],
       pdf: true,
@@ -536,7 +548,7 @@ export default {
         activo: "S",
       },
     });
-    this.$refs.methods.getData("/unidades", "setData", "unidades");    
+    this.$refs.methods.getData("/unidades", "setData", "unidades");
     this.$refs.methods.getData("/ayudantes", "setData", "ayudantes", {
       headers: {
         activo: "S",
@@ -677,13 +689,15 @@ export default {
           },
         })
         .then((res) => {
+          let zoom = this.reportValue ? this.selectedTipo.zoom : 0.7;
           if (!res.data.validDoc) {
             this.$q.notify({
               message: "No existen registros para este conjunto de Filtos",
               color: "red",
             });
+            zoom = 0.7;
           }
-          this.$refs.webViewer.showpdf(res.data.pdfPath);
+          this.$refs.webViewer.showpdf(res.data.pdfPath, zoom, false, false);
           this.loading = false;
         })
         .catch((err) => {

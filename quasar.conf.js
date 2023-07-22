@@ -54,7 +54,7 @@ module.exports = configure(function (ctx) {
           ? 'https://scen.rcsexpress.com/api/v1'
           : 'http://localhost:3000/api/v1' 
       },
-      vueRouterMode: 'hash', // available values: 'hash', 'history'
+      vueRouterMode: 'history', // available values: 'hash', 'history'
 
       // transpile: false,
 

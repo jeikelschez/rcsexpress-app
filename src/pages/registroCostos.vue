@@ -1392,12 +1392,11 @@
     </q-dialog>
 
     <q-dialog v-model="pdfView" @show="this.pdfPrint()">
-      <div style="width: 700px; height: 700px">
-        <webViewer
-          ref="webViewer"
-          @close-pdf="this.pdfView = false"
-        ></webViewer>
-      </div>
+      <webViewer
+        ref="webViewer"
+        @close-pdf="this.pdfView = false"
+        style="width: 1000px; height: 750px; max-width: 1000px"
+      ></webViewer>
     </q-dialog>
 
     <methods
@@ -1639,24 +1638,29 @@ export default {
         {
           label: "DETALLE DE GUIAS ASOCIADAS",
           value: "DE",
+          zoom: 1.5,
         },
         {
           label: "RESUMEN DISTRIBUIDO POR DESTINO",
           value: "RE",
+          zoom: 1.5,
         },
       ],
       tipoImpresion2: [
         {
           label: "GENERAL",
           value: "GE",
+          zoom: 1.5,
         },
         {
           label: "DIARIO",
           value: "DI",
+          zoom: 1.2,
         },
         {
           label: "COMISIONES",
           value: "CO",
+          zoom: 1.2,
         },
       ],
       money: {
@@ -2512,12 +2516,15 @@ export default {
       return number;
     },
     printReport() {
-      if (this.selectedTipo.value == "DI" && this.fecha_desde != this.fecha_hasta) {
+      if (
+        this.selectedTipo.value == "DI" &&
+        this.fecha_desde != this.fecha_hasta
+      ) {
         this.$q.notify({
-            message: "Debe seleccionar la misma Fecha Desde y Hasta",
-            color: "red",
-          });
-          return;
+          message: "Debe seleccionar la misma Fecha Desde y Hasta",
+          color: "red",
+        });
+        return;
       }
       this.pdfView = true;
     },
@@ -2545,7 +2552,10 @@ export default {
             this.pdfView = false;
             return;
           }
-          this.$refs.webViewer.showpdf(res.data.pdfPath);
+          this.$refs.webViewer.showpdf(
+            res.data.pdfPath,
+            this.selectedTipo.zoom
+          );
         })
         .catch((err) => {
           this.$q.notify({

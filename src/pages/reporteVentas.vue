@@ -2,11 +2,11 @@
   <q-page class="pagina q-pa-md">
     <div
       class="row justify-end q-pa-md col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
-      style="margin-left: 100px; margin-right: 120px"
+      style="margin-left: 20px;"
     >
       <div
-        class="row q-pa-md col-md-6 col-xl-6 col-lg-6 col-xs-12 col-sm-12"
-        style="align-self: center; text-align: center; margin-top: 15px"
+        class="row col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 q-pa-sm justify-center"
+        style="align-self: center; text-align: center; margin-top: 15px "
       >
         <div
           class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
@@ -196,18 +196,18 @@
           <div v-else style="margin-bottom: 40px"></div>
         </div>
         <div
-          class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12"
+          class="col-md-12 col-xs-12 col-sm-12"
           style="align-self: center; text-align: center"
         >
           <p
-            style="font-size: 20px; margin-bottom: 0px; margin-bottom: 15px"
+            style="font-size: 20px; margin-bottom: 5px"
             class="text-secondary"
           >
             <strong>Periodo Consultado</strong>
           </p>
         </div>
         <div
-          class="col-md-4 col-xs-12 cardMargin selectMobile2"
+          class="col-md-6 col-xs-12 cardMargin selectMobile2"
           style="align-self: center; text-align: center; margin-bottom: 15px"
         >
           <q-input
@@ -241,7 +241,7 @@
           </q-input>
         </div>
         <div
-          class="col-md-4 col-xs-12 cardMargin selectMobile2"
+          class="col-md-6 col-xs-12 cardMargin selectMobile2"
           style="align-self: center; text-align: center; margin-bottom: 15px"
         >
           <q-input
@@ -275,7 +275,7 @@
           </q-input>
         </div>
         <div
-          class="col-md-4 col-xl-4 col-lg-4 col-xs-4 col-sm-4 cardMargin selectMobile2"
+          class="col-md-4 cardMargin selectMobile2"
           style="align-self: center; text-align: center; margin-bottom: 15px"
         >
           <q-select
@@ -304,7 +304,7 @@
           <div v-else style="margin-bottom: 40px"></div>
         </div>
         <div
-          class="col-md-4 col-xl-4 col-lg-4 col-xs-4 col-sm-4 cardMargin selectMobile2"
+          class="col-md-4 cardMargin selectMobile2"
           style="align-self: center; text-align: center; margin-bottom: 15px"
         >
           <q-select
@@ -323,7 +323,7 @@
             v-model="selectedTipoDoc"
             outlined
             standout
-            label="Tipo de Documento"
+            label="Tipo Doc."
           >
           </q-select>
           <q-select
@@ -342,13 +342,13 @@
             v-model="selectedForma"
             outlined
             standout
-            label="Forma de Pago"
+            label="Forma Pago"
           >
           </q-select>
           <div v-else style="margin-bottom: 40px"></div>
         </div>
         <div
-          class="col-md-4 col-xl-4 col-lg-4 col-xs-4 col-sm-4 cardMargin selectMobile2"
+          class="col-md-4 cardMargin selectMobile2"
           style="align-self: center; text-align: center; margin-bottom: 15px"
         >
           <q-select
@@ -373,7 +373,7 @@
           <div v-else style="margin-bottom: 40px"></div>
         </div>
         <div
-          class="col-md-3 col-xl-3 col-lg-3 col-xs-3 col-sm-3"
+          class="col-md-3"
           style="align-self: center; text-align: center"
         >
           <p
@@ -385,12 +385,12 @@
               selectedTipo.value != 'CCC'
             "
           >
-            <strong>Montos Venta</strong>
+            <strong>Ver Montos</strong>
           </p>
           <div v-else style="margin-bottom: 40px"></div>
         </div>
         <div
-          class="col-md-3 col-xl-3 col-lg-3 col-xs-3 col-sm-3 cardMargin selectMobile2"
+          class="col-md-3 cardMargin selectMobile2"
           style="align-self: center; text-align: center; margin-bottom: 15px"
         >
           <q-btn-toggle
@@ -413,11 +413,11 @@
           <div v-else style="margin-bottom: 40px"></div>
         </div>
         <div
-          class="col-md-3 col-xl-3 col-lg-3 col-xs-3 col-sm-3"
+          class="col-md-2"
           style="align-self: center; text-align: center"
         >
           <p
-            style="font-size: 20px; margin-bottom: 15px; margin-left: -80px"
+            style="font-size: 20px; margin-bottom: 15px; margin-left: -50px;"
             class="text-secondary"
             v-if="
               selectedTipo.value == 'VC' ||
@@ -428,16 +428,16 @@
             <strong>Serie</strong>
           </p>
           <p
-            style="font-size: 20px; margin-bottom: 15px"
+            style="font-size: 20px; margin-bottom: 15px; margin-right: -20px;"
             class="text-secondary"
             v-else-if="selectedTipo.value == 'GC' || selectedTipo.value == 'FA'"
           >
-            <strong>Orden Correlativo</strong>
+            <strong>Correlativo</strong>
           </p>
           <div v-else style="margin-bottom: 40px"></div>
         </div>
         <div
-          class="col-md-1 col-xl-1 col-lg-1 col-xs-1 col-sm-1 cardMargin selectMobile2"
+          class="col-md-3 cardMargin selectMobile2"
           style="align-self: center; text-align: center; margin-bottom: 15px"
         >
           <q-checkbox
@@ -451,7 +451,7 @@
             left-label
             val="44"
             label="44"
-            style="margin-left: -80px"
+            style="margin-left: -60px"
           />
           <q-checkbox
             v-if="
@@ -474,25 +474,8 @@
             v-model="selectedCorrelativo"
             color="primary"
             left-label
+            style="margin-left: -40px"
           />
-          <div v-else style="margin-bottom: 40px"></div>
-        </div>
-        <div
-          class="col-md-1 col-xl-1 col-lg-1 col-xs-1 col-sm-1"
-          style="align-self: center; text-align: center"
-        >
-          <p
-            style="font-size: 20px; margin-bottom: 15px"
-            class="text-secondary"
-            v-if="
-              selectedTipo.value == 'VG' ||
-              selectedTipo.value == 'VC' ||
-              selectedTipo.value == 'TV' ||
-              selectedTipo.value == 'RD'
-            "
-          >
-            <strong>$</strong>
-          </p>
           <div v-else style="margin-bottom: 40px"></div>
         </div>
         <div
@@ -500,8 +483,7 @@
           style="
             align-self: center;
             text-align: center;
-            margin-bottom: 15px;
-            margin-left: -15px;
+            margin-bottom: 15px;            
           "
         >
           <q-checkbox
@@ -514,11 +496,14 @@
             v-model="selectedDolar"
             color="primary"
             left-label
+            label="$"
+            class="text-secondary"
+            style="font-size:20px; font-weight: bold; margin-left: -30px;"
           />
           <div v-else style="margin-bottom: 40px"></div>
         </div>
         <div
-          class="col-md-4 col-xl-4 col-lg-4 col-xs-4 col-sm-4"
+          class="col-md-3"
           style="align-self: center; text-align: center"
         >
           <p
@@ -526,24 +511,24 @@
             class="text-secondary"
             v-if="selectedTipo.value == 'VC'"
           >
-            <strong>Agrupado Mes</strong>
+            <strong>Agrup. Mes</strong>
           </p>
           <p
             style="font-size: 20px; margin-bottom: 15px"
             class="text-secondary"
             v-else-if="selectedTipo.value == 'TV'"
           >
-            <strong>Agrupado Clientes</strong>
+            <strong>Agrup. Clientes</strong>
           </p>
           <div v-else style="margin-bottom: 40px"></div>
         </div>
         <div
-          class="col-md-1 col-xl-1 col-lg-1 col-xs-1 col-sm-1 cardMargin selectMobile2"
+          class="col-md-1 cardMargin selectMobile2"
           style="
             align-self: center;
             text-align: center;
             margin-bottom: 15px;
-            margin-left: -30px;
+            margin-left: -10px;
           "
         >
           <q-checkbox
@@ -563,25 +548,25 @@
           <div v-else style="margin-bottom: 40px"></div>
         </div>
         <div
-          class="col-md-4 col-xl-4 col-lg-4 col-xs-4 col-sm-4"
+          class="col-md-3"
           style="align-self: center; text-align: center"
         >
           <p
-            style="font-size: 20px; margin-bottom: 15px; margin-left: -40px"
+            style="font-size: 20px; margin-bottom: 15px; margin-left: -10px"
             class="text-secondary"
             v-if="selectedTipo.value == 'VC' || selectedTipo.value == 'TV'"
           >
-            <strong>Agrupado Días</strong>
+            <strong>Agrup. Días</strong>
           </p>
           <div v-else style="margin-bottom: 40px"></div>
         </div>
         <div
-          class="col-md-1 col-xl-1 col-lg-1 col-xs-1 col-sm-1 cardMargin selectMobile2"
+          class="col-md-1 cardMargin selectMobile2"
           style="
             align-self: center;
             text-align: center;
             margin-bottom: 15px;
-            margin-left: -50px;
+            margin-left: -10px;
           "
         >
           <q-checkbox
@@ -599,11 +584,11 @@
           <div v-else style="margin-bottom: 40px"></div>
         </div>
         <div
-          class="col-md-1 col-xl-1 col-lg-1 col-xs-1 col-sm-1"
+          class="col-md-3"
           style="align-self: center; text-align: center"
         >
           <p
-            style="font-size: 20px; margin-bottom: 15px; margin-left: 40px"
+            style="font-size: 20px; margin-bottom: 15px;"
             class="text-secondary"
             v-if="
               selectedTipo.value == 'VC' ||
@@ -616,12 +601,12 @@
           <div v-else style="margin-bottom: 40px"></div>
         </div>
         <div
-          class="col-md-1 col-xl-1 col-lg-1 col-xs-1 col-sm-1 cardMargin selectMobile2"
+          class="col-md-1 cardMargin selectMobile2"
           style="
             align-self: center;
             text-align: center;
             margin-bottom: 15px;
-            margin-left: 35px;
+            margin-left: -35px;
           "
         >
           <q-checkbox
@@ -637,7 +622,7 @@
           <div v-else style="margin-bottom: 40px"></div>
         </div>
         <div
-          class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12 cardMargin selectMobile2"
+          class="col-md-4 col-xl-12 col-lg-12 col-xs-12 col-sm-12 cardMargin selectMobile2"
           style="align-self: center; text-align: center"
         >
           <q-btn
@@ -661,10 +646,14 @@
         </div>
       </div>
       <div
-        class="q-pa-md col-md-6 col-xs-12 q-gutter-y-md justify-center"
-        style="height: 650px"
+        class="q-pa-md col-md-8 col-xs-12 q-gutter-y-md justify-center"
       >
-        <webViewer ref="webViewer" v-if="pdf == true"></webViewer>
+        <webViewer
+          ref="webViewer" 
+          v-if="pdf == true" 
+          style="width: 960px; height: 620px; max-width: 960px"
+        >
+        </webViewer>
         <q-inner-loading :showing="loading" color="primary" class="loading" />
       </div>
     </div>
@@ -708,59 +697,72 @@ export default {
         {
           label: "VENTAS GENERALES",
           value: "VG",
-          agentes: true,
+          zoom: 1.6,
         },
         {
           label: "VENTAS POR CLIENTES",
           value: "VC",
+          zoom: 1.6,
         },
         {
           label: "TOTALES DE VENTAS",
           value: "TV",
+          zoom: 1.6,
         },
         {
           label: "TOTALES RELACIÓN DESPACHO",
           value: "RD",
+          zoom: 1.6,
         },
         {
           label: "GUÍAS CARGAS",
           value: "GC",
+          zoom: 1.4,
         },
         {
           label: "FACTURAS",
           value: "FA",
+          zoom: 1.4,
         },
         {
           label: "FACTURAS FPO",
           value: "FPO",
+          zoom: 1.4,
         },
         {
           label: "NOTAS DE CRÉDITO",
           value: "NC",
+          zoom: 1.4,
         },
         {
           label: "NOTAS DE DÉBITO",
           value: "ND",
+          zoom: 1.4,
         },
         {
           label: "DOCUMENTOS EMITIDOS",
           value: "DE",
+          zoom: 1.4,
         },
         {
           label: "COBRANZA GENERAL",
           value: "CG",
+          zoom: 1.4,
         },
         {
           label: "COBRO EN DESTINO",
           value: "CD",
+          zoom: 1.4,
         },
         {
           label: "CUENTAS POR COBRAR",
           value: "CC",
+          zoom: 1.4,
         },
         {
           label: "CUENTAS POR COBRAR CLIENTE",
           value: "CCC",
+          zoom: 1.4,
         },
       ],
       estatus: [
@@ -904,7 +906,7 @@ export default {
       dataArray.correlativo = this.selectedCorrelativo;
       dataArray.tipo_doc = this.selectedTipoDoc.value;
 
-      if (this.reportValue == "VC") {
+      if (this.reportValue == "VC" || this.reportValue == "CCC") {
         if (this.selectedAgrMes) this.reportValue = "VCM";
         if (this.selectedAgrDia) this.reportValue = "VCD";
         if (!this.selectedAgencia.id) {
@@ -961,13 +963,15 @@ export default {
           },
         })
         .then((res) => {
+          let zoom = this.reportValue ? this.selectedTipo.zoom : 0.7;
           if (!res.data.validDoc) {
             this.$q.notify({
               message: "No existen registros para este conjunto de Filtos",
               color: "red",
             });
+            zoom = 0.7;
           }
-          this.$refs.webViewer.showpdf(res.data.pdfPath);
+          this.$refs.webViewer.showpdf(res.data.pdfPath, zoom, false, false);
           this.loading = false;
         })
         .catch((err) => {

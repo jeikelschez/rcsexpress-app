@@ -155,7 +155,10 @@
                     style="padding-bottom: 0px"
                     @blur="getDataClientes()"
                     @keyup.enter="getDataClientes()"
-                    @update:model-value="getDataClientes(); this.$refs.qDateProxy1.hide()"
+                    @update:model-value="
+                      getDataClientes();
+                      this.$refs.qDateProxy1.hide();
+                    "
                   ></q-date>
                 </q-popup-proxy>
               </q-icon>
@@ -193,7 +196,10 @@
                     style="padding-bottom: 0px"
                     @blur="getDataClientes()"
                     @keyup.enter="getDataClientes()"
-                    @update:model-value="getDataClientes(); this.$refs.qDateProxy2.hide() "
+                    @update:model-value="
+                      getDataClientes();
+                      this.$refs.qDateProxy2.hide();
+                    "
                   ></q-date>
                 </q-popup-proxy>
               </q-icon>
@@ -455,10 +461,12 @@
       </q-table>
     </div>
 
-    <q-dialog v-model="pdfView" @show="this.printLetter()">
-      <div style="width: 700px; height: 700px">
-        <webViewer ref="webViewer" @close-pdf="this.pdfView = false"></webViewer>
-      </div>
+    <q-dialog v-model="pdfView" @show="this.print()">
+      <webViewer
+        ref="webViewer"
+        @close-pdf="this.pdfView = false"
+        style="width: 1000px; height: 750px; max-width: 1000px"
+      ></webViewer>
     </q-dialog>
 
     <methods
@@ -770,7 +778,7 @@ export default {
       this.getDataClientes();
     },
     // Imprimir Carta
-    printLetter() {
+    print() {
       var factArray = [];
       this.dialog = false;
       for (var i = 0; i <= this.selected.length - 1; i++) {
@@ -791,7 +799,7 @@ export default {
             contacto: this.form.contacto,
             cargo: this.form.cargo,
             ciudad: this.selectedAgencia.ciudades.desc_ciudad,
-            usuario: LocalStorage.getItem('tokenTraducido').usuario.nombre,
+            usuario: LocalStorage.getItem("tokenTraducido").usuario.nombre,
           },
         })
         .then((res) => {
@@ -801,10 +809,10 @@ export default {
               color: "red",
             });
             this.resetForm();
-            this.pdfView = false
+            this.pdfView = false;
             return;
           }
-          this.$refs.webViewer.showpdf(res.data.pdfPath);
+          this.$refs.webViewer.showpdf(res.data.pdfPath, 1.3);
         })
         .catch((err) => {
           this.$q.notify({
@@ -812,7 +820,7 @@ export default {
             color: "red",
           });
           this.resetForm();
-          this.pdfView = false
+          this.pdfView = false;
           return;
         });
     },

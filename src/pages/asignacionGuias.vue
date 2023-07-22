@@ -797,10 +797,12 @@
       </q-card>
     </q-dialog>
 
-    <q-dialog v-model="pdfView" @show="this.printPending()">
-      <div style="width: 700px; height: 700px; ">
-        <webViewer ref="webViewer" @close-pdf="closePdf"></webViewer>
-      </div>
+    <q-dialog v-model="pdfView" @show="this.print">
+      <webViewer
+        ref="webViewer"
+        @close-pdf="closePdf"
+        style="width: 1000px; height: 750px; max-width: 1000px"
+      ></webViewer>
     </q-dialog>
 
     <methods
@@ -1089,7 +1091,10 @@ export default {
     },
     // Metodo para Crear Datos
     sendData() {
-      this.form.fecha_asignacion = moment(this.form.fecha_asignacion, "DD/MM/YYYY").format("YYYY-MM-DD");
+      this.form.fecha_asignacion = moment(
+        this.form.fecha_asignacion,
+        "DD/MM/YYYY"
+      ).format("YYYY-MM-DD");
       this.form.cod_agencia = this.selectedAgencia.id
         ? this.selectedAgencia.id
         : this.form.cod_agencia.id;
@@ -1124,17 +1129,16 @@ export default {
       }
     },
     // Imprimir Guias pendientes
-    printPending() {
+    print() {
       api
-        .get(`/cguias/generatePDF`, {
+        .get(`/reports/asignacionGuias`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            id: this.selected 
+            id: this.selected,
           },
         })
         .then((res) => {
-          this.$refs.webViewer.showpdf("", res.data.base64);
-          this.$refs.webViewer.design(1);
+          this.$refs.webViewer.showpdf(res.data.pdfPath, 1.3);
         });
     },
     // Metodo para Resetear Filtros

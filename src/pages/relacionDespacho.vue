@@ -794,11 +794,12 @@
     </div>
 
     <q-dialog v-model="pdfView" @show="this.printReport()">
-        <webViewer
-          ref="webViewer"
-          @print-pdf="this.sendCostos()"
-          @close-pdf="this.pdfView = false"
-        ></webViewer>
+      <webViewer
+        ref="webViewer"
+        @print-pdf="this.sendCostos()"
+        @close-pdf="this.pdfView = false"
+        style="width: 1400px; height: 750px; max-width: 1400px;"
+      ></webViewer>
     </q-dialog>
 
     <q-dialog v-model="confirmCostosPopUp" persistent>
@@ -1207,7 +1208,7 @@ export default {
             this.pdfView = false;
             return;
           }
-          this.$refs.webViewer.showpdf(res.data.pdfPath);
+          this.$refs.webViewer.showpdf(res.data.pdfPath, 1.6);
         })
         .catch((err) => {
           this.$q.notify({
@@ -1414,7 +1415,7 @@ export default {
       formCosto.destino = destino;
       formCosto.cod_transporte = this.selectedUnidad.id;
       if (this.selectedAyudante.id)
-        formCosto.cod_ayudante = this.selectedAyudante.id;      
+        formCosto.cod_ayudante = this.selectedAyudante.id;
 
       // Creamos el costo
       let idCosto;

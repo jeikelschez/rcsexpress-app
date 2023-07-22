@@ -481,23 +481,20 @@
     </q-dialog>
 
     <q-dialog v-model="dialogFactura" @show="this.printFactura()">
-      <q-card class="q-pa-md" bordered style="width: 1000px; max-width: 600vw">
-        <q-card-section>
-          <div style="width: 100%; height: 600px">
-            <webViewer
-              ref="webViewer"
-              @print-pdf="this.printData()"
-              @close-pdf="dialogFactura = false"
-            ></webViewer>
-          </div>
-        </q-card-section>
-      </q-card>
+      <webViewer
+        ref="webViewer"
+        @print-pdf="this.printData()"
+        @close-pdf="dialogFactura = false"
+        style="width: 900px; height: 750px; max-width: 900px"
+      ></webViewer>
     </q-dialog>
 
     <q-dialog v-model="dialogAnexo">
-      <div style="width: 100%; height: 700px">
-        <webViewer ref="webViewer" @close-pdf="dialogAnexo = false"></webViewer>
-      </div>
+      <webViewer
+        ref="webViewer"
+        @close-pdf="dialogAnexo = false"
+        style="width: 1000px; height: 750px; max-width: 1000px"
+      ></webViewer>
     </q-dialog>
 
     <div class="q-pa-sm justify-center">
@@ -2421,11 +2418,9 @@ export default {
       if (!this.confirmPrint) {
         return;
       }
-
       this.confirmPrint = false;
-      this.dialogFactura = false;
-      this.errorMessage("Aqui imprimo la factura");
       this.sendData();
+      this.$refs.webViewer.confirmPrint = true;
     },
     // Metodos para guardar la Factura
     async sendData() {
@@ -2683,7 +2678,7 @@ export default {
               this.dialogAnexo = false;
               return;
             }
-            this.$refs.webViewer.showpdf(res.data.pdfPath);
+            this.$refs.webViewer.showpdf(res.data.pdfPath, 1.3);
           })
           .catch((err) => {
             this.$q.notify({
@@ -3401,7 +3396,7 @@ export default {
             this.dialogFactura = false;
             return;
           }
-          this.$refs.webViewer.showpdf(res.data.pdfPath);
+          this.$refs.webViewer.showpdf(res.data.pdfPath, 1.5, true);
         })
         .catch((err) => {
           this.$q.notify({
