@@ -1750,7 +1750,7 @@ export default {
     };
   },
   mounted() {
-    this.$emit("changeTitle", "SCEN - Mantenimiento - Registro de Costos", "");
+    this.$emit("changeTitle", "SCEN - Operaciones - Registro de Costos", "");
     this.$refs.methods.getData("/agencias", "setDataInit", "agencias");
     this.$refs.methods.getData("/agentes", "setData", "agentes", {
       headers: {

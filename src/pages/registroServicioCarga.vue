@@ -3288,7 +3288,7 @@ export default {
   mounted() {
     this.$emit(
       "changeTitle",
-      "SCEN - Mantenimiento - Registro Servicio Carga",
+      "SCEN - Ventas - Registro Servicio Carga",
       ""
     );
 

@@ -1026,7 +1026,7 @@ export default {
   mounted() {
     this.$emit(
       "changeTitle",
-      "SCEN - Mantenimiento - Relación de Despacho",
+      "SCEN - Operaciones - Relación de Despacho",
       ""
     );
     this.$refs.methods.getData("/agencias", "setData", "agencias");

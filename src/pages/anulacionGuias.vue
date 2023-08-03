@@ -90,7 +90,7 @@
           style="align-self: center; text-align: center"
         >
           <p style="font-size: 20px" class="text-secondary">
-            <strong>MANTENIMIENTO - ANULACION DE GUIAS</strong>
+            <strong>VENTAS - ANULACION DE GUIAS</strong>
           </p>
         </div>
         <div
@@ -600,7 +600,7 @@ export default {
     };
   },
   mounted() {
-    this.$emit("changeTitle", "SCEN - Mantenimiento - Anulacion de Guias", "");
+    this.$emit("changeTitle", "SCEN - Ventas - Anulacion de Guias", "");
     this.$refs.methods.getData("/agencias", "setDataInit", "agencias");
     this.$refs.methods.getData("/clientes", "setData", "clientesAll");
     this.$refs.methods.getData("/coperacion", "setData", "motivos", {

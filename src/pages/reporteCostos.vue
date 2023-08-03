@@ -541,6 +541,7 @@ export default {
   },
   mounted() {
     this.pdfPrint();
+    this.$emit("changeTitle", "SCEN - Operaciones - Reporte de Costos", "");
     this.$refs.methods.getData("/agencias", "setData", "agencias");
     this.$refs.methods.getData("/proveedores", "setData", "proveedores", {
       headers: {

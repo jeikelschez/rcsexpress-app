@@ -89,7 +89,7 @@ export default {
           instance.UI.useEmbeddedPrint(true);
           setTimeout(() => {
             instance.UI.setZoomLevel(zoom ? zoom : 0.7);
-          }, 1000);
+          }, 1500);
         }
       );
     },

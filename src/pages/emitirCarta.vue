@@ -78,7 +78,7 @@
           style="align-self: center; text-align: center"
         >
           <p style="font-size: 20px" class="text-secondary">
-            <strong>MANTENIMIENTO - EMITIR CARTA A CLIENTES</strong>
+            <strong>VENTAS - EMITIR CARTA A CLIENTES</strong>
           </p>
         </div>
         <div
@@ -590,7 +590,7 @@ export default {
   mounted() {
     this.$emit(
       "changeTitle",
-      "SCEN - Mantenimiento - Emitir Carta de Cliente",
+      "SCEN - Ventas - Emitir Carta de Cliente",
       ""
     );
     this.$refs.methods.getData("/agencias", "setDataAgencias", "agencias");

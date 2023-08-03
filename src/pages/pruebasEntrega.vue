@@ -1478,7 +1478,7 @@ export default {
     };
   },
   mounted() {
-    this.$emit("changeTitle", "SCEN - Mantenimiento - Pruebas de Entrega", "");
+    this.$emit("changeTitle", "SCEN - Operaciones - Pruebas de Entrega", "");
     this.$refs.methods.getData("/agencias", "setDataInit", "agencias");
     this.$refs.methods.getData("/agentes", "setData", "agentes", {
       headers: {
