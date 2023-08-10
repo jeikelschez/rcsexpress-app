@@ -174,7 +174,7 @@
             round
             padding="sm"
             style="margin-right: 15px"
-            @click="addDetail()"
+            @click="detalleDialog = true"
           >
             <q-icon size="25px" name="description" color="white"> </q-icon>
             <q-tooltip
@@ -214,19 +214,27 @@
               print = 1;
             "
           >
-            <q-icon size="25px" name="print" color="white"> </q-icon>
+            <q-icon size="25px" name="input" color="white"> </q-icon>
             <q-tooltip
               class="bg-primary"
               transition-show="scale"
               style="max-height: 30px"
               transition-hide="scale"
               color="primary"
-              >Imprimir</q-tooltip
+              >Generar</q-tooltip
             >
           </q-btn>
         </div>
       </div>
     </div>
+
+    <q-dialog v-model="detalleDialog">
+      <q-card class="q-pa-md" bordered style="width: 600px; max-width: 120vw">
+        <q-card-section>
+          <q-input v-model="detalle" filled type="textarea" />
+        </q-card-section>
+      </q-card>
+    </q-dialog>
 
     <div
       class="q-pa-md col-md-12 col-xs-12 q-gutter-y-md justify-center"
@@ -277,6 +285,8 @@ export default {
       selectedProveedor: [],
       print: "",
       tipoReporte: "",
+      detalle: "",
+      detalleDialog: false,
       fecha_desde: moment().format("DD/MM/YYYY"),
       fecha_hasta: moment().format("DD/MM/YYYY"),
     };
@@ -361,9 +371,12 @@ export default {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
             print: this.print,
             agencia: this.selectedAgencia.id ? this.selectedAgencia.id : "",
-            proveedor: this.selectedProveedor.id ? this.selectedProveedor.id : "",
+            proveedor: this.selectedProveedor.id
+              ? this.selectedProveedor.id
+              : "",
             desde: this.fecha_desde,
             hasta: this.fecha_hasta,
+            detalle: this.detalle,
           },
         })
         .then((res) => {
@@ -376,7 +389,7 @@ export default {
           }
           this.$refs.webViewer.showpdf(
             res.data.pdfPath,
-            this.print == "" ? 0.83 : 1.9,
+            this.print == "" ? 0.83 : 1.5,
             false,
             false
           );
@@ -398,6 +411,7 @@ export default {
       this.selectedProveedor = [];
       this.fecha_desde = moment().format("DD/MM/YYYY");
       this.fecha_hasta = moment().format("DD/MM/YYYY");
+      this.detalle = "";
       this.print = "";
       this.pdfChange();
     },

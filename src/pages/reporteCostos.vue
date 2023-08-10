@@ -398,11 +398,11 @@
           >
             <q-btn
               rounded
-              label="Imprimir"
+              label="Generar"
               type="submit"
               color="primary"
               class="col-md-5 col-sm-5 col-xs-12"
-              icon="print"
+              icon="input"
               style="margin-right: 30px"
               @click="pdfChange(false)"
             />
@@ -623,7 +623,7 @@ export default {
           if (!this.selectedAgente.id) {
             this.$q.notify({
               message:
-                "Debe seleccionar el Agente antes de imprimir el reporte...",
+                "Debe seleccionar el Agente antes de generar el reporte...",
               color: "red",
             });
             this.loading = false;
@@ -639,7 +639,7 @@ export default {
           if (!this.selectedProveedor.id) {
             this.$q.notify({
               message:
-                "Debe seleccionar el Proveedor antes de imprimir el reporte...",
+                "Debe seleccionar el Proveedor antes de generar el reporte...",
               color: "red",
             });
             this.loading = false;
@@ -655,7 +655,7 @@ export default {
         if (!this.selectedAyudante.id) {
           this.$q.notify({
             message:
-              "Debe seleccionar el Ayudante antes de imprimir el reporte...",
+              "Debe seleccionar el Ayudante antes de generar el reporte...",
             color: "red",
           });
           this.loading = false;
@@ -670,7 +670,7 @@ export default {
         if (!this.selectedUnidad.id) {
           this.$q.notify({
             message:
-              "Debe seleccionar el Transporte antes de imprimir el reporte...",
+              "Debe seleccionar el Transporte antes de generar el reporte...",
             color: "red",
           });
           this.loading = false;

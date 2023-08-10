@@ -168,7 +168,7 @@ const routes = [
       {
         path: '/libroventas',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('src/pages/libroventas.vue')}]
+        children: [{ path: "", component: () => import('src/pages/libroVentas.vue')}]
       },
       {
         path: '/pagospendientesproveedores',

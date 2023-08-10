@@ -463,6 +463,9 @@
           <template v-slot:prepend>
             <q-icon name="search" />
           </template>
+          <template v-slot:clientesLoading>
+            <q-inner-loading showing color="primary" class="loading" />
+          </template>
         </q-select>
       </div>
       <div class="col-md-2 col-xs-12 cardMargin selectMobile2">
@@ -798,7 +801,7 @@
         ref="webViewer"
         @print-pdf="this.sendCostos()"
         @close-pdf="this.pdfView = false"
-        style="width: 1400px; height: 750px; max-width: 1400px;"
+        style="width: 1400px; height: 750px; max-width: 1400px"
       ></webViewer>
     </q-dialog>
 
@@ -1024,11 +1027,7 @@ export default {
     };
   },
   mounted() {
-    this.$emit(
-      "changeTitle",
-      "SCEN - Operaciones - Relación de Despacho",
-      ""
-    );
+    this.$emit("changeTitle", "SCEN - Operaciones - Relación de Despacho", "");
     this.$refs.methods.getData("/agencias", "setData", "agencias");
     this.$refs.methods.getData("/agentes", "setData", "agentes", {
       headers: {

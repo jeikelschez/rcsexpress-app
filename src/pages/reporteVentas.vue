@@ -627,11 +627,11 @@
         >
           <q-btn
             rounded
-            label="Imprimir"
+            label="Generar"
             type="submit"
             color="primary"
             class="col-md-5 col-sm-5 col-xs-12"
-            icon="print"
+            icon="input"
             style="margin-right: 30px"
             @click="pdfChange(false)"
           />
