@@ -10,7 +10,7 @@
           style="align-self: center; text-align: center"
         >
           <p style="font-size: 20px" class="text-secondary">
-            <strong>MANTENIMIENTO - LIBRO DE VENTAS</strong>
+            <strong>REPORTES - LIBRO DE COMPRAS</strong>
           </p>
         </div>
         <div
@@ -43,16 +43,6 @@
             outlined
             standout
             label="Agencia"
-            @update:model-value="
-              this.selectedCliente = [];
-              this.clientesLoading = true;
-              this.$refs.methods.getData(`/clientes`, 'setData', 'clientes', {
-                headers: {
-                  agencia: selectedAgencia.id,
-                  activo: 'S',
-                },
-              });
-            "
             ><template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey">
@@ -74,29 +64,27 @@
             dense
             transition-show="flip-up"
             transition-hide="flip-down"
-            :options="clientesSelected"
+            :options="proveedoresSelected"
             @filter="
               (val, update) =>
                 filterArray(
                   val,
                   update,
-                  'clientesSelected',
-                  'clientes',
-                  'nb_cliente'
+                  'proveedoresSelected',
+                  'proveedores',
+                  'nb_proveedor'
                 )
             "
             use-input
             hide-selected
             fill-input
             input-debounce="0"
-            option-label="nb_cliente"
+            option-label="nb_proveedor"
             option-value="id"
-            v-model="selectedCliente"
-            :loading="clientesLoading"
-            :disable="clientesLoading"
+            v-model="selectedProveedor"
             outlined
             standout
-            label="Cliente"
+            label="Proveedor"
             ><template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey">
@@ -106,9 +94,6 @@
             </template>
             <template v-slot:prepend>
               <q-icon name="search" />
-            </template>
-            <template v-slot:clientesLoading>
-              <q-inner-loading showing color="primary" class="loading" />
             </template>
           </q-select>
         </div>
@@ -183,20 +168,12 @@
         <div
           class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 selectMobile2"
         >
-          <q-checkbox
-            v-model="selectedCorrelativo"
-            color="primary"
-            left-label
-            label="Orden"
-            class="text-secondary"
-            style="font-size:20px; font-weight: bold; margin-right: 10px"
-          />
           <q-btn
             dense
             color="primary"
             round
             padding="sm"
-            style="margin-right: 10px"
+            style="margin-right: 15px"
             @click="detalleDialog = true"
           >
             <q-icon size="25px" name="description" color="white"> </q-icon>
@@ -214,7 +191,7 @@
             color="primary"
             round
             padding="sm"
-            style="margin-right: 10px"
+            style="margin-right: 15px"
             @click="resetFilters()"
           >
             <q-icon size="25px" name="filter_alt_off" color="white"> </q-icon>
@@ -246,7 +223,7 @@
               color="primary"
               >Generar</q-tooltip
             >
-          </q-btn>          
+          </q-btn>
         </div>
       </div>
     </div>
@@ -301,17 +278,15 @@ export default {
     return {
       pdf: true,
       agencias: [],
-      clientes: [],
+      proveedores: [],
       agenciasSelected: [],
       selectedAgencia: [],
-      clientesSelected: [],
-      selectedCliente: [],
+      proveedoresSelected: [],
+      selectedProveedor: [],
       print: "",
       tipoReporte: "",
       detalle: "",
       detalleDialog: false,
-      clientesLoading: false,
-      selectedCorrelativo: true,
       fecha_desde: moment().format("DD/MM/YYYY"),
       fecha_hasta: moment().format("DD/MM/YYYY"),
     };
@@ -325,13 +300,18 @@ export default {
   },
   mounted() {
     this.pdfPrint();
-    this.$emit("changeTitle", "SCEN - Reportes - Libro de Ventas", "");
+    this.$emit("changeTitle", "SCEN - Reportes - Libro de Compras", "");
     this.$refs.methods.getData("/agencias", "setData", "agencias");
+    this.$refs.methods.getData("/proveedores", "setData", "proveedores", {
+      headers: {
+        activo: "S",
+      },
+    });
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
         rol: LocalStorage.getItem("tokenTraducido").usuario.roles.id,
-        menu: "libroventas",
+        menu: "librocompras",
       },
     });
   },
@@ -374,7 +354,6 @@ export default {
 
     // Metodo para Setear Datos Iniciales
     setData(res, dataRes) {
-      eval("this." + dataRes + "Loading = false");
       this[dataRes] = res.data ? res.data : res;
     },
     async pdfChange() {
@@ -387,17 +366,18 @@ export default {
     },
     pdfPrint() {
       api
-        .get(`/reports/libroVentas`, {
+        .get(`/reports/libroCompras`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
             print: this.print,
             agencia: this.selectedAgencia.id ? this.selectedAgencia.id : "",
-            cliente: this.selectedCliente.id ? this.selectedCliente.id : "",
+            proveedor: this.selectedProveedor.id
+              ? this.selectedProveedor.id
+              : "",
             desde: this.fecha_desde,
             hasta: this.fecha_hasta,
             detalle: this.detalle,
-            correlativo: this.selectedCorrelativo
-          }, 
+          },
         })
         .then((res) => {
           if (!res.data.validDoc) {
@@ -428,11 +408,11 @@ export default {
     // Metodo para resetaer la data de los filtros
     resetFilters() {
       this.selectedAgencia = [];
-      this.selectedCliente = [];
+      this.selectedProveedor = [];
       this.fecha_desde = moment().format("DD/MM/YYYY");
       this.fecha_hasta = moment().format("DD/MM/YYYY");
-      this.print = "";
       this.detalle = "";
+      this.print = "";
       this.pdfChange();
     },
   },

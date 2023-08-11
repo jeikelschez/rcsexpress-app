@@ -10,7 +10,7 @@
           style="align-self: center; text-align: center"
         >
           <p style="font-size: 20px" class="text-secondary">
-            <strong>MANTENIMIENTO - LIBRO DE COMPRAS</strong>
+            <strong>REPORTES - PAGOS PENDIENTES A PROVEEDORES</strong>
           </p>
         </div>
         <div
@@ -56,7 +56,7 @@
           </q-select>
         </div>
         <div
-          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 cardMargin selectMobile2"
+          class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 cardMargin selectMobile2"
           style="align-self: center; text-align: center"
         >
           <q-select
@@ -166,26 +166,8 @@
           </q-input>
         </div>
         <div
-          class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 selectMobile2"
-        >
-          <q-btn
-            dense
-            color="primary"
-            round
-            padding="sm"
-            style="margin-right: 15px"
-            @click="detalleDialog = true"
-          >
-            <q-icon size="25px" name="description" color="white"> </q-icon>
-            <q-tooltip
-              class="bg-primary"
-              style="max-height: 30px"
-              transition-show="scale"
-              transition-hide="scale"
-              color="primary"
-              >Agregar Detalle</q-tooltip
-            >
-          </q-btn>
+          class="col-md-1 col-xl-1 col-lg-1 col-xs-12 col-sm-12 selectMobile2"
+        >          
           <q-btn
             dense
             color="primary"
@@ -226,15 +208,7 @@
           </q-btn>
         </div>
       </div>
-    </div>
-
-    <q-dialog v-model="detalleDialog">
-      <q-card class="q-pa-md" bordered style="width: 600px; max-width: 120vw">
-        <q-card-section>
-          <q-input v-model="detalle" filled type="textarea" />
-        </q-card-section>
-      </q-card>
-    </q-dialog>
+    </div>    
 
     <div
       class="q-pa-md col-md-12 col-xs-12 q-gutter-y-md justify-center"
@@ -286,7 +260,6 @@ export default {
       print: "",
       tipoReporte: "",
       detalle: "",
-      detalleDialog: false,
       fecha_desde: moment().format("DD/MM/YYYY"),
       fecha_hasta: moment().format("DD/MM/YYYY"),
     };
@@ -300,7 +273,7 @@ export default {
   },
   mounted() {
     this.pdfPrint();
-    this.$emit("changeTitle", "SCEN - Reportes - Libro de Compras", "");
+    this.$emit("changeTitle", "SCEN - Reportes - Pagos Pendientes a Proveedores", "");
     this.$refs.methods.getData("/agencias", "setData", "agencias");
     this.$refs.methods.getData("/proveedores", "setData", "proveedores", {
       headers: {
@@ -311,7 +284,7 @@ export default {
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
         rol: LocalStorage.getItem("tokenTraducido").usuario.roles.id,
-        menu: "librocompras",
+        menu: "pagospendproveedores",
       },
     });
   },
