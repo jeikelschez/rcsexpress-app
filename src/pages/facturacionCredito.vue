@@ -2663,7 +2663,7 @@ export default {
             .padStart(9, "00-000000");
 
         await api
-          .get(`/reports/anexoFactura`, {
+          .get(`/pdfreports/anexoFactura`, {
             headers: {
               Authorization: `Bearer ${LocalStorage.getItem("token")}`,
               data: JSON.stringify(formFactura),
@@ -3381,7 +3381,7 @@ export default {
       factArray.igtf_bs = igtf_bs.replaceAll(",", "").replaceAll(".", ",");
 
       api
-        .get(`/reports/facturaPreimpreso`, {
+        .get(`/pdfreports/facturaPreimpreso`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
             data: JSON.stringify(factArray),

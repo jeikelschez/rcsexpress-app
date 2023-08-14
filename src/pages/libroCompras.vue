@@ -366,7 +366,7 @@ export default {
     },
     pdfPrint() {
       api
-        .get(`/reports/libroCompras`, {
+        .get(`/pdfreports/libroCompras`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
             print: this.print,

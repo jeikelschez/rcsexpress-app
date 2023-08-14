@@ -2,11 +2,11 @@
   <q-page class="pagina q-pa-md">
     <div
       class="row justify-end q-pa-md col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
-      style="margin-left: 20px;"
+      style="margin-left: 20px"
     >
       <div
         class="row col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 q-pa-sm justify-center"
-        style="align-self: center; text-align: center; margin-top: 15px "
+        style="align-self: center; text-align: center; margin-top: 15px"
       >
         <div
           class="col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
@@ -199,10 +199,7 @@
           class="col-md-12 col-xs-12 col-sm-12"
           style="align-self: center; text-align: center"
         >
-          <p
-            style="font-size: 20px; margin-bottom: 5px"
-            class="text-secondary"
-          >
+          <p style="font-size: 20px; margin-bottom: 5px" class="text-secondary">
             <strong>Periodo Consultado</strong>
           </p>
         </div>
@@ -372,10 +369,7 @@
           </q-select>
           <div v-else style="margin-bottom: 40px"></div>
         </div>
-        <div
-          class="col-md-3"
-          style="align-self: center; text-align: center"
-        >
+        <div class="col-md-3" style="align-self: center; text-align: center">
           <p
             style="font-size: 20px; margin-bottom: 15px"
             class="text-secondary"
@@ -412,12 +406,9 @@
           </q-btn-toggle>
           <div v-else style="margin-bottom: 40px"></div>
         </div>
-        <div
-          class="col-md-2"
-          style="align-self: center; text-align: center"
-        >
+        <div class="col-md-2" style="align-self: center; text-align: center">
           <p
-            style="font-size: 20px; margin-bottom: 15px; margin-left: -50px;"
+            style="font-size: 20px; margin-bottom: 15px; margin-left: -50px"
             class="text-secondary"
             v-if="
               selectedTipo.value == 'VC' ||
@@ -428,7 +419,7 @@
             <strong>Serie</strong>
           </p>
           <p
-            style="font-size: 20px; margin-bottom: 15px; margin-right: -20px;"
+            style="font-size: 20px; margin-bottom: 15px; margin-right: -20px"
             class="text-secondary"
             v-else-if="selectedTipo.value == 'GC' || selectedTipo.value == 'FA'"
           >
@@ -480,11 +471,7 @@
         </div>
         <div
           class="col-md-1 col-xl-1 col-lg-1 col-xs-1 col-sm-1 cardMargin selectMobile2"
-          style="
-            align-self: center;
-            text-align: center;
-            margin-bottom: 15px;            
-          "
+          style="align-self: center; text-align: center; margin-bottom: 15px"
         >
           <q-checkbox
             v-if="
@@ -498,14 +485,11 @@
             left-label
             label="$"
             class="text-secondary"
-            style="font-size:20px; font-weight: bold; margin-left: -30px;"
+            style="font-size: 20px; font-weight: bold; margin-left: -30px"
           />
           <div v-else style="margin-bottom: 40px"></div>
         </div>
-        <div
-          class="col-md-3"
-          style="align-self: center; text-align: center"
-        >
+        <div class="col-md-3" style="align-self: center; text-align: center">
           <p
             style="font-size: 20px; margin-bottom: 15px"
             class="text-secondary"
@@ -547,10 +531,7 @@
           />
           <div v-else style="margin-bottom: 40px"></div>
         </div>
-        <div
-          class="col-md-3"
-          style="align-self: center; text-align: center"
-        >
+        <div class="col-md-3" style="align-self: center; text-align: center">
           <p
             style="font-size: 20px; margin-bottom: 15px; margin-left: -10px"
             class="text-secondary"
@@ -583,12 +564,9 @@
           />
           <div v-else style="margin-bottom: 40px"></div>
         </div>
-        <div
-          class="col-md-3"
-          style="align-self: center; text-align: center"
-        >
+        <div class="col-md-3" style="align-self: center; text-align: center">
           <p
-            style="font-size: 20px; margin-bottom: 15px;"
+            style="font-size: 20px; margin-bottom: 15px"
             class="text-secondary"
             v-if="
               selectedTipo.value == 'VC' ||
@@ -630,27 +608,35 @@
             label="Generar"
             type="submit"
             color="primary"
-            class="col-md-5 col-sm-5 col-xs-12"
+            class="col-md-3 col-sm-3 col-xs-12"
             icon="input"
-            style="margin-right: 30px"
+            style="margin-right: 20px"
             @click="pdfChange(false)"
+          />
+          <q-btn
+            rounded
+            :disabled="!this.enabledExport"
+            label="Excel"
+            color="primary"
+            class="col-md-3 col-sm-3 col-xs-12"
+            icon="system_update_alt"
+            style="margin-right: 20px"
+            @click="exportExcel()"
           />
           <q-btn
             rounded
             label="Limpiar"
             color="primary"
-            class="col-md-5 col-sm-5 col-xs-12 btnmovil"
+            class="col-md-3 col-sm-3 col-xs-12 btnmovil"
             icon="filter_alt_off"
             @click="resetFilters()"
           />
         </div>
       </div>
-      <div
-        class="q-pa-md col-md-8 col-xs-12 q-gutter-y-md justify-center"
-      >
+      <div class="q-pa-md col-md-8 col-xs-12 q-gutter-y-md justify-center">
         <webViewer
-          ref="webViewer" 
-          v-if="pdf == true" 
+          ref="webViewer"
+          v-if="pdf == true"
           style="width: 960px; height: 620px; max-width: 960px"
         >
         </webViewer>
@@ -772,8 +758,8 @@ export default {
         { label: "ANULADAS", value: "A" },
         { label: "EN ELABORACIÓN", value: "E" },
         { label: "FACTURADAS", value: "G" },
-        { label: 'PENDIENTES POR IMPRIMIR', value: 'I' },
-        { label: 'MODIFICADAS', value: 'M' },
+        { label: "PENDIENTES POR IMPRIMIR", value: "I" },
+        { label: "MODIFICADAS", value: "M" },
       ],
       tipoDoc: [
         { label: "GUÍAS CARGA", value: "GC" },
@@ -817,6 +803,7 @@ export default {
       selectedAgrMes: false,
       selectedAgrCli: false,
       selectedAgrDia: false,
+      enabledExport: false,
       fecha_desde: moment().format("DD/MM/YYYY"),
       fecha_hasta: moment().format("DD/MM/YYYY"),
     };
@@ -956,7 +943,7 @@ export default {
       }
 
       api
-        .get(`/reports/reporteVentas`, {
+        .get(`/pdfreports/reporteVentas`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
             tipo: this.reportValue,
@@ -972,6 +959,11 @@ export default {
             });
             zoom = 0.7;
           }
+          if (res.data.pdfPath == "reporteBase.pdf") {
+            this.enabledExport = false;
+          } else {
+            this.enabledExport = true;
+          }
           this.$refs.webViewer.showpdf(res.data.pdfPath, zoom, false, false);
           this.loading = false;
         })
@@ -981,6 +973,35 @@ export default {
             color: "red",
           });
           this.loading = false;
+        });
+    },
+    exportExcel() {
+      api
+        .get(`/excelreports/reporteVentas`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            tipo: this.selectedTipo.value,
+          },
+        })
+        .then((res) => {
+          if (!res.data.validDoc) {
+            this.$q.notify({
+              message: "No existen registros para este conjunto de Filtos",
+              color: "red",
+            });
+            return;
+          }
+
+          const link = document.createElement("a");
+          link.href = `${process.env.apiPath}/excelReports/loadExcel/${res.data.excelPath}`;
+          link.setAttribute("download", "file.xlsx");
+          link.click();
+        })
+        .catch((err) => {
+          this.$q.notify({
+            message: err.message,
+            color: "red",
+          });
         });
     },
     // Metodo para Resetear Filtros

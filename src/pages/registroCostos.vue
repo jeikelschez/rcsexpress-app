@@ -2531,7 +2531,7 @@ export default {
     pdfPrint() {
       this.printOptions = false;
       api
-        .get(`/reports/costosTransporte`, {
+        .get(`/pdfreports/costosTransporte`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
             id: this.selected,

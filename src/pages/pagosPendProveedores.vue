@@ -260,7 +260,7 @@ export default {
       print: "",
       tipoReporte: "",
       detalle: "",
-      fecha_desde: moment().format("DD/MM/YYYY"),
+      fecha_desde: moment('2020-01-01').format("DD/MM/YYYY"),
       fecha_hasta: moment().format("DD/MM/YYYY"),
     };
   },
@@ -339,7 +339,7 @@ export default {
     },
     pdfPrint() {
       api
-        .get(`/reports/libroCompras`, {
+        .get(`/pdfreports/pagosPendProv`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
             print: this.print,
@@ -349,7 +349,6 @@ export default {
               : "",
             desde: this.fecha_desde,
             hasta: this.fecha_hasta,
-            detalle: this.detalle,
           },
         })
         .then((res) => {
@@ -362,7 +361,7 @@ export default {
           }
           this.$refs.webViewer.showpdf(
             res.data.pdfPath,
-            this.print == "" ? 0.83 : 1.5,
+            this.print == "" ? 0.64 : 1.5,
             false,
             false
           );

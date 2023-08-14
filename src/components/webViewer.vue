@@ -82,7 +82,7 @@ export default {
             });
           } else {
             instance.UI.loadDocument(
-              `${process.env.apiPath}/reports/loadPDF/${filePath}`
+              `${process.env.apiPath}/pdfreports/loadPDF/${filePath}`
             );
           }
           instance.UI.setLanguage("es");

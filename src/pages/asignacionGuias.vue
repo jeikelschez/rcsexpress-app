@@ -1131,7 +1131,7 @@ export default {
     // Imprimir Guias pendientes
     print() {
       api
-        .get(`/reports/asignacionGuias`, {
+        .get(`/pdfreports/asignacionGuias`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
             id: this.selected,

@@ -791,7 +791,7 @@ export default {
         );
       }
       api
-        .get(`/reports/cartaCliente`, {
+        .get(`/pdfreports/cartaCliente`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
             data: factArray,

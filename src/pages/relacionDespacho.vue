@@ -1190,7 +1190,7 @@ export default {
       factArray.nombreReporte = this.nombreReporte;
 
       api
-        .get(`/reports/relacionDespacho`, {
+        .get(`/pdfreports/relacionDespacho`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
             data: JSON.stringify(factArray),

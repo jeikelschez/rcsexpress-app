@@ -682,7 +682,7 @@ export default {
       }
 
       api
-        .get(`/reports/reporteCostos`, {
+        .get(`/pdfreports/reporteCostos`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
             tipo: this.reportValue,
