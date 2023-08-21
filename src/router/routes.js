@@ -176,9 +176,9 @@ const routes = [
         children: [{ path: "", component: () => import('src/pages/pagosPendProveedores.vue')}]
       },
       {
-        path: '/pagosrealizadosproveedores',
+        path: '/pagosproveedores',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('src/pages/pagosrealizadosproveedores.vue')}]
+        children: [{ path: "", component: () => import('src/pages/pagosProveedores.vue')}]
       },
       {
         path: '/relacionretenciones',

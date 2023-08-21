@@ -10,7 +10,7 @@
           style="align-self: center; text-align: center"
         >
           <p style="font-size: 20px" class="text-secondary">
-            <strong>REPORTES - PAGOS PENDIENTES A PROVEEDORES</strong>
+            <strong>REPORTES - PAGOS REALIZADOS A PROVEEDORES</strong>
           </p>
         </div>
         <div
@@ -273,7 +273,7 @@ export default {
   },
   mounted() {
     this.pdfPrint();
-    this.$emit("changeTitle", "SCEN - Reportes - Pagos Pendientes a Proveedores", "");
+    this.$emit("changeTitle", "SCEN - Reportes - Pagos Realizados a Proveedores", "");
     this.$refs.methods.getData("/agencias", "setData", "agencias");
     this.$refs.methods.getData("/proveedores", "setData", "proveedores", {
       headers: {
@@ -284,7 +284,7 @@ export default {
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
         rol: LocalStorage.getItem("tokenTraducido").usuario.roles.id,
-        menu: "pagospendproveedores",
+        menu: "pagosproveedores",
       },
     });
   },
@@ -339,7 +339,7 @@ export default {
     },
     pdfPrint() {
       api
-        .get(`/pdfreports/pagosPendProv`, {
+        .get(`/pdfreports/pagosProv`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
             print: this.print,
