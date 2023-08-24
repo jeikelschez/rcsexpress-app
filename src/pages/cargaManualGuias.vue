@@ -397,7 +397,7 @@
             style="margin-right: 25px; margin-bottom: 10px"
             @click="this.cargarGuias()"
           >
-            <q-icon size="25px" name="find_in_page" color="white"> </q-icon>
+            <q-icon size="25px" name="browser_updated" color="white"> </q-icon>
             <q-tooltip
               class="bg-primary"
               style="max-height: 30px"
@@ -589,7 +589,7 @@
                   update,
                   'agentesSelected',
                   'agentes',
-                  'nb_agente'
+                  'persona_responsable'
                 )
             "
             use-input
@@ -1532,48 +1532,57 @@ export default {
         return;
       }
 
+      this.loadingPage = true;
       // Valida el Detalle
       for (var i = 0; i <= this.datos.length - 1; i++) {
         if (this.datos[i].colorEstado == "red") {
           this.setDataEdit(this.datos[i]);
           this.errorMessage("Debe Seleccionar el Estado correcto");
+          this.loadingPage = false;
           return;
         }
         if (this.datos[i].colorCiudad == "red") {
           this.setDataEdit(this.datos[i]);
           this.errorMessage("Debe Seleccionar la Ciudad correcta");
+          this.loadingPage = false;
           return;
         }
         if (this.datos[i].colorCiudad == "blue") {
           this.setDataEdit(this.datos[i]);
           this.errorMessage("La ciudad seleccionada no tiene Zonas asignadas");
+          this.loadingPage = false;
           return;
         }
         if (this.curReplace(this.datos[i].peso) == 0.0) {
           this.setDataEdit(this.datos[i]);
           this.errorMessage("Debe ingresar el Peso");
+          this.loadingPage = false;
           return;
         }
         if (this.curReplace(this.datos[i].carga_neta) == 0.0) {
           this.setDataEdit(this.datos[i]);
           this.errorMessage("Debe ingresar la Carga Neta");
+          this.loadingPage = false;
           return;
         }
         await this.validatePorcZona(this.datos[i], i);
         if (this.datos[i].colorZona == "red") {
           eval("this.$refs.porc_zona" + i + ".$el.focus()");
           this.errorMessage("Debe ingresar un % de Comisión válido");
+          this.loadingPage = false;
           return;
         }
         if (!this.datos[i].nro_guia) {
           eval("this.$refs.nro_guia" + i + ".$el.focus()");
           this.errorMessage("Debe ingresar el Número de Guía");
+          this.loadingPage = false;
           return;
         }
         await this.validateGuia(this.datos[i].nro_guia, i);
         if (this.datos[i].colorGuia == "red") {
           eval("this.$refs.nro_guia" + i + ".$el.focus()");
           this.errorMessage("Debe ingresar un Número de Guía válido");
+          this.loadingPage = false;
           return;
         }
       }
@@ -1581,6 +1590,7 @@ export default {
       this.confirmUploadPopUp = true;
       await this.until((_) => this.confirmUpload == true);
       if (!this.confirmUpload) {
+        this.loadingPage = false;
         return;
       } else {
         this.confirmUpload = false;
@@ -1659,11 +1669,22 @@ export default {
           formParticulares.telefonos = this.datos[i].telefono;
         formParticulares.estatus = "A";
         if (idParticular) {
-          await api.put(`/cparticulares/${idParticular}`, formParticulares, {
-            headers: {
-              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            },
-          });
+          await api
+            .put(`/cparticulares/${idParticular}`, formParticulares, {
+              headers: {
+                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              },
+            })
+            .catch((err) => {
+              if (err.response) {
+                this.errorMessage(
+                  "Error del Sistema. Problemas al Actualizar el cliente Particular. Error: " +
+                    err.response.data.message
+                );
+              }
+              this.loadingPage = false;
+              return;
+            });
         } else {
           await api
             .post(`/cparticulares`, formParticulares, {
@@ -1673,6 +1694,16 @@ export default {
             })
             .then((res) => {
               idParticular = res.data.id;
+            })
+            .catch((err) => {
+              if (err.response) {
+                this.errorMessage(
+                  "Error del Sistema. Problemas al crear el cliente Particular. Error: " +
+                    err.response.data.message
+                );
+              }
+              this.loadingPage = false;
+              return;
             });
         }
 
@@ -1729,6 +1760,7 @@ export default {
                 this.datos[i].nro_guia +
                 ". Comuníquese con el proveedor del Sistemas..."
             );
+            this.loadingPage = false;
             return;
           });
       }
@@ -1736,6 +1768,7 @@ export default {
       this.file = [];
       this.selectedAgencia = [];
       this.resetFilters();
+      this.loadingPage = false;
 
       this.$q.notify({
         message:

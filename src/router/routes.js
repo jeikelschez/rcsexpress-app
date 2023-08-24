@@ -183,7 +183,7 @@ const routes = [
       {
         path: '/relacionretenciones',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('src/pages/relacionretenciones.vue')}]
+        children: [{ path: "", component: () => import('src/pages/relacionRetenciones.vue')}]
       },
       {
         path: '/controlretencionesislr',
