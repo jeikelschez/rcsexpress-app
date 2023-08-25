@@ -966,7 +966,7 @@ export default {
           this.loading = false;
         });
     },
-    exportExcel() {
+    async exportExcel() {
       if (!this.enabledExport) {
         this.$q.notify({
           message: "No existen registros para este conjunto de Filtos",
@@ -989,7 +989,7 @@ export default {
       dataArray.pagado_en = this.selectedPagado.value;
       dataArray.correlativo = this.selectedCorrelativo;
       dataArray.tipo_doc = this.selectedTipoDoc.value;
-      api
+      await api
         .get(`/excelreports/reporteVentas`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
@@ -1006,9 +1006,11 @@ export default {
             return;
           }
           const link = document.createElement("a");
-          link.href = `${process.env.apiPath}/excelReports/loadExcel/${res.data.excelPath}`;
+          link.href = `${process.env.apiPath}/excelReports/loadExcel/${res.data.excelPath}`; 
           link.setAttribute("download", "file.xlsx");
-          link.click();
+          setTimeout(() => {
+            link.click();
+          }, 1000);
         })
         .catch((err) => {
           this.$q.notify({

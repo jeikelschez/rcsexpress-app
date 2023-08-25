@@ -53,7 +53,7 @@ export default {
             header.push({
               type: "actionButton",
               title: "Exportar Excel",
-              img: "https://icones.pro/wp-content/uploads/2021/04/icone-excel-grise.png",
+              img: "../../icons/icone-excel-grise.png",
               onClick: () => {
                 this.$emit("exportExcel");
               },
