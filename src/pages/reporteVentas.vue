@@ -630,6 +630,9 @@
           v-if="pdf == true"
           style="width: 960px; height: 620px; max-width: 960px"
         >
+        <q-inner-loading :showing="visible">
+        <q-spinner-gears size="50px" color="primary" />
+        </q-inner-loading>
         </webViewer>
         <q-inner-loading :showing="loading" color="primary" class="loading" />
       </div>
@@ -967,7 +970,9 @@ export default {
         });
     },
     async exportExcel() {
+      this.loading = true;
       if (!this.enabledExport) {
+        this.loading = false;
         this.$q.notify({
           message: "No existen registros para este conjunto de Filtos",
           color: "red",
@@ -1011,6 +1016,7 @@ export default {
           setTimeout(() => {
             link.click();
           }, 1000);
+          this.loading = false;
         })
         .catch((err) => {
           this.$q.notify({
