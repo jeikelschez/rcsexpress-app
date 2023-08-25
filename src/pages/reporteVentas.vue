@@ -615,16 +615,6 @@
           />
           <q-btn
             rounded
-            :disabled="!this.enabledExport"
-            label="Excel"
-            color="primary"
-            class="col-md-3 col-sm-3 col-xs-12"
-            icon="system_update_alt"
-            style="margin-right: 20px"
-            @click="exportExcel()"
-          />
-          <q-btn
-            rounded
             label="Limpiar"
             color="primary"
             class="col-md-3 col-sm-3 col-xs-12 btnmovil"
@@ -635,6 +625,7 @@
       </div>
       <div class="q-pa-md col-md-8 col-xs-12 q-gutter-y-md justify-center">
         <webViewer
+          @export-Excel="exportExcel"
           ref="webViewer"
           v-if="pdf == true"
           style="width: 960px; height: 620px; max-width: 960px"
@@ -976,11 +967,34 @@ export default {
         });
     },
     exportExcel() {
+      if (!this.enabledExport) {
+        this.$q.notify({
+          message: "No existen registros para este conjunto de Filtos",
+          color: "red",
+        });
+        zoom = 0.7;
+        return;
+      }
+      var dataArray = {};
+      dataArray.fecha_desde = this.fecha_desde;
+      dataArray.fecha_hasta = this.fecha_hasta;
+      dataArray.agencia = this.selectedAgencia.id;
+      dataArray.cliente = this.selectedCliente.id;
+      dataArray.agente = this.selectedAgente.id;
+      dataArray.dolar = this.selectedDolar;
+      dataArray.visible = this.selectedMonto;
+      dataArray.neta = this.selectedNeta;
+      dataArray.estatus_admin = this.selectedEstatus.value;
+      dataArray.modalidad = this.selectedForma.value;
+      dataArray.pagado_en = this.selectedPagado.value;
+      dataArray.correlativo = this.selectedCorrelativo;
+      dataArray.tipo_doc = this.selectedTipoDoc.value;
       api
         .get(`/excelreports/reporteVentas`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
             tipo: this.selectedTipo.value,
+            data: JSON.stringify(dataArray),
           },
         })
         .then((res) => {
@@ -991,7 +1005,6 @@ export default {
             });
             return;
           }
-
           const link = document.createElement("a");
           link.href = `${process.env.apiPath}/excelReports/loadExcel/${res.data.excelPath}`;
           link.setAttribute("download", "file.xlsx");
