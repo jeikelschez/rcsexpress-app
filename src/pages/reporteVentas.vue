@@ -16,7 +16,7 @@
             style="font-size: 25px; margin-bottom: 25px"
             class="text-secondary"
           >
-            <strong>REPORTE DE VENTAS</strong>
+            <strong>REPORTE DE VENTAS 2</strong>
           </p>
         </div>
         <div
@@ -814,7 +814,7 @@ export default {
   },
   mounted() {
     this.pdfPrint();
-    this.$emit("changeTitle", "SCEN - Reportes - Reporte de Ventas", "");
+    this.$emit("changeTitle", "SCEN - Reportes - Reporte de Ventas 2", "");
     this.$refs.methods.getData("/agencias", "setData", "agencias");
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
