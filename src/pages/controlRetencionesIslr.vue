@@ -516,7 +516,7 @@ export default {
       generarDisabled: true,
       flagGenerar: false,
       valorIslr: "",
-      fecha_desde: moment("2023-01-01").format("DD/MM/YYYY"),
+      fecha_desde: moment().format("DD/MM/YYYY"),
       fecha_hasta: moment().format("DD/MM/YYYY"),
     };
   },
