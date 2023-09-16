@@ -620,7 +620,7 @@ export default {
               : "",
             desde: this.fecha_desde,
             hasta: this.fecha_hasta,
-            nro_comprobante: this.nro_comprobante,
+            comprobante: this.nro_comprobante,
           },
         })
         .then((res) => {
