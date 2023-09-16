@@ -84,6 +84,8 @@
             v-model="selectedProveedor"
             outlined
             standout
+            :loading="proveedoresLoading"
+            :disable="proveedoresLoading"
             label="Proveedor"
             ><template v-slot:no-option>
               <q-item>
@@ -257,10 +259,11 @@ export default {
       selectedAgencia: [],
       proveedoresSelected: [],
       selectedProveedor: [],
+      proveedoresLoading: true,
       print: "",
       tipoReporte: "",
       detalle: "",
-      fecha_desde: moment('2023-07-01').format("DD/MM/YYYY"),
+      fecha_desde: moment().format("DD/MM/YYYY"),
       fecha_hasta: moment().format("DD/MM/YYYY"),
     };
   },
@@ -327,6 +330,7 @@ export default {
 
     // Metodo para Setear Datos Iniciales
     setData(res, dataRes) {
+      eval("this." + dataRes + "Loading = false");
       this[dataRes] = res.data ? res.data : res;
     },
     async pdfChange() {

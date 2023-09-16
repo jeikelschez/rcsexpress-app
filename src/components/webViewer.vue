@@ -47,7 +47,7 @@ export default {
               title: "Descargar",
               img: "icon-header-download",
               onClick: () => {
-                instance.downloadPdf();
+                instance.UI.downloadPdf();
               },
             });
             header.push({
@@ -70,7 +70,7 @@ export default {
                     return;
                   }
                 }
-                instance.print();
+                instance.UI.print();
               },
             });
             if (closable) {

@@ -188,7 +188,7 @@ const routes = [
       {
         path: '/controlretencionesislr',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('src/pages/controlretencionesislr.vue')}]
+        children: [{ path: "", component: () => import('src/pages/controlRetencionesIslr.vue')}]
       },
       {
         path: '/controlretencionesiva',
