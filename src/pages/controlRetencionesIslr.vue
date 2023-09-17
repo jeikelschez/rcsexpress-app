@@ -609,18 +609,20 @@ export default {
       }, 100);
     },
     pdfPrint() {
+      let dataArray = {};
+      dataArray.proveedor = this.selectedProveedor.id
+        ? this.selectedProveedor.id
+        : "";
+      dataArray.desde = this.fecha_desde;
+      dataArray.hasta = this.fecha_hasta;
+      dataArray.comprobante = this.nro_comprobante;
       api
         .get(`/pdfreports/retencionesIslr`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
             print: this.print,
             tipo: this.selectedTipo.value,
-            proveedor: this.selectedProveedor.id
-              ? this.selectedProveedor.id
-              : "",
-            desde: this.fecha_desde,
-            hasta: this.fecha_hasta,
-            comprobante: this.nro_comprobante,
+            data: JSON.stringify(dataArray),
           },
         })
         .then((res) => {
