@@ -97,7 +97,7 @@ export default {
           instance.UI.useEmbeddedPrint(true);
           setTimeout(() => {
             instance.UI.setZoomLevel(zoom ? zoom : 0.7);
-          }, 1500);
+          }, 2000);
         }
       );
     },

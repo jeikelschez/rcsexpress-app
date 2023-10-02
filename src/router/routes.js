@@ -193,7 +193,7 @@ const routes = [
       {
         path: '/controlretencionesiva',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('src/pages/controlretencionesiva.vue')}]
+        children: [{ path: "", component: () => import('src/pages/controlRetencionesIva.vue')}]
       },
       {
         path: '/franqueopostal',

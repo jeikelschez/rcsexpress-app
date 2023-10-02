@@ -10,7 +10,7 @@
           style="align-self: center; text-align: center"
         >
           <p style="font-size: 20px" class="text-secondary">
-            <strong>REPORTES - CONTROL DE RETENCIONES ISLR</strong>
+            <strong>REPORTES - CONTROL DE RETENCIONES IVA</strong>
           </p>
         </div>
         <div
@@ -158,7 +158,7 @@
             round
             padding="sm"
             style="margin-right: 15px"
-            @click="selectDetalleIslr()"
+            @click="selectDetalleIva()"
             :disabled="
               this.selectedTipo.value == 'IC' && this.selectedProveedor.id
                 ? false
@@ -224,8 +224,8 @@
       </div>
     </div>
 
-    <q-dialog v-model="detalleIslr">
-      <q-card style="width: 800px; max-width: 80vw">
+    <q-dialog v-model="detalleIva">
+      <q-card style="width: 1000px; max-width: 80vw">
         <div
           class="row justify-center items-center content-center"
           style="padding: 20px"
@@ -237,7 +237,7 @@
           </div>
           <div class="col-md-12 col-xs-12">
             <q-table
-              :rows="listaIslr"
+              :rows="listaIva"
               row-key="id"
               :columns="columnsLista"
               binary-state-sort
@@ -250,6 +250,37 @@
               style="width: 100%; height: 350px"
               hide-bottom
             >
+              <template v-slot:body-cell-fecha_entrega="props">
+                <q-td :props="props">
+                  <q-input
+                    label="Fecha Desde"
+                    hint=""
+                    dense
+                    style="padding-bottom: 0px"
+                    v-model="props.row.fecha_entrega"
+                    lazy-rules
+                    mask="##/##/####"
+                    :rules="[(val) => this.$refs.rulesVue.checkDate(val)]"
+                  >
+                    <template v-slot:append>
+                      <q-icon name="event" class="cursor-pointer">
+                        <q-popup-proxy
+                          ref="qDateProxy"
+                          transition-show="scale"
+                          transition-hide="scale"
+                        >
+                          <q-date
+                            v-model="props.row.fecha_entrega"
+                            mask="DD/MM/YYYY"
+                            style="padding-bottom: 0px"
+                            @update:model-value="this.$refs.qDateProxy.hide()"
+                          ></q-date>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+                </q-td>
+              </template>
               <template v-slot:body-cell-action="props">
                 <q-td :props="props">
                   <q-btn
@@ -257,10 +288,18 @@
                     round
                     flat
                     color="primary"
-                    icon="delete"
+                    icon="edit"
+                    :disabled="this.allowOption(3) || props.row.fecha_entrega == '00/00/0000'"
+                    @click="updateSelected(props.row.id, props.row.fecha_entrega)"
+                  ></q-btn>
+                  <q-btn
+                    dense
+                    round
+                    flat
+                    color="primary"
+                    icon="backspace"
                     :disabled="this.allowOption(4)"
-                    @click="selectedOption = props.row.id"
-                    @click.capture="deletePopup = true"
+                    @click="deleteSelected(props.row.id, props.rowIndex)"
                   ></q-btn>
                 </q-td>
               </template>
@@ -290,7 +329,7 @@
       </q-card>
     </q-dialog>
 
-    <q-dialog v-model="detalleIslrSelected">
+    <q-dialog v-model="detalleIvaSelected">
       <q-card style="width: 500px; max-width: 80vw">
         <div
           class="row justify-center items-center content-center"
@@ -298,7 +337,7 @@
         >
           <div class="col-md-11 col-xs-12">
             <p style="font-size: 20px; text-align: left" class="text-secondary">
-              <strong>INGRESE COMPROBANTE ISLR</strong>
+              <strong>INGRESE COMPROBANTE IVA</strong>
             </p>
           </div>
           <div class="row col-md-12 col-xs-12">
@@ -385,27 +424,7 @@
           />
         </div>
       </q-card>
-    </q-dialog>
-
-    <q-dialog v-model="deletePopup">
-      <q-card style="width: 700px">
-        <q-card-section>
-          <div class="text-h5" style="font-size: 18px">
-            ¿Estas seguro que quieres eliminar este elemento?
-          </div>
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn flat label="Cancelar" color="primary" v-close-popup />
-          <q-btn
-            flat
-            label="Aceptar"
-            color="primary"
-            v-close-popup
-            @click="this.deleteIslr(selectedOption)"
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+    </q-dialog>    
 
     <div
       class="q-pa-md col-md-12 col-xs-12 q-gutter-y-md justify-center"
@@ -449,9 +468,9 @@ export default {
     return {
       columnsLista: [
         {
-          name: "fecha_factura",
+          name: "fecha_documento",
           label: "Fec. Fact.",
-          field: "fecha_factura",
+          field: "fecha_documento",
           align: "center",
         },
         {
@@ -463,19 +482,25 @@ export default {
         {
           name: "nro_factura",
           label: "Nro. Control",
-          field: "nro_factura",
+          field: "nro_ctrl_doc",
           align: "center",
         },
         {
           name: "nro_comprobante",
           label: "Nro. Comprobante",
-          field: (row) => row.retenciones.nro_comprobante,
+          field: "nro_comprobante_iva",
           align: "center",
         },
         {
           name: "fecha_comprobante",
           label: "Fec. Comprobante",
-          field: (row) => row.retenciones.fecha_comprobante,
+          field: "fecha_comprobante",
+          align: "center",
+        },
+        {
+          name: "fecha_entrega",
+          label: "Fec. Entrega",
+          field: "fecha_entrega",
           align: "center",
         },
         {
@@ -486,16 +511,12 @@ export default {
       ],
       tipoReporte: [
         {
-          label: "IMPRESIÓN DE COMPROBANTE ISLR",
+          label: "IMPRESIÓN DE COMPROBANTE IVA",
           value: "IC",
         },
         {
-          label: "RESUMEN DE COMPROBANTE ISLR",
+          label: "RESUMEN DE COMPROBANTE IVA",
           value: "RC",
-        },
-        {
-          label: "DECLARACIÓN DE ISLR",
-          value: "DI",
         },
       ],
       pagination: {
@@ -507,18 +528,17 @@ export default {
       selected: [],
       selectedOption: [],
       proveedores: [],
-      cislrfac: [],
       selectedTipo: [],
       proveedoresSelected: [],
       selectedProveedor: [],
-      listaIslr: [],
+      listaIva: [],
       proveedoresLoading: true,
       print: "",
       nro_comprobante: "",
       fecha_comprobante: "",
       generarDisabled: true,
       flagGenerar: false,
-      valorIslr: "",
+      valorIva: "",
       fecha_desde: moment().format("DD/MM/YYYY"),
       fecha_hasta: moment().format("DD/MM/YYYY"),
     };
@@ -528,9 +548,8 @@ export default {
     return {
       loading: ref(false),
       pdfView: ref(false),
-      detalleIslr: ref(false),
-      detalleIslrSelected: ref(false),
-      deletePopup: ref(false),
+      detalleIva: ref(false),
+      detalleIvaSelected: ref(false),
       separator: ref("vertical"),
     };
   },
@@ -538,7 +557,7 @@ export default {
     this.pdfPrint();
     this.$emit(
       "changeTitle",
-      "SCEN - Reportes - Control de Retenciones ISLR",
+      "SCEN - Reportes - Control de Retenciones IVA",
       ""
     );
     this.$refs.methods.getData("/proveedores", "setData", "proveedores", {
@@ -550,7 +569,7 @@ export default {
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
         rol: LocalStorage.getItem("tokenTraducido").usuario.roles.id,
-        menu: "controlretencionesislr",
+        menu: "controlretencionesiva",
       },
     });
     this.selectedTipo = this.tipoReporte[0];
@@ -620,7 +639,7 @@ export default {
       dataArray.hasta = this.fecha_hasta;
       dataArray.comprobante = this.nro_comprobante;
       api
-        .get(`/pdfreports/retencionesIslr`, {
+        .get(`/pdfreports/retencionesIva`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
             print: this.print,
@@ -654,10 +673,10 @@ export default {
           return;
         });
     },
-    // Metodo para seleccionar el detalle de ISLR
-    async selectDetalleIslr() {
+    // Metodo para seleccionar el detalle de IVA
+    async selectDetalleIva() {
       await api
-        .get(`/cislrfac`, {
+        .get(`/mctapagar`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
             desde: moment(this.fecha_desde, "DD/MM/YYYY").format("YYYY-MM-DD"),
@@ -667,8 +686,8 @@ export default {
         })
         .then((res) => {
           if (res.data.data.length > 0) {
-            this.listaIslr = res.data.data;
-            this.detalleIslr = true;
+            this.listaIva = res.data.data;
+            this.detalleIva = true;
           } else {
             this.$q.notify({
               message: "No existen registros para este Proveedor",
@@ -687,43 +706,17 @@ export default {
         return;
       }
 
-      this.detalleIslr = false;
-      this.detalleIslrSelected = true;
+      this.detalleIva = false;
+      this.detalleIvaSelected = true;
       this.generarDisabled = true;
       if (
-        this.selected[0].retenciones.nro_comprobante == null ||
-        this.selected[0].retenciones.nro_comprobante == ""
+        this.selected[0].nro_comprobante_iva == null ||
+        this.selected[0].nro_comprobante_iva == ""
       ) {
         this.generarDisabled = false;
       }
-      this.nro_comprobante = this.selected[0].retenciones.nro_comprobante;
-      this.fecha_comprobante = this.selected[0].retenciones.fecha_comprobante;
-    },
-    // Metodo para borrar detalles de la lista
-    deleteIslr(option) {
-      api
-        .delete(`/cislrfac/${option}`, {
-          headers: {
-            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-          },
-        })
-        .then(() => {
-          this.listaIslr.splice(
-            this.listaIslr.findIndex((item) => item.id == option),
-            1
-          );
-          this.$q.notify({
-            message: "ISLR eliminado con Exito...",
-            color: "green",
-          });
-        })
-        .catch(() => {
-          this.$q.notify({
-            message:
-              "Error del Sistema. Problemas al Eliminar el ISLR. Comuníquese con el proveedor del Sistemas...",
-            color: "red",
-          });
-        });
+      this.nro_comprobante = this.selected[0].nro_comprobante_iva;
+      this.fecha_comprobante = this.selected[0].fecha_comprobante;
     },
     // Metodo para guardar el nuevo numero de comprobante
     saveNroComp() {
@@ -737,17 +730,17 @@ export default {
       }
 
       for (var i = 0; i <= this.selected.length - 1; i++) {
-        let formIslr = {};
-        formIslr.nro_comprobante = this.nro_comprobante;
-        formIslr.fecha_comprobante = moment(
+        let formIva = {};
+        formIva.nro_comprobante_iva = this.nro_comprobante;
+        formIva.fecha_comprobante = moment(
           this.fecha_comprobante,
           "DD/MM/YYYY"
         ).format("YYYY-MM-DD");
-        this.selected[i].retenciones.nro_comprobante = this.nro_comprobante;
-        this.selected[i].retenciones.fecha_comprobante = this.fecha_comprobante;
+        this.selected[i].nro_comprobante_iva = this.nro_comprobante;
+        this.selected[i].fecha_comprobante = this.fecha_comprobante;
 
         api
-          .put(`/cislr/${this.selected[i].cod_islr}`, formIslr, {
+          .put(`/mctapagar/${this.selected[i].id}`, formIva, {
             headers: {
               Authorization: `Bearer ${LocalStorage.getItem("token")}`,
             },
@@ -755,7 +748,7 @@ export default {
           .catch(() => {
             this.$q.notify({
               message:
-                "Error del Sistema. Problemas al Actualizar el ISLR. Comuníquese con el proveedor del Sistemas...",
+                "Error del Sistema. Problemas al Actualizar el IVA. Comuníquese con el proveedor del Sistemas...",
               color: "red",
             });
           });
@@ -766,11 +759,11 @@ export default {
           .get(`/vcontrol`, {
             headers: {
               Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-              name: "COMPROBANTE_ISLR",
+              name: "COMPROBANTE_IVA",
             },
           })
           .then((res) => {
-            res.data[0].valor = this.valorIslr.toString();
+            res.data[0].valor = this.valorIva.toString();
             let id = res.data[0].id;
             delete res.data[0].id;
             delete res.data[0].tipo_desc;
@@ -790,14 +783,14 @@ export default {
               .catch(() => {
                 this.$q.notify({
                   message:
-                    "Error del Sistema. Problemas al Actualizar el valor del ISLR. Comuníquese con el proveedor del Sistemas...",
+                    "Error del Sistema. Problemas al Actualizar el valor del IVA. Comuníquese con el proveedor del Sistemas...",
                   color: "red",
                 });
               });
           });
       }
 
-      this.detalleIslrSelected = false;
+      this.detalleIvaSelected = false;
     },
     // Metodo para generar un numero de comprobante
     generaNroComp() {
@@ -805,17 +798,70 @@ export default {
         .get(`/vcontrol`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            name: "COMPROBANTE_ISLR",
+            name: "COMPROBANTE_IVA",
           },
         })
         .then((res) => {
-          this.valorIslr = parseInt(res.data[0].valor, 10) + 1;
+          this.valorIva = parseInt(res.data[0].valor, 10) + 1;
           let nro_comprobante =
-            moment().format("YYYY") +
-            this.valorIslr.toString().padStart(4, "0");
+            moment().format("YYYY") + moment().format("MM") + this.valorIva.toString().padStart(8, "0");
           this.nro_comprobante = nro_comprobante;
           this.fecha_comprobante = moment().format("DD/MM/YYYY");
           this.flagGenerar = true;
+        });
+    },
+    // Metodo para setear fecha de entrega en Comprobante IVA
+    updateSelected(id, fecha) {
+      let formCtaPagar = {};
+      formCtaPagar.fecha_entrega = moment(
+        fecha,
+          "DD/MM/YYYY"
+        ).format("YYYY-MM-DD");
+      api
+        .put(`/mctapagar/${id}`, formCtaPagar, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .then(() => {
+          this.$q.notify({
+            message: "Actualización Exitosa...",
+            color: "green",
+          });
+        })
+        .catch(() => {
+          this.$q.notify({
+            message:
+              "Error del Sistema. Problemas al Actualizar la fecha de Entrega. Comuníquese con el proveedor del Sistemas...",
+            color: "red",
+          });
+        });
+    },
+    // Metodo para borrar comprobante IVA y fecha
+    deleteSelected(id, index) {
+      this.listaIva[index].nro_comprobante_iva = null;
+      this.listaIva[index].fecha_comprobante = null;
+      let formCtaPagar = {};
+      formCtaPagar.nro_comprobante_iva = null;
+      formCtaPagar.fecha_comprobante = null;
+      api
+        .put(`/mctapagar/${id}`, formCtaPagar, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .then(() => {
+          this.$q.notify({
+            message: "Actualización Exitosa...",
+            color: "green",
+          });
+        })
+        .catch(() => {
+          this.$q.notify({
+            message:
+              "Error del Sistema. Problemas al borrar los datos del Comprobante. Comuníquese con el proveedor del Sistemas...",
+            color: "red",
+          });
         });
     },
     // Metodo para resetaer la data de los filtros
