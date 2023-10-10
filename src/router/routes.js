@@ -198,7 +198,7 @@ const routes = [
       {
         path: '/franqueopostal',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('pages/franqueopostal.vue')}]
+        children: [{ path: "", component: () => import('pages/franqueoPostal.vue')}]
       },
       {
         path: '/agencias',
