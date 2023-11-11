@@ -73,12 +73,12 @@ const routes = [
       {
         path: '/notasdebito',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('src/pages/notasdebito.vue')}]
+        children: [{ path: "", component: () => import('src/pages/notasDebito.vue')}]
       },
       {
         path: '/notascredito',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('src/pages/notascredito.vue')}]
+        children: [{ path: "", component: () => import('src/pages/notasCredito.vue')}]
       },
       {
         path: '/anulacionnotascontables',

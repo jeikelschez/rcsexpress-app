@@ -97,3 +97,12 @@
   margin-bottom: 0px;
   padding-left: 5px;
 }
+
+.opt-text {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.hr-option-text {
+  font-size: 10px;
+}

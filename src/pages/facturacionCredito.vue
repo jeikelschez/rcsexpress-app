@@ -29,7 +29,7 @@
                 v-model="monto_subtotal"
                 label="Monto Subtotal:"
                 hint=""
-                densethis.detalles
+                dense
                 v-money="money"
                 input-class="text-right"
                 style="padding-bottom: 10px"
@@ -183,7 +183,7 @@
                 setConceptos();
               "
               v-close-popup
-              style="margin-bottom: 1px"
+              style="margin-bottom: 10px"
             />
           </div>
           <q-table
@@ -212,7 +212,7 @@
                   <strong> {{ this.selectedAgencia.nb_agencia }} </strong>
                 </p>
               </div>
-              <div class="col-md-4 col-xs-12 texto">
+              <div class="col-md-6 col-xs-12 texto">
                 <p style="font-size: 20px">
                   <strong class="text-secondary">CLIENTE: </strong>
                   <strong> {{ this.selectedCliente.nb_cliente }} </strong>
