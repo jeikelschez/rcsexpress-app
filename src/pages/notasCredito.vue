@@ -129,7 +129,7 @@
             :pagination="paginationGuia"
             :grid="$q.screen.xs"
             :rows-per-page-options="[]"
-            style="width: 100%; height: 430px; margin-bottom: 20px;"
+            style="width: 100%; height: 430px; margin-bottom: 20px"
             v-model:selected="selectedGuias"
             :selected.sync="selectedGuias"
             @selection="onSelection"
@@ -139,13 +139,13 @@
             </template>
             <template v-slot:top="props">
               <div class="col-md-5 col-xs-12 texto">
-                <p style="font-size: 18px; padding-right: 10px;">
+                <p style="font-size: 18px; padding-right: 10px">
                   <strong class="text-secondary">AGENCIA: </strong>
                   <strong> {{ this.selectedAgencia.nb_agencia }} </strong>
                 </p>
               </div>
               <div class="col-md-7 col-xs-12 texto">
-                <p style="font-size: 18px;">
+                <p style="font-size: 18px">
                   <strong class="text-secondary">CLIENTE: </strong>
                   <strong>
                     {{ this.selectedFactura.cliente_orig_desc }}
@@ -1628,11 +1628,11 @@ export default {
         .get(`/mmovimientos`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            tipo: "NC",
+            filters: JSON.stringify({ tipo: "NC" }),
             page: 0,
             limit: 1,
-            order_by: "nro_control",
-            order_direction: "DESC",
+            order: "nro_control",
+            direction: "DESC",
           },
         })
         .then((res) => {
@@ -1660,12 +1660,14 @@ export default {
         .get(`/mmovimientos`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            agencia: agencia,
-            tipo: "FA",
-            estatus_admin_in: "P",
-            si_saldo: "S",
-            order_by: "nro_documento",
-            order_direction: "DESC",
+            filters: JSON.stringify({
+              agencia: agencia,
+              tipo: "FA",
+              estatus_admin_in: "P",
+              si_saldo: "S",
+            }),
+            order: "nro_documento",
+            direction: "DESC",
           },
         })
         .then((res) => {
@@ -1912,12 +1914,14 @@ export default {
         .get(`/mmovimientos/`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            agencia: this.selectedAgencia.id,
-            tipo: "NC",
+            filters: JSON.stringify({
+              agencia: this.selectedAgencia.id,
+              tipo: "NC",
+            }),
             page: 0,
             limit: 1,
-            order_by: "nro_documento",
-            order_direction: "DESC",
+            order: "nro_documento",
+            direction: "DESC",
           },
         })
         .then((res) => {
@@ -1948,11 +1952,13 @@ export default {
         .get(`/mmovimientos/`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            tipo: "GC",
-            tipo_doc_ppal: this.selectedFactura.t_de_documento,
-            nro_doc_ppal: this.selectedFactura.nro_documento,
-            nro_ctrl_doc_ppal: this.selectedFactura.nro_control,
-            cod_ag_doc_ppal: this.selectedFactura.cod_agencia,
+            filters: JSON.stringify({
+              tipo: "GC",
+              tipo_doc_ppal: this.selectedFactura.t_de_documento,
+              nro_doc_ppal: this.selectedFactura.nro_documento,
+              nro_ctrl_doc_ppal: this.selectedFactura.nro_control,
+              cod_ag_doc_ppal: this.selectedFactura.cod_agencia,
+            }),
           },
         })
         .then((res) => {
@@ -2240,11 +2246,11 @@ export default {
         .get(`/mmovimientos`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            tipo: "NC",
+            filters: JSON.stringify({ tipo: "NC" }),
             page: 0,
             limit: 1,
-            order_by: "nro_control",
-            order_direction: "DESC",
+            order: "nro_control",
+            direction: "DESC",
           },
         })
         .then((res) => {
