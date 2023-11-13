@@ -561,8 +561,6 @@ export default {
         rowsPerPage: 10,
         sortBy: "nro_documento",
         descending: true,
-        filter: "",
-        filterValue: "",
         rowsNumber: "",
       },
       clientesAll: [],
@@ -693,18 +691,18 @@ export default {
       if (props) this.pagination = props.pagination;
       this.$refs.methods.getData(`/mmovimientos`, "setDataTable", "guias", {
         headers: {
-          agencia: this.selectedAgencia.id,
-          tipo: this.selectedTipo.value,
-          desde: moment(this.fecha_desde, "DD/MM/YYYY").format("YYYY-MM-DD"),
-          hasta: moment(this.fecha_hasta, "DD/MM/YYYY").format("YYYY-MM-DD"),
-          estatus_admin_ex: "G,C",
-          no_abono: "S",
+          filters: JSON.stringify({
+            agencia: this.selectedAgencia.id,
+            tipo: this.selectedTipo.value,
+            desde: moment(this.fecha_desde, "DD/MM/YYYY").format("YYYY-MM-DD"),
+            hasta: moment(this.fecha_hasta, "DD/MM/YYYY").format("YYYY-MM-DD"),
+            estatus_admin_ex: "G,C",
+            no_abono: "S",
+          }),
           page: this.pagination.page,
           limit: this.pagination.rowsPerPage,
-          order_by: this.pagination.sortBy,
-          order_direction: this.pagination.descending ? "DESC" : "ASC",
-          filter: this.pagination.filter,
-          filter_value: this.pagination.filterValue,
+          order: this.pagination.sortBy,
+          direction: this.pagination.descending ? "DESC" : "ASC",
         },
       });
     },
@@ -777,8 +775,10 @@ export default {
             .get(`/mmovimientos/`, {
               headers: {
                 Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                nro_doc_ppal: this.form.guia.nro_documento,
-                nro_ctrl_doc_ppal: this.form.guia.nro_control,
+                filters: JSON.stringify({
+                  nro_doc_ppal: this.form.guia.nro_documento,
+                  nro_ctrl_doc_ppal: this.form.guia.nro_control,
+                }),
               },
             })
             .then((res) => {
@@ -877,11 +877,13 @@ export default {
           .get(`/mmovimientos/`, {
             headers: {
               Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-              tipo_doc_ppal: "FA",
-              nro_doc_ppal: this.form.guia.nro_documento,
-              nro_ctrl_doc_ppal: this.form.guia.nro_control,
-              cod_ag_doc_ppal: this.form.guia.cod_agencia,
-              tipo: "GC",
+              filters: JSON.stringify({
+                tipo_doc_ppal: "FA",
+                nro_doc_ppal: this.form.guia.nro_documento,
+                nro_ctrl_doc_ppal: this.form.guia.nro_control,
+                cod_ag_doc_ppal: this.form.guia.cod_agencia,
+                tipo: "GC",
+              }),
             },
           })
           .then((res) => {
@@ -937,11 +939,12 @@ export default {
                       Authorization: `Bearer ${LocalStorage.getItem("token")}`,
                     },
                   });
-                } else {                  
+                } else {
                   //Creo un registro de reverso de la comision
                   formComision = res.data.data[i];
                   delete formComision.id;
-                  formComision.monto_comision = res.data.data[i].monto_comision * -1;
+                  formComision.monto_comision =
+                    res.data.data[i].monto_comision * -1;
                   formComision.estatus = 0; //por descontar
                   formComision.fecha_emision = formGuia.fecha_anulacion;
                   // Actualiza las comisiones

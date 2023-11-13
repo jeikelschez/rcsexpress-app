@@ -2109,20 +2109,24 @@ export default {
         .get(`/mmovimientos`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            agencia: this.selectedAgenciaGuia.id
-              ? this.selectedAgenciaGuia.id
-              : "",
-            agencia_transito: this.selectedAgenciaGuia.id
-              ? this.selectedAgenciaGuia.id
-              : "",
-            desde: moment(this.fecha_desde_guias_asignar, "DD/MM/YYYY").format(
-              "YYYY-MM-DD"
-            ),
-            hasta: moment(this.fecha_hasta_guias_asignar, "DD/MM/YYYY").format(
-              "YYYY-MM-DD"
-            ),
-            estatus_oper: "PR",
-            estatus_admin_ex: "A",
+            filters: JSON.stringify({
+              agencia: this.selectedAgenciaGuia.id
+                ? this.selectedAgenciaGuia.id
+                : "",
+              agencia_transito: this.selectedAgenciaGuia.id
+                ? this.selectedAgenciaGuia.id
+                : "",
+              desde: moment(
+                this.fecha_desde_guias_asignar,
+                "DD/MM/YYYY"
+              ).format("YYYY-MM-DD"),
+              hasta: moment(
+                this.fecha_hasta_guias_asignar,
+                "DD/MM/YYYY"
+              ).format("YYYY-MM-DD"),
+              estatus_oper: "PR",
+              estatus_admin_ex: "A",
+            }),
           },
         })
         .then((res) => {

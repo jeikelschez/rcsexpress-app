@@ -588,11 +588,7 @@ export default {
     };
   },
   mounted() {
-    this.$emit(
-      "changeTitle",
-      "SCEN - Ventas - Emitir Carta de Cliente",
-      ""
-    );
+    this.$emit("changeTitle", "SCEN - Ventas - Emitir Carta de Cliente", "");
     this.$refs.methods.getData("/agencias", "setDataAgencias", "agencias");
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
@@ -663,13 +659,19 @@ export default {
         "guiasAll",
         {
           headers: {
-            agencia: this.selectedAgencia.id ? this.selectedAgencia.id : "",
-            desde: moment(this.fecha_desde, "DD/MM/YYYY").format("YYYY-MM-DD"),
-            hasta: moment(this.fecha_hasta, "DD/MM/YYYY").format("YYYY-MM-DD"),
-            cliente_orig_exist: this.selectedTipo == "C" ? "S" : "",
-            cliente_part_exist: this.selectedTipo == "C" ? "" : "S",
-            tipo_in: "FA,NC,ND",
-            estatus_admin_ex: "A",
+            filters: JSON.stringify({
+              agencia: this.selectedAgencia.id ? this.selectedAgencia.id : "",
+              desde: moment(this.fecha_desde, "DD/MM/YYYY").format(
+                "YYYY-MM-DD"
+              ),
+              hasta: moment(this.fecha_hasta, "DD/MM/YYYY").format(
+                "YYYY-MM-DD"
+              ),
+              cliente_orig_exist: this.selectedTipo == "C" ? "S" : "",
+              cliente_part_exist: this.selectedTipo == "C" ? "" : "S",
+              tipo_in: "FA,NC,ND",
+              estatus_admin_ex: "A",
+            }),
           },
         }
       );
@@ -712,12 +714,16 @@ export default {
       this.loading = true;
       this.$refs.methods.getData(`/mmovimientos`, "setDataTable", "guias", {
         headers: {
-          agencia: this.selectedAgencia.id ? this.selectedAgencia.id : "",
-          cliente_orig: this.selectedCliente.id ? this.selectedCliente.id : "",
-          desde: moment(this.fecha_desde, "DD/MM/YYYY").format("YYYY-MM-DD"),
-          hasta: moment(this.fecha_hasta, "DD/MM/YYYY").format("YYYY-MM-DD"),
-          tipo_in: "FA,NC,ND",
-          estatus_admin_ex: "A",
+          filters: JSON.stringify({
+            agencia: this.selectedAgencia.id ? this.selectedAgencia.id : "",
+            cliente_orig: this.selectedCliente.id
+              ? this.selectedCliente.id
+              : "",
+            desde: moment(this.fecha_desde, "DD/MM/YYYY").format("YYYY-MM-DD"),
+            hasta: moment(this.fecha_hasta, "DD/MM/YYYY").format("YYYY-MM-DD"),
+            tipo_in: "FA,NC,ND",
+            estatus_admin_ex: "A",
+          }),
         },
       });
     },

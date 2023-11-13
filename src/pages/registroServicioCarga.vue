@@ -3286,11 +3286,7 @@ export default {
     };
   },
   mounted() {
-    this.$emit(
-      "changeTitle",
-      "SCEN - Ventas - Registro Servicio Carga",
-      ""
-    );
+    this.$emit("changeTitle", "SCEN - Ventas - Registro Servicio Carga", "");
 
     document.addEventListener("keydown", this.comandoteclas);
     this.$refs.methods.getData(`/paises`, `setData`, `paises`);
@@ -4326,8 +4322,10 @@ export default {
           .get(`/mmovimientos`, {
             headers: {
               Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-              nro_documento: this.form.nro_documento,
-              tipo: "GC",
+              filters: JSON.stringify({
+                nro_documento: this.form.nro_documento,
+                tipo: "GC",
+              }),
             },
           })
           .then((res) => {

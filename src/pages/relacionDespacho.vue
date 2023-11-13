@@ -1111,28 +1111,32 @@ export default {
       if (props) this.pagination = props.pagination;
       this.$refs.methods.getData(`/mmovimientos`, "setDataTable", "guias", {
         headers: {
-          agencia: this.selectedAgencia.id ? this.selectedAgencia.id : "",
-          cliente_orig: this.selectedCliente.id ? this.selectedCliente.id : "",
-          agencia_dest: this.selectedAgenciaDestino.id
-            ? this.selectedAgenciaDestino.id
-            : this.selectedAgenciaDestino
-            ? this.selectedAgenciaDestino
-            : "",
-          agencia_dest_transito: this.selectedAgenciaDestino.id
-            ? this.selectedAgenciaDestino.id
-            : this.selectedAgenciaDestino
-            ? this.selectedAgenciaDestino
-            : "",
-          desde: moment(this.fecha_desde, "DD/MM/YYYY").format("YYYY-MM-DD"),
-          hasta: moment(this.fecha_hasta, "DD/MM/YYYY").format("YYYY-MM-DD"),
-          prefix_nro:
-            this.selectedSerie.length < 2 ? this.selectedSerie[0] : "",
-          tipo: "GC",
-          estatus_admin_ex: "A",
-          estatus_oper: this.selectedTipo == "C" ? "PR" : "",
-          include_zona: "S",
-          order_by: this.pagination.sortBy,
-          order_direction: this.pagination.descending ? "DESC" : "ASC",
+          filters: JSON.stringify({
+            agencia: this.selectedAgencia.id ? this.selectedAgencia.id : "",
+            cliente_orig: this.selectedCliente.id
+              ? this.selectedCliente.id
+              : "",
+            agencia_dest: this.selectedAgenciaDestino.id
+              ? this.selectedAgenciaDestino.id
+              : this.selectedAgenciaDestino
+              ? this.selectedAgenciaDestino
+              : "",
+            agencia_dest_transito: this.selectedAgenciaDestino.id
+              ? this.selectedAgenciaDestino.id
+              : this.selectedAgenciaDestino
+              ? this.selectedAgenciaDestino
+              : "",
+            desde: moment(this.fecha_desde, "DD/MM/YYYY").format("YYYY-MM-DD"),
+            hasta: moment(this.fecha_hasta, "DD/MM/YYYY").format("YYYY-MM-DD"),
+            prefix_nro:
+              this.selectedSerie.length < 2 ? this.selectedSerie[0] : "",
+            tipo: "GC",
+            estatus_admin_ex: "A",
+            estatus_oper: this.selectedTipo == "C" ? "PR" : "",
+            include_zona: "S",
+          }),
+          order: this.pagination.sortBy,
+          direction: this.pagination.descending ? "DESC" : "ASC",
         },
       });
     },

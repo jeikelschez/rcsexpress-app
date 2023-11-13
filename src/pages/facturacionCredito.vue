@@ -2247,11 +2247,13 @@ export default {
         "ultimaFact",
         {
           headers: {
-            tipo: "FA",
+            filters: JSON.stringify({
+              tipo: "FA",
+            }),
             page: 0,
             limit: 1,
-            order_by: "nro_control",
-            order_direction: "DESC",
+            order: "nro_control",
+            direction: "DESC",
           },
         }
       );
@@ -2389,13 +2391,15 @@ export default {
         .get(`/mmovimientos/`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            agencia: this.selectedAgencia.id,
-            tipo: "FA",
+            filters: JSON.stringify({
+              agencia: this.selectedAgencia.id,
+              tipo: "FA",
+              estatus: "A",
+            }),
             page: 0,
             limit: 1,
-            estatus: "A",
-            order_by: "nro_documento",
-            order_direction: "DESC",
+            order: "nro_documento",
+            direction: "DESC",
           },
         })
         .then((res) => {
@@ -2700,11 +2704,13 @@ export default {
         "ultimaFact",
         {
           headers: {
-            tipo: "FA",
+            filters: JSON.stringify({
+              tipo: "FA",
+            }),
             page: 0,
             limit: 1,
-            order_by: "nro_control",
-            order_direction: "DESC",
+            order: "nro_control",
+            direction: "DESC",
           },
         }
       );
@@ -2721,11 +2727,13 @@ export default {
         .get(`/mmovimientos`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            cliente_orig: this.selectedCliente.id,
-            tipo: "GC",
-            pagado_en: "O",
-            modalidad: this.selectedTipo.formaPago,
-            estatus_admin_in: "F",
+            filters: JSON.stringify({
+              cliente_orig: this.selectedCliente.id,
+              tipo: "GC",
+              pagado_en: "O",
+              modalidad: this.selectedTipo.formaPago,
+              estatus_admin_in: "F",
+            }),
           },
         })
         .then((res) => {
@@ -2739,11 +2747,13 @@ export default {
         .get(`/mmovimientos`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            cliente_dest: this.selectedCliente.id,
-            tipo: "GC",
-            pagado_en: "D",
-            modalidad: this.selectedTipo.formaPago,
-            estatus_admin_in: "F",
+            filters: JSON.stringify({
+              cliente_dest: this.selectedCliente.id,
+              tipo: "GC",
+              pagado_en: "D",
+              modalidad: this.selectedTipo.formaPago,
+              estatus_admin_in: "F",
+            }),
           },
         })
         .then((res) => {

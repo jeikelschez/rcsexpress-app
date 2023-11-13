@@ -1812,7 +1812,9 @@ export default {
           .get(`/mmovimientos`, {
             headers: {
               Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-              nro_documento: nroGuia,
+              filters: JSON.stringify({
+                nro_documento: nroGuia,
+              }),
             },
           })
           .then((res) => {

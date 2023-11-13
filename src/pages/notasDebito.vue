@@ -148,7 +148,9 @@
                   </q-card-section>
                   <q-separator vertical />
                   <q-card-section class="col-3">
-                    <div class="hr-option-text">{{ scope.opt.cliente_orig_desc }}</div>
+                    <div class="hr-option-text">
+                      {{ scope.opt.cliente_orig_desc }}
+                    </div>
                   </q-card-section>
                   <q-separator vertical />
                   <q-card-section class="col-2">
@@ -1143,11 +1145,13 @@ export default {
         .get(`/mmovimientos`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            tipo: "ND",
+            filters: JSON.stringify({
+              tipo: "ND",
+            }),
             page: 0,
             limit: 1,
-            order_by: "nro_control",
-            order_direction: "DESC",
+            order: "nro_control",
+            direction: "DESC",
           },
         })
         .then((res) => {
@@ -1175,12 +1179,14 @@ export default {
         .get(`/mmovimientos`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            agencia: agencia,
-            tipo: "FA",
-            estatus_admin_ex: "A,E",
-            no_pagada: "S",
-            order_by: "nro_documento",
-            order_direction: "DESC",
+            filters: JSON.stringify({
+              agencia: agencia,
+              tipo: "FA",
+              estatus_admin_ex: "A,E",
+              no_pagada: "S",
+            }),
+            order: "nro_documento",
+            direction: "DESC",
           },
         })
         .then((res) => {
@@ -1428,12 +1434,14 @@ export default {
         .get(`/mmovimientos/`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            agencia: this.selectedAgencia.id,
-            tipo: "ND",
+            filters: JSON.stringify({
+              agencia: this.selectedAgencia.id,
+              tipo: "ND",
+            }),
             page: 0,
             limit: 1,
-            order_by: "nro_documento",
-            order_direction: "DESC",
+            order: "nro_documento",
+            direction: "DESC",
           },
         })
         .then((res) => {
@@ -1482,7 +1490,9 @@ export default {
       // Actualizo la factura original
       var formFact = {};
       formFact.estatus_administra = "P";
-      formFact.saldo = this.parseFloatN(this.curReplace(this.selectedFactura.saldo)) + this.parseFloatN(this.curReplace(this.form.monto_total));
+      formFact.saldo =
+        this.parseFloatN(this.curReplace(this.selectedFactura.saldo)) +
+        this.parseFloatN(this.curReplace(this.form.monto_total));
 
       api.put(`/mmovimientos/${this.selectedFactura.id}`, formFact, {
         headers: {
@@ -1587,11 +1597,13 @@ export default {
         .get(`/mmovimientos`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            tipo: "ND",
+            filters: JSON.stringify({
+              tipo: "ND",
+            }),
             page: 0,
             limit: 1,
-            order_by: "nro_control",
-            order_direction: "DESC",
+            order: "nro_control",
+            direction: "DESC",
           },
         })
         .then((res) => {
