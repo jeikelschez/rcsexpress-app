@@ -66,11 +66,6 @@ const routes = [
         children: [{ path: "", component: () => import('src/pages/administracion.vue')}]
       },
       {
-        path: '/notascontables',
-        component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('src/pages/notascontables.vue')}]
-      },
-      {
         path: '/notasdebito',
         component: () => import("layouts/mainLayout.vue"),
         children: [{ path: "", component: () => import('src/pages/notasDebito.vue')}]
@@ -83,7 +78,7 @@ const routes = [
       {
         path: '/anulacionnotascontables',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('src/pages/anulacionnotascontables.vue')}]
+        children: [{ path: "", component: () => import('src/pages/anulacionNotasContables.vue')}]
       },
       {
         path: '/cuentasporcobrar',
