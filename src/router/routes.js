@@ -83,7 +83,7 @@ const routes = [
       {
         path: '/cuentasporcobrar',
         component: () => import("layouts/mainLayout.vue"),
-        children: [{ path: "", component: () => import('src/pages/cuentasporcobrar.vue')}]
+        children: [{ path: "", component: () => import('src/pages/cuentasPorCobrar.vue')}]
       },
       {
         path: '/cuentasporpagar',
