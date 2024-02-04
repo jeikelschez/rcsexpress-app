@@ -460,6 +460,7 @@
                     label="Ingreso de Caja N°:"
                     hint=""
                     dense
+                    mask="######"
                     style="padding-bottom: 10px"
                     class="pcform"
                     lazy-rules
@@ -603,7 +604,7 @@ export default {
         descending: true,
         rowsNumber: "",
       },
-      fecha_desde: moment("2023-06-01").startOf("month").format("DD/MM/YYYY"),
+      fecha_desde: moment().startOf("month").format("DD/MM/YYYY"),
       fecha_hasta: moment().endOf("month").format("DD/MM/YYYY"),
       fecha_emision: moment().format("DD/MM/YYYY"),
       fecha_cobranza: moment().format("DD/MM/YYYY"),
