@@ -71,6 +71,7 @@
             lazy-rules
             mask="##/##/####"
             :rules="[(val) => this.$refs.rulesVue.checkDate(val)]"
+            @keyup.enter="getDataTable()"
           >
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
@@ -108,6 +109,7 @@
             mask="##/##/####"
             lazy-rules
             :rules="[(val) => this.$refs.rulesVue.checkDate(val)]"
+            @keyup.enter="getDataTable()"
           >
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
