@@ -1232,6 +1232,7 @@ export default {
       this.$refs.methods.getData("/agentes", "setData", "agentes", {
         headers: {
           agencia: this.agencias[0].id,
+          activo: "S",
         },
       });
     },

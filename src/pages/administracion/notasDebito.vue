@@ -1,333 +1,5 @@
 <template>
   <q-page class="pagina q-pa-md">
-    <q-dialog v-model="guiasDialog">
-      <q-card
-        class="q-pa-md"
-        bordered
-        style="width: 1200px; max-width: 100vw; padding-bottom: 0px"
-      >
-        <q-card-section>
-          <div class="text-h5">
-            <p
-              style="font-size: 20px; margin-bottom: 15px"
-              class="text-secondary"
-            >
-              <strong>AJUSTAR LA COMISIÓN DE GUÍAS CARGAS ASOCIADAS</strong>
-            </p>
-          </div>
-        </q-card-section>
-        <q-card-section style="margin-top: -30px">
-          <div class="row pc" style="margin-bottom: 10px; margin-top: 10px">
-            <div class="col-md-4 col-xs-12"></div>
-            <div class="col-md-2 col-xs-12">
-              <p style="font-size: 17px; margin-top: 5px">
-                <strong class="text-secondary">Totales</strong>
-              </p>
-            </div>
-            <div class="col-md-2 col-xs-12">
-              <q-input
-                outlined
-                v-model="monto_total"
-                label="Monto Total:"
-                hint=""
-                dense
-                v-money="money"
-                input-class="text-right"
-                style="padding-bottom: 10px"
-                class="pcform"
-                :readonly="true"
-                lazy-rules
-              >
-              </q-input>
-            </div>
-            <div class="col-md-2 col-xs-12">
-              <q-input
-                outlined
-                v-model="monto_descontar"
-                label="Monto a Descontar:"
-                input-class="text-right"
-                class="pcform"
-                hint=""
-                dense
-                v-money="money"
-                :readonly="true"
-                style="padding-bottom: 10px"
-                lazy-rules
-              >
-              </q-input>
-            </div>
-          </div>
-          <div class="row pc">
-            <div class="col-md-4 col-xs-12"></div>
-            <div class="col-md-2 col-xs-12">
-              <p style="font-size: 17px; margin-top: 5px">
-                <strong class="text-secondary">Seleccionados</strong>
-              </p>
-            </div>
-            <div class="col-md-2 col-xs-12">
-              <q-input
-                outlined
-                v-model="monto_total_select"
-                :input-style="{ color: '#06065B' }"
-                label="Monto Total:"
-                hint=""
-                dense
-                input-class="text-right"
-                style="padding-bottom: 10px"
-                v-money="money"
-                :readonly="true"
-                class="pcform"
-                lazy-rules
-              >
-              </q-input>
-            </div>
-            <div class="col-md-2 col-xs-12">
-              <q-input
-                outlined
-                v-model="monto_descontar_select"
-                :input-style="{ color: '#06065B' }"
-                label="Monto a Descontar:"
-                input-class="text-right"
-                class="pcform"
-                hint=""
-                v-money="money"
-                :readonly="true"
-                dense
-                style="padding-bottom: 10px"
-                lazy-rules
-              >
-              </q-input>
-            </div>
-          </div>
-          <div class="row pc" style="margin-bottom: 6px; margin-top: 10px">
-            <q-btn
-              label="Asignar"
-              @click="confirmAsignar()"
-              color="primary"
-              icon="add"
-              class="col-md-6 col-xl-6 col-lg-6 col-xs-12 col-sm-12"
-              style="margin-bottom: 10px"
-            />
-            <q-btn
-              label="Continuar"
-              color="primary"
-              flat
-              icon="close"
-              class="col-md-6 col-xl-6 col-lg-6 col-xs-12 col-sm-12"
-              @click="confirmContinue()"
-              style="margin-bottom: 1px"
-            />
-          </div>
-          <q-table
-            :rows="guiasCarga"
-            :loading="loading"
-            binary-state-sort
-            row-key="id"
-            :columns="columns"
-            selection="multiple"
-            :separator="separator"
-            :pagination="paginationGuia"
-            :grid="$q.screen.xs"
-            :rows-per-page-options="[]"
-            style="width: 100%; height: 430px; margin-bottom: 20px"
-            v-model:selected="selectedGuias"
-            :selected.sync="selectedGuias"
-            @selection="onSelection"
-          >
-            <template v-slot:loading>
-              <q-inner-loading showing color="primary" class="loading" />
-            </template>
-            <template v-slot:top="props">
-              <div class="col-md-5 col-xs-12 texto">
-                <p style="font-size: 18px; padding-right: 10px">
-                  <strong class="text-secondary">AGENCIA: </strong>
-                  <strong> {{ this.selectedAgencia.nb_agencia }} </strong>
-                </p>
-              </div>
-              <div class="col-md-7 col-xs-12 texto">
-                <p style="font-size: 18px">
-                  <strong class="text-secondary">CLIENTE: </strong>
-                  <strong>
-                    {{ this.selectedFactura.cliente_orig_desc }}
-                  </strong>
-                </p>
-              </div>
-            </template>
-            <template v-slot:body-cell-nro_documento="props">
-              <q-td :props="props">
-                {{ props.row.t_de_documento + "-" + props.row.nro_documento }}
-              </q-td>
-            </template>
-            <template v-slot:body-cell-pagado_en="props">
-              <q-td :props="props">
-                {{ filterDesc("pagadoEn", props.row.pagado_en) }}
-              </q-td>
-            </template>
-            <template v-slot:body-cell-monto_descontar="props">
-              <q-td :props="props">
-                <q-input
-                  outlined
-                  v-model="props.row.monto_descontar"
-                  hint=""
-                  dense
-                  v-money="money"
-                  input-class="text-right"
-                  style="padding-bottom: 10px"
-                  class="pcform"
-                  lazy-rules
-                  @keyup="this.calculaDescontar()"
-                >
-                </q-input>
-              </q-td>
-            </template>
-            <template v-slot:body-cell-monto_base_new="props">
-              <q-td :props="props" style="text-align: right">
-                {{
-                  this.calculaBaseNew(
-                    props.row.monto_total,
-                    props.row.monto_descontar
-                  )
-                }}
-              </q-td>
-            </template>
-            <template v-slot:item="props">
-              <div
-                class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
-                :style="props.selected ? 'transform: scale(0.95);' : ''"
-              >
-                <q-card :class="props.selected ? 'bg-grey-2' : ''">
-                  <q-card-section>
-                    <q-checkbox
-                      dense
-                      v-model="props.selected"
-                      :label="props.row.name"
-                    />
-                  </q-card-section>
-                  <q-separator />
-                  <q-list dense>
-                    <q-item v-for="col in props.cols" :key="col.name">
-                      <q-item-section>
-                        <q-item-label>{{ col.label }}</q-item-label>
-                      </q-item-section>
-                      <q-item-section side class="itemMovilSide">
-                        <q-item-label>
-                          {{ col.value }}
-                        </q-item-label>
-                      </q-item-section>
-                    </q-item>
-                  </q-list>
-                </q-card>
-              </div>
-            </template>
-          </q-table>
-          <div class="row movil" style="margin-bottom: 10px; margin-top: 10px">
-            <div class="col-md-4 col-xs-12"></div>
-            <div class="col-md-2 col-xs-12">
-              <p style="font-size: 17px; margin-top: 5px">
-                <strong class="text-secondary">Totales</strong>
-              </p>
-            </div>
-            <div class="col-md-2 col-xs-12">
-              <q-input
-                outlined
-                v-model="monto_total"
-                label="Monto Total:"
-                hint=""
-                dense
-                v-money="money"
-                input-class="text-right"
-                style="padding-bottom: 10px"
-                class="pcform"
-                :readonly="true"
-                lazy-rules
-              >
-              </q-input>
-            </div>
-            <div class="col-md-2 col-xs-12">
-              <q-input
-                outlined
-                v-model="monto_descontar"
-                label="Monto a Descontar:"
-                input-class="text-right"
-                class="pcform"
-                hint=""
-                dense
-                v-money="money"
-                :readonly="true"
-                style="padding-bottom: 10px"
-                lazy-rules
-              >
-              </q-input>
-            </div>
-          </div>
-          <div class="row movil">
-            <div class="col-md-4 col-xs-12"></div>
-            <div class="col-md-2 col-xs-12">
-              <p style="font-size: 17px; margin-top: 5px">
-                <strong class="text-secondary">Seleccionados</strong>
-              </p>
-            </div>
-            <div class="col-md-2 col-xs-12">
-              <q-input
-                outlined
-                v-model="monto_total_select"
-                :input-style="{ color: '#06065B' }"
-                label="Monto Total:"
-                hint=""
-                dense
-                input-class="text-right"
-                style="padding-bottom: 10px"
-                v-money="money"
-                :readonly="true"
-                class="pcform"
-                lazy-rules
-              >
-              </q-input>
-            </div>
-            <div class="col-md-2 col-xs-12">
-              <q-input
-                outlined
-                v-model="monto_descontar_select"
-                :input-style="{ color: '#06065B' }"
-                label="Monto a Descontar:"
-                input-class="text-right"
-                class="pcform"
-                hint=""
-                v-money="money"
-                :readonly="true"
-                dense
-                style="padding-bottom: 10px"
-                lazy-rules
-              >
-              </q-input>
-            </div>
-          </div>
-          <div
-            class="justify-end row movil"
-            style="margin-bottom: 6px; margin-top: 10px"
-          >
-            <q-btn
-              label="Asignar"
-              @click="confirmAsignar()"
-              color="primary"
-              icon="add"
-              class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
-              style="margin-bottom: 10px"
-            />
-            <q-btn
-              label="Continuar"
-              color="primary"
-              flat
-              icon="close"
-              class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
-              @click="confirmContinue()"
-              style="margin-bottom: 10px"
-            />
-          </div>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
-
     <div class="q-pa-sm justify-center">
       <div
         class="row justify-end q-pa-md col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
@@ -337,7 +9,7 @@
           style="align-self: center; text-align: center"
         >
           <p style="font-size: 20px" class="text-secondary">
-            <strong>Administración - Notas de Crédito</strong>
+            <strong>ADMINISTRACIÓN - NOTAS DE DÉBITO</strong>
           </p>
         </div>
         <div
@@ -566,7 +238,7 @@
               transition-show="scale"
               transition-hide="scale"
               color="primary"
-              >Generar Nota de Crédito</q-tooltip
+              >Generar Nota de Débito</q-tooltip
             >
           </q-btn>
         </div>
@@ -1017,7 +689,7 @@
           <q-input
             outlined
             v-model="this.selectedFactura.observacion"
-            label="Observacion Nota de Crédito"
+            label="Observacion Nota de Débito"
             type="textarea"
             input-class="textArea"
           >
@@ -1032,7 +704,7 @@
               style="font-size: 15px; margin-bottom: 7px"
               class="text-secondary"
             >
-              <strong>Ultima Nota de Crédito Registrada</strong>
+              <strong>Ultima Nota de Débito Registrada</strong>
             </p>
           </div>
           <div
@@ -1125,7 +797,7 @@
       <q-card style="width: 700px">
         <q-card-section>
           <div class="text-h5" style="font-size: 18px">
-            ¿Desea Generar la Nota de Crédito?
+            ¿Desea Generar la Nota de Débito?
           </div>
         </q-card-section>
         <q-card-actions align="right">
@@ -1147,64 +819,11 @@
       </q-card>
     </q-dialog>
 
-    <q-dialog v-model="confirmContinuePopUp" persistent>
-      <q-card style="width: 700px">
-        <q-card-section>
-          <div class="text-h5" style="font-size: 18px">
-            ¿Está seguro de salir sin ajustar las guías?
-          </div>
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn
-            flat
-            label="Si"
-            color="primary"
-            @click="this.dialogContinue = true"
-            v-close-popup
-          />
-          <q-btn
-            flat
-            label="No"
-            color="primary"
-            v-close-popup
-            @click="this.dialogContinue = false"
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-
-    <q-dialog v-model="confirmAsignarPopUp" persistent>
-      <q-card style="width: 700px">
-        <q-card-section>
-          <div class="text-h5" style="font-size: 18px">
-            ¿Está seguro de realizar el ajuste a las comisiones de las guias
-            seleccionadas...?
-          </div>
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn
-            flat
-            label="Si"
-            color="primary"
-            @click="this.dialogAsignar = true"
-            v-close-popup
-          />
-          <q-btn
-            flat
-            label="No"
-            color="primary"
-            v-close-popup
-            @click="this.dialogAsignar = false"
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-
     <q-dialog v-model="confirmPrintPopUp" persistent>
       <q-card style="width: 700px">
         <q-card-section>
           <div class="text-h5" style="font-size: 18px">
-            Estas seguro de Imprimir la Nota de Crédito con Nro. Control
+            Estas seguro de Imprimir la Nota de Débito con Nro. Control
             {{
               this.correlativo.serie_doc
                 ? this.correlativo.serie_doc + " "
@@ -1312,84 +931,6 @@ export default {
         precision: 0,
         masked: false,
       },
-      columns: [
-        {
-          name: "nro_documento",
-          label: "Nro. Guía",
-          field: "nro_documento",
-          align: "left",
-        },
-        {
-          name: "fecha_emision",
-          label: "Emisión",
-          field: "fecha_emision",
-          align: "left",
-        },
-        {
-          name: "pagado_en",
-          label: "Pagado En",
-          field: "pagado_en",
-          align: "left",
-        },
-        {
-          name: "monto_subtotal",
-          label: "Sub-total",
-          field: "monto_subtotal",
-          align: "right",
-          format: (val) =>
-            new Intl.NumberFormat("de-DE", {
-              style: "currency",
-              currency: "EUR",
-              currencyDisplay: "code",
-            })
-              .format(val)
-              .replace("EUR", "")
-              .trim(),
-        },
-        {
-          name: "monto_impuesto",
-          label: "Impuesto",
-          field: "monto_impuesto",
-          align: "right",
-          format: (val) =>
-            new Intl.NumberFormat("de-DE", {
-              style: "currency",
-              currency: "EUR",
-              currencyDisplay: "code",
-            })
-              .format(val)
-              .replace("EUR", "")
-              .trim(),
-        },
-        {
-          name: "monto_total",
-          label: "Monto Total",
-          field: "monto_total",
-          align: "right",
-          format: (val) =>
-            new Intl.NumberFormat("de-DE", {
-              style: "currency",
-              currency: "EUR",
-              currencyDisplay: "code",
-            })
-              .format(val)
-              .replace("EUR", "")
-              .trim(),
-        },
-        {
-          name: "monto_descontar",
-          label: "Monto Base a Descontar",
-          field: "monto_descontar",
-          align: "center",
-        },
-        {
-          name: "monto_base_new",
-          label: "Monto Base Nuevo",
-          field: "monto_base_new",
-          align: "center",
-          format: (val) => "0.00",
-        },
-      ],
       columnsDetalle: [
         {
           name: "check_impuesto",
@@ -1479,16 +1020,6 @@ export default {
         { label: "CONTADO", value: "CO" },
         { label: "CRÉDITO", value: "CR" },
       ],
-      pagadoEn: [
-        { label: "ORIGEN", value: "O" },
-        { label: "DESTINO", value: "D" },
-      ],
-      paginationGuia: {
-        page: 1,
-        rowsPerPage: 0,
-        sortBy: "fecha_emision",
-        descending: false,
-      },
       agencias: [],
       selectedAgencia: [],
       selectedFactura: [],
@@ -1506,20 +1037,10 @@ export default {
       referencia: "",
       rpermisos: [],
       confirmSave: false,
-      dialogContinue: false,
-      dialogAsignar: false,
       confirmPrint: false,
       iva: 0,
       correlativo: {},
       ultimaNota: [],
-      guiasCarga: [],
-      monto_subtotal: 0,
-      monto_base: 0,
-      monto_impuesto: 0,
-      monto_total: 0,
-      monto_total_select: 0,
-      monto_descontar: 0,
-      monto_descontar_select: 0,
     };
   },
   setup() {
@@ -1529,13 +1050,9 @@ export default {
       separator: ref("vertical"),
       confirmSavePopUp: ref(false),
       confirmPrintPopUp: ref(false),
-      confirmContinuePopUp: ref(false),
-      confirmAsignarPopUp: ref(false),
       dialogNota: ref(false),
       reference: ref(false),
       deletePopup: ref(false),
-      guiasDialog: ref(false),
-      selectedGuias: ref([]),
       pagination: {
         page: 1,
         rowsPerPage: 0,
@@ -1543,12 +1060,12 @@ export default {
     };
   },
   mounted() {
-    this.$emit("changeTitle", "SCEN - Administración - Notas de Crédito", "");
+    this.$emit("changeTitle", "SCEN - Administración - Notas de Débito", "");
     this.$refs.methods.getData("/agencias", "setDataInit", "agencias");
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
         rol: LocalStorage.getItem("tokenTraducido").usuario.roles.id,
-        menu: "notascredito",
+        menu: "notasdebito",
       },
     });
   },
@@ -1608,7 +1125,7 @@ export default {
 
       this.$refs.methods.getData("/coperacion", "setData", "tiposConcepto", {
         headers: {
-          tipo: 10,
+          tipo: 11,
         },
       });
 
@@ -1623,12 +1140,14 @@ export default {
           this.iva = res.data.valor;
         });
 
-      // Seteamos los datos de la ultima Nota de Credito
+      // Seteamos los datos de la ultima Nota de Debito
       api
         .get(`/mmovimientos`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            filters: JSON.stringify({ tipo: "NC" }),
+            filters: JSON.stringify({
+              tipo: "ND",
+            }),
             page: 0,
             limit: 1,
             order: "nro_control",
@@ -1663,8 +1182,8 @@ export default {
             filters: JSON.stringify({
               agencia: agencia,
               tipo: "FA",
-              estatus_admin_in: "P",
-              si_saldo: "S",
+              estatus_admin_ex: "A,E",
+              no_pagada: "S",
             }),
             order: "nro_documento",
             direction: "DESC",
@@ -1696,6 +1215,7 @@ export default {
               }
             }
 
+            factura.id = data.id;
             factura.cod_agencia = data.cod_agencia;
             factura.nro_documento = data.nro_documento;
             factura.t_de_documento = data.t_de_documento;
@@ -1727,7 +1247,7 @@ export default {
             factura.ci_rif_cte_conta_dest = data.ci_rif_cte_conta_dest;
 
             let observacion =
-              "NOTA DE CRÉDITO APLICADA AL DOCUMENTO NRO. " + serie;
+              "NOTA DE DÉBITO APLICADA AL DOCUMENTO NRO. " + serie;
 
             if (!data.nro_control || data.nro_control == 0) {
               observacion += data.t_de_documento + " ";
@@ -1761,7 +1281,7 @@ export default {
       for (var i = 0; i < this.detalles.length; i++) {
         if (this.selectedTiposConcepto.id == this.detalles[i].cod_concepto) {
           this.$q.notify({
-            message: "El concepto de Nota de Crédito ya fue Insertado",
+            message: "El concepto de Nota de Débito ya fue Insertado",
             color: "red",
           });
           this.selectedTiposConcepto = [];
@@ -1781,12 +1301,12 @@ export default {
       this.selectedTiposConcepto = [];
       this.calculaTotales();
     },
-    // Metodos para mostrar el preimpreso de la Nota de Credito
+    // Metodos para mostrar el preimpreso de la Nota de Debito
     async printDialog() {
       // Verifico que tenga detalle
       if (this.detalles.length == 0) {
         this.errorMessage(
-          "No es posible generar la Nota de Crédito si esta no posee Detalle"
+          "No es posible generar la Nota de Débito si esta no posee Detalle"
         );
         return;
       }
@@ -1796,7 +1316,7 @@ export default {
         if (this.detalles[i].subtotal == "0,00") {
           eval("this.$refs.cantidad" + i + ".$el.focus()");
           this.errorMessage(
-            "Debe ingresar los datos completos en el detalle, antes de generar la Nota de Crédito"
+            "Debe ingresar los datos completos en el detalle, antes de generar la Nota de Débito"
           );
           return;
         }
@@ -1822,7 +1342,7 @@ export default {
           agencia_ctrl = res.data.valor;
         });
 
-      //se define el tipo de formato que usa la nota de Credito
+      //se define el tipo de formato que usa la nota de debito
       let formato_nd;
       let tipo_formato;
       await api
@@ -1847,7 +1367,7 @@ export default {
           tipo_formato = res.data[0].id;
         });
 
-      //buscar el control correlativo de la Nota de Credito
+      //buscar el control correlativo de la Nota de Debito
       await api
         .get(`/correlativo/`, {
           headers: {
@@ -1879,7 +1399,7 @@ export default {
               "Atención: el Número Correlativo del Control Preimpreso Activo ha llegado al último Número asignado al mismo"
             );
             this.errorMessage(
-              "Para Registrar otra Nota de Crédito Ingrese un nuevo Control Correlativo y asignele estatus [Activo]"
+              "Para Registrar otra Nota de Débito Ingrese un nuevo Control Correlativo y asignele estatus [Activo]"
             );
 
             //Actualiza la tabla CONTROL_CORRELATIVO y asigna estatus 'C'=Culminado
@@ -1888,10 +1408,10 @@ export default {
             this.correlativo.ult_doc_referencia > this.correlativo.control_final
           ) {
             this.errorMessage(
-              "Atención: no existe un Número Correlativo Activo del Control Preimpreso de Notas de Crédito"
+              "Atención: no existe un Número Correlativo Activo del Control Preimpreso de Notas de Débito"
             );
             this.errorMessage(
-              "Para Registrar otra Nota de Crédito Ingrese un nuevo Control Correlativo y asignele estatus [Activo]"
+              "Para Registrar otra Nota de Débito Ingrese un nuevo Control Correlativo y asignele estatus [Activo]"
             );
             this.loading = false;
             return;
@@ -1899,10 +1419,10 @@ export default {
         }
       } else {
         this.errorMessage(
-          "La Nota de Crédito no se puede generar porque no hay un N° de Control Inicio Preimpreso"
+          "La Nota de Débito no se puede generar porque no hay un N° de Control Inicio Preimpreso"
         );
         this.errorMessage(
-          "SOLUCION: Registre un Control Correlativo en el Módulo de Mantenimiento Sub Módulo Datos Generales y vuelva a generar la Nota de Crédito."
+          "SOLUCION: Registre un Control Correlativo en el Módulo de Mantenimiento Sub Módulo Datos Generales y vuelva a generar la Nota de Débito."
         );
         this.loading = false;
         return;
@@ -1916,7 +1436,7 @@ export default {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
             filters: JSON.stringify({
               agencia: this.selectedAgencia.id,
-              tipo: "NC",
+              tipo: "ND",
             }),
             page: 0,
             limit: 1,
@@ -1933,51 +1453,19 @@ export default {
           }
         });
 
-      //Busca y Genera ultimo numero interno de las Notas de Credito
+      //Busca y Genera ultimo numero interno de las Notas de Débito
       if (this.ultimaNota.length > 0) {
         this.nro_interno = this.parseFloatN(this.ultimaNota[0].nro_control) + 1;
       } else {
         this.nro_interno = 1;
       }
 
-      // Hacer el Preview de la Nota de Credito
+      // Hacer el Preview de la Nota de Debito
       this.confirmSave = false;
-      //this.dialogNota = true;
+      this.dialogNota = true;
       this.loading = false;
-      this.ajustarGuias();
     },
-    // Metodo para ajustar Guias asociadas
-    async ajustarGuias() {
-      await api
-        .get(`/mmovimientos/`, {
-          headers: {
-            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            filters: JSON.stringify({
-              tipo: "GC",
-              tipo_doc_ppal: this.selectedFactura.t_de_documento,
-              nro_doc_ppal: this.selectedFactura.nro_documento,
-              nro_ctrl_doc_ppal: this.selectedFactura.nro_control,
-              cod_ag_doc_ppal: this.selectedFactura.cod_agencia,
-            }),
-          },
-        })
-        .then((res) => {
-          if (res.data.data.length > 0) {
-            this.guiasCarga = res.data.data;
-            this.guiasDialog = true;
-
-            for (var i = 0; i < this.guiasCarga.length; i++) {
-              this.monto_total += this.parseFloatN(
-                this.guiasCarga[i].monto_total
-              );
-            }
-            this.monto_total = this.monto_total.toFixed(2);
-          } else {
-            this.dialogNota = true;
-          }
-        });
-    },
-    // Metodo para imprimir la Nota de Credito
+    // Metodo para imprimir la Nota de Debito
     async printData() {
       this.confirmPrintPopUp = true;
       await this.until((_) => this.confirmPrint == true);
@@ -1988,7 +1476,7 @@ export default {
       this.sendData();
       this.$refs.webViewer.confirmPrint = true;
     },
-    // Metodos para guardar la Nota de Credito
+    // Metodos para guardar la Nota de Debito
     async sendData() {
       this.loading = true;
 
@@ -1999,10 +1487,21 @@ export default {
         },
       });
 
+      // Actualizo la factura original
+      var formFact = {};
+      formFact.estatus_administra = "P";
+      formFact.saldo =
+        this.parseFloatN(this.curReplace(this.selectedFactura.saldo)) +
+        this.parseFloatN(this.curReplace(this.form.monto_total));
+
+      api.put(`/mmovimientos/${this.selectedFactura.id}`, formFact, {
+        headers: {
+          Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        },
+      });
+
       // Setear los datos en el maestro
       let formNota = {};
-      let base_vta_nc = 0;
-      let base_seg_nc = 0;
 
       formNota.tipo_doc_principal = this.selectedFactura.t_de_documento;
       formNota.nro_doc_principal = this.selectedFactura.nro_documento;
@@ -2018,7 +1517,7 @@ export default {
       formNota.nro_documento = this.nro_documento;
       formNota.nro_control = this.nro_interno;
       formNota.nro_control_new = this.correlativo.ult_doc_referencia;
-      formNota.t_de_documento = "NC";
+      formNota.t_de_documento = "ND";
       formNota.cod_agencia_dest = this.selectedFactura.cod_agencia_dest;
       formNota.cod_cliente_org = this.selectedFactura.cod_cliente_org;
       formNota.cod_cliente_dest = this.selectedFactura.cod_cliente_dest;
@@ -2030,7 +1529,7 @@ export default {
       formNota.monto_impuesto = this.curReplace(this.form.monto_impuesto);
       formNota.monto_total = this.curReplace(this.form.monto_total);
       formNota.saldo = 0;
-      formNota.estatus_administra = "P";
+      formNota.estatus_administra = "N";
       formNota.observacion = this.selectedFactura.observacion;
       formNota.fecha_emision = moment(this.fechaSelected, "DD/MM/YYYY").format(
         "YYYY-MM-DD"
@@ -2048,7 +1547,7 @@ export default {
         })
         .catch(() => {
           this.errorMessage(
-            "Error del Sistema. Problemas al actualizar el maestro de la Nota de Crédito. Comuníquese con el proveedor del Sistemas..."
+            "Error del Sistema. Problemas al actualizar el maestro de la Nota de Débito. Comuníquese con el proveedor del Sistemas..."
           );
           return;
         });
@@ -2078,162 +1577,14 @@ export default {
           })
           .catch(() => {
             this.errorMessage(
-              "Error del Sistema. Problemas al actualizar el detalle de la Nota de Crédito. Comuníquese con el proveedor del Sistemas..."
+              "Error del Sistema. Problemas al actualizar el detalle de la Nota de Débito. Comuníquese con el proveedor del Sistemas..."
             );
             return;
           });
       }
 
-      // Ajusto las comisiones
-      for (var i = 0; i < this.selectedGuias.length; i++) {
-        let comisiones = [];
-        let porc_comision = 0;
-        let monto_descontar = this.parseFloatN(
-          this.curReplace(this.selectedGuias[i].monto_descontar)
-        );
-
-        //realizar el ajuste de la comision de la guìa
-        if (monto_descontar > 0) {
-          await api
-            .get(`/ccomisiones`, {
-              headers: {
-                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                cod_movimiento: this.selectedGuias[i].id,
-                mayor: "S",
-              },
-            })
-            .then((res) => {
-              if (res.data.data.length > 0) {
-                comisiones = res.data.data;
-              }
-            });
-
-          for (var y = 0; y < comisiones.length; y++) {
-            if (this.selectedGuias[i].base_comision_vta_rcl != 0) {
-              let monto_comision = comisiones[y].monto_comision;
-              //Obtengo el %de la comision
-              porc_comision =
-                (monto_descontar * 100) /
-                this.selectedGuias[i].base_comision_vta_rcl;
-
-              //Disminuyo la comisión aplicada a la nota de crédito
-              monto_comision = ((monto_comision * porc_comision) / 100) * -1;
-
-              let agencia = comisiones[y].cod_agencia;
-              let agente = comisiones[y].cod_agente;
-              let tipo_comision = comisiones[y].tipo_comision;
-              let idComision;
-              let comisionVenta = {};
-              await api
-                .get(`/ccomisiones`, {
-                  headers: {
-                    Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                    agencia: agencia,
-                    cod_movimiento: idFact,
-                    agente: agente,
-                    tipo: tipo_comision,
-                  },
-                })
-                .then((res) => {
-                  if (res.data.data.length == 0) {
-                    comisionVenta.cod_agencia = agencia;
-                    comisionVenta.cod_movimiento = idFact;
-                    comisionVenta.cod_agente = agente;
-                    comisionVenta.fecha_emision = moment(
-                      this.fechaSelected,
-                      "DD/MM/YYYY"
-                    ).format("YYYY-MM-DD");
-                    comisionVenta.tipo_comision = tipo_comision;
-                    comisionVenta.monto_comision = monto_comision.toFixed(2);
-                    comisionVenta.estatus = 0;
-                  } else {
-                    idComision = res.data.data[0].id;
-                    comisionVenta = {};
-                    comisionVenta.monto_comision = (
-                      this.parseFloatN(res.data.data[0].monto_comision) +
-                      this.parseFloatN(monto_comision)
-                    ).toFixed(2);
-                  }
-                });
-
-              if (!idComision) {
-                // Inserto la comision de la nota de Crédito
-                await api
-                  .post(`/ccomisiones`, comisionVenta, {
-                    headers: {
-                      Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                    },
-                  })
-                  .catch(() => {
-                    this.errorMessage(
-                      "Error al Crear las Comisiones de las Cargas asociadas a la Nota de Crédito!..."
-                    );
-                    return;
-                  });
-              } else {
-                // Actualizo la comision de la nota de Crédito
-                await api
-                  .put(`/ccomisiones/${idComision}`, comisionVenta, {
-                    headers: {
-                      Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                    },
-                  })
-                  .catch(() => {
-                    this.errorMessage(
-                      "Error al Actualizar las Comisiones de las Cargas asociadas a la Nota de Crédito!..."
-                    );
-                    return;
-                  });
-              }
-            }
-          }
-
-          // Actualizo la base de Comision cada guia
-          let base_vta =
-            this.selectedGuias[i].base_comision_vta_rcl -
-            (porc_comision * this.selectedGuias[i].base_comision_vta_rcl) / 100;
-          let base_seg =
-            this.selectedGuias[i].base_comision_seg -
-            (porc_comision * this.selectedGuias[i].base_comision_seg) / 100;
-          let formGuias = {};
-          formGuias.base_comision_vta_rcl = base_vta;
-          formGuias.base_comision_seg = base_seg;
-          await api
-            .put(`/mmovimientos/${this.selectedGuias[i].id}`, formGuias, {
-              headers: {
-                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-              },
-            })
-            .catch(() => {
-              this.errorMessage(
-                "Error al Actualizar la base de comisiones de las Guias Cargas asociadas a la Nota de Crédito!..."
-              );
-              return;
-            });
-
-          // Actualizo la base de Comision en la Nota de Credito
-          base_vta_nc = base_vta_nc + (base_vta * porc_comision) / 100;
-          base_seg_nc = base_seg_nc + (base_seg * porc_comision) / 100;
-          let formNota = {};
-          formNota.base_comision_vta_rcl = base_vta_nc;
-          formNota.base_comision_seg = base_seg_nc;
-          await api
-            .put(`/mmovimientos/${idFact}`, formNota, {
-              headers: {
-                Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-              },
-            })
-            .catch(() => {
-              this.errorMessage(
-                "Error al Actualizar la base de comisiones de la Nota de Crédito!..."
-              );
-              return;
-            });
-        }
-      }
-
       this.$q.notify({
-        message: "La Nota de Crédito ha sido generada Exitosamente",
+        message: "La Nota de Débito ha sido generada Exitosamente",
         color: "green",
       });
 
@@ -2241,12 +1592,14 @@ export default {
       this.loading = false;
       this.resetFilters();
 
-      // Seteamos los datos de la ultima Nota de Credito
+      // Seteamos los datos de la ultima Nota de Debito
       api
         .get(`/mmovimientos`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            filters: JSON.stringify({ tipo: "NC" }),
+            filters: JSON.stringify({
+              tipo: "ND",
+            }),
             page: 0,
             limit: 1,
             order: "nro_control",
@@ -2271,50 +1624,10 @@ export default {
           }
         });
     },
-    // Metodo para insertar o actualizar las comisiones
-    async actualizaComision(
-      idFact,
-      agencia,
-      agente,
-      tipo_comision,
-      monto_comision
-    ) {
-      let idComision;
-      let comisionVenta = {};
-      await api
-        .get(`/ccomisiones`, {
-          headers: {
-            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            agencia: agencia,
-            cod_movimiento: idFact,
-            agente: agente,
-            tipo: tipo_comision,
-          },
-        })
-        .then((res) => {
-          if (res.data.data.length == 0) {
-            comisionVenta.cod_agencia = agencia;
-            comisionVenta.cod_movimiento = idFact;
-            comisionVenta.cod_agente = agente;
-            comisionVenta.fecha_emision = moment(
-              this.fechaSelected,
-              "DD/MM/YYYY"
-            ).format("YYYY-MM-DD");
-            comisionVenta.tipo_comision = tipo_comision;
-            comisionVenta.monto_comision = monto_comision.toFixed(2);
-            comisionVenta.estatus = 0;
-          } else {
-            idComision = res.data.data.id;
-            comisionVenta = {};
-            comisionVenta.monto_comision =
-              res.data.data.monto_comision + monto_comision.toFixed(2);
-          }
-        });
-    },
     // Imprimir Nota en PDF
     async printNota() {
       let notaArray = {};
-      notaArray.tipo = "NOTA DE CRÉDITO";
+      notaArray.tipo = "NOTA DE DÉBITO";
       let serie_doc = this.correlativo.serie_doc
         ? this.correlativo.serie_doc + "-"
         : "";
@@ -2415,14 +1728,14 @@ export default {
         }
       }
 
-      //Valido que el total de la Nota de Crédito no sea mayor al Monto Total del Documento
+      //Valido que el total de la Nota de Débito no sea mayor al Monto Total del Documento
       if (
         this.form.monto_subtotal >
         this.parseFloatN(this.curReplace(this.selectedFactura.monto_subtotal))
       ) {
         this.$q.notify({
           message:
-            "Error en la Nota de Crédito. Verifique que el Total de la Nota de Crédito no sea Mayor al Monto Total del Documento Principal",
+            "Error en la Nota de Débito. Verifique que el Total de la Nota de Débito no sea Mayor al Monto Total del Documento Principal",
           color: "red",
         });
         this.detalles[this.detalles.length - 1].cantidad = 0;
@@ -2436,60 +1749,6 @@ export default {
           monto_impuesto: 0,
           monto_total: 0,
         };
-      }
-    },
-    // Metodo para calcular la nueva base
-    calculaBaseNew(total, descuento) {
-      return descuento
-        ? this.parseFloatN(this.parseFloatN(total) - this.curReplace(descuento))
-        : 0.0;
-    },
-    // Metodo para calcular el monto a descontar total
-    calculaDescontar() {
-      this.monto_descontar = 0;
-      for (var i = 0; i < this.guiasCarga.length; i++) {
-        this.monto_descontar += this.parseFloatN(
-          this.curReplace(this.guiasCarga[i].monto_descontar)
-        );
-      }
-      this.monto_descontar = this.monto_descontar.toFixed(2);
-    },
-    // Metodo para setar los valores totales y seleccionados
-    onSelection({ rows, added }) {
-      let monto_total = 0;
-      let monto_descontar = 0;
-
-      if (rows.length > 1) {
-        this.monto_total_select = "0,00";
-        this.monto_descontar_select = "0,00";
-        if (!added) return;
-      }
-
-      for (var i = 0; i < rows.length; i++) {
-        monto_total += this.parseFloatN(rows[i].monto_total);
-        monto_descontar += this.parseFloatN(
-          this.curReplace(rows[i].monto_descontar)
-        );
-      }
-
-      if (added) {
-        this.monto_total_select = (
-          this.parseFloatN(this.curReplace(this.monto_total_select)) +
-          monto_total
-        ).toFixed(2);
-        this.monto_descontar_select = (
-          this.parseFloatN(this.curReplace(this.monto_descontar_select)) +
-          monto_descontar
-        ).toFixed(2);
-      } else {
-        this.monto_total_select = (
-          this.parseFloatN(this.curReplace(this.monto_total_select)) -
-          monto_total
-        ).toFixed(2);
-        this.monto_descontar_select = (
-          this.parseFloatN(this.curReplace(this.monto_descontar_select)) -
-          monto_descontar
-        ).toFixed(2);
       }
     },
     // Pasar un numero a numero con dos decimales en formato correcto para efectuar operaciones
@@ -2515,54 +1774,6 @@ export default {
         color: "red",
       });
     },
-    // Metodo para controlar el continuar sin asociar Guias
-    async confirmContinue() {
-      this.confirmContinuePopUp = true;
-      await this.until((_) => this.dialogContinue == true);
-      if (this.dialogContinue) {
-        this.dialogContinue = false;
-        this.guiasCarga = [];
-        this.monto_total = 0;
-        this.monto_descontar = 0;
-        this.monto_total_select = 0;
-        this.monto_descontar_select = 0;
-        this.selectedGuias = [];
-        this.dialogNota = true;
-        this.guiasDialog = false;
-      }
-    },
-    // Metodo para controlar el asignar descuento de las guias
-    async confirmAsignar() {
-      if (this.selectedGuias.length == 0) {
-        this.$q.notify({
-          message:
-            "Debe seleccionar las guias para las cuales se realizará el ajuste de la comisión",
-          color: "red",
-        });
-        return;
-      }
-
-      if (this.monto_descontar != this.monto_descontar_select) {
-        this.$q.notify({
-          message:
-            "Las guías a las que realizó el ajuste deben estar seleccionadas antes de ejecutar esta opción",
-          color: "red",
-        });
-        return;
-      }
-
-      this.confirmAsignarPopUp = true;
-      await this.until((_) => this.dialogAsignar == true);
-      if (this.dialogAsignar) {
-        this.dialogAsignar = false;
-        this.monto_total = 0;
-        this.monto_descontar = 0;
-        this.monto_total_select = 0;
-        this.monto_descontar_select = 0;
-        this.dialogNota = true;
-        this.guiasDialog = false;
-      }
-    },
     // Metodo para que una funcion no avance hasta que se cumpla una condicion
     async until(conditionFunction) {
       const poll = (resolve) => {
@@ -2574,7 +1785,6 @@ export default {
     // Metodo para limpiar los filtros
     resetFilters() {
       this.selectedAgencia = this.agencias[0];
-      this.selectedFactura = [];
       this.selectedTiposConcepto = [];
       this.fechaSelected = moment().format("DD/MM/YYYY");
       this.detalles = [];
@@ -2583,6 +1793,10 @@ export default {
         monto_impuesto: 0,
         monto_total: 0,
       };
+
+      this.selectedFactura = [];
+      this.facturas = [];
+      this.getFacturas(this.selectedAgencia.id);
     },
   },
 };

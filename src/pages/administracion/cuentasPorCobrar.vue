@@ -10,7 +10,7 @@
           style="align-self: center; text-align: center"
         >
           <p style="font-size: 20px" class="text-secondary">
-            <strong>Administración - Cuentas por Cobrar</strong>
+            <strong>ADMINISTRACIÓN - CUENTAS POR COBRAR</strong>
           </p>
         </div>
         <div

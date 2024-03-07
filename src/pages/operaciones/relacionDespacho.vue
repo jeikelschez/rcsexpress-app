@@ -599,14 +599,26 @@
         class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 selectMobile2"
         style="padding-right: 25px"
       >
-        <q-option-group
-          v-model="selectedSerie"
-          :options="optionSerie"
-          color="primary"
-          type="checkbox"
-          inline
-          @update:model-value="getDataTable()"
-        />
+      <q-checkbox
+            v-model="selectedSerie"
+            color="primary"
+            left-label
+            val="44"
+            label="Serie 44"
+            @update:model-value="getDataTable()"
+            :disable="this.selectedSerie.length > 1 ? false : this.selectedSerie[0] == '55' ? false : true"
+            :readonly="this.selectedSerie.length > 1 ? false : this.selectedSerie[0] == '55' ? false : true"
+          />
+          <q-checkbox
+            v-model="selectedSerie"
+            color="primary"
+            left-label
+            val="55"
+            label="Serie 55"
+            @update:model-value="getDataTable()"
+            :disable="this.selectedSerie.length > 1 ? false : this.selectedSerie[0] == '44' ? false : true"
+            :readonly="this.selectedSerie.length > 1 ? false : this.selectedSerie[0] == '44' ? false : true"
+          />
       </div>
       <div
         class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 selectMobile2 cardMargin"
@@ -964,16 +976,6 @@ export default {
         },
       ],
       visibleColumns: ["zona_dest"],
-      optionSerie: [
-        {
-          label: "Serie 44",
-          value: "44",
-        },
-        {
-          label: "Serie 55",
-          value: "55",
-        },
-      ],
       pagination: {
         page: 1,
         rowsPerPage: 0,

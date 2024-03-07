@@ -967,7 +967,11 @@ export default {
     this.agenciasLoading = true;
     this.$refs.methods.getData("/agencias", "setData", "agencias");
     this.$refs.methods.getData("/clientes", "setData", "clientesAll");
-    this.$refs.methods.getData("/agentes", "setData", "agentesAll");
+    this.$refs.methods.getData("/agentes", "setData", "agentesAll", {
+        headers: {
+          activo: "S",
+        },
+      });
     this.getDataTable();
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {

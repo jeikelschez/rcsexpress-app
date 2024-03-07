@@ -1584,6 +1584,7 @@ export default {
       headers: {
         rol: LocalStorage.getItem("tokenTraducido").usuario.roles.id,
         group_ag: "S",
+        activo: "S",
       },
     });
     this.$refs.methods.getData("/coperacion", "setData", "motivosRetraso", {
