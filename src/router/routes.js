@@ -160,6 +160,17 @@ const routes = [
         ],
       },
       {
+        path: "/comprobantesigtf",
+        component: () => import("layouts/mainLayout.vue"),
+        children: [
+          {
+            path: "",
+            component: () =>
+              import("src/pages/administracion/comprobantesIgtf.vue"),
+          },
+        ],
+      },
+      {
         path: "/reporteventas",
         component: () => import("layouts/mainLayout.vue"),
         children: [

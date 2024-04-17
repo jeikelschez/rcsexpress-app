@@ -833,7 +833,7 @@ export default {
       selectedSerie: ["44", "55"],
       selectedAgrup: false,
       selectedDolar: false,
-      fecha_desde: moment("2023-07-01").startOf("month").format("DD/MM/YYYY"),
+      fecha_desde: moment().startOf("month").format("DD/MM/YYYY"),
       fecha_hasta: moment().endOf("month").format("DD/MM/YYYY"),
       cantidad: 0,
       monto_total: 0,
