@@ -374,7 +374,7 @@
           :loading="loading"
           :rows-per-page-options="[0]"
           @request="getDataTable"
-          style="width: 100%; height: 490px; margin-bottom: 30px"
+          style="width: 100%; height: 500px; margin-bottom: 30px"
           :grid="$q.screen.xs"
           v-model:selected="selected"
           v-model:pagination="pagination"

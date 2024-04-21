@@ -625,7 +625,7 @@
         :columns="columns"
         :loading="loading"
         :separator="separator"
-        style="width: 100%; height: 500px"
+        style="width: 100%; height: 550px"
         :grid="$q.screen.xs"
         :rows-per-page-options="[0]"
       >

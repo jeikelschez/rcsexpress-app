@@ -628,7 +628,7 @@
           @export-Excel="exportExcel"
           ref="webViewer"
           v-if="pdf == true"
-          style="width: 960px; height: 620px; max-width: 960px"
+          style="width: 1080px; height: 650px; max-width: 1080px"
         >
         <q-inner-loading :showing="visible">
         <q-spinner-gears size="50px" color="primary" />

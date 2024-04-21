@@ -171,6 +171,17 @@ const routes = [
         ],
       },
       {
+        path: "/relacionigtf",
+        component: () => import("layouts/mainLayout.vue"),
+        children: [
+          {
+            path: "",
+            component: () =>
+              import("src/pages/reportes/relacionIgtf.vue"),
+          },
+        ],
+      },
+      {
         path: "/reporteventas",
         component: () => import("layouts/mainLayout.vue"),
         children: [

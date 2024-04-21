@@ -693,7 +693,7 @@
         :grid="$q.screen.xs"
         :rows-per-page-options="[0]"
         :pagination.sync="pagination"
-        style="width: 100%; height: 520px"
+        style="width: 100%; height: 550px"
         :visible-columns="visibleColumns"
         v-model:selected="selected"
         v-model:pagination="pagination"

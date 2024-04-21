@@ -882,7 +882,7 @@
                     :columns="columnsDetalle"
                     :grid="$q.screen.xs"
                     :separator="separator"
-                    style="width: 100%; height: 230px"
+                    style="width: 100%; height: 260px"
                     hide-bottom
                   >
                     <template v-slot:loading>

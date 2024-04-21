@@ -10,14 +10,14 @@
           style="align-self: center; text-align: center"
         >
           <p style="font-size: 20px" class="text-secondary">
-            <strong>REPORTES - LIBRO DE VENTAS</strong>
+            <strong>ADMINISTRACIÓN - RELACIÓN DE COMPROBANTES IGTF</strong>
           </p>
         </div>
         <div
           class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 cardMargin selectMobile2"
           style="align-self: center; text-align: center"
         >
-          <q-select
+        <q-select
             rounded
             dense
             transition-show="flip-up"
@@ -42,14 +42,17 @@
             v-model="selectedAgencia"
             outlined
             standout
+            :loading="loading"
+            :disable="loading"
             label="Agencia"
             @update:model-value="
               this.selectedCliente = [];
+              this.facturas = [];
+              this.selectedFacturas = [];
               this.clientesLoading = true;
-              this.$refs.methods.getData(`/clientes`, 'setData', 'clientes', {
+              this.$refs.methods.getData('/clientes', 'setData', 'clientes', {
                 headers: {
-                  agencia: selectedAgencia.id,
-                  activo: 'S',
+                  agencia: this.selectedAgencia.id,
                 },
               });
             "
@@ -69,12 +72,15 @@
           class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 cardMargin selectMobile2"
           style="align-self: center; text-align: center"
         >
-          <q-select
+        <q-select
             rounded
             dense
             transition-show="flip-up"
             transition-hide="flip-down"
             :options="clientesSelected"
+            :loading="clientesLoading"
+            :disable="clientesLoading"
+            ref="clientes"
             @filter="
               (val, update) =>
                 filterArray(
@@ -92,11 +98,10 @@
             option-label="nb_cliente"
             option-value="id"
             v-model="selectedCliente"
-            :loading="clientesLoading"
-            :disable="clientesLoading"
             outlined
             standout
             label="Cliente"
+            @update:model-value=""
             ><template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey">
@@ -181,40 +186,30 @@
           </q-input>
         </div>
         <div
-          class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 selectMobile2"
+          class="col-md-1 col-xl-1 col-lg-1 col-xs-12 col-sm-6 cardMargin selectMobile2"
+          style="align-self: center; text-align: center"
         >
-          <q-checkbox
-            v-model="selectedCorrelativo"
-            color="primary"
-            left-label
-            label="Orden"
-            class="text-secondary"
-            style="font-size:20px; font-weight: bold; margin-right: 10px"
-          />
-          <q-btn
+          <q-input
+            outlined
+            label="Período Fiscal"
+            hint=""
             dense
-            color="primary"
-            round
-            padding="sm"
-            style="margin-right: 10px"
-            @click="detalleDialog = true"
+            rounded
+            style="padding-bottom: 0px"
+            v-model="periodo"
+            lazy-rules
           >
-            <q-icon size="25px" name="description" color="white"> </q-icon>
-            <q-tooltip
-              class="bg-primary"
-              style="max-height: 30px"
-              transition-show="scale"
-              transition-hide="scale"
-              color="primary"
-              >Agregar Detalle</q-tooltip
-            >
-          </q-btn>
+          </q-input>
+        </div>
+        <div
+          class="col-md-1 col-xl-1 col-lg-1 col-xs-12 col-sm-12 selectMobile2"
+        >
           <q-btn
             dense
             color="primary"
             round
             padding="sm"
-            style="margin-right: 10px"
+            style="margin-right: 15px"
             @click="resetFilters()"
           >
             <q-icon size="25px" name="filter_alt_off" color="white"> </q-icon>
@@ -232,33 +227,25 @@
             color="primary"
             round
             padding="sm"
+            :disable="this.periodo == '' ? true : false"
             @click="
               pdfChange();
               print = 1;
             "
           >
-            <q-icon size="25px" name="input" color="white"> </q-icon>
+            <q-icon size="25px" name="print" color="white"> </q-icon>
             <q-tooltip
               class="bg-primary"
               transition-show="scale"
               style="max-height: 30px"
               transition-hide="scale"
               color="primary"
-              >Generar</q-tooltip
+              >Imprimir</q-tooltip
             >
-          </q-btn>          
+          </q-btn>
         </div>
       </div>
     </div>
-
-    <q-dialog v-model="detalleDialog">
-      <q-card class="q-pa-md" bordered style="width: 600px; max-width: 120vw">
-        <q-card-section>
-          <q-input v-model="detalle" filled type="textarea" />
-        </q-card-section>
-      </q-card>
-    </q-dialog>
-
     <div
       class="q-pa-md col-md-12 col-xs-12 q-gutter-y-md justify-center"
       style="margin-top: -30px"
@@ -304,16 +291,13 @@ export default {
       clientes: [],
       agenciasSelected: [],
       selectedAgencia: [],
-      clientesSelected: [],
       selectedCliente: [],
-      print: "",
-      tipoReporte: "",
-      detalle: "",
-      detalleDialog: false,
+      clientesSelected: [],
       clientesLoading: false,
-      selectedCorrelativo: true,
-      fecha_desde: moment().format("DD/MM/YYYY"),
-      fecha_hasta: moment().format("DD/MM/YYYY"),
+      periodo: "",
+      print: "",
+      fecha_desde: moment().startOf("month").format("DD/MM/YYYY"),
+      fecha_hasta: moment().endOf("month").format("DD/MM/YYYY"),
     };
   },
   setup() {
@@ -321,17 +305,19 @@ export default {
     return {
       loading: ref(false),
       pdfView: ref(false),
+      deletePopup: ref(false),
+      separator: ref("vertical"),
     };
   },
   mounted() {
     this.pdfPrint();
-    this.$emit("changeTitle", "SCEN - Reportes - Libro de Ventas", "");
+    this.$emit("changeTitle", "SCEN - Administración - Relación de Comprobantes IGTF", "");
     this.$refs.methods.getData("/agencias", "setData", "agencias");
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
         rol: LocalStorage.getItem("tokenTraducido").usuario.roles.id,
-        menu: "libroventas",
+        menu: "relacionigtf",
       },
     });
   },
@@ -369,6 +355,12 @@ export default {
       if (this.rpermisos.findIndex((item) => item.acciones.accion == 1) < 0)
         this.$router.push("/error403");
     },
+    // Metodo para validar Permisos
+    allowOption(option) {
+      return (
+        this.rpermisos.findIndex((item) => item.acciones.accion == option) < 0
+      );
+    },
 
     // METODOS DE PAGINA
 
@@ -386,18 +378,19 @@ export default {
       }, 100);
     },
     pdfPrint() {
+      let dataArray = {};
+      dataArray.fecha_desde = this.fecha_desde;
+      dataArray.fecha_hasta = this.fecha_hasta;
+      dataArray.agencia = this.selectedAgencia.id;
+      dataArray.cliente = this.selectedCliente.id;
+      dataArray.periodo = this.periodo;
       api
-        .get(`/pdfreports/libroVentas`, {
+        .get(`/pdfreports/reporteIgtf`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
             print: this.print,
-            agencia: this.selectedAgencia.id ? this.selectedAgencia.id : "",
-            cliente: this.selectedCliente.id ? this.selectedCliente.id : "",
-            desde: this.fecha_desde,
-            hasta: this.fecha_hasta,
-            detalle: this.detalle,
-            correlativo: this.selectedCorrelativo
-          }, 
+            data: JSON.stringify(dataArray),
+          },
         })
         .then((res) => {
           if (!res.data.validDoc) {
@@ -409,7 +402,7 @@ export default {
           }
           this.$refs.webViewer.showpdf(
             res.data.pdfPath,
-            this.print == "" ? 0.83 : 1.5,
+            this.print == "" ? 0.64 : 1.8,
             false,
             false
           );
@@ -429,10 +422,12 @@ export default {
     resetFilters() {
       this.selectedAgencia = [];
       this.selectedCliente = [];
-      this.fecha_desde = moment().format("DD/MM/YYYY");
-      this.fecha_hasta = moment().format("DD/MM/YYYY");
+      this.clientes = [];
+      this.selectedFacturas = [];
+      this.fecha_desde = moment().startOf("month").format("DD/MM/YYYY");
+      this.fecha_hasta = moment().endOf("month").format("DD/MM/YYYY");
       this.print = "";
-      this.detalle = "";
+      this.periodo = "";
       this.pdfChange();
     },
   },

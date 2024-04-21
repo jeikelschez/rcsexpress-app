@@ -445,7 +445,7 @@
           class="tableHeight"
           :rows-per-page-options="[5, 10, 15, 20, 50]"
           @request="getDataTable"
-          style="width: 100%; height: 530px; margin-bottom: 30px"
+          style="width: 100%; height: 550px; margin-bottom: 30px"
           :grid="$q.screen.xs"
           v-model:pagination="pagination"
         >

@@ -536,7 +536,7 @@ export default {
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
         rol: LocalStorage.getItem("tokenTraducido").usuario.roles.id,
-        menu: "generarcomisiones",
+        menu: "comprobantesigtf",
       },
     });
   },

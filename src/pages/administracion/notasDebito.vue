@@ -410,7 +410,7 @@
                     :columns="columnsDetalle"
                     :grid="$q.screen.xs"
                     :separator="separator"
-                    style="width: 100%; height: 230px; margin-top: 10px"
+                    style="width: 100%; height: 260px; margin-top: 10px"
                     hide-bottom
                   >
                     <template v-slot:loading>

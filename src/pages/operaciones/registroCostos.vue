@@ -935,7 +935,7 @@
         row-key="id"
         :loading="loading"
         :rows-per-page-options="[0]"
-        style="width: 100%; height: 510px"
+        style="width: 100%; height: 530px"
         :grid="$q.screen.xs"
         hide-bottom
         :visible-columns="visibleColumns"

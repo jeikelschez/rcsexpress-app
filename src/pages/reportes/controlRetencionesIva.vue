@@ -433,7 +433,7 @@
       <webViewer
         ref="webViewer"
         v-if="pdf == true"
-        style="width: 1580px; height: 560px; max-width: 1580px"
+        style="width: 1680px; height: 610px; max-width: 1680px"
       >
       </webViewer>
       <q-inner-loading :showing="loading" color="primary" class="loading" />
