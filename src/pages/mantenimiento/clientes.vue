@@ -729,7 +729,7 @@
             </q-select>
           </div>
           <div
-            class="col-md-5 col-xl-5 col-lg-5 col-xs-12 col-sm-6"
+            class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-6"
             style="align-self: center; text-align: center"
           >
             <q-input
@@ -751,8 +751,22 @@
             </q-input>
           </div>
           <div
-            class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 cardMarginButton"
-            style="text-align: center; align-self: center"
+            class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-6"
+            style="align-self: center; text-align: center"
+          >
+            <q-checkbox
+              size="md"
+              v-model="checkUsuario"
+              true-value="S"
+              false-value=""
+              style="font-size: 13px"
+              label="USUARIOS"
+              @click="getDataTable()"
+            />
+          </div>
+          <div
+            class="col-md-1 col-xl-1 col-lg-1 col-xs-12 col-sm-12 cardMarginButton"
+            style="text-align: center; align-self: center; margin-left: -40px"
           >
             <q-btn
               label="Insertar"
@@ -817,6 +831,27 @@
                   @click="selected = props.row.id"
                   @click.capture="deletePopup = true"
                 ></q-btn>
+                <q-btn
+                  dense
+                  round
+                  flat
+                  color="primary"
+                  icon="contact_mail"
+                  @click="selected = props.row.id"
+                  @click.capture="addressDialog = true"
+                ></q-btn>
+                <q-btn
+                  dense
+                  round
+                  flat
+                  color="primary"
+                  icon="group"
+                  @click="selected = props.row.id"
+                  @click.capture="
+                    getUsuarios(props.row.id, props.row.nb_cliente)
+                  "
+                  :disabled="props.row.clientes_usuarios == 0"
+                ></q-btn>
               </q-td>
             </template>
             <template v-slot:item="props">
@@ -875,6 +910,189 @@
         </div>
       </div>
     </div>
+
+    <q-dialog v-model="addressDialog">
+      <q-card style="width: 400px">
+        <q-card-section>
+          <div class="row justify-center items-center">
+            <div
+              class="col-md-12 col-xs-12"
+              style="margin-bottom: 6px; margin-top: 10px"
+            >
+              <p
+                style="font-size: 17px; text-align: center"
+                class="text-secondary"
+              >
+                <strong>INVITACIÓN SEGUIMIENTO DE GUÍAS</strong>
+              </p>
+            </div>
+            <div class="col-md-12 col-xs-12">
+              <q-input
+                v-model="address"
+                rounded
+                dense
+                label="Correo Electrónico"
+                :rules="[(val) => this.$refs.rulesVue.isReq(val, '')]"
+              >
+              </q-input>
+            </div>
+            <div
+              class="col-md-12 col-xs-12"
+              style="margin-top: 23px; margin-bottom: 10px; text-align: center"
+            >
+              <q-btn
+                label="Invitar"
+                color="primary"
+                style="width: 200px"
+                @click="sendEmail()"
+              />
+            </div>
+          </div>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog v-model="usuarioDialog">
+      <q-card style="width: 700px; max-width: 80vw">
+        <div
+          class="row justify-center items-center content-center"
+          style="padding: 20px"
+        >
+          <div class="col-md-10 col-xs-12">
+            <p style="font-size: 20px; text-align: left" class="text-secondary">
+              <strong>USUARIOS ASOCIADOS AL CLIENTE</strong>
+            </p>
+            <p style="font-size: 16; text-align: left">
+              <strong>{{ this.clientName }}</strong>
+            </p>
+          </div>
+          <div
+            class="col-md-2 col-xs-12"
+            style="margin-bottom: 20px; text-align: center"
+          >
+            <q-btn color="primary" rounded icon="close" v-close-popup />
+          </div>
+          <div class="col-md-12 col-xs-12">
+            <q-table
+              :rows="usuarios"
+              row-key="id"
+              :columns="columnsUsuarios"
+              binary-state-sort
+              :separator="separator"
+              v-model:pagination="pagination2"
+              :grid="$q.screen.xs"
+              :rows-per-page-options="[0]"
+              style="width: 100%; height: 350px"
+              hide-bottom
+            >
+              <template v-slot:body-cell-estatus="props">
+                <q-td :props="props">
+                  {{ props.row.estatus == 1 ? "ACTIVO" : "INACTIVO" }}
+                </q-td>
+              </template>
+              <template v-slot:body-cell-action="props">
+                <q-td :props="props">
+                  <q-btn
+                    dense
+                    round
+                    flat
+                    color="primary"
+                    icon="edit"
+                    @click="
+                      this.editUsuarioDialog = true;
+                      setDataUsuario(props.row.id, props.rowIndex);
+                    "
+                  ></q-btn>
+                  <q-btn
+                    dense
+                    round
+                    flat
+                    color="primary"
+                    icon="delete"
+                    @click="selected = props.row.id"
+                    @click.capture="deletePopup = true"
+                  ></q-btn>
+                </q-td>
+              </template>
+            </q-table>
+          </div>
+        </div>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog v-model="editUsuarioDialog">
+      <q-card class="q-pa-md" bordered style="max-width: 500px">
+        <q-card-section>
+          <div class="row">
+            <div class="col-md-12 col-xs-12">
+              <q-input
+                outlined
+                v-model="email"
+                label="Correo Electrónico"
+                hint=""
+                :disable="true"
+              >
+                <template v-slot:prepend>
+                  <q-icon name="mail" />
+                </template>
+              </q-input>
+            </div>
+            <div class="col-md-12 col-xs-12">
+              <q-input
+                outlined
+                v-model="password"
+                label="Password"
+                :rules="[
+                  (val) => this.$refs.rulesVue.isMax(val, 100),
+                  (val) => this.$refs.rulesVue.isMin(val, 3),
+                ]"
+                hint=""
+                lazy-rules
+              >
+                <template v-slot:prepend>
+                  <q-icon name="key" />
+                </template>
+              </q-input>
+            </div>
+            <div class="col-md-12 col-xs-12">
+              <q-select
+                outlined
+                v-model="estatusUser"
+                label="Estatus"
+                hint=""
+                :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
+                :options="estatusUsuario"
+                lazy-rules
+              >
+                <template v-slot:prepend>
+                  <q-icon name="rule" />
+                </template>
+              </q-select>
+            </div>
+          </div>
+          <div
+            class="row justify-center items-center content-center"
+            style="margin-bottom: 10px"
+          >
+            <q-btn
+              label="Guardar"
+              color="primary"
+              class="col-md-5 col-sm-5 col-xs-12"
+              icon="save"
+              @click="sendDataUsuario"
+            />
+            <q-btn
+              label="Cerrar"
+              color="primary"
+              flat
+              class="col-md-5 col-sm-5 col-xs-12 btnmovil"
+              icon="close"
+              v-close-popup
+            />
+          </div>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
 
     <q-dialog v-model="deletePopup">
       <q-card style="width: 700px">
@@ -966,6 +1184,31 @@ export default {
           align: "center",
         },
       ],
+      columnsUsuarios: [
+        {
+          name: "email",
+          label: "Correo Electrónico",
+          field: "email",
+          align: "center",
+        },
+        {
+          name: "password",
+          label: "Contraseña",
+          field: "password",
+          align: "center",
+        },
+        {
+          name: "estatus",
+          label: "Estatus",
+          field: "estatus",
+          align: "center",
+        },
+        {
+          name: "action",
+          label: "Acción",
+          align: "center",
+        },
+      ],
       form: {
         nb_cliente: "",
         rif_cedula: "",
@@ -1001,6 +1244,10 @@ export default {
         { label: "ACTIVO", value: "A" },
         { label: "INACTIVO", value: "I" },
       ],
+      estatusUsuario: [
+        { label: "ACTIVO", value: "1" },
+        { label: "INACTIVO", value: "0" },
+      ],
       pagination: {
         page: 1,
         rowsPerPage: 10,
@@ -1008,6 +1255,11 @@ export default {
         descending: false,
         filter: "nb_cliente,rif_cedula,flag_activo",
         filterValue: "",
+        rowsNumber: "",
+      },
+      pagination2: {
+        page: 1,
+        rowsPerPage: 0,
         rowsNumber: "",
       },
       agenciasSelected: [],
@@ -1041,6 +1293,15 @@ export default {
       pais: "",
       estado: "",
       filter: "",
+      address: "",
+      checkUsuario: "",
+      clientName: "",
+      usuarios: [],
+      usuario: "",
+      email: "",
+      password: "",
+      estatusUser: "",
+      usuarioIndex: "",
     };
   },
   setup() {
@@ -1049,7 +1310,10 @@ export default {
       loading: ref(false),
       separator: ref("vertical"),
       dialog: ref(false),
+      addressDialog: ref(false),
+      usuarioDialog: ref(false),
       deletePopup: ref(false),
+      editUsuarioDialog: ref(false),
       clienteParticularExistente() {
         $q.notify({
           message: "Solo puede haber un Cliente Particular por Agencia",
@@ -1142,6 +1406,7 @@ export default {
           order_direction: this.pagination.descending ? "DESC" : "ASC",
           filter: this.pagination.filter,
           filter_value: this.pagination.filterValue,
+          usuarios: this.checkUsuario,
         },
       });
       this.$refs.methods.getData(`/agentes`, "setData", "agentes", {
@@ -1354,6 +1619,114 @@ export default {
       this.dialog = false;
       this.resetForm();
     },
+    // Metodo para Enviar correo de Invitacion
+    sendEmail() {
+      // Valido la dirreccion de correo
+      var validRegex =
+        /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+      if (!this.address.match(validRegex)) {
+        this.$q.notify({
+          message: "Debe colocar una dirección de Correo Electrónico valida",
+          color: "red",
+        });
+        return;
+      }
+
+      this.addressDialog = false;
+
+      api
+        .get(`cusuarios/send-invitation`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            address: this.address,
+            client: this.selected,
+          },
+        })
+        .then((res) => {
+          this.$q.notify({
+            message: "La Invitación ha sido enviada Exitosamente",
+            color: "green",
+          });
+        })
+        .catch((err) => {
+          this.$q.notify({
+            message: "Error al enviar el mensaje: " + err.message,
+            color: "red",
+          });
+        });
+    },
+    // Metodo para llenar la ventana de usuarios de un cliente
+    async getUsuarios(clientId, clientName) {
+      await api
+        .get(`/cusuarios`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            cliente: clientId,
+          },
+        })
+        .then((res) => {
+          this.usuarios = res.data;
+        });
+
+      this.clientName = clientName;
+      this.usuarioDialog = true;
+    },
+    // Metodo para Setear Datos de Usuarios
+    setDataUsuario(userId, index) {
+      api
+        .get(`/cusuarios/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => {
+          this.usuarioIndex = index;
+          this.usuario = res.data.id;
+          this.email = res.data.email;
+          this.password = res.data.password;
+          this.estatusUser = this.filterDesc(
+            "estatusUsuario",
+            res.data.estatus
+          );
+        });
+    },
+    // Metodo para Editar usuarios de Clientes
+    async sendDataUsuario() {
+      let formUsuarios = {};
+      formUsuarios.cod_cliente = this.selected;
+      formUsuarios.email = this.email;
+      formUsuarios.password = this.password;
+      formUsuarios.estatus = this.estatusUser.value
+        ? this.estatusUser.value
+        : this.estatusUser == "ACTIVO"
+        ? "1"
+        : "0";
+
+      await api
+        .put(`/cusuarios/${this.usuario}`, formUsuarios, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .catch(() => {
+          this.$q.notify({
+            message:
+              "Error del Sistema. Problemas al actualizar datos del Usuario. Comuníquese con el proveedor del Sistemas...",
+            color: "red",
+          });
+          return;
+        });
+
+      this.$q.notify({
+        message: "Usuario Actualizado Exitosamente",
+        color: "green",
+      });
+
+      this.usuarios[this.usuarioIndex].email = this.email;
+      this.usuarios[this.usuarioIndex].password = this.password;
+      this.usuarios[this.usuarioIndex].estatus = formUsuarios.estatus;
+      this.editUsuarioDialog = false;
+    },
     // Metodo para Resetear Formulario
     resetForm() {
       delete this.form.id;
@@ -1387,6 +1760,7 @@ export default {
       this.selectedAgente = [];
       this.pais = "";
       this.estado = "";
+      this.checkUsuario = "";
     },
   },
 };

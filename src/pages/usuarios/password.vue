@@ -111,11 +111,11 @@ export default {
       );
     },
     logUser(res) {
-      LocalStorage.set("token", `${res.data.accessToken}`);
-      LocalStorage.set("user", true);
-      LocalStorage.set("username", `${this.form.username}`);
-      LocalStorage.set("refreshToken", `${res.data.refreshToken}`);
-      this.$router.push("/dashboard");
+      LocalStorage.set("token", `${res.data.accessToken}`),
+        LocalStorage.set("user", true),
+        LocalStorage.set("username", `${this.form.username}`),
+        LocalStorage.set("refreshToken", `${res.data.refreshToken}`),
+        this.$router.push("/dashboard");
       this.$refs.userLogout.login();
     },
     onReset() {

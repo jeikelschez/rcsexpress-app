@@ -3,58 +3,57 @@
     <q-page-container>
       <q-page class="login">
         <div class="fix-center text-center">
-          <div class="frame q-pa-xl pad">
-            <q-form
-              class="q-gutter-md"
-              @submit="onSubmit"
-              @reset="onReset"
-              novalidate="novalidate"
-            >
-              <p class="titulo">SCEN</p>
-              <div class="column">
-                <div class="col q-gutter-md">
-                  <q-input
-                    required
-                    color="blue"
-                    bg-color="white"
-                    filled
-                    v-model="form.username"
-                    :label="$t('Login.user')"
-                    :rules="[(val) => !!val || $t('Login.blank_user')]"
-                  >
-                    <template v-slot:prepend>
-                      <q-icon name="perm_identity" />
-                    </template>
-                  </q-input>
-                  <q-input
-                    color="blue"
-                    standout
-                    bg-color="white"
-                    filled
-                    v-model="form.password"
-                    :label="$t('Login.password')"
-                    :type="isPwd ? 'password' : 'text'"
-                    :rules="[(val) => !!val || $t('Login.blank_pass')]"
-                  >
-                    <template v-slot:prepend>
-                      <q-icon name="screen_lock_landscape" />
-                    </template>
-                    <template v-slot:append>
-                      <q-icon
-                        :name="isPwd ? 'visibility_off' : 'visibility'"
-                        class="cursor-pointer"
-                        @click="isPwd = !isPwd"
-                      />
-                    </template>
-                  </q-input>
-                </div>
-                <div class="q-pa-lg" />
-                <div class="col q-gutter-md">
-                  <q-btn glossy :label="$t('Login.login')" type="submit" />
-                </div>
+          <q-form
+            class="q-gutter-md"
+            @submit="onSubmit"
+            @reset="onReset"
+            novalidate="novalidate"
+          >
+            <q-img src="images/logo_rcs.png"/>
+            <div class="column">
+              <div class="col q-gutter-md">
+                <q-input
+                  required
+                  dense
+                  bg-color="white"
+                  filled
+                  outlined 
+                  v-model="form.username"
+                  label="Usuario"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="perm_identity" />
+                  </template>
+                </q-input>
+                <q-input
+                  color="blue"
+                  standout
+                  dense
+                  bg-color="white"
+                  filled
+                  v-model="form.password"
+                  :label="$t('Login.password')"
+                  :type="isPwd ? 'password' : 'text'"
+                  :rules="[(val) => !!val || $t('Login.blank_pass')]"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="screen_lock_landscape" />
+                  </template>
+                  <template v-slot:append>
+                    <q-icon
+                      :name="isPwd ? 'visibility_off' : 'visibility'"
+                      class="cursor-pointer"
+                      @click="isPwd = !isPwd"
+                    />
+                  </template>
+                </q-input>
               </div>
-            </q-form>
-          </div>
+              <div class="q-pa-lg" />
+              <div class="col q-gutter-md">
+                <q-btn glossy :label="$t('Login.login')" type="submit" />
+              </div>
+            </div>
+          </q-form>
         </div>
         <methods ref="methods" @log-User="logUser"></methods>
         <user-logout ref="userLogout"></user-logout>
@@ -99,7 +98,10 @@ export default {
       },
     };
   },
-  mounted() {},
+  mounted() {
+    //var decodedStringAtoB = atob(encodedStringAtoB);
+    console.log(this.$router.currentRoute._value.query.isExternal)
+  },
   methods: {
     onSubmit() {
       LocalStorage.set("usuario", this.form.username);
@@ -128,13 +130,7 @@ export default {
 
 <style>
 body .login {
-  background: linear-gradient(
-    90deg,
-    rgba(20, 139, 247) 0%,
-    rgba(0, 167, 172) 47%,
-    rgba(10, 102, 191) 61%,
-    rgba(1, 48, 102) 100%
-  );
+  background: #9EC1ED;
 }
 @media (min-width: 600px) {
   .frame {

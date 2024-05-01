@@ -553,6 +553,14 @@ const routes = [
     component: () => import("pages/login.vue"),
   },
   {
+    path: "/login_user",
+    component: () => import("pages/usuarios/login.vue"),
+  },
+  {
+    path: "/password_user",
+    component: () => import("pages/usuarios/password.vue"),
+  },
+  {
     path: "/:catchall(.*)*",
     component: () => import("pages/error404.vue"),
   },
