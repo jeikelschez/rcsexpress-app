@@ -564,5 +564,13 @@ const routes = [
     path: "/:catchall(.*)*",
     component: () => import("pages/error404.vue"),
   },
+  {
+    path: "/errorVerify",
+    component: () => import("pages/errorVerify.vue"),
+  },
+  {
+    path: "/userCreated",
+    component: () => import("pages/userCreated.vue"),
+  },
 ];
 export default routes;

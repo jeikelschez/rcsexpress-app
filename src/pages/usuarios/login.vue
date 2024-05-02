@@ -2,14 +2,9 @@
   <q-layout>
     <q-page-container>
       <q-page class="login">
-        <div class="fix-center text-center">
-          <q-form
-            class="q-gutter-md"
-            @submit="onSubmit"
-            @reset="onReset"
-            novalidate="novalidate"
-          >
-            <q-img src="images/logo_rcs.png"/>
+        <div class="fix-center text-center" style="min-width: 320px">
+          <q-form class="q-gutter-md" @submit="onSubmit">
+            <q-img src="images/logo_rcs.png" />
             <div class="column">
               <div class="col q-gutter-md">
                 <q-input
@@ -17,9 +12,11 @@
                   dense
                   bg-color="white"
                   filled
-                  outlined 
-                  v-model="form.username"
+                  outlined
+                  v-model="email"
+                  :disable="true"
                   label="Usuario"
+                  style="margin-top: 40px"
                 >
                   <template v-slot:prepend>
                     <q-icon name="perm_identity" />
@@ -27,14 +24,35 @@
                 </q-input>
                 <q-input
                   color="blue"
-                  standout
                   dense
                   bg-color="white"
                   filled
-                  v-model="form.password"
-                  :label="$t('Login.password')"
+                  v-model="password"
+                  label="Contraseña"
                   :type="isPwd ? 'password' : 'text'"
-                  :rules="[(val) => !!val || $t('Login.blank_pass')]"
+                  :rules="[(val) => (!!val && val.length > 5) || '']"
+                  style="margin-bottom: -20px"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="screen_lock_landscape" />
+                  </template>
+                  <template v-slot:append>
+                    <q-icon
+                      :name="isPwd ? 'visibility_off' : 'visibility'"
+                      class="cursor-pointer"
+                      @click="isPwd = !isPwd"
+                    />
+                  </template>
+                </q-input>
+                <q-input
+                  color="blue"
+                  dense
+                  bg-color="white"
+                  filled
+                  v-model="confirm"
+                  label="Confirmar Contraseña"
+                  :type="isPwd ? 'password' : 'text'"
+                  :rules="[(val) => (!!val && val === this.password) || '']"
                 >
                   <template v-slot:prepend>
                     <q-icon name="screen_lock_landscape" />
@@ -50,34 +68,33 @@
               </div>
               <div class="q-pa-lg" />
               <div class="col q-gutter-md">
-                <q-btn glossy :label="$t('Login.login')" type="submit" />
+                <q-btn glossy label="Confirmar" type="submit" />
               </div>
             </div>
           </q-form>
         </div>
-        <methods ref="methods" @log-User="logUser"></methods>
-        <user-logout ref="userLogout"></user-logout>
       </q-page>
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
-import { LocalStorage } from "quasar";
 import { useQuasar } from "quasar";
+import { api } from "boot/axios";
+import { decode } from "js-base64";
 import userLogoutVue from "src/components/userLogout.vue";
 import methodsVue from "src/components/methods.vue";
 
 export default {
   components: { "user-logout": userLogoutVue, methods: methodsVue },
-  name: "login",
+  name: "login_user",
   data() {
     return {
       routes: [],
-      form: {
-        username: "",
-        password: "",
-      },
+      email: "",
+      password: "",
+      confirm: "",
+      cliente: "",
       isPwd: true,
       remember: true,
       axiosConfig: {
@@ -89,40 +106,62 @@ export default {
   },
   setup() {
     const $q = useQuasar();
-    return {
-      isNotAuthenticated() {
-        $q.notify({
-          message: "Hubo un error al Iniciar Sesion...",
-          color: "red",
-        });
-      },
-    };
+    return {};
   },
   mounted() {
-    //var decodedStringAtoB = atob(encodedStringAtoB);
-    console.log(this.$router.currentRoute._value.query.isExternal)
+    this.cliente = this.$router.currentRoute._value.query.cliente;
+    this.email = decode(this.$router.currentRoute._value.query.email);
+    this.verifyUser();
   },
   methods: {
-    onSubmit() {
-      LocalStorage.set("usuario", this.form.username);
-      this.$refs.methods.login(
-        `/usuarios/login`,
-        this.form,
-        `logUser`,
-        this.axiosConfig
-      );
+    async onSubmit() {
+      let formUsuarios = {};
+      formUsuarios.cod_cliente = this.cliente;
+      formUsuarios.email = this.email;
+      formUsuarios.password = this.password;
+      formUsuarios.estatus = "1";
+
+      // Guardo el usuario
+      await api
+        .post(`/cusuarios`, formUsuarios, {})
+        .then(() => {
+          api.get(`cusuarios/send-confirm`, {
+            headers: {
+              address: this.email,
+              client: this.cliente,
+              password: this.password,
+            },
+          });
+          this.$router.push("/userCreated");
+        })
+        .catch(() => {
+          this.$q.notify({
+            message:
+              "Error del Sistema. Problemas al actualizar datos del Usuario. Comuníquese con el proveedor del Sistemas...",
+            color: "red",
+          });
+          return;
+        });
     },
-    logUser(res) {
-      LocalStorage.set("token", `${res.data.accessToken}`);
-      LocalStorage.set("user", true);
-      LocalStorage.set("username", `${this.form.username}`);
-      LocalStorage.set("refreshToken", `${res.data.refreshToken}`);
-      this.$router.push("/dashboard");
-      this.$refs.userLogout.login();
-    },
-    onReset() {
-      this.form.username = "";
-      this.form.password = "";
+    verifyUser() {
+      // Verifico que cliente Exista
+      api.get(`clientes/verify/${this.cliente}`, {}).catch((err) => {
+        this.$router.push("/errorVerify");
+      });
+
+      // Verifico que usuario no exista para ese cliente
+      api
+        .get(`cusuarios/verify`, {
+          headers: {
+            email: this.email,
+            cliente: this.cliente,
+          },
+        })
+        .then((res) => {
+          if (res.data > 0) {
+            this.$router.push("/errorVerify");
+          }
+        });
     },
   },
 };
@@ -130,16 +169,9 @@ export default {
 
 <style>
 body .login {
-  background: #9EC1ED;
+  background: #9ec1ed;
 }
 @media (min-width: 600px) {
-  .frame {
-    border-color: white;
-    border-width: 2px;
-    border-style: solid;
-    border-radius: 10px;
-    background-color: rgb(255, 255, 255, 0.3);
-  }
   .fix-center {
     top: 50%;
     left: 50%;
