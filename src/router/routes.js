@@ -176,8 +176,7 @@ const routes = [
         children: [
           {
             path: "",
-            component: () =>
-              import("src/pages/reportes/relacionIgtf.vue"),
+            component: () => import("src/pages/reportes/relacionIgtf.vue"),
           },
         ],
       },
@@ -530,6 +529,21 @@ const routes = [
 
   {
     path: "/",
+    redirect: "/userLogin",
+    component: () => import("src/layouts/userLayout.vue"),
+    children: [
+      {
+        path: "/dashboardUser",
+        component: () => import("layouts/userLayout.vue"),
+        children: [
+          { path: "", component: () => import("pages/usuarios/dashboard.vue") },
+        ],
+      },
+    ],
+  },
+
+  {
+    path: "/",
     redirect: "/login",
     component: () => import("layouts/manualLayout.vue"),
     children: [
@@ -553,12 +567,12 @@ const routes = [
     component: () => import("pages/login.vue"),
   },
   {
-    path: "/login_user",
+    path: "/userLogin",
     component: () => import("pages/usuarios/login.vue"),
   },
   {
-    path: "/password_user",
-    component: () => import("pages/usuarios/password.vue"),
+    path: "/userConfirm",
+    component: () => import("pages/usuarios/confirm.vue"),
   },
   {
     path: "/:catchall(.*)*",

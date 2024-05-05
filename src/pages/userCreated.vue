@@ -11,7 +11,7 @@
         color="primary"
         text-color="white"
         unelevated
-        href="https://rcsexpress.com"
+        href="https://scen.rcsexpress.com/#/userLogin"
         label="Ingresar al Sistema"
         no-caps
       />

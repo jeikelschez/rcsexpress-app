@@ -14,8 +14,8 @@
                   filled
                   outlined
                   v-model="email"
+                  :disable="true"
                   label="Correo electrónico"
-                  autocomplete="new-user"
                   style="margin-top: 40px"
                 >
                   <template v-slot:prepend>
@@ -23,10 +23,10 @@
                   </template>
                 </q-input>
                 <q-input
+                  color="blue"
                   dense
                   bg-color="white"
                   filled
-                  autocomplete="new-password"
                   v-model="password"
                   label="Contraseña"
                   :type="isPwd ? 'password' : 'text'"
@@ -44,10 +44,31 @@
                     />
                   </template>
                 </q-input>
+                <q-input
+                  color="blue"
+                  dense
+                  bg-color="white"
+                  filled
+                  v-model="confirm"
+                  label="Confirmar Contraseña"
+                  :type="isPwd ? 'password' : 'text'"
+                  :rules="[(val) => (!!val && val === this.password) || '']"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="screen_lock_landscape" />
+                  </template>
+                  <template v-slot:append>
+                    <q-icon
+                      :name="isPwd ? 'visibility_off' : 'visibility'"
+                      class="cursor-pointer"
+                      @click="isPwd = !isPwd"
+                    />
+                  </template>
+                </q-input>
               </div>
               <div class="q-pa-lg" />
               <div class="col q-gutter-md">
-                <q-btn glossy label="Ingresar" type="submit" />
+                <q-btn glossy label="Confirmar" type="submit" />
               </div>
             </div>
           </q-form>
@@ -60,18 +81,22 @@
 <script>
 import { useQuasar } from "quasar";
 import { api } from "boot/axios";
+import { decode } from "js-base64";
+import userLogoutVue from "src/components/userLogout.vue";
 import methodsVue from "src/components/methods.vue";
-import { SessionStorage } from "quasar";
 
 export default {
-  components: { methods: methodsVue },
+  components: { "user-logout": userLogoutVue, methods: methodsVue },
   name: "login_user",
   data() {
     return {
       routes: [],
       email: "",
       password: "",
+      confirm: "",
+      cliente: "",
       isPwd: true,
+      remember: true,
       axiosConfig: {
         headers: {
           Authorization: ``,
@@ -83,26 +108,59 @@ export default {
     const $q = useQuasar();
     return {};
   },
-  mounted() {},
+  mounted() {
+    this.cliente = this.$router.currentRoute._value.query.cliente;
+    this.email = decode(this.$router.currentRoute._value.query.email);
+    this.verifyUser();
+  },
   methods: {
     async onSubmit() {
+      let formUsuarios = {};
+      formUsuarios.cod_cliente = this.cliente;
+      formUsuarios.email = this.email;
+      formUsuarios.password = this.password;
+      formUsuarios.estatus = "1";
+
+      // Guardo el usuario
+      await api
+        .post(`/cusuarios`, formUsuarios, {})
+        .then(() => {
+          api.get(`cusuarios/send-confirm`, {
+            headers: {
+              address: this.email,
+              client: this.cliente,
+              password: this.password,
+            },
+          });
+          this.$router.push("/userCreated");
+        })
+        .catch(() => {
+          this.$q.notify({
+            message:
+              "Error del Sistema. Problemas al actualizar datos del Usuario. Comuníquese con el proveedor del Sistemas...",
+            color: "red",
+          });
+          return;
+        });
+    },
+    verifyUser() {
+      // Verifico que cliente Exista
+      api.get(`clientes/verify/${this.cliente}`, {}).catch((err) => {
+        this.$router.push("/errorVerify");
+      });
+
+      // Verifico que usuario no exista para ese cliente
       api
-        .get(`cusuarios/login`, {
+        .get(`cusuarios/verify`, {
           headers: {
             email: this.email,
-            password: this.password,
+            cliente: this.cliente,
           },
         })
         .then((res) => {
-          SessionStorage.set("clientId", res.data.data);
-          SessionStorage.set("user", true);
-          this.$emit("changeTitle", "SCEN - Mantenimiento - Clientes", "");
-          this.$router.push("/dashboardUser");
-        }).catch((err) => {
-          this.$q.notify({
-            message: err.response.data.message,
-            color: "red",
-          });
+          if (res.data > 0) {
+            this.$router.push("/errorVerify");
+          }
         });
     },
   },
@@ -137,6 +195,14 @@ body .login {
 }
 .label {
   color: white;
+}
+.forgot {
+  margin-top: 20px;
+}
+.remember {
+  color: white;
+  font-weight: bold;
+  width: 100px;
 }
 .titulo {
   font-size: 20px;

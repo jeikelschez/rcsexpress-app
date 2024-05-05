@@ -1009,8 +1009,8 @@
                     flat
                     color="primary"
                     icon="delete"
-                    @click="selected = props.row.id"
-                    @click.capture="deletePopup = true"
+                    @click="selectedUsuario = props.row.id"
+                    @click.capture="deleteUserPopup = true"
                   ></q-btn>
                 </q-td>
               </template>
@@ -1114,6 +1114,26 @@
                 'getDataTable'
               )
             "
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog v-model="deleteUserPopup">
+      <q-card style="width: 700px">
+        <q-card-section>
+          <div class="text-h5" style="font-size: 18px">
+            ¿Estas seguro que quieres eliminar este Usuario?
+          </div>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn flat label="Cancelar" color="primary" v-close-popup />
+          <q-btn
+            flat
+            label="Aceptar"
+            color="primary"
+            v-close-popup
+            @click="deleteUsuario()"
           />
         </q-card-actions>
       </q-card>
@@ -1301,6 +1321,7 @@ export default {
       email: "",
       password: "",
       estatusUser: "",
+      selectedUsuario: "",
       usuarioIndex: "",
     };
   },
@@ -1313,6 +1334,7 @@ export default {
       addressDialog: ref(false),
       usuarioDialog: ref(false),
       deletePopup: ref(false),
+      deleteUserPopup: ref(false),
       editUsuarioDialog: ref(false),
       clienteParticularExistente() {
         $q.notify({
@@ -1726,6 +1748,32 @@ export default {
       this.usuarios[this.usuarioIndex].password = this.password;
       this.usuarios[this.usuarioIndex].estatus = formUsuarios.estatus;
       this.editUsuarioDialog = false;
+    },
+    // Metodo para Borrar usuarios de Clientes
+    async deleteUsuario() {
+      this.usuarioDialog = false;
+
+      await api
+        .delete(`/cusuarios/${this.selectedUsuario}`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .catch(() => {
+          this.$q.notify({
+            message:
+              "Error del Sistema. Problemas al Borrar datos del Usuario. Comuníquese con el proveedor del Sistemas...",
+            color: "red",
+          });
+          return;
+        });
+
+      this.$q.notify({
+        message: "Usuario Eliminado Exitosamente",
+        color: "green",
+      });
+
+      this.getDataTable();
     },
     // Metodo para Resetear Formulario
     resetForm() {
