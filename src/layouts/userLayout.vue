@@ -9,7 +9,9 @@
         >
         <q-space></q-space>
         <q-space></q-space>
-        <q-toolbar-title style="font-size: 14px; text-align: right;">{{title}}</q-toolbar-title>
+        <q-toolbar-title style="font-size: 14px; text-align: right">{{
+          title
+        }}</q-toolbar-title>
         <q-btn flat dense>
           <q-avatar size="42px">
             <img src="~assets/avatar.jpg" />
@@ -32,9 +34,7 @@
       </q-toolbar>
     </q-header>
 
-    <q-page-container>
-        <router-view @change-Title="changeTitle"></router-view>
-    </q-page-container>
+    <router-view @change-Title="changeTitle"></router-view>
 
     <!-- Pie de Pagina -->
     <q-footer elevated bordered>
@@ -55,7 +55,7 @@ export default {
   emits: ["changeTitle"],
   data() {
     return {
-        title: "",
+      title: "",
     };
   },
   mounted() {

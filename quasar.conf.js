@@ -46,13 +46,17 @@ module.exports = configure(function (ctx) {
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
-      env: {
+      /*env: {
         publicPath: process.env.NODE_ENV === 'production'
           ? 'https://scen.rcsexpress.com'
           : 'http://localhost:8080',
         apiPath: process.env.NODE_ENV === 'production'
           ? 'https://scen.rcsexpress.com/api/v1'
           : 'http://localhost:3000/api/v1' 
+      },*/
+      env: {
+        publicPath: 'https://scen.rcsexpress.com',
+        apiPath: 'https://scen.rcsexpress.com/api/v1'
       },
       vueRouterMode: 'hash', // available values: 'hash', 'history'
 

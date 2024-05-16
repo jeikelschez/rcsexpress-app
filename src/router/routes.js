@@ -17,13 +17,6 @@ const routes = [
         children: [{ path: "", component: () => import("pages/error403.vue") }],
       },
       {
-        path: "/m_login",
-        component: () => import("layouts/mainLayout.vue"),
-        children: [
-          { path: "", component: () => import("pages/manuals/m_login.vue") },
-        ],
-      },
-      {
         path: "/relaciondespacho",
         component: () => import("layouts/mainLayout.vue"),
         children: [
@@ -542,26 +535,6 @@ const routes = [
     ],
   },
 
-  {
-    path: "/",
-    redirect: "/login",
-    component: () => import("layouts/manualLayout.vue"),
-    children: [
-      {
-        path: "/m_relaciondespacho",
-        component: () => import("layouts/manualLayout.vue"),
-        children: [
-          {
-            path: "",
-            component: () => import("pages/manuals/m_relacionDespacho.vue"),
-          },
-        ],
-      },
-    ],
-  },
-
-  // always leave this as last one,
-  // but you can also remove it
   {
     path: "/login",
     component: () => import("pages/login.vue"),
