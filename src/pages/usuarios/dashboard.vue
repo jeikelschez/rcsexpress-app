@@ -3,6 +3,7 @@
     <div class="q-pa-sm justify-center">
       <div
         class="row justify-end q-pa-md col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
+        style="margin-left: 30px"
       >
         <div
           class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 cardMargin selectMobile2"
@@ -62,7 +63,7 @@
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy
-                  ref="qDateProxy"
+                  ref="qDateProxy2"
                   transition-show="scale"
                   transition-hide="scale"
                 >
@@ -71,7 +72,7 @@
                     mask="DD/MM/YYYY"
                     style="padding-bottom: 0px"
                     @update:model-value="
-                      this.$refs.qDateProxy.hide();
+                      this.$refs.qDateProxy2.hide();
                       getDataTable();
                     "
                   ></q-date>
@@ -79,7 +80,7 @@
               </q-icon>
             </template>
           </q-input>
-        </div>        
+        </div>
         <div
           class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 cardMargin selectMobile2"
           style="align-self: center; text-align: center"
@@ -89,7 +90,7 @@
             dense
             transition-show="flip-up"
             transition-hide="flip-down"
-            :options="estatusOperativo"
+            :options="estatus"
             use-input
             hide-selected
             fill-input
@@ -122,17 +123,27 @@
             dense
             transition-show="flip-up"
             transition-hide="flip-down"
-            :options="estatusOperativo"
+            :options="cuidades"
             use-input
             hide-selected
             fill-input
-            option-label="label"
-            option-value="value"
+            @filter="
+              (val, update) =>
+                filterArray(
+                  val,
+                  update,
+                  'ciudadesSelected',
+                  'ciudades',
+                  'desc_ciudad'
+                )
+            "
+            option-label="desc_ciudad"
+            option-value="id"
             input-debounce="0"
-            v-model="selectedEstatus"
+            v-model="selectedCuidades"
             outlined
             standout
-            label="Estatus"
+            label="Ciudad"
             @update:model-value="getDataTable()"
             ><template v-slot:no-option>
               <q-item>
@@ -190,25 +201,9 @@
             color="primary"
             round
             padding="sm"
-            @click="this.sendData()"
-            style="margin-right: 15px"
-          >
-            <q-icon size="25px" name="save" color="white"> </q-icon>
-            <q-tooltip
-              class="bg-primary"
-              style="max-height: 30px"
-              transition-show="scale"
-              transition-hide="scale"
-              color="primary"
-              >Guardar Selección</q-tooltip
-            >
-          </q-btn>
-          <q-btn
-            dense
-            color="primary"
-            round
-            padding="sm"
+            @click="pdfView = true"
             style="margin-right: 5px"
+            :disable="this.guias.length == 0 ? true : false"
           >
             <q-icon size="25px" name="print" color="white"> </q-icon>
             <q-tooltip
@@ -233,922 +228,213 @@
         row-key="id"
         :loading="loading"
         class="tableHeight"
-        :rows-per-page-options="[5, 10, 15, 20, 50]"
+        :rows-per-page-options="[0]"
         @request="getDataTable"
-        style="width: 100%; height: 540px"
+        style="width: 100%; height: 570px"
         :grid="$q.screen.xs"
-        v-model:pagination="pagination"
       >
         <template v-slot:loading>
           <q-inner-loading showing color="primary" class="loading" />
         </template>
-        <template v-slot:header="props">
-          <q-tr :props="props">
-            <q-th v-for="col in props.cols" :key="col.name" :props="props">
-              {{ col.label }}
-            </q-th>
-          </q-tr>
-        </template>
-        <template v-slot:body="props" style="margin-bottom: 20px">
-          <q-tr
+        <template v-slot:body-cell-nro_documento="props">
+          <q-td
             :props="props"
-            v-if="
-              ((this.pagination.page - 1) * this.pagination.rowsPerPage -
-                props.rowIndex) *
-                -1 ==
-              0
-            "
+            @click="loadDetalle(props.row)"
+            style="color: #06065b"
           >
-            <q-td colspan="100%" style="font-size: 20px; color: #283593">
-              <div class="text-left">
-                <strong> {{ "ORIGEN: " }} </strong>
-                {{
-                  this.findIndex(
-                    "agencias",
-                    this.guias[
-                      ((this.pagination.page - 1) *
-                        this.pagination.rowsPerPage -
-                        props.rowIndex) *
-                        -1
-                    ].cod_agencia,
-                    "nb_agencia"
-                  ) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-                }}
-                <strong> {{ "DESTINO: " }} </strong>
-                {{
-                  this.findIndex(
-                    "agencias",
-                    this.guias[
-                      ((this.pagination.page - 1) *
-                        this.pagination.rowsPerPage -
-                        props.rowIndex) *
-                        -1
-                    ].cod_agencia_dest,
-                    "nb_agencia"
-                  )
-                }}
-              </div>
-            </q-td>
-          </q-tr>
-          <q-tr
-            :props="props"
-            v-else-if="
-              ((this.pagination.page - 1) * this.pagination.rowsPerPage -
-                props.rowIndex) *
-                -1 >
-                0 &&
-              this.guias[
-                ((this.pagination.page - 1) * this.pagination.rowsPerPage -
-                  props.rowIndex) *
-                  -1
-              ].cod_agencia +
-                '-' +
-                this.guias[
-                  ((this.pagination.page - 1) * this.pagination.rowsPerPage -
-                    props.rowIndex) *
-                    -1
-                ].cod_agencia_dest !=
-                this.guias[
-                  ((this.pagination.page - 1) * this.pagination.rowsPerPage -
-                    props.rowIndex) *
-                    -1 -
-                    1
-                ].cod_agencia +
-                  '-' +
-                  this.guias[
-                    ((this.pagination.page - 1) * this.pagination.rowsPerPage -
-                      props.rowIndex) *
-                      -1 -
-                      1
-                  ].cod_agencia_dest
-            "
-          >
-            <q-td colspan="100%" style="font-size: 20px; color: #283593">
-              <div class="text-left">
-                <strong> {{ "ORIGEN: " }} </strong>
-                {{
-                  this.findIndex(
-                    "agencias",
-                    this.guias[
-                      ((this.pagination.page - 1) *
-                        this.pagination.rowsPerPage -
-                        props.rowIndex) *
-                        -1
-                    ].cod_agencia,
-                    "nb_agencia"
-                  ) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-                }}
-                <strong> {{ "DESTINO: " }} </strong>
-                {{
-                  this.findIndex(
-                    "agencias",
-                    this.guias[
-                      ((this.pagination.page - 1) *
-                        this.pagination.rowsPerPage -
-                        props.rowIndex) *
-                        -1
-                    ].cod_agencia_dest,
-                    "nb_agencia"
-                  )
-                }}
-              </div>
-            </q-td>
-          </q-tr>
-          <q-tr :props="props">
-            <q-td v-for="col in props.cols" :key="col.name" :props="props">
-              <div v-if="col.name == 'modalidad_pago'">
-                {{ filterDesc("modalidadPago", props.row.modalidad_pago) }}
-              </div>
-              <div v-else-if="col.name == 'pagado_en'">
-                {{ filterDesc("pagadoEn", props.row.pagado_en) }}
-              </div>
-              <div v-else-if="col.name == 'check_pagado'">
-                <q-checkbox
-                  size="md"
-                  v-model="props.row.check_pagado"
-                  true-value="1"
-                  false-value="0"
-                  :disable="true"
-                  style="font-size: 13px"
-                />
-              </div>
-              <div v-else-if="col.name == 'estatus_operativo'">
-                <q-select
-                  dense
-                  outlined
-                  fill-input
-                  input-debounce="0"
-                  :options="estatusOperativo"
-                  option-label="label"
-                  option-value="value"
-                  v-model="props.row.estatus_operativo"
-                >
-                  <template v-slot:selected-item="scope">
-                    {{
-                      props.row.estatus_operativo.label
-                        ? props.row.estatus_operativo.label
-                        : filterDesc(
-                            "estatusOperativo",
-                            props.row.estatus_operativo
-                          )
-                    }}
-                  </template>
-                </q-select>
-              </div>
-              <div v-else-if="col.name == 'persona_recibio'">
-                <q-input
-                  dense
-                  outlined
-                  v-model="props.row.persona_recibio"
-                  lazy-rules
-                  :rules="[
-                    (val) =>
-                      formRules(
-                        val,
-                        'persona_recibio',
-                        ((this.pagination.page - 1) *
-                          this.pagination.rowsPerPage -
-                          props.rowIndex) *
-                          -1
-                      ),
-                  ]"
-                  style="padding-top: 20px; min-width: 250px"
-                />
-              </div>
-              <div v-else-if="col.name == 'ci_persona_recibio'">
-                <q-input
-                  dense
-                  outlined
-                  v-model="props.row.ci_persona_recibio"
-                  lazy-rules
-                  style="padding-top: 20px; min-width: 150px"
-                  :rules="[
-                    (val) =>
-                      formRules(
-                        val,
-                        'ci_persona_recibio',
-                        ((this.pagination.page - 1) *
-                          this.pagination.rowsPerPage -
-                          props.rowIndex) *
-                          -1
-                      ),
-                  ]"
-                />
-              </div>
-              <div v-else-if="col.name == 'fecha_recepcion'">
-                <q-input
-                  dense
-                  outlined
-                  v-model="props.row.fecha_recepcion"
-                  lazy-rules
-                  :rules="[
-                    (val) =>
-                      formRules(
-                        val,
-                        'fecha_recepcion',
-                        ((this.pagination.page - 1) *
-                          this.pagination.rowsPerPage -
-                          props.rowIndex) *
-                          -1
-                      ),
-                  ]"
-                  mask="##/##/####"
-                  style="padding-top: 20px; min-width: 150px"
-                >
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy
-                        ref="qDateProxy"
-                        transition-show="scale"
-                        transition-hide="scale"
-                      >
-                        <q-date
-                          v-model="props.row.fecha_recepcion"
-                          mask="DD/MM/YYYY"
-                          @update:model-value="this.$refs.qDateProxy[0].hide()"
-                        ></q-date>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </div>
-              <div v-else-if="col.name == 'hora_recepcion'">
-                <q-input
-                  dense
-                  outlined
-                  v-model="props.row.hora_recepcion"
-                  lazy-rules
-                  mask="time"
-                  :rules="[
-                    (val) =>
-                      formRules(
-                        val,
-                        'hora_recepcion',
-                        ((this.pagination.page - 1) *
-                          this.pagination.rowsPerPage -
-                          props.rowIndex) *
-                          -1
-                      ),
-                  ]"
-                  style="padding-top: 20px; min-width: 150px"
-                >
-                  <template v-slot:append>
-                    <q-icon name="access_time" class="cursor-pointer">
-                      <q-popup-proxy
-                        ref="qTimeProxy"
-                        transition-show="scale"
-                        transition-hide="scale"
-                      >
-                        <q-time
-                          v-model="props.row.hora_recepcion"
-                          :format24h="false"
-                          @update:model-value="this.$refs.qTimeProxy[0].hide()"
-                        >
-                          <div class="row items-center justify-end">
-                            <q-btn
-                              v-close-popup
-                              label="Cerrar"
-                              color="primary"
-                              flat
-                            />
-                          </div>
-                        </q-time>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </div>
-              <div v-else-if="col.name == 'cod_agente_entrega'">
-                <q-select
-                  dense
-                  outlined
-                  fill-input
-                  input-debounce="0"
-                  :options="this.agentes[props.row.cod_agencia_dest - 1]"
-                  option-label="persona_responsable"
-                  option-value="id"
-                  :loading="agentesLoading"
-                  :disable="agentesLoading"
-                  v-model="props.row.cod_agente_entrega"
-                  :rules="[
-                    (val) =>
-                      formRules(
-                        val,
-                        'cod_agente_entrega',
-                        ((this.pagination.page - 1) *
-                          this.pagination.rowsPerPage -
-                          props.rowIndex) *
-                          -1
-                      ),
-                  ]"
-                  style="padding-top: 20px; min-width: 250px"
-                >
-                  <template v-slot:selected-item="scope">
-                    {{
-                      !agentesLoading
-                        ? this.findIndexAgentes(
-                            "agentes",
-                            props.row.cod_agencia_dest - 1,
-                            props.row.cod_agente_entrega,
-                            "persona_responsable"
-                          )
-                        : null
-                    }}
-                  </template>
-                  <template v-slot:agentesLoading>
-                    <q-inner-loading showing color="primary" class="loading" />
-                  </template>
-                </q-select>
-              </div>
-              <div
-                v-else-if="
-                  col.name == 'dias_entrega' &&
-                  diffDays(props.row.fecha_emision, props.row.fecha_recepcion) <
-                    2
-                "
-              >
-                {{
-                  diffDays(props.row.fecha_emision, props.row.fecha_recepcion)
-                }}
-              </div>
-              <div v-else-if="col.name == 'dias_entrega'" style="color: red">
-                {{
-                  diffDays(props.row.fecha_emision, props.row.fecha_recepcion)
-                }}
-              </div>
-              <div v-else-if="col.name == 'cod_motivo_retraso'">
-                <q-select
-                  dense
-                  outlined
-                  fill-input
-                  input-debounce="0"
-                  :options="motivosRetraso"
-                  option-label="desc_concepto"
-                  option-value="id"
-                  v-model="props.row.cod_motivo_retraso"
-                  style="min-width: 250px"
-                >
-                  <template v-slot:selected-item="scope">
-                    {{
-                      props.row.cod_motivo_retraso.desc_concepto
-                        ? props.row.cod_motivo_retraso.desc_concepto
-                        : findIndex(
-                            "motivosRetraso",
-                            props.row.cod_motivo_retraso,
-                            "desc_concepto"
-                          )
-                    }}
-                  </template>
-                </q-select>
-              </div>
-              <div v-else-if="col.name == 'cod_agencia_transito'">
-                {{
-                  this.findIndex(
-                    "agencias",
-                    props.row.cod_agencia_dest,
-                    "nb_agencia"
-                  )
-                }}
-              </div>
-              <div v-else-if="col.name == 'fecha_sale_transito'">
-                <q-input
-                  dense
-                  outlined
-                  v-model="props.row.fecha_sale_transito"
-                  lazy-rules
-                  :rules="[
-                    (val) =>
-                      formRules(
-                        val,
-                        'fecha_sale_transito',
-                        ((this.pagination.page - 1) *
-                          this.pagination.rowsPerPage -
-                          props.rowIndex) *
-                          -1
-                      ),
-                  ]"
-                  mask="##/##/####"
-                  style="padding-top: 20px; min-width: 150px"
-                >
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy
-                        ref="qDate2Proxy"
-                        transition-show="scale"
-                        transition-hide="scale"
-                      >
-                        <q-date
-                          v-model="props.row.fecha_sale_transito"
-                          mask="DD/MM/YYYY"
-                          @update:model-value="this.$refs.qDate2Proxy[0].hide()"
-                        ></q-date>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </div>
-              <div v-else-if="col.name == 'observacion_entrega'">
-                <q-input
-                  dense
-                  outlined
-                  v-model="props.row.observacion_entrega"
-                  lazy-rules
-                  style="padding-top: 20px; min-width: 350px"
-                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 200)]"
-                />
-              </div>
-              <div v-else>
-                {{ col.value }}
-              </div>
-            </q-td>
-          </q-tr>
+            {{ props.value }}
+          </q-td>
         </template>
-        <template v-slot:item="props">
-          <div
-            class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
-            :style="props.selected ? 'transform: scale(0.95);' : ''"
-          >
-            <q-card :class="props.selected ? 'bg-grey-2' : ''">
-              <q-list dense>
-                <q-item-section
-                  :props="props"
-                  v-if="
-                    ((this.pagination.page - 1) * this.pagination.rowsPerPage -
-                      props.rowIndex) *
-                      -1 ==
-                    0
-                  "
-                >
-                  <q-item-section
-                    style="font-size: 15px; padding: 15px; color: #283593"
-                  >
-                    <div class="text-left">
-                      <strong> {{ "ORIGEN: " }} </strong>
-                      {{
-                        this.findIndex(
-                          "agencias",
-                          this.guias[
-                            ((this.pagination.page - 1) *
-                              this.pagination.rowsPerPage -
-                              props.rowIndex) *
-                              -1
-                          ].cod_agencia,
-                          "nb_agencia"
-                        ) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-                      }}
-                      <strong> {{ "DESTINO: " }} </strong>
-                      {{
-                        this.findIndex(
-                          "agencias",
-                          this.guias[
-                            ((this.pagination.page - 1) *
-                              this.pagination.rowsPerPage -
-                              props.rowIndex) *
-                              -1
-                          ].cod_agencia_dest,
-                          "nb_agencia"
-                        )
-                      }}
-                    </div>
-                  </q-item-section>
-                </q-item-section>
-                <q-item
-                  v-for="col in props.cols"
-                  :key="col.name"
-                  :props="props"
-                >
-                  <q-item-section>
-                    <q-item-label>{{ col.label }}</q-item-label>
-                  </q-item-section>
-
-                  <q-item-section
-                    side
-                    class="itemMovilSide"
-                    v-if="col.name === 'modalidad_pago'"
-                  >
-                    {{ filterDesc("modalidadPago", props.row.modalidad_pago) }}
-                  </q-item-section>
-                  <q-item-section
-                    side
-                    class="itemMovilSide"
-                    v-if="col.name === 'pagado_en'"
-                  >
-                    {{ filterDesc("pagadoEn", props.row.pagado_en) }}
-                  </q-item-section>
-                  <q-item-section
-                    side
-                    class="itemMovilSide"
-                    v-if="col.name === 'check_pagado'"
-                  >
-                    <q-checkbox
-                      size="md"
-                      v-model="props.row.check_pagado"
-                      true-value="1"
-                      false-value="0"
-                      :disable="true"
-                      style="font-size: 13px"
-                    />
-                  </q-item-section>
-                  <q-item-section
-                    side
-                    class="itemMovilSide"
-                    v-if="col.name === 'estatus_operativo'"
-                  >
-                    <q-select
-                      dense
-                      outlined
-                      fill-input
-                      input-debounce="0"
-                      :options="estatusOperativo"
-                      option-label="label"
-                      option-value="value"
-                      v-model="props.row.estatus_operativo"
-                      style="min-width: 150px"
-                    >
-                      <template v-slot:selected-item="scope">
-                        {{
-                          props.row.estatus_operativo.label
-                            ? props.row.estatus_operativo.label
-                            : filterDesc(
-                                "estatusOperativo",
-                                props.row.estatus_operativo
-                              )
-                        }}
-                      </template>
-                    </q-select>
-                  </q-item-section>
-                  <q-item-section
-                    side
-                    class="itemMovilSide"
-                    v-if="col.name === 'persona_recibio'"
-                  >
-                    <q-input
-                      dense
-                      outlined
-                      v-model="props.row.persona_recibio"
-                      lazy-rules
-                      :rules="[
-                        (val) =>
-                          formRules(
-                            val,
-                            'persona_recibio',
-                            ((this.pagination.page - 1) *
-                              this.pagination.rowsPerPage -
-                              props.rowIndex) *
-                              -1
-                          ),
-                      ]"
-                      style="min-width: 150px"
-                      hide-bottom-space
-                    />
-                  </q-item-section>
-                  <q-item-section
-                    side
-                    class="itemMovilSide"
-                    v-if="col.name === 'ci_persona_recibio'"
-                  >
-                    <q-input
-                      dense
-                      outlined
-                      v-model="props.row.ci_persona_recibio"
-                      lazy-rules
-                      style="min-width: 150px"
-                      hide-bottom-space
-                      :rules="[
-                        (val) =>
-                          formRules(
-                            val,
-                            'ci_persona_recibio',
-                            ((this.pagination.page - 1) *
-                              this.pagination.rowsPerPage -
-                              props.rowIndex) *
-                              -1
-                          ),
-                      ]"
-                    />
-                  </q-item-section>
-                  <q-item-section
-                    side
-                    class="itemMovilSide"
-                    v-if="col.name === 'fecha_recepcion'"
-                  >
-                    <q-input
-                      dense
-                      outlined
-                      v-model="props.row.fecha_recepcion"
-                      lazy-rules
-                      :rules="[
-                        (val) =>
-                          formRules(
-                            val,
-                            'fecha_recepcion',
-                            ((this.pagination.page - 1) *
-                              this.pagination.rowsPerPage -
-                              props.rowIndex) *
-                              -1
-                          ),
-                      ]"
-                      mask="##/##/####"
-                      style="min-width: 150px"
-                      hide-bottom-space
-                    >
-                      <template v-slot:append>
-                        <q-icon name="event" class="cursor-pointer">
-                          <q-popup-proxy
-                            ref="qDateProxy"
-                            transition-show="scale"
-                            transition-hide="scale"
-                          >
-                            <q-date
-                              v-model="props.row.fecha_recepcion"
-                              mask="DD/MM/YYYY"
-                              @update:model-value="
-                                this.$refs.qDateProxy[0].hide()
-                              "
-                            ></q-date>
-                          </q-popup-proxy>
-                        </q-icon>
-                      </template>
-                    </q-input>
-                  </q-item-section>
-                  <q-item-section
-                    side
-                    class="itemMovilSide"
-                    v-if="col.name === 'hora_recepcion'"
-                  >
-                    <q-input
-                      dense
-                      outlined
-                      v-model="props.row.hora_recepcion"
-                      lazy-rules
-                      mask="time"
-                      :rules="[
-                        (val) =>
-                          formRules(
-                            val,
-                            'hora_recepcion',
-                            ((this.pagination.page - 1) *
-                              this.pagination.rowsPerPage -
-                              props.rowIndex) *
-                              -1
-                          ),
-                      ]"
-                      style="min-width: 150px"
-                      hide-bottom-space
-                    >
-                      <template v-slot:append>
-                        <q-icon name="access_time" class="cursor-pointer">
-                          <q-popup-proxy
-                            ref="qTimeProxy"
-                            transition-show="scale"
-                            transition-hide="scale"
-                          >
-                            <q-time
-                              v-model="props.row.hora_recepcion"
-                              :format24h="false"
-                              @update:model-value="
-                                this.$refs.qTimeProxy[0].hide()
-                              "
-                            >
-                              <div class="row items-center justify-end">
-                                <q-btn
-                                  v-close-popup
-                                  label="Cerrar"
-                                  color="primary"
-                                  flat
-                                />
-                              </div>
-                            </q-time>
-                          </q-popup-proxy>
-                        </q-icon>
-                      </template>
-                    </q-input>
-                  </q-item-section>
-                  <q-item-section
-                    side
-                    class="itemMovilSide"
-                    v-if="col.name === 'cod_agente_entrega'"
-                  >
-                    <q-select
-                      dense
-                      outlined
-                      fill-input
-                      input-debounce="0"
-                      :options="this.agentes[props.row.cod_agencia_dest - 1]"
-                      option-label="persona_responsable"
-                      option-value="id"
-                      :loading="agentesLoading"
-                      :disable="agentesLoading"
-                      v-model="props.row.cod_agente_entrega"
-                      :rules="[
-                        (val) =>
-                          formRules(
-                            val,
-                            'cod_agente_entrega',
-                            ((this.pagination.page - 1) *
-                              this.pagination.rowsPerPage -
-                              props.rowIndex) *
-                              -1
-                          ),
-                      ]"
-                      style="min-width: 150px"
-                      hide-bottom-space
-                    >
-                      <template v-slot:selected-item="scope">
-                        {{
-                          !agentesLoading
-                            ? this.findIndexAgentes(
-                                "agentes",
-                                props.row.cod_agencia_dest - 1,
-                                props.row.cod_agente_entrega,
-                                "persona_responsable"
-                              )
-                            : null
-                        }}
-                      </template>
-                      <template v-slot:agentesLoading>
-                        <q-inner-loading
-                          showing
-                          color="primary"
-                          class="loading"
-                        />
-                      </template>
-                    </q-select>
-                  </q-item-section>
-                  <q-item-section
-                    side
-                    class="itemMovilSide"
-                    v-if="col.name === 'dias_entrega'"
-                    style="color: red"
-                  >
-                    {{
-                      diffDays(
-                        props.row.fecha_emision,
-                        props.row.fecha_recepcion
-                      )
-                    }}
-                  </q-item-section>
-                  <q-item-section
-                    side
-                    class="itemMovilSide"
-                    v-if="col.name === 'cod_motivo_retraso'"
-                  >
-                    <q-select
-                      dense
-                      outlined
-                      fill-input
-                      input-debounce="0"
-                      :options="motivosRetraso"
-                      option-label="desc_concepto"
-                      option-value="id"
-                      v-model="props.row.cod_motivo_retraso"
-                      style="min-width: 150px"
-                    >
-                      <template v-slot:selected-item="scope">
-                        {{
-                          props.row.cod_motivo_retraso.desc_concepto
-                            ? props.row.cod_motivo_retraso.desc_concepto
-                            : findIndex(
-                                "motivosRetraso",
-                                props.row.cod_motivo_retraso,
-                                "desc_concepto"
-                              )
-                        }}
-                      </template>
-                    </q-select>
-                  </q-item-section>
-                  <q-item-section
-                    side
-                    class="itemMovilSide"
-                    v-if="col.name === 'cod_agencia_transito'"
-                  >
-                    {{
-                      this.findIndex(
-                        "agencias",
-                        props.row.cod_agencia_dest,
-                        "nb_agencia"
-                      )
-                    }}
-                  </q-item-section>
-                  <q-item-section
-                    side
-                    class="itemMovilSide"
-                    v-if="col.name === 'fecha_sale_transito'"
-                    style="text-align: right"
-                  >
-                    <q-input
-                      dense
-                      outlined
-                      v-model="props.row.fecha_sale_transito"
-                      lazy-rules
-                      :rules="[
-                        (val) =>
-                          formRules(
-                            val,
-                            'fecha_sale_transito',
-                            ((this.pagination.page - 1) *
-                              this.pagination.rowsPerPage -
-                              props.rowIndex) *
-                              -1
-                          ),
-                      ]"
-                      mask="##/##/####"
-                      style="min-width: 150px"
-                      hide-bottom-space
-                    >
-                      <template v-slot:append>
-                        <q-icon name="event" class="cursor-pointer">
-                          <q-popup-proxy
-                            ref="qDate2Proxy"
-                            transition-show="scale"
-                            transition-hide="scale"
-                          >
-                            <q-date
-                              v-model="props.row.fecha_sale_transito"
-                              mask="DD/MM/YYYY"
-                              @update:model-value="
-                                this.$refs.qDate2Proxy[0].hide()
-                              "
-                            ></q-date>
-                          </q-popup-proxy>
-                        </q-icon>
-                      </template>
-                    </q-input>
-                  </q-item-section>
-                  <q-item-section
-                    side
-                    class="itemMovilSide"
-                    v-if="col.name === 'fecha_llega_transito'"
-                    style="text-align: right"
-                  >
-                    {{ props.row.fecha_recepcion }}
-                  </q-item-section>
-                  <q-item-section
-                    side
-                    class="itemMovilSide"
-                    v-if="col.name === 'cliente_orig_desc'"
-                    style="text-align: right"
-                  >
-                    {{ props.row.cliente_orig_desc }}
-                  </q-item-section>
-                  <q-item-section
-                    side
-                    class="itemMovilSide"
-                    v-if="col.name === 'cliente_dest_desc'"
-                    style="text-align: right"
-                  >
-                    {{ props.row.cliente_dest_desc }}
-                  </q-item-section>
-                  <q-item-section
-                    side
-                    class="itemMovilSide"
-                    v-if="col.name === 'fecha_emision'"
-                    style="text-align: right"
-                  >
-                    {{ props.row.fecha_emision }}
-                  </q-item-section>
-                  <q-item-section
-                    side
-                    class="itemMovilSide"
-                    v-if="col.name === 'fecha_envio'"
-                    style="text-align: right"
-                  >
-                    {{ props.row.fecha_envio }}
-                  </q-item-section>
-                  <q-item-section
-                    side
-                    class="itemMovilSide"
-                    v-if="col.name === 'nro_documento'"
-                    style="text-align: right"
-                  >
-                    {{ props.row.nro_documento }}
-                  </q-item-section>
-                  <q-item-section
-                    side
-                    class="itemMovilSide"
-                    v-if="col.name === 'observacion_entrega'"
-                    style="text-align: right"
-                  >
-                    <q-input
-                      dense
-                      outlined
-                      v-model="props.row.observacion_entrega"
-                      lazy-rules
-                      :rules="[(val) => this.$refs.rulesVue.isMax(val, 200)]"
-                    />
-                  </q-item-section>
-                </q-item>
-              </q-list>
-            </q-card>
-          </div>
+        <template v-slot:body-cell-estatus_operativo="props">
+          <q-td :props="props">
+            <q-icon
+              size="20px"
+              color="primary"
+              v-if="props.value == 'CO'"
+              name="thumb_up"
+            />
+            <q-icon
+              size="20px"
+              color="orange"
+              v-else-if="props.value == 'PR' || props.value == 'PE'"
+              name="thumb_down"
+            />
+            <q-icon size="20px" color="red" v-else name="warning" />
+          </q-td>
+        </template>
+        <template v-slot:body-cell-persona_recibio="props">
+          <q-td :props="props" class="limit-width" style="max-width: 150px">
+            {{
+              props.value == null || props.value == ""
+                ? "NO DEFINIDO"
+                : props.value
+            }}
+          </q-td>
+        </template>
+        <template v-slot:body-cell-fecha_recepcion="props">
+          <q-td :props="props">
+            {{
+              props.value == null || props.value == ""
+                ? "EN PROCESO"
+                : props.value
+            }}
+          </q-td>
+        </template>
+        <template v-slot:body-cell-motivo_retraso="props">
+          <q-td :props="props" class="limit-width" style="max-width: 60px">
+            {{ calculaDias(props.row) }}
+            <q-tooltip class="bg-blue text-body2" :offset="[10, 10]">{{
+              calculaDias(props.row)
+            }}</q-tooltip>
+          </q-td>
+        </template>
+        <template v-slot:body-cell-dimensiones="props">
+          <q-td :props="props" class="limit-width" style="max-width: 200px">
+            {{ props.value }}
+            <q-tooltip class="bg-blue text-body2" :offset="[10, 10]">{{
+              props.value
+            }}</q-tooltip>
+          </q-td>
+        </template>
+        <template v-slot:body-cell-cliente_dest_desc="props">
+          <q-td :props="props" class="limit-width" style="max-width: 350px">
+            {{ props.value }}
+          </q-td>
         </template>
       </q-table>
     </div>
 
-    <methods
-      ref="methods"
-      @get-Data-Table="getDataTable"
-    ></methods>
+    <q-dialog v-model="guiaDialog">
+      <q-card style="width: 1300px; max-width: 300vw">
+        <q-card-section>
+          <div
+            class="row justify-end q-pa-md col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
+          >
+            <div class="text-h6 col-md-4 col-xs-12">
+              Nro Guia: <strong>{{ guiaSelected.nro_documento }}</strong>
+            </div>
+            <div
+              class="col-md-4 col-xs-12"
+              style="text-align: center; margin-top: 6px"
+            >
+              N° Fact Cliente: <strong>{{ guiaSelected.dimensiones }}</strong>
+            </div>
+            <div
+              class="col-md-4 col-xs-12"
+              style="text-align: right; margin-top: 6px"
+            >
+              Transito:
+              <strong>{{
+                guiaSelected.cod_agencia_transito == null
+                  ? "Agencia T. no Definida"
+                  : guiaSelected.agencias_trans.nb_agencia
+              }}</strong>
+            </div>
+          </div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none" style="margin-top: -20px">
+          <div
+            class="row justify-end q-pa-md col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12"
+          >
+            <div class="col-md-6 col-xs-12" style="margin-bottom: 8px">
+              Cliente Origen: <strong>{{ this.client }}</strong>
+            </div>
+            <div class="col-md-6 col-xs-12">
+              Cliente Destino:
+              <strong>{{ guiaSelected.cliente_dest_desc }}</strong>
+            </div>
+            <div class="col-md-6 col-xs-12" style="margin-bottom: 8px">
+              Fecha Emisión: <strong>{{ guiaSelected.fecha_emision }}</strong>
+            </div>
+            <div class="col-md-6 col-xs-12">
+              Fecha Envio: <strong>{{ guiaSelected.fecha_envio }}</strong>
+            </div>
+            <div class="col-md-6 col-xs-12" style="margin-bottom: 8px">
+              N° piezas: <strong>{{ guiaSelected.nro_piezas }}</strong>
+            </div>
+            <div class="col-md-6 col-xs-12">
+              Peso Neto:
+              <strong>{{
+                new Intl.NumberFormat("de-DE", {
+                  style: "currency",
+                  currency: "EUR",
+                  currencyDisplay: "code",
+                })
+                  .format(guiaSelected.peso_kgs)
+                  .replace("EUR", "")
+                  .trim()
+              }}</strong>
+            </div>
+            <div class="col-md-6 col-xs-12" style="margin-bottom: 8px">
+              Método Pago:
+              <strong>{{
+                guiaSelected.modalidad_pago == "CO" ? "Contado" : "Crédito"
+              }}</strong>
+            </div>
+            <div class="col-md-6 col-xs-12">
+              Estatus:
+              <strong>{{
+                filterDesc("estatusOperativo", guiaSelected.estatus_operativo)
+              }}</strong>
+            </div>
+            <div class="col-md-6 col-xs-12" style="margin-bottom: 8px">
+              Recibido por:
+              <strong>{{
+                guiaSelected.persona_recibio == null ||
+                guiaSelected.persona_recibio == ""
+                  ? "NO DEFINIDO"
+                  : guiaSelected.persona_recibio
+              }}</strong>
+            </div>
+            <div class="col-md-6 col-xs-12">
+              Cédula o Rif:
+              <strong>{{ guiaSelected.ci_persona_recibio }}</strong>
+            </div>
+            <div class="col-md-6 col-xs-12" style="margin-bottom: 30px">
+              Fecha entrega:
+              <strong>{{
+                guiaSelected.fecha_recepcion == null ||
+                guiaSelected.fecha_recepcion == ""
+                  ? "EN PROCESO"
+                  : guiaSelected.fecha_recepcion
+              }}</strong>
+            </div>
+            <div class="col-md-6 col-xs-12">
+              Hora entrega: <strong>{{ guiaSelected.hora_recepcion }}</strong>
+            </div>
+            <div class="col-md-12 col-xs-12">
+              <strong
+                >NOTA: LA INFORMACIÓN REFLEJADA, SÓLO TIENE VIGENCIA DE 6
+                MESES.</strong
+              >
+            </div>
+            <div class="col-md-12 col-xs-12" style="margin-bottom: -40px">
+              <strong
+                >SI DESEA UNA LISTA DE GUIAS ANTERIORES, PUEDE SOLICITARLAS A
+                TRAVÉS DEL CORREO ELECTRÓNICO:
+                SERVICIOSALCLIENTE@RCSEXPRESS.COM.</strong
+              >
+            </div>
+          </div>
+        </q-card-section>
+
+        <q-card-actions align="right" class="bg-white text-teal">
+          <q-btn color="primary" flat icon="close" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog v-model="pdfView" @show="this.pdfPrint()">
+      <webViewer
+        ref="webViewer"
+        @export-Excel="exportExcel"
+        @close-pdf="this.pdfView = false"
+        style="width: 1400px; height: 750px; max-width: 1400px"
+      ></webViewer>
+    </q-dialog>
+
+    <methods ref="methods" @get-Data-Table="getDataTable"></methods>
 
     <rules-vue ref="rulesVue"></rules-vue>
   </q-page>
@@ -1161,146 +447,110 @@ import { api } from "boot/axios";
 import rulesVue from "src/components/rules.vue";
 import { useQuasar, SessionStorage } from "quasar";
 import methodsVue from "src/components/methods.vue";
+import webViewerVue from "src/components/webViewer.vue";
 
 export default {
   components: {
     methods: methodsVue,
+    webViewer: webViewerVue,
     rulesVue,
   },
   data() {
     return {
       columns: [
         {
-          name: "cliente_orig_desc",
-          label: "Cliente Origen",
-          field: "cliente_orig_desc",
-          align: "left",
+          name: "siglas_dest",
+          label: "DESTINO",
+          field: (row) => row.agencias_dest.ciudades.siglas,
+          align: "center",
+        },
+        {
+          name: "nro_documento",
+          label: "GUÍA",
+          field: "nro_documento",
+          align: "center",
+        },
+        {
+          name: "dimensiones",
+          label: "N° FACT CLIENTE",
+          field: "dimensiones",
+          align: "center",
         },
         {
           name: "cliente_dest_desc",
-          label: "Cliente Destino",
+          label: "DESTINATARIO",
           field: "cliente_dest_desc",
           align: "left",
         },
         {
+          name: "nro_piezas",
+          label: "PIEZAS",
+          field: "nro_piezas",
+          align: "center",
+        },
+        {
+          name: "peso_kgs",
+          label: "PESO",
+          field: "peso_kgs",
+          align: "right",
+          format: (val) =>
+            new Intl.NumberFormat("de-DE", {
+              style: "currency",
+              currency: "EUR",
+              currencyDisplay: "code",
+            })
+              .format(val)
+              .replace("EUR", "")
+              .trim(),
+        },
+        {
+          name: "persona_recibio",
+          label: "RECEPTOR",
+          field: "persona_recibio",
+          align: "center",
+        },
+        {
+          name: "ci_persona_recibio",
+          label: "CI/RIF",
+          field: "ci_persona_recibio",
+          align: "center",
+        },
+        {
           name: "fecha_emision",
-          label: "Fecha Emisión",
+          label: "EMISIÓN",
           field: "fecha_emision",
-          align: "left",
+          align: "center",
         },
         {
-          name: "fecha_envio",
-          label: "Fecha Envío",
-          field: "fecha_envio",
-          align: "left",
-        },
-        {
-          name: "nro_documento",
-          label: "Nro. Guía",
-          field: "nro_documento",
-          align: "left",
-        },
-        {
-          name: "modalidad_pago",
-          label: "Forma Pago",
-          field: "modalidad_pago",
-          align: "left",
-        },
-        {
-          name: "pagado_en",
-          label: "Pagado En",
-          field: "pagado_en",
-          align: "left",
-        },
-        {
-          name: "check_pagado",
-          label: "Check Pagado",
-          field: "check_pagado",
+          name: "fecha_recepcion",
+          label: "RECEPCIÓN",
+          field: "fecha_recepcion",
           align: "center",
         },
         {
           name: "estatus_operativo",
-          label: "Estatus Operativo",
+          label: "ESTATUS",
           field: "estatus_operativo",
-          align: "left",
-        },
-        {
-          name: "persona_recibio",
-          label: "Persona que Recibió",
-          field: "persona_recibio",
-          align: "left",
-        },
-        {
-          name: "ci_persona_recibio",
-          label: "C:I Persona Recibió",
-          field: "ci_persona_recibio",
-          align: "left",
-        },
-        {
-          name: "fecha_recepcion",
-          label: "Fecha Entrega",
-          field: "fecha_recepcion",
-          align: "left",
-        },
-        {
-          name: "hora_recepcion",
-          label: "Hora Entrega",
-          field: "hora_recepcion",
-          align: "left",
-        },
-        {
-          name: "cod_agente_entrega",
-          label: "Agente Entrega",
-          field: "cod_agente_entrega",
-          align: "left",
-        },
-        {
-          name: "dias_entrega",
-          label: "Dias Entrega",
-          field: "dias_entrega",
           align: "center",
         },
         {
-          name: "cod_motivo_retraso",
-          label: "Motivo Retraso",
-          field: "cod_motivo_retraso",
-          align: "left",
+          name: "motivo_retraso",
+          label: "MOTIVO RETRASO / DIAS",
+          field: "motivo_retraso",
+          align: "center",
         },
-        {
-          name: "cod_agencia_transito",
-          label: "Agencia Transito",
-          field: "cod_agencia_transito",
-          align: "left",
-        },
-        {
-          name: "fecha_llega_transito",
-          label: "Fecha Llega Transito",
-          field: "fecha_llega_transito",
-          align: "left",
-        },
-        {
-          name: "fecha_sale_transito",
-          label: "Fecha Sale Transito",
-          field: "fecha_sale_transito",
-          align: "left",
-        },
-        {
-          name: "observacion_entrega",
-          label: "Observación de Prueba Entrega",
-          field: "observacion_entrega",
-          align: "left",
-        },
+      ],
+      estatus: [
+        { label: "ENTREGADAS", value: "CO" },
+        { label: "PENDIENTES", value: "PE" },
+        { label: "NO CONFORMES", value: "NC" },
+        { label: "EN PROCESO DE ENVÍO", value: "PR" },
       ],
       estatusOperativo: [
         { label: "EN PROCESO DE ENVÍO", value: "PR" },
         { label: "PENDIENTE POR ENTREGA", value: "PE" },
         { label: "ENTREGA CONFORME", value: "CO" },
         { label: "ENTREGA NO CONFORME", value: "NC" },
-      ],
-      modalidadPago: [
-        { label: "CONTADO", value: "CO" },
-        { label: "CREDITO", value: "CR" },
-        { label: "PREPAGADA", value: "PP" },
       ],
       pagadoEn: [
         { label: "ORIGEN", value: "O" },
@@ -1312,30 +562,16 @@ export default {
         rowsNumber: "",
       },
       guias: [],
+      guiaSelected: [],
       agencias: [],
       agentes: [],
-      agenciasDestino: [],
-      clientes: [],
-      clientesDestino: [],
-      agenciasSelected: [],
-      agenciasDestinoSelected: [],
-      selectedAgencia: [],
-      selectedAgenciaDestino: [],
-      clientesSelected: [],
-      selectedCliente: [],
-      clientesLoading: false,
-      clientesDestinoSelected: [],
-      selectedClienteDestino: [],
-      clientesDestinoLoading: false,
-      agentesLoading: true,
+      cuidades: [],
       selectedEstatus: [],
-      motivosRetraso: [],
-      checkTransito: "0",
-      pagado_en: "0",
+      selectedCuidades: [],
       nro_guia: "",
-      estatus: "",
-      fecha_desde: moment().format("DD/MM/YYYY"),
-      fecha_hasta: moment().format("DD/MM/YYYY"),
+      client: "",
+      fecha_desde: moment().startOf("month").format("DD/MM/YYYY"),
+      fecha_hasta: moment().endOf("month").format("DD/MM/YYYY"),
     };
   },
   setup() {
@@ -1343,7 +579,9 @@ export default {
     return {
       loading: ref(false),
       separator: ref("vertical"),
+      guiaDialog: ref(false),
       dialog: ref(false),
+      pdfView: ref(false),
     };
   },
   mounted() {
@@ -1351,42 +589,188 @@ export default {
     api
       .get(`clientes/verify/${SessionStorage.getItem("clientId")}`, {})
       .then((res) => {
+        this.client = res.data.nb_cliente;
         this.$emit("changeTitle", res.data.nb_cliente);
       });
+
+    this.getDataTable();
   },
   methods: {
+    // Metodo para filtrar opciones de Selects
+    filterArray(val, update, pagina, array, element) {
+      if (val === "") {
+        update(() => {
+          this[pagina] = this[array];
+        });
+        return;
+      }
+      update(() => {
+        const needle = val.toUpperCase();
+        var notEqual = [];
+        for (var i = 0; i <= this[array].length - 1; i++) {
+          if (this[array][i][element].indexOf(needle) > -1) {
+            notEqual.push(this[array][i]);
+          }
+          if (i == this[array].length - 1) {
+            this[pagina] = notEqual;
+            break;
+          }
+        }
+      });
+    },
+    // Metodo para traer el value de los Selects y Columns
+    findIndex(array, value, field) {
+      var find = this[array].findIndex((item) => item.id == value);
+      return find >= 0 ? this[array][find][field] : null;
+    },
+    // Metodo para traer el value de los Selects y Columns
+    filterDesc(array, value) {
+      var find = this[array].findIndex((item) => item.value == value);
+      return find >= 0 ? this[array][find].label : null;
+    },
+
     // Metodo para Extraer Datos de Tabla
-    getDataTable(props) {
+    async getDataTable() {
       this.loading = true;
-      if (props) this.pagination = props.pagination;
-      this.$refs.methods.getData(`/mmovimientos`, "setDataTable", "guias", {
-        headers: {
-          filters: JSON.stringify({
-            agencia: this.selectedAgencia.id ? this.selectedAgencia.id : "",
-            cliente_orig: this.selectedCliente.id
-              ? this.selectedCliente.id
-              : "",
-            agencia_dest: this.selectedAgenciaDestino.id
-              ? this.selectedAgenciaDestino.id
-              : "",
-            cliente_dest: this.selectedClienteDestino.id
-              ? this.selectedClienteDestino.id
-              : "",
+      if (this.fecha_desde == null || this.fecha_hasta == null) {
+        this.loading = false;
+        return;
+      }
+
+      await api
+        .get(`mmovimientos/guiasEmpresa`, {
+          headers: {
+            client: SessionStorage.getItem("clientId"),
             desde: moment(this.fecha_desde, "DD/MM/YYYY").format("YYYY-MM-DD"),
             hasta: moment(this.fecha_hasta, "DD/MM/YYYY").format("YYYY-MM-DD"),
-            nro_documento: this.nro_guia ? this.nro_guia : "",
-            estatus_oper: this.selectedEstatus.value
+            estatus: this.selectedEstatus.value
               ? this.selectedEstatus.value
               : "",
-            transito: this.checkTransito == "1" ? this.checkTransito : "",
-            tipo: "GC",
-            estatus_admin_ex: "A",
-            order_pe: "S",
-          }),
-          page: this.pagination.page,
-          limit: this.pagination.rowsPerPage,
-        },
-      });
+            ciudad: this.selectedCuidades.id ? this.selectedCuidades.id : "",
+            guia: this.nro_guia,
+          },
+        })
+        .then((res) => {
+          this.guias = res.data;
+          this.loading = false;
+        });
+
+      for (var i = 0; i <= this.guias.length - 1; i++) {
+        if (
+          this.cuidades.findIndex(
+            (item) => item.id == this.guias[i].agencias_dest.ciudades.id
+          ) < 0
+        )
+          this.cuidades.push(this.guias[i].agencias_dest.ciudades);
+      }
+      this.cuidades.sort((p1, p2) =>
+        p1.desc_ciudad > p2.desc_ciudad
+          ? 1
+          : p1.desc_ciudad < p2.desc_ciudad
+          ? -1
+          : 0
+      );
+    },
+    // Metodo para resetaer la data de los filtros
+    resetFilters() {
+      this.agencias = [];
+      this.agentes = [];
+      this.cuidades = [];
+      this.selectedEstatus = [];
+      this.selectedCuidades = [];
+      this.nro_guia = "";
+      this.fecha_desde = moment().startOf("month").format("DD/MM/YYYY");
+      this.fecha_hasta = moment().endOf("month").format("DD/MM/YYYY");
+      this.getDataTable();
+    },
+    loadDetalle(row) {
+      this.guiaDialog = true;
+      this.guiaSelected = row;
+    },
+    calculaDias(row) {
+      let fecha_recepcion = moment(row.fecha_recepcion, "DD/MM/YYYY");
+      let fecha_emision = moment(row.fecha_emision, "DD/MM/YYYY");
+      let dias = fecha_recepcion.diff(fecha_emision, "days");
+
+      if (row.observacion_entrega != null || row.motivo_retraso != null) {
+        let motivo = "";
+        if (row.motivo_retraso != null) {
+          motivo = row.motivo_retraso + ". ";
+        }
+        if (row.observacion_entrega != null) {
+          motivo = row.observacion_entrega;
+        }
+
+        motivo += " " + dias;
+        if (dias == 1) {
+          motivo += " Día";
+        } else {
+          motivo += " Días";
+        }
+        return motivo;
+      } else {
+        return "";
+      }
+    },
+    // Metodo para imprimir en PDF
+    pdfPrint() {
+      api
+        .get(`/pdfreports/guiasEmpresa`, {
+          headers: {
+            client: SessionStorage.getItem("clientId"),
+            desde: moment(this.fecha_desde, "DD/MM/YYYY").format("YYYY-MM-DD"),
+            hasta: moment(this.fecha_hasta, "DD/MM/YYYY").format("YYYY-MM-DD"),
+            estatus: this.selectedEstatus.value
+              ? this.selectedEstatus.value
+              : "",
+            ciudad: this.selectedCuidades.id ? this.selectedCuidades.id : "",
+            guia: this.nro_guia,
+          },
+        })
+        .then((res) => {
+          this.$refs.webViewer.showpdf(res.data.pdfPath, 1.5, false, false);
+          this.idCobranza = "";
+        });
+    },
+    async exportExcel() {
+      this.pdfView = false;
+      this.loading = true;
+
+      await api
+        .get(`/excelreports/guiasEmpresa`, {
+          headers: {
+            client: SessionStorage.getItem("clientId"),
+            desde: moment(this.fecha_desde, "DD/MM/YYYY").format("YYYY-MM-DD"),
+            hasta: moment(this.fecha_hasta, "DD/MM/YYYY").format("YYYY-MM-DD"),
+            estatus: this.selectedEstatus.value
+              ? this.selectedEstatus.value
+              : "",
+            ciudad: this.selectedCuidades.id ? this.selectedCuidades.id : "",
+            guia: this.nro_guia,
+          },
+        })
+        .then((res) => {
+          if (!res.data.validDoc) {
+            this.$q.notify({
+              message: "No existen registros para este conjunto de Filtos",
+              color: "red",
+            });
+            return;
+          }
+          const link = document.createElement("a");
+          link.href = `${process.env.apiPath}/excelReports/loadExcel/${res.data.excelPath}`;
+          link.setAttribute("download", "Consulta_RCS.xlsx");
+          setTimeout(() => {
+            link.click();
+          }, 1000);
+          this.loading = false;
+        })
+        .catch((err) => {
+          this.$q.notify({
+            message: err.message,
+            color: "red",
+          });
+        });
     },
   },
 };
@@ -1397,5 +781,11 @@ export default {
   .tableHeight {
     height: 100% !important;
   }
+}
+
+.limit-width {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>
