@@ -414,24 +414,11 @@
             round
             padding="sm"
             style="margin-right: 25px; margin-bottom: 10px"
-          >
-            <q-icon size="25px" name="fact_check" color="white"> </q-icon>
-            <q-tooltip
-              class="bg-primary"
-              style="max-height: 30px"
-              transition-show="scale"
-              transition-hide="scale"
-              color="primary"
-              >Imprimir Lote</q-tooltip
-            >
-          </q-btn>
-          <q-btn
-            dense
-            color="primary"
-            :disabled="this.allowOption(2)"
-            round
-            padding="sm"
-            style="margin-right: 25px; margin-bottom: 10px"
+            :disable="this.selectedCliente.length == 0 ? true : false"
+            @click="
+              this.printType = 1;
+              this.printGuias();
+            "
           >
             <q-icon size="25px" name="print" color="white"> </q-icon>
             <q-tooltip
@@ -440,7 +427,7 @@
               transition-show="scale"
               transition-hide="scale"
               color="primary"
-              >Imprimir Guia Individual</q-tooltip
+              >Imprimir Guías Preimpreso</q-tooltip
             >
           </q-btn>
           <q-btn
@@ -450,6 +437,11 @@
             round
             padding="sm"
             style="margin-bottom: 10px"
+            :disable="this.selectedCliente.length == 0 ? true : false"
+            @click="
+              this.printType = 2;
+              this.printGuias();
+            "
           >
             <q-icon size="25px" name="print" color="primary"> </q-icon>
             <q-tooltip
@@ -458,7 +450,7 @@
               style="max-height: 30px"
               transition-hide="scale"
               color="primary"
-              >Imprimir Lote Anterior
+              >Imprimir Guías Forma Libre
             </q-tooltip>
           </q-btn>
         </div>
@@ -504,6 +496,8 @@
               this.selectedAgente = [];
               this.clientes = [];
               this.agentes = [];
+              this.clientesLoading = true;
+              this.agentesLoading = true;
               this.$refs.methods.getData(`/agentes`, 'setData', 'agentes', {
                 headers: {
                   agencia: this.selectedAgencia.id,
@@ -555,6 +549,8 @@
             option-label="nb_cliente"
             option-value="id"
             ref="cliente"
+            :loading="clientesLoading"
+            :disable="clientesLoading"
             v-model="selectedCliente"
             outlined
             standout
@@ -568,6 +564,9 @@
             </template>
             <template v-slot:prepend>
               <q-icon name="search" />
+            </template>
+            <template v-slot:clientesLoading>
+              <q-inner-loading showing color="primary" class="loading" />
             </template>
           </q-select>
         </div>
@@ -596,6 +595,9 @@
             hide-selected
             fill-input
             input-debounce="0"
+            :loading="agentesLoading"
+            :disable="agentesLoading"
+            ref="agente"
             option-label="persona_responsable"
             option-value="id"
             v-model="selectedAgente"
@@ -611,6 +613,9 @@
             </template>
             <template v-slot:prepend>
               <q-icon name="search" />
+            </template>
+            <template v-slot:clientesLoading>
+              <q-inner-loading showing color="primary" class="loading" />
             </template>
           </q-select>
         </div>
@@ -825,6 +830,91 @@
       </q-card>
     </q-dialog>
 
+    <q-dialog v-model="guiasPrintDialog">
+      <q-card style="width: 700px; max-width: 80vw">
+        <div
+          class="row justify-center items-center content-center"
+          style="padding: 20px"
+        >
+          <div class="col-md-12 col-xs-12">
+            <p style="font-size: 20px; text-align: left" class="text-secondary">
+              <strong>IMPRIMIR GUÍAS CARGA</strong>
+            </p>
+          </div>
+          <div class="col-md-12 col-xs-12">
+            <q-table
+              :rows="guias_print"
+              row-key="id"
+              selection="multiple"
+              v-model:selected="selectedGuiasPrint"
+              :columns="columnsPrint"
+              binary-state-sort
+              :separator="separator"
+              :grid="$q.screen.xs"
+              :rows-per-page-options="[0]"
+              style="width: 100%; height: 350px"
+              hide-bottom
+            >
+            </q-table>
+          </div>
+        </div>
+        <div
+          class="row justify-center items-center content-center"
+          style="margin-bottom: 20px"
+        >
+          <q-btn
+            label="Imprimir"
+            color="primary"
+            class="col-md-5 col-sm-5 col-xs-12"
+            icon="print"
+            @click="this.printData()"
+          />
+          <q-btn
+            label="Cancelar"
+            color="primary"
+            flat
+            class="col-md-5 col-sm-5 col-xs-12 btnmovil"
+            icon="close"
+            v-close-popup
+          />
+        </div>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog v-model="pdfView" @show="this.pdfPrint()">
+      <webViewer
+        ref="webViewer"
+        @close-pdf="this.pdfView = false"
+        style="width: 1000px; height: 750px; max-width: 1000px"
+      ></webViewer>
+    </q-dialog>
+
+    <q-dialog v-model="confirmPopUp" persistent>
+      <q-card style="width: 700px">
+        <q-card-section>
+          <div class="text-h5" style="font-size: 18px">
+            ¿Seguro desea imprimir las Guias sin el Preimpreso?
+          </div>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn
+            flat
+            label="Si"
+            color="primary"
+            @click="this.confirmPrint = true"
+            v-close-popup
+          />
+          <q-btn
+            flat
+            label="No"
+            color="primary"
+            v-close-popup
+            @click="this.confirmPrint = false"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
     <methods
       ref="methods"
       @set-Data="setData"
@@ -845,12 +935,14 @@ import rulesVue from "src/components/rules.vue";
 import { VMoney } from "v-money";
 import { useQuasar, LocalStorage } from "quasar";
 import methodsVue from "src/components/methods.vue";
+import webViewerVue from "src/components/webViewer.vue";
 
 export default {
   components: {
     methods: methodsVue,
     rulesVue,
     VMoney,
+    webViewer: webViewerVue,
   },
   directives: { money: VMoney },
 
@@ -1005,6 +1097,20 @@ export default {
           align: "center",
         },
       ],
+      columnsPrint: [
+        {
+          name: "nro_documento",
+          label: "Nro. Documento",
+          field: "nro_documento",
+          align: "center",
+        },
+        {
+          name: "dimensiones",
+          label: "Facturas Asociadas",
+          field: "dimensiones",
+          align: "center",
+        },
+      ],
       form: {
         id: "",
         nro_factura: "",
@@ -1043,6 +1149,12 @@ export default {
       estados: [],
       ciudades: [],
       content: null,
+      clientesLoading: false,
+      agentesLoading: false,
+      guias_print: [],
+      printType: "",
+      selectedGuiasPrint: [],
+      confirmPrint: false,
     };
   },
   setup() {
@@ -1055,6 +1167,9 @@ export default {
       loading: ref(false),
       deletePopup: ref(false),
       confirmUploadPopUp: ref(false),
+      guiasPrintDialog: ref(false),
+      pdfView: ref(false),
+      confirmPopUp: ref(false),
     };
   },
   mounted() {
@@ -1124,7 +1239,9 @@ export default {
       reader.onload = async (res) => {
         try {
           var errorMessage;
-          this.content = res.target.result;
+          this.content = res.target.result
+            .replace(/((\n|\r))"/g, "")
+            .replace(/"/g, "");
           var lines = this.content.split("\n");
           for (var i = 0; i < lines.length - 1; i++) {
             var form = {};
@@ -1223,6 +1340,8 @@ export default {
     // Metodo para Actualizar Datos de Tabla
     setDataInit(res, dataRes) {
       this[dataRes] = res.data;
+      this.clientesLoading = true;
+      this.agentesLoading = true;
       this.selectedAgencia = this.agencias[0];
       this.$refs.methods.getData("/clientes", "setData", "clientes", {
         headers: {
@@ -1238,6 +1357,7 @@ export default {
     },
     // Metodo para Setear Datos
     setData(res, dataRes) {
+      eval("this." + dataRes + "Loading = false");
       this[dataRes] = res.data ? res.data : res;
     },
     // Metodo para Setear Datos Seleccionados
@@ -1532,6 +1652,13 @@ export default {
         );
         return;
       }
+      if (this.selectedAgente.length == 0) {
+        this.$refs.agente.$el.focus();
+        this.errorMessage(
+          "Debe ingresar el Agente antes de transferir los Datos"
+        );
+        return;
+      }
 
       this.loadingPage = true;
       // Valida el Detalle
@@ -1789,7 +1916,7 @@ export default {
       }
 
       // Validamos que la guia tenga lote
-      if (nroGuia) {
+      /*if (nroGuia) {
         await api
           .get(`/cguias`, {
             headers: {
@@ -1805,7 +1932,7 @@ export default {
               nroGuia = null;
             }
           });
-      }
+      }*/
 
       // Validamos que la guia no haya sido utilizada
       if (nroGuia) {
@@ -1857,6 +1984,35 @@ export default {
       this.form = [];
       this.datos = [];
     },
+    // Metodo para imprimir las Guias
+    async printGuias() {
+      await api
+        .get(`/mmovimientos`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            filters: JSON.stringify({
+              desde: moment().format("YYYY-MM-DD"),
+              hasta: moment().format("YYYY-MM-DD"),
+              tipo: "GC",
+              cliente_orig: this.selectedCliente.id,
+            }),
+          },
+        })
+        .then((res) => {
+          if (res.data.data.length == 0) {
+            this.$q.notify({
+              message:
+                "No existen Guías a imprimir para este Cliente del día en curso",
+              color: "red",
+            });
+            return;
+          } else {
+            this.guias_print = res.data.data;
+            this.selectedGuiasPrint = this.guias_print;
+            this.guiasPrintDialog = true;
+          }
+        });
+    },
     // Pasar un numero a numero con dos decimales en formato correcto para efectuar operaciones
     parseFloatN(number) {
       number = Math.round(number * 100) / 100;
@@ -1874,6 +2030,53 @@ export default {
         message: message,
         color: "red",
       });
+    },
+    // Metodo para que una funcion no avance hasta que se cumpla una condicion
+    async until(conditionFunction) {
+      const poll = (resolve) => {
+        if (conditionFunction()) resolve();
+        else setTimeout((_) => poll(resolve), 400);
+      };
+      return new Promise(poll);
+    },
+    async printData() {
+      if (this.selectedGuiasPrint.length == 0) {
+        this.$q.notify({
+          message: "Debe seleccionar al menos una Guía a Imprimir!",
+          color: "red",
+        });
+        return;
+      }
+
+      if (this.printType == 2) {
+        this.confirmPopUp = true;
+        await this.until((_) => this.confirmPrint == true);
+        if (!this.confirmPrint) {
+          return;
+        } else {
+          this.confirmPrint = false;
+        }
+      }
+
+      this.pdfView = true;
+    },
+    // Metodo para imprimir las Guias
+    pdfPrint() {
+      let selectedGuiasPrintIds = [];
+      for (var i = 0; i <= this.selectedGuiasPrint.length - 1; i++) {
+        selectedGuiasPrintIds.push(this.selectedGuiasPrint[i].id);
+      }
+      api
+        .get(`/pdfreports/guiasLote`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            tipo: this.printType,
+            data: JSON.stringify(selectedGuiasPrintIds),
+          },
+        })
+        .then((res) => {
+          this.$refs.webViewer.showpdf(res.data.pdfPath, 1.5);
+        });
     },
     // Metodo para que una funcion no avance hasta que se cumpla una condicion
     async until(conditionFunction) {

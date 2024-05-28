@@ -586,12 +586,14 @@
                 <div v-else-if="col.name == 'estatus_operativo'">
                   <q-select
                     dense
+                    options-dense
                     outlined
                     fill-input
                     input-debounce="0"
                     :options="estatusOperativo"
                     option-label="label"
                     option-value="value"
+                    style="font-size: 13px;"
                     v-model="props.row.estatus_operativo"
                   >
                     <template v-slot:selected-item="scope">
@@ -623,7 +625,7 @@
                             -1
                         ),
                     ]"
-                    style="padding-top: 20px; min-width: 250px"
+                    style="margin-top: -20px; min-width: 150px; max-height: 15px; font-size: 13px;"
                   />
                 </div>
                 <div v-else-if="col.name == 'ci_persona_recibio'">
@@ -631,8 +633,7 @@
                     dense
                     outlined
                     v-model="props.row.ci_persona_recibio"
-                    lazy-rules
-                    style="padding-top: 20px; min-width: 150px"
+                    lazy-rules                    
                     :rules="[
                       (val) =>
                         formRules(
@@ -644,6 +645,7 @@
                             -1
                         ),
                     ]"
+                    style="margin-top: -20px; min-width: 100px; max-height: 15px; font-size: 13px;"
                   />
                 </div>
                 <div v-else-if="col.name == 'fecha_recepcion'">
@@ -664,7 +666,7 @@
                         ),
                     ]"
                     mask="##/##/####"
-                    style="padding-top: 20px; min-width: 150px"
+                    style="margin-top: -20px; min-width: 150px; max-height: 15px; font-size: 13px;"
                   >
                     <template v-slot:append>
                       <q-icon name="event" class="cursor-pointer">
@@ -703,7 +705,7 @@
                             -1
                         ),
                     ]"
-                    style="padding-top: 20px; min-width: 150px"
+                    style="margin-top: -20px; min-width: 100px; max-height: 15px; font-size: 13px;"
                   >
                     <template v-slot:append>
                       <q-icon name="access_time" class="cursor-pointer">
@@ -736,6 +738,7 @@
                 <div v-else-if="col.name == 'cod_agente_entrega'">
                   <q-select
                     dense
+                    options-dense
                     outlined
                     fill-input
                     input-debounce="0"
@@ -756,7 +759,7 @@
                             -1
                         ),
                     ]"
-                    style="padding-top: 20px; min-width: 250px"
+                    style="margin-top: -20px; min-width: 250px; max-height: 15px; font-size: 13px;"
                   >
                     <template v-slot:selected-item="scope">
                       {{
@@ -800,6 +803,7 @@
                 <div v-else-if="col.name == 'cod_motivo_retraso'">
                   <q-select
                     dense
+                    options-dense
                     outlined
                     fill-input
                     input-debounce="0"
@@ -807,7 +811,7 @@
                     option-label="desc_concepto"
                     option-value="id"
                     v-model="props.row.cod_motivo_retraso"
-                    style="min-width: 250px"
+                    style="min-width: 250px; font-size: 13px;"
                   >
                     <template v-slot:selected-item="scope">
                       {{
@@ -849,7 +853,7 @@
                         ),
                     ]"
                     mask="##/##/####"
-                    style="padding-top: 20px; min-width: 150px"
+                    style="margin-top: -20px; min-width: 150px; max-height: 15px; font-size: 13px;"
                   >
                     <template v-slot:append>
                       <q-icon name="event" class="cursor-pointer">
@@ -876,7 +880,7 @@
                     outlined
                     v-model="props.row.observacion_entrega"
                     lazy-rules
-                    style="padding-top: 20px; min-width: 350px"
+                    style="margin-top: -20px; min-width: 350px; max-height: 15px; font-size: 13px;"
                     :rules="[(val) => this.$refs.rulesVue.isMax(val, 200)]"
                   />
                 </div>

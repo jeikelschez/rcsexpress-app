@@ -63,6 +63,7 @@ export default {
               title: "Imprimir",
               img: "icon-header-print-line",
               onClick: async () => {
+                console.log("asdasd")
                 if (wait) {
                   this.$emit("printPdf");
                   await this.until((_) => this.confirmPrint == true);

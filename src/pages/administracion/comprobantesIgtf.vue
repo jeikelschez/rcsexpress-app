@@ -781,7 +781,7 @@ export default {
           },
         })
         .then((res) => {
-          this.$refs.webViewer.showpdf(res.data.pdfPath, 1.0, true);
+          this.$refs.webViewer.showpdf(res.data.pdfPath, 1.0);
           this.idCobranza = "";
         });
     },
