@@ -1,139 +1,247 @@
 <template>
   <q-layout view="hHh Lpr fFf">
-    <!-- Encabezado de la pagina -->
-    <q-header elevated>
-      <q-toolbar class="bg-indigo-9">
-        <!-- Boton para expandir Menu -->
-        <q-btn flat dense round @click="
-          this.hideItems();
-          this.drawerClick();
-        " icon="menu" aria-label="Menu" class="q-mr-sm" />
-        <!-- Titulo -->
-        <q-toolbar-title class="titleMainLayout">{{title}}</q-toolbar-title>
-        <q-toolbar-title class="titleMainLayoutMobile">{{titleMobile}}</q-toolbar-title>
-        <q-space></q-space>
-        <!-- Boton para acceder a manuales -->
-        <q-btn dense color="white" round style="margin-right: 10px" clickable to="/m_bancos" padding="xs">
-          <q-icon size="20px" name="question_mark" color="primary"> </q-icon>
-        </q-btn>
-        <!-- Boton usuario y Logout -->
-        <q-btn flat dense>
-          <q-avatar size="42px">
-            <img src="~assets/avatar.jpg" />
-          </q-avatar>
-          <q-menu transition-show="flip-right" transition-hide="flip-left" auto-close>
-            <q-list style="min-width: 100px">
-              <q-item clickable v-ripple @click="logout">
-                <q-item-section avatar>
-                  <q-icon name="logout" />
-                </q-item-section>
-                <q-item-section>{{ $t("Menu.logout") }}</q-item-section>
-              </q-item>
-            </q-list>
-          </q-menu>
-        </q-btn>
-      </q-toolbar>
-    </q-header>
-
-    <!-- Menu lateral izquierdo -->
-    <q-drawer v-model="drawer" show-if-above :breakpoint="500" bordered :width="350" auto-close
-      :mini="!drawer || miniState" @click="miniState = false" content-class="bg-grey-3">
-      <q-list>
-        <div>
-          <q-list class="rounded-borders">
-            <!-- Opcion del Dashboard -->
-            <!-- MENUS LEVEL 0 -->
-            <div v-for="item in items">
-              <div v-if="item.level == 0">
-                <!-- LEVEL 0 / Q-ITEMS -->
-                <q-item v-if="item.qitem" style="margin-top:5px" clickable :to="item.url" :disable=allowOption(item) exact>
+    <q-page-container style="padding: 0px">
+      <!-- Encabezado de la pagina -->
+      <q-header elevated>
+        <q-toolbar class="bg-indigo-9">
+          <!-- Boton para expandir Menu -->
+          <q-btn
+            flat
+            dense
+            round
+            @click="
+              this.hideItems();
+              this.drawerClick();
+            "
+            icon="menu"
+            aria-label="Menu"
+            class="q-mr-sm"
+          />
+          <!-- Titulo -->
+          <q-toolbar-title class="titleMainLayout">{{ title }}</q-toolbar-title>
+          <q-toolbar-title class="titleMainLayoutMobile">{{
+            titleMobile
+          }}</q-toolbar-title>
+          <q-space></q-space>
+          <!-- Boton para acceder a manuales -->
+          <q-btn
+            dense
+            color="white"
+            round
+            style="margin-right: 10px"
+            clickable
+            to="/m_bancos"
+            padding="xs"
+          >
+            <q-icon size="20px" name="question_mark" color="primary"> </q-icon>
+          </q-btn>
+          <!-- Boton usuario y Logout -->
+          <q-btn flat dense>
+            <q-avatar size="42px">
+              <img src="~assets/avatar.jpg" />
+            </q-avatar>
+            <q-menu
+              transition-show="flip-right"
+              transition-hide="flip-left"
+              auto-close
+            >
+              <q-list style="min-width: 100px">
+                <q-item clickable v-ripple @click="logout">
                   <q-item-section avatar>
-                    <q-icon size="28px" :name="item.icon" />
+                    <q-icon name="logout" />
                   </q-item-section>
-                  <q-item-section>
-                    <q-item-label>{{ item.label }}</q-item-label>
-                    <q-item-label caption></q-item-label>
-                  </q-item-section>
+                  <q-item-section>{{ $t("Menu.logout") }}</q-item-section>
                 </q-item>
-                <!-- LEVEL 0 / Q-EXPANSION-ITEMS -->
-                <q-expansion-item v-else expand-separator :icon=item.icon group="somegroup" default-opened
-                  :label=item.label v-model="items_model[item.name]">
-                  <!-- MENUS LEVEL 1 -->
-                  <div v-for="item2 in items">
-                    <div v-if="item2.level == 1 && item.name == item2.padre">
-                      <!-- LEVEL 1 / Q-ITEMS -->
-                      <div v-if="item2.qitem" class="q-pl-lg">
-                        <q-item clickable :to="item2.url" :disable=allowOption(item2) exact>
-                          <q-item-section avatar>
-                            <q-icon size="28px" :name="item2.icon" />
-                            <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                              transition-show="scale" transition-hide="scale">
-                              <div class="tool">{{ item2.label }}</div>
-                            </q-tooltip>
-                          </q-item-section>
-                          <q-item-section>
-                            <q-item-label>{{ item2.label }}</q-item-label>
-                            <q-item-label caption></q-item-label>
-                          </q-item-section>
-                        </q-item>
-                      </div>
-                      <!-- LEVEL 1 / Q-EXPANSION-ITEMS -->
-                      <q-expansion-item v-else :header-inset-level="0.4" :content-inset-level="0.9" expand-separator
-                        group="somegroup2" default-opened :icon=item2.icon :label=item2.label
-                        v-model="items_model[item2.name]">
-                        <!-- LEVEL 2 / Q-ITEMS -->
-                        <div v-for="item3 in items">
-                          <div v-if="item3.level == 2 && item2.name == item3.padre">
-                            <q-item clickable :to="item3.url" :disable=allowOption(item3) exact>
-                              <q-item-section avatar>
-                                <q-icon size="28px" :name="item3.icon" />
-                                <q-tooltip v-if="miniState" anchor="center right" self="center left" :offset="[10, 10]"
-                                  transition-show="scale" transition-hide="scale">
-                                  <div class="tool">{{ item3.label }}</div>
-                                </q-tooltip>
-                              </q-item-section>
-                              <q-item-section>
-                                <q-item-label>{{ item3.label }}</q-item-label>
-                                <q-item-label caption></q-item-label>
-                              </q-item-section>
-                            </q-item>
-                          </div>
+              </q-list>
+            </q-menu>
+          </q-btn>
+        </q-toolbar>
+      </q-header>
+
+      <!-- Menu lateral izquierdo -->
+      <q-drawer
+        v-model="drawer"
+        show-if-above
+        :breakpoint="500"
+        bordered
+        :width="350"
+        auto-close
+        :mini="!drawer || miniState"
+        @click="miniState = false"
+        content-class="bg-grey-3"
+      >
+        <q-list>
+          <div>
+            <q-list class="rounded-borders">
+              <!-- Opcion del Dashboard -->
+              <!-- MENUS LEVEL 0 -->
+              <div v-for="item in items">
+                <div v-if="item.level == 0">
+                  <!-- LEVEL 0 / Q-ITEMS -->
+                  <q-item
+                    v-if="item.qitem"
+                    style="margin-top: 5px"
+                    clickable
+                    :to="item.url"
+                    :disable="allowOption(item)"
+                    exact
+                  >
+                    <q-item-section avatar>
+                      <q-icon size="28px" :name="item.icon" />
+                    </q-item-section>
+                    <q-item-section>
+                      <q-item-label>{{ item.label }}</q-item-label>
+                      <q-item-label caption></q-item-label>
+                    </q-item-section>
+                  </q-item>
+                  <!-- LEVEL 0 / Q-EXPANSION-ITEMS -->
+                  <q-expansion-item
+                    v-else
+                    expand-separator
+                    :icon="item.icon"
+                    group="somegroup"
+                    default-opened
+                    :label="item.label"
+                    v-model="items_model[item.name]"
+                  >
+                    <!-- MENUS LEVEL 1 -->
+                    <div v-for="item2 in items">
+                      <div v-if="item2.level == 1 && item.name == item2.padre">
+                        <!-- LEVEL 1 / Q-ITEMS -->
+                        <div v-if="item2.qitem" class="q-pl-lg">
+                          <q-item
+                            clickable
+                            :to="item2.url"
+                            :disable="allowOption(item2)"
+                            exact
+                          >
+                            <q-item-section avatar>
+                              <q-icon size="28px" :name="item2.icon" />
+                              <q-tooltip
+                                v-if="miniState"
+                                anchor="center right"
+                                self="center left"
+                                :offset="[10, 10]"
+                                transition-show="scale"
+                                transition-hide="scale"
+                              >
+                                <div class="tool">{{ item2.label }}</div>
+                              </q-tooltip>
+                            </q-item-section>
+                            <q-item-section>
+                              <q-item-label>{{ item2.label }}</q-item-label>
+                              <q-item-label caption></q-item-label>
+                            </q-item-section>
+                          </q-item>
                         </div>
-                      </q-expansion-item>
+                        <!-- LEVEL 1 / Q-EXPANSION-ITEMS -->
+                        <q-expansion-item
+                          v-else
+                          :header-inset-level="0.4"
+                          :content-inset-level="0.9"
+                          expand-separator
+                          group="somegroup2"
+                          default-opened
+                          :icon="item2.icon"
+                          :label="item2.label"
+                          v-model="items_model[item2.name]"
+                        >
+                          <!-- LEVEL 2 / Q-ITEMS -->
+                          <div v-for="item3 in items">
+                            <div
+                              v-if="
+                                item3.level == 2 && item2.name == item3.padre
+                              "
+                            >
+                              <q-item
+                                clickable
+                                :to="item3.url"
+                                :disable="allowOption(item3)"
+                                exact
+                              >
+                                <q-item-section avatar>
+                                  <q-icon size="28px" :name="item3.icon" />
+                                  <q-tooltip
+                                    v-if="miniState"
+                                    anchor="center right"
+                                    self="center left"
+                                    :offset="[10, 10]"
+                                    transition-show="scale"
+                                    transition-hide="scale"
+                                  >
+                                    <div class="tool">{{ item3.label }}</div>
+                                  </q-tooltip>
+                                </q-item-section>
+                                <q-item-section>
+                                  <q-item-label>{{ item3.label }}</q-item-label>
+                                  <q-item-label caption></q-item-label>
+                                </q-item-section>
+                              </q-item>
+                            </div>
+                          </div>
+                        </q-expansion-item>
+                      </div>
                     </div>
-                  </div>
-                </q-expansion-item>
+                  </q-expansion-item>
+                </div>
               </div>
-            </div>
-            <!-- AQUI TERMINA DINAMICO -->
-          </q-list>
+              <!-- AQUI TERMINA DINAMICO -->
+            </q-list>
+          </div>
+        </q-list>
+      </q-drawer>
+
+      <!-- Detecta cuando el mouse sale del menu y cierra los items -->
+      <router-view
+        @change-Title="changeTitle"
+        @mouseover="
+          this.hideItems();
+          this.miniState = true;
+        "
+      >
+      </router-view>
+      <keep-alive> </keep-alive>
+
+      <!-- Pie de Pagina -->
+      <q-footer elevated bordered>
+        <div
+          v-for="(item4, index) in directs"
+          class="float-left"
+          style="margin-top: 10px; margin-bottom: 10px; margin-left: 15px"
+        >
+          <q-btn
+            v-show="item4.direct"
+            dense
+            color="white"
+            round
+            :class="`b${index + 1}`"
+            clickable
+            :to="item4.url"
+            exact
+            padding="xs"
+            :disable="allowOption(item4)"
+          >
+            <q-icon size="25px" :name="item4.icon" color="primary">
+              <q-tooltip
+                transition-show="flip-right"
+                transition-hide="flip-left"
+                class="bg-primary"
+                style="max-height: 30px"
+                color="primary"
+                max-height="40px"
+                >{{ item4.label }}</q-tooltip
+              >
+            </q-icon>
+          </q-btn>
         </div>
-      </q-list>
-    </q-drawer>
-
-    <!-- Detecta cuando el mouse sale del menu y cierra los items -->
-    <router-view @change-Title="changeTitle" @mouseover="this.hideItems(); this.miniState = true;">
-    </router-view>
-    <keep-alive> </keep-alive>
-
-    <!-- Pie de Pagina -->
-    <q-footer elevated bordered>
-      <div v-for="(item4, index) in directs" class="float-left" style="margin-top: 10px; margin-bottom: 10px; margin-left: 15px">
-        <q-btn v-show="item4.direct" dense color="white" round :class="`b${index + 1}`" clickable :to=item4.url exact
-          padding="xs" :disable=allowOption(item4)>
-          <q-icon size="25px" :name=item4.icon color="primary">
-            <q-tooltip transition-show="flip-right" transition-hide="flip-left" class="bg-primary"
-              style="max-height: 30px" color="primary" max-height="40px">{{ item4.label }}</q-tooltip>
-          </q-icon>
-        </q-btn>
-      </div>
-      <div class="text-caption float-right items-center creditos">
-        <p style="font-size: 12px; margin-right: 20px; padding-top: 16px">
-          <strong>© 2022. LOS DERECHOS RESERVADOS. RCS EXPRESS</strong>
-        </p>
-      </div>
-      <user-logout ref="component"></user-logout>      
-    </q-footer>
+        <div class="text-caption float-right items-center creditos">
+          <p style="font-size: 12px; margin-right: 20px; padding-top: 16px">
+            <strong>© 2022. LOS DERECHOS RESERVADOS. RCS EXPRESS</strong>
+          </p>
+        </div>
+        <user-logout ref="component"></user-logout>
+      </q-footer>
+    </q-page-container>
   </q-layout>
   <methods ref="methods" @set-Data="setData"></methods>
 </template>
@@ -157,7 +265,7 @@ export default {
       titleMobile: "SCEN",
       items: [],
       items_model: {},
-      events: ["click", "mousemove", "mousedown", "scroll", "keypress", "load"],      
+      events: ["click", "mousemove", "mousedown", "scroll", "keypress", "load"],
       drawer: false,
       miniState: false,
       intervalLogout: null,
@@ -173,19 +281,19 @@ export default {
     this.authenticator();
     this.refreshTimer();
 
-    this.getData('/menus', 'setData', 'items', {
+    this.getData("/menus", "setData", "items", {
       headers: {
-        rol: LocalStorage.getItem('tokenTraducido').usuario.roles.id,
-        read: 'S'
+        rol: LocalStorage.getItem("tokenTraducido").usuario.roles.id,
+        read: "S",
       },
-    })
-    this.getData('/menus', 'setData', 'directs', {
+    });
+    this.getData("/menus", "setData", "directs", {
       headers: {
-        rol: LocalStorage.getItem('tokenTraducido').usuario.roles.id,
+        rol: LocalStorage.getItem("tokenTraducido").usuario.roles.id,
         direct: 1,
-        read: 'S'
+        read: "S",
       },
-    })
+    });
   },
 
   methods: {
@@ -319,7 +427,7 @@ export default {
     hideItems() {
       for (var i = 0; i < this.items.length - 1; i++) {
         this.items_model[this.items[i].name] = false;
-      };
+      }
     },
     changeTitle(text, textMobile) {
       this.title = text;
