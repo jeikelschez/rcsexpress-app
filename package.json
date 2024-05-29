@@ -8,6 +8,9 @@
   "scripts": {
     "test": "react-app-rewired test"
   },
+  "overrides": {
+    "minimist": "1.2.6"
+  },
   "dependencies": {
     "@pdftron/pdfjs-express": "^8.7.0",
     "@pdftron/pdfjs-express-viewer": "^8.7.0",
@@ -31,7 +34,6 @@
     "quasar-app-extension-qpdfviewervue3": "^1.0.3",
     "set-value": "^4.1.0",
     "to": "^0.2.9",
-    "update": "^0.4.2",
     "v-money": "^0.8.1",
     "vee-validate": "^4.5.11",
     "vue": "^3.2.36",
