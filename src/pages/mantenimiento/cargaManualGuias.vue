@@ -646,6 +646,7 @@
               v-model="props.row.nro_guia"
               :ref="'nro_guia' + props.rowIndex"
               mask="##########"
+              :tabindex="0"
               :input-style="{ color: props.row.colorGuia }"
               @blur="this.validateGuia(props.row.nro_guia, props.rowIndex)"
               @keyup.enter="
@@ -661,7 +662,8 @@
               outlined
               dense
               input-class="text-right"
-              v-money="money"
+              :tabindex="1"
+              v-money="moneyOneDecimal"
               :ref="'porc_zona' + props.rowIndex"
               style="min-width: 80px"
               v-model="props.row.porc_zona"
@@ -963,6 +965,14 @@ export default {
         suffix: "",
         precision: 0,
         masked: true,
+      },
+      moneyOneDecimal: {
+        decimal: ",",
+        thousands: ".",
+        prefix: "",
+        suffix: "",
+        precision: 1,
+        masked: false,
       },
       columns: [
         {
