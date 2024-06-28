@@ -930,15 +930,14 @@ export default {
         "DD/MM/YYYY"
       ).format("YYYY-MM-DD");
       formCobranza.monto_cobrado = parseFloat(
-        this.curReplace(this.monto_deposito)
+        this.curReplace(this.monto_cobrado)
       );
       formCobranza.cod_cuenta = this.selectedCuenta.id;
       formCobranza.monto_retenido = parseFloat(
         this.curReplace(this.monto_retenido)
       );
       formCobranza.monto_deposito =
-        parseFloat(this.curReplace(this.monto_deposito)) -
-        parseFloat(this.curReplace(this.monto_retenido));
+        parseFloat(this.curReplace(this.monto_deposito));
       formCobranza.ingreso_caja = this.nro_ingreso;
 
       await api
@@ -968,8 +967,7 @@ export default {
       formBancario.nro_documento = 0;
       formBancario.tipo_documento = "DP";
       formBancario.monto_movimiento =
-        parseFloat(this.curReplace(this.monto_deposito)) -
-        parseFloat(this.curReplace(this.monto_retenido));
+        parseFloat(this.curReplace(this.monto_deposito));
 
       await api
         .post(`/mbancarios/`, formBancario, {
@@ -1152,9 +1150,9 @@ export default {
         monto_cobrado += parseFloat(
           this.curReplace(this.cuentas_cobrar[i].monto_total)
         );
-        monto_deposito += parseFloat(
-          this.curReplace(this.cuentas_cobrar[i].monto_pagado)
-        );
+        monto_deposito +=
+          parseFloat(this.curReplace(this.cuentas_cobrar[i].monto_total)) -
+          parseFloat(this.curReplace(this.cuentas_cobrar[i].islr_retenido));
         iva_retenido += parseFloat(
           this.curReplace(this.cuentas_cobrar[i].iva_retenido)
         );

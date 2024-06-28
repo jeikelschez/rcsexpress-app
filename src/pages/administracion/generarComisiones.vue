@@ -328,6 +328,7 @@
             padding="sm"
             @click="this.sendData()"
             style="margin-right: 15px"
+            disabled
           >
             <q-icon size="25px" name="save" color="white"> </q-icon>
             <q-tooltip

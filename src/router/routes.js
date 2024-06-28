@@ -142,6 +142,17 @@ const routes = [
         ],
       },
       {
+        path: "/cuentasporpagar",
+        component: () => import("layouts/mainLayout.vue"),
+        children: [
+          {
+            path: "",
+            component: () =>
+              import("src/pages/administracion/cuentasPorPagar.vue"),
+          },
+        ],
+      },
+      {
         path: "/generarcomisiones",
         component: () => import("layouts/mainLayout.vue"),
         children: [

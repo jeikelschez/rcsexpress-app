@@ -614,7 +614,7 @@
             <template v-slot:prepend>
               <q-icon name="search" />
             </template>
-            <template v-slot:clientesLoading>
+            <template v-slot:agentesLoading>
               <q-inner-loading showing color="primary" class="loading" />
             </template>
           </q-select>
