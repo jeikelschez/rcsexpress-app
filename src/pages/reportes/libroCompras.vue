@@ -118,7 +118,7 @@
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy
-                  ref="qDateProxy"
+                  ref="qDateProxy1"
                   transition-show="scale"
                   transition-hide="scale"
                 >
@@ -126,7 +126,7 @@
                     v-model="fecha_desde"
                     mask="DD/MM/YYYY"
                     style="padding-bottom: 0px"
-                    @update:model-value="this.$refs.qDateProxy.hide()"
+                    @update:model-value="this.$refs.qDateProxy1.hide()"
                   ></q-date>
                 </q-popup-proxy>
               </q-icon>
@@ -152,7 +152,7 @@
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy
-                  ref="qDateProxy"
+                  ref="qDateProxy2"
                   transition-show="scale"
                   transition-hide="scale"
                 >
@@ -160,7 +160,7 @@
                     v-model="fecha_hasta"
                     mask="DD/MM/YYYY"
                     style="padding-bottom: 0px"
-                    @update:model-value="this.$refs.qDateProxy.hide()"
+                    @update:model-value="this.$refs.qDateProxy2.hide()"
                   ></q-date>
                 </q-popup-proxy>
               </q-icon>
@@ -243,6 +243,7 @@
       style="margin-top: -30px"
     >
       <webViewer
+        @export-Excel="exportExcel"
         ref="webViewer"
         v-if="pdf == true"
         style="width: 1680px; height: 610px; max-width: 1680px"
@@ -290,6 +291,7 @@ export default {
       tipoReporte: "",
       detalle: "",
       detalleDialog: false,
+      enabledExport: false,
       fecha_desde: moment().format("DD/MM/YYYY"),
       fecha_hasta: moment().format("DD/MM/YYYY"),
     };
@@ -391,6 +393,11 @@ export default {
             });
             this.print = "";
           }
+          if (res.data.pdfPath == "reporteBase2.pdf") {
+            this.enabledExport = false;
+          } else {
+            this.enabledExport = true;
+          }
           this.$refs.webViewer.showpdf(
             res.data.pdfPath,
             this.print == "" ? 0.83 : 1.5,
@@ -407,6 +414,53 @@ export default {
           this.pdfView = false;
           this.loading = false;
           return;
+        });
+    },
+    // Metodo para exportar a Excel
+    async exportExcel() {
+      this.loading = true;
+      if (!this.enabledExport) {
+        this.loading = false;
+        this.$q.notify({
+          message: "No existen registros para este conjunto de Filtos",
+          color: "red",
+        });
+        return;
+      }      
+      await api
+        .get(`/excelreports/libroCompras`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            agencia: this.selectedAgencia.id ? this.selectedAgencia.id : "",
+            proveedor: this.selectedProveedor.id
+              ? this.selectedProveedor.id
+              : "",
+            desde: this.fecha_desde,
+            hasta: this.fecha_hasta,
+            detalle: this.detalle,
+          },
+        })
+        .then((res) => {
+          if (!res.data.validDoc) {
+            this.$q.notify({
+              message: "No existen registros para este conjunto de Filtos",
+              color: "red",
+            });
+            return;
+          }
+          const link = document.createElement("a");
+          link.href = `${process.env.apiPath}/excelReports/loadExcel/${res.data.excelPath}`; 
+          link.setAttribute("download", "LibroCompras.xlsx");
+          setTimeout(() => {
+            link.click();
+          }, 1000);
+          this.loading = false;
+        })
+        .catch((err) => {
+          this.$q.notify({
+            message: err.message,
+            color: "red",
+          });
         });
     },
     // Metodo para resetaer la data de los filtros

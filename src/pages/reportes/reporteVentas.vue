@@ -969,6 +969,7 @@ export default {
           this.loading = false;
         });
     },
+    // Metodo para exportar a Excel
     async exportExcel() {
       this.loading = true;
       if (!this.enabledExport) {
