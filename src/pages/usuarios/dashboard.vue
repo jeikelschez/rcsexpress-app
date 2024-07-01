@@ -178,6 +178,14 @@
           class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
           style="align-self: center; text-align: center"
         >
+          <q-checkbox
+              size="md"
+              v-model="checkSerie"
+              true-value="S"
+              false-value=""
+              style="font-size: 13px; padding-right: 30px;"
+              @click="getDataTable()"
+            />
           <q-btn
             dense
             color="primary"
@@ -570,6 +578,7 @@ export default {
       selectedCuidades: [],
       nro_guia: "",
       client: "",
+      checkSerie: "",
       fecha_desde: moment().startOf("month").format("DD/MM/YYYY"),
       fecha_hasta: moment().endOf("month").format("DD/MM/YYYY"),
     };
@@ -648,6 +657,7 @@ export default {
               : "",
             ciudad: this.selectedCuidades.id ? this.selectedCuidades.id : "",
             guia: this.nro_guia,
+            serie: this.checkSerie,
           },
         })
         .then((res) => {
@@ -679,6 +689,7 @@ export default {
       this.selectedEstatus = [];
       this.selectedCuidades = [];
       this.nro_guia = "";
+      this.checkSerie = "";
       this.fecha_desde = moment().startOf("month").format("DD/MM/YYYY");
       this.fecha_hasta = moment().endOf("month").format("DD/MM/YYYY");
       this.getDataTable();

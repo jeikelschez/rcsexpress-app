@@ -30,7 +30,7 @@
                   v-model="password"
                   label="Contraseña"
                   :type="isPwd ? 'password' : 'text'"
-                  :rules="[(val) => (!!val && val.length > 5) || '']"
+                  :rules="[(val) => (!!val && val.length > 3) || '']"
                   style="margin-bottom: -20px"
                 >
                   <template v-slot:prepend>
