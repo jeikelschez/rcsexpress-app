@@ -232,8 +232,15 @@
             color="primary"
             round
             padding="sm"
-            :disabled="false"
-            @click=""
+            :disable="
+              !this.form.nro_documento ||
+              !this.form.nro_ctrl_doc ||
+              this.gastos.length == 0 ||
+              this.form.monto_base_nacional == '0,00'
+                ? true
+                : false
+            "
+            @click="saveCta()"
           >
             <q-icon size="25px" name="save" color="white"> </q-icon>
             <q-tooltip
@@ -446,7 +453,7 @@
                     dense
                     transition-show="flip-up"
                     transition-hide="flip-down"
-                    :options="tipoCuenta"
+                    :options="tipoConcepto"
                     use-input
                     hide-selected
                     fill-input
@@ -1519,7 +1526,7 @@ export default {
       this.selectedAgencia = this.agencias[0];
       this.selectedTipo = this.tipos[0];
       this.form.selectedForma = this.formaPago[1];
-      this.form.selectedTipoCuenta = this.tipoCuenta[1];
+      this.form.selectedTipoCuenta = this.tipoConcepto[1];
       this.form.selectedPorc = this.porcentajes[0];
       this.form.estatus_documento = this.estatus[0].label;
       this.form.fecha_registro = moment().format("DD/MM/YYYY");
@@ -1660,6 +1667,36 @@ export default {
 
         this.confirmDocument = false;
         this.isSave = true;
+      }
+    },
+    // Metodo para guardar la cuenta por Pagar
+    async saveCta() {
+      if (this.form.selectedForma.value == "CR") {
+        if (this.form.selectedTipoCuenta.value == "P") {
+          // Obtenemos el total de la Distribución de los Gastos
+          let total_gtos = this.parseFloatN(this.curReplace(this.totalGastos));
+          let monto_exento = this.parseFloatN(
+            this.curReplace(this.form.monto_exento)
+          );
+          let monto_base_nac = this.parseFloatN(
+            this.curReplace(this.form.monto_base_nacional)
+          );
+          let monto_base_inter = this.parseFloatN(
+            this.curReplace(this.form.monto_base_intern)
+          );
+          let monto_cuenta = monto_exento + monto_base_nac + monto_base_inter;
+
+          // Validamos que el de distrib de gastos sea igual a Monto Exento + Monto Base Nac. + Monto Base Int.
+          if (monto_cuenta != total_gtos) {
+            this.$q.notify({
+              message:
+                "Error en la Distribución de Gastos. Verifique que el Total de los Gastos sea igual a: Monto Exento + Monto Base Nac. + Monto Base Intern.",
+              color: "red",
+            });
+            return;
+          }
+        }
+      } else {
       }
     },
     // Metodo para actualizar la fecha de vencimiento
@@ -1954,7 +1991,7 @@ export default {
         base_imponible_retencion: "0,00",
       };
       this.form.selectedForma = this.formaPago[1];
-      this.form.selectedTipoCuenta = this.tipoCuenta[1];
+      this.form.selectedTipoCuenta = this.tipoConcepto[1];
       this.form.selectedPorc = this.porcentajes[0];
       this.form.estatus_documento = this.estatus[0].label;
       this.form.fecha_registro = moment().format("DD/MM/YYYY");
