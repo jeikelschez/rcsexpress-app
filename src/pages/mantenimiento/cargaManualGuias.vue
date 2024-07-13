@@ -1253,7 +1253,6 @@ export default {
             .replace(/((\n|\r))"/g, "")
             .replace(/"/g, "")
             .replace(/\n +\//g, " /");
-          console.log(this.content)  
           var lines = this.content.split("\n");
           for (var i = 0; i < lines.length - 1; i++) {
             var form = {};
