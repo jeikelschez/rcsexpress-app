@@ -164,6 +164,27 @@ const routes = [
         ],
       },
       {
+        path: "/retencioncomprador",
+        component: () => import("layouts/mainLayout.vue"),
+        children: [
+          {
+            path: "",
+            component: () =>
+              import("src/pages/administracion/retencionComprador.vue"),
+          },
+        ],
+      },
+      {
+        path: "/relacionretencionescomprador",
+        component: () => import("layouts/mainLayout.vue"),
+        children: [
+          {
+            path: "",
+            component: () => import("src/pages/reportes/relacionRetencionesComprador.vue"),
+          },
+        ],
+      },
+      {
         path: "/comprobantesigtf",
         component: () => import("layouts/mainLayout.vue"),
         children: [

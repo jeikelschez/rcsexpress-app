@@ -10,7 +10,7 @@
           style="align-self: center; text-align: center"
         >
           <p style="font-size: 20px" class="text-secondary">
-            <strong>REPORTES - RELACIÓN DE COMPROBANTES IGTF</strong>
+            <strong>REPORTES - RELACIÓN DE RETENCIONES COMPRADOR</strong>
           </p>
         </div>
         <div
@@ -69,7 +69,7 @@
           </q-select>
         </div>
         <div
-          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 cardMargin selectMobile2"
+          class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 cardMargin selectMobile2"
           style="align-self: center; text-align: center"
         >
         <q-select
@@ -186,22 +186,6 @@
           </q-input>
         </div>
         <div
-          class="col-md-1 col-xl-1 col-lg-1 col-xs-12 col-sm-6 cardMargin selectMobile2"
-          style="align-self: center; text-align: center"
-        >
-          <q-input
-            outlined
-            label="Período Fiscal"
-            hint=""
-            dense
-            rounded
-            style="padding-bottom: 0px"
-            v-model="periodo"
-            lazy-rules
-          >
-          </q-input>
-        </div>
-        <div
           class="col-md-1 col-xl-1 col-lg-1 col-xs-12 col-sm-12 selectMobile2"
         >
           <q-btn
@@ -227,7 +211,6 @@
             color="primary"
             round
             padding="sm"
-            :disable="this.periodo == '' ? true : false"
             @click="
               pdfChange();
               print = 1;
@@ -294,7 +277,6 @@ export default {
       selectedCliente: [],
       clientesSelected: [],
       clientesLoading: false,
-      periodo: "",
       print: "",
       fecha_desde: moment().startOf("month").format("DD/MM/YYYY"),
       fecha_hasta: moment().endOf("month").format("DD/MM/YYYY"),
@@ -311,13 +293,13 @@ export default {
   },
   mounted() {
     this.pdfPrint();
-    this.$emit("changeTitle", "SCEN - Reportes - Relación de Comprobantes IGTF", "");
+    this.$emit("changeTitle", "SCEN - Reportes - Relación de Retenciones Comprador", "");
     this.$refs.methods.getData("/agencias", "setData", "agencias");
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
         rol: LocalStorage.getItem("tokenTraducido").usuario.roles.id,
-        menu: "relacionigtf",
+        menu: "relacionretencionescomprador",
       },
     });
   },
@@ -383,9 +365,8 @@ export default {
       dataArray.fecha_hasta = this.fecha_hasta;
       dataArray.agencia = this.selectedAgencia.id;
       dataArray.cliente = this.selectedCliente.id;
-      dataArray.periodo = this.periodo;
       api
-        .get(`/pdfreports/reporteIgtf`, {
+        .get(`/pdfreports/retencionesComprador`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
             print: this.print,
@@ -427,7 +408,6 @@ export default {
       this.fecha_desde = moment().startOf("month").format("DD/MM/YYYY");
       this.fecha_hasta = moment().endOf("month").format("DD/MM/YYYY");
       this.print = "";
-      this.periodo = "";
       this.pdfChange();
     },
   },
