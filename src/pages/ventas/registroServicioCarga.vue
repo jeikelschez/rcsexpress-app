@@ -896,7 +896,7 @@
                   label="RIF/CI"
                   dense
                   :rules="[(val) => this.$refs.rulesVue.isMin(val, 3, '')]"
-                  :readonly="this.disableRif"
+                  :readonly="this.disableGuia"
                   @blur="this.validateExistingClient()"
                   @keyup.enter="this.validateExistingClient()"
                   hint=""
@@ -913,7 +913,7 @@
                   outlined
                   v-model="formClientesParticulares.cod_agencia"
                   label="Agencia"
-                  :readonly="this.disableAgencia"
+                  :readonly="this.disableAgencia || this.disableGuia"
                   hint=""
                   dense
                   class="pcform"
@@ -955,7 +955,7 @@
                   outlined
                   v-model="formClientesParticulares.nb_cliente"
                   label="Cliente"
-                  :readonly="this.disableCliente"
+                  :readonly="this.disableCliente || this.disableGuia"
                   dense
                   :rules="[(val) => this.$refs.rulesVue.isMin(val, 3, '')]"
                   lazy-rules
@@ -971,7 +971,7 @@
                   outlined
                   v-model="pais"
                   label="Pais"
-                  :readonly="this.disableInputs"
+                  :readonly="this.disableInputs || this.disableGuia"
                   hint=""
                   dense
                   class="pcform"
@@ -1036,7 +1036,7 @@
                   label="Estado"
                   class="pcform"
                   hint=""
-                  :readonly="this.disableInputs"
+                  :readonly="this.disableInputs || this.disableGuia"
                   :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, '')]"
                   :options="estadosFiltered"
                   @filter="
@@ -1116,7 +1116,7 @@
                   label="Ciudad"
                   dense
                   hint=""
-                  :readonly="this.disableInputs"
+                  :readonly="this.disableInputs || this.disableGuia"
                   :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, '')]"
                   :options="ciudadesFiltered"
                   @filter="
@@ -1157,7 +1157,7 @@
                   label="Municipio"
                   hint=""
                   class="pcform"
-                  :readonly="this.disableInputs"
+                  :readonly="this.disableInputs || this.disableGuia"
                   dense
                   :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, '')]"
                   :options="municipiosFiltered"
@@ -1211,7 +1211,7 @@
                   outlined
                   v-model="formClientesParticulares.cod_parroquia"
                   label="Parroquia"
-                  :readonly="this.disableInputs"
+                  :readonly="this.disableInputs || this.disableGuia"
                   hint=""
                   class="pcform"
                   dense
@@ -1253,7 +1253,7 @@
                   v-model="formClientesParticulares.cod_localidad"
                   label="Localidad"
                   hint=""
-                  :readonly="this.disableInputs"
+                  :readonly="this.disableInputs || this.disableGuia"
                   dense
                   :rules="[(val) => this.$refs.rulesVue.isReqSelect(val, '')]"
                   :options="localidadesFiltered"
@@ -1293,7 +1293,7 @@
                   v-model="formClientesParticulares.telefonos"
                   label="Telefono"
                   :rules="[(val) => this.$refs.rulesVue.isMin(val, 3, '')]"
-                  :readonly="this.disableInputs"
+                  :readonly="this.disableInputs || this.disableGuia"
                   class="pcform"
                   dense
                   hint=""
@@ -1308,7 +1308,7 @@
                 <q-input
                   outlined
                   v-model="formClientesParticulares.fax"
-                  :readonly="this.disableInputs"
+                  :readonly="this.disableInputs || this.disableGuia"
                   label="Fax"
                   dense
                   hint=""
@@ -1325,7 +1325,7 @@
                   outlined
                   v-model="formClientesParticulares.direccion"
                   label="Direccion"
-                  :readonly="this.disableInputs"
+                  :readonly="this.disableInputs || this.disableGuia"
                   :rules="[(val) => this.$refs.rulesVue.isMin(val, 3, '')]"
                   dense
                   hint=""
@@ -1343,7 +1343,7 @@
             >
               <q-btn
                 label="Actualizar Cliente"
-                :disable="this.disableInputs"
+                :disable="this.disableInputs  || this.disableGuia"
                 type="submit"
                 color="primary"
                 class="col-md-5 col-sm-5 col-xs-12"
@@ -2076,7 +2076,7 @@
                       ]"
                       label="Cliente"
                       :tabindex="14"
-                      :disable="this.disableGuia"
+                      :readonly="this.disableGuia"
                       dense
                       style="padding-bottom: 20px"
                       hint=""
@@ -2824,7 +2824,7 @@
               label="% X Zona"
               :tabindex="36"
               :disable="this.disableGuia"
-              v-money="money"
+              v-money="moneyOneDecimal"
               input-class="text-right"
               class="pcform pcmovil"
               hint=""
@@ -3004,6 +3004,14 @@ export default {
         prefix: "",
         suffix: "",
         precision: 0,
+        masked: false,
+      },
+      moneyOneDecimal: {
+        decimal: ",",
+        thousands: ".",
+        prefix: "",
+        suffix: "",
+        precision: 1,
         masked: false,
       },
       columnsConceptos: [
@@ -3428,6 +3436,16 @@ export default {
               this.disableRif = true;
               return;
             } else {
+              this.formClientesParticulares.id = "";
+              this.formClientesParticulares.cod_ciudad = [];
+              this.formClientesParticulares.cod_localidad = [];
+              this.formClientesParticulares.cod_municipio = [];
+              this.formClientesParticulares.cod_parroquia = [];
+              this.formClientesParticulares.direccion = "";
+              this.formClientesParticulares.fax = "";
+              this.formClientesParticulares.id = "";
+              this.formClientesParticulares.nb_cliente = "";
+              this.formClientesParticulares.telefonos = "";
               this.disableInputs = false;
               this.disableCliente = false;
               this.disableRif = true;
@@ -4508,6 +4526,12 @@ export default {
         this.form.check_elab = 1;
         this.checkbox.paquetes = "1";
         this.form.check_transito = "0";
+        this.form.cod_proveedor =
+          this.proveedores[
+            this.proveedores.findIndex(
+              (item) => item.nb_proveedor == "TERRESTRE"
+            )
+          ];
         this.resetLoading();
       } catch (stopFuction) {
         if (errorMessage) {
@@ -4663,7 +4687,7 @@ export default {
         this.form.porc_apl_seguro = res.porc_apl_seguro;
         this.form.check_transito = res.check_transito;
         this.form.monto_ref_cte_sin_imp = res.monto_ref_cte_sin_imp;
-        this.form.porc_comision = res.porc_comision;
+        this.form.porc_comision = parseFloat(res.porc_comision).toFixed(1);
         this.form.porc_descuento = res.porc_descuento;
         this.form.base_comision_vta_rcl = res.base_comision_vta_rcl;
         this.form.base_comision_seg = res.base_comision_seg;
@@ -5221,7 +5245,9 @@ export default {
                 });
             }
 
-            if (form.estatus_administra !== "G") form.estatus_administra = "F";
+            if (form.estatus_administra !== "G") {
+              form.estatus_administra = "F";
+            }
             form.check_pxfac = 1;
             form.fecha_pxfac = moment().format("YYYY-MM-DD");
 
@@ -5300,16 +5326,6 @@ export default {
               this.disableGuia = true;
             }
 
-            this.filterAndSet(
-              "estatus_administrativo",
-              "value",
-              form.estatus_administra,
-              "form",
-              "estatus_administra"
-            );
-
-            this.updateEstatusAdministra();
-
             await api
               .put(`/mmovimientos/${form.id}`, form, {
                 headers: {
@@ -5350,6 +5366,16 @@ export default {
                 return stopFuction;
               });
           }
+
+          this.filterAndSet(
+            "estatus_administrativo",
+            "value",
+            form.estatus_administra,
+            "form",
+            "estatus_administra"
+          );
+
+          this.updateEstatusAdministra();
 
           // Si tiene detalles, lo guarda y guarda las comisiones
           if (this.detalle_movimiento.length > 0) {
