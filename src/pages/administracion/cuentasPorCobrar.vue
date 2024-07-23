@@ -789,9 +789,6 @@ export default {
         menu: "cuentasporcobrar",
       },
     });
-
-    this.pdfView = true;
-
   },
   methods: {
     // Metodos para Filtrar Selects
@@ -1063,11 +1060,11 @@ export default {
         .get(`/pdfreports/cobranza`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            id: 627,
+            id: this.idCobranza,
           },
         })
         .then((res) => {
-          this.$refs.webViewer.showpdf(res.data.pdfPath, 1.2);
+          this.$refs.webViewer.showpdf(res.data.pdfPath, 1.5);
           this.idCobranza = "";
         });
     },
