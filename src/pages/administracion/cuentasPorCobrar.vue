@@ -548,7 +548,7 @@
       <webViewer
         ref="webViewer"
         @close-pdf="this.pdfView = false"
-        style="width: 1000px; height: 750px; max-width: 1000px"
+        style="width: 1200px; height: 750px; max-width: 1200px"
       ></webViewer>
     </q-dialog>
 
@@ -789,6 +789,9 @@ export default {
         menu: "cuentasporcobrar",
       },
     });
+
+    this.pdfView = true;
+
   },
   methods: {
     // Metodos para Filtrar Selects
@@ -1060,11 +1063,11 @@ export default {
         .get(`/pdfreports/cobranza`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            id: this.idCobranza,
+            id: 627,
           },
         })
         .then((res) => {
-          this.$refs.webViewer.showpdf(res.data.pdfPath, 1.5);
+          this.$refs.webViewer.showpdf(res.data.pdfPath, 1.2);
           this.idCobranza = "";
         });
     },
