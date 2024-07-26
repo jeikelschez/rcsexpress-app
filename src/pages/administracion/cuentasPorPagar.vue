@@ -3031,7 +3031,6 @@ export default {
     // Imprimir Comprobante de Pago en PDF
     async printPago() {
       let pagoArray = {};
-      console.log(this.selectedProveedor)
       api
         .get(`/pdfreports/reportePago`, {
           headers: {
