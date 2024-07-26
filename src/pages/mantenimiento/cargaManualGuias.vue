@@ -1905,8 +1905,8 @@ export default {
       }
 
       this.file = [];
-      this.selectedAgencia = [];
-      this.resetFilters();
+      this.form = [];
+      this.datos = [];
       this.loadingPage = false;
 
       this.$q.notify({

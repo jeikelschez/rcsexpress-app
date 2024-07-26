@@ -236,7 +236,6 @@
               !this.form.nro_documento ||
               !this.form.nro_ctrl_doc ||
               this.gastos.length == 0 ||
-              this.islr.length == 0 ||
               this.form.total_documento == '0,00'
                 ? true
                 : false
@@ -1136,7 +1135,7 @@
     <q-dialog v-model="pagoContadoDialog">
       <q-card class="q-pa-md" bordered style="width: 600px; max-width: 80vw">
         <q-card-section>
-          <q-form @submit="saveCta" class="q-gutter-md">
+          <q-form @submit="validatePago" class="q-gutter-md">
             <div class="row">
               <div class="col-md-12 col-xs-12">
                 <p
@@ -1265,8 +1264,6 @@
                   label="Nro. Cheque"
                   hint=""
                   lazy-rules
-                  :rules="[(val) => this.$refs.rulesVue.isReq(val, '')]"
-                  mask="############"
                 >
                 </q-input>
               </div>
@@ -1332,20 +1329,11 @@
               style="margin-bottom: 10px"
             >
               <q-btn
-                v-if="this.fpago.id"
-                label="Guardar"
+                :label="this.fpago.id ? 'Guardar' : 'Generar'"
                 type="submit"
                 color="primary"
                 class="col-md-5 col-sm-5 col-xs-12"
                 icon="save"
-              />
-              <q-btn
-                v-else
-                label="Generar"
-                color="primary"
-                class="col-md-5 col-sm-5 col-xs-12"
-                icon="save"
-                @click="this.confirmGPagoPopUp = true"
               />
               <q-btn
                 label="Cancelar"
@@ -1651,6 +1639,7 @@ export default {
       pagos: [],
       pagosClone: [],
       idPago: "",
+      beneficiario: "",
       form: {
         id: "",
         monto_exento: "0,00",
@@ -2064,6 +2053,23 @@ export default {
           });
 
         this.confirmDocument = false;
+      }
+    },
+    // Metodo para validar el pago
+    validatePago() {
+      if(this.fpago.nro_doc_pago2 == "") {
+        this.$q.notify({
+          message:
+            "Debe ingresar el Número de Cheque",
+          color: "red",
+        });
+        return;
+      }
+
+      if(this.fpago.id) {
+        this.saveCta();
+      } else {
+        this.confirmGPagoPopUp = true;
       }
     },
     // Metodo para guardar la cuenta por Pagar
@@ -2603,6 +2609,7 @@ export default {
       }
 
       this.selectedAgencia = this.agencias[0];
+      this.beneficiario = this.selectedProveedor.nb_beneficiario
       this.selectedProveedor = [];
       this.selectedTipo = this.tipos[0];
       this.resetFilters();
@@ -3024,12 +3031,13 @@ export default {
     // Imprimir Comprobante de Pago en PDF
     async printPago() {
       let pagoArray = {};
+      console.log(this.selectedProveedor)
       api
         .get(`/pdfreports/reportePago`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
             id: this.idPago,
-            beneficiario: this.selectedProveedor.nb_beneficiario,
+            beneficiario: this.beneficiario,
           },
         })
         .then((res) => {

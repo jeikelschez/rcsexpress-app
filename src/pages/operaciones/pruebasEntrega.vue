@@ -50,7 +50,6 @@
                   agencia: this.selectedAgencia.id,
                 },
               });
-              this.getDataTable();
             "
             ><template v-slot:no-option>
               <q-item>
@@ -107,7 +106,6 @@
                   },
                 }
               );
-              this.getDataTable();
             "
             ><template v-slot:no-option>
               <q-item>
@@ -136,7 +134,6 @@
             lazy-rules
             mask="##/##/####"
             :rules="[(val) => this.$refs.rulesVue.checkDate(val)]"
-            @keyup.enter="getDataTable()"
           >
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
@@ -151,7 +148,6 @@
                     style="padding-bottom: 0px"
                     @update:model-value="
                       this.$refs.qDateProxy.hide();
-                      getDataTable();
                     "
                   ></q-date>
                 </q-popup-proxy>
@@ -174,7 +170,6 @@
             lazy-rules
             mask="##/##/####"
             :rules="[(val) => this.$refs.rulesVue.checkDate(val)]"
-            @keyup.enter="getDataTable()"
           >
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
@@ -189,7 +184,6 @@
                     style="padding-bottom: 0px"
                     @update:model-value="
                       this.$refs.qDateProxy.hide();
-                      getDataTable();
                     "
                   ></q-date>
                 </q-popup-proxy>
@@ -209,8 +203,6 @@
             outlined
             standout
             label="NRO. Guia"
-            @blur="getDataTable()"
-            @keyup.enter="getDataTable()"
           >
           </q-input>
         </div>
@@ -251,7 +243,6 @@
             outlined
             standout
             label="Cliente Origen"
-            @update:model-value="getDataTable()"
             ><template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey">
@@ -299,7 +290,6 @@
             outlined
             standout
             label="Cliente Destino"
-            @update:model-value="getDataTable()"
             ><template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey">
@@ -335,7 +325,6 @@
             outlined
             standout
             label="Estatus"
-            @update:model-value="getDataTable()"
             ><template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey">
@@ -367,7 +356,6 @@
                 false-value="0"
                 style="font-size: 13px"
                 label="TRANSITO"
-                @click="getDataTable()"
               />
             </template>
           </q-field>
@@ -417,7 +405,7 @@
             color="primary"
             round
             padding="sm"
-            style="margin-right: 5px"
+            style="margin-right: 15px"
           >
             <q-icon size="25px" name="print" color="white"> </q-icon>
             <q-tooltip
@@ -427,6 +415,24 @@
               transition-hide="scale"
               color="primary"
               >Imprimir Reporte</q-tooltip
+            >
+          </q-btn>
+          <q-btn
+            dense
+            color="primary"
+            round
+            padding="sm"
+            @click="this.getDataTable()"
+            style="margin-right: 15px"
+          >
+            <q-icon size="25px" name="input" color="white"> </q-icon>
+            <q-tooltip
+              class="bg-primary"
+              style="max-height: 30px"
+              transition-show="scale"
+              transition-hide="scale"
+              color="primary"
+              >Generar</q-tooltip
             >
           </q-btn>
         </div>
@@ -1661,9 +1667,7 @@ export default {
 
     // Metodo para Setear Datos Generales
     async setDataInit(res, dataRes) {
-      this.loading = true;
       this[dataRes] = res.data ? res.data : res;
-      this.getDataTable();
     },
     // Metodo para Setear Datos Generales
     setData(res, dataRes) {
@@ -1888,7 +1892,6 @@ export default {
       this.fecha_hasta = moment().format("DD/MM/YYYY");
       this.checkTransito = "0";
       this.nro_guia = "";
-      this.getDataTable();
     },
     // Metodo para restar dos fechas
     diffDays(date1, date2) {
