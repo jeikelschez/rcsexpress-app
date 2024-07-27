@@ -674,6 +674,19 @@
             </q-input>
           </q-td>
         </template>
+        <template v-slot:header-cell-check_peso="props">
+          <q-th :props="props">
+            <q-checkbox
+              size="md"
+              v-model="check_peso"
+              true-value="1"
+              false-value="0"
+              style="font-size: 13px"
+              :disable="this.datos.length == 0 ? true : false"
+              @update:model-value="setCheckPeso('header')"
+            />
+          </q-th>
+        </template>
         <template v-slot:body-cell-ciudad="props">
           <q-td :props="props" :style="{ color: props.row.colorCiudad }">
             {{ props.row.ciudad }}
@@ -682,6 +695,18 @@
         <template v-slot:body-cell-estado="props">
           <q-td :props="props" :style="{ color: props.row.colorEstado }">
             {{ props.row.estado }}
+          </q-td>
+        </template>
+        <template v-slot:body-cell-check_peso="props">
+          <q-td :props="props">
+            <q-checkbox
+              size="md"
+              v-model="props.row.check_peso"
+              true-value="1"
+              false-value="0"
+              style="font-size: 13px"
+              @update:model-value="setCheckPeso('cell')"
+            />
           </q-td>
         </template>
         <template v-slot:body-cell-action="props">
@@ -798,7 +823,7 @@
             flat
             label="Cancelar"
             color="primary"
-            @click="this.confirmUpload = false"
+            @click="this.loadingPage = false; this.confirmUpload = false"
             v-close-popup
           />
           <q-btn
@@ -1102,6 +1127,12 @@ export default {
           align: "left",
         },
         {
+          name: "check_peso",
+          label: "X",
+          field: "check_peso",
+          align: "center",
+        },
+        {
           name: "action",
           label: "Acciones",
           align: "center",
@@ -1165,6 +1196,7 @@ export default {
       printType: "",
       selectedGuiasPrint: [],
       confirmPrint: false,
+      check_peso: "1",
     };
   },
   setup() {
@@ -1271,6 +1303,7 @@ export default {
             form.estado = columns[6];
             form.bultos = this.curReplace(columns[7]);
             form.telefono = columns[8];
+            form.check_peso = "1";
             form.monto = this.curReplace(columns[9]);
             if (!columns[10]) {
               errorMessage = "Error al leer el Peso";
@@ -1388,9 +1421,9 @@ export default {
         this.form.ciudad = form.ciudad;
         this.form.bultos = form.bultos;
         this.form.telefono = form.telefono;
-        this.form.monto = form.monto * 100;
-        this.form.peso = form.peso * 100;
-        this.form.carga_neta = form.carga_neta * 100;
+        this.form.monto = parseFloat(form.monto).toFixed(2);
+        this.form.peso = parseFloat(form.peso).toFixed(2);
+        this.form.carga_neta = parseFloat(form.carga_neta).toFixed(2);
         await api
           .get(`/estados`, {
             headers: {
@@ -1692,25 +1725,29 @@ export default {
           this.loadingPage = false;
           return;
         }
-        if (this.curReplace(this.datos[i].peso) == 0.0) {
-          this.setDataEdit(this.datos[i]);
-          this.errorMessage("Debe ingresar el Peso");
-          this.loadingPage = false;
-          return;
+
+        if (this.datos[i].check_peso == "1") {
+          if (this.curReplace(this.datos[i].peso) == 0.0) {
+            this.setDataEdit(this.datos[i]);
+            this.errorMessage("Debe ingresar el Peso");
+            this.loadingPage = false;
+            return;
+          }
+          if (this.curReplace(this.datos[i].carga_neta) == 0.0) {
+            this.setDataEdit(this.datos[i]);
+            this.errorMessage("Debe ingresar la Carga Neta");
+            this.loadingPage = false;
+            return;
+          }
+          await this.validatePorcZona(this.datos[i], i);
+          if (this.datos[i].colorZona == "red") {
+            eval("this.$refs.porc_zona" + i + ".$el.focus()");
+            this.errorMessage("Debe ingresar un % de Comisión válido");
+            this.loadingPage = false;
+            return;
+          }
         }
-        if (this.curReplace(this.datos[i].carga_neta) == 0.0) {
-          this.setDataEdit(this.datos[i]);
-          this.errorMessage("Debe ingresar la Carga Neta");
-          this.loadingPage = false;
-          return;
-        }
-        await this.validatePorcZona(this.datos[i], i);
-        if (this.datos[i].colorZona == "red") {
-          eval("this.$refs.porc_zona" + i + ".$el.focus()");
-          this.errorMessage("Debe ingresar un % de Comisión válido");
-          this.loadingPage = false;
-          return;
-        }
+
         if (!this.datos[i].nro_guia) {
           eval("this.$refs.nro_guia" + i + ".$el.focus()");
           this.errorMessage("Debe ingresar el Número de Guía");
@@ -2096,6 +2133,33 @@ export default {
         else setTimeout((_) => poll(resolve), 400);
       };
       return new Promise(poll);
+    },
+    async setCheckPeso(type) {
+      if (type == "header") {
+        for (var i = 0; i <= this.datos.length - 1; i++) {
+          if (this.check_peso == 1) {
+            this.datos[i].check_peso = "1";
+          } else {
+            this.datos[i].peso = "0.00";
+            this.datos[i].carga_neta = "0.00";
+            this.datos[i].porc_zona = "0.0";
+            this.datos[i].check_peso = "0";
+            this.datos[i].colorZona = "blue";
+          }
+        }
+      } else {
+        let check = "1";
+        for (var i = 0; i <= this.datos.length - 1; i++) {
+          if (this.datos[i].check_peso == 0) {
+            this.datos[i].peso = "0.00";
+            this.datos[i].carga_neta = "0.00";
+            this.datos[i].porc_zona = "0.0";
+            this.datos[i].colorZona = "blue";
+            check = "0";
+          }
+        }
+        this.check_peso = check;
+      }
     },
   },
 };
