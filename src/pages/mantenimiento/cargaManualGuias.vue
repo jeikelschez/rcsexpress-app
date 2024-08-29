@@ -2096,7 +2096,7 @@ export default {
         return;
       }
 
-      if (this.printType == 2) {
+      /*if (this.printType == 2) {
         this.confirmPopUp = true;
         await this.until((_) => this.confirmPrint == true);
         if (!this.confirmPrint) {
@@ -2104,7 +2104,7 @@ export default {
         } else {
           this.confirmPrint = false;
         }
-      }
+      }*/
 
       this.pdfView = true;
     },

@@ -3621,13 +3621,13 @@ export default {
           });
           return;
         }
-        if (form.peso_kgs == 0.0) {
+        /*if (form.peso_kgs == 0.0) {
           this.$q.notify({
             message: "Debe ingresar la cantidad de KG antes de tarifear",
             color: "red",
           });
           return;
-        }
+        }*/
         if (!form.modalidad_pago) {
           this.$q.notify({
             message: "Debe ingresar la modalidad de pago antes de tarifear",
