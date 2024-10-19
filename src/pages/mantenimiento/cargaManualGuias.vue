@@ -1166,6 +1166,8 @@ export default {
         monto: "",
         peso: "",
         carga_neta: "",
+        nro_guia: "",
+        porc_zona: 0,
       },
       datos: [],
       loadingPage: false,
@@ -1316,6 +1318,13 @@ export default {
               return stopFuction;
             }
             form.carga_neta = this.curReplace(columns[11].replace("\r", ""));
+            if (columns[12]) {
+              form.porc_zona = this.curReplace(columns[12]) * 10;
+              form.colorZona = "blue";
+            }
+            if (columns[13]) {
+              form.nro_guia = columns[13];
+            }
             await api
               .get(`/estados`, {
                 headers: {
