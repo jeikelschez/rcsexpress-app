@@ -189,7 +189,6 @@
           <q-table
             :rows="guiasCarga"
             :loading="loading"
-            binary-state-sort
             row-key="id"
             :columns="columns"
             selection="multiple"
@@ -2048,8 +2047,6 @@ export default {
       paginationGuia: {
         page: 1,
         rowsPerPage: 0,
-        sortBy: "fecha_emision",
-        descending: false,
       },
       formClientesParticulares: {
         pais: "",
@@ -2734,6 +2731,8 @@ export default {
               modalidad: this.selectedTipo.formaPago,
               estatus_admin_in: "F",
             }),
+            order: "fecha_emision",
+            direction: "ASC",
           },
         })
         .then((res) => {
@@ -2754,6 +2753,8 @@ export default {
               modalidad: this.selectedTipo.formaPago,
               estatus_admin_in: "F",
             }),
+            order: "fecha_emision",
+            direction: "ASC",
           },
         })
         .then((res) => {
