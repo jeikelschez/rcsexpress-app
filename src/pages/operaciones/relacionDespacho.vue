@@ -685,12 +685,12 @@
         :rows="guias"
         :columns="columns"
         :loading="loading"
+        dense
         class="tableHeight"
         selection="multiple"
         binary-state-sort
         :separator="separator"
         row-key="id"
-        :grid="$q.screen.xs"
         :rows-per-page-options="[0]"
         :pagination.sync="pagination"
         style="width: 100%; height: 550px"
@@ -704,7 +704,7 @@
         <template v-slot:header="props">
           <q-tr :props="props">
             <q-th auto-width>
-              <q-checkbox v-model="props.selected" />
+              <q-checkbox v-model="props.selected" dense />
             </q-th>
             <q-th v-for="col in props.cols" :key="col.name" :props="props">
               {{ col.label }}
@@ -790,7 +790,7 @@
           </q-tr>
           <q-tr :props="props">
             <q-td>
-              <q-checkbox v-model="props.selected" />
+              <q-checkbox v-model="props.selected" dense />
             </q-td>
             <q-td v-for="col in props.cols" :key="col.name" :props="props">
               <div v-if="col.name == 'cod_agencia'">
@@ -830,13 +830,13 @@
             label="Si"
             color="primary"
             v-close-popup
-            @click="this.confirmCostos = true"
+            @click="this.confirmCostos = 'true'"
           />
           <q-btn
             flat
             label="No"
             color="primary"
-            @click="this.confirmCostos = false"
+            @click="this.confirmCostos = 'false'"
             v-close-popup
           />
         </q-card-actions>
@@ -1213,7 +1213,7 @@ export default {
             this.pdfView = false;
             return;
           }
-          this.$refs.webViewer.showpdf(res.data.pdfPath, 1.6);
+          this.$refs.webViewer.showpdf(res.data.pdfPath, 1.6, true);
         })
         .catch((err) => {
           this.$q.notify({
@@ -1228,8 +1228,8 @@ export default {
     async sendCostos() {
       if (this.selectedTipo == "C") {
         this.confirmCostosPopUp = true;
-        await this.until((_) => this.confirmCostos == true);
-        if (this.confirmCostos) {
+        await this.until((_) => this.confirmCostos);
+        if (this.confirmCostos == 'true') {
           this.confirmCostos = false;
           if (this.selectedAgenciaDestino.length == 0) {
             this.$q.notify({
@@ -1237,6 +1237,9 @@ export default {
                 "Debe seleccionar al menos un Destino para cargar el Costo",
               color: "red",
             });
+            this.$refs.webViewer.confirmPrint = false;
+            this.pdfView = false;
+            this.dialog = true;
             return;
           }
           if (!this.selectedAgente.id || !this.selectedUnidad.id) {
@@ -1245,6 +1248,9 @@ export default {
                 "Debe seleccionar el Chofer y el Vehículo para cargar el Costo",
               color: "red",
             });
+            this.$refs.webViewer.confirmPrint = false;
+            this.pdfView = false;
+            this.dialog = true;
             return;
           }
           if (this.selectedAgente.cod_agencia != 1) {
@@ -1253,12 +1259,17 @@ export default {
                 "El Chofer no existe para la Agencia principal de Costos",
               color: "red",
             });
+            this.$refs.webViewer.confirmPrint = false;
+            this.pdfView = false;
+            this.dialog = true;
             return;
           }
           this.fecha_costo = this.fecha_desde;
           this.dialogFecha = true;
         }
       }
+      this.confirmCostos = false;
+      this.$refs.webViewer.confirmPrint = true;
     },
     // Metodo para buscar costos por chofer y vehiculo de ese dia
     async findCostos() {
