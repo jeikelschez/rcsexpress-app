@@ -168,7 +168,7 @@
                 </q-btn-toggle>
               </div>
               <div
-                class="col-md-5 col-xs-12"
+                class="col-md-4 col-xs-12"
                 style="margin-bottom: 10px; padding-left: 15px"
               >
                 <q-btn-toggle
@@ -184,12 +184,24 @@
                 >
                 </q-btn-toggle>
               </div>
-              <div class="col-md-2 col-xs-12" style="margin-bottom: 10px">
+              <div
+                class="col-md-1 col-xs-12"
+                style="margin-bottom: 10px; padding-left: 30px"
+              >
                 <q-checkbox
                   v-model="selectedDolar"
                   label="$"
                   color="primary"
                   left-label
+                />
+              </div>
+              <div class="col-md-2 col-xs-12" style="margin-bottom: 10px">
+                <q-checkbox
+                  v-model="visibleGuia"
+                  label="Guía"
+                  color="primary"
+                  left-label
+                  :disable="this.selectedTipo == 'C' ? false : true"
                 />
               </div>
             </div>
@@ -599,26 +611,50 @@
         class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 selectMobile2"
         style="padding-right: 25px"
       >
-      <q-checkbox
-            v-model="selectedSerie"
-            color="primary"
-            left-label
-            val="44"
-            label="Serie 44"
-            @update:model-value="getDataTable()"
-            :disable="this.selectedSerie.length > 1 ? false : this.selectedSerie[0] == '55' ? false : true"
-            :readonly="this.selectedSerie.length > 1 ? false : this.selectedSerie[0] == '55' ? false : true"
-          />
-          <q-checkbox
-            v-model="selectedSerie"
-            color="primary"
-            left-label
-            val="55"
-            label="Serie 55"
-            @update:model-value="getDataTable()"
-            :disable="this.selectedSerie.length > 1 ? false : this.selectedSerie[0] == '44' ? false : true"
-            :readonly="this.selectedSerie.length > 1 ? false : this.selectedSerie[0] == '44' ? false : true"
-          />
+        <q-checkbox
+          v-model="selectedSerie"
+          color="primary"
+          left-label
+          val="44"
+          label="Serie 44"
+          @update:model-value="getDataTable()"
+          :disable="
+            this.selectedSerie.length > 1
+              ? false
+              : this.selectedSerie[0] == '55'
+              ? false
+              : true
+          "
+          :readonly="
+            this.selectedSerie.length > 1
+              ? false
+              : this.selectedSerie[0] == '55'
+              ? false
+              : true
+          "
+        />
+        <q-checkbox
+          v-model="selectedSerie"
+          color="primary"
+          left-label
+          val="55"
+          label="Serie 55"
+          @update:model-value="getDataTable()"
+          :disable="
+            this.selectedSerie.length > 1
+              ? false
+              : this.selectedSerie[0] == '44'
+              ? false
+              : true
+          "
+          :readonly="
+            this.selectedSerie.length > 1
+              ? false
+              : this.selectedSerie[0] == '44'
+              ? false
+              : true
+          "
+        />
       </div>
       <div
         class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 selectMobile2 cardMargin"
@@ -1013,6 +1049,7 @@ export default {
       fecha_hasta: moment().format("DD/MM/YYYY"),
       confirmCostos: false,
       confirmMezclar: false,
+      visibleGuia: true,
     };
   },
   setup() {
@@ -1111,6 +1148,7 @@ export default {
         return;
       this.loading = true;
       if (props) this.pagination = props.pagination;
+      this.visibleGuia = true;
       this.$refs.methods.getData(`/mmovimientos`, "setDataTable", "guias", {
         headers: {
           filters: JSON.stringify({
@@ -1174,6 +1212,8 @@ export default {
           ? this.selectedAgencia.nb_agencia
           : this.selectedAgenciaDestino.nb_agencia;
       factArray.visible = this.selectedVisible;
+      factArray.visibleGuia = this.visibleGuia;
+      factArray.tipo = this.selectedTipo;
       factArray.chofer = this.selectedAgente.id
         ? this.selectedAgente.persona_responsable +
           " - C.I." +
@@ -1229,7 +1269,7 @@ export default {
       if (this.selectedTipo == "C") {
         this.confirmCostosPopUp = true;
         await this.until((_) => this.confirmCostos);
-        if (this.confirmCostos == 'true') {
+        if (this.confirmCostos == "true") {
           this.confirmCostos = false;
           if (this.selectedAgenciaDestino.length == 0) {
             this.$q.notify({
