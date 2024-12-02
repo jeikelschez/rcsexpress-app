@@ -1343,7 +1343,7 @@
             >
               <q-btn
                 label="Actualizar Cliente"
-                :disable="this.disableInputs  || this.disableGuia"
+                :disable="this.disableInputs || this.disableGuia"
                 type="submit"
                 color="primary"
                 class="col-md-5 col-sm-5 col-xs-12"
@@ -1645,7 +1645,8 @@
                       v-money="moneyNotDecimal"
                       input-class="text-right"
                       :rules="[
-                        (val) => this.$refs.rulesVue.isReqCurrency(val, ''),
+                        (val) =>
+                          this.$refs.rulesVue.isReqCurrencyWithZero(val, ''),
                         (val) => this.$refs.rulesVue.isMax(val, 3, ''),
                       ]"
                       hide-buttom-space
@@ -1664,7 +1665,8 @@
                       :tabindex="6"
                       :disable="this.disableGuia"
                       :rules="[
-                        (val) => this.$refs.rulesVue.isReqCurrency(val, ''),
+                        (val) =>
+                          this.$refs.rulesVue.isReqCurrencyWithZero(val, ''),
                         (val) => this.$refs.rulesVue.isMax(val, 9, ''),
                       ]"
                       v-money="money"
@@ -2535,19 +2537,21 @@
                 </q-input>
               </div>
               <div class="col-md-6 col-xs-6">
-                <q-select
+                <q-input
                   outlined
                   v-model="form.desc_contenido"
-                  label="Contenido"
+                  label="Dimensiones"
                   :tabindex="25"
                   :disable="this.disableGuia"
-                  hint=""
                   dense
                   style="padding-bottom: 10px"
-                  :options="contenido"
+                  hint=""
+                  @update:model-value="
+                    form.desc_contenido = form.desc_contenido.toUpperCase()
+                  "
                   lazy-rules
                 >
-                </q-select>
+                </q-input>
               </div>
             </div>
             <div class="row col-md-12 col-xs-12">
@@ -2564,7 +2568,7 @@
                   v-money="money"
                   input-class="text-right"
                   :rules="[
-                    (val) => this.$refs.rulesVue.isReqCurrency(val, ''),
+                    (val) => this.$refs.rulesVue.isReqCurrencyWithZero(val, ''),
                     (val) => this.$refs.rulesVue.isMax(val, 9, ''),
                   ]"
                   class="pcform"
@@ -5056,9 +5060,6 @@ export default {
           if (this.checkbox.normal == "1") form.tipo_urgencia = "N";
           if (this.checkbox.emergencia == "1") form.tipo_urgencia = "E";
           form.modalidad_pago = form.modalidad_pago.value;
-          form.desc_contenido = form.desc_contenido
-            ? form.desc_contenido.value
-            : null;
           form.pagado_en = form.pagado_en.value;
 
           if (form.fecha_envio)
