@@ -251,6 +251,7 @@ import { ref } from "vue";
 import { LocalStorage } from "quasar";
 import userLogoutVue from "src/components/userLogout.vue";
 import methodsVue from "src/components/methods.vue";
+import { api } from "boot/axios";
 
 export default {
   emits: ["changeTitle", "mouseover"],
@@ -270,6 +271,10 @@ export default {
       miniState: false,
       intervalLogout: null,
       dashboard: this.$t("Menu.dashboard"),
+      form: {
+        username: "",
+        token: "",
+      },
     };
   },
   mounted() {
@@ -355,7 +360,7 @@ export default {
             clearInterval(interval);
             LocalStorage.remove("currentTime");
             LocalStorage.remove("targetTime");
-            _this.$refs.component.refreshToken();
+            _this.refreshToken();
             _this.refreshTimer();
           } else {
             currentTime = new Date();
@@ -372,19 +377,39 @@ export default {
         localStorage.setItem("currentTime", currentTime);
       };
     },
+    refreshToken() {
+      if (LocalStorage.getItem("user") === true) {
+        this.form.username = LocalStorage.getItem("usuario");
+        this.form.token = LocalStorage.getItem("refreshToken");
+        api
+          .post(`/usuarios/refresh`, this.form)
+          .then((res) => {
+            if ((res.status = 201)) {
+              LocalStorage.set("token", `${res.data.data.accessToken}`),
+                this.refreshTimer();
+            }
+          })
+          .catch((err) => {
+            $q.notify({
+              message: err.response.data.statusCode,
+              color: "red",
+            });
+          });
+      }
+    },
     resetLogoutTimer() {
       clearInterval(this.intervalLogout);
       LocalStorage.remove("currentTimeLogout");
       LocalStorage.remove("targetTimeLogout");
       var currentTime = new Date();
-      var targetTime = new Date(currentTime.getTime() + 5 * 60000);
+      var targetTime = new Date(currentTime.getTime() + 10 * 60000);
       localStorage.setItem("currentTimeLogout", currentTime);
       localStorage.setItem("targetTimeLogout", targetTime);
       this.logoutTimer();
     },
     logoutTimer() {
       let _this = this;
-      let minutes = 5;
+      let minutes = 10;
       let currentTime = localStorage.getItem("currentTimeLogout");
       let targetTime = localStorage.getItem("targetTimeLogout");
       if (targetTime == null && currentTime == null) {

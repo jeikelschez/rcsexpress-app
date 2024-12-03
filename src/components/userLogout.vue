@@ -55,9 +55,10 @@ export default {
             LocalStorage.set("token", `${res.data.data.accessToken}`),
             LocalStorage.set("user", true),
             this.traducirToken();
-            this.setRefreshTimer();
+            this.refreshTimer();
           }
         }).catch((err) => {
+          console.log(err)
           if (err.response) this.error = err.response.data.statusCode;
           if ((this.error = "404")) this.errorDelServidor();
         });
