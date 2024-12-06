@@ -2656,18 +2656,18 @@ export default {
           this.form.monto_imp_nacional = (
             (this.parseFloatN(this.curReplace(this.form.monto_base_nacional)) *
               parseFloat(this.iva)) /
-            100
+            10
           ).toFixed(2);
           this.form.base_imponible_retencion = (
             (this.parseFloatN(this.curReplace(this.form.monto_base_nacional)) *
               parseFloat(this.iva)) /
-            100
+            10
           ).toFixed(2);
         } else {
           this.form.monto_imp_intern = (
             (this.parseFloatN(this.curReplace(this.form.monto_base_intern)) *
               parseFloat(this.imp_intern)) /
-            100
+            10
           ).toFixed(2);
         }
         this.calculaTotales();
