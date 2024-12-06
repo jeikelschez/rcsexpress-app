@@ -691,12 +691,7 @@
                     style="padding-bottom: 10px"
                     class="pcform"
                     lazy-rules
-                    :disable="
-                      this.selectedProveedor.length == 0 ||
-                      this.selectedTipo.value == 'RE'
-                        ? true
-                        : false
-                    "
+                    :readonly="true"
                     @update:model-value="setBaseRetencion()"
                   >
                   </q-input>
@@ -2675,16 +2670,16 @@ export default {
     },
     // Metodo para validar el monto retencion
     async setBaseRetencion() {
-      if (
+      /*if (
         this.parseFloatN(this.curReplace(this.form.base_imponible_retencion)) >
-        this.parseFloatN(this.curReplace(this.form.total_documento))
+        this.parseFloatN(this.curReplace(this.form.total_documento)) * 10
       ) {
         this.$q.notify({
           message: "Monto Base a Retener es mayor al Total del Documento",
           color: "red",
         });
         this.form.base_imponible_retencion = "0,00";
-      }
+      }*/
 
       this.form.saldo_retenido = (
         ((await this.parseFloatN(
