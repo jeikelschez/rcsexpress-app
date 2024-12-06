@@ -1102,18 +1102,18 @@
                   fill-input
                   input-debounce="0"
                   :options="unidades"
-                  option-label="descripcion"
+                  option-label="unidad_desc"
                   option-value="id"
                   v-model="props.row.cod_transporte"
                 >
                   <template v-slot:selected-item="scope">
                     {{
                       props.row.cod_transporte.id
-                        ? props.row.cod_transporte.descripcion
+                        ? props.row.cod_transporte.unidad_desc
                         : this.findIndex(
                             "unidades",
                             props.row.cod_transporte,
-                            "descripcion"
+                            "unidad_desc"
                           )
                     }}
                   </template>
