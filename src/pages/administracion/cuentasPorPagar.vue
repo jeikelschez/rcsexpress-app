@@ -1062,7 +1062,7 @@
                   hide-selected
                   fill-input
                   input-debounce="0"
-                  option-label="nb_tipo_retencion"
+                  option-label="codigo_desc"
                   option-value="id"
                   v-model="fIslr.cod_tipo_retencion"
                   outlined
@@ -1493,7 +1493,7 @@
                     findIndex(
                       "retenciones",
                       props.row.cod_tipo_retencion,
-                      "nb_tipo_retencion"
+                      "codigo_desc"
                     )
                   }}
                 </q-td>
