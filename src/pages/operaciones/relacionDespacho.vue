@@ -1277,7 +1277,7 @@ export default {
                 "Debe seleccionar al menos un Destino para cargar el Costo",
               color: "red",
             });
-            this.$refs.webViewer.confirmPrint = false;
+            this.$refs.webViewer.confirmPrint = "false";
             this.pdfView = false;
             this.dialog = true;
             return;
@@ -1288,7 +1288,7 @@ export default {
                 "Debe seleccionar el Chofer y el Vehículo para cargar el Costo",
               color: "red",
             });
-            this.$refs.webViewer.confirmPrint = false;
+            this.$refs.webViewer.confirmPrint = "false";
             this.pdfView = false;
             this.dialog = true;
             return;
@@ -1299,7 +1299,7 @@ export default {
                 "El Chofer no existe para la Agencia principal de Costos",
               color: "red",
             });
-            this.$refs.webViewer.confirmPrint = false;
+            this.$refs.webViewer.confirmPrint = "false";
             this.pdfView = false;
             this.dialog = true;
             return;
@@ -1309,7 +1309,7 @@ export default {
         }
       }
       this.confirmCostos = false;
-      this.$refs.webViewer.confirmPrint = true;
+      this.$refs.webViewer.confirmPrint = "true";
     },
     // Metodo para buscar costos por chofer y vehiculo de ese dia
     async findCostos() {

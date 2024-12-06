@@ -65,8 +65,8 @@ export default {
               onClick: async () => {
                 if (wait) {
                   this.$emit("printPdf");
-                  await this.until((_) => this.confirmPrint == true);
-                  if (!this.confirmPrint) {
+                  await this.until((_) => this.confirmPrint);
+                  if (this.confirmPrint == "false") {
                     return;
                   }
                 }
