@@ -169,7 +169,7 @@
               </div>
               <div
                 class="col-md-4 col-xs-12"
-                style="margin-bottom: 10px; padding-left: 15px"
+                style="margin-bottom: 10px; padding-left: 10px"
               >
                 <q-btn-toggle
                   v-model="selectedNeta"
@@ -186,7 +186,7 @@
               </div>
               <div
                 class="col-md-1 col-xs-12"
-                style="margin-bottom: 10px; padding-left: 30px"
+                style="margin-bottom: 10px; padding-left: 10px"
               >
                 <q-checkbox
                   v-model="selectedDolar"
@@ -195,13 +195,25 @@
                   left-label
                 />
               </div>
-              <div class="col-md-2 col-xs-12" style="margin-bottom: 10px">
+              <div class="col-md-1 col-xs-12" style="margin-bottom: 10px">
                 <q-checkbox
                   v-model="visibleGuia"
                   label="Guía"
                   color="primary"
                   left-label
                   :disable="this.selectedTipo == 'C' ? false : true"
+                />
+              </div>
+              <div
+                v-show="this.selectedTipo == 'C' ? true : false"
+                class="col-md-1 col-xs-12"
+                style="margin-bottom: 10px; padding-left: 15px"
+              >
+                <q-btn
+                  round
+                  color="primary"
+                  icon="description"
+                  @click="dialogObservacion = true"
                 />
               </div>
             </div>
@@ -223,6 +235,14 @@
               />
             </div>
           </q-form>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog v-model="dialogObservacion">
+      <q-card class="q-pa-md" bordered style="width: 600px; max-width: 120vw;">
+        <q-card-section>
+          <q-input v-model="observacion" filled type="textarea" />
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -1050,6 +1070,7 @@ export default {
       confirmCostos: false,
       confirmMezclar: false,
       visibleGuia: true,
+      observacion: "",
     };
   },
   setup() {
@@ -1060,6 +1081,7 @@ export default {
       dialog: ref(false),
       dialogAgencias: ref(false),
       dialogFecha: ref(false),
+      dialogObservacion: ref(false),
       pdfView: ref(false),
       confirmCostosPopUp: ref(false),
       confirmMezclarPopUp: ref(false),
@@ -1234,6 +1256,7 @@ export default {
       factArray.tipoReporte = this.selectedReporte;
       factArray.sortBy = this.pagination.sortBy;
       factArray.nombreReporte = this.nombreReporte;
+      factArray.observacion = this.observacion;
 
       api
         .get(`/pdfreports/relacionDespacho`, {
@@ -1560,6 +1583,7 @@ export default {
       this.selectedNeta = "K";
       this.fecha_desde = moment().format("DD/MM/YYYY");
       this.fecha_hasta = moment().format("DD/MM/YYYY");
+      this.observacion = "";
     },
     // Metodo para que una funcion no avance hasta que se cumpla una condicion
     async until(conditionFunction) {
