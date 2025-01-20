@@ -431,8 +431,8 @@ export default {
         flag_activo: [],
       },
       estatus: [
-        { label: "ACTIVO", value: "A" },
-        { label: "INACTIVO", value: "I" },
+        { label: "ACTIVO", value: 1 },
+        { label: "INACTIVO", value: 0 },
       ],
       pagination: {
         rowsPerPage: 10,
