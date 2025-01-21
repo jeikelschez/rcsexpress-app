@@ -50,6 +50,7 @@
                   agencia: this.selectedAgencia.id,
                 },
               });
+              getDataTable();
             "
             ><template v-slot:no-option>
               <q-item>
@@ -106,6 +107,7 @@
                   },
                 }
               );
+              getDataTable();
             "
             ><template v-slot:no-option>
               <q-item>
@@ -125,7 +127,7 @@
         >
           <q-input
             outlined
-            label="Desde"
+            label="Fecha Desde"
             hint=""
             dense
             rounded
@@ -134,6 +136,7 @@
             lazy-rules
             mask="##/##/####"
             :rules="[(val) => this.$refs.rulesVue.checkDate(val)]"
+            @keyup.enter="getDataTable()"
           >
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
@@ -148,6 +151,7 @@
                     style="padding-bottom: 0px"
                     @update:model-value="
                       this.$refs.qDateProxy.hide();
+                      getDataTable();
                     "
                   ></q-date>
                 </q-popup-proxy>
@@ -161,7 +165,7 @@
         >
           <q-input
             outlined
-            label="Hasta"
+            label="Fecha Hasta"
             hint=""
             dense
             rounded
@@ -170,6 +174,7 @@
             lazy-rules
             mask="##/##/####"
             :rules="[(val) => this.$refs.rulesVue.checkDate(val)]"
+            @keyup.enter="getDataTable()"
           >
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
@@ -184,6 +189,7 @@
                     style="padding-bottom: 0px"
                     @update:model-value="
                       this.$refs.qDateProxy.hide();
+                      getDataTable();
                     "
                   ></q-date>
                 </q-popup-proxy>
@@ -203,6 +209,7 @@
             outlined
             standout
             label="NRO. Guia"
+            @update:model-value="getDataTable()"
           >
           </q-input>
         </div>
@@ -243,6 +250,7 @@
             outlined
             standout
             label="Cliente Origen"
+            @update:model-value="getDataTable()"
             ><template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey">
@@ -290,6 +298,7 @@
             outlined
             standout
             label="Cliente Destino"
+            @update:model-value="getDataTable()"
             ><template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey">
@@ -325,6 +334,7 @@
             outlined
             standout
             label="Estatus"
+            @update:model-value="getDataTable()"
             ><template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey">
@@ -347,6 +357,7 @@
             dense
             style="padding-left: 0px"
             v-model="checkTransito"
+            @update:model-value="getDataTable()"
           >
             <template v-slot:control>
               <q-checkbox
@@ -356,6 +367,7 @@
                 false-value="0"
                 style="font-size: 13px"
                 label="TRANSITO"
+                @update:model-value="getDataTable()"
               />
             </template>
           </q-field>
@@ -415,24 +427,6 @@
               transition-hide="scale"
               color="primary"
               >Imprimir Reporte</q-tooltip
-            >
-          </q-btn>
-          <q-btn
-            dense
-            color="primary"
-            round
-            padding="sm"
-            @click="this.getDataTable()"
-            style="margin-right: 15px"
-          >
-            <q-icon size="25px" name="input" color="white"> </q-icon>
-            <q-tooltip
-              class="bg-primary"
-              style="max-height: 30px"
-              transition-show="scale"
-              transition-hide="scale"
-              color="primary"
-              >Generar</q-tooltip
             >
           </q-btn>
         </div>
@@ -599,7 +593,7 @@
                     :options="estatusOperativo"
                     option-label="label"
                     option-value="value"
-                    style="font-size: 13px;"
+                    style="font-size: 13px"
                     v-model="props.row.estatus_operativo"
                   >
                     <template v-slot:selected-item="scope">
@@ -631,7 +625,12 @@
                             -1
                         ),
                     ]"
-                    style="margin-top: -20px; min-width: 150px; max-height: 15px; font-size: 13px;"
+                    style="
+                      margin-top: -20px;
+                      min-width: 150px;
+                      max-height: 15px;
+                      font-size: 13px;
+                    "
                   />
                 </div>
                 <div v-else-if="col.name == 'ci_persona_recibio'">
@@ -639,7 +638,7 @@
                     dense
                     outlined
                     v-model="props.row.ci_persona_recibio"
-                    lazy-rules                    
+                    lazy-rules
                     :rules="[
                       (val) =>
                         formRules(
@@ -651,7 +650,12 @@
                             -1
                         ),
                     ]"
-                    style="margin-top: -20px; min-width: 100px; max-height: 15px; font-size: 13px;"
+                    style="
+                      margin-top: -20px;
+                      min-width: 100px;
+                      max-height: 15px;
+                      font-size: 13px;
+                    "
                   />
                 </div>
                 <div v-else-if="col.name == 'fecha_recepcion'">
@@ -672,7 +676,12 @@
                         ),
                     ]"
                     mask="##/##/####"
-                    style="margin-top: -20px; min-width: 150px; max-height: 15px; font-size: 13px;"
+                    style="
+                      margin-top: -20px;
+                      min-width: 150px;
+                      max-height: 15px;
+                      font-size: 13px;
+                    "
                   >
                     <template v-slot:append>
                       <q-icon name="event" class="cursor-pointer">
@@ -700,18 +709,12 @@
                     v-model="props.row.hora_recepcion"
                     lazy-rules
                     mask="time"
-                    :rules="[
-                      (val) =>
-                        formRules(
-                          val,
-                          'hora_recepcion',
-                          ((this.pagination.page - 1) *
-                            this.pagination.rowsPerPage -
-                            props.rowIndex) *
-                            -1
-                        ),
-                    ]"
-                    style="margin-top: -20px; min-width: 100px; max-height: 15px; font-size: 13px;"
+                    style="
+                      margin-top: -20px;
+                      min-width: 100px;
+                      max-height: 15px;
+                      font-size: 13px;
+                    "
                   >
                     <template v-slot:append>
                       <q-icon name="access_time" class="cursor-pointer">
@@ -749,7 +752,7 @@
                     fill-input
                     input-debounce="0"
                     :options="this.agentes[props.row.cod_agencia_dest - 1]"
-                    option-label="persona_responsable"
+                    option-label="agente_id"
                     option-value="id"
                     :loading="agentesLoading"
                     :disable="agentesLoading"
@@ -765,7 +768,12 @@
                             -1
                         ),
                     ]"
-                    style="margin-top: -20px; min-width: 250px; max-height: 15px; font-size: 13px;"
+                    style="
+                      margin-top: -20px;
+                      min-width: 250px;
+                      max-height: 15px;
+                      font-size: 13px;
+                    "
                   >
                     <template v-slot:selected-item="scope">
                       {{
@@ -817,7 +825,7 @@
                     option-label="desc_concepto"
                     option-value="id"
                     v-model="props.row.cod_motivo_retraso"
-                    style="min-width: 250px; font-size: 13px;"
+                    style="min-width: 250px; font-size: 13px"
                   >
                     <template v-slot:selected-item="scope">
                       {{
@@ -859,7 +867,12 @@
                         ),
                     ]"
                     mask="##/##/####"
-                    style="margin-top: -20px; min-width: 150px; max-height: 15px; font-size: 13px;"
+                    style="
+                      margin-top: -20px;
+                      min-width: 150px;
+                      max-height: 15px;
+                      font-size: 13px;
+                    "
                   >
                     <template v-slot:append>
                       <q-icon name="event" class="cursor-pointer">
@@ -886,7 +899,12 @@
                     outlined
                     v-model="props.row.observacion_entrega"
                     lazy-rules
-                    style="margin-top: -20px; min-width: 350px; max-height: 15px; font-size: 13px;"
+                    style="
+                      margin-top: -20px;
+                      min-width: 350px;
+                      max-height: 15px;
+                      font-size: 13px;
+                    "
                     :rules="[(val) => this.$refs.rulesVue.isMax(val, 200)]"
                   />
                 </div>
@@ -1171,7 +1189,7 @@
                         fill-input
                         input-debounce="0"
                         :options="this.agentes[props.row.cod_agencia_dest - 1]"
-                        option-label="persona_responsable"
+                        option-label="agente_id"
                         option-value="id"
                         :loading="agentesLoading"
                         :disable="agentesLoading"
