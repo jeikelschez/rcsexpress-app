@@ -1336,6 +1336,7 @@ export default {
     },
     // Metodo para buscar costos por chofer y vehiculo de ese dia
     async findCostos() {
+      this.costo = [];
       this.dialogFecha = false;
       let flagCosto = false;
       await api
@@ -1369,7 +1370,6 @@ export default {
     },
     // Metodo para mezclar los Costos
     async mezclarCosto() {
-      this.pdfView = false;
       this.loading = true;
       let destino = this.costo[0].destino;
       if (this.selectedAgenciaDestino.length) {
@@ -1467,7 +1467,6 @@ export default {
     },
     // Metodo para Crear el Costo
     async crearCosto() {
-      this.pdfView = false;
       this.loading = true;
       let destino = "";
       if (this.selectedAgenciaDestino.length) {
