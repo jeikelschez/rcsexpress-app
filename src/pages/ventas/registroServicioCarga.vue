@@ -3809,8 +3809,9 @@ export default {
             }
 
             this.detalle_movimiento[0].cantidad = kgr_minimos / 100;
-            this.detalle_movimiento[0].precio_unitario =
-            (this.parseFloatN(monto_basico) / this.parseFloatN(kgr_minimos)).toFixed(2);
+            this.detalle_movimiento[0].precio_unitario = (
+              this.parseFloatN(monto_basico) / this.parseFloatN(kgr_minimos)
+            ).toFixed(2);
             this.detalle_movimiento[0].importe_renglon =
               this.parseFloatN(monto_basico).toFixed(2);
           })
@@ -6012,8 +6013,7 @@ export default {
           .check_impuesto;
         let check_comision = await this.detalle_movimiento[i].conceptos
           .check_comision;
-        let cod_concepto_oper = await this.detalle_movimiento[i].conceptos
-          .cod_concepto;
+        let cod_concepto_oper = await this.detalle_movimiento[i].cod_concepto_oper;
 
         subtotal += this.parseFloatN(importe_renglon);
         monto_base +=

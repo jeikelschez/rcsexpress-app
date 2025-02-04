@@ -758,7 +758,7 @@ export default {
         {
           name: "comision_entrega",
           label: "Comisión Entrega",
-          field: "comision_entrega",
+          field: "com_entrega",
           align: "right",
           format: (val) =>
             new Intl.NumberFormat("de-DE", {
@@ -773,7 +773,7 @@ export default {
         {
           name: "comision_seguro",
           label: "Comisión Seguro",
-          field: "comision_seguro",
+          field: "com_seguro",
           align: "right",
           format: (val) =>
             new Intl.NumberFormat("de-DE", {
@@ -986,7 +986,7 @@ export default {
       this.pagination.rowsPerPage = res.limit;
       this.loading = false;
       this.selected = this.guias;
-      if (this.guias.length > 0) this.calculaTotales();
+      //if (this.guias.length > 0) this.calculaTotales();
     },
     // Construye la data de la tabla
     buildData(field, row) {
