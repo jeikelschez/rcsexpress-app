@@ -471,7 +471,7 @@
 
     <methods
       ref="methods"
-      @set-Data-Agencias="setDataAgencias"
+      @set-Data="setData"
       @get-Data-Clientes="getDataClientes"
       @set-Data-Clientes="setDataClientes"
       @get-Data-Table="getDataTable"
@@ -589,7 +589,12 @@ export default {
   },
   mounted() {
     this.$emit("changeTitle", "SCEN - Ventas - Emitir Carta de Cliente", "");
-    this.$refs.methods.getData("/agencias", "setDataAgencias", "agencias");
+    this.$refs.methods.getData("/agencias", "setData", "agencias", {
+      headers: {
+        order_by: "nb_agencia",
+        order_direction: "ASC",
+      },
+    });
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
@@ -642,10 +647,8 @@ export default {
     // METODOS DE PAGINA
 
     // Metodos para Setear Datos de Agencias
-    setDataAgencias(res, dataRes) {
+    setData(res, dataRes) {
       this[dataRes] = res.data;
-      this.selectedAgencia = this.agencias[0];
-      this.getDataClientes();
     },
     // Metodo para Extraer Todos las facturas y de alli los clientes
     getDataClientes() {
@@ -778,10 +781,9 @@ export default {
       this.clientes = [];
       this.selectedCliente = [];
       this.selectedTipo = "C";
-      this.selectedAgencia = this.agencias[0];
+      this.selectedAgencia = [];
       this.fecha_desde = moment().subtract(7, "days").format("DD/MM/YYYY");
       this.fecha_hasta = moment().format("DD/MM/YYYY");
-      this.getDataClientes();
     },
     // Imprimir Carta
     print() {

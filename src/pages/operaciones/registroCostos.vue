@@ -751,6 +751,9 @@
                 headers: {
                   Authorization: ``,
                   agencia: this.selectedAgencia.id,
+                  activo: 'S',
+                  order_by: 'persona_responsable',
+                  order_direction: 'ASC',
                 },
               });
               getDataTable();
@@ -1751,11 +1754,10 @@ export default {
   },
   mounted() {
     this.$emit("changeTitle", "SCEN - Operaciones - Registro de Costos", "");
-    this.$refs.methods.getData("/agencias", "setDataInit", "agencias");
-    this.$refs.methods.getData("/agentes", "setData", "agentes", {
+    this.$refs.methods.getData("/agencias", "setDataInit", "agencias", {
       headers: {
-        agencia: 1,
-        activo: "S",
+        order_by: "nb_agencia",
+        order_direction: "ASC",
       },
     });
     this.$refs.methods.getData("/unidades", "setData", "unidades");
@@ -1764,6 +1766,8 @@ export default {
       headers: {
         tipo_servicio: "TP",
         activo: "S",
+        order_by: "nb_proveedor",
+        order_direction: "ASC",
       },
     });
     this.$refs.methods.getData("/coperacion", "setData", "conceptos", {
@@ -1824,7 +1828,6 @@ export default {
     // Metodo para Setear Datos Generales
     async setDataInit(res, dataRes) {
       this[dataRes] = res.data ? res.data : res;
-      this.selectedAgencia = this.agencias[0];
       this.getDataTable();
     },
     // Metodo para Extraer Datos de Tabla
@@ -2388,7 +2391,7 @@ export default {
     },
     // Metodo para resetaer la data de los filtros
     resetFilters() {
-      this.selectedAgencia = this.agencias[0];
+      this.selectedAgencia = [];
       this.fecha_desde = moment().format("DD/MM/YYYY");
       this.fecha_hasta = moment().format("DD/MM/YYYY");
       this.getDataTable();

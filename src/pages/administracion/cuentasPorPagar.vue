@@ -165,7 +165,7 @@
             round
             padding="sm"
             @click="
-              this.selectedAgencia = this.agencias[0];
+              this.selectedAgencia = [];
               this.selectedProveedor = [];
               this.selectedTipo = this.tipos[0];
               resetFilters();
@@ -1790,11 +1790,18 @@ export default {
   },
   mounted() {
     this.$emit("changeTitle", "SCEN - Administración - Cuentas por Pagar", "");
-    this.$refs.methods.getData("/agencias", "setDataInit", "agencias");
+    this.$refs.methods.getData("/agencias", "setDataInit", "agencias", {
+      headers: {
+        order_by: "nb_agencia",
+        order_direction: "ASC",
+      },
+    });
     this.$refs.methods.getData("/bancos", "setData", "bancos");
     this.$refs.methods.getData("/proveedores", "setData", "proveedores", {
       headers: {
         activo: "S",
+        order_by: "nb_proveedor",
+        order_direction: "ASC",
       },
     });
 
@@ -1861,7 +1868,6 @@ export default {
     // Metodos para Setear Datos al Iniciar
     setDataInit(res, dataRes) {
       this[dataRes] = res.data;
-      this.selectedAgencia = this.agencias[0];
       this.selectedTipo = this.tipos[0];
       this.form.selectedForma = this.formaPago[1];
       this.form.selectedTipoConcepto = this.tipoConcepto[1];
@@ -2603,7 +2609,7 @@ export default {
         });
       }
 
-      this.selectedAgencia = this.agencias[0];
+      this.selectedAgencia = [];
       this.beneficiario = this.selectedProveedor.nb_beneficiario
       this.selectedProveedor = [];
       this.selectedTipo = this.tipos[0];

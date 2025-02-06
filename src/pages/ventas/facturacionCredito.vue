@@ -2096,7 +2096,7 @@ export default {
       ultNroControl: "",
       ultNroInterno: "",
       ultNroRef: "",
-      clientesLoading: true,
+      clientesLoading: false,
       monto_subtotal: 0,
       monto_base: 0,
       monto_impuesto: 0,
@@ -2144,7 +2144,12 @@ export default {
       "SCEN - Ventas - Facturacion Credito, Contado y Otros",
       ""
     );
-    this.$refs.methods.getData("/agencias", "setDataInit", "agencias");
+    this.$refs.methods.getData("/agencias", "setDataInit", "agencias", {
+      headers: {
+        order_by: "nb_agencia",
+        order_direction: "ASC",
+      },
+    });
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
         rol: LocalStorage.getItem("tokenTraducido").usuario.roles.id,
@@ -2203,15 +2208,7 @@ export default {
     // Metodos para Setear Datos al Iniciar
     setDataInit(res, dataRes) {
       this[dataRes] = res.data;
-      this.selectedAgencia = this.agencias[0];
-      this.selectedTipo = this.tipoFacturacion[2];
       this.selectedForma = this.formaPago[0];
-      this.$refs.methods.getData(`/clientes`, "setData", "clientes", {
-        headers: {
-          agencia: this.selectedAgencia.id,
-          activo: "S",
-        },
-      });
 
       // Seteamos los tipos de concepto
       api
@@ -3291,8 +3288,8 @@ export default {
     // Metodo para limpiar los filtros
     resetFilters() {
       this.resetForm();
-      this.selectedAgencia = this.agencias[0];
-      this.selectedTipo = this.tipoFacturacion[2];
+      this.selectedAgencia = [];
+      this.selectedTipo = [];
       this.selectedForma = this.formaPago[0];
       this.selectedConcepto = [];
       this.fechaSelected = moment().format("DD/MM/YYYY");
@@ -3310,13 +3307,7 @@ export default {
         observacion: "",
       };
       this.selectedCliente = [];
-      this.clientesLoading = true;
-      this.$refs.methods.getData(`/clientes`, "setData", "clientes", {
-        headers: {
-          agencia: this.selectedAgencia.id,
-          activo: "S",
-        },
-      });
+      this.clientes = [];
     },
     // Metodo para que una funcion no avance hasta que se cumpla una condicion
     async until(conditionFunction) {

@@ -501,6 +501,9 @@
               this.$refs.methods.getData(`/agentes`, 'setData', 'agentes', {
                 headers: {
                   agencia: this.selectedAgencia.id,
+                  activo: 'S',
+                  order_by: 'persona_responsable',
+                  order_direction: 'ASC',
                 },
               });
               this.$refs.methods.getData(`/clientes`, 'setData', 'clientes', {
@@ -823,7 +826,10 @@
             flat
             label="Cancelar"
             color="primary"
-            @click="this.loadingPage = false; this.confirmUpload = false"
+            @click="
+              this.loadingPage = false;
+              this.confirmUpload = false;
+            "
             v-close-popup
           />
           <q-btn
@@ -1233,7 +1239,12 @@ export default {
         pais: 1,
       },
     });
-    this.$refs.methods.getData("/agencias", "setDataInit", "agencias");
+    this.$refs.methods.getData("/agencias", "setDataInit", "agencias", {
+      headers: {
+        order_by: "nb_agencia",
+        order_direction: "ASC",
+      },
+    });
   },
   methods: {
     // Metodo para Filtrar Selects
@@ -1393,20 +1404,6 @@ export default {
     // Metodo para Actualizar Datos de Tabla
     setDataInit(res, dataRes) {
       this[dataRes] = res.data;
-      this.clientesLoading = true;
-      this.agentesLoading = true;
-      this.selectedAgencia = this.agencias[0];
-      this.$refs.methods.getData("/clientes", "setData", "clientes", {
-        headers: {
-          agencia: this.agencias[0].id,
-        },
-      });
-      this.$refs.methods.getData("/agentes", "setData", "agentes", {
-        headers: {
-          agencia: this.agencias[0].id,
-          activo: "S",
-        },
-      });
     },
     // Metodo para Setear Datos
     setData(res, dataRes) {

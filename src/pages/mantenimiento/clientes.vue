@@ -1346,7 +1346,12 @@ export default {
   },
   mounted() {
     this.$emit("changeTitle", "SCEN - Mantenimiento - Clientes", "");
-    this.$refs.methods.getData("/agencias", "setDataInit", "agencias");
+    this.$refs.methods.getData("/agencias", "setDataInit", "agencias", {
+      headers: {
+        order_by: "nb_agencia",
+        order_direction: "ASC",
+      },
+    });
     this.$refs.methods.getData("/paises", "setData", "paises");
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
@@ -1411,7 +1416,6 @@ export default {
     // Metodo para Setear Datos Iniciales
     setDataInit(res, dataRes) {
       this[dataRes] = res.data;
-      this.selectedAgencia = this.agencias[0];
       this.getDataTable();
     },
     // Metodo para Extraer Datos de Tabla

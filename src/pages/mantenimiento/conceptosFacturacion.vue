@@ -445,7 +445,6 @@ export default {
     // Metodo para Setear Datos al Iniciar
     setDataInit(res, dataRes) {
       this[dataRes] = res.data ? res.data : res;
-      this.selectedConcepto = this.conceptos[0];
       this.getDataTable();
     },
     // Metodo para Extraer Datos de Tabla

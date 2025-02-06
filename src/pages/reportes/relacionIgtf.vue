@@ -312,7 +312,12 @@ export default {
   mounted() {
     this.pdfPrint();
     this.$emit("changeTitle", "SCEN - Reportes - Relación de Comprobantes IGTF", "");
-    this.$refs.methods.getData("/agencias", "setData", "agencias");
+    this.$refs.methods.getData("/agencias", "setData", "agencias", {
+      headers: {
+        order_by: "nb_agencia",
+        order_direction: "ASC",
+      },
+    });
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {

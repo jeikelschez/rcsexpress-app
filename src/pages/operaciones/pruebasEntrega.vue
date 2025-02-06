@@ -1607,7 +1607,12 @@ export default {
   },
   mounted() {
     this.$emit("changeTitle", "SCEN - Operaciones - Pruebas de Entrega", "");
-    this.$refs.methods.getData("/agencias", "setDataInit", "agencias");
+    this.$refs.methods.getData("/agencias", "setDataInit", "agencias", {
+      headers: {
+        order_by: "nb_agencia",
+        order_direction: "ASC",
+      }
+    });
     this.$refs.methods.getData("/agentes", "setData", "agentes", {
       headers: {
         rol: LocalStorage.getItem("tokenTraducido").usuario.roles.id,

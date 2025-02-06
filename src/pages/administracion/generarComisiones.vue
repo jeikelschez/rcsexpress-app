@@ -58,6 +58,8 @@
                     ? this.selectedAgenciaDestino
                     : '',
                   activo: 'S',
+                  order_by: 'persona_responsable',
+                  order_direction: 'ASC',
                 },
               });
               this.getDataTable();
@@ -756,7 +758,7 @@ export default {
           align: "left",
         },
         {
-          name: "comision_entrega",
+          name: "com_entrega",
           label: "Comisión Entrega",
           field: "com_entrega",
           align: "right",
@@ -771,7 +773,7 @@ export default {
               .trim(),
         },
         {
-          name: "comision_seguro",
+          name: "com_seguro",
           label: "Comisión Seguro",
           field: "com_seguro",
           align: "right",
@@ -852,10 +854,17 @@ export default {
   },
   mounted() {
     this.$emit("changeTitle", "SCEN - Administración - Generar Comisiones", "");
-    this.$refs.methods.getData("/agencias", "setDataInit", "agencias");
+    this.$refs.methods.getData("/agencias", "setDataInit", "agencias", {
+      headers: {
+        order_by: "nb_agencia",
+        order_direction: "ASC",
+      },
+    });
     this.$refs.methods.getData("/agentes", "setData", "agentesAll", {
       headers: {
         activo: "S",
+        order_by: "persona_responsable",
+        order_direction: "ASC",
       },
     });
 
@@ -942,6 +951,8 @@ export default {
                 agencia: this.selectedAgenciaDestino[i],
                 responsable: this.selectedAgente.persona_responsable,
                 activo: "S",
+                order_by: "persona_responsable",
+                order_direction: "ASC",
               },
             })
             .then((res) => {
@@ -986,7 +997,7 @@ export default {
       this.pagination.rowsPerPage = res.limit;
       this.loading = false;
       this.selected = this.guias;
-      //if (this.guias.length > 0) this.calculaTotales();
+      if (this.guias.length > 0) this.calculaTotales();
     },
     // Construye la data de la tabla
     buildData(field, row) {
@@ -1032,7 +1043,7 @@ export default {
             desde: this.fecha_desde,
             hasta: this.fecha_hasta,
             dolar: this.selectedDolar,
-            group: this.selectedAgrup
+            group: this.selectedAgrup,
           },
         })
         .then((res) => {
@@ -1057,12 +1068,12 @@ export default {
       this.printData = [];
     },
     async exportExcel() {
-      this.pdfView = false
+      this.pdfView = false;
       this.loading = true;
 
       for (var i = 0; i < this.selected.length; i++) {
         this.selectedId.push(this.selected[i].id);
-      }   
+      }
 
       await api
         .get(`/excelreports/comisiones`, {
@@ -1083,7 +1094,7 @@ export default {
             return;
           }
           const link = document.createElement("a");
-          link.href = `${process.env.apiPath}/excelReports/loadExcel/${res.data.excelPath}`; 
+          link.href = `${process.env.apiPath}/excelReports/loadExcel/${res.data.excelPath}`;
           link.setAttribute("download", "file.xlsx");
           setTimeout(() => {
             link.click();
@@ -1105,13 +1116,19 @@ export default {
       let agente_entrega = 0;
       let agente_seguro = 0;
       for (var i = 0; i < this.guias.length; i++) {
-        total += this.parseFloatN(this.curReplace(this.guias[i].monto_total));
-        entrega += this.parseFloatN(
-          this.curReplace(this.guias[i].comision_entrega)
-        );
-        seguro += this.parseFloatN(
-          this.curReplace(this.guias[i].comision_seguro)
-        );
+        total +=
+          this.guias[i].monto_total
+            ? this.parseFloatN(this.curReplace(this.guias[i].monto_total))
+            : 0;
+        entrega +=
+          this.guias[i].com_entrega
+            ? this.parseFloatN(this.curReplace(this.guias[i].com_entrega))
+            : 0;
+            console.log(entrega)
+        seguro +=
+          this.guias[i].com_seguro
+            ? this.parseFloatN(this.curReplace(this.guias[i].com_seguro))
+            : 0;
         if (
           i > 0 &&
           this.guias[i].cod_agencia_dest +
@@ -1134,12 +1151,14 @@ export default {
           agente_entrega = 0;
           agente_seguro = 0;
         }
-        agente_entrega += this.parseFloatN(
-          this.curReplace(this.guias[i].comision_entrega)
-        );
-        agente_seguro += this.parseFloatN(
-          this.curReplace(this.guias[i].comision_seguro)
-        );
+        agente_entrega +=
+          this.guias[i].com_entrega
+            ? this.parseFloatN(this.curReplace(this.guias[i].com_entrega))
+            : 0;
+        agente_seguro +=
+          this.guias[i].com_seguro
+            ? this.parseFloatN(this.curReplace(this.guias[i].com_seguro))
+            : 0;
       }
       this.agentesEntrega[
         this.guias[this.guias.length - 1].cod_agencia_dest +

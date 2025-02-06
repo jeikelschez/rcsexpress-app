@@ -1887,6 +1887,9 @@
                             headers: {
                               Authorization: ``,
                               agencia: this.form.cod_agencia.id,
+                              activo: 'S',
+                              order_by: 'persona_responsable',
+                              order_direction: 'ASC',
                             },
                           }
                         );
@@ -3379,7 +3382,7 @@ export default {
     pdfview() {
       this.$refs.webViewer.showpdf("", res.data.base64);
     },
-    // Metodo para mostart el Detalle de Documento
+    // Metodo para mostar el Detalle de Documento
     showDetalle() {
       if (!this.agencias[0]) {
         this.$q.notify({
@@ -4416,6 +4419,8 @@ export default {
           .get(`/agencias`, {
             headers: {
               Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              order_by: "nb_agencia",
+              order_direction: "ASC",
             },
           })
           .then((res) => {
@@ -4459,6 +4464,9 @@ export default {
             headers: {
               Authorization: `Bearer ${LocalStorage.getItem("token")}`,
               agencia: this.form.cod_agencia.id,
+              activo: "S",
+              order_by: "persona_responsable",
+              order_direction: "ASC",
             },
           })
           .then((res) => {
@@ -4726,6 +4734,8 @@ export default {
           .get(`/agencias`, {
             headers: {
               Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              order_by: "nb_agencia",
+              order_direction: "ASC",
             },
           })
           .then((res) => {
@@ -4747,7 +4757,15 @@ export default {
           });
 
         await api
-          .get(`/agentes`, axiosConfig)
+          .get(`/agentes`, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              agencia: cod_agencia,
+              activo: "S",
+              order_by: "persona_responsable",
+              order_direction: "ASC",
+            },
+          })
           .then((res) => {
             this.agentes = res.data.data;
             if (cod_agente_venta) {
@@ -6013,7 +6031,8 @@ export default {
           .check_impuesto;
         let check_comision = await this.detalle_movimiento[i].conceptos
           .check_comision;
-        let cod_concepto_oper = await this.detalle_movimiento[i].cod_concepto_oper;
+        let cod_concepto_oper = await this.detalle_movimiento[i]
+          .cod_concepto_oper;
 
         subtotal += this.parseFloatN(importe_renglon);
         monto_base +=

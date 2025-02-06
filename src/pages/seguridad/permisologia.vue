@@ -395,7 +395,12 @@ export default {
   },
   mounted() {
     this.$emit("changeTitle", "SCEN - Seguridad - Permisologia", "");
-    this.getData("/agencias", "setDataInit", "agencias");
+    this.getData("/agencias", "setDataInit", "agencias", {
+      headers: {
+        order_by: "nb_agencia",
+        order_direction: "ASC",
+      },
+    });
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
@@ -446,23 +451,6 @@ export default {
     setDataInit(res, dataRes) {
       this.loading = true;
       this[dataRes] = res.data;
-      this.selectedAgencia = this.agencias[0];
-      api
-        .get(`/roles`, {
-          headers: {
-            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-            agencia: this.agencias[0].id,
-          },
-        })
-        .then((res) => {
-          this.selectedRol = res.data[0];
-          this.rolesPermisos = res.data;
-          this.getData(`/menus`, "setDataMenus", "menus", {
-            headers: {
-              rol: this.selectedRol.id,
-            },
-          });
-        });
     },
     // Metodo para Setear Datos
     setData(res, dataRes) {

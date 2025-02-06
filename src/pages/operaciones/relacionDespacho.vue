@@ -240,7 +240,7 @@
     </q-dialog>
 
     <q-dialog v-model="dialogObservacion">
-      <q-card class="q-pa-md" bordered style="width: 600px; max-width: 120vw;">
+      <q-card class="q-pa-md" bordered style="width: 600px; max-width: 120vw">
         <q-card-section>
           <q-input v-model="observacion" filled type="textarea" />
         </q-card-section>
@@ -1089,11 +1089,18 @@ export default {
   },
   mounted() {
     this.$emit("changeTitle", "SCEN - Operaciones - Relación de Despacho", "");
-    this.$refs.methods.getData("/agencias", "setData", "agencias");
+    this.$refs.methods.getData("/agencias", "setData", "agencias", {
+      headers: {
+        order_by: "nb_agencia",
+        order_direction: "ASC",
+      },
+    });
     this.$refs.methods.getData("/agentes", "setData", "agentes", {
       headers: {
         agencia: 1,
         activo: "S",
+        order_by: "persona_responsable",
+        order_direction: "ASC",
       },
     });
     this.$refs.methods.getData("/unidades", "setData", "unidades");

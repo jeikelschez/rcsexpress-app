@@ -82,6 +82,9 @@
                 this.$refs.methods.getData(`/agentes`, 'setData', 'agentes', {
                   headers: {
                     agencia: this.selectedAgencia.id,
+                    activo: 'S',
+                    order_by: 'persona_responsable',
+                    order_direction: 'ASC',
                   },
                 });
               "
@@ -542,11 +545,18 @@ export default {
   mounted() {
     this.pdfPrint();
     this.$emit("changeTitle", "SCEN - Operaciones - Reporte de Costos", "");
-    this.$refs.methods.getData("/agencias", "setData", "agencias");
+    this.$refs.methods.getData("/agencias", "setData", "agencias", {
+      headers: {
+        order_by: "nb_agencia",
+        order_direction: "ASC",
+      }
+    });
     this.$refs.methods.getData("/proveedores", "setData", "proveedores", {
       headers: {
         tipo_servicio: "TP",
         activo: "S",
+        order_by: "nb_proveedor",
+        order_direction: "ASC",
       },
     });
     this.$refs.methods.getData("/unidades", "setData", "unidades");

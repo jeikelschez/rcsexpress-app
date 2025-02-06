@@ -555,7 +555,6 @@
     <methods
       ref="methods"
       @set-Data="setData"
-      @set-Data-Init="setDataInit"
       @get-Data-Table="getDataTable"
       @set-Data-Table="setDataTable"
       @set-Data-Permisos="setDataPermisos"
@@ -780,7 +779,12 @@ export default {
   },
   mounted() {
     this.$emit("changeTitle", "SCEN - Administración - Cuentas por Cobrar", "");
-    this.$refs.methods.getData("/agencias", "setDataInit", "agencias");
+    this.$refs.methods.getData("/agencias", "setData", "agencias", {
+      headers: {
+        order_by: "nb_agencia",
+        order_direction: "ASC",
+      },
+    });
     this.$refs.methods.getData("/bancos", "setData", "bancos");
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
@@ -841,12 +845,6 @@ export default {
     // Metodo para Setear Datos Iniciales
     setData(res, dataRes) {
       this[dataRes] = res.data ? res.data : res;
-    },
-    // Metodos para Setear Datos al Iniciar
-    setDataInit(res, dataRes) {
-      this[dataRes] = res.data;
-      this.selectedAgencia = this.agencias[0];
-      this.getDataTable();
     },
     // Metodo para Extraer Datos de Tabla
     getDataTable() {
@@ -1214,7 +1212,7 @@ export default {
     },
     // Metodo para resetaer la data de los filtros
     resetFilters() {
-      this.selectedAgencia = this.agencias[0];
+      this.selectedAgencia = [];
       this.fecha_desde = moment().startOf("month").format("DD/MM/YYYY");
       this.fecha_hasta = moment().endOf("month").format("DD/MM/YYYY");
       this.fecha_emision = moment().format("DD/MM/YYYY");

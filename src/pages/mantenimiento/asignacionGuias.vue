@@ -365,6 +365,9 @@
               this.$refs.methods.getData(`/agentes`, 'setData', 'agentes', {
                 headers: {
                   agencia: this.selectedAgencia.id,
+                  activo: 'S',
+                  order_by: 'persona_responsable',
+                  order_direction: 'ASC',
                 },
               });
               this.$refs.methods.getData(`/clientes`, 'setData', 'clientes', {
@@ -965,13 +968,20 @@ export default {
   mounted() {
     this.$emit("changeTitle", "SCEN - Mantenimiento - Asignacion de Guias", "");
     this.agenciasLoading = true;
-    this.$refs.methods.getData("/agencias", "setData", "agencias");
+    this.$refs.methods.getData("/agencias", "setData", "agencias", {
+      headers: {
+        order_by: "nb_agencia",
+        order_direction: "ASC",
+      },
+    });
     this.$refs.methods.getData("/clientes", "setData", "clientesAll");
     this.$refs.methods.getData("/agentes", "setData", "agentesAll", {
-        headers: {
-          activo: "S",
-        },
-      });
+      headers: {
+        activo: "S",
+        order_by: "persona_responsable",
+        order_direction: "ASC",
+      },
+    });
     this.getDataTable();
 
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {

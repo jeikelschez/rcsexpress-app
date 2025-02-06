@@ -563,6 +563,8 @@ export default {
     this.$refs.methods.getData("/proveedores", "setData", "proveedores", {
       headers: {
         activo: "S",
+        order_by: "nb_proveedor",
+        order_direction: "ASC",
       },
     });
 

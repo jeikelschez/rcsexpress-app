@@ -1544,7 +1544,12 @@ export default {
   },
   mounted() {
     this.$emit("changeTitle", "SCEN - Administración - Notas de Crédito", "");
-    this.$refs.methods.getData("/agencias", "setDataInit", "agencias");
+    this.$refs.methods.getData("/agencias", "setDataInit", "agencias", {
+      headers: {
+        order_by: "nb_agencia",
+        order_direction: "ASC",
+      },
+    });
     this.$refs.methods.getData("/rpermisos", "setDataPermisos", "rpermisos", {
       headers: {
         rol: LocalStorage.getItem("tokenTraducido").usuario.roles.id,
@@ -1603,8 +1608,6 @@ export default {
     // Metodos para Setear Datos al Iniciar
     setDataInit(res, dataRes) {
       this[dataRes] = res.data;
-      this.selectedAgencia = this.agencias[0];
-      this.getFacturas(this.selectedAgencia.id);
 
       this.$refs.methods.getData("/coperacion", "setData", "tiposConcepto", {
         headers: {
@@ -2573,7 +2576,7 @@ export default {
     },
     // Metodo para limpiar los filtros
     resetFilters() {
-      this.selectedAgencia = this.agencias[0];
+      this.selectedAgencia = [];
       this.selectedFactura = [];
       this.selectedTiposConcepto = [];
       this.fechaSelected = moment().format("DD/MM/YYYY");

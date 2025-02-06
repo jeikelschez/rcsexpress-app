@@ -599,7 +599,12 @@ export default {
   },
   mounted() {
     this.$emit("changeTitle", "SCEN - Ventas - Anulacion de Guias", "");
-    this.$refs.methods.getData("/agencias", "setDataInit", "agencias");
+    this.$refs.methods.getData("/agencias", "setDataInit", "agencias", {
+      headers: {
+        order_by: "nb_agencia",
+        order_direction: "ASC",
+      },
+    });
     this.$refs.methods.getData("/clientes", "setData", "clientesAll");
     this.$refs.methods.getData("/coperacion", "setData", "motivos", {
       headers: {
@@ -674,7 +679,6 @@ export default {
     // Metodos para Setear Datos al Iniciar
     setDataInit(res, dataRes) {
       this[dataRes] = res.data;
-      this.selectedAgencia = this.agencias[0];
       this.selectedTipo = this.tipos[0];
       this.getDataTable();
     },
