@@ -790,7 +790,7 @@ export default {
       ],
       opciones: [
         { label: "GENERAR COMISIONES", value: "GC" },
-        { label: "COMISIONES GENERADAS", value: "CG" },
+        /*{ label: "COMISIONES GENERADAS", value: "CG" },*/
       ],
       estatusOperativo: [
         { label: "Conforme", value: "CO" },
@@ -1124,7 +1124,6 @@ export default {
           this.guias[i].com_entrega
             ? this.parseFloatN(this.curReplace(this.guias[i].com_entrega))
             : 0;
-            console.log(entrega)
         seguro +=
           this.guias[i].com_seguro
             ? this.parseFloatN(this.curReplace(this.guias[i].com_seguro))
