@@ -88,7 +88,7 @@
           </q-select>
         </div>
         <div
-          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 cardMargin selectMobile2"
+          class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 cardMargin selectMobile2"
           style="align-self: center; text-align: center"
         >
           <q-select
@@ -129,6 +129,27 @@
             <template v-slot:prepend>
               <q-icon name="search" />
             </template>
+          </q-select>
+        </div>
+        <div
+          class="col-md-1 col-xl-1 col-lg-1 col-xs-12 col-sm-12 cardMargin selectMobile2"
+          style="align-self: center; text-align: center"
+        >
+          <q-select
+            rounded
+            dense
+            transition-show="flip-up"
+            transition-hide="flip-down"
+            :options="pesosKgs"
+            use-input
+            hide-selected
+            fill-input
+            input-debounce="0"
+            v-model="selectedKgs"
+            outlined
+            standout
+            label="Peso Kgs"
+          >
           </q-select>
         </div>
         <div
@@ -226,12 +247,8 @@
             round
             padding="sm"
             @click.capture="
-              if (this.selectedTipo.value == 'PA') {
-                this.dialog = true;
-              } else {
-                pdfChange();
-                print = 1;
-              }
+              pdfChange();
+              print = 1;
             "
           >
             <q-icon size="25px" name="input" color="white"> </q-icon>
@@ -247,82 +264,6 @@
         </div>
       </div>
     </div>
-
-    <q-dialog v-model="dialog">
-      <q-card class="q-pa-md" bordered style="width: 500; max-width: 80vw">
-        <q-card-section>
-          <q-form
-            class="q-gutter-md"
-            @submit="
-              pdfChange();
-              print = 1;
-              this.dialog = false;
-            "
-          >
-            <div class="row" style="text-align: center">
-              <div class="col-md-6 col-xs-6">
-                <q-input
-                  outlined
-                  label="Fecha Depósito"
-                  hint=""
-                  dense
-                  class="pcform"
-                  style="padding-bottom: 0px"
-                  v-model="fecha_deposito"
-                  lazy-rules
-                  mask="##/##/####"
-                  :rules="[(val) => this.$refs.rulesVue.checkDate(val)]"
-                >
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy
-                        ref="qDateProxy"
-                        transition-show="scale"
-                        transition-hide="scale"
-                      >
-                        <q-date
-                          v-model="fecha_deposito"
-                          mask="DD/MM/YYYY"
-                          style="padding-bottom: 0px"
-                          @update:model-value="this.$refs.qDateProxy.hide()"
-                        ></q-date>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </div>
-              <div class="col-md-6 col-xs-6">
-                <q-input
-                  outlined
-                  label="Planilla"
-                  hint=""
-                  dense                  
-                  style="padding-bottom: 0px"
-                  v-model="nro_planilla"
-                />
-              </div>
-            </div>
-            <div class="row justify-center items-center content-center">
-              <q-btn
-                label="Generar"
-                type="submit"
-                color="primary"
-                class="col-md-5 col-sm-5 col-xs-12"
-                icon="print"
-              />
-              <q-btn
-                label="Cerrar"
-                color="primary"
-                flat
-                class="col-md-5 col-sm-5 col-xs-12 btnmovil"
-                icon="close"
-                v-close-popup
-              />
-            </div>
-          </q-form>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
 
     <div
       class="q-pa-md col-md-12 col-xs-12 q-gutter-y-md justify-center"
@@ -369,84 +310,332 @@ export default {
           label: "REPORTE GENERAL",
           value: "RG",
           tittle: "GENERAL",
-          kgs_min: 0,
-          kgs_max: 30,
         },
         {
           label: "RESUMEN",
           value: "RE",
           tittle: "RESUMEN",
-          kgs_min: 0,
-          kgs_max: 30,
         },
         {
           label: "RESUMEN GENERAL",
           value: "REG",
           tittle: "RESUMEN GENERAL",
-          kgs_min: 0,
-          kgs_max: 30,
         },
         {
           label: "PLANILLA DE AUTOLIQUIDACIÓN",
           value: "PA",
-          tittle: "",
-          kgs_min: 0,
-          kgs_max: 30,
+          tittle: "PLANILLA DE AUTOLIQUIDACIÓN",
         },
         {
-          label: "DE 0 A 0,500 KG",
-          value: "R1",
-          tittle: "GUÍAS HASTA 500 grs.",
+          label: "RELACIÓN DIARIA",
+          value: "RD",
+          tittle: "RELACIÓN DIARIA",
+        },
+      ],
+      pesosKgs: [
+        {
+          label: "DE 0.1 HASTA 250",
           kgs_min: 0,
+          kgs_max: 0.25,
+        },
+        {
+          label: "DE 251 HASTA 500",
+          kgs_min: 0.25,
           kgs_max: 0.5,
         },
         {
-          label: "DE 0,0501 A 1 KG",
-          value: "R2",
-          tittle: "GUÍAS DESDE 501 HASTA 1.000 grs.",
-          kgs_min: 0.501,
+          label: "DE 501 HASTA 1.000",
+          kgs_min: 0.5,
           kgs_max: 1,
         },
         {
-          label: "DE 1,01 A 2 KG",
-          value: "R3",
-          tittle: "GUÍAS DESDE 1.001 HASTA 2.000 grs.",
-          kgs_min: 1.01,
+          label: "DE 1.001 HASTA 1500",
+          kgs_min: 1,
+          kgs_max: 1.5,
+        },
+        {
+          label: "DE 1.501 HASTA 2.000",
+          kgs_min: 1.5,
           kgs_max: 2,
         },
         {
-          label: "DE 2,01 A 4 KG",
-          value: "R4",
-          tittle: "GUÍAS DESDE 2.001 HASTA 4.000 grs.",
-          kgs_min: 2.01,
+          label: "DE 2.001 HASTA 2.500",
+          kgs_min: 2,
+          kgs_max: 2.5,
+        },
+        {
+          label: "DE 2.501 HASTA 3.000",
+          kgs_min: 2.5,
+          kgs_max: 3,
+        },
+        {
+          label: "DE 3.001 HASTA 3.500",
+          kgs_min: 3,
+          kgs_max: 3.5,
+        },
+        {
+          label: "DE 3.501 HASTA 4.000",
+          kgs_min: 3.5,
           kgs_max: 4,
         },
         {
-          label: "DE 4,01 A 5 KG",
-          value: "R5",
-          tittle: "GUÍAS DESDE 4.001 HASTA 5.000 grs.",
-          kgs_min: 4.01,
+          label: "DE 4.001 HASTA 4.500",
+          kgs_min: 4,
+          kgs_max: 4.5,
+        },
+        {
+          label: "DE 4.501 HASTA 5.000",
+          kgs_min: 4.5,
           kgs_max: 5,
         },
         {
-          label: "DE 5,01 A 10 KG",
-          value: "R6",
-          tittle: "GUÍAS DESDE 5.001 HASTA 10.000 grs.",
-          kgs_min: 5.01,
+          label: "DE 5.001 HASTA 5.500",
+          kgs_min: 5,
+          kgs_max: 5.5,
+        },
+        {
+          label: "DE 5.501 HASTA 6.000",
+          kgs_min: 5.5,
+          kgs_max: 6,
+        },
+        {
+          label: "DE 6.001 HASTA 6.500",
+          kgs_min: 6,
+          kgs_max: 6.5,
+        },
+        {
+          label: "DE 6.501 HASTA 7.000",
+          kgs_min: 6.5,
+          kgs_max: 7,
+        },
+        {
+          label: "DE 7.001 HASTA 7.500",
+          kgs_min: 7,
+          kgs_max: 7.5,
+        },
+        {
+          label: "DE 7.501 HASTA 8.000",
+          kgs_min: 7.5,
+          kgs_max: 8,
+        },
+        {
+          label: "DE 8.001 HASTA 8.500",
+          kgs_min: 8,
+          kgs_max: 8.5,
+        },
+        {
+          label: "DE 8.501 HASTA 9.000",
+          kgs_min: 8.5,
+          kgs_max: 9,
+        },
+        {
+          label: "DE 9.001 HASTA 9.500",
+          kgs_min: 9,
+          kgs_max: 9.5,
+        },
+        {
+          label: "DE 9.501 HASTA 10.000",
+          kgs_min: 9.5,
           kgs_max: 10,
         },
         {
-          label: "DE 10,01 A 20 KG",
-          value: "R7",
-          tittle: "GUÍAS DESDE 10.001 HASTA 20.000 grs.",
-          kgs_min: 10.01,
+          label: "DE 10.001 HASTA 10.500",
+          kgs_min: 10,
+          kgs_max: 10.5,
+        },
+        {
+          label: "DE 10.501 HASTA 11.000",
+          kgs_min: 10.5,
+          kgs_max: 11,
+        },
+        {
+          label: "DE 11.001 HASTA 11.500",
+          kgs_min: 11,
+          kgs_max: 11.5,
+        },
+        {
+          label: "DE 11.501 HASTA 12.000",
+          kgs_min: 11.5,
+          kgs_max: 12,
+        },
+        {
+          label: "DE 12.001 HASTA 12.500",
+          kgs_min: 12,
+          kgs_max: 12.5,
+        },
+        {
+          label: "DE 12.501 HASTA 13.000",
+          kgs_min: 12.5,
+          kgs_max: 13,
+        },
+        {
+          label: "DE 13.001 HASTA 13.500",
+          kgs_min: 13,
+          kgs_max: 13.5,
+        },
+        {
+          label: "DE 13.501 HASTA 14.000",
+          kgs_min: 13.5,
+          kgs_max: 14,
+        },
+        {
+          label: "DE 14.001 HASTA 14.500",
+          kgs_min: 14,
+          kgs_max: 14.5,
+        },
+        {
+          label: "DE 14.501 HASTA 15.000",
+          kgs_min: 14.5,
+          kgs_max: 15,
+        },
+        {
+          label: "DE 15.001 HASTA 15.500",
+          kgs_min: 15,
+          kgs_max: 15.5,
+        },
+        {
+          label: "DE 15.501 HASTA 16.000",
+          kgs_min: 15.5,
+          kgs_max: 16,
+        },
+        {
+          label: "DE 16.001 HASTA 16.500",
+          kgs_min: 16,
+          kgs_max: 16.5,
+        },
+        {
+          label: "DE 16.501 HASTA 17.000",
+          kgs_min: 16.5,
+          kgs_max: 17,
+        },
+        {
+          label: "DE 17.001 HASTA 17.500",
+          kgs_min: 17,
+          kgs_max: 17.5,
+        },
+        {
+          label: "DE 17.501 HASTA 18.000",
+          kgs_min: 17.5,
+          kgs_max: 18,
+        },
+        {
+          label: "DE 18.001 HASTA 18.500",
+          kgs_min: 18,
+          kgs_max: 18.5,
+        },
+        {
+          label: "DE 18.501 HASTA 19.000",
+          kgs_min: 18.5,
+          kgs_max: 19,
+        },
+        {
+          label: "DE 19.001 HASTA 19.500",
+          kgs_min: 19,
+          kgs_max: 19.5,
+        },
+        {
+          label: "DE 19.501 HASTA 20.000",
+          kgs_min: 19.5,
           kgs_max: 20,
         },
         {
-          label: "DE 20,01 A 30 KG",
-          value: "R8",
-          tittle: "GUÍAS DESDE 20.001 HASTA 30.000 grs.",
-          kgs_min: 20.01,
+          label: "DE 20.001 HASTA 20.500",
+          kgs_min: 20,
+          kgs_max: 20.5,
+        },
+        {
+          label: "DE 20.501 HASTA 21.000",
+          kgs_min: 20.5,
+          kgs_max: 21,
+        },
+        {
+          label: "DE 21.001 HASTA 21.500",
+          kgs_min: 21,
+          kgs_max: 21.5,
+        },
+        {
+          label: "DE 21.501 HASTA 22.000",
+          kgs_min: 21.5,
+          kgs_max: 22,
+        },
+        {
+          label: "DE 22.001 HASTA 22.500",
+          kgs_min: 22,
+          kgs_max: 22.5,
+        },
+        {
+          label: "DE 22.501 HASTA 23.000",
+          kgs_min: 22.5,
+          kgs_max: 23,
+        },
+        {
+          label: "DE 23.001 HASTA 23.500",
+          kgs_min: 23,
+          kgs_max: 23.5,
+        },
+        {
+          label: "DE 23.501 HASTA 24.000",
+          kgs_min: 23.5,
+          kgs_max: 24,
+        },
+        {
+          label: "DE 24.001 HASTA 24.500",
+          kgs_min: 24,
+          kgs_max: 24.5,
+        },
+        {
+          label: "DE 24.501 HASTA 25.000",
+          kgs_min: 24.5,
+          kgs_max: 25,
+        },
+        {
+          label: "DE 25.001 HASTA 25.500",
+          kgs_min: 25,
+          kgs_max: 25.5,
+        },
+        {
+          label: "DE 25.501 HASTA 26.000",
+          kgs_min: 25.5,
+          kgs_max: 26,
+        },
+        {
+          label: "DE 26.001 HASTA 26.500",
+          kgs_min: 26,
+          kgs_max: 26.5,
+        },
+        {
+          label: "DE 26.501 HASTA 27.000",
+          kgs_min: 26.5,
+          kgs_max: 27,
+        },
+        {
+          label: "DE 27.001 HASTA 27.500",
+          kgs_min: 27,
+          kgs_max: 27.5,
+        },
+        {
+          label: "DE 27.501 HASTA 28.000",
+          kgs_min: 27.5,
+          kgs_max: 28,
+        },
+        {
+          label: "DE 28.001 HASTA 28.500",
+          kgs_min: 28,
+          kgs_max: 28.5,
+        },
+        {
+          label: "DE 28.501 HASTA 29.000",
+          kgs_min: 28.5,
+          kgs_max: 29,
+        },
+        {
+          label: "DE 29.001 HASTA 29.500",
+          kgs_min: 29,
+          kgs_max: 29.5,
+        },
+        {
+          label: "DE 29.501 HASTA 30.000",
+          kgs_min: 29.5,
           kgs_max: 30,
         },
       ],
@@ -456,16 +645,15 @@ export default {
       agencias: [],
       clientes: [],
       selectedTipo: [],
+      selectedKgs: [],
       agenciasSelected: [],
       selectedAgencia: [],
       clientesSelected: [],
       selectedCliente: [],
       clientesLoading: false,
       print: "",
-      nro_planilla: "",
       fecha_desde: moment().format("DD/MM/YYYY"),
       fecha_hasta: moment().format("DD/MM/YYYY"),
-      fecha_deposito: moment().format("DD/MM/YYYY"),
     };
   },
   setup() {
@@ -566,10 +754,12 @@ export default {
       dataArray.desde = this.fecha_desde;
       dataArray.hasta = this.fecha_hasta;
       dataArray.tittle = this.selectedTipo.tittle;
-      dataArray.kgs_min = this.selectedTipo.kgs_min;
-      dataArray.kgs_max = this.selectedTipo.kgs_max;
-      dataArray.fecha_deposito = this.fecha_deposito;
-      dataArray.planilla = this.nro_planilla;
+      dataArray.kgs_min = this.selectedKgs.kgs_min
+        ? this.selectedKgs.kgs_min
+        : 0;
+      dataArray.kgs_max = this.selectedKgs.kgs_max
+        ? this.selectedKgs.kgs_max
+        : 30;
       api
         .get(`/pdfreports/relacionFpo`, {
           headers: {
@@ -612,6 +802,7 @@ export default {
       this.selectedTipo = this.tipoReporte[0];
       this.selectedAgencia = [];
       this.selectedCliente = [];
+      this.selectedKgs = [];
       this.fecha_desde = moment().format("DD/MM/YYYY");
       this.fecha_hasta = moment().format("DD/MM/YYYY");
       this.print = "";

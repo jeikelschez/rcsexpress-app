@@ -238,6 +238,26 @@
               <div class="col-md-8 col-xs-12">
                 <q-input
                   outlined
+                  v-model="form.contenido"
+                  label="Contenido"
+                  hint=""
+                  @update:model-value="
+                    form.contenido = form.contenido.toUpperCase()
+                  "
+                  lazy-rules
+                  :rules="[
+                    (val) => this.$refs.rulesVue.isMax(val, 100),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
+                  ]"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="visibility" />
+                  </template>
+                </q-input>
+              </div>
+              <div class="col-md-12 col-xs-12">
+                <q-input
+                  outlined
                   v-model="form.observacion"
                   label="Observaciones"
                   hint=""
@@ -1241,6 +1261,7 @@ export default {
         modalidad_pago: "",
         persona_contacto: "",
         observacion: "",
+        contenido: "",
         cte_decontado: "",
         tipo_persona: "",
         tipo_persona_new: "",
@@ -1611,6 +1632,7 @@ export default {
       );
       this[dataRes].persona_contacto = res.persona_contacto;
       this[dataRes].observacion = res.observacion;
+      this[dataRes].contenido = res.contenido;
       this[dataRes].cte_decontado = res.cte_decontado;
       this[dataRes].flag_activo = this.filterDesc("estatus", res.flag_activo);
     },
@@ -1795,6 +1817,7 @@ export default {
       this.form.modalidad_pago = "";
       this.form.persona_contacto = "";
       this.form.observacion = "";
+      this.form.contenido = "";
       this.form.cte_decontado = "";
       this.form.flag_activo = "";
       this.form.cod_agencia = "";
