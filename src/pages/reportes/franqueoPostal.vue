@@ -270,6 +270,7 @@
       style="margin-top: -30px"
     >
       <webViewer
+        @export-Excel="exportExcel"
         ref="webViewer"
         v-if="pdf == true"
         style="width: 1680px; height: 610px; max-width: 1680px"
@@ -650,6 +651,7 @@ export default {
       selectedAgencia: [],
       clientesSelected: [],
       selectedCliente: [],
+      enabledExport: false,
       clientesLoading: false,
       print: "",
       fecha_desde: moment().format("DD/MM/YYYY"),
@@ -777,6 +779,15 @@ export default {
             });
             this.print = "";
           }
+
+          console.log(res.data.pdfPath);
+
+          if (res.data.pdfPath == "reporteBase.pdf") {
+            this.enabledExport = false;
+          } else {
+            this.enabledExport = true;
+          }
+
           this.$refs.webViewer.showpdf(
             res.data.pdfPath,
             this.print == "" ? 0.64 : 1.8,
@@ -793,6 +804,67 @@ export default {
           this.pdfView = false;
           this.loading = false;
           return;
+        });
+    },
+    // Metodo para exportar a Excel
+    async exportExcel() {
+      this.loading = true;
+      if (!this.enabledExport) {
+        this.loading = false;
+        this.$q.notify({
+          message: "No existen registros para este conjunto de Filtos",
+          color: "red",
+        });
+        return;
+      }  
+      
+      let dataArray = {};
+      dataArray.cliente = this.selectedCliente.id
+        ? this.selectedCliente.id
+        : "";
+      dataArray.nbCliente = this.selectedCliente.id
+        ? this.selectedCliente.nb_cliente
+        : "";
+      dataArray.desde = this.fecha_desde;
+      dataArray.hasta = this.fecha_hasta;
+      dataArray.tittle = this.selectedTipo.tittle;
+      dataArray.kgs_min = this.selectedKgs.kgs_min
+        ? this.selectedKgs.kgs_min
+        : 0;
+      dataArray.kgs_max = this.selectedKgs.kgs_max
+        ? this.selectedKgs.kgs_max
+        : 30;
+
+      await api
+        .get(`/excelreports/relacionFpo`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            tipo: this.selectedTipo.value,
+            data: JSON.stringify(dataArray),
+          },
+        })
+        .then((res) => {
+          if (!res.data.validDoc) {
+            this.$q.notify({
+              message: "No existen registros para este conjunto de Filtos",
+              color: "red",
+            });
+            return;
+          }
+          const link = document.createElement("a");
+          link.href = `${process.env.apiPath}/excelReports/loadExcel/${res.data.excelPath}`; 
+          link.setAttribute("download", "relacionFpo.xlsx");
+          setTimeout(() => {
+            link.click();
+          }, 1000);
+          this.loading = false;
+        })
+        .catch((err) => {
+          this.$q.notify({
+            message: err.message,
+            color: "red",
+          });
+          this.loading = false;
         });
     },
     // Metodo para resetaer la data de los filtros
