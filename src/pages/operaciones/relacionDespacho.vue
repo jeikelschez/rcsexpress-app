@@ -753,6 +753,7 @@
         :visible-columns="visibleColumns"
         v-model:selected="selected"
         v-model:pagination="pagination"
+        @update:selected="calculaTotalDespacho"
       >
         <template v-slot:loading>
           <q-inner-loading showing color="primary" class="loading" />
@@ -823,27 +824,74 @@
               </div>
             </q-td>
           </q-tr>
-          <q-tr
-            :props="props"
-            v-else-if="
+          <template
+            v-if="
+              props.rowIndex > 0 && // <--- ADD THIS CONDITION FIRST
               selectedReporte == 'MAD' &&
               this.guias[props.rowIndex].cod_agencia_dest !=
                 this.guias[props.rowIndex - 1].cod_agencia_dest
             "
           >
-            <q-td colspan="100%" style="font-size: 20px; color: #283593">
-              <div class="text-left">
-                <strong> {{ "Agencia Destino: " }} </strong>
-                {{
-                  this.findIndex(
-                    "agencias",
-                    this.guias[props.rowIndex].cod_agencia_dest,
-                    "nb_agencia"
-                  )
-                }}
-              </div>
-            </q-td>
-          </q-tr>
+            <q-tr :props="props">
+              <q-td colspan="6">
+                <p>
+                  <strong>{{
+                    "Subtotal Guías: " +
+                    this.subtotal_por_agencia[
+                      this.guias[props.rowIndex - 1].cod_agencia_dest
+                    ].count
+                  }}</strong>
+                </p>
+              </q-td>
+              <q-td colspan="1"
+                ><strong
+                  ><p style="text-align: right">
+                    {{
+                      this.subtotal_por_agencia[
+                        this.guias[props.rowIndex - 1].cod_agencia_dest
+                      ].piezas
+                    }}
+                  </p></strong
+                >
+              </q-td>
+              <q-td colspan="1">
+                <strong
+                  ><p style="text-align: right">
+                    {{
+                      new Intl.NumberFormat("de-DE", {
+                        style: "currency",
+                        currency: "EUR",
+                        currencyDisplay: "code",
+                      })
+                        .format(
+                          this.subtotal_por_agencia[
+                            this.guias[props.rowIndex - 1].cod_agencia_dest
+                          ].peso
+                        )
+                        .replace("EUR", "")
+                        .trim()
+                    }}
+                  </p></strong
+                >
+              </q-td>
+              <q-td colspan="2"> </q-td>
+            </q-tr>
+
+            <q-tr :props="props">
+              <q-td colspan="10" style="font-size: 20px; color: #283593">
+                <div class="text-left">
+                  <strong> {{ "Agencia Destino: " }} </strong>
+                  {{
+                    this.findIndex(
+                      "agencias",
+                      this.guias[props.rowIndex].cod_agencia_dest,
+                      "nb_agencia"
+                    )
+                  }}
+                </div>
+              </q-td>
+            </q-tr>
+          </template>
           <q-tr :props="props">
             <q-td>
               <q-checkbox v-model="props.selected" dense />
@@ -859,6 +907,76 @@
                 {{ col.value }}
               </div>
             </q-td>
+          </q-tr>
+        </template>
+        <template v-slot:bottom-row v-if="this.guias.length > 0">
+          <q-tr
+            v-if="selectedReporte == 'MAD'"
+            style="background-color: #f0f0f0"
+          >
+            <q-td :colspan="selectedReporte == 'APZ' ? 5 : 6">
+              <p>
+                <strong>{{
+                  "Subtotal Guías: " +
+                  this.subtotal_por_agencia[guias[guias.length - 1].cod_agencia_dest].count
+                }}</strong>
+              </p>
+            </q-td>
+            <q-td
+              ><strong
+                ><p style="text-align: right">
+                  {{ this.subtotal_por_agencia[guias[guias.length - 1].cod_agencia_dest].piezas }}
+                </p></strong
+              >
+            </q-td>
+            <q-td
+              ><strong
+                ><p style="text-align: right">
+                  {{
+                    new Intl.NumberFormat("de-DE", {
+                      style: "currency",
+                      currency: "EUR",
+                      currencyDisplay: "code",
+                    })
+                      .format(this.subtotal_por_agencia[guias[guias.length - 1].cod_agencia_dest].peso)
+                      .replace("EUR", "")
+                      .trim()
+                  }}
+                </p></strong
+              >
+            </q-td>
+            <q-td colspan="2"> </q-td>
+          </q-tr>
+          <q-tr>
+            <q-td :colspan="selectedReporte == 'APZ' ? 5 : 6">
+              <p>
+                <strong>{{ "Guías: " + this.selected.length }}</strong>
+              </p>
+            </q-td>
+            <q-td
+              ><strong
+                ><p style="text-align: right">
+                  {{ this.total_piezas }}
+                </p></strong
+              >
+            </q-td>
+            <q-td
+              ><strong
+                ><p style="text-align: right">
+                  {{
+                    new Intl.NumberFormat("de-DE", {
+                      style: "currency",
+                      currency: "EUR",
+                      currencyDisplay: "code",
+                    })
+                      .format(this.total_peso)
+                      .replace("EUR", "")
+                      .trim()
+                  }}
+                </p></strong
+              >
+            </q-td>
+            <q-td colspan="2"> </q-td>
           </q-tr>
         </template>
       </q-table>
@@ -1009,6 +1127,29 @@ export default {
           align: "left",
         },
         {
+          name: "nro_piezas",
+          label: "Piezas",
+          field: "nro_piezas",
+          required: true,
+          align: "right",
+        },
+        {
+          name: "peso_kgs",
+          label: "Kgs.",
+          field: "peso_kgs",
+          required: true,
+          align: "right",
+          format: (val) =>
+            new Intl.NumberFormat("de-DE", {
+              style: "currency",
+              currency: "EUR",
+              currencyDisplay: "code",
+            })
+              .format(val)
+              .replace("EUR", "")
+              .trim(),
+        },
+        {
           name: "cliente_orig_desc",
           label: "Remitente",
           field: "cliente_orig_desc",
@@ -1071,6 +1212,10 @@ export default {
       confirmMezclar: false,
       visibleGuia: true,
       observacion: "",
+      total_piezas: 0,
+      total_peso: 0,
+      subtotal_por_agencia: {},
+      detalles_costo_guias_asignar: [],
     };
   },
   setup() {
@@ -1218,6 +1363,7 @@ export default {
       this.pagination.rowsPerPage = res.limit;
       this.selected = this.guias;
       this.loading = false;
+      this.calculaTotalDespacho();
     },
     // Imprimir Reporte
     printReport() {
@@ -1634,6 +1780,39 @@ export default {
           break;
       }
       this.getDataTable();
+    },
+    calculaTotalDespacho() {
+      this.total_piezas = 0;
+      this.total_peso = 0;
+      this.subtotal_por_agencia = {}; // Reset for each calculation
+
+      for (let i = 0; i < this.selected.length; i++) {
+        const guiaActual = this.selected[i]; // Use selected for totals
+        const codAgenciaDestino = guiaActual.cod_agencia_dest; // Assuming selected items also have cod_agencia_dest
+
+        // Add to overall totals
+        this.total_piezas += parseFloat(guiaActual.nro_piezas);
+        this.total_peso += parseFloat(guiaActual.peso_kgs);
+
+        // Calculate subtotal per agency
+        if (!this.subtotal_por_agencia[codAgenciaDestino]) {
+          // If this agency code doesn't exist yet in our subtotal object, initialize it
+          this.subtotal_por_agencia[codAgenciaDestino] = {
+            piezas: 0,
+            peso: 0,
+            count: 0,
+          };
+        }
+
+        // Add to the agency's subtotal
+        this.subtotal_por_agencia[codAgenciaDestino].piezas += parseFloat(
+          guiaActual.nro_piezas
+        );
+        this.subtotal_por_agencia[codAgenciaDestino].peso += parseFloat(
+          guiaActual.peso_kgs
+        );
+        this.subtotal_por_agencia[codAgenciaDestino].count += 1;
+      }
     },
   },
 };
