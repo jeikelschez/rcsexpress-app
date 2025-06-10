@@ -102,6 +102,13 @@ export default {
         }
       );
     },
+    // Method to dispose of the WebViewer instance
+    disposeViewer() {
+      if (this.instance) {
+        this.instance.UI.dispose();
+        this.instance = null;
+      }
+    },
   },
 };
 </script>

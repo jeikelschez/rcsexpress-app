@@ -753,6 +753,7 @@
         :visible-columns="visibleColumns"
         v-model:selected="selected"
         v-model:pagination="pagination"
+        virtual-scroll
         @update:selected="calculaTotalDespacho"
       >
         <template v-slot:loading>
@@ -918,14 +919,20 @@
               <p>
                 <strong>{{
                   "Subtotal Guías: " +
-                  this.subtotal_por_agencia[guias[guias.length - 1].cod_agencia_dest].count
+                  this.subtotal_por_agencia[
+                    guias[guias.length - 1].cod_agencia_dest
+                  ].count
                 }}</strong>
               </p>
             </q-td>
             <q-td
               ><strong
                 ><p style="text-align: right">
-                  {{ this.subtotal_por_agencia[guias[guias.length - 1].cod_agencia_dest].piezas }}
+                  {{
+                    this.subtotal_por_agencia[
+                      guias[guias.length - 1].cod_agencia_dest
+                    ].piezas
+                  }}
                 </p></strong
               >
             </q-td>
@@ -938,7 +945,11 @@
                       currency: "EUR",
                       currencyDisplay: "code",
                     })
-                      .format(this.subtotal_por_agencia[guias[guias.length - 1].cod_agencia_dest].peso)
+                      .format(
+                        this.subtotal_por_agencia[
+                          guias[guias.length - 1].cod_agencia_dest
+                        ].peso
+                      )
                       .replace("EUR", "")
                       .trim()
                   }}
@@ -982,7 +993,7 @@
       </q-table>
     </div>
 
-    <q-dialog v-model="pdfView" @show="this.printReport()">
+    <q-dialog v-model="pdfView" @show="this.printReport()" @hide="onDialogHide">
       <webViewer
         ref="webViewer"
         @print-pdf="this.sendCostos()"
@@ -1412,14 +1423,19 @@ export default {
       factArray.observacion = this.observacion;
 
       api
-        .get(`/pdfreports/relacionDespacho`, {
-          headers: {
-            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        .post(
+          `/pdfreports/relacionDespacho`,
+          {
             data: JSON.stringify(factArray),
             detalle: detalleArray,
-            usuario: LocalStorage.getItem("tokenTraducido").usuario.nombre,
           },
-        })
+          {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              usuario: LocalStorage.getItem("tokenTraducido").usuario.nombre,
+            },
+          }
+        )
         .then((res) => {
           if (!res.data.validDoc) {
             this.$q.notify({
@@ -1439,6 +1455,13 @@ export default {
           this.pdfView = false;
           return;
         });
+    },
+    // Method called when the QDialog hides (e.g., user clicks outside or closes it)
+    onDialogHide() {
+      if (this.$refs.webViewer) {
+        this.$refs.webViewer.disposeViewer();
+      }
+      this.pdfView = false;
     },
     // Metodo al imprimir el reporte para asociar a Costos
     async sendCostos() {
