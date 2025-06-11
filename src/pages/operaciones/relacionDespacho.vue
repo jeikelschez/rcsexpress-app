@@ -993,11 +993,12 @@
       </q-table>
     </div>
 
-    <q-dialog v-model="pdfView" @show="this.printReport()" @hide="onDialogHide">
+    <q-dialog v-model="pdfView" @show="printReport()" @hide="onDialogHide">
       <webViewer
+        v-if="pdfView"
         ref="webViewer"
-        @print-pdf="this.sendCostos()"
-        @close-pdf="this.pdfView = false"
+        @print-pdf="sendCostos()"
+        @close-pdf="pdfView = false"
         style="width: 1400px; height: 750px; max-width: 1400px"
       ></webViewer>
     </q-dialog>

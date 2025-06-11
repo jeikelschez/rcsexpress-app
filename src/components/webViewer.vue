@@ -10,6 +10,7 @@ export default {
   data: function () {
     return {
       confirmPrint: false,
+      instance: null,
     };
   },
   setup() {
@@ -36,9 +37,22 @@ export default {
       return new Promise(poll);
     },
     showpdf(filePath, zoom, wait = false, closable = true, base64) {
+      // Destruye la instancia previa si existe
+      if (this.instance) {
+        this.instance.UI.dispose();
+        this.instance = null;
+        // Limpia el DOM del visor
+        if (this.viewer && this.viewer.$el) {
+          this.viewer.$el.innerHTML = "";
+        } else if (this.$refs.viewer) {
+          this.$refs.viewer.innerHTML = "";
+        }
+      }
+
       const path = `${process.env.publicPath}/webViewer`;
       WebViewer({ path, licenseKey: "atkUT8UOiniAvAWUG1rN" }, this.viewer).then(
         (instance) => {
+          this.instance = instance; // <--- Guarda la instancia aquí
           instance.UI.disableElements(["panToolButton"]);
           instance.UI.disableElements(["textSelectButton"]);
           instance.UI.setHeaderItems((header) => {
@@ -107,8 +121,17 @@ export default {
       if (this.instance) {
         this.instance.UI.dispose();
         this.instance = null;
+        // Limpia el DOM del visor
+        if (this.viewer && this.viewer.$el) {
+          this.viewer.$el.innerHTML = "";
+        } else if (this.$refs.viewer) {
+          this.$refs.viewer.innerHTML = "";
+        }
       }
     },
+  },
+  beforeUnmount() {
+    this.disposeViewer();
   },
 };
 </script>
