@@ -50,7 +50,7 @@ export default {
       }
 
       const path = `${process.env.publicPath}/webViewer`;
-      WebViewer({ path, licenseKey: "atkUT8UOiniAvAWUG1rN" }, this.viewer).then(
+      WebViewer({ path, licenseKey: "4rtfX5Op0lYmruJtmVOe" }, this.viewer).then(
         (instance) => {
           this.instance = instance; // <--- Guarda la instancia aquí
           instance.UI.disableElements(["panToolButton"]);
