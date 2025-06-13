@@ -2252,7 +2252,7 @@
                   </h4>
                 </div>
                 <div
-                  class="col-md-5 col-xs-6 checkboxForaneo"
+                  class="col-md-3 col-xs-4 checkboxForaneo"
                   style="margin-bottom: 6px"
                 >
                   <q-checkbox
@@ -2267,22 +2267,42 @@
                     @update:model-value="
                       if (this.checkbox.urbano == '1') {
                         this.checkbox.extra_urbano = '0';
+                        this.checkbox.foraneo = '0';
                       }
                     "
                   />
                 </div>
-                <div class="col-md-5 col-xs-6" style="margin-bottom: 6px">
+                <div class="col-md-3 col-xs-4" style="margin-bottom: 6px">
                   <q-checkbox
                     size="lg"
                     v-model="checkbox.extra_urbano"
                     true-value="1"
                     false-value="0"
-                    style="font-size: 13px"
+                    style="font-size: 13px; padding-right: 10px"
                     label="Extra-Urbano"
                     :tabindex="19"
                     :disable="this.disableGuia"
                     @update:model-value="
                       if (this.checkbox.extra_urbano == '1') {
+                        this.checkbox.urbano = '0';
+                        this.checkbox.foraneo = '0';
+                      }
+                    "
+                  />
+                </div>
+                <div class="col-md-3 col-xs-4" style="margin-bottom: 6px">
+                  <q-checkbox
+                    size="lg"
+                    v-model="checkbox.foraneo"
+                    true-value="1"
+                    false-value="0"
+                    style="font-size: 13px"
+                    label="Foraneo"
+                    :tabindex="19"
+                    :disable="this.disableGuia"
+                    @update:model-value="
+                      if (this.checkbox.foraneo == '1') {
+                        this.checkbox.extra_urbano = '0';
                         this.checkbox.urbano = '0';
                       }
                     "
@@ -3162,6 +3182,7 @@ export default {
         internacional: "0",
         urbano: "0",
         extra_urbano: "0",
+        foraneo: "0",
         normal: "0",
         emergencia: "0",
       },
@@ -3651,7 +3672,7 @@ export default {
           return;
         }
         if (
-          !(this.checkbox.extra_urbano !== "0" || this.checkbox.urbano !== "0")
+          !(this.checkbox.extra_urbano !== "0" || this.checkbox.urbano !== "0" || this.checkbox.foraneo !== "0")
         ) {
           this.$q.notify({
             message: "Debe ingresar el tipo de ubicación antes de tarifear",
@@ -3918,6 +3939,19 @@ export default {
             headers: {
               Authorization: `Bearer ${LocalStorage.getItem("token")}`,
               tipo_ubicacion: "E",
+              tipo_tarifa: "KA",
+              tipo_urgencia: form.tipo_urgencia,
+              region_origen: form.cod_agencia.ciudades.cod_region,
+              region_destino: form.cod_agencia_dest.ciudades.cod_region,
+              mix_region: "S",
+            },
+          };
+        }
+        if (form.tipo_ubicacion == "F") {
+          axiosConfig = {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              tipo_ubicacion: "F",
               tipo_tarifa: "KA",
               tipo_urgencia: form.tipo_urgencia,
               region_origen: form.cod_agencia.ciudades.cod_region,
@@ -4720,6 +4754,7 @@ export default {
         if (res.tipo_servicio == "I") this.checkbox.internacional = "1";
         if (res.tipo_ubicacion == "U") this.checkbox.urbano = "1";
         if (res.tipo_ubicacion == "E") this.checkbox.extra_urbano = "1";
+        if (res.tipo_ubicacion == "F") this.checkbox.foraneo = "1";
         if (res.tipo_urgencia == "N") this.checkbox.normal = "1";
         if (res.tipo_urgencia == "E") this.checkbox.emergencia = "1";
 
@@ -6221,6 +6256,7 @@ export default {
       this.checkbox.foraneo = "0";
       this.checkbox.urbano = "0";
       this.checkbox.extra_urbano = "0";
+      this.checkbox.foraneo = "0";
       this.checkbox.normal = "0";
       this.checkbox.emergencia = "0";
       this.form.id = "";
