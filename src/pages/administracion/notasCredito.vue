@@ -1982,7 +1982,6 @@ export default {
     },
     // Metodo para imprimir la Nota de Credito
     async printData() {
-      console.log("asdasdasdasd")
       this.confirmPrintPopUp = true;
       await this.until((_) => this.confirmPrint == true);
       if (!this.confirmPrint) {
@@ -2062,7 +2061,7 @@ export default {
         let formDetalle = {};
         formDetalle.cod_movimiento = idFact;
         formDetalle.nro_item = this.detalles[i].nro_item;
-        formDetalle.cod_concepto = this.detalles[i].cod_concepto;
+        formDetalle.cod_concepto_oper = this.detalles[i].cod_concepto;
         formDetalle.precio_unitario = this.curReplace(
           this.detalles[i].costo_unitario
         );
