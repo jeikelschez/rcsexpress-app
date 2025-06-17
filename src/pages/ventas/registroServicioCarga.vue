@@ -1396,8 +1396,8 @@
                     form.nro_documento !== this.nroRef
                   ) {
                     this.resetFormGuia();
-                    this.showTextLoading();
                     this.validationGetGuia();
+                    this.loading = true;
                   }
                 "
                 @blur="
@@ -1406,8 +1406,8 @@
                     form.nro_documento !== this.nroRef
                   ) {
                     this.resetFormGuia();
-                    this.showTextLoading();
                     this.validationGetGuia();
+                    this.loading = true;
                   }
                 "
                 dense
@@ -1422,8 +1422,8 @@
                     @click="
                       if (form.nro_documento !== '') {
                         this.resetFormGuia();
-                        this.showTextLoading();
                         this.validationGetGuia();
+                        this.loading = true;
                       }
                     "
                     class="cursor-pointer"
@@ -2877,7 +2877,7 @@
             >
             </q-input>
           </div>
-          <q-inner-loading :showing="visible">
+          <q-inner-loading :showing="loading">
             <q-spinner-gears size="50px" color="primary" />
           </q-inner-loading>
         </div>
@@ -2986,7 +2986,6 @@
       ref="methods"
       @set-Data="setData"
       @set-Data-Guia="setDataGuia"
-      @reset-Loading="resetLoading"
       @set-Data-Detalle="setDataDetalle"
       @set-Data-Permisos="setDataPermisos"
     >
@@ -3283,8 +3282,6 @@ export default {
     };
   },
   setup() {
-    const visible = ref(false);
-    const showSimulatedReturnData = ref(false);
     const $q = useQuasar();
     return {
       formData: null,
@@ -3297,16 +3294,7 @@ export default {
       detalleCantidad: null,
       detalleImporteRenglon: null,
       detallePrecioUnitario: null,
-      visible,
-      showSimulatedReturnData,
-      showTextLoading() {
-        visible.value = true;
-        showSimulatedReturnData.value = false;
-      },
-      resetLoading() {
-        visible.value = false;
-        showSimulatedReturnData.value = true;
-      },
+      loading: false,
       anulate: ref(false),
       separator: ref("vertical"),
       loading: ref(false),
@@ -3564,7 +3552,6 @@ export default {
     // Metodo para Tarificar una Guía
     async tarificar() {
       try {
-        var error = true;
         var form = JSON.parse(JSON.stringify(this.form));
         form.nro_piezas = this.curReplace(form.nro_piezas);
         form.peso_kgs = this.curReplace(form.peso_kgs);
@@ -3588,7 +3575,6 @@ export default {
         var monto_seguro = 0;
         var porc_cod;
         var monto_cod = 0;
-        var errorMessage;
         var monto_especial;
         if (this.checkbox.paquetes == "1") form.tipo_carga = "PM";
         if (this.checkbox.sobres == "1") form.tipo_carga = "SB";
@@ -3599,118 +3585,81 @@ export default {
         if (this.checkbox.foraneo == "1") form.tipo_ubicacion = "F";
         if (this.checkbox.normal == "1") form.tipo_urgencia = "N";
         if (this.checkbox.emergencia == "1") form.tipo_urgencia = "E";
+        
         if (!this.form.cod_agencia.id) {
-          this.$q.notify({
-            message: "Debe Cargar una Guia",
-            color: "red",
-          });
-          return;
+          throw new Error("Debe Cargar una Guia");
         }
         if (this.detalle_movimiento[0]) {
-          this.$q.notify({
-            message: "La guía ya fue Tarificada",
-            color: "red",
-          });
-          return;
+          throw new Error("La Guía ya fue Tarifeada");
         }
         if (form.estatus_administra.value == "A") {
-          this.$q.notify({
-            message:
-              "La Guía no puede ser tarifeada cuando se encuentra anulada",
-            color: "red",
-          });
-          return;
+          throw new Error(
+            "La Guía no puede ser tarifeada cuando se encuentra anulada"
+          );
         }
         if (!form.cod_agencia) {
-          this.$q.notify({
-            message: "Debe ingresar la Agencia Origen antes de tarifear",
-            color: "red",
-          });
-          return;
+          throw new Error(
+            "Debe ingresar la Agencia Origen antes de tarifear"
+          );
         }
         if (!form.cod_cliente_org) {
-          this.$q.notify({
-            message: "Debe ingresar el Cliente Origen antes de tarifear",
-            color: "red",
-          });
-          return;
+          throw new Error(
+            "Debe ingresar el Cliente Origen antes de tarifear"
+          );
         }
         if (!form.cod_agencia_dest) {
-          this.$q.notify({
-            message: "Debe ingresar la Agencia Destino antes de tarifear",
-            color: "red",
-          });
-          return;
+          throw new Error(
+            "Debe ingresar la Agencia Destino antes de tarifear"
+          );
         }
         if (!form.cod_cliente_dest) {
-          this.$q.notify({
-            message: "Debe ingresar el Cliente Destino antes de tarifear",
-            color: "red",
-          });
-          return;
+          throw new Error(
+            "Debe ingresar el Cliente Destino antes de tarifear"
+          );
         }
-        /*if (form.peso_kgs == 0.0) {
-          this.$q.notify({
-            message: "Debe ingresar la cantidad de KG antes de tarifear",
-            color: "red",
-          });
-          return;
-        }*/
         if (!form.modalidad_pago) {
-          this.$q.notify({
-            message: "Debe ingresar la modalidad de pago antes de tarifear",
-            color: "red",
-          });
-          return;
+          throw new Error(
+            "Debe ingresar la modalidad de pago antes de tarifear"
+          );
         }
         if (!form.pagado_en) {
-          this.$q.notify({
-            message:
-              "Debe ingresar donde será pagada la guía antes de tarifear",
-            color: "red",
-          });
+          throw new Error(
+            "Debe ingresar donde será pagada la guía antes de tarifear"
+          );
           return;
         }
         if (
-          !(this.checkbox.extra_urbano !== "0" || this.checkbox.urbano !== "0" || this.checkbox.foraneo !== "0")
+          !(
+            this.checkbox.extra_urbano !== "0" ||
+            this.checkbox.urbano !== "0" ||
+            this.checkbox.foraneo !== "0"
+          )
         ) {
-          this.$q.notify({
-            message: "Debe ingresar el tipo de ubicación antes de tarifear",
-            color: "red",
-          });
-          return;
+          throw new Error(
+            "Debe ingresar el tipo de ubicación antes de tarifear"
+          );
         }
         if (
           !(this.checkbox.emergencia !== "0" || this.checkbox.normal !== "0")
         ) {
-          this.$q.notify({
-            message: "Debe ingresar el tipo de urgencia antes de tarifear",
-            color: "red",
-          });
-          return;
+          throw new Error(
+            "Debe ingresar el tipo de urgencia antes de tarifear"
+          );
         }
         if (!(this.checkbox.paquetes !== "0" || this.checkbox.sobres !== "0")) {
-          this.$q.notify({
-            message: "Debe ingresar el tipo de carga antes de tarifear",
-            color: "red",
-          });
-          return;
+          throw new Error(
+            "Debe ingresar el tipo de carga antes de tarifear"
+          );
         }
         if (!this.form.cod_agencia.ciudades.cod_region) {
-          this.$q.notify({
-            message:
-              "Error del Sistema... No existe un Codigo de Region para la Agencia Origen Seleccionada",
-            color: "red",
-          });
-          return;
+          throw new Error(
+            "Error del Sistema... No existe un Codigo de Region para la Agencia Origen Seleccionada"
+          );
         }
         if (!this.form.cod_agencia_dest.ciudades.cod_region) {
-          this.$q.notify({
-            message:
-              "Error del Sistema... No existe un Codigo de Region para la Agencia Destino Seleccionada",
-            color: "red",
-          });
-          return;
+          throw new Error(
+            "Error del Sistema... No existe un Codigo de Region para la Agencia Destino Seleccionada"
+          );
         }
 
         // setear los valores del concepto básico
@@ -3730,7 +3679,7 @@ export default {
           cod_concepto_oper: null,
         };
 
-        this.showTextLoading();
+        this.loading = true;
 
         // tarificar mínimo
         await api
@@ -3742,11 +3691,9 @@ export default {
           .then((res) => {
             this.detalle_movimiento[0].cod_concepto = res.data.valor;
           })
-          .catch((err) => {
-            if (err.response) {
-              errorMessage = err.response.data.message;
-            }
-            return error;
+          .catch((error) => {
+            this.detalle_movimiento = [];
+            throw error;
           });
 
         // Se incluye este aparte para calcular el diferencial del minimo y el valor declarado
@@ -3766,11 +3713,9 @@ export default {
             this.detalle_movimiento[0].cod_concepto_oper =
               res.data.cod_concepto;
           })
-          .catch((err) => {
-            if (err.response) {
-              errorMessage = err.response.data.message;
-            }
-            return error;
+          .catch((error) => {
+            this.detalle_movimiento = [];
+            throw error;
           });
 
         // Buscar tarifa básica
@@ -3786,27 +3731,30 @@ export default {
           })
           .then((res) => {
             if (!res.data[0]) {
-              errorMessage =
-                "Problemas al ubicar la tarifa básica. Revisar mantenimiento de tarifas";
-              return error;
+              this.detalle_movimiento = [];
+              throw new Error(
+                "Problemas al ubicar la tarifa básica. Revisar mantenimiento de tarifas"
+              );
             }
             if (
               res.data[0].monto_tarifa == null ||
               res.data[0].monto_tarifa == "" ||
               res.data[0].monto_tarifa == 0
             ) {
-              errorMessage =
-                "Problemas al ubicar el monto de la tarifa básica. Revisar mantenimiento de tarifas";
-              return error;
+              this.detalle_movimiento = [];
+              throw new Error(
+                "Problemas al ubicar el monto de la tarifa básica. Revisar mantenimiento de tarifas"
+              );
             }
             if (
               res.data[0].kgr_hasta == null ||
               res.data[0].kgr_hasta == "" ||
               res.data[0].kgr_hasta == 0
             ) {
-              errorMessage =
-                "Problemas al ubicar los Kgs. minimos de la tarifa básica. Revisar mantenimiento de tarifas";
-              return error;
+              this.detalle_movimiento = [];
+              throw new Error(
+                "Problemas al ubicar los Kgs. minimos de la tarifa básica. Revisar mantenimiento de tarifas"
+              );
             }
             monto_basico = res.data[0].monto_tarifa;
             kgr_minimos = res.data[0].kgr_hasta;
@@ -3839,11 +3787,9 @@ export default {
             this.detalle_movimiento[0].importe_renglon =
               this.parseFloatN(monto_basico).toFixed(2);
           })
-          .catch((err) => {
-            if (err.response) {
-              errorMessage = err.response.data.message;
-            }
-            return error;
+          .catch((error) => {
+            this.detalle_movimiento = [];
+            throw error;
           });
 
         // setear los valores del concepto kg adicionales
@@ -3873,11 +3819,9 @@ export default {
           .then((res) => {
             this.detalle_movimiento[1].cod_concepto = res.data.valor;
           })
-          .catch((err) => {
-            if (err.response) {
-              errorMessage = err.response.data.message;
-            }
-            return error;
+          .catch((error) => {
+            this.detalle_movimiento = [];
+            throw error;
           });
 
         // buscar si el concepto acepta comisiones y vale para el iva
@@ -3897,11 +3841,9 @@ export default {
             this.detalle_movimiento[1].cod_concepto_oper =
               res.data.cod_concepto;
           })
-          .catch((err) => {
-            if (err.response) {
-              errorMessage = err.response.data.message;
-            }
-            return error;
+          .catch((error) => {
+            this.detalle_movimiento = [];
+            throw error;
           });
 
         var axiosConfig;
@@ -3966,18 +3908,20 @@ export default {
           .get(`/tarifas`, axiosConfig)
           .then((res) => {
             if (!res.data[0]) {
-              errorMessage =
-                "Problemas al ubicar la tarifa de Kgs. Adicionales. Revisar mantenimiento de tarifas";
-              return error;
+              this.detalle_movimiento = [];
+              throw new Error(
+                "Problemas al ubicar la tarifa de Kgs. Adicionales. Revisar mantenimiento de tarifas"
+              );
             }
             if (
               res.data[0].kgr_hasta == null ||
               res.data[0].kgr_hasta == "" ||
               res.data[0].kgr_hasta == 0
             ) {
-              errorMessage =
-                "Problemas al ubicar el monto de los Kgs. adicionales. Revisar mantenimiento de tarifas";
-              return error;
+              this.detalle_movimiento = [];
+              throw new Error(
+                "Problemas al ubicar el monto de los Kgs. adicionales. Revisar mantenimiento de tarifas"
+              );
             }
 
             if (form.peso_kgs > kgr_minimos) {
@@ -4005,11 +3949,9 @@ export default {
               res.data[0].monto_tarifa
             ).toFixed(2);
           })
-          .catch((err) => {
-            if (err.response) {
-              errorMessage = err.response.data.message;
-            }
-            return error;
+          .catch((error) => {
+            this.detalle_movimiento = [];
+            throw error;
           });
 
         // setear los valores del concepto otros
@@ -4039,11 +3981,9 @@ export default {
           .then((res) => {
             this.detalle_movimiento[2].cod_concepto = res.data.valor;
           })
-          .catch((err) => {
-            if (err.response) {
-              errorMessage = err.response.data.message;
-            }
-            return error;
+          .catch((error) => {
+            this.detalle_movimiento = [];
+            throw error;
           });
 
         // buscar si el concepto acepta comisiones y vale para el iva
@@ -4063,11 +4003,9 @@ export default {
             this.detalle_movimiento[2].cod_concepto_oper =
               res.data.cod_concepto;
           })
-          .catch((err) => {
-            if (err.response) {
-              errorMessage = err.response.data.message;
-            }
-            return error;
+          .catch((error) => {
+            this.detalle_movimiento = [];
+            throw error;
           });
 
         // Se incluye esta tarifa para manejar precio actualizado del $.
@@ -4130,11 +4068,9 @@ export default {
             this.detalle_movimiento[2].importe_renglon = monto_otros.toFixed(2);
             this.detalle_movimiento[2].precio_unitario = monto_otros.toFixed(2);
           })
-          .catch((err) => {
-            if (err.response) {
-              errorMessage = err.response.data.message;
-            }
-            return error;
+          .catch((error) => {
+            this.detalle_movimiento = [];
+            throw error;
           });
 
         // setear los valores del concepto seguros
@@ -4164,11 +4100,9 @@ export default {
           .then((res) => {
             this.detalle_movimiento[3].cod_concepto = res.data.valor;
           })
-          .catch((err) => {
-            if (err.response) {
-              errorMessage = err.response.data.message;
-            }
-            return error;
+          .catch((error) => {
+            this.detalle_movimiento = [];
+            throw error;
           });
 
         //buscar si el concepto acepta comisiones y vale para el iva
@@ -4188,11 +4122,9 @@ export default {
             this.detalle_movimiento[3].cod_concepto_oper =
               res.data.cod_concepto;
           })
-          .catch((err) => {
-            if (err.response) {
-              errorMessage = err.response.data.message;
-            }
-            return error;
+          .catch((error) => {
+            this.detalle_movimiento = [];
+            throw error;
           });
 
         monto_seguro =
@@ -4229,11 +4161,9 @@ export default {
           .then((res) => {
             this.detalle_movimiento[4].cod_concepto = res.data.valor;
           })
-          .catch((err) => {
-            if (err.response) {
-              errorMessage = err.response.data.message;
-            }
-            return error;
+          .catch((error) => {
+            this.detalle_movimiento = [];
+            throw error;
           });
 
         await api
@@ -4252,11 +4182,9 @@ export default {
             this.detalle_movimiento[4].cod_concepto_oper =
               res.data.cod_concepto;
           })
-          .catch((err) => {
-            if (err.response) {
-              errorMessage = err.response.data.message;
-            }
-            return error;
+          .catch((error) => {
+            this.detalle_movimiento = [];
+            throw error;
           });
 
         await api
@@ -4274,11 +4202,9 @@ export default {
             this.detalle_movimiento[4].precio_unitario = monto_cod.toFixed(2);
             this.detalle_movimiento[4].importe_renglon = monto_cod.toFixed(2);
           })
-          .catch((err) => {
-            if (err.response) {
-              errorMessage = err.response.data.message;
-            }
-            return error;
+          .catch((error) => {
+            this.detalle_movimiento = [];
+            throw error;
           });
 
         // setear los valores del concepto gastos reembolsables
@@ -4308,11 +4234,9 @@ export default {
           .then((res) => {
             this.detalle_movimiento[5].cod_concepto = res.data.valor;
           })
-          .catch((err) => {
-            if (err.response) {
-              errorMessage = err.response.data.message;
-            }
-            return error;
+          .catch((error) => {
+            this.detalle_movimiento = [];
+            throw error;
           });
 
         //buscar si el concepto acepta comisiones y vale para el iva
@@ -4332,11 +4256,9 @@ export default {
             this.detalle_movimiento[5].cod_concepto_oper =
               res.data.cod_concepto;
           })
-          .catch((err) => {
-            if (err.response) {
-              errorMessage = err.response.data.message;
-            }
-            return error;
+          .catch((error) => {
+            this.detalle_movimiento = [];
+            throw error;
           });
 
         // setear los valores de los totales
@@ -4347,17 +4269,14 @@ export default {
           color: "green",
         });
         this.detalle = true;
-        this.resetLoading();
+        this.loading = false;
       } catch (error) {
-        if (errorMessage) {
-          this.detalle_movimiento = [];
-          this.resetLoading();
-          this.$q.notify({
-            message: errorMessage,
+        this.$q.notify({
+            message: error.message,
             color: "red",
           });
-          errorMessage = "";
-        }
+        this.loading = false;
+          
       }
     },
     // Metodo para que una funcion no avance hasta que se cumpla una condicion
@@ -4578,11 +4497,11 @@ export default {
               (item) => item.nb_proveedor == "TERRESTRE"
             )
           ];
-        this.resetLoading();
+        this.loading = false;
       } catch (stopFuction) {
         if (errorMessage) {
           this.resetFormGuia();
-          this.resetLoading();
+          this.loading = false;
           this.$q.notify({
             message: errorMessage,
             color: "red",
@@ -4936,10 +4855,10 @@ export default {
           "nb_agencia"
         );
 
-        this.resetLoading();
+        this.loading = false;
       } catch (error) {
         this.resetFormGuia();
-        this.resetLoading();
+        this.loading = false;
         this.$q.notify({
           message: errorMessage,
           color: "red",
@@ -4948,7 +4867,7 @@ export default {
     },
     // Metodo para Guardar Datos de Guia
     async sendDataGuia() {
-      this.showTextLoading();
+      this.loading = true;
       var errorMessage = null;
       var guia;
       var comisionVenta;
@@ -5611,13 +5530,13 @@ export default {
             }
           }
 
-          this.resetLoading();
+          this.loading = false;
           this.$q.notify({
             message: "Actualización Exitosa...",
             color: "green",
           });
         } catch (stopFuction) {
-          this.resetLoading();
+          this.loading = false;
           if (errorMessage) {
             this.$q.notify({
               message: errorMessage,

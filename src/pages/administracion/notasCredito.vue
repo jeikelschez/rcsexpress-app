@@ -1982,6 +1982,7 @@ export default {
     },
     // Metodo para imprimir la Nota de Credito
     async printData() {
+      console.log("asdasdasdasd")
       this.confirmPrintPopUp = true;
       await this.until((_) => this.confirmPrint == true);
       if (!this.confirmPrint) {
@@ -2354,7 +2355,7 @@ export default {
             this.dialogNota = false;
             return;
           }
-          this.$refs.webViewer.showpdf(res.data.pdfPath, 1.5);
+          this.$refs.webViewer.showpdf(res.data.pdfPath, 1.5, true);
         })
         .catch((err) => {
           this.$q.notify({

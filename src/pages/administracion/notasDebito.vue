@@ -1667,7 +1667,7 @@ export default {
             this.dialogNota = false;
             return;
           }
-          this.$refs.webViewer.showpdf(res.data.pdfPath, 1.5);
+          this.$refs.webViewer.showpdf(res.data.pdfPath, 1.5, true);
         })
         .catch((err) => {
           this.$q.notify({
