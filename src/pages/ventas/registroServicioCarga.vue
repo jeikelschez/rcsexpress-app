@@ -1363,10 +1363,13 @@
       </q-card>
     </q-dialog>
 
-    <q-dialog v-model="pdfView" @show="this.pdfview()">
-      <div style="width: 100%; max-width: 80vw">
-        <webViewer ref="webViewer" @close-pdf="closePdf"></webViewer>
-      </div>
+    <q-dialog v-model="pdfView" @show="this.printGuia()">
+      <webViewer
+        ref="webViewer"
+        @print-pdf="this.printData()"
+        @close-pdf="pdfView = false"
+        style="width: 900px; height: 750px; max-width: 900px"
+      ></webViewer>
     </q-dialog>
 
     <div
@@ -3333,9 +3336,6 @@ export default {
       });
   },
   methods: {
-    closePdf() {
-      this.pdfView = false;
-    },
     // Metodo para validar Permisos
     allowOption(option) {
       return (
@@ -3389,6 +3389,7 @@ export default {
     },
     // Metodo para mostrar PDF en funcion de BASE 64
     pdfview() {
+      console.log(res.data.base64)
       this.$refs.webViewer.showpdf("", res.data.base64);
     },
     // Metodo para mostar el Detalle de Documento
@@ -6231,6 +6232,49 @@ export default {
       this.formClientesParticulares.nb_cliente = "";
       this.formClientesParticulares.rif_ci = "";
       this.formClientesParticulares.telefonos = "";
+    },
+    async printGuia() {
+      if (
+        !(
+          this.form.estatus_administra.value == "F" ||
+          this.form.estatus_administra.value == "P"
+        )
+      ) {
+        this.$q.notify({
+          message:
+            "No es posible imprimir el preimpreso de la guía bajo el estatus administrativo en el que se encuentra.",
+          color: "red",
+        });
+        this.pdfView = false;
+        return;
+      }
+
+      api
+        .get(`/pdfreports/guiaIndividual`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            guia: this.form.id,
+          },
+        })
+        .then((res) => {
+          if (!res.data.validDoc) {
+            this.$q.notify({
+              message: "No existen registros para este conjunto de Filtos",
+              color: "red",
+            });
+            this.pdfView = false;
+            return;
+          }
+          this.$refs.webViewer.showpdf(res.data.pdfPath, 1.5);
+        })
+        .catch((err) => {
+          this.$q.notify({
+            message: err.message,
+            color: "red",
+          });
+          this.pdfView = false;
+          return;
+        });
     },
   },
 };
