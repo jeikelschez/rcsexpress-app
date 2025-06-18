@@ -1611,7 +1611,7 @@ export default {
       headers: {
         order_by: "nb_agencia",
         order_direction: "ASC",
-      }
+      },
     });
     this.$refs.methods.getData("/agentes", "setData", "agentes", {
       headers: {
@@ -1738,6 +1738,25 @@ export default {
       this.pagination.rowsNumber = res.total;
       this.pagination.rowsPerPage = res.limit;
       this.loading = false;
+
+      this.setFechaEnvio();
+    },
+    // Metodo para calcular los totales del Detalle
+    async setFechaEnvio() {
+      for (var i = 0; i < this.guias.length; i++) {
+        await api
+          .get(`/dcostosg`, {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              cod_movimiento: this.guias[i].id,
+            },
+          })
+          .then((res) => {
+            if (res.data.data[0]) {
+              this.guias[i].fecha_envio = res.data.data[0].costos.fecha_envio;
+            }
+          });
+      }
     },
     // Metodo para Setear Datos de Tabla
     async sendData() {
