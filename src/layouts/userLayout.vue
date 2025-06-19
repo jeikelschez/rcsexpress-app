@@ -50,7 +50,6 @@
 </template>
 
 <script>
-import { ref } from "vue";
 import { SessionStorage } from "quasar";
 
 export default {

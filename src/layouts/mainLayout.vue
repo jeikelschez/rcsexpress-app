@@ -247,7 +247,6 @@
 </template>
 
 <script>
-import { ref } from "vue";
 import { LocalStorage } from "quasar";
 import userLogoutVue from "src/components/userLogout.vue";
 import methodsVue from "src/components/methods.vue";
@@ -337,7 +336,7 @@ export default {
     refreshTimer() {
       let _this = this;
       var interval;
-      let minutes = 19;
+      let minutes = 119;
       let currentTime = localStorage.getItem("currentTime");
       let targetTime = localStorage.getItem("targetTime");
       if (targetTime == null && currentTime == null) {
@@ -402,14 +401,14 @@ export default {
       LocalStorage.remove("currentTimeLogout");
       LocalStorage.remove("targetTimeLogout");
       var currentTime = new Date();
-      var targetTime = new Date(currentTime.getTime() + 10 * 60000);
+      var targetTime = new Date(currentTime.getTime() + 60 * 60000);
       localStorage.setItem("currentTimeLogout", currentTime);
       localStorage.setItem("targetTimeLogout", targetTime);
       this.logoutTimer();
     },
     logoutTimer() {
       let _this = this;
-      let minutes = 10;
+      let minutes = 60;
       let currentTime = localStorage.getItem("currentTimeLogout");
       let targetTime = localStorage.getItem("targetTimeLogout");
       if (targetTime == null && currentTime == null) {
