@@ -630,7 +630,7 @@
       </div>
     </q-form>
 
-    <q-dialog v-model="pdfView" @show="this.print()">
+    <q-dialog v-model="pdfView" @show="this.print()" @hide="onDialogHide">
       <webViewer
         ref="webViewer"
         @export-Excel="exportExcel"
@@ -1036,16 +1036,21 @@ export default {
       }
 
       api
-        .get(`/pdfreports/comisiones`, {
-          headers: {
-            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        .post(
+          `/pdfreports/comisiones`,
+          {
             data: JSON.stringify(this.selectedId),
             desde: this.fecha_desde,
             hasta: this.fecha_hasta,
             dolar: this.selectedDolar,
             group: this.selectedAgrup,
           },
-        })
+          {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            },
+          }
+        )
         .then((res) => {
           if (!res.data.validDoc) {
             this.$q.notify({
@@ -1055,7 +1060,7 @@ export default {
             this.pdfView = false;
             return;
           }
-          this.$refs.webViewer.showpdf(res.data.pdfPath, 1.4);
+          this.$refs.webViewer.showpdf(res.data.pdfPath, 1.4, true);
         })
         .catch((err) => {
           this.$q.notify({
@@ -1076,15 +1081,20 @@ export default {
       }
 
       await api
-        .get(`/excelreports/comisiones`, {
-          headers: {
-            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+        .post(
+          `/excelreports/comisiones`,
+          {
             data: JSON.stringify(this.selectedId),
             desde: this.fecha_desde,
             hasta: this.fecha_hasta,
             dolar: this.selectedDolar,
           },
-        })
+          {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            },
+          }
+        )
         .then((res) => {
           if (!res.data.validDoc) {
             this.$q.notify({
@@ -1116,18 +1126,15 @@ export default {
       let agente_entrega = 0;
       let agente_seguro = 0;
       for (var i = 0; i < this.guias.length; i++) {
-        total +=
-          this.guias[i].monto_total
-            ? this.parseFloatN(this.curReplace(this.guias[i].monto_total))
-            : 0;
-        entrega +=
-          this.guias[i].com_entrega
-            ? this.parseFloatN(this.curReplace(this.guias[i].com_entrega))
-            : 0;
-        seguro +=
-          this.guias[i].com_seguro
-            ? this.parseFloatN(this.curReplace(this.guias[i].com_seguro))
-            : 0;
+        total += this.guias[i].monto_total
+          ? this.parseFloatN(this.curReplace(this.guias[i].monto_total))
+          : 0;
+        entrega += this.guias[i].com_entrega
+          ? this.parseFloatN(this.curReplace(this.guias[i].com_entrega))
+          : 0;
+        seguro += this.guias[i].com_seguro
+          ? this.parseFloatN(this.curReplace(this.guias[i].com_seguro))
+          : 0;
         if (
           i > 0 &&
           this.guias[i].cod_agencia_dest +
@@ -1150,14 +1157,12 @@ export default {
           agente_entrega = 0;
           agente_seguro = 0;
         }
-        agente_entrega +=
-          this.guias[i].com_entrega
-            ? this.parseFloatN(this.curReplace(this.guias[i].com_entrega))
-            : 0;
-        agente_seguro +=
-          this.guias[i].com_seguro
-            ? this.parseFloatN(this.curReplace(this.guias[i].com_seguro))
-            : 0;
+        agente_entrega += this.guias[i].com_entrega
+          ? this.parseFloatN(this.curReplace(this.guias[i].com_entrega))
+          : 0;
+        agente_seguro += this.guias[i].com_seguro
+          ? this.parseFloatN(this.curReplace(this.guias[i].com_seguro))
+          : 0;
       }
       this.agentesEntrega[
         this.guias[this.guias.length - 1].cod_agencia_dest +
@@ -1197,6 +1202,13 @@ export default {
     parseFloatN(number) {
       number = Math.round(number * 100) / 100;
       return number;
+    },
+    // Method called when the QDialog hides (e.g., user clicks outside or closes it)
+    onDialogHide() {
+      if (this.$refs.webViewer) {
+        this.$refs.webViewer.disposeViewer();
+      }
+      this.pdfView = false;
     },
   },
 };
