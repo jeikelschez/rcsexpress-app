@@ -2176,9 +2176,7 @@ export default {
       formCtaPagar.condicion_pago = this.form.condicion_pago
         ? parseInt(this.form.condicion_pago)
         : null;
-      formCtaPagar.cod_tipo_persona = this.form.cod_tipo_persona
-        ? parseInt(this.form.cod_tipo_persona)
-        : null;
+      formCtaPagar.cod_tipo_persona = this.selectedProveedor.tipo_persona;
 
       formCtaPagar.estatus_documento =
         this.estatus[
