@@ -1060,7 +1060,7 @@ export default {
             this.pdfView = false;
             return;
           }
-          this.$refs.webViewer.showpdf(res.data.pdfPath, 1.4, true);
+          this.$refs.webViewer.showpdf(res.data.pdfPath, 1.4);
         })
         .catch((err) => {
           this.$q.notify({
