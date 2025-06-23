@@ -382,6 +382,7 @@
           v-model:selected="selected"
           v-model:pagination="pagination"
           hide-bottom
+          @update:selected="calculaTotales"
         >
           <template v-slot:loading>
             <q-inner-loading showing color="primary" class="loading" />
@@ -990,14 +991,20 @@ export default {
     },
     // Metodo para Setear Datos de Tabla
     setDataTable(res, dataRes) {
+      this.selected = [];
+      this[dataRes] = [];
+
+      // Asignación de nuevos datos
       this[dataRes] = res.data ? res.data : res;
+      this.selected = this[dataRes];
+
       this.pagination.page = res.currentPage;
       this.currentPage = res.currentPage;
       this.pagination.rowsNumber = res.total;
       this.pagination.rowsPerPage = res.limit;
       this.loading = false;
-      this.selected = this.guias;
-      if (this.guias.length > 0) this.calculaTotales();
+
+      if (this.selected.length > 0) this.calculaTotales();
     },
     // Construye la data de la tabla
     buildData(field, row) {
@@ -1031,6 +1038,7 @@ export default {
     },
     // Imprimir Reporte
     print() {
+      this.selectedId = [];
       for (var i = 0; i < this.selected.length; i++) {
         this.selectedId.push(this.selected[i].id);
       }
@@ -1125,57 +1133,57 @@ export default {
       let seguro = 0;
       let agente_entrega = 0;
       let agente_seguro = 0;
-      for (var i = 0; i < this.guias.length; i++) {
-        total += this.guias[i].monto_total
-          ? this.parseFloatN(this.curReplace(this.guias[i].monto_total))
+      for (var i = 0; i < this.selected.length; i++) {
+        total += this.selected[i].monto_total
+          ? this.parseFloatN(this.curReplace(this.selected[i].monto_total))
           : 0;
-        entrega += this.guias[i].com_entrega
-          ? this.parseFloatN(this.curReplace(this.guias[i].com_entrega))
+        entrega += this.selected[i].com_entrega
+          ? this.parseFloatN(this.curReplace(this.selected[i].com_entrega))
           : 0;
-        seguro += this.guias[i].com_seguro
-          ? this.parseFloatN(this.curReplace(this.guias[i].com_seguro))
+        seguro += this.selected[i].com_seguro
+          ? this.parseFloatN(this.curReplace(this.selected[i].com_seguro))
           : 0;
         if (
           i > 0 &&
-          this.guias[i].cod_agencia_dest +
+          this.selected[i].cod_agencia_dest +
             "-" +
-            this.guias[i].cod_agente_entrega !=
-            this.guias[i - 1].cod_agencia_dest +
+            this.selected[i].cod_agente_entrega !=
+            this.selected[i - 1].cod_agencia_dest +
               "-" +
-              this.guias[i - 1].cod_agente_entrega
+              this.selected[i - 1].cod_agente_entrega
         ) {
           this.agentesEntrega[
-            this.guias[i - 1].cod_agencia_dest +
+            this.selected[i - 1].cod_agencia_dest +
               "-" +
-              this.guias[i - 1].cod_agente_entrega
+              this.selected[i - 1].cod_agente_entrega
           ] = agente_entrega;
           this.agentesSeguro[
-            this.guias[i - 1].cod_agencia_dest +
+            this.selected[i - 1].cod_agencia_dest +
               "-" +
-              this.guias[i - 1].cod_agente_entrega
+              this.selected[i - 1].cod_agente_entrega
           ] = agente_seguro;
           agente_entrega = 0;
           agente_seguro = 0;
         }
-        agente_entrega += this.guias[i].com_entrega
-          ? this.parseFloatN(this.curReplace(this.guias[i].com_entrega))
+        agente_entrega += this.selected[i].com_entrega
+          ? this.parseFloatN(this.curReplace(this.selected[i].com_entrega))
           : 0;
-        agente_seguro += this.guias[i].com_seguro
-          ? this.parseFloatN(this.curReplace(this.guias[i].com_seguro))
+        agente_seguro += this.selected[i].com_seguro
+          ? this.parseFloatN(this.curReplace(this.selected[i].com_seguro))
           : 0;
       }
       this.agentesEntrega[
-        this.guias[this.guias.length - 1].cod_agencia_dest +
+        this.selected[this.selected.length - 1].cod_agencia_dest +
           "-" +
-          this.guias[this.guias.length - 1].cod_agente_entrega
+          this.selected[this.selected.length - 1].cod_agente_entrega
       ] = agente_entrega;
       this.agentesSeguro[
-        this.guias[this.guias.length - 1].cod_agencia_dest +
+        this.selected[this.selected.length - 1].cod_agencia_dest +
           "-" +
-          this.guias[this.guias.length - 1].cod_agente_entrega
+          this.selected[this.selected.length - 1].cod_agente_entrega
       ] = agente_seguro;
 
-      this.cantidad = this.guias.length;
+      this.cantidad = this.selected.length;
       this.monto_total = total.toFixed(2);
       this.comision_entrega = entrega.toFixed(2);
       this.comision_seguro = seguro.toFixed(2);

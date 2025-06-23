@@ -889,7 +889,7 @@
                   <strong>CLIENTE PARTICULAR ORIGEN</strong>
                 </h4>
               </div>
-              <div class="col-md-4 col-xs-12">
+              <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
                   v-model="formClientesParticulares.rif_ci"
@@ -908,7 +908,7 @@
                   </template>
                 </q-input>
               </div>
-              <div class="col-md-4 col-xs-12">
+              <div class="col-md-6 col-xs-12">
                 <q-select
                   outlined
                   v-model="formClientesParticulares.cod_agencia"
@@ -950,7 +950,7 @@
                 </q-select>
               </div>
 
-              <div class="col-md-4 col-xs-12">
+              <div class="col-md-12 col-xs-12">
                 <q-input
                   outlined
                   v-model="formClientesParticulares.nb_cliente"

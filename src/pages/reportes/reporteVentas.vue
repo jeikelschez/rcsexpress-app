@@ -1000,6 +1000,7 @@ export default {
       dataArray.pagado_en = this.selectedPagado.value;
       dataArray.correlativo = this.selectedCorrelativo;
       dataArray.tipo_doc = this.selectedTipoDoc.value;
+      dataArray.serie = this.selectedSerie;
       await api
         .get(`/excelreports/reporteVentas`, {
           headers: {
