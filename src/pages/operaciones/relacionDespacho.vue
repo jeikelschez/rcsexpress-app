@@ -1409,7 +1409,9 @@ export default {
       factArray.vehiculo = this.selectedUnidad.id
         ? this.selectedUnidad.placas +
           " - " +
-          this.selectedUnidad.descripcion
+          this.selectedUnidad.descripcion +
+          " - " +
+          this.selectedUnidad.chofer
         : "";
       factArray.receptor = this.selectedReceptor.id
         ? this.selectedReceptor
