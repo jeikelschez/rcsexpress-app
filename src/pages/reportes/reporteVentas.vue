@@ -413,17 +413,11 @@
             v-if="
               selectedTipo.value == 'VC' ||
               selectedTipo.value == 'TV' ||
-              selectedTipo.value == 'RD'
+              selectedTipo.value == 'RD' ||
+              selectedTipo.value == 'GC'
             "
           >
             <strong>Serie</strong>
-          </p>
-          <p
-            style="font-size: 20px; margin-bottom: 15px; margin-right: -20px"
-            class="text-secondary"
-            v-else-if="selectedTipo.value == 'GC' || selectedTipo.value == 'FA'"
-          >
-            <strong>Correlativo</strong>
           </p>
           <div v-else style="margin-bottom: 40px"></div>
         </div>
@@ -435,7 +429,8 @@
             v-if="
               selectedTipo.value == 'VC' ||
               selectedTipo.value == 'TV' ||
-              selectedTipo.value == 'RD'
+              selectedTipo.value == 'RD' ||
+              selectedTipo.value == 'GC'
             "
             v-model="selectedSerie"
             color="primary"
@@ -448,24 +443,14 @@
             v-if="
               selectedTipo.value == 'VC' ||
               selectedTipo.value == 'TV' ||
-              selectedTipo.value == 'RD'
+              selectedTipo.value == 'RD' ||
+              selectedTipo.value == 'GC'
             "
             v-model="selectedSerie"
             color="primary"
             left-label
             val="55"
             label="55"
-          />
-          <q-checkbox
-            v-else-if="
-              selectedTipo.value == 'GC' ||
-              selectedTipo.value == 'GF' ||
-              selectedTipo.value == 'FA'
-            "
-            v-model="selectedCorrelativo"
-            color="primary"
-            left-label
-            style="margin-left: -40px"
           />
           <div v-else style="margin-bottom: 40px"></div>
         </div>
@@ -576,6 +561,13 @@
           >
             <strong>Neta</strong>
           </p>
+          <p
+            style="font-size: 20px; margin-bottom: 15px; margin-left: -30px"
+            class="text-secondary"
+            v-else-if="selectedTipo.value == 'GC' || selectedTipo.value == 'FA'"
+          >
+            <strong>Correlativo</strong>
+          </p>
           <div v-else style="margin-bottom: 40px"></div>
         </div>
         <div
@@ -594,6 +586,12 @@
               selectedTipo.value == 'RD'
             "
             v-model="selectedNeta"
+            color="primary"
+            left-label
+          />
+          <q-checkbox
+            v-else-if="selectedTipo.value == 'GC' || selectedTipo.value == 'FA'"
+            v-model="selectedCorrelativo"
             color="primary"
             left-label
           />
@@ -622,6 +620,25 @@
             @click="resetFilters()"
           />
         </div>
+        <div
+          class="col-md-4 col-xl-12 col-lg-12 col-xs-12 col-sm-12 cardMargin selectMobile2"
+          style="align-self: center; text-align: center"
+          v-if="
+            selectedTipo.value == 'GC' &&
+            this.selectedSerie == '55' &&
+            this.enabledExport
+          "
+        >
+          <q-btn
+            rounded
+            label="Marcar como Modificada"
+            color="primary"
+            class="col-md-3 col-sm-3 col-xs-12 btnmovil"
+            icon="redo"
+            style="margin-top: 10px"
+            @click="setModificada()"
+          />
+        </div>
       </div>
       <div class="q-pa-md col-md-8 col-xs-12 q-gutter-y-md justify-center">
         <webViewer
@@ -630,12 +647,37 @@
           v-if="pdf == true"
           style="width: 1080px; height: 650px; max-width: 1080px"
         >
-        <q-inner-loading :showing="visible">
-        <q-spinner-gears size="50px" color="primary" />
-        </q-inner-loading>
+          <q-inner-loading :showing="visible">
+            <q-spinner-gears size="50px" color="primary" />
+          </q-inner-loading>
         </webViewer>
         <q-inner-loading :showing="loading" color="primary" class="loading" />
       </div>
+      <q-dialog v-model="confirmPopUp" persistent>
+      <q-card style="width: 700px">
+        <q-card-section>
+          <div class="text-h5" style="font-size: 18px">
+            Desea cambiar el estado de las Guias serie 55 de esta selección a Modificadas?
+          </div>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn
+            flat
+            label="Cancelar"
+            color="primary"
+            @click="this.updateMasivo = false"
+            v-close-popup
+          />
+          <q-btn
+            flat
+            label="Actualizar"
+            color="primary"
+            v-close-popup
+            @click="this.updateMasivo = true"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
     </div>
 
     <methods
@@ -668,10 +710,6 @@ export default {
       montoVenta: [
         { label: "SI", value: "SI" },
         { label: "NO", value: "NO" },
-      ],
-      serieGuias: [
-        { label: "44", value: "44" },
-        { label: "55", value: "55" },
       ],
       tipoReporte: [
         {
@@ -798,6 +836,7 @@ export default {
       selectedAgrCli: false,
       selectedAgrDia: false,
       enabledExport: false,
+      updateMasivo: false,
       fecha_desde: moment().format("DD/MM/YYYY"),
       fecha_hasta: moment().format("DD/MM/YYYY"),
     };
@@ -810,6 +849,7 @@ export default {
       deletePopup: ref(false),
       dialog: ref(false),
       pdfView: ref(true),
+      confirmPopUp: ref(false),
     };
   },
   mounted() {
@@ -928,7 +968,8 @@ export default {
         this.reportValue == "TV" ||
         this.reportValue == "TVC" ||
         this.reportValue == "TVD" ||
-        this.reportValue == "RD"
+        this.reportValue == "RD" ||
+        this.reportValue == "GC"
       ) {
         if (this.selectedSerie.length == 0) {
           this.$q.notify({
@@ -1018,7 +1059,7 @@ export default {
             return;
           }
           const link = document.createElement("a");
-          link.href = `${process.env.apiPath}/excelReports/loadExcel/${res.data.excelPath}`; 
+          link.href = `${process.env.apiPath}/excelReports/loadExcel/${res.data.excelPath}`;
           link.setAttribute("download", "file.xlsx");
           setTimeout(() => {
             link.click();
@@ -1056,6 +1097,53 @@ export default {
       this.fecha_desde = moment().format("DD/MM/YYYY");
       this.fecha_hasta = moment().format("DD/MM/YYYY");
       this.pdfChange(0);
+    },
+    async setModificada() {
+      this.confirmPopUp = true;
+      await this.until((_) => this.updateMasivo == true);
+      if (!this.updateMasivo) {
+        return;
+      } else {
+        this.updateMasivo = false;
+      }
+
+      this.loading = true;
+
+      let data = {};
+      data.desde = this.fecha_desde;
+      data.hasta = this.fecha_hasta;
+      data.nuevoEstatus = "M";
+      data.agencia = this.selectedAgencia.id;
+      data.cliente = this.selectedCliente.id;
+
+      await api
+        .put(`/mmovimientos/update-estatus-masivo`, data, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => {
+          this.$q.notify({
+            message: res.data.message + ", Guías actualizadas: " + res.data.cantidad,
+            color: "green",
+          });
+        })
+        .catch((error) => {
+          this.$q.notify({
+            message: error.message,
+            color: "red",
+          });
+        });
+      this.loading = false;
+      this.pdfPrint();
+    },
+    // Metodo para que una funcion no avance hasta que se cumpla una condicion
+    async until(conditionFunction) {
+      const poll = (resolve) => {
+        if (conditionFunction()) resolve();
+        else setTimeout((_) => poll(resolve), 400);
+      };
+      return new Promise(poll);
     },
   },
 };
