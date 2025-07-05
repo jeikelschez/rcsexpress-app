@@ -41,6 +41,7 @@
             option-value="id"
             v-model="selectedAgencia"
             outlined
+            ref="agencia"
             standout
             label="Agencia"
             @update:model-value="getDataTable()"
@@ -209,311 +210,314 @@
       </div>
     </div>
 
-    <div
-      class="row justify-center items-center content-center"
-      style="padding: 10px"
-    >
-      <div class="col-md-6 col-xs-12" style="width: 48%; padding-right: 5px">
-        <q-card style="margin-top: 10px">
-          <q-card-section>
-            <q-table
-              :rows="cuentas_cobrar_asignar"
-              dense
-              selection="multiple"
-              :columns="columnsCuentasCobrarAsignar"
-              binary-state-sort
-              :separator="separator"
-              :rows-per-page-options="[0]"
-              v-model:selected="selectedCuentasCobrarAsignar"
-              row-key="id"
-              style="width: 100%; height: 400px"
-              :loading="loading"
-              hide-bottom
-            >
-              <template v-slot:loading>
-                <q-inner-loading showing color="primary" class="loading" />
-              </template>
-              <template v-slot:body-cell-nro_control="props">
-                <q-td :props="props">
-                  {{ buildNroDoc("nro_control", props.row) }}
-                </q-td>
-              </template>
-              <template v-slot:body-cell-nro_documento="props">
-                <q-td :props="props">
-                  {{ buildNroDoc("nro_documento", props.row) }}
-                </q-td>
-              </template>
-              <template v-slot:body-cell-nro_ref="props">
-                <q-td :props="props">
-                  {{ buildNroDoc("nro_ref", props.row) }}
-                </q-td>
-              </template>
-            </q-table>
-          </q-card-section>
-        </q-card>
-      </div>
-      <div
-        class="row col-md-1 col-xs-12"
-        style="text-align: center; margin-left: -40px; margin-right: -40px"
-      >
-        <div class="col-md-12 col-xs-3 buttonsCard">
-          <q-btn
-            color="primary"
-            round
-            padding="sm"
-            icon="chevron_right"
-            @click="addSelectedCuenta()"
-          />
-        </div>
-        <div class="col-md-12 col-xs-3 buttonsCard">
-          <q-btn
-            color="primary"
-            round
-            padding="sm"
-            icon="chevron_left"
-            @click="removeSelectedCuenta()"
-          />
-        </div>
-      </div>
-      <div class="col-md-6 col-xs-12" style="width: 48%; padding-left: 5px">
-        <q-card style="margin-top: 10px">
-          <q-card-section>
-            <q-table
-              :rows="cuentas_cobrar"
-              dense
-              selection="multiple"
-              :columns="columnsCuentasCobrar"
-              binary-state-sort
-              :separator="separator"
-              :rows-per-page-options="[0]"
-              v-model:selected="selectedCuentasCobrar"
-              row-key="id"
-              style="width: 100%; height: 400px"
-              :loading="loading"
-              hide-bottom
-            >
-              <template v-slot:loading>
-                <q-inner-loading showing color="primary" class="loading" />
-              </template>
-              <template v-slot:body-cell-nro_control="props">
-                <q-td :props="props">
-                  {{ buildNroDoc("nro_control", props.row) }}
-                </q-td>
-              </template>
-              <template v-slot:body-cell-nro_documento="props">
-                <q-td :props="props">
-                  {{ buildNroDoc("nro_documento", props.row) }}
-                </q-td>
-              </template>
-              <template v-slot:body-cell-nro_ref="props">
-                <q-td :props="props">
-                  {{ buildNroDoc("nro_ref", props.row) }}
-                </q-td>
-              </template>
-              <template v-slot:body-cell-iva_retenido="props">
-                <q-td :props="props">
-                  <q-input
-                    dense
-                    v-model="props.row.iva_retenido"
-                    v-money="money"
-                    input-class="text-right"
-                    style="min-width: 80px; font-size: 13px"
-                    @update:model-value="calculaTotales()"
-                  />
-                </q-td>
-              </template>
-              <template v-slot:body-cell-islr_retenido="props">
-                <q-td :props="props">
-                  <q-input
-                    dense
-                    v-model="props.row.islr_retenido"
-                    v-money="money"
-                    input-class="text-right"
-                    style="min-width: 80px; font-size: 13px"
-                    @update:model-value="calculaTotales()"
-                  />
-                </q-td>
-              </template>
-              <template v-slot:body-cell-monto_pagado="props">
-                <q-td :props="props">
-                  <q-input
-                    dense
-                    v-model="props.row.monto_pagado"
-                    v-money="money"
-                    input-class="text-right"
-                    style="min-width: 100px; font-size: 13px"
-                    @update:model-value="calculaTotales()"
-                  />
-                </q-td>
-              </template>
-              <template v-slot:body-cell-observacion="props">
-                <q-td :props="props">
-                  <q-input
-                    dense
-                    v-model="props.row.observacion"
-                    style="min-width: 120px; font-size: 13px"
-                  />
-                </q-td>
-              </template>
-            </q-table>
-          </q-card-section>
-        </q-card>
-      </div>
-      <div class="row col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
-        <div class="col-md-12 col-xs-12" style="margin-top: 20px">
-          <q-card
-            class="q-pa-md col-md-12 col-xs-12"
-            bordered
-            style="padding: 5px"
-          >
-            <q-card-section
-              style="
-                padding-bottom: 5px;
-                padding-left: 10px;
-                padding-right: 10px;
-              "
-            >
-              <div class="row">
-                <div
-                  class="col-md-5 col-xs-12 selectMobile2"
-                  style="margin-bottom: 20px"
-                >
-                  <q-select
-                    dense
-                    transition-show="flip-up"
-                    transition-hide="flip-down"
-                    :options="bancos"
-                    use-input
-                    hide-selected
-                    fill-input
-                    input-debounce="0"
-                    option-label="nb_banco"
-                    option-value="id"
-                    v-model="selectedBanco"
-                    outlined
-                    standout
-                    ref="banco"
-                    label="Banco"
-                    class="pcform"
-                    @update:model-value="this.setCuentas()"
-                  >
-                    <template v-slot:prepend>
-                      <q-icon name="apartment" />
-                    </template>
-                  </q-select>
-                </div>
-                <div class="col-md-5 col-xs-12" style="padding-right: 20px">
-                  <q-select
-                    dense
-                    transition-show="flip-up"
-                    transition-hide="flip-down"
-                    :options="cuentas"
-                    use-input
-                    hide-selected
-                    fill-input
-                    input-debounce="0"
-                    option-label="nro_cuenta"
-                    option-value="id"
-                    v-model="selectedCuenta"
-                    outlined
-                    standout
-                    ref="cuenta"
-                    label="Cuenta"
-                  >
-                    <template v-slot:prepend>
-                      <q-icon name="apartment" />
-                    </template>
-                  </q-select>
-                </div>
-                <div class="col-md-2 col-xs-12">
-                  <q-input
-                    outlined
-                    label="Fecha"
-                    hint=""
-                    dense
-                    v-model="fecha_cobranza"
-                    mask="##/##/####"
-                    lazy-rules
-                    :rules="[(val) => this.$refs.rulesVue.checkDate(val)]"
-                  >
-                    <template v-slot:append>
-                      <q-icon name="event" class="cursor-pointer">
-                        <q-popup-proxy
-                          ref="qDateProxy"
-                          transition-show="scale"
-                          transition-hide="scale"
-                        >
-                          <q-date
-                            v-model="fecha_cobranza"
-                            mask="DD/MM/YYYY"
-                            style="padding-bottom: 0px"
-                          ></q-date>
-                        </q-popup-proxy>
-                      </q-icon>
-                    </template>
-                  </q-input>
-                </div>
-                <div class="col-md-3 col-xs-12">
-                  <q-input
-                    outlined
-                    v-model="nro_ingreso"
-                    label="Ingreso de Caja N°:"
-                    hint=""
-                    dense
-                    mask="######"
-                    style="padding-bottom: 10px"
-                    class="pcform"
-                    lazy-rules
-                  >
-                  </q-input>
-                </div>
-                <div class="col-md-3 col-xs-12">
-                  <q-input
-                    outlined
-                    v-model="monto_cobrado"
-                    label="Monto Cobrado:"
-                    hint=""
-                    class="pcform"
-                    v-money="money"
-                    dense
-                    input-class="text-right"
-                    style="padding-bottom: 10px"
-                    lazy-rules
-                  >
-                  </q-input>
-                </div>
-                <div class="col-md-3 col-xs-12">
-                  <q-input
-                    outlined
-                    v-model="monto_retenido"
-                    label="Monto Retenido:"
-                    input-class="text-right"
-                    hint=""
-                    v-money="money"
-                    dense
-                    style="padding-bottom: 10px"
-                    class="pcform"
-                    lazy-rules
-                  >
-                  </q-input>
-                </div>
-                <div class="col-md-3 col-xs-12">
-                  <q-input
-                    outlined
-                    v-model="monto_deposito"
-                    label="Monto Depósito:"
-                    input-class="text-right"
-                    hint=""
-                    v-money="money"
-                    dense
-                    style="padding-bottom: 10px"
-                    lazy-rules
-                  >
-                  </q-input>
-                </div>
-              </div>
+    <div class="q-mx-xl">
+      <div class="row q-col-gutter-xs items-center">
+        <!-- Primera tabla -->
+        <div class="col-12 col-md-5">
+          <q-card class="q-mt-md">
+            <q-card-section>
+              <q-table
+                :rows="cuentas_cobrar_asignar"
+                dense
+                selection="multiple"
+                :columns="columnsCuentasCobrarAsignar"
+                binary-state-sort
+                :separator="separator"
+                :rows-per-page-options="[0]"
+                v-model:selected="selectedCuentasCobrarAsignar"
+                row-key="id"
+                style="width: 100%; height: 400px"
+                :loading="loading"
+                hide-bottom
+              >
+                <template v-slot:loading>
+                  <q-inner-loading showing color="primary" class="loading" />
+                </template>
+                <template v-slot:body-cell-nro_control="props">
+                  <q-td :props="props">
+                    {{ buildNroDoc("nro_control", props.row) }}
+                  </q-td>
+                </template>
+                <template v-slot:body-cell-nro_documento="props">
+                  <q-td :props="props">
+                    {{ buildNroDoc("nro_documento", props.row) }}
+                  </q-td>
+                </template>
+                <template v-slot:body-cell-nro_ref="props">
+                  <q-td :props="props">
+                    {{ buildNroDoc("nro_ref", props.row) }}
+                  </q-td>
+                </template>
+              </q-table>
             </q-card-section>
           </q-card>
+        </div>
+        <!-- Botones centrales -->
+        <div class="col-12 col-md-1 flex flex-center">
+          <div>
+            <div class="col-md-12 col-xs-3 buttonsCard">
+              <q-btn
+                color="primary"
+                round
+                padding="sm"
+                icon="chevron_right"
+                @click="addSelectedCuenta()"
+                class="q-mb-sm"
+              />
+            </div>
+            <div class="col-md-12 col-xs-3 buttonsCard">
+              <q-btn
+                color="primary"
+                round
+                padding="sm"
+                icon="chevron_left"
+                @click="removeSelectedCuenta()"
+              />
+            </div>
+          </div>
+        </div>
+        <!-- Segunda tabla -->
+        <div class="col-12 col-md-6">
+          <q-card class="q-mt-md">
+            <q-card-section>
+              <q-table
+                :rows="cuentas_cobrar"
+                dense
+                selection="multiple"
+                :columns="columnsCuentasCobrar"
+                binary-state-sort
+                :separator="separator"
+                :rows-per-page-options="[0]"
+                v-model:selected="selectedCuentasCobrar"
+                row-key="id"
+                style="width: 100%; height: 400px"
+                :loading="loading"
+                hide-bottom
+              >
+                <template v-slot:loading>
+                  <q-inner-loading showing color="primary" class="loading" />
+                </template>
+                <template v-slot:body-cell-nro_control="props">
+                  <q-td :props="props">
+                    {{ buildNroDoc("nro_control", props.row) }}
+                  </q-td>
+                </template>
+                <template v-slot:body-cell-nro_documento="props">
+                  <q-td :props="props">
+                    {{ buildNroDoc("nro_documento", props.row) }}
+                  </q-td>
+                </template>
+                <template v-slot:body-cell-nro_ref="props">
+                  <q-td :props="props">
+                    {{ buildNroDoc("nro_ref", props.row) }}
+                  </q-td>
+                </template>
+                <template v-slot:body-cell-iva_retenido="props">
+                  <q-td :props="props">
+                    <q-input
+                      dense
+                      v-model="props.row.iva_retenido"
+                      v-money="money"
+                      input-class="text-right"
+                      style="min-width: 80px; font-size: 13px"
+                      @update:model-value="calculaTotales()"
+                    />
+                  </q-td>
+                </template>
+                <template v-slot:body-cell-islr_retenido="props">
+                  <q-td :props="props">
+                    <q-input
+                      dense
+                      v-model="props.row.islr_retenido"
+                      v-money="money"
+                      input-class="text-right"
+                      style="min-width: 80px; font-size: 13px"
+                      @update:model-value="calculaTotales()"
+                    />
+                  </q-td>
+                </template>
+                <template v-slot:body-cell-monto_pagado="props">
+                  <q-td :props="props">
+                    <q-input
+                      dense
+                      v-model="props.row.monto_pagado"
+                      v-money="money"
+                      input-class="text-right"
+                      style="min-width: 100px; font-size: 13px"
+                      @update:model-value="calculaTotales()"
+                    />
+                  </q-td>
+                </template>
+                <template v-slot:body-cell-observacion="props">
+                  <q-td :props="props">
+                    <q-input
+                      dense
+                      v-model="props.row.observacion"
+                      style="min-width: 120px; font-size: 13px"
+                    />
+                  </q-td>
+                </template>
+              </q-table>
+            </q-card-section>
+          </q-card>
+        </div>
+        <!-- Fila de Totales -->
+        <div class="row col-md-12 col-xl-12 col-lg-12 col-xs-12 col-sm-12">
+          <div class="col-md-12 col-xs-12" style="margin-top: 20px">
+            <q-card
+              class="q-pa-md col-md-12 col-xs-12"
+              bordered
+              style="padding: 5px"
+            >
+              <q-card-section
+                style="
+                  padding-bottom: 5px;
+                  padding-left: 10px;
+                  padding-right: 10px;
+                "
+              >
+                <div class="row">
+                  <div
+                    class="col-md-5 col-xs-12 selectMobile2"
+                    style="margin-bottom: 20px"
+                  >
+                    <q-select
+                      dense
+                      transition-show="flip-up"
+                      transition-hide="flip-down"
+                      :options="bancos"
+                      use-input
+                      hide-selected
+                      fill-input
+                      input-debounce="0"
+                      option-label="nb_banco"
+                      option-value="id"
+                      v-model="selectedBanco"
+                      outlined
+                      standout
+                      ref="banco"
+                      label="Banco"
+                      class="pcform"
+                      @update:model-value="this.setCuentas()"
+                    >
+                      <template v-slot:prepend>
+                        <q-icon name="apartment" />
+                      </template>
+                    </q-select>
+                  </div>
+                  <div class="col-md-5 col-xs-12" style="padding-right: 20px">
+                    <q-select
+                      dense
+                      transition-show="flip-up"
+                      transition-hide="flip-down"
+                      :options="cuentas"
+                      use-input
+                      hide-selected
+                      fill-input
+                      input-debounce="0"
+                      option-label="nro_cuenta"
+                      option-value="id"
+                      v-model="selectedCuenta"
+                      outlined
+                      standout
+                      ref="cuenta"
+                      label="Cuenta"
+                    >
+                      <template v-slot:prepend>
+                        <q-icon name="apartment" />
+                      </template>
+                    </q-select>
+                  </div>
+                  <div class="col-md-2 col-xs-12">
+                    <q-input
+                      outlined
+                      label="Fecha"
+                      hint=""
+                      dense
+                      v-model="fecha_cobranza"
+                      mask="##/##/####"
+                      lazy-rules
+                      :rules="[(val) => this.$refs.rulesVue.checkDate(val)]"
+                    >
+                      <template v-slot:append>
+                        <q-icon name="event" class="cursor-pointer">
+                          <q-popup-proxy
+                            ref="qDateProxy"
+                            transition-show="scale"
+                            transition-hide="scale"
+                          >
+                            <q-date
+                              v-model="fecha_cobranza"
+                              mask="DD/MM/YYYY"
+                              style="padding-bottom: 0px"
+                            ></q-date>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                  </div>
+                  <div class="col-md-3 col-xs-12">
+                    <q-input
+                      outlined
+                      v-model="nro_ingreso"
+                      label="Ingreso de Caja N°:"
+                      hint=""
+                      dense
+                      mask="######"
+                      style="padding-bottom: 10px"
+                      class="pcform"
+                      lazy-rules
+                    >
+                    </q-input>
+                  </div>
+                  <div class="col-md-3 col-xs-12">
+                    <q-input
+                      outlined
+                      v-model="monto_cobrado"
+                      label="Monto Cobrado:"
+                      hint=""
+                      class="pcform"
+                      v-money="money"
+                      dense
+                      input-class="text-right"
+                      style="padding-bottom: 10px"
+                      lazy-rules
+                    >
+                    </q-input>
+                  </div>
+                  <div class="col-md-3 col-xs-12">
+                    <q-input
+                      outlined
+                      v-model="monto_retenido"
+                      label="Monto Retenido:"
+                      input-class="text-right"
+                      hint=""
+                      v-money="money"
+                      dense
+                      style="padding-bottom: 10px"
+                      class="pcform"
+                      lazy-rules
+                    >
+                    </q-input>
+                  </div>
+                  <div class="col-md-3 col-xs-12">
+                    <q-input
+                      outlined
+                      v-model="monto_deposito"
+                      label="Monto Depósito:"
+                      input-class="text-right"
+                      hint=""
+                      v-money="money"
+                      dense
+                      style="padding-bottom: 10px"
+                      lazy-rules
+                    >
+                    </q-input>
+                  </div>
+                </div>
+              </q-card-section>
+            </q-card>
+          </div>
         </div>
       </div>
     </div>
@@ -891,6 +895,16 @@ export default {
     },
     async saveCuentas() {
       // Valido que el banco este lleno
+      if (this.selectedAgencia.length == 0) {
+        this.$refs.agencia.$el.focus();
+        this.$q.notify({
+          message: "Debe seleccionar la Agencia para poder generar la Cobranza",
+          color: "red",
+        });
+        return;
+      }
+
+      // Valido que el banco este lleno
       if (this.selectedBanco.length == 0) {
         this.$refs.banco.$el.focus();
         this.$q.notify({
@@ -934,8 +948,9 @@ export default {
       formCobranza.monto_retenido = parseFloat(
         this.curReplace(this.monto_retenido)
       );
-      formCobranza.monto_deposito =
-        parseFloat(this.curReplace(this.monto_deposito));
+      formCobranza.monto_deposito = parseFloat(
+        this.curReplace(this.monto_deposito)
+      );
       formCobranza.ingreso_caja = this.nro_ingreso;
 
       await api
@@ -964,8 +979,9 @@ export default {
       ).format("YYYY-MM-DD");
       formBancario.nro_documento = 0;
       formBancario.tipo_documento = "DP";
-      formBancario.monto_movimiento =
-        parseFloat(this.curReplace(this.monto_deposito));
+      formBancario.monto_movimiento = parseFloat(
+        this.curReplace(this.monto_deposito)
+      );
 
       await api
         .post(`/mbancarios/`, formBancario, {
@@ -1146,10 +1162,10 @@ export default {
       let islr_retenido = 0;
       for (var i = 0; i < this.cuentas_cobrar.length; i++) {
         monto_cobrado += parseFloat(
-          this.curReplace(this.cuentas_cobrar[i].monto_total)
+          this.curReplace(this.cuentas_cobrar[i].monto_pagado)
         );
         monto_deposito +=
-          parseFloat(this.curReplace(this.cuentas_cobrar[i].monto_total)) -
+          parseFloat(this.curReplace(this.cuentas_cobrar[i].monto_pagado)) -
           parseFloat(this.curReplace(this.cuentas_cobrar[i].islr_retenido));
         iva_retenido += parseFloat(
           this.curReplace(this.cuentas_cobrar[i].iva_retenido)

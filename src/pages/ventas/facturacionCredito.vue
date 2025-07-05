@@ -3209,9 +3209,8 @@ export default {
                   this.curReplace(this.detalles[i].subtotal)
                 )
               : 0;
-        }
-
-        subtotal_base +=
+        } else {
+          subtotal_base +=
             this.detalles[i].subtotal != "0"
               ? await this.parseFloatN(
                   this.curReplace(this.detalles[i].subtotal)
@@ -3222,6 +3221,7 @@ export default {
               this.parseFloatN(this.curReplace(this.descuentoSelected))) /
             100;
           base = subtotal_base - descuento_base;
+        }
 
         // Calculamos el Monto base
         if (this.detalles[i].check_impuesto != 1) {
