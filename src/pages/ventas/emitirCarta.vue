@@ -295,7 +295,22 @@
           </q-select>
         </div>
         <div
-          class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
+          class="col-md-1 col-xl-1 col-lg-1 col-xs-12 col-sm-12"
+          style="align-self: center; text-align: center"
+        >
+          <q-checkbox
+            v-model="checkMonto"
+            label="Monto"
+            color="primary"
+            size="lg"
+            checked-icon="check_box"
+            unchecked-icon="check_box_outline_blank"
+            :true-value="true"
+            :false-value="false"
+          />
+        </div>
+        <div
+          class="col-md-1 col-xl-1 col-lg-1 col-xs-12 col-sm-12"
           style="align-self: center; text-align: center"
         >
           <q-btn
@@ -322,7 +337,7 @@
             round
             padding="sm"
             style="margin-right: 5px"
-            :disabled="this.guias.length > 0 ? false : true"
+            :disabled="this.selected.length > 0 ? false : true"
             @click.capture="this.dialog = true"
           >
             <q-icon size="25px" name="print" color="white"> </q-icon>
@@ -571,6 +586,7 @@ export default {
       fecha_desde: moment().subtract(7, "days").format("DD/MM/YYYY"),
       fecha_hasta: moment().format("DD/MM/YYYY"),
       clientesLoading: false,
+      checkMonto: true,
     };
   },
   setup() {
@@ -652,6 +668,10 @@ export default {
     },
     // Metodo para Extraer Todos las facturas y de alli los clientes
     getDataClientes() {
+      if (!this.selectedAgencia.id) {
+        return;
+      }
+
       this.guias = [];
       this.selected = [];
       this.clientes = [];
@@ -790,12 +810,16 @@ export default {
       var factArray = [];
       this.dialog = false;
       for (var i = 0; i <= this.selected.length - 1; i++) {
+        const monto =
+          this.selected[i].t_de_documento === "NC"
+            ? -Math.abs(this.selected[i].monto_total)
+            : this.selected[i].monto_total;
         factArray.push(
           this.selected[i].id +
             "/" +
             (this.selected[i].observacion_adic
               ? this.selected[i].observacion_adic.toUpperCase()
-              : "")
+              : "" + "/" + monto)
         );
       }
       api
@@ -808,6 +832,7 @@ export default {
             cargo: this.form.cargo,
             ciudad: this.selectedAgencia.ciudades.desc_ciudad,
             usuario: LocalStorage.getItem("tokenTraducido").usuario.nombre,
+            monto: this.checkMonto,
           },
         })
         .then((res) => {
