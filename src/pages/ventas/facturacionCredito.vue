@@ -491,6 +491,7 @@
     <q-dialog v-model="dialogFactura2" @show="this.printFactura2()">
       <webViewer
         ref="webViewer"
+        @print-pdf="this.printData2()"
         @close-pdf="dialogFactura2 = false"
         style="width: 900px; height: 750px; max-width: 900px"
       ></webViewer>
@@ -3544,6 +3545,10 @@ export default {
           this.dialogFactura2 = false;
           return;
         });
+    },
+    // Metodo para imprimir la Factura
+    async printData2() {
+      this.$refs.webViewer.confirmPrint = true;
     },
   },
 };
