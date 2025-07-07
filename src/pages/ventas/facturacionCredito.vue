@@ -488,6 +488,14 @@
       ></webViewer>
     </q-dialog>
 
+    <q-dialog v-model="dialogFactura2" @show="this.printFactura2()">
+      <webViewer
+        ref="webViewer"
+        @close-pdf="dialogFactura2 = false"
+        style="width: 900px; height: 750px; max-width: 900px"
+      ></webViewer>
+    </q-dialog>
+
     <q-dialog v-model="dialogAnexo">
       <webViewer
         ref="webViewer"
@@ -803,6 +811,24 @@
               transition-hide="scale"
               color="primary"
               >Generar Factura</q-tooltip
+            >
+          </q-btn>
+          <q-btn
+            dense
+            color="red"
+            round
+            padding="sm"
+            @click="this.dialogFactura2 = true"
+            style="margin-right: 15px"
+          >
+            <q-icon size="25px" name="save" color="white"> </q-icon>
+            <q-tooltip
+              class="bg-primary"
+              style="max-height: 30px"
+              transition-show="scale"
+              transition-hide="scale"
+              color="primary"
+              >Imprimir Factura Prueba</q-tooltip
             >
           </q-btn>
         </div>
@@ -2131,6 +2157,7 @@ export default {
       selectedGuias: ref([]),
       deletePopup: ref(false),
       dialogFactura: ref(false),
+      dialogFactura2: ref(false),
       dialogAnexo: ref(false),
       pagination: {
         page: 1,
@@ -3035,8 +3062,8 @@ export default {
       );
       this.selectedTiposConcepto = this.tiposConcepto[find];
 
-      // Seteamos el concepto de Transporte de Mercancia
-      api
+      if (this.selectedTipo.length > 0) {
+        api
         .get(`/vcontrol/${this.selectedTipo.vcontrol}`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
@@ -3045,8 +3072,10 @@ export default {
         .then((res) => {
           this.conceptoTransporte = res.data.valor;
         });
+      }     
 
-      api
+      if(this.selectedTiposConcepto) {
+        api
         .get(`/cfacturacion`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
@@ -3056,6 +3085,7 @@ export default {
         .then((res) => {
           this.conceptos = res.data;
         });
+      }      
 
       this.setGuiasCarga();
     },
@@ -3398,7 +3428,7 @@ export default {
             this.dialogFactura = false;
             return;
           }
-          this.$refs.webViewer.showpdf(res.data.pdfPath, 1.5, true);
+          this.$refs.webViewer.showpdf(res.data.pdfPath, 1.3, true);
         })
         .catch((err) => {
           this.$q.notify({
@@ -3406,6 +3436,112 @@ export default {
             color: "red",
           });
           this.dialogFactura = false;
+          return;
+        });
+    },
+    // Imprimir Factura de prueba en PDF
+    async printFactura2() {      
+      console.log("Imprimiendo Factura de prueba...");
+      let factArray = {};
+      let valor_dolar = 0;
+      factArray.cliente_orig = 365;
+      /*if (this.selectedCliente.cte_decontado == 1) {
+        factArray.ci_rif_cte_conta_org = this.ci_rif_cte_conta_org;
+        factArray.id_clte_part_orig = this.id_clte_part_orig;
+      }
+      let serie_doc = this.correlativo.serie_doc
+        ? this.correlativo.serie_doc + "-"
+        : "";
+      factArray.nroControl =
+        serie_doc +
+        (this.nro_interno
+          ? this.nro_interno.toString().padStart(4, "0000")
+          : this.nro_documento.toString().padStart(4, "0000"));
+      let agencia = this.selectedAgencia.id + "-";
+      factArray.nroDocumento =
+        "F " + this.nro_interno
+          ? agencia + this.nro_documento
+          : serie_doc
+          ? serie_doc + this.nro_documento
+          : agencia + this.nro_documento;
+      factArray.formaPago = this.selectedForma == "CR" ? "CREDITO" : "CONTADO";
+      factArray.fecha_emision = this.fechaSelected;*/
+      factArray.detalles = this.detalles;
+
+      let form = {};
+      form.concepto = 'TRANSPORTE DE MERCANCIA (E)';
+      form.cod_concepto = 14;
+      form.check_impuesto = 0;
+      form.nro_item = 1;
+      form.cantidad = 1;
+      form.costo_unitario = 0;
+      form.subtotal = 0;
+      this.detalles.push(form);
+
+      /*
+      factArray.iva = this.iva.replace(".", ",");
+      factArray.subtotal = this.form.monto_subtotal;
+      factArray.base = this.form.monto_base;
+      factArray.porc_desc = this.descuentoSelected;
+      factArray.descuento = this.form.monto_descuento;
+      factArray.exento = this.form.monto_exento;
+      factArray.impuesto = this.form.monto_impuesto;
+      factArray.fpo = this.form.monto_fpo;
+      factArray.total = this.form.monto_total;*/
+      let total = '5.166,60';
+      factArray.totalString = total.replaceAll(".", "");
+      /*factArray.observacion = this.form.observacion;
+      factArray.monto_divisas = this.cobradoSelected;
+      let monto_igtf = (this.curReplace(this.cobradoSelected) * 0.03).toFixed(
+        2
+      );
+      factArray.monto_igtf = monto_igtf
+        .replaceAll(",", "")
+        .replaceAll(".", ",");
+
+      await api
+        .get(`/hdolar/`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            fecha: moment(this.fechaSelected, "DD/MM/YYYY").format(
+              "YYYY-MM-DD"
+            ),
+          },
+        })
+        .then((res) => {
+          if (res.data.data.length > 0) {
+            valor_dolar = res.data.data[0].valor;
+          }
+        });
+
+      factArray.valor_dolar = valor_dolar;
+      let igtf_bs = (monto_igtf * valor_dolar).toFixed(2);
+      factArray.igtf_bs = igtf_bs.replaceAll(",", "").replaceAll(".", ",");*/
+
+      api
+        .get(`/pdfreports/facturaPreimpreso`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            data: JSON.stringify(factArray),
+          },
+        })
+        .then((res) => {
+          if (!res.data.validDoc) {
+            this.$q.notify({
+              message: "No existen registros para este conjunto de Filtos",
+              color: "red",
+            });
+            this.dialogFactura2 = false;
+            return;
+          }
+          this.$refs.webViewer.showpdf(res.data.pdfPath, 1.3, true);
+        })
+        .catch((err) => {
+          this.$q.notify({
+            message: err.message,
+            color: "red",
+          });
+          this.dialogFactura2 = false;
           return;
         });
     },
