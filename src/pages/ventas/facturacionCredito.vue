@@ -1075,7 +1075,7 @@
                           ref="costo_unitario"
                           :rules="[
                             (val) => this.$refs.rulesVue.isReq(val, ''),
-                            (val) => this.$refs.rulesVue.isMax(val, 9, ''),
+                            (val) => this.$refs.rulesVue.isMax(val, 16, ''),
                           ]"
                           hide-bottom-space
                           @keyup="
@@ -1101,7 +1101,7 @@
                           ref="subtotal"
                           :rules="[
                             (val) => this.$refs.rulesVue.isReq(val, ''),
-                            (val) => this.$refs.rulesVue.isMax(val, 9, ''),
+                            (val) => this.$refs.rulesVue.isMax(val, 16, ''),
                           ]"
                           hide-bottom-space
                           @keyup="this.calculaDetalle('subtotal', props.row)"
@@ -3035,7 +3035,7 @@ export default {
       );
       this.selectedTiposConcepto = this.tiposConcepto[find];
 
-      if (this.selectedTipo.length > 0) {
+      if (this.selectedTipo.value) {
         api
           .get(`/vcontrol/${this.selectedTipo.vcontrol}`, {
             headers: {
