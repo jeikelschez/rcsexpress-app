@@ -1197,6 +1197,22 @@
                 >
                 </q-input>
               </div>
+              <div v-else-if="col.name == 'anticipo_ayudante'">
+                <q-input
+                  dense
+                  outlined
+                  v-model="props.row.anticipo_ayudante"
+                  v-money="money"
+                  input-class="text-right"
+                  style="
+                    padding-top: 5px;
+                    margin-bottom: -15px;
+                    min-width: 100px;
+                  "
+                  :rules="[(val) => this.$refs.rulesVue.isMax(val, 14)]"
+                >
+                </q-input>
+              </div>
               <div v-else-if="col.name == 'monto_guias'">
                 <q-input
                   dense
@@ -1501,6 +1517,13 @@ export default {
           name: "monto_anticipo",
           label: "Anticipo",
           field: "monto_anticipo",
+          align: "center",
+          required: true,
+        },
+        {
+          name: "anticipo_ayudante",
+          label: "Anticipo Ayudante",
+          field: "anticipo_ayudante",
           align: "center",
           required: true,
         },
@@ -1905,6 +1928,9 @@ export default {
         formCosto.observacion_gnral = this.costos[i].observacion_gnral;
         formCosto.monto_anticipo = this.curReplace(
           this.costos[i].monto_anticipo
+        );
+        formCosto.anticipo_ayudante = this.curReplace(
+          this.costos[i].anticipo_ayudante
         );
         formCosto.cod_ayudante = this.costos[i].cod_ayudante
           ? this.costos[i].cod_ayudante.id
