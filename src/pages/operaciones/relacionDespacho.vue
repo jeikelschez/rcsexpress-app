@@ -314,14 +314,14 @@
       <div
         class="col-md-4 col-xs-12 selectMobile2 cardMargin"
         style="margin-bottom: 10px"
-        v-if="selectedReporte == 'MAD'"
+        v-if="selectedReporte == 'MAD' || selectedReporte == 'MAA'"
       >
         <q-select
           rounded
           dense
           transition-show="flip-up"
           transition-hide="flip-down"
-          :options="agenciasSelected"
+          :options="[{ id: 'todos', nb_agencia: 'TODAS' }, ...agenciasSelected]"
           @filter="
             (val, update) =>
               filterArray(
@@ -347,7 +347,7 @@
           :loading="loading"
           :disable="loading"
           label="Agencia Destino"
-          @update:model-value="getDataTable()"
+          @update:model-value="onSelectAgenciaDestino"
           ><template v-slot:no-option>
             <q-item>
               <q-item-section class="text-grey">
@@ -570,9 +570,7 @@
           </template>
         </q-input>
       </div>
-      <div
-        class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 selectMobile2 cardMargin"
-      >
+      <div class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12">
         <q-btn-toggle
           v-model="selectedReporte"
           spread
@@ -627,10 +625,7 @@
           </template>
         </q-btn-toggle>
       </div>
-      <div
-        class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 selectMobile2"
-        style="padding-right: 25px"
-      >
+      <div class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 selectMobile2">
         <q-checkbox
           v-model="selectedSerie"
           color="primary"
@@ -753,14 +748,15 @@
         :visible-columns="visibleColumns"
         v-model:selected="selected"
         v-model:pagination="pagination"
-        virtual-scroll
         @update:selected="calculaTotalDespacho"
       >
         <template v-slot:loading>
           <q-inner-loading showing color="primary" class="loading" />
         </template>
+        <!-- Cabeceras -->
         <template v-slot:header="props">
-          <q-tr :props="props">
+          <!-- Cabecera todos menos Multiples Agencias Agrupado -->
+          <q-tr :props="props" v-if="selectedReporte != 'MAA'">
             <q-th auto-width>
               <q-checkbox v-model="props.selected" dense />
             </q-th>
@@ -768,8 +764,21 @@
               {{ col.label }}
             </q-th>
           </q-tr>
+          <!-- Cabecera Multiples Agencias Agrupado -->
+          <q-tr :props="props" v-else>
+            <q-th>Zona</q-th>
+            <q-th>Guías</q-th>
+            <q-th>Piezas</q-th>
+            <q-th>Kilos</q-th>
+            <q-th>Crédito Origen</q-th>
+            <q-th>Crédito Destino</q-th>
+            <q-th>Contado Origen</q-th>
+            <q-th>Contado Destino</q-th>
+          </q-tr>
         </template>
+        <!-- Cuerpo -->
         <template v-slot:body="props" style="margin-bottom: 20px">
+          <!-- Agrupado por Zona - Zona Primera fila -->
           <q-tr
             :props="props"
             v-if="selectedReporte == 'APZ' && props.rowIndex * -1 == 0"
@@ -785,6 +794,7 @@
               </div>
             </q-td>
           </q-tr>
+          <!-- Agrupado por Zona - Zona Filas siguientes -->
           <q-tr
             :props="props"
             v-else-if="
@@ -808,6 +818,7 @@
               </div>
             </q-td>
           </q-tr>
+          <!-- Multiples Agencias - Agencia Primera fila -->
           <q-tr
             :props="props"
             v-if="selectedReporte == 'MAD' && props.rowIndex * -1 == 0"
@@ -825,9 +836,109 @@
               </div>
             </q-td>
           </q-tr>
+          <!-- Multiples Agencias Agrupado - Datos Primera fila -->
+          <q-tr
+            :props="props"
+            v-if="selectedReporte == 'MAA' && props.rowIndex * -1 == 0"
+          >
+            <q-td>{{
+              this.findIndex(
+                "agencias",
+                this.guias[props.rowIndex].cod_agencia_dest,
+                "nb_agencia"
+              )
+            }}</q-td>
+            <q-td style="text-align: center">
+              {{
+                this.subtotal_por_agencia[
+                  this.guias[props.rowIndex].cod_agencia_dest
+                ].count
+              }}</q-td
+            >
+            <q-td style="text-align: right">
+              {{
+                this.subtotal_por_agencia[
+                  this.guias[props.rowIndex].cod_agencia_dest
+                ].piezas
+              }}</q-td
+            >
+            <q-td style="text-align: right">
+              {{
+                new Intl.NumberFormat("de-DE", {
+                  style: "currency",
+                  currency: "EUR",
+                  currencyDisplay: "code",
+                })
+                  .format(
+                    this.subtotal_por_agencia[
+                      this.guias[props.rowIndex].cod_agencia_dest
+                    ].peso
+                  )
+                  .replace("EUR", "")
+                  .trim()
+              }}</q-td
+            >
+            <q-td style="text-align: right">{{
+              new Intl.NumberFormat("de-DE", {
+                style: "currency",
+                currency: "EUR",
+                currencyDisplay: "code",
+              })
+                .format(
+                  this.subtotal_por_agencia[
+                    this.guias[props.rowIndex].cod_agencia_dest
+                  ].credito_origen
+                )
+                .replace("EUR", "")
+                .trim()
+            }}</q-td>
+            <q-td style="text-align: right">{{
+              new Intl.NumberFormat("de-DE", {
+                style: "currency",
+                currency: "EUR",
+                currencyDisplay: "code",
+              })
+                .format(
+                  this.subtotal_por_agencia[
+                    this.guias[props.rowIndex].cod_agencia_dest
+                  ].credito_destino
+                )
+                .replace("EUR", "")
+                .trim()
+            }}</q-td>
+            <q-td style="text-align: right">{{
+              new Intl.NumberFormat("de-DE", {
+                style: "currency",
+                currency: "EUR",
+                currencyDisplay: "code",
+              })
+                .format(
+                  this.subtotal_por_agencia[
+                    this.guias[props.rowIndex].cod_agencia_dest
+                  ].contado_origen
+                )
+                .replace("EUR", "")
+                .trim()
+            }}</q-td>
+            <q-td style="text-align: right">{{
+              new Intl.NumberFormat("de-DE", {
+                style: "currency",
+                currency: "EUR",
+                currencyDisplay: "code",
+              })
+                .format(
+                  this.subtotal_por_agencia[
+                    this.guias[props.rowIndex].cod_agencia_dest
+                  ].contado_destino
+                )
+                .replace("EUR", "")
+                .trim()
+            }}</q-td>
+          </q-tr>
+          <!-- Multiples Agencias - Agencia Y Subtotal Primera Fila -->
           <template
             v-if="
-              props.rowIndex > 0 && // <--- ADD THIS CONDITION FIRST
+              props.rowIndex > 0 &&
               selectedReporte == 'MAD' &&
               this.guias[props.rowIndex].cod_agencia_dest !=
                 this.guias[props.rowIndex - 1].cod_agencia_dest
@@ -877,7 +988,6 @@
               </q-td>
               <q-td colspan="2"> </q-td>
             </q-tr>
-
             <q-tr :props="props">
               <q-td colspan="10" style="font-size: 20px; color: #283593">
                 <div class="text-left">
@@ -893,7 +1003,113 @@
               </q-td>
             </q-tr>
           </template>
-          <q-tr :props="props">
+          <!-- Multiples Agencias Agrupado - Datos Filas siguientes -->
+          <template
+            v-if="
+              props.rowIndex > 0 &&
+              selectedReporte == 'MAA' &&
+              this.guias[props.rowIndex].cod_agencia_dest !=
+                this.guias[props.rowIndex - 1].cod_agencia_dest
+            "
+          >
+            <q-tr :props="props">
+              <q-td>{{
+                this.findIndex(
+                  "agencias",
+                  this.guias[props.rowIndex].cod_agencia_dest,
+                  "nb_agencia"
+                )
+              }}</q-td>
+              <q-td style="text-align: center">
+                {{
+                  this.subtotal_por_agencia[
+                    this.guias[props.rowIndex].cod_agencia_dest
+                  ].count
+                }}</q-td
+              >
+              <q-td style="text-align: right">
+                {{
+                  this.subtotal_por_agencia[
+                    this.guias[props.rowIndex].cod_agencia_dest
+                  ].piezas
+                }}</q-td
+              >
+              <q-td style="text-align: right">
+                {{
+                  new Intl.NumberFormat("de-DE", {
+                    style: "currency",
+                    currency: "EUR",
+                    currencyDisplay: "code",
+                  })
+                    .format(
+                      this.subtotal_por_agencia[
+                        this.guias[props.rowIndex].cod_agencia_dest
+                      ].peso
+                    )
+                    .replace("EUR", "")
+                    .trim()
+                }}</q-td
+              >
+              <q-td style="text-align: right">{{
+                new Intl.NumberFormat("de-DE", {
+                  style: "currency",
+                  currency: "EUR",
+                  currencyDisplay: "code",
+                })
+                  .format(
+                    this.subtotal_por_agencia[
+                      this.guias[props.rowIndex].cod_agencia_dest
+                    ].credito_origen
+                  )
+                  .replace("EUR", "")
+                  .trim()
+              }}</q-td>
+              <q-td style="text-align: right">{{
+                new Intl.NumberFormat("de-DE", {
+                  style: "currency",
+                  currency: "EUR",
+                  currencyDisplay: "code",
+                })
+                  .format(
+                    this.subtotal_por_agencia[
+                      this.guias[props.rowIndex].cod_agencia_dest
+                    ].credito_destino
+                  )
+                  .replace("EUR", "")
+                  .trim()
+              }}</q-td>
+              <q-td style="text-align: right">{{
+                new Intl.NumberFormat("de-DE", {
+                  style: "currency",
+                  currency: "EUR",
+                  currencyDisplay: "code",
+                })
+                  .format(
+                    this.subtotal_por_agencia[
+                      this.guias[props.rowIndex].cod_agencia_dest
+                    ].contado_origen
+                  )
+                  .replace("EUR", "")
+                  .trim()
+              }}</q-td>
+              <q-td style="text-align: right">{{
+                new Intl.NumberFormat("de-DE", {
+                  style: "currency",
+                  currency: "EUR",
+                  currencyDisplay: "code",
+                })
+                  .format(
+                    this.subtotal_por_agencia[
+                      this.guias[props.rowIndex].cod_agencia_dest
+                    ].contado_destino
+                  )
+                  .replace("EUR", "")
+                  .trim()
+              }}</q-td>
+            </q-tr>
+          </template>
+          <!-- Todos menos Multiples Agencias Agrupado - Datos -->
+          <q-tr :props="props" v-if="selectedReporte != 'MAA'">
             <q-td>
               <q-checkbox v-model="props.selected" dense />
             </q-td>
@@ -910,12 +1126,14 @@
             </q-td>
           </q-tr>
         </template>
+        <!-- Totales y Subtotales -->
         <template v-slot:bottom-row v-if="this.guias.length > 0">
+          <!-- Multiples Agencias - Subtotal filas Siguientes -->
           <q-tr
             v-if="selectedReporte == 'MAD'"
             style="background-color: #f0f0f0"
           >
-            <q-td :colspan="selectedReporte == 'APZ' ? 5 : 6">
+            <q-td :colspan="6">
               <p>
                 <strong>{{
                   "Subtotal Guías: " +
@@ -958,7 +1176,8 @@
             </q-td>
             <q-td colspan="2"> </q-td>
           </q-tr>
-          <q-tr>
+          <!-- Totales todos menos Multiples Agencias Agrupado -->
+          <q-tr v-if="selectedReporte != 'MAA'">
             <q-td :colspan="selectedReporte == 'APZ' ? 5 : 6">
               <p>
                 <strong>{{ "Guías: " + this.selected.length }}</strong>
@@ -988,6 +1207,110 @@
               >
             </q-td>
             <q-td colspan="2"> </q-td>
+          </q-tr>
+          <!-- Totales Multiples Agencias Agrupado -->
+          <q-tr v-else>
+            <q-td style="text-align: right">
+              <p>
+                <strong>Totales</strong>
+              </p>
+            </q-td>
+            <q-td
+              ><strong
+                ><p style="text-align: center">
+                  {{ this.guias.length }}
+                </p></strong
+              >
+            </q-td>
+            <q-td
+              ><strong
+                ><p style="text-align: right">
+                  {{
+                    this.total_piezas
+                  }}
+                </p></strong
+              >
+            </q-td>
+            <q-td
+              ><strong
+                ><p style="text-align: right">
+                  {{
+                    new Intl.NumberFormat("de-DE", {
+                      style: "currency",
+                      currency: "EUR",
+                      currencyDisplay: "code",
+                    })
+                      .format(this.total_peso)
+                      .replace("EUR", "")
+                      .trim()
+                  }}
+                </p></strong
+              >
+            </q-td>
+            <q-td
+              ><strong
+                ><p style="text-align: right">
+                  {{
+                    new Intl.NumberFormat("de-DE", {
+                      style: "currency",
+                      currency: "EUR",
+                      currencyDisplay: "code",
+                    })
+                      .format(this.total_credito_origen)
+                      .replace("EUR", "")
+                      .trim()
+                  }}
+                </p></strong
+              >
+            </q-td>
+            <q-td
+              ><strong
+                ><p style="text-align: right">
+                  {{
+                    new Intl.NumberFormat("de-DE", {
+                      style: "currency",
+                      currency: "EUR",
+                      currencyDisplay: "code",
+                    })
+                      .format(this.total_credito_destino)
+                      .replace("EUR", "")
+                      .trim()
+                  }}
+                </p></strong
+              >
+            </q-td>
+            <q-td
+              ><strong
+                ><p style="text-align: right">
+                  {{
+                    new Intl.NumberFormat("de-DE", {
+                      style: "currency",
+                      currency: "EUR",
+                      currencyDisplay: "code",
+                    })
+                      .format(this.total_contado_origen)
+                      .replace("EUR", "")
+                      .trim()
+                  }}
+                </p></strong
+              >
+            </q-td>
+            <q-td
+              ><strong
+                ><p style="text-align: right">
+                  {{
+                    new Intl.NumberFormat("de-DE", {
+                      style: "currency",
+                      currency: "EUR",
+                      currencyDisplay: "code",
+                    })
+                      .format(this.total_contado_destino)
+                      .replace("EUR", "")
+                      .trim()
+                  }}
+                </p></strong
+              >
+            </q-td>
           </q-tr>
         </template>
       </q-table>
@@ -1097,6 +1420,7 @@ export default {
         { label: "GPA", value: "GPA", slot: "one" },
         { label: "APZ", value: "APZ", slot: "two" },
         { label: "MAD", value: "MAD", slot: "three" },
+        { label: "MAA", value: "MAA", slot: "four" },
       ],
       cargaNeta: [
         { label: "PESO KGS", value: "K", slot: "one" },
@@ -1226,6 +1550,10 @@ export default {
       observacion: "",
       total_piezas: 0,
       total_peso: 0,
+      total_credito_origen: 0,
+      total_credito_destino: 0,
+      total_contado_origen: 0,
+      total_contado_destino: 0,
       subtotal_por_agencia: {},
       detalles_costo_guias_asignar: [],
     };
@@ -1792,9 +2120,14 @@ export default {
           this.nombreReporte = "Relación de Despacho por Agencia Destino";
           this.visibleColumns = ["zona_dest"];
           this.pagination.sortBy = JSON.stringify([
-            ["cod_zona_dest", "ASC"],
+            ["cod_agencia_dest", "ASC"],
             ["nro_documento", "ASC"],
           ]);
+          break;
+        case "MAA":
+          this.nombreReporte =
+            "Relación de Despacho por Agencia Destino Agrupado";
+          this.visibleColumns = ["zona_dest"];
           this.pagination.sortBy = JSON.stringify([
             ["cod_agencia_dest", "ASC"],
             ["nro_documento", "ASC"],
@@ -1808,27 +2141,31 @@ export default {
     calculaTotalDespacho() {
       this.total_piezas = 0;
       this.total_peso = 0;
-      this.subtotal_por_agencia = {}; // Reset for each calculation
+      this.total_credito_origen = 0;
+      this.total_credito_destino = 0;
+      this.total_contado_origen = 0;
+      this.total_contado_destino = 0;
+      this.subtotal_por_agencia = {};
 
       for (let i = 0; i < this.selected.length; i++) {
-        const guiaActual = this.selected[i]; // Use selected for totals
-        const codAgenciaDestino = guiaActual.cod_agencia_dest; // Assuming selected items also have cod_agencia_dest
+        const guiaActual = this.selected[i];
+        const codAgenciaDestino = guiaActual.cod_agencia_dest;
 
-        // Add to overall totals
         this.total_piezas += parseFloat(guiaActual.nro_piezas);
         this.total_peso += parseFloat(guiaActual.peso_kgs);
 
-        // Calculate subtotal per agency
         if (!this.subtotal_por_agencia[codAgenciaDestino]) {
-          // If this agency code doesn't exist yet in our subtotal object, initialize it
           this.subtotal_por_agencia[codAgenciaDestino] = {
             piezas: 0,
             peso: 0,
+            credito_origen: 0,
+            credito_destino: 0,
+            contado_origen: 0,
+            contado_destino: 0,
             count: 0,
           };
         }
 
-        // Add to the agency's subtotal
         this.subtotal_por_agencia[codAgenciaDestino].piezas += parseFloat(
           guiaActual.nro_piezas
         );
@@ -1836,7 +2173,41 @@ export default {
           guiaActual.peso_kgs
         );
         this.subtotal_por_agencia[codAgenciaDestino].count += 1;
+
+        const monto = parseFloat(guiaActual.monto_total) || 0;
+        if (guiaActual.modalidad_pago == "CR") {
+          if (guiaActual.pagado_en == "O") {
+            this.subtotal_por_agencia[codAgenciaDestino].credito_origen +=
+              monto;
+            this.total_credito_origen += monto;
+          } else if (guiaActual.pagado_en == "D") {
+            this.subtotal_por_agencia[codAgenciaDestino].credito_destino +=
+              monto;
+            this.total_credito_destino += monto;
+          }
+        } else {
+          if (guiaActual.pagado_en == "O") {
+            this.subtotal_por_agencia[codAgenciaDestino].contado_origen +=
+              monto;
+            this.total_contado_origen += monto;
+          } else if (guiaActual.pagado_en == "D") {
+            this.subtotal_por_agencia[codAgenciaDestino].contado_destino +=
+              monto;
+            this.total_contado_destino += monto;
+          }
+        }
       }
+    },
+    onSelectAgenciaDestino(val) {
+      // Si selecciona 'TODAS', selecciona todas las agencias menos 'TODAS'
+      if (Array.isArray(val) && val.includes("todos")) {
+        this.selectedAgenciaDestino = this.agenciasSelected
+          .map((a) => a.id)
+          .filter((id) => id !== "todos");
+      } else {
+        this.selectedAgenciaDestino = val;
+      }
+      this.getDataTable();
     },
   },
 };

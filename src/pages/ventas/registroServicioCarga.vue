@@ -2789,7 +2789,6 @@
               v-model="form.estatus_administra"
               label="Estatus Administrativo"
               :tabindex="34"
-              :disable="this.disableGuia"
               hint=""
               :options="estatus_administrativo"
               class="pcform"
