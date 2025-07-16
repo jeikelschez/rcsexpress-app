@@ -620,17 +620,6 @@
               >Eliminar Filtros</q-tooltip
             >
           </q-btn>
-          <q-btn dense color="primary" round padding="sm">
-            <q-icon size="25px" name="sticky_note_2" color="white"> </q-icon>
-            <q-tooltip
-              class="bg-primary"
-              transition-show="scale"
-              style="max-height: 30px"
-              transition-hide="scale"
-              color="primary"
-              >Carta para el Cliente</q-tooltip
-            >
-          </q-btn>
         </div>
       </div>
     </div>
@@ -692,7 +681,16 @@
               icon="sim_card_download"
               :disabled="props.row.cant_disponible > 0 ? false : true"
               @click="selected = props.row.id"
-              @click.capture="this.pdfView = true"
+              @click.capture="dialogGuias = true"
+            ></q-btn>
+            <q-btn
+              dense
+              round
+              flat
+              color="primary"
+              icon="drafts"
+              @click="selected = props.row.id"
+              @click.capture="dialogCarta = true"
             ></q-btn>
           </q-td>
         </template>
@@ -755,7 +753,18 @@
                       icon="sim_card_download"
                       :disabled="props.row.cant_disponible > 0 ? false : true"
                       @click="selected = props.row.id"
-                      @click.capture="this.pdfView = true"
+                      @click.capture="dialogGuias = true"
+                    ></q-btn>
+                    <q-btn
+                      v-if="col.name === 'action'"
+                      dense
+                      round
+                      flat
+                      color="primary"
+                      icon="letter"
+                      :disabled="props.row.cant_disponible > 0 ? false : true"
+                      @click="selected = props.row.id"
+                      @click.capture="dialogCarta = true"
                     ></q-btn>
                     <q-item-label
                       v-if="
@@ -800,7 +809,15 @@
       </q-card>
     </q-dialog>
 
-    <q-dialog v-model="pdfView" @show="this.print">
+    <q-dialog v-model="dialogGuias" @show="this.printGuias">
+      <webViewer
+        ref="webViewer"
+        @close-pdf="closePdf"
+        style="width: 1000px; height: 750px; max-width: 1000px"
+      ></webViewer>
+    </q-dialog>
+
+    <q-dialog v-model="dialogCarta" @show="this.printCarta">
       <webViewer
         ref="webViewer"
         @close-pdf="closePdf"
@@ -962,7 +979,8 @@ export default {
       separator: ref("vertical"),
       deletePopup: ref(false),
       dialog: ref(false),
-      pdfView: ref(false),
+      dialogGuias: ref(false),
+      dialogCarta: ref(false),
     };
   },
   mounted() {
@@ -993,7 +1011,8 @@ export default {
   },
   methods: {
     closePdf() {
-      this.pdfView = false;
+      this.dialogGuias = false;
+      this.dialogCarta = false;
     },
     // Metodo para filtrar opciones de Selects
     filterArray(val, update, pagina, array, element) {
@@ -1143,12 +1162,26 @@ export default {
       }
     },
     // Imprimir Guias pendientes
-    print() {
+    printGuias() {
       api
         .get(`/pdfreports/asignacionGuias`, {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
             id: this.selected,
+          },
+        })
+        .then((res) => {
+          this.$refs.webViewer.showpdf(res.data.pdfPath, 1.3);
+        });
+    },
+    // Imprimir Carta de Asignación
+    printCarta() {
+      api
+        .get(`/pdfreports/cartaAsignacion`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            id: this.selected,
+            usuario: LocalStorage.getItem("tokenTraducido").usuario.nombre,
           },
         })
         .then((res) => {
