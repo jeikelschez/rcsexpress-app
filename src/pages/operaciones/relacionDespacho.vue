@@ -26,6 +26,7 @@
                   hide-selected
                   fill-input
                   label="Chofer"
+                  :disable="selectedReporte == 'MAA' ? true : false"
                   ><template v-slot:no-option>
                     <q-item>
                       <q-item-section class="text-grey">
@@ -59,6 +60,7 @@
                   fill-input
                   outlined
                   label="Vehiculo"
+                  :disable="selectedReporte == 'MAA' ? true : false"
                   ><template v-slot:no-option>
                     <q-item>
                       <q-item-section class="text-grey">
@@ -92,6 +94,7 @@
                   hide-selected
                   fill-input
                   label="Ayudante"
+                  :disable="selectedReporte == 'MAA' ? true : false"
                   ><template v-slot:no-option>
                     <q-item>
                       <q-item-section class="text-grey">
@@ -125,6 +128,7 @@
                   hide-selected
                   fill-input
                   label="Receptor"
+                  :disable="selectedReporte == 'MAA' ? true : false"
                   ><template v-slot:no-option>
                     <q-item>
                       <q-item-section class="text-grey">
@@ -140,6 +144,7 @@
               <div class="col-md-12 col-xs-12" style="margin-bottom: 10px">
                 <q-select
                   label="Guías Adicionales"
+                  :disable="selectedReporte == 'MAA' ? true : false"
                   v-model="selectedGuias"
                   use-input
                   use-chips
