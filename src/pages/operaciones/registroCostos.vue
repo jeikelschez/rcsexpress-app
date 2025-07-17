@@ -1413,6 +1413,7 @@
     <q-dialog v-model="pdfView" @show="this.pdfPrint()">
       <webViewer
         ref="webViewer"
+        @export-Excel="exportExcel"
         @close-pdf="this.pdfView = false"
         style="width: 1000px; height: 750px; max-width: 1000px"
       ></webViewer>
@@ -2589,6 +2590,50 @@ export default {
             res.data.pdfPath,
             this.selectedTipo.zoom
           );
+        })
+        .catch((err) => {
+          this.$q.notify({
+            message: err.message,
+            color: "red",
+          });
+          this.pdfView = false;
+          return;
+        });
+    },
+    exportExcel() {
+      if (this.selectedTipo.value != "CO") {
+        this.$q.notify({
+          message: "Este reporte no tiene la Opción de Exportar a Excel",
+          color: "red",
+        });
+        return;
+      }
+
+      api
+        .get(`/excelreports/costosTransporte`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            desde: this.fecha_desde,
+            hasta: this.fecha_hasta,
+            neta: this.selectedNeta,
+            dolar: this.selectedDolar,
+          },
+        })
+        .then((res) => {
+          if (!res.data.validDoc) {
+            this.$q.notify({
+              message: "No existen registros para este conjunto de Filtos",
+              color: "red",
+            });
+            return;
+          }
+          const link = document.createElement("a");
+          link.href = `${process.env.apiPath}/excelReports/loadExcel/${res.data.excelPath}`;
+          link.setAttribute("download", "file.xlsx");
+          setTimeout(() => {
+            link.click();
+          }, 1000);
+          this.loading = false;
         })
         .catch((err) => {
           this.$q.notify({
