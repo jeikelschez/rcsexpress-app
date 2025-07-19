@@ -30,6 +30,49 @@
               <div class="col-md-6 col-xs-12">
                 <q-input
                   outlined
+                  v-model="form.tlf_agente"
+                  label="Teléfono"
+                  hint=""
+                  mask="(####) ### - ####"
+                  @update:model-value="
+                    form.tlf_agente = form.tlf_agente.toUpperCase()
+                  "
+                  lazy-rules
+                  :rules="[
+                    (val) => this.$refs.rulesVue.isMax(val, 50),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
+                  ]"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="fax" />
+                  </template>
+                </q-input>
+              </div>
+              <div class="col-md-6 col-xs-12">
+                <q-input
+                  outlined
+                  v-model="form.cel_agente"
+                  label="Celular"
+                  class="pcform"
+                  hint=""
+                  mask="(####) ### - ####"
+                  @update:model-value="
+                    form.cel_agente = form.cel_agente.toUpperCase()
+                  "
+                  lazy-rules
+                  :rules="[
+                    (val) => this.$refs.rulesVue.isMax(val, 50),
+                    (val) => this.$refs.rulesVue.isMin(val, 3),
+                  ]"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="fax" />
+                  </template>
+                </q-input>
+              </div>
+              <div class="col-md-6 col-xs-12">
+                <q-input
+                  outlined
                   v-model="form.fax_agente"
                   label="Fax"
                   hint=""
@@ -173,7 +216,6 @@
                         v-model="form.tipo_agente"
                         label="Tipo de Agente"
                         hint=""
-                        :rules="[(val) => this.$refs.rulesVue.isReqSelect(val)]"
                         :options="tipoAgente"
                         lazy-rules
                       >
@@ -511,6 +553,7 @@ import { LocalStorage } from "quasar";
 import rulesVue from "src/components/rules.vue";
 import { VMoney } from "v-money";
 import methodsVue from "src/components/methods.vue";
+import { not } from "vuelidate/lib/validators";
 
 export default {
   directives: { money: VMoney },
@@ -570,6 +613,7 @@ export default {
         persona_responsable: "",
         dir_agente: "",
         tlf_agente: "",
+        cel_agente: "",
         fax_agente: "",
         email_web: "",
         tipo_agente: "",
@@ -710,6 +754,7 @@ export default {
       this[dataRes].persona_responsable = res.persona_responsable;
       this[dataRes].dir_agente = res.dir_agente;
       this[dataRes].tlf_agente = res.tlf_agente;
+      this[dataRes].cel_agente = res.cel_agente;
       this[dataRes].fax_agente = res.fax_agente;
       this[dataRes].email_web = res.email_web;
       this[dataRes].rif_ci_agente = res.rif_ci_agente;
@@ -724,6 +769,13 @@ export default {
     },
     // Metodo para Actualizar o Crear Datos
     sendData() {
+      if (this.selectedAgencia.length == 0) {
+        this.$q.notify({
+          message: "Debe seleccionar una Agencia",
+          color: "red",
+        });
+        return;
+      }
       this.form.porc_comision_venta = this.form.porc_comision_venta
         .replaceAll(".", "")
         .replaceAll(",", ".");
@@ -734,7 +786,9 @@ export default {
         .replaceAll(".", "")
         .replaceAll(",", ".");
       this.form.cod_agencia = this.selectedAgencia.id;
-      this.form.tipo_agente = this.form.tipo_agente.value;
+      this.form.tipo_agente = this.form.tipo_agente
+        ? this.form.tipo_agente.value
+        : null;
       this.form.flag_activo = this.form.flag_activo.value;
       if (!this.form.id) {
         this.$refs.methods.createData(`/agentes`, this.form, "getDataTable");
@@ -758,6 +812,7 @@ export default {
       this.form.email_web = "";
       this.form.tipo_agente = "";
       this.form.fax_agente = "";
+      this.form.cel_agente = "";
       this.form.rif_ci_agente = "";
       this.form.porc_comision_venta = "";
       this.form.flag_activo = "";
