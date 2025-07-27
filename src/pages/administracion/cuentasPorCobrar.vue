@@ -1090,6 +1090,7 @@ export default {
           (item) => item.id == this.selectedCuentasCobrarAsignar[i].id
         );
         let monto_total = this.selectedCuentasCobrarAsignar[i].monto_total;
+        let saldo = this.selectedCuentasCobrarAsignar[i].saldo;
         let iva_retenido = (
           (parseFloat(monto_total) /
             (100 +
@@ -1119,7 +1120,7 @@ export default {
         }
 
         this.cuentas_cobrar[index].monto_total = monto_total;
-        this.cuentas_cobrar[index].monto_pagado = monto_total;
+        this.cuentas_cobrar[index].monto_pagado = saldo;
         this.cuentas_cobrar[index].iva_retenido = iva_retenido;
         this.cuentas_cobrar[index].islr_retenido = islr_retenido;
         this.cuentas_cobrar[index].observacion = "";

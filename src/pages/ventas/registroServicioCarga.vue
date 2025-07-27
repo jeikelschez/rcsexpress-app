@@ -955,7 +955,7 @@
                   outlined
                   v-model="formClientesParticulares.nb_cliente"
                   label="Cliente"
-                  :readonly="this.disableCliente || this.disableGuia"
+                  :readonly="this.disableGuia"
                   dense
                   :rules="[(val) => this.$refs.rulesVue.isMin(val, 3, '')]"
                   lazy-rules
@@ -3196,7 +3196,6 @@ export default {
       disableAgencia: true,
       disableInputs: true,
       disableRif: true,
-      disableCliente: true,
       disableGuia: true,
       pais: "",
       estado: "",
@@ -3463,7 +3462,6 @@ export default {
               this.formClientesParticulares.nb_cliente = "";
               this.formClientesParticulares.telefonos = "";
               this.disableInputs = false;
-              this.disableCliente = false;
               this.disableRif = true;
             }
           });
@@ -6191,7 +6189,6 @@ export default {
       delete this.formClientesParticulares.id;
       this.disableAgencia = true;
       this.disableRif = true;
-      this.disableCliente = true;
       this.disableInputs = true;
       this.formClientes.id = "";
       this.formClientes.nb_cliente = "";
