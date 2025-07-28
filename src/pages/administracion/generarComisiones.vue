@@ -48,8 +48,10 @@
             :disable="loading"
             label="Agencia Destino"
             @update:model-value="
-              this.selectedAgente = [];
-              this.agenteLoading = true;
+              selectedAgente = [];
+              agenteLoading = true;
+              guias = [];
+              selected = [];
               this.$refs.methods.getData('/agentes', 'setData', 'agentes', {
                 headers: {
                   agencia: this.selectedAgenciaDestino.id
@@ -62,7 +64,6 @@
                   order_direction: 'ASC',
                 },
               });
-              this.getDataTable();
             "
             ><template v-slot:no-option>
               <q-item>
@@ -109,7 +110,10 @@
             outlined
             standout
             label="Agente"
-            @update:model-value="getDataTable()"
+            @update:model-value="
+              guias = [];
+              selected = [];
+            "
             ><template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey">
@@ -150,7 +154,6 @@
             outlined
             standout
             label="Opciones"
-            @update:model-value="getDataTable()"
           >
           </q-select>
         </div>
@@ -169,7 +172,10 @@
             lazy-rules
             mask="##/##/####"
             :rules="[(val) => this.$refs.rulesVue.checkDate(val)]"
-            @keyup.enter="getDataTable()"
+            @keyup.enter="
+              guias = [];
+              selected = [];
+            "
           >
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
@@ -184,7 +190,8 @@
                     style="padding-bottom: 0px"
                     @update:model-value="
                       this.$refs.qDateProxy.hide();
-                      getDataTable();
+                      guias = [];
+                      selected = [];
                     "
                   ></q-date>
                 </q-popup-proxy>
@@ -207,7 +214,10 @@
             lazy-rules
             mask="##/##/####"
             :rules="[(val) => this.$refs.rulesVue.checkDate(val)]"
-            @keyup.enter="getDataTable()"
+            @keyup.enter="
+              guias = [];
+              selected = [];
+            "
           >
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
@@ -222,7 +232,8 @@
                     style="padding-bottom: 0px"
                     @update:model-value="
                       this.$refs.qDateProxy.hide();
-                      getDataTable();
+                      guias = [];
+                      selected = [];
                     "
                   ></q-date>
                 </q-popup-proxy>
@@ -240,7 +251,6 @@
             left-label
             val="44"
             label="Serie 44"
-            @update:model-value="getDataTable()"
             :disable="
               this.selectedSerie.length > 1
                 ? false
@@ -254,6 +264,10 @@
                 : this.selectedSerie[0] == '55'
                 ? false
                 : true
+            "
+            @update:model-value="
+              guias = [];
+              selected = [];
             "
           />
           <q-checkbox
@@ -262,7 +276,6 @@
             left-label
             val="55"
             label="Serie 55"
-            @update:model-value="getDataTable()"
             :disable="
               this.selectedSerie.length > 1
                 ? false
@@ -276,6 +289,10 @@
                 : this.selectedSerie[0] == '44'
                 ? false
                 : true
+            "
+            @update:model-value="
+              guias = [];
+              selected = [];
             "
           />
         </div>
@@ -305,6 +322,24 @@
           class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12"
           style="align-self: center; text-align: center"
         >
+          <q-btn
+            dense
+            color="primary"
+            round
+            padding="sm"
+            @click="this.getDataTable()"
+            style="margin-right: 15px"
+          >
+            <q-icon size="25px" name="search" color="white"> </q-icon>
+            <q-tooltip
+              class="bg-primary"
+              style="max-height: 30px"
+              transition-show="scale"
+              transition-hide="scale"
+              color="primary"
+              >Buscar Selección</q-tooltip
+            >
+          </q-btn>
           <q-btn
             dense
             color="primary"
@@ -376,7 +411,6 @@
           row-key="id"
           :loading="loading"
           :rows-per-page-options="[0]"
-          @request="getDataTable"
           style="width: 100%; height: 500px; margin-bottom: 30px"
           :grid="$q.screen.xs"
           v-model:selected="selected"
@@ -926,10 +960,8 @@ export default {
 
     // Metodo para Setear Datos Generales
     async setDataInit(res, dataRes) {
-      this.loading = true;
       this[dataRes] = res.data ? res.data : res;
       this.selectedOpcion = this.opciones[0];
-      this.getDataTable();
     },
     // Metodo para Setear Datos Generales
     setData(res, dataRes) {
@@ -1190,6 +1222,8 @@ export default {
     },
     // Metodo para resetaer la data de los filtros
     resetFilters() {
+      this.guias = [];
+      this.selected = [];
       this.selectedOpcion = this.opciones[0];
       this.selectedAgenciaDestino = [];
       this.selectedAgente = [];
@@ -1198,7 +1232,6 @@ export default {
       this.selectedSerie = ["44", "55"];
       this.selectedAgrup = false;
       this.selectedDolar = false;
-      this.getDataTable();
     },
     // Metodo para convertir a Currency los String
     curReplace(amount) {
