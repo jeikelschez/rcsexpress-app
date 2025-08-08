@@ -167,6 +167,7 @@
                   unelevated
                   toggle-color="primary"
                   color="white"
+                  :disable="this.allowOption(6)"
                   text-color="black"
                   :options="visible"
                 >
@@ -198,6 +199,7 @@
                   label="$"
                   color="primary"
                   left-label
+                  :disable="this.allowOption(7)"
                 />
               </div>
               <div class="col-md-1 col-xs-12" style="margin-bottom: 10px">
@@ -631,50 +633,53 @@
         </q-btn-toggle>
       </div>
       <div class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 selectMobile2">
-        <q-checkbox
-          v-model="selectedSerie"
-          color="primary"
-          left-label
-          val="44"
-          label="Serie 44"
-          @update:model-value="getDataTable()"
-          :disable="
-            this.selectedSerie.length > 1
-              ? false
-              : this.selectedSerie[0] == '55'
-              ? false
-              : true
-          "
-          :readonly="
-            this.selectedSerie.length > 1
-              ? false
-              : this.selectedSerie[0] == '55'
-              ? false
-              : true
-          "
-        />
-        <q-checkbox
-          v-model="selectedSerie"
-          color="primary"
-          left-label
-          val="55"
-          label="Serie 55"
-          @update:model-value="getDataTable()"
-          :disable="
-            this.selectedSerie.length > 1
-              ? false
-              : this.selectedSerie[0] == '44'
-              ? false
-              : true
-          "
-          :readonly="
-            this.selectedSerie.length > 1
-              ? false
-              : this.selectedSerie[0] == '44'
-              ? false
-              : true
-          "
-        />
+        <template v-if="!this.allowOption(5)">
+          <q-checkbox
+            v-model="selectedSerie"
+            color="primary"
+            left-label
+            val="44"
+            label="Serie 44"
+            @update:model-value="getDataTable()"
+            :disable="
+              this.selectedSerie.length > 1
+                ? false
+                : this.selectedSerie[0] == '55'
+                ? false
+                : true
+            "
+            :readonly="
+              this.selectedSerie.length > 1
+                ? false
+                : this.selectedSerie[0] == '55'
+                ? false
+                : true
+            "
+          />
+          <q-checkbox
+            v-model="selectedSerie"
+            color="primary"
+            left-label
+            val="55"
+            label="Serie 55"
+            @update:model-value="getDataTable()"
+            :disable="
+              this.selectedSerie.length > 1
+                ? false
+                : this.selectedSerie[0] == '44'
+                ? false
+                : true
+            "
+            :readonly="
+              this.selectedSerie.length > 1
+                ? false
+                : this.selectedSerie[0] == '44'
+                ? false
+                : true
+            "
+          />
+        </template>
+        <template v-else> &nbsp; </template>
       </div>
       <div
         class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 selectMobile2 cardMargin"
@@ -1230,9 +1235,7 @@
             <q-td
               ><strong
                 ><p style="text-align: right">
-                  {{
-                    this.total_piezas
-                  }}
+                  {{ this.total_piezas }}
                 </p></strong
               >
             </q-td>
@@ -1520,12 +1523,13 @@ export default {
         sortBy: JSON.stringify([["nro_documento", "ASC"]]),
         descending: false,
       },
+      rpermisos: [],
       selected: [],
       guias: [],
       selectedTipo: "O",
       selectedReporte: "GPA",
-      selectedVisible: "V",
-      selectedSerie: ["44", "55"],
+      selectedVisible: "",
+      selectedSerie: [],
       selectedDolar: false,
       selectedNeta: "K",
       agencias: [],
@@ -1647,9 +1651,22 @@ export default {
         }
       });
     },
+    // Metodo para validar Permisos
+    allowOption(option) {
+      return (
+        this.rpermisos.findIndex((item) => item.acciones.accion == option) < 0
+      );
+    },
     // Metodo para Setear Datos Permisos
     setDataPermisos(res, dataRes) {
       this[dataRes] = res;
+
+      // Permiso para ver Serie 55
+      this.selectedSerie = !this.allowOption(5) ? ["44", "55"] : ["44"];
+
+      // Permiso para ver Montos
+      this.selectedVisible = !this.allowOption(6) ? "V" : "N";
+
       if (this.rpermisos.findIndex((item) => item.acciones.accion == 1) < 0)
         this.$router.push("/error403");
     },
@@ -2080,14 +2097,14 @@ export default {
       this.selectedAgenciaDestino = [];
       this.selectedCliente = [];
       this.selectedTipo = "O";
-      this.selectedSerie = ["44", "55"];
+      this.selectedSerie = !this.allowOption(5) ? ["44", "55"] : ["44"];
       this.selectedReporte = "GPA";
       this.selectedAgente = [];
       this.selectedUnidad = [];
       this.selectedAyudante = [];
       this.selectedReceptor = [];
       this.selectedGuias = [];
-      this.selectedVisible = "V";
+      this.selectedVisible = !this.allowOption(6) ? "V" : "N";
       this.selectedDolar = false;
       this.selectedNeta = "K";
       this.fecha_desde = moment().format("DD/MM/YYYY");

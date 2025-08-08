@@ -794,6 +794,7 @@
             padding="sm"
             @click="printDialog()"
             style="margin-right: 15px"
+            :disable="this.allowOption(3)"
           >
             <q-icon size="25px" name="save" color="white"> </q-icon>
             <q-tooltip
@@ -2065,7 +2066,7 @@ export default {
         rif_ci: "",
         telefonos: "",
       },
-      fpoConceptos: [15, 16, 17, 18, 19, 20, 21, 22],
+      fpoConceptos: [15, 16, 17, 18, 19, 20, 21, 22, 23],
       ci_rif_cte_conta_org: null,
       id_clte_part_orig: null,
       cliente_id_temp: "",

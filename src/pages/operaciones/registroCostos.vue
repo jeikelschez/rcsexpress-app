@@ -53,6 +53,7 @@
                 label="$"
                 color="primary"
                 left-label
+                :disable="this.allowOption(5)"
               />
             </div>
           </div>
@@ -856,6 +857,7 @@
             padding="sm"
             style="margin-right: 15px"
             @click="addData()"
+            :disabled="this.allowOption(2)"
           >
             <q-icon size="25px" name="add" color="white"> </q-icon>
             <q-tooltip
@@ -874,6 +876,7 @@
             padding="sm"
             style="margin-right: 15px"
             @click="sendData()"
+            :disabled="this.allowOption(3)"
           >
             <q-icon size="25px" name="save" color="white"> </q-icon>
             <q-tooltip
@@ -969,6 +972,7 @@
                     selectedIndex = props.rowIndex;
                   "
                   @click.capture="deletePopup = true"
+                  :disabled="this.allowOption(4)"
                   ><q-tooltip
                     class="bg-primary"
                     transition-show="scale"
@@ -1715,6 +1719,7 @@ export default {
         rowsPerPage: 0,
         rowsNumber: "",
       },
+      rpermisos: [],
       visibleColumns: [],
       guia_desde: "",
       type: 2,
@@ -1834,6 +1839,12 @@ export default {
     findIndex(array, value, field) {
       var find = this[array].findIndex((item) => item.id == value);
       return find >= 0 ? this[array][find][field] : null;
+    },
+    // Metodo para validar Permisos
+    allowOption(option) {
+      return (
+        this.rpermisos.findIndex((item) => item.acciones.accion == option) < 0
+      );
     },
     // Metodo para Setear Datos Permisos
     setDataPermisos(res, dataRes) {

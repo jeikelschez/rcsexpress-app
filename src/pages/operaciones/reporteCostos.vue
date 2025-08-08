@@ -386,11 +386,7 @@
             <q-checkbox
               v-model="selectedDolar"
               label="$"
-              :disable="
-                selectedTipo.value != 'CTP' &&
-                selectedTipo.value != 'CTA' &&
-                selectedTipo.value != 'RVV'
-              "
+              :disable="this.allowOption(5) || selectedTipo.value != 'CTP' && selectedTipo.value != 'CTA' && selectedTipo.value != 'RVV'"
               color="primary"
               left-label
             />
@@ -507,6 +503,7 @@ export default {
           zoom: 1,
         },
       ],
+      rpermisos: [],
       pdf: true,
       reportValue: "",
       selectedNeta: "K",
@@ -595,6 +592,12 @@ export default {
           }
         }
       });
+    },
+    // Metodo para validar Permisos
+    allowOption(option) {
+      return (
+        this.rpermisos.findIndex((item) => item.acciones.accion == option) < 0
+      );
     },
     // Metodo para Setear Datos Permisos
     setDataPermisos(res, dataRes) {

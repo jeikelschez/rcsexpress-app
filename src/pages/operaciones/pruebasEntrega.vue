@@ -401,6 +401,7 @@
             padding="sm"
             @click="this.sendData()"
             style="margin-right: 15px"
+            :disabled="this.allowOption(3)"
           >
             <q-icon size="25px" name="save" color="white"> </q-icon>
             <q-tooltip
@@ -1570,6 +1571,7 @@ export default {
         rowsPerPage: 10,
         rowsNumber: "",
       },
+      rpermisos: [],
       guias: [],
       agencias: [],
       agentes: [],

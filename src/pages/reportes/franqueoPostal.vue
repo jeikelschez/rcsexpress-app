@@ -223,12 +223,19 @@
         <div
           class="col-md-1 col-xl-1 col-lg-1 col-xs-12 col-sm-12 selectMobile2"
         >
+          <q-checkbox v-if="!this.allowOption(5)"
+            size="md"
+            v-model="checkProtect"
+            true-value="S"
+            false-value=""
+            style="font-size: 13px; margin-left: -40px;"
+          />
           <q-btn
             dense
             color="primary"
             round
             padding="sm"
-            style="margin-right: 15px"
+            style="margin-right: 10px;"
             @click="resetFilters()"
           >
             <q-icon size="25px" name="filter_alt_off" color="white"> </q-icon>
@@ -654,6 +661,8 @@ export default {
       enabledExport: false,
       clientesLoading: false,
       print: "",
+      checkProtect: "",
+      rpermisos: [],
       fecha_desde: moment().format("DD/MM/YYYY"),
       fecha_hasta: moment().format("DD/MM/YYYY"),
     };
@@ -762,6 +771,8 @@ export default {
       dataArray.kgs_max = this.selectedKgs.kgs_max
         ? this.selectedKgs.kgs_max
         : 30;
+      dataArray.checkProtect = this.checkProtect;
+      
       api
         .get(`/pdfreports/relacionFpo`, {
           headers: {
@@ -779,8 +790,6 @@ export default {
             });
             this.print = "";
           }
-
-          console.log(res.data.pdfPath);
 
           if (res.data.pdfPath == "reporteBase.pdf") {
             this.enabledExport = false;
@@ -816,8 +825,8 @@ export default {
           color: "red",
         });
         return;
-      }  
-      
+      }
+
       let dataArray = {};
       dataArray.cliente = this.selectedCliente.id
         ? this.selectedCliente.id
@@ -834,6 +843,7 @@ export default {
       dataArray.kgs_max = this.selectedKgs.kgs_max
         ? this.selectedKgs.kgs_max
         : 30;
+      dataArray.checkProtect = this.checkProtect;
 
       await api
         .get(`/excelreports/relacionFpo`, {
@@ -852,7 +862,7 @@ export default {
             return;
           }
           const link = document.createElement("a");
-          link.href = `${process.env.apiPath}/excelReports/loadExcel/${res.data.excelPath}`; 
+          link.href = `${process.env.apiPath}/excelReports/loadExcel/${res.data.excelPath}`;
           link.setAttribute("download", "relacionFpo.xlsx");
           setTimeout(() => {
             link.click();
