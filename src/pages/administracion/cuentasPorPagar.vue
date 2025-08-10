@@ -236,7 +236,8 @@
               !this.form.nro_documento ||
               !this.form.nro_ctrl_doc ||
               this.gastos.length == 0 ||
-              this.form.total_documento == '0,00'
+              this.form.total_documento == '0,00' ||
+              this.allowOption(2)
                 ? true
                 : false
             "
@@ -2058,16 +2059,15 @@ export default {
     },
     // Metodo para validar el pago
     validatePago() {
-      if(this.fpago.nro_doc_pago2 == "") {
+      if (this.fpago.nro_doc_pago2 == "") {
         this.$q.notify({
-          message:
-            "Debe ingresar el Número de Cheque",
+          message: "Debe ingresar el Número de Cheque",
           color: "red",
         });
         return;
       }
 
-      if(this.fpago.id) {
+      if (this.fpago.id) {
         this.saveCta();
       } else {
         this.confirmGPagoPopUp = true;
@@ -2608,7 +2608,7 @@ export default {
       }
 
       this.selectedAgencia = [];
-      this.beneficiario = this.selectedProveedor.nb_beneficiario
+      this.beneficiario = this.selectedProveedor.nb_beneficiario;
       this.selectedProveedor = [];
       this.selectedTipo = this.tipos[0];
       this.resetFilters();

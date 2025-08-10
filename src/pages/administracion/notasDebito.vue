@@ -230,6 +230,7 @@
             padding="sm"
             @click="printDialog()"
             style="margin-right: 15px"
+            :disabled="this.allowOption(2)"
           >
             <q-icon size="25px" name="save" color="white"> </q-icon>
             <q-tooltip

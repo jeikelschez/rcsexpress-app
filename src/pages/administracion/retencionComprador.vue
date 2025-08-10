@@ -145,7 +145,11 @@
             padding="sm"
             @click="this.sendData()"
             style="margin-right: 15px"
-            :disable="this.selectedFacturas.length == 0 ? true : false"
+            :disable="
+              this.selectedFacturas.length == 0 || this.allowOption(2)
+                ? true
+                : false
+            "
           >
             <q-icon size="25px" name="save" color="white"> </q-icon>
             <q-tooltip
@@ -355,6 +359,7 @@ export default {
       fecha_emi_comp_ret_compra: null,
       nro_comp_ret_compra: "",
       iva_retenido_comprador: 0,
+      rpermisos: [],
       columnsFacturas: [
         {
           name: "t_de_documento",
@@ -551,8 +556,13 @@ export default {
             : moment().format("DD/MM/YYYY");
         this.nro_comp_ret_compra = rows[0].nro_comp_ret_compra;
         this.iva_retenido_comprador = rows[0].iva_retenido_comprador;
-        if(rows[0].iva_retenido_comprador == 0 || rows[0].iva_retenido_comprador == null) {
-          this.iva_retenido_comprador = (rows[0].monto_impuesto * 0.75).toFixed(2);
+        if (
+          rows[0].iva_retenido_comprador == 0 ||
+          rows[0].iva_retenido_comprador == null
+        ) {
+          this.iva_retenido_comprador = (rows[0].monto_impuesto * 0.75).toFixed(
+            2
+          );
         }
       }
     },
@@ -603,10 +613,12 @@ export default {
           "Invalid date" ||
         moment(this.fecha_comp_ret_compra, "DD/MM/YYYY").format("YYYY-MM-DD") ==
           null ||
-        moment(this.fecha_emi_comp_ret_compra, "DD/MM/YYYY").format("YYYY-MM-DD") ==
-          "Invalid date" ||
-        moment(this.fecha_emi_comp_ret_compra, "DD/MM/YYYY").format("YYYY-MM-DD") ==
-          null ||
+        moment(this.fecha_emi_comp_ret_compra, "DD/MM/YYYY").format(
+          "YYYY-MM-DD"
+        ) == "Invalid date" ||
+        moment(this.fecha_emi_comp_ret_compra, "DD/MM/YYYY").format(
+          "YYYY-MM-DD"
+        ) == null ||
         this.nro_comp_ret_compra == "" ||
         this.nro_comp_ret_compra == null ||
         this.iva_retenido_comprador == null ||

@@ -145,7 +145,11 @@
             padding="sm"
             @click="this.sendData()"
             style="margin-right: 15px"
-            :disable="this.selectedFacturas.length == 0 ? true : false"
+            :disable="
+              this.selectedFacturas.length == 0 || this.allowOption(2)
+                ? true
+                : false
+            "
           >
             <q-icon size="25px" name="save" color="white"> </q-icon>
             <q-tooltip
@@ -457,6 +461,7 @@ export default {
       porc_igtf: "3%",
       divisas_igtf: 0,
       bs_igtf: 0,
+      rpermisos: [],
       columnsFacturas: [
         {
           name: "t_de_documento",
@@ -775,7 +780,7 @@ export default {
       }
       await this.sendData();
       this.pdfView = true;
-    }, 
+    },
     // Imprimo el comprobante de IGTF
     pdfPrint() {
       api

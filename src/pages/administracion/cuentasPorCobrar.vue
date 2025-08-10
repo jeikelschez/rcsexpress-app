@@ -193,7 +193,7 @@
             color="primary"
             round
             padding="sm"
-            :disabled="this.cuentas_cobrar.length > 0 ? false : true"
+            :disabled="this.cuentas_cobrar.length > 0 && !this.allowOption(2) ? false : true"
             @click="this.saveCuentas()"
           >
             <q-icon size="25px" name="input" color="white"> </q-icon>

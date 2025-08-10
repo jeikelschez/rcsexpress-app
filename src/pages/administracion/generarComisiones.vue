@@ -245,7 +245,7 @@
           class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-12 cardMargin selectMobile2"
           style="align-self: center; text-align: center"
         >
-          <q-checkbox
+          <q-checkbox v-if="!this.allowOption(5)"
             v-model="selectedSerie"
             color="primary"
             left-label
@@ -270,7 +270,7 @@
               selected = [];
             "
           />
-          <q-checkbox
+          <q-checkbox v-if="!this.allowOption(5)"
             v-model="selectedSerie"
             color="primary"
             left-label
@@ -311,7 +311,7 @@
           class="col-md-1 col-xl-1 col-lg-1 col-xs-12 col-sm-12 cardMargin selectMobile2"
           style="align-self: center; text-align: center"
         >
-          <q-checkbox
+          <q-checkbox v-if="!this.allowOption(6)"
             v-model="selectedDolar"
             color="primary"
             left-label
@@ -868,7 +868,8 @@ export default {
       selectedOpcion: [],
       selectedId: [],
       printData: [],
-      selectedSerie: ["44", "55"],
+      rpermisos: [],
+      selectedSerie: [],
       selectedAgrup: false,
       selectedDolar: false,
       fecha_desde: moment().startOf("month").format("DD/MM/YYYY"),
@@ -952,6 +953,10 @@ export default {
     // Metodo para Setear Datos Permisos
     setDataPermisos(res, dataRes) {
       this[dataRes] = res;
+
+      // Permiso para ver Serie 55
+      this.selectedSerie = !this.allowOption(5) ? ["44", "55"] : ["44"];
+
       if (this.rpermisos.findIndex((item) => item.acciones.accion == 1) < 0)
         this.$router.push("/error403");
     },
@@ -1229,7 +1234,7 @@ export default {
       this.selectedAgente = [];
       this.fecha_desde = moment().startOf("month").format("DD/MM/YYYY");
       this.fecha_hasta = moment().endOf("month").format("DD/MM/YYYY");
-      this.selectedSerie = ["44", "55"];
+      this.selectedSerie = !this.allowOption(5) ? ["44", "55"] : ["44"];
       this.selectedAgrup = false;
       this.selectedDolar = false;
     },
