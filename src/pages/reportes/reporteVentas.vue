@@ -376,7 +376,8 @@
             v-if="
               selectedTipo.value != 'CG' &&
               selectedTipo.value != 'CC' &&
-              selectedTipo.value != 'CCC'
+              selectedTipo.value != 'CCC' &&
+              !this.allowOption(7)
             "
           >
             <strong>Ver Montos</strong>
@@ -391,7 +392,8 @@
             v-if="
               selectedTipo.value != 'CG' &&
               selectedTipo.value != 'CC' &&
-              selectedTipo.value != 'CCC'
+              selectedTipo.value != 'CCC' &&
+              !this.allowOption(7)
             "
             v-model="selectedMonto"
             spread
@@ -411,10 +413,12 @@
             style="font-size: 20px; margin-bottom: 15px; margin-left: -50px"
             class="text-secondary"
             v-if="
-              selectedTipo.value == 'VC' ||
-              selectedTipo.value == 'TV' ||
-              selectedTipo.value == 'RD' ||
-              selectedTipo.value == 'GC'
+              (selectedTipo.value == 'VG' ||
+                selectedTipo.value == 'VC' ||
+                selectedTipo.value == 'TV' ||
+                selectedTipo.value == 'RD' ||
+                selectedTipo.value == 'GC') &&
+              !this.allowOption(5)
             "
           >
             <strong>Serie</strong>
@@ -427,10 +431,12 @@
         >
           <q-checkbox
             v-if="
-              selectedTipo.value == 'VC' ||
-              selectedTipo.value == 'TV' ||
-              selectedTipo.value == 'RD' ||
-              selectedTipo.value == 'GC'
+              (selectedTipo.value == 'VG' ||
+                selectedTipo.value == 'VC' ||
+                selectedTipo.value == 'TV' ||
+                selectedTipo.value == 'RD' ||
+                selectedTipo.value == 'GC') &&
+              !this.allowOption(5)
             "
             v-model="selectedSerie"
             color="primary"
@@ -441,10 +447,12 @@
           />
           <q-checkbox
             v-if="
-              selectedTipo.value == 'VC' ||
-              selectedTipo.value == 'TV' ||
-              selectedTipo.value == 'RD' ||
-              selectedTipo.value == 'GC'
+              (selectedTipo.value == 'VG' ||
+                selectedTipo.value == 'VC' ||
+                selectedTipo.value == 'TV' ||
+                selectedTipo.value == 'RD' ||
+                selectedTipo.value == 'GC') &&
+              !this.allowOption(5)
             "
             v-model="selectedSerie"
             color="primary"
@@ -460,10 +468,11 @@
         >
           <q-checkbox
             v-if="
-              selectedTipo.value == 'VG' ||
-              selectedTipo.value == 'VC' ||
-              selectedTipo.value == 'TV' ||
-              selectedTipo.value == 'RD'
+              (selectedTipo.value == 'VG' ||
+                selectedTipo.value == 'VC' ||
+                selectedTipo.value == 'TV' ||
+                selectedTipo.value == 'RD') &&
+              !this.allowOption(6)
             "
             v-model="selectedDolar"
             color="primary"
@@ -654,30 +663,31 @@
         <q-inner-loading :showing="loading" color="primary" class="loading" />
       </div>
       <q-dialog v-model="confirmPopUp" persistent>
-      <q-card style="width: 700px">
-        <q-card-section>
-          <div class="text-h5" style="font-size: 18px">
-            Desea cambiar el estado de las Guias serie 55 de esta selección a Modificadas?
-          </div>
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn
-            flat
-            label="Cancelar"
-            color="primary"
-            @click="this.updateMasivo = false"
-            v-close-popup
-          />
-          <q-btn
-            flat
-            label="Actualizar"
-            color="primary"
-            v-close-popup
-            @click="this.updateMasivo = true"
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+        <q-card style="width: 700px">
+          <q-card-section>
+            <div class="text-h5" style="font-size: 18px">
+              Desea cambiar el estado de las Guias serie 55 de esta selección a
+              Modificadas?
+            </div>
+          </q-card-section>
+          <q-card-actions align="right">
+            <q-btn
+              flat
+              label="Cancelar"
+              color="primary"
+              @click="this.updateMasivo = false"
+              v-close-popup
+            />
+            <q-btn
+              flat
+              label="Actualizar"
+              color="primary"
+              v-close-popup
+              @click="this.updateMasivo = true"
+            />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
     </div>
 
     <methods
@@ -827,9 +837,9 @@ export default {
       selectedForma: [],
       selectedPagado: [],
       reportValue: "",
-      selectedMonto: "SI",
+      selectedMonto: "",
       selectedNeta: false,
-      selectedSerie: ["44", "55"],
+      selectedSerie: [],
       selectedDolar: false,
       selectedCorrelativo: false,
       selectedAgrMes: false,
@@ -837,6 +847,7 @@ export default {
       selectedAgrDia: false,
       enabledExport: false,
       updateMasivo: false,
+      rpermisos: [],
       fecha_desde: moment().format("DD/MM/YYYY"),
       fecha_hasta: moment().format("DD/MM/YYYY"),
     };
@@ -892,9 +903,22 @@ export default {
         }
       });
     },
+    // Metodo para validar Permisos
+    allowOption(option) {
+      return (
+        this.rpermisos.findIndex((item) => item.acciones.accion == option) < 0
+      );
+    },
     // Metodo para Setear Datos Permisos
     setDataPermisos(res, dataRes) {
       this[dataRes] = res;
+
+      // Permiso para ver Serie 55
+      this.selectedSerie = !this.allowOption(5) ? ["44", "55"] : ["44"];
+
+      // Permiso para ver Montos
+      this.selectedMonto = !this.allowOption(7) ? "SI" : "NO";
+
       if (this.rpermisos.findIndex((item) => item.acciones.accion == 1) < 0)
         this.$router.push("/error403");
     },
@@ -962,6 +986,7 @@ export default {
       }
 
       if (
+        this.reportValue == "VG" ||
         this.reportValue == "VC" ||
         this.reportValue == "VCM" ||
         this.reportValue == "VCD" ||
@@ -1087,8 +1112,8 @@ export default {
       this.selectedForma = [];
       this.selectedPagado = [];
       this.selectedDolar = false;
-      this.selectedMonto = "SI";
-      this.selectedSerie = ["44", "55"];
+      this.selectedMonto = !this.allowOption(7) ? "SI" : "NO";
+      this.selectedSerie = !this.allowOption(5) ? ["44", "55"] : ["44"];
       this.selectedDolar = false;
       this.selectedCorrelativo = false;
       this.selectedAgrMes = false;
@@ -1124,7 +1149,8 @@ export default {
         })
         .then((res) => {
           this.$q.notify({
-            message: res.data.message + ", Guías actualizadas: " + res.data.cantidad,
+            message:
+              res.data.message + ", Guías actualizadas: " + res.data.cantidad,
             color: "green",
           });
         })
