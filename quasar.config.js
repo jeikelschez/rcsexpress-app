@@ -5,8 +5,8 @@
 
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
-var webpack = require('webpack');
-const { configure } = require("quasar/wrappers");
+import webpack from 'webpack';
+import { configure } from 'quasar/wrappers';
 
 module.exports = configure(function (ctx) {
   return {
