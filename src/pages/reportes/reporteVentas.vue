@@ -568,7 +568,7 @@
               selectedTipo.value == 'RD'
             "
           >
-            <strong>Neta</strong>
+            <strong v-if="!this.allowOption(8)">Neta</strong>
           </p>
           <p
             style="font-size: 20px; margin-bottom: 15px; margin-left: -30px"
@@ -587,6 +587,7 @@
             margin-bottom: 15px;
             margin-left: -35px;
           "
+          v-if="!this.allowOption(8)"
         >
           <q-checkbox
             v-if="

@@ -176,6 +176,7 @@
               <div
                 class="col-md-4 col-xs-12"
                 style="margin-bottom: 10px; padding-left: 10px"
+                v-if="!this.allowOption(8)"
               >
                 <q-btn-toggle
                   v-model="selectedNeta"
@@ -1327,6 +1328,7 @@
     <q-dialog v-model="pdfView" @show="printReport()" @hide="onDialogHide">
       <webViewer
         v-if="pdfView"
+        @export-Excel="exportExcel"
         ref="webViewer"
         @print-pdf="sendCostos()"
         @close-pdf="pdfView = false"
@@ -1805,6 +1807,91 @@ export default {
           });
           this.pdfView = false;
           return;
+        });
+    },
+    // Metodo para exportar a Excel
+    async exportExcel() {
+      this.loading = true;
+      var factArray = {};
+      var detalleArray = [];
+      this.dialog = false;
+
+      for (var i = 0; i <= this.selected.length - 1; i++) {
+        detalleArray.push(this.selected[i].nro_documento);
+      }
+
+      for (var i = 0; i <= this.selectedGuias.length - 1; i++) {
+        detalleArray.push(this.selectedGuias[i]);
+      }
+
+      factArray.fecha_desde = this.fecha_desde;
+      factArray.fecha_hasta = this.fecha_hasta;
+      factArray.usuario = LocalStorage.getItem("tokenTraducido").usuario.nombre;
+      factArray.agencia =
+        this.selectedAgenciaDestino.length == 0
+          ? this.selectedAgencia.nb_agencia
+          : this.selectedAgenciaDestino.nb_agencia;
+      factArray.visible = this.selectedVisible;
+      factArray.visibleGuia = this.visibleGuia;
+      factArray.tipo = this.selectedTipo;
+      factArray.chofer = this.selectedAgente.id
+        ? this.selectedAgente.persona_responsable +
+          " - C.I." +
+          this.selectedAgente.rif_ci_agente
+        : "";
+      factArray.vehiculo = this.selectedUnidad.id
+        ? this.selectedUnidad.placas +
+          " - " +
+          this.selectedUnidad.descripcion +
+          " - " +
+          this.selectedUnidad.chofer
+        : "";
+      factArray.receptor = this.selectedReceptor.id
+        ? this.selectedReceptor
+        : "";
+      factArray.neta = this.selectedNeta;
+      factArray.dolar = this.selectedDolar;
+      factArray.tipoReporte = this.selectedReporte;
+      factArray.sortBy = this.pagination.sortBy;
+      factArray.nombreReporte = this.nombreReporte;
+      factArray.observacion = this.observacion;
+
+      api
+        .post(
+          `/excelreports/relacionDespacho`,
+          {
+            data: JSON.stringify(factArray),
+            detalle: detalleArray,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+              usuario: LocalStorage.getItem("tokenTraducido").usuario.nombre,
+            },
+          }
+        )
+        .then((res) => {
+          if (!res.data.validDoc) {
+            this.$q.notify({
+              message: "No existen registros para este conjunto de Filtos",
+              color: "red",
+            });
+            this.pdfView = false;
+            return;
+          }
+          const link = document.createElement("a");
+          link.href = `${process.env.apiPath}/excelReports/loadExcel/${res.data.excelPath}`;
+          link.setAttribute("download", "file.xlsx");
+          setTimeout(() => {
+            link.click();
+          }, 1000);
+          this.loading = false;
+        })
+        .catch((err) => {
+          this.$q.notify({
+            message: err.message,
+            color: "red",
+          });
         });
     },
     // Method called when the QDialog hides (e.g., user clicks outside or closes it)

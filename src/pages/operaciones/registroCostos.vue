@@ -36,7 +36,11 @@
                 @click="printReport()"
               />
             </div>
-            <div class="col-md-2 col-xs-12" style="margin-top: 5px">
+            <div
+              class="col-md-2 col-xs-12"
+              style="margin-top: 5px"
+              v-if="!this.allowOption(6)"
+            >
               <q-checkbox
                 v-model="selectedNeta"
                 label="Neta"

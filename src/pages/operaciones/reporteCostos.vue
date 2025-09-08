@@ -364,6 +364,7 @@
           <div
             class="col-md-10 col-xl-10 col-lg-10 col-xs-10 col-sm-10 cardMargin selectMobile2"
             style="align-self: center; text-align: center; margin-bottom: 25px"
+            v-if="!this.allowOption(6)"
           >
             <q-btn-toggle
               v-model="selectedNeta"
