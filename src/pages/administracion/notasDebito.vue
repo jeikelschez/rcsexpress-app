@@ -1533,7 +1533,7 @@ export default {
       formNota.monto_impuesto = this.curReplace(this.form.monto_impuesto);
       formNota.monto_total = this.curReplace(this.form.monto_total);
       formNota.saldo = 0;
-      formNota.estatus_administra = "N";
+      formNota.estatus_administra = "P";
       formNota.observacion = this.selectedFactura.observacion;
       formNota.fecha_emision = moment(this.fechaSelected, "DD/MM/YYYY").format(
         "YYYY-MM-DD"

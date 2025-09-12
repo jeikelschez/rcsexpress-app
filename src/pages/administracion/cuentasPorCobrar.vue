@@ -868,7 +868,7 @@ export default {
                 "YYYY-MM-DD"
               ),
               estatus_admin_in: "P",
-              tipo_in: "FA,NC",
+              tipo_in: "FA,NC,ND",
             }),
             order: JSON.stringify([
               ["t_de_documento", "DESC"],
