@@ -64,6 +64,7 @@
             v-model="selectedProveedor"
             outlined
             :loading="proveedoresLoading"
+            @update:model-value="this.selected = []; this.nro_comprobante = ''"
             :disable="
               this.selectedTipo.value != 'DI' ? proveedoresLoading : true
             "
@@ -869,6 +870,7 @@ export default {
     // Metodo para resetaer la data de los filtros
     resetFilters() {
       this.selected = [];
+      this.nro_comprobante = '';
       this.selectedOption = [];
       this.flagGenerar = false;
       this.selectedTipo = this.tipoReporte[0];
