@@ -2088,7 +2088,11 @@ export default {
       let monto_base_inter = this.parseFloatN(
         this.curReplace(this.form.monto_base_intern)
       );
-      let monto_cuenta = monto_exento + monto_base_nac + monto_base_inter;
+      let monto_cuenta = (
+        monto_exento +
+        monto_base_nac +
+        monto_base_inter
+      ).toFixed(2);
       let mto_doc = this.parseFloatN(
         this.curReplace(this.form.total_documento)
       );
