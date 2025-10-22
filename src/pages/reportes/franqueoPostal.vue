@@ -335,9 +335,9 @@ export default {
           tittle: "PLANILLA DE AUTOLIQUIDACIÓN",
         },
         {
-          label: "RELACIÓN DIARIA",
+          label: "LIBRO DE CUENTA AUXILIAR",
           value: "RD",
-          tittle: "RELACIÓN DIARIA",
+          tittle: "LIBRO DE CUENTA AUXILIAR",
         },
       ],
       pesosKgs: [
@@ -645,6 +645,11 @@ export default {
           label: "DE 29.501 HASTA 30.000",
           kgs_min: 29.5,
           kgs_max: 30,
+        },
+        {
+          label: "TODOS LOS PESOS",
+          kgs_min: 0,
+          kgs_max: 10000,
         },
       ],
       pdf: true,
