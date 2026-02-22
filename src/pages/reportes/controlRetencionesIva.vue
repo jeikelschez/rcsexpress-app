@@ -432,6 +432,7 @@
       style="margin-top: -30px"
     >
       <webViewer
+        @export-Excel="exportExcel"
         ref="webViewer"
         v-if="pdf == true"
         style="width: 1680px; height: 610px; max-width: 1680px"
@@ -675,6 +676,50 @@ export default {
           this.loading = false;
           return;
         });
+    },
+    // Metodo para exportar a Excel
+    async exportExcel() {
+      if (this.selectedTipo.value != "RC") {
+        return;
+      }           
+
+      let dataArray = {};
+      dataArray.proveedor = this.selectedProveedor.id
+        ? this.selectedProveedor.id
+        : "";
+      dataArray.desde = this.fecha_desde;
+      dataArray.hasta = this.fecha_hasta;
+      dataArray.comprobante = this.nro_comprobante;
+
+      await api
+        .get(`/excelreports/retencionesIva`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            data: JSON.stringify(dataArray)
+          },
+        })
+        .then((res) => {
+          if (!res.data.validDoc) {
+            this.$q.notify({
+              message: "No existen registros para este conjunto de Filtos",
+              color: "red",
+            });
+            return;
+          }
+          const link = document.createElement("a");
+          link.href = `${process.env.apiPath}/excelReports/loadExcel/${res.data.excelPath}`; 
+          link.setAttribute("download", "RetencionesIva.xlsx");
+          setTimeout(() => {
+            link.click();
+          }, 1000);
+        })
+        .catch((err) => {
+          this.$q.notify({
+            message: err.message,
+            color: "red",
+          });
+        });
+        this.loading = false; 
     },
     // Metodo para seleccionar el detalle de IVA
     async selectDetalleIva() {
