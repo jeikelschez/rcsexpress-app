@@ -4926,6 +4926,7 @@ export default {
               return stopFuction;
             }
           } else {
+            form.id_clte_part_orig = null;
             for (var i = 0; i <= this.clientes_origen.length - 1; i++) {
               if (this.clientes_origen[i].id == form.cod_cliente_org.id) {
                 if (
@@ -4982,6 +4983,7 @@ export default {
               return stopFuction;
             }
           } else {
+            form.id_clte_part_dest = null;
             for (var i = 0; i <= this.clientes_destino.length - 1; i++) {
               if (this.clientes_destino[i].id == form.cod_cliente_dest.id) {
                 if (
