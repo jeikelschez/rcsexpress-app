@@ -608,6 +608,33 @@
           <div v-else style="margin-bottom: 40px"></div>
         </div>
         <div
+          v-if="selectedTipo.value == 'VC' && !selectedAgrMes && !selectedAgrDia"
+          class="col-md-12 col-xs-12 col-sm-12 cardMargin selectMobile2"
+          style="align-self: center; text-align: center; margin-bottom: 30px"
+        >
+          <q-input
+            outlined
+            rounded
+            dense
+            label="Excluir N°s de Guía (separar con comas)"
+            v-model="guiasExcluidas"
+            clearable
+            hint="Ej: 1234, 5678, 9101"
+            style="padding-bottom: 0px"
+            :rules="[
+              val =>
+                !val ||
+                /^[\d\s,]+$/.test(val.trim()) ||
+                'Solo se permiten números separados por comas'
+            ]"
+            lazy-rules
+          >
+            <template v-slot:prepend>
+              <q-icon name="block" />
+            </template>
+          </q-input>
+        </div>
+        <div
           class="col-md-4 col-xl-12 col-lg-12 col-xs-12 col-sm-12 cardMargin selectMobile2"
           style="align-self: center; text-align: center"
         >
@@ -846,6 +873,7 @@ export default {
       selectedAgrMes: false,
       selectedAgrCli: false,
       selectedAgrDia: false,
+      guiasExcluidas: "",
       enabledExport: false,
       updateMasivo: false,
       rpermisos: [],
@@ -957,6 +985,9 @@ export default {
       dataArray.pagado_en = this.selectedPagado.value;
       dataArray.correlativo = this.selectedCorrelativo;
       dataArray.tipo_doc = this.selectedTipoDoc.value;
+      dataArray.guias_excluidas = this.guiasExcluidas
+        ? this.guiasExcluidas.split(',').map(g => g.trim()).filter(g => /^\d+$/.test(g)).map(Number)
+        : [];
 
       if (this.reportValue == "VC" || this.reportValue == "CCC") {
         if (this.selectedAgrMes) this.reportValue = "VCM";
@@ -1067,6 +1098,9 @@ export default {
       dataArray.pagado_en = this.selectedPagado.value;
       dataArray.correlativo = this.selectedCorrelativo;
       dataArray.tipo_doc = this.selectedTipoDoc.value;
+      dataArray.guias_excluidas = this.guiasExcluidas
+        ? this.guiasExcluidas.split(',').map(g => g.trim()).filter(g => /^\d+$/.test(g)).map(Number)
+        : [];
       dataArray.serie = this.selectedSerie;
       await api
         .get(`/excelreports/reporteVentas`, {
@@ -1120,6 +1154,7 @@ export default {
       this.selectedAgrMes = false;
       this.selectedAgrCli = false;
       this.selectedAgrDia = false;
+      this.guiasExcluidas = "";
       this.fecha_desde = moment().format("DD/MM/YYYY");
       this.fecha_hasta = moment().format("DD/MM/YYYY");
       this.pdfChange(0);
