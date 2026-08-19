@@ -5284,9 +5284,10 @@ export default {
           }
 
           // Guarda la guia
+          if (form.id_clte_part_dest == "") delete form.id_clte_part_dest;
+          if (form.id_clte_part_orig == "") delete form.id_clte_part_orig;
+
           if (form.id !== "") {
-            if (form.id_clte_part_dest == "") delete form.id_clte_part_dest;
-            if (form.id_clte_part_orig == "") delete form.id_clte_part_orig;
             if (this.reversada == true) {
               form.estatus_administra = "E";
               form.check_elab = 1;
@@ -5294,32 +5295,8 @@ export default {
             } else {
               this.disableGuia = true;
             }
-
-            await api
-              .put(`/mmovimientos/${form.id}`, form, {
-                headers: {
-                  Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                },
-              })
-              .then((res) => {
-                this.reversada = false;
-                this.destino = false;
-                this.cliente = false;
-                this.saveDetails = false;
-              })
-              .catch(() => {
-                this.reversada = false;
-                this.destino = false;
-                this.saveDetails = false;
-                this.cliente = false;
-                errorMessage =
-                  "Error del Sistema. Problemas al actualizar los datos Generales de la Guía. Comuníquese con el proveedor del Sistemas...";
-                return stopFuction;
-              });
           } else {
             delete form.id;
-            if (form.id_clte_part_dest == "") delete form.id_clte_part_dest;
-            if (form.id_clte_part_orig == "") delete form.id_clte_part_orig;
             await api
               .post(`/mmovimientos`, form, {
                 headers: {
@@ -5336,154 +5313,13 @@ export default {
               });
           }
 
-          this.filterAndSet(
-            "estatus_administrativo",
-            "value",
-            form.estatus_administra,
-            "form",
-            "estatus_administra"
-          );
-
-          this.updateEstatusAdministra();
-
-          // Si tiene detalles, lo guarda y guarda las comisiones
+          // Si tiene detalles, guarda maestro + detalle + comisiones en una sola
+          // operacion atomica (todo o nada) para evitar guardados parciales
           if (this.detalle_movimiento.length > 0) {
-            // Busca la comision de Venta
-            await api
-              .get(`/ccomisiones`, {
-                headers: {
-                  Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                  cod_movimiento: this.form.id,
-                  tipo: "V",
-                },
-              })
-              .then((res) => {
-                if (res.data.data[0]) {
-                  comVta = res.data.data[0].id;
-                  comisionVenta = {
-                    cod_agencia: form.cod_agencia,
-                    cod_agente: form.cod_agente_venta,
-                    cod_movimiento: this.form.id,
-                    fecha_emision: form.fecha_emision,
-                    monto_comision: form.comision_venta,
-                    estatus: 0,
-                  };
-                } else {
-                  comisionVenta = {
-                    cod_agencia: form.cod_agencia,
-                    cod_agente: form.cod_agente_venta,
-                    cod_movimiento: this.form.id,
-                    fecha_emision: form.fecha_emision,
-                    monto_comision: form.comision_venta,
-                    tipo_comision: "V",
-                    estatus: 0,
-                  };
-                }
-              })
-              .catch(() => {
-                errorMessage =
-                  "Error del Sistema. Problemas al encontrar comisiones. Comuníquese con el proveedor del Sistemas";
-                return stopFuction;
-              });
-
-            // Guarda la comision de Ventas
-            if (comVta != "") {
-              await api
-                .put(`/ccomisiones/${comVta}`, comisionVenta, {
-                  headers: {
-                    Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                  },
-                })
-                .catch(() => {
-                  errorMessage =
-                    "Error del Sistema. Problemas al Actualizar comisión del Ventas. Comuníquese con el proveedor del Sistemas";
-                  return stopFuction;
-                });
-            } else {
-              await api
-                .post(`/ccomisiones/`, comisionVenta, {
-                  headers: {
-                    Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                  },
-                })
-                .catch(() => {
-                  errorMessage =
-                    "Error del Sistema. Problemas al Crear comisión del Ventas. Comuníquese con el proveedor del Sistemas";
-                  return stopFuction;
-                });
-            }
-
-            // Busca la comision de Seguro
-            await api
-              .get(`/ccomisiones`, {
-                headers: {
-                  Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                  cod_movimiento: this.form.id,
-                  tipo: "S",
-                },
-              })
-              .then((res) => {
-                if (res.data.data[0]) {
-                  comSeg = res.data.data[0].id;
-                  comisionSeguro = {
-                    cod_agencia: form.cod_agencia,
-                    cod_agente: form.cod_agente_venta,
-                    cod_movimiento: this.form.id,
-                    fecha_emision: form.fecha_emision,
-                    monto_comision: form.comision_seg_vta,
-                    estatus: 0,
-                  };
-                } else {
-                  comisionSeguro = {
-                    cod_agencia: form.cod_agencia,
-                    cod_agente: form.cod_agente_venta,
-                    cod_movimiento: this.form.id,
-                    fecha_emision: form.fecha_emision,
-                    monto_comision: form.comision_seg_vta,
-                    tipo_comision: "S",
-                    estatus: 0,
-                  };
-                }
-              })
-              .catch(() => {
-                errorMessage =
-                  "Error del Sistema. Problemas al encontrar comisiones. Comuníquese con el proveedor del Sistemas";
-                return stopFuction;
-              });
-
-            // Guarda la comision de Seguro
-            if (comSeg != "") {
-              await api
-                .put(`/ccomisiones/${comSeg}`, comisionSeguro, {
-                  headers: {
-                    Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                  },
-                })
-                .catch(() => {
-                  errorMessage =
-                    "Error del Sistema. Problemas al Actualizar comisión del Seguro. Comuníquese con el proveedor del Sistemas";
-                  return stopFuction;
-                });
-            } else {
-              await api
-                .post(`/ccomisiones/`, comisionSeguro, {
-                  headers: {
-                    Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                  },
-                })
-                .catch(() => {
-                  errorMessage =
-                    "Error del Sistema. Problemas al Crear comisión del Seguro. Comuníquese con el proveedor del Sistemas";
-                  return stopFuction;
-                });
-            }
-
-            // Guarda el Detalle
             var detalleTemp = JSON.parse(
               JSON.stringify(this.detalle_movimiento)
             );
             for (var i = 0; i <= detalleTemp.length - 1; i++) {
-              detalleTemp[i].cod_movimiento = this.form.id;
               detalleTemp[i].cantidad = await this.curReplace(
                 detalleTemp[i].cantidad
               );
@@ -5494,37 +5330,93 @@ export default {
                 detalleTemp[i].importe_renglon
               );
               delete detalleTemp[i].conceptos;
-              if (detalleTemp[i].id == 0) {
-                delete detalleTemp[i].id;
-                await api
-                  .post(`/dmovimientos`, detalleTemp[i], {
-                    headers: {
-                      Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                    },
-                  })
-                  .then((res) => {
-                    this.detalle_movimiento[i].id = res.data.id;
-                  })
-                  .catch(() => {
-                    errorMessage =
-                      "Error del Sistema. Problemas al crear los datos del Detalle de la Guía. Comuníquese con el proveedor del Sistemas";
-                    return stopFuction;
-                  });
-              } else {
-                await api
-                  .put(`/dmovimientos/${detalleTemp[i].id}`, detalleTemp[i], {
-                    headers: {
-                      Authorization: `Bearer ${LocalStorage.getItem("token")}`,
-                    },
-                  })
-                  .catch(() => {
-                    errorMessage =
-                      "Error del Sistema. Problemas al actualizar los datos del Detalle de la Guía. Comuníquese con el proveedor del Sistemas";
-                    return stopFuction;
-                  });
-              }
+              delete detalleTemp[i].id;
+              delete detalleTemp[i].cod_movimiento;
             }
+
+            await api
+              .put(
+                `/mmovimientos/${this.form.id}/tarifeo`,
+                {
+                  maestro: form,
+                  detalle: detalleTemp,
+                  comisionVenta: {
+                    cod_agencia: form.cod_agencia,
+                    cod_agente: form.cod_agente_venta,
+                    fecha_emision: form.fecha_emision,
+                    monto_comision: form.comision_venta,
+                    tipo_comision: "V",
+                    estatus: 0,
+                  },
+                  comisionSeguro: {
+                    cod_agencia: form.cod_agencia,
+                    cod_agente: form.cod_agente_venta,
+                    fecha_emision: form.fecha_emision,
+                    monto_comision: form.comision_seg_vta,
+                    tipo_comision: "S",
+                    estatus: 0,
+                  },
+                },
+                {
+                  headers: {
+                    Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                  },
+                }
+              )
+              .then((res) => {
+                res.data.detalle.forEach((renglon, idx) => {
+                  if (this.detalle_movimiento[idx]) {
+                    this.detalle_movimiento[idx].id = renglon.id;
+                  }
+                });
+                this.reversada = false;
+                this.destino = false;
+                this.cliente = false;
+                this.saveDetails = false;
+              })
+              .catch(() => {
+                this.reversada = false;
+                this.destino = false;
+                this.saveDetails = false;
+                this.cliente = false;
+                errorMessage =
+                  "Error del Sistema. Problemas al guardar el detalle y las comisiones de la Guía. Comuníquese con el proveedor del Sistemas";
+                return stopFuction;
+              });
+          } else if (form.id !== "") {
+            // Guia sin tarifear todavia: solo actualiza los datos generales
+            await api
+              .put(`/mmovimientos/${form.id}`, form, {
+                headers: {
+                  Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+                },
+              })
+              .then(() => {
+                this.reversada = false;
+                this.destino = false;
+                this.cliente = false;
+                this.saveDetails = false;
+              })
+              .catch(() => {
+                this.reversada = false;
+                this.destino = false;
+                this.saveDetails = false;
+                this.cliente = false;
+                errorMessage =
+                  "Error del Sistema. Problemas al actualizar los datos Generales de la Guía. Comuníquese con el proveedor del Sistemas...";
+                return stopFuction;
+              });
           }
+
+          this.filterAndSet(
+            "estatus_administrativo",
+            "value",
+            form.estatus_administra,
+            "form",
+            "estatus_administra"
+          );
+
+          this.updateEstatusAdministra();
 
           this.loading = false;
           this.$q.notify({
