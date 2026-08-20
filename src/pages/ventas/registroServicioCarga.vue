@@ -2964,8 +2964,9 @@
       <q-card style="width: 700px">
         <q-card-section>
           <div class="text-h5" style="font-size: 18px">
-            La guía está tarificada, una vez que se encuentre completa no podrá
-            ser modificada. ¿Está seguro de que la misma esta completa?..."
+            El detalle fue calculado pero todavía NO se ha guardado. Una vez
+            que presione Guardar y quede completo, no podrá ser modificado.
+            ¿Está seguro de que el detalle está completo y desea guardarlo?...
           </div>
         </q-card-section>
         <q-card-actions align="right">
@@ -5379,6 +5380,16 @@ export default {
                 this.destino = false;
                 this.saveDetails = false;
                 this.cliente = false;
+                // Nada quedo guardado (todo o nada), asi que se limpia el
+                // detalle y los montos calculados en memoria para que un
+                // segundo intento (ej. "guardar como incompleta") no
+                // arrastre un monto_total sin ningun detalle real detras
+                this.detalle_movimiento = [];
+                this.form.monto_subtotal = "";
+                this.form.monto_base = "";
+                this.form.monto_impuesto = "";
+                this.form.monto_total = "";
+                this.form.saldo = "0.00";
                 errorMessage =
                   "Error del Sistema. Problemas al guardar el detalle y las comisiones de la Guía. Comuníquese con el proveedor del Sistemas";
                 return stopFuction;
