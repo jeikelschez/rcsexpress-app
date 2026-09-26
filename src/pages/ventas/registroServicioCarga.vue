@@ -5288,7 +5288,8 @@ export default {
           if (form.id_clte_part_dest == "") delete form.id_clte_part_dest;
           if (form.id_clte_part_orig == "") delete form.id_clte_part_orig;
 
-          if (form.id !== "") {
+          const esNueva = form.id === "";
+          if (!esNueva) {
             if (this.reversada == true) {
               form.estatus_administra = "E";
               form.check_elab = 1;
@@ -5394,7 +5395,7 @@ export default {
                   "Error del Sistema. Problemas al guardar el detalle y las comisiones de la Guía. Comuníquese con el proveedor del Sistemas";
                 return stopFuction;
               });
-          } else if (form.id !== "") {
+          } else if (!esNueva) {
             // Guia sin tarifear todavia: solo actualiza los datos generales
             await api
               .put(`/mmovimientos/${form.id}`, form, {
