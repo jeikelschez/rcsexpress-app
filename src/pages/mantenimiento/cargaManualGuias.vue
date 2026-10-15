@@ -969,6 +969,7 @@ import { VMoney } from "v-money";
 import { useQuasar, LocalStorage } from "quasar";
 import methodsVue from "src/components/methods.vue";
 import webViewerVue from "src/components/webViewer.vue";
+import { imprimirZpl } from "src/utils/zebra";
 
 export default {
   components: {
@@ -2130,7 +2131,48 @@ export default {
         })
         .then((res) => {
           this.$refs.webViewer.showpdf(res.data.pdfPath, 1.5);
+          this.confirmEtiquetas(selectedGuiasPrintIds);
         });
+    },
+    // Pregunta si se desean imprimir las etiquetas de bultos (opcional)
+    confirmEtiquetas(ids) {
+      this.$q
+        .dialog({
+          title: "Etiquetas de Bultos",
+          message:
+            "¿Desea imprimir las etiquetas de bultos (QR) para estas guías?",
+          cancel: { label: "No", flat: true },
+          ok: { label: "Sí, imprimir", color: "primary" },
+          persistent: true,
+        })
+        .onOk(() => {
+          this.imprimirEtiquetas(ids);
+        });
+    },
+    // Solicita el ZPL al backend y lo envía a la impresora Zebra local
+    async imprimirEtiquetas(ids) {
+      try {
+        this.$q.loading.show({ message: "Generando etiquetas..." });
+        const res = await api.get(`/pdfreports/etiquetasLote`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            data: JSON.stringify(ids),
+          },
+        });
+        await imprimirZpl(res.data.zpl);
+        this.$q.notify({
+          message: "Etiquetas enviadas a la impresora.",
+          color: "green",
+        });
+      } catch (e) {
+        this.$q.notify({
+          message: "No se pudieron imprimir las etiquetas: " + e.message,
+          color: "red",
+          timeout: 6000,
+        });
+      } finally {
+        this.$q.loading.hide();
+      }
     },
     // Metodo para que una funcion no avance hasta que se cumpla una condicion
     async until(conditionFunction) {
