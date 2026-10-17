@@ -2157,6 +2157,8 @@ export default {
           headers: {
             Authorization: `Bearer ${LocalStorage.getItem("token")}`,
             data: JSON.stringify(ids),
+            // printType 1 = preimpreso -> QR completo (C); 2 = forma libre -> QR simple (S)
+            tipo: this.printType === 2 ? "S" : "C",
           },
         });
         await imprimirZpl(res.data.zpl);

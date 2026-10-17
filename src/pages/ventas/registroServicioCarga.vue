@@ -3009,6 +3009,7 @@ import { VMoney } from "v-money";
 import methodsVue from "src/components/methods.vue";
 import webViewerVue from "src/components/webViewer.vue";
 import rulesVue from "src/components/rules.vue";
+import { imprimirZpl } from "src/utils/zebra";
 import { useQuasar, LocalStorage } from "quasar";
 
 export default {
@@ -6164,6 +6165,7 @@ export default {
             return;
           }
           this.$refs.webViewer.showpdf(res.data.pdfPath, 1);
+          this.confirmEtiquetas(this.form.id);
         })
         .catch((err) => {
           this.$q.notify({
@@ -6173,6 +6175,46 @@ export default {
           this.pdfView = false;
           return;
         });
+    },
+    // Pregunta si se desea imprimir el QR (etiqueta simple) de los bultos
+    confirmEtiquetas(id) {
+      this.$q
+        .dialog({
+          title: "Etiqueta QR",
+          message: "¿Desea imprimir la etiqueta QR de los bultos?",
+          cancel: { label: "No", flat: true },
+          ok: { label: "Sí, imprimir", color: "primary" },
+          persistent: true,
+        })
+        .onOk(() => {
+          this.imprimirEtiquetas([id]);
+        });
+    },
+    // Solicita el ZPL (QR simple) al backend y lo envía a la impresora Zebra local
+    async imprimirEtiquetas(ids) {
+      try {
+        this.$q.loading.show({ message: "Generando etiquetas..." });
+        const res = await api.get(`/pdfreports/etiquetasLote`, {
+          headers: {
+            Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            data: JSON.stringify(ids),
+            tipo: "S",
+          },
+        });
+        await imprimirZpl(res.data.zpl);
+        this.$q.notify({
+          message: "Etiquetas enviadas a la impresora.",
+          color: "green",
+        });
+      } catch (e) {
+        this.$q.notify({
+          message: "No se pudieron imprimir las etiquetas: " + e.message,
+          color: "red",
+          timeout: 6000,
+        });
+      } finally {
+        this.$q.loading.hide();
+      }
     },
   },
 };
