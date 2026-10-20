@@ -115,8 +115,21 @@ export default {
       LocalStorage.set("user", true);
       LocalStorage.set("username", `${this.form.username}`);
       LocalStorage.set("refreshToken", `${res.data.refreshToken}`);
-      this.$router.push("/dashboard");
       this.$refs.userLogout.login();
+      // Redirección por rol (aditivo): el operador de carga aterriza directo
+      // en la app de escaneo; el resto de usuarios siguen yendo al dashboard.
+      let destino = "/dashboard";
+      try {
+        const tt = LocalStorage.getItem("tokenTraducido");
+        const rol =
+          tt && tt.usuario && tt.usuario.roles
+            ? tt.usuario.roles.descripcion
+            : "";
+        if (rol && rol.toString().toUpperCase() === "OPERADOR DE CARGA") {
+          destino = "/escaneo";
+        }
+      } catch (e) {}
+      this.$router.push(destino);
     },
     onReset() {
       this.form.username = "";

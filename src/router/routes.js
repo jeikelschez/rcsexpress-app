@@ -572,6 +572,16 @@ const routes = [
     component: () => import("pages/login.vue"),
   },
   {
+    path: "/escaneo",
+    component: () => import("src/layouts/escaneoLayout.vue"),
+    children: [
+      {
+        path: "",
+        component: () => import("src/pages/escaneo/escaneoCarga.vue"),
+      },
+    ],
+  },
+  {
     path: "/userLogin",
     component: () => import("pages/usuarios/login.vue"),
   },
