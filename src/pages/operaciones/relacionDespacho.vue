@@ -1362,32 +1362,6 @@
       </q-card>
     </q-dialog>
 
-    <q-dialog v-model="confirmMezclarPopUp" persistent>
-      <q-card style="width: 600px">
-        <q-card-section>
-          <div class="text-h5" style="font-size: 18px">
-            Existe un Costo cargado para este Chofer y Vehículo en esta fecha.
-            ¿Desea unificar el Costo?
-          </div>
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn
-            flat
-            label="Si"
-            color="primary"
-            v-close-popup
-            @click="this.confirmMezclar = '1'"
-          />
-          <q-btn
-            flat
-            label="No"
-            color="primary"
-            @click="this.confirmMezclar = '2'"
-            v-close-popup
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
 
     <methods
       ref="methods"
@@ -1420,7 +1394,7 @@ export default {
     return {
       tipoReporte: [
         { label: "OPERATIVA", value: "O" },
-        { label: "COSTOS", value: "C" },
+        { label: "CARGA", value: "C" },
       ],
       visible: [
         { label: "VISIBLE", value: "V" },
@@ -1556,7 +1530,6 @@ export default {
       fecha_costo: "",
       fecha_hasta: moment().format("DD/MM/YYYY"),
       confirmCostos: false,
-      confirmMezclar: false,
       visibleGuia: true,
       observacion: "",
       total_piezas: 0,
@@ -1580,7 +1553,6 @@ export default {
       dialogObservacion: ref(false),
       pdfView: ref(false),
       confirmCostosPopUp: ref(false),
-      confirmMezclarPopUp: ref(false),
     };
   },
   mounted() {
@@ -1944,6 +1916,63 @@ export default {
       this.confirmCostos = false;
       this.$refs.webViewer.confirmPrint = "true";
     },
+    // Al trasladar a costos nace (o se completa) el Control de Carga con las
+    // mismas guías, y solo se informa. Si ya hay un control activo de este
+    // costo o del mismo chofer + vehículo + fecha, el API le agrega las guías.
+    // No cambia el estatus de las guías; `codCosto` queda como referencia.
+    // La fecha del control es el día real de la carga (no la del costo).
+    async generarControlCarga({ ids, fecha, codCosto }) {
+      if (!ids || !ids.length) return;
+      try {
+        const tt = LocalStorage.getItem("tokenTraducido");
+        const res = await api.post(
+          `/controlcarga/generar`,
+          {
+            unir_existente: true,
+            cod_agencia: this.selectedAgencia.id
+              ? this.selectedAgencia.id
+              : tt.usuario.cod_agencia,
+            cod_agente: this.selectedAgente.id,
+            cod_unidad: this.selectedUnidad.id,
+            fecha,
+            guias: ids,
+            cod_costo: codCosto || null,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${LocalStorage.getItem("token")}`,
+            },
+          }
+        );
+        const r = res.data;
+        const vinc = r.vinculados || [];
+        let message = r.id
+          ? `${r.creada ? "Se generó" : "Se actualizó"} el Control de Carga <b>#${r.id}</b> con ${r.guias_agregadas} guía(s) y ${r.bultos_creados} bulto(s). El almacén ya puede escanearlo.`
+          : vinc.length
+          ? ""
+          : "No se generó el Control de Carga.";
+        if (vinc.length) {
+          message +=
+            (message ? "<br><br>" : "") +
+            `Guías ya cargadas: el costo quedó vinculado al Control de Carga <b>#${vinc.join(
+              ", #"
+            )}</b>, que ya estaba cerrado.`;
+        }
+        if (r.conflictos && r.conflictos.length) {
+          message +=
+            "<br><br>Guías que no se agregaron:<br>" +
+            r.conflictos.map((c) => "• " + c.motivo).join("<br>");
+        }
+        this.$q.dialog({ title: "Control de Carga", message, html: true });
+      } catch (e) {
+        this.$q.notify({
+          message:
+            (e.response && e.response.data && e.response.data.message) ||
+            "Error al generar el Control de Carga",
+          color: "red",
+        });
+      }
+    },
     // Metodo para buscar costos por chofer y vehiculo de ese dia
     async findCostos() {
       this.costo = [];
@@ -1965,9 +1994,12 @@ export default {
         });
 
       if (this.costo.length) {
-        this.confirmMezclarPopUp = true;
-        await this.until((_) => this.confirmMezclar);
-        if (this.confirmMezclar == "1") {
+        // Puede haber varios costos del mismo chofer y vehículo en la fecha
+        // (varios viajes en el día): se listan todos para elegir a cuál
+        // unificar, o crear uno nuevo. mezclarCosto trabaja sobre costo[0].
+        const elegido = await this.elegirCostoUnificar();
+        if (elegido) {
+          this.costo = this.costo.filter((c) => c.id == elegido);
           this.mezclarCosto();
         } else {
           this.crearCosto();
@@ -1975,8 +2007,34 @@ export default {
       } else {
         this.crearCosto();
       }
-      this.confirmMezclar = false;
       flagCosto = false;
+    },
+    // Devuelve el id del costo elegido para unificar, o null para crear uno nuevo
+    elegirCostoUnificar() {
+      const items = this.costo.map((c) => ({
+        label:
+          `Unificar al costo #${c.id}` +
+          (c.destino && c.destino.trim() ? ` (${c.destino.trim()})` : "") +
+          (Array.isArray(c.detallesg)
+            ? ` · ${c.detallesg.length} guía(s)`
+            : ""),
+        value: c.id,
+      }));
+      items.push({ label: "Crear un costo nuevo", value: 0 });
+      return new Promise((resolve) => {
+        this.$q
+          .dialog({
+            title: "Costos del Chofer y Vehículo",
+            message:
+              this.costo.length > 1
+                ? `Existen ${this.costo.length} costos cargados para este Chofer y Vehículo en esta fecha. ¿A cuál desea unificar estas guías?`
+                : "Existe un costo cargado para este Chofer y Vehículo en esta fecha. ¿Desea unificar estas guías a ese costo?",
+            options: { type: "radio", model: this.costo[0].id, items },
+            ok: { label: "Aceptar", flat: true },
+            persistent: true,
+          })
+          .onOk((valor) => resolve(valor || null));
+      });
     },
     // Metodo para mezclar los Costos
     async mezclarCosto() {
@@ -2072,6 +2130,11 @@ export default {
       this.$q.notify({
         message: "Costo Actualizado con Exito",
         color: "green",
+      });
+      this.generarControlCarga({
+        ids: this.selected.map((g) => g.id),
+        fecha: moment().format("DD/MM/YYYY"),
+        codCosto: this.costo[0].id,
       });
       this.getDataTable();
     },
@@ -2170,6 +2233,12 @@ export default {
         message: "Costo Creado con Exito",
         color: "green",
       });
+      if (idCosto)
+        this.generarControlCarga({
+          ids: this.selected.map((g) => g.id),
+          fecha: moment().format("DD/MM/YYYY"),
+          codCosto: idCosto,
+        });
       this.getDataTable();
     },
     // Metodo para Resetear Filtros

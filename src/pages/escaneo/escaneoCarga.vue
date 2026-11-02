@@ -557,16 +557,12 @@ export default {
     async iniciarCarga() {
       this.cargando = true;
       try {
-        const vehiculo = this.selVehiculo ? this.selVehiculo.placas : null;
-        const chofer = this.selChofer
-          ? this.selChofer.persona_responsable
-          : null;
         const res = await api.post(
           "/controlcarga",
           {
             cod_agencia: this.codAgencia,
-            vehiculo,
-            chofer,
+            cod_unidad: this.selVehiculo ? this.selVehiculo.id : null,
+            cod_agente: this.selChofer ? this.selChofer.id : null,
             via: "ALMACEN",
           },
           this.headers()
@@ -844,6 +840,10 @@ export default {
           this.beep("ok");
           if (this.carga.estado === "ABIERTA")
             this.carga.estado = "EN PROCESO";
+          // Vía oficina: al escanear el último bulto esperado se sugiere cerrar
+          // (no se cierra solo: el operador confirma que el camión ya sale)
+          if (this.carga.via === "OFICINA" && idx >= 0 && this.cierreCompleta)
+            this.confirmarCierre();
         }
       } catch (e) {
         this.notificarError(e);

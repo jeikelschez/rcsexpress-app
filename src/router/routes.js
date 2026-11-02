@@ -28,6 +28,16 @@ const routes = [
         ],
       },
       {
+        path: "/controlcarga",
+        component: () => import("layouts/mainLayout.vue"),
+        children: [
+          {
+            path: "",
+            component: () => import("src/pages/operaciones/controlCarga.vue"),
+          },
+        ],
+      },
+      {
         path: "/registrocostos",
         component: () => import("layouts/mainLayout.vue"),
         children: [
