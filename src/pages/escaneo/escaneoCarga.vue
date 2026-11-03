@@ -694,9 +694,19 @@ export default {
           experimentalFeatures: { useBarCodeDetectorIfSupported: true },
           verbose: false,
         });
+        // Resolución alta: el Code128 de Hidroca tiene ~290 barras y a 640px
+        // (el valor por defecto) no se distinguen
         await this.scanner.start(
           { facingMode: "environment" },
-          { fps: 10 },
+          {
+            fps: 10,
+            videoConstraints: {
+              facingMode: "environment",
+              width: { ideal: 1280 },
+              height: { ideal: 720 },
+              advanced: [{ focusMode: "continuous" }],
+            },
+          },
           (decodedText) => this.onScan(decodedText),
           () => {}
         );
