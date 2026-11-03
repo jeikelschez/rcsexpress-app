@@ -1947,7 +1947,9 @@ export default {
         const r = res.data;
         const vinc = r.vinculados || [];
         let message = r.id
-          ? `${r.creada ? "Se generó" : "Se actualizó"} el Control de Carga <b>#${r.id}</b> con ${r.guias_agregadas} guía(s) y ${r.bultos_creados} bulto(s). El almacén ya puede escanearlo.`
+          ? r.creada
+            ? `Se generó el Control de Carga <b>#${r.id}</b> con ${r.guias_agregadas} guía(s) y ${r.bultos_creados} bulto(s). El almacén ya puede escanearlo.`
+            : `Se agregaron ${r.guias_agregadas} guía(s) y ${r.bultos_creados} bulto(s) al Control de Carga <b>#${r.id}</b>, que ya existía. El almacén ya puede escanearlas.`
           : vinc.length
           ? ""
           : "No se generó el Control de Carga.";
@@ -1963,7 +1965,12 @@ export default {
             "<br><br>Guías que no se agregaron:<br>" +
             r.conflictos.map((c) => "• " + c.motivo).join("<br>");
         }
-        this.$q.dialog({ title: "Control de Carga", message, html: true });
+        // Al cerrar el aviso termina el traslado: se cierra también la relación
+        this.$q
+          .dialog({ title: "Control de Carga", message, html: true })
+          .onDismiss(() => {
+            this.pdfView = false;
+          });
       } catch (e) {
         this.$q.notify({
           message:
@@ -1998,6 +2005,11 @@ export default {
         // (varios viajes en el día): se listan todos para elegir a cuál
         // unificar, o crear uno nuevo. mezclarCosto trabaja sobre costo[0].
         const elegido = await this.elegirCostoUnificar();
+        if (elegido === undefined) {
+          // Regresar: vuelve a la fecha del costo (aún no se ha guardado nada)
+          this.dialogFecha = true;
+          return;
+        }
         if (elegido) {
           this.costo = this.costo.filter((c) => c.id == elegido);
           this.mezclarCosto();
@@ -2009,7 +2021,8 @@ export default {
       }
       flagCosto = false;
     },
-    // Devuelve el id del costo elegido para unificar, o null para crear uno nuevo
+    // Devuelve el id del costo elegido para unificar, null para crear uno nuevo
+    // o undefined si el usuario pulsa Regresar
     elegirCostoUnificar() {
       const items = this.costo.map((c) => ({
         label:
@@ -2027,13 +2040,16 @@ export default {
             title: "Costos del Chofer y Vehículo",
             message:
               this.costo.length > 1
-                ? `Existen ${this.costo.length} costos cargados para este Chofer y Vehículo en esta fecha. ¿A cuál desea unificar estas guías?`
-                : "Existe un costo cargado para este Chofer y Vehículo en esta fecha. ¿Desea unificar estas guías a ese costo?",
+                ? `Para el <b>${this.fecha_costo}</b> existen ${this.costo.length} costos cargados para este Chofer y Vehículo. ¿A cuál desea unificar estas guías?`
+                : `Para el <b>${this.fecha_costo}</b> existe un costo cargado para este Chofer y Vehículo. ¿Desea unificar estas guías a ese costo?`,
+            html: true,
             options: { type: "radio", model: this.costo[0].id, items },
             ok: { label: "Aceptar", flat: true },
+            cancel: { label: "Regresar", flat: true, color: "grey-8" },
             persistent: true,
           })
-          .onOk((valor) => resolve(valor || null));
+          .onOk((valor) => resolve(valor || null))
+          .onCancel(() => resolve(undefined));
       });
     },
     // Metodo para mezclar los Costos
