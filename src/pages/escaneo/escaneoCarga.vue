@@ -1,5 +1,24 @@
 <template>
   <q-page class="q-pa-sm" style="max-width: 640px; margin: 0 auto">
+    <!-- Aviso grande arriba tras cada escaneo; se oculta solo (o al tocarlo) -->
+    <transition name="aviso">
+      <div
+        v-if="aviso"
+        :key="aviso.n"
+        class="aviso-scan text-white row items-center no-wrap"
+        :class="'aviso-' + aviso.tipo"
+        @click="ocultarAviso"
+      >
+        <q-icon :name="aviso.icon" size="44px" class="q-mr-md" />
+        <div class="col" style="min-width: 0">
+          <div class="text-h6 text-weight-bold" style="line-height: 1.2">
+            {{ aviso.titulo }}
+          </div>
+          <div class="text-body2 ellipsis-2-lines">{{ aviso.detalle }}</div>
+        </div>
+      </div>
+    </transition>
+
     <!-- ====== Sin carga activa: crear una ====== -->
     <template v-if="!carga">
       <q-card flat bordered>
@@ -226,10 +245,13 @@
       <!-- Lector -->
       <q-card flat bordered class="q-mb-sm">
         <q-card-section class="q-pt-sm">
-          <div
-            id="reader"
-            style="width: 100%; border-radius: 8px; overflow: hidden"
-          ></div>
+          <!-- El borde se pinta del color del último resultado mientras dura el aviso -->
+          <div class="reader-marco" :class="aviso ? 'marco-' + aviso.tipo : ''">
+            <div
+              id="reader"
+              style="width: 100%; border-radius: 6px; overflow: hidden"
+            ></div>
+          </div>
           <q-banner
             v-if="camaraError"
             dense
@@ -418,6 +440,7 @@ export default {
       ultimo: null,
       ultimoStatus: "",
       lastDecoded: { codigo: "", ts: 0 },
+      aviso: null,
     };
   },
   computed: {
@@ -495,6 +518,7 @@ export default {
     if (actual) this.cargarCarga(actual);
   },
   beforeUnmount() {
+    clearTimeout(this._avisoTimer);
     this.stopCamera();
   },
   methods: {
@@ -662,10 +686,17 @@ export default {
         return;
       }
       try {
-        this.scanner = new window.Html5Qrcode("reader");
+        // QR de RCS + Code128 de las etiquetas de Hidroca. Sin qrbox: se lee
+        // todo el cuadro, así cabe un código de barras largo.
+        const F = window.Html5QrcodeSupportedFormats;
+        this.scanner = new window.Html5Qrcode("reader", {
+          formatsToSupport: [F.QR_CODE, F.CODE_128],
+          experimentalFeatures: { useBarCodeDetectorIfSupported: true },
+          verbose: false,
+        });
         await this.scanner.start(
           { facingMode: "environment" },
-          { fps: 10, qrbox: { width: 240, height: 240 } },
+          { fps: 10 },
           (decodedText) => this.onScan(decodedText),
           () => {}
         );
@@ -803,28 +834,28 @@ export default {
             titulo: "Ya escaneado",
             detalle: data.bulto.codigo,
           };
-          this.beep("dup");
+          this.senal("dup", "replay", this.ultimo);
         } else if (data.status === "RECHAZADO") {
           // No se registra: guía inexistente o bulto fuera de rango
           this.ultimo = {
             titulo: "No registrado",
             detalle: data.motivo || "Código no válido",
           };
-          this.beep("error");
+          this.senal("error", "cancel", this.ultimo);
         } else if (data.status === "EN_OTRA_CARGA") {
           // El bulto ya está escaneado en otra carga: no se permite doble carga
           this.ultimo = {
             titulo: "En otra carga",
             detalle: data.motivo || "El bulto ya está cargado en otra CC",
           };
-          this.beep("error");
+          this.senal("error", "block", this.ultimo);
         } else if (data.status === "SOBRANTE") {
           // Vía oficina: el bulto no pertenece al set esperado de esta carga
           this.ultimo = {
             titulo: "Sobrante",
             detalle: data.motivo || "No pertenece a esta carga",
           };
-          this.beep("error");
+          this.senal("error", "report_problem", this.ultimo);
         } else {
           // OK: si ya existía (esperado), lo actualizo; si no, lo agrego
           const idx = this.bultos.findIndex((x) => x.id === data.bulto.id);
@@ -837,7 +868,16 @@ export default {
               data.bulto.codigo +
               (g && g.destinatario ? " · " + g.destinatario : ""),
           };
-          this.beep("ok");
+          // Aviso: cuántos bultos de esta guía van, para saber si falta alguno
+          const nro = data.bulto.nro_documento;
+          const van = this.bultos.filter(
+            (x) => x.escaneado && x.nro_documento === nro
+          ).length;
+          const tot = g && g.total_piezas ? " de " + g.total_piezas : "";
+          this.senal("ok", "check_circle", {
+            titulo: `Bulto ${van}${tot}` + (g && g.destino ? " · " + g.destino : ""),
+            detalle: "Guía " + nro,
+          });
           if (this.carga.estado === "ABIERTA")
             this.carga.estado = "EN PROCESO";
           // Vía oficina: al escanear el último bulto esperado se sugiere cerrar
@@ -846,8 +886,34 @@ export default {
             this.confirmarCierre();
         }
       } catch (e) {
-        this.notificarError(e);
+        // En pleno escaneo el error va al aviso grande: si no, el almacenista
+        // cree que el bulto quedó registrado
+        this.ultimoStatus = "ERROR";
+        this.ultimo = { titulo: "No registrado", detalle: this.mensajeError(e) };
+        this.senal("error", "wifi_off", this.ultimo);
       }
+    },
+    // Respuesta de cada escaneo: pitido + vibración + aviso grande arriba
+    senal(tipo, icon, { titulo, detalle }) {
+      this.beep(tipo);
+      this.vibrar(tipo);
+      clearTimeout(this._avisoTimer);
+      this.aviso = { tipo, icon, titulo, detalle, n: Date.now() };
+      const ms = { ok: 1500, dup: 2000, error: 3500 }[tipo];
+      this._avisoTimer = setTimeout(this.ocultarAviso, ms);
+    },
+    ocultarAviso() {
+      clearTimeout(this._avisoTimer);
+      this.aviso = null;
+    },
+    // ok: un toque corto · dup: dos toques · error: uno largo.
+    // En iPhone el navegador no permite vibrar: queda solo sonido y aviso.
+    vibrar(tipo) {
+      try {
+        if (!navigator.vibrate) return;
+        const p = { ok: [80], dup: [80, 90, 80], error: [450] }[tipo];
+        navigator.vibrate(p);
+      } catch (e) {}
     },
     confirmarCierre() {
       // El estado se detecta solo: si quedan bultos sin escanear, se cierra
@@ -962,7 +1028,8 @@ export default {
           o.frequency.value = t.f;
           // Rampas suaves para evitar chasquidos.
           g.gain.setValueAtTime(0.0001, start);
-          g.gain.exponentialRampToValueAtTime(0.25, start + 0.01);
+          // Volumen alto: en el almacén hay ruido
+          g.gain.exponentialRampToValueAtTime(t.w === "square" ? 0.5 : 0.8, start + 0.01);
           g.gain.exponentialRampToValueAtTime(0.0001, start + t.d);
           o.connect(g);
           g.connect(ctx.destination);
@@ -971,18 +1038,62 @@ export default {
         });
       } catch (e) {}
     },
+    mensajeError(e) {
+      return e && e.response && e.response.data && e.response.data.message
+        ? e.response.data.message
+        : "Error de conexión";
+    },
     notificarError(e) {
-      const msg =
-        e && e.response && e.response.data && e.response.data.message
-          ? e.response.data.message
-          : "Error de conexión";
-      this.$q.notify({ color: "red", message: msg });
+      this.$q.notify({ color: "red", position: "top", message: this.mensajeError(e) });
     },
   },
 };
 </script>
 
 <style scoped>
+.aviso-scan {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 6000;
+  padding: 14px 18px;
+  padding-top: calc(14px + env(safe-area-inset-top));
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+.aviso-ok {
+  background: #21ba45;
+}
+.aviso-dup {
+  background: #1976d2;
+}
+.aviso-error {
+  background: #c10015;
+}
+.aviso-enter-active,
+.aviso-leave-active {
+  transition: transform 0.18s ease, opacity 0.18s ease;
+}
+.aviso-enter-from,
+.aviso-leave-to {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+.reader-marco {
+  border: 5px solid transparent;
+  border-radius: 10px;
+  transition: border-color 0.15s;
+}
+.marco-ok {
+  border-color: #21ba45;
+}
+.marco-dup {
+  border-color: #1976d2;
+}
+.marco-error {
+  border-color: #c10015;
+}
 .text-mono {
   font-family: ui-monospace, Consolas, monospace;
   font-size: 0.82rem;
