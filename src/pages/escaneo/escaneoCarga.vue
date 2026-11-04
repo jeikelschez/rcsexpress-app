@@ -247,10 +247,36 @@
         <q-card-section class="q-pt-sm">
           <!-- El borde se pinta del color del último resultado mientras dura el aviso -->
           <div class="reader-marco" :class="aviso ? 'marco-' + aviso.tipo : ''">
-            <div
-              id="reader"
-              style="width: 100%; border-radius: 6px; overflow: hidden"
-            ></div>
+            <div class="reader-ventana">
+              <div
+                id="reader"
+                style="width: 100%; border-radius: 6px; overflow: hidden"
+              ></div>
+            </div>
+            <!-- Zoom y linterna: solo si el teléfono los soporta (Android
+                 casi siempre; en iPhone normalmente no aparecen) -->
+            <div v-if="scanning && (zoomMax > 1 || torchOk)" class="camara-ctrl">
+              <q-btn
+                v-if="zoomMax > 1"
+                round
+                unelevated
+                color="black"
+                text-color="white"
+                class="camara-btn"
+                :label="zoom > 1 ? '1×' : '2×'"
+                @click="toggleZoom"
+              />
+              <q-btn
+                v-if="torchOk"
+                round
+                unelevated
+                :color="torch ? 'yellow-7' : 'black'"
+                :text-color="torch ? 'black' : 'white'"
+                class="camara-btn q-ml-sm"
+                :icon="torch ? 'flashlight_off' : 'flashlight_on'"
+                @click="toggleTorch"
+              />
+            </div>
           </div>
           <q-banner
             v-if="camaraError"
@@ -441,6 +467,10 @@ export default {
       ultimoStatus: "",
       lastDecoded: { codigo: "", ts: 0 },
       aviso: null,
+      zoom: 1,
+      zoomMax: 1,
+      torch: false,
+      torchOk: false,
     };
   },
   computed: {
@@ -519,6 +549,7 @@ export default {
   },
   beforeUnmount() {
     clearTimeout(this._avisoTimer);
+    this.detenerDetectorNativo();
     this.stopCamera();
   },
   methods: {
@@ -694,16 +725,16 @@ export default {
           experimentalFeatures: { useBarCodeDetectorIfSupported: true },
           verbose: false,
         });
-        // Resolución alta: el Code128 de Hidroca tiene ~290 barras y a 640px
-        // (el valor por defecto) no se distinguen
+        // Resolución alta: el Code128 de Hidroca tiene ~290 barras en 4-5 cm
+        // y a menos resolución no se distinguen
         await this.scanner.start(
           { facingMode: "environment" },
           {
             fps: 10,
             videoConstraints: {
               facingMode: "environment",
-              width: { ideal: 1280 },
-              height: { ideal: 720 },
+              width: { ideal: 1920 },
+              height: { ideal: 1080 },
               advanced: [{ focusMode: "continuous" }],
             },
           },
@@ -711,13 +742,48 @@ export default {
           () => {}
         );
         this.scanning = true;
+        this.leerCapacidades();
+        this.iniciarDetectorNativo();
       } catch (e) {
         this.scanner = null;
         this.camaraError =
           "No se pudo abrir la cámara. En el teléfono requiere HTTPS; usá la entrada manual por ahora.";
       }
     },
+    // La librería reduce cada cuadro al tamaño en pantalla (~400px) antes de
+    // leerlo, y así el Code128 de Hidroca casi no entra. Donde el navegador
+    // trae lector nativo (Chrome en Android) se lee además directo del video,
+    // a resolución completa. En iPhone no existe y queda solo la librería.
+    async iniciarDetectorNativo() {
+      this.detenerDetectorNativo();
+      if (!("BarcodeDetector" in window)) return;
+      try {
+        const soportados = await window.BarcodeDetector.getSupportedFormats();
+        const formats = ["qr_code", "code_128"].filter((f) =>
+          soportados.includes(f)
+        );
+        if (!formats.length) return;
+        const detector = new window.BarcodeDetector({ formats });
+        const leer = async () => {
+          if (!this.scanning) return;
+          const video = document.querySelector("#reader video");
+          if (video && video.readyState >= 2) {
+            try {
+              const codes = await detector.detect(video);
+              if (codes.length) this.onScan(codes[0].rawValue);
+            } catch (e) {}
+          }
+          this._detectorTimer = setTimeout(leer, 150);
+        };
+        leer();
+      } catch (e) {}
+    },
+    detenerDetectorNativo() {
+      clearTimeout(this._detectorTimer);
+      this._detectorTimer = null;
+    },
     async stopCamera() {
+      this.detenerDetectorNativo();
       if (this.scanner) {
         try {
           await this.scanner.stop();
@@ -726,6 +792,34 @@ export default {
         this.scanner = null;
       }
       this.scanning = false;
+      this.zoom = 1;
+      this.zoomMax = 1;
+      this.torch = false;
+      this.torchOk = false;
+    },
+    // Qué permite la cámara de este teléfono (zoom / linterna)
+    leerCapacidades() {
+      try {
+        const caps = this.scanner.getRunningTrackCapabilities() || {};
+        this.zoomMax = caps.zoom && caps.zoom.max ? caps.zoom.max : 1;
+        this.torchOk = !!caps.torch;
+      } catch (e) {}
+    },
+    // 2× acerca la imagen sin acercar el teléfono (el enfoque de cerca falla)
+    async toggleZoom() {
+      const z = this.zoom > 1 ? 1 : Math.min(2, this.zoomMax);
+      try {
+        await this.scanner.applyVideoConstraints({ advanced: [{ zoom: z }] });
+        this.zoom = z;
+      } catch (e) {}
+    },
+    async toggleTorch() {
+      try {
+        await this.scanner.applyVideoConstraints({
+          advanced: [{ torch: !this.torch }],
+        });
+        this.torch = !this.torch;
+      } catch (e) {}
     },
     onScan(decodedText) {
       const now = Date.now();
@@ -1090,7 +1184,31 @@ export default {
   transform: translateY(-100%);
   opacity: 0;
 }
+/* En el teléfono vertical la cámara entrega imagen vertical y empujaba el
+   resto de la pantalla: se muestra por una ventana de 40% del alto,
+   centrada. No se toca el tamaño del video, porque la librería calcula
+   lo que lee a partir de él. */
+.reader-ventana {
+  max-height: 40vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+}
+.reader-ventana > #reader {
+  flex: 0 0 auto;
+}
+.camara-ctrl {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 2;
+}
+.camara-btn {
+  opacity: 0.8;
+}
 .reader-marco {
+  position: relative;
   border: 5px solid transparent;
   border-radius: 10px;
   transition: border-color 0.15s;
