@@ -541,11 +541,20 @@ export default {
         this.usuario = tt.usuario.nombre;
       }
     } catch (e) {}
+    // Al recargar dentro de una carga se parte de la lista; la carga se
+    // reabre abajo desde ccActual y vuelve a agregar su paso al historial
+    if (this.$route.query.cc) this.$router.replace({ path: "/escaneo" });
     this.cargarListas();
     this.cargarAbiertas();
     // Reanudar una carga abierta si quedó registrada en este dispositivo
     const actual = LocalStorage.getItem("ccActual");
     if (actual) this.cargarCarga(actual);
+  },
+  watch: {
+    // "Atrás" del teléfono dentro de una carga vuelve a la lista de cargas
+    "$route.query.cc"(cc) {
+      if (!cc && this.carga) this.cerrarVistaCarga();
+    },
   },
   beforeUnmount() {
     clearTimeout(this._avisoTimer);
@@ -625,6 +634,7 @@ export default {
         this.carga = res.data;
         this.bultos = [];
         LocalStorage.set("ccActual", this.carga.id);
+        this.marcarHistorial();
         this.autoEscaneo();
       } catch (e) {
         this.notificarError(e);
@@ -638,6 +648,7 @@ export default {
         this.carga = res.data;
         this.bultos = res.data.bultos || [];
         LocalStorage.set("ccActual", this.carga.id);
+        this.marcarHistorial();
         this.autoEscaneo();
       } catch (e) {
         // Si no existe (p.ej. se borró), limpiar referencia
@@ -695,7 +706,19 @@ export default {
         this.notificarError(e);
       }
     },
-    async volver() {
+    // Cada carga abierta es un paso en el historial (?cc=N) para que el
+    // botón "atrás" del teléfono vuelva a la lista en vez de salir
+    marcarHistorial() {
+      if (String(this.$route.query.cc || "") !== String(this.carga.id)) {
+        this.$router.push({ path: "/escaneo", query: { cc: String(this.carga.id) } });
+      }
+    },
+    volver() {
+      // Con paso en el historial, volver = "atrás"; el watch cierra la vista
+      if (this.$route.query.cc) this.$router.back();
+      else this.cerrarVistaCarga();
+    },
+    async cerrarVistaCarga() {
       // Detener y limpiar la cámara ANTES de desmontar #reader; si no se espera,
       // html5-qrcode deja nodos (video/canvas) dentro del div y Vue falla al
       // desmontarlo (Cannot read properties of null 'parentNode').
@@ -1141,6 +1164,8 @@ export default {
     },
     resetCarga() {
       LocalStorage.remove("ccActual");
+      // Quitar el paso de la carga del historial (el watch ya no hace nada)
+      if (this.$route.query.cc) this.$router.back();
       this.carga = null;
       this.bultos = [];
       this.ultimo = null;

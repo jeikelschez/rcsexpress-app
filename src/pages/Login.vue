@@ -129,7 +129,8 @@ export default {
           destino = "/escaneo";
         }
       } catch (e) {}
-      this.$router.push(destino);
+      // replace: así "atrás" en el teléfono no vuelve a la pantalla de login
+      this.$router.replace(destino);
     },
     onReset() {
       this.form.username = "";
