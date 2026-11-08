@@ -717,11 +717,11 @@ export default {
         return;
       }
       try {
-        // QR de RCS + Code128 de las etiquetas de Hidroca. Sin qrbox: se lee
-        // todo el cuadro, así cabe un código de barras largo.
+        // La librería solo abre la cámara y lee el QR de RCS; el Code128 de
+        // Hidroca lo lee iniciarDetectorNativo a resolución completa.
         const F = window.Html5QrcodeSupportedFormats;
         this.scanner = new window.Html5Qrcode("reader", {
-          formatsToSupport: [F.QR_CODE, F.CODE_128],
+          formatsToSupport: [F.QR_CODE],
           experimentalFeatures: { useBarCodeDetectorIfSupported: true },
           verbose: false,
         });
@@ -751,36 +751,87 @@ export default {
       }
     },
     // La librería reduce cada cuadro al tamaño en pantalla (~400px) antes de
-    // leerlo, y así el Code128 de Hidroca casi no entra. Donde el navegador
-    // trae lector nativo (Chrome en Android) se lee además directo del video,
-    // a resolución completa. En iPhone no existe y queda solo la librería.
+    // leerlo, y así el Code128 de Hidroca (~280 barras) no entra. Por eso se
+    // lee además directo del video, a resolución completa: con el lector
+    // nativo donde existe (Chrome en Android) y si no encuentra nada, con
+    // ZXing en WebAssembly (sirve también en iPhone).
     async iniciarDetectorNativo() {
       this.detenerDetectorNativo();
-      if (!("BarcodeDetector" in window)) return;
+      // Si la cámara se apaga y prende mientras carga, solo sigue el último ciclo
+      const gen = this._detectorGen;
+      const detector = await this.crearDetectorNativo();
+      const zxing = await this.cargarZxing();
+      if (!detector && !zxing) return;
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      const leer = async () => {
+        if (!this.scanning || gen !== this._detectorGen) return;
+        const video = document.querySelector("#reader video");
+        if (video && video.readyState >= 2 && video.videoWidth) {
+          let texto = null;
+          if (detector) {
+            try {
+              const codes = await detector.detect(video);
+              if (codes.length) texto = codes[0].rawValue;
+            } catch (e) {}
+          }
+          if (!texto && zxing) {
+            try {
+              canvas.width = video.videoWidth;
+              canvas.height = video.videoHeight;
+              ctx.drawImage(video, 0, 0);
+              const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+              const res = await zxing(img, {
+                formats: ["Code128", "QRCode"],
+                tryHarder: true,
+                maxNumberOfSymbols: 1,
+              });
+              if (res.length && res[0].isValid) texto = res[0].text;
+            } catch (e) {}
+          }
+          if (texto && this.scanning) this.onScan(texto);
+        }
+        this._detectorTimer = setTimeout(leer, 100);
+      };
+      leer();
+    },
+    async crearDetectorNativo() {
+      if (!("BarcodeDetector" in window)) return null;
       try {
         const soportados = await window.BarcodeDetector.getSupportedFormats();
         const formats = ["qr_code", "code_128"].filter((f) =>
           soportados.includes(f)
         );
-        if (!formats.length) return;
-        const detector = new window.BarcodeDetector({ formats });
-        const leer = async () => {
-          if (!this.scanning) return;
-          const video = document.querySelector("#reader video");
-          if (video && video.readyState >= 2) {
-            try {
-              const codes = await detector.detect(video);
-              if (codes.length) this.onScan(codes[0].rawValue);
-            } catch (e) {}
-          }
-          this._detectorTimer = setTimeout(leer, 150);
-        };
-        leer();
-      } catch (e) {}
+        return formats.length ? new window.BarcodeDetector({ formats }) : null;
+      } catch (e) {
+        return null;
+      }
+    },
+    // El .wasm se sirve desde public/js (copiado de node_modules/zxing-wasm,
+    // misma versión exacta del package.json) para no depender de un CDN
+    async cargarZxing() {
+      try {
+        const { prepareZXingModule, readBarcodes } = await import(
+          "zxing-wasm/reader"
+        );
+        await prepareZXingModule({
+          overrides: {
+            locateFile: (path, prefix) =>
+              path.endsWith(".wasm")
+                ? new URL("js/zxing_reader.wasm", document.baseURI).href
+                : prefix + path,
+          },
+          fireImmediately: true,
+        });
+        return readBarcodes;
+      } catch (e) {
+        return null;
+      }
     },
     detenerDetectorNativo() {
       clearTimeout(this._detectorTimer);
       this._detectorTimer = null;
+      this._detectorGen = (this._detectorGen || 0) + 1;
     },
     async stopCamera() {
       this.detenerDetectorNativo();
