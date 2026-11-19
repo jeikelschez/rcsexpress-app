@@ -721,7 +721,7 @@
           </p>
         </div>
         <div
-          class="col-md-4 col-xl-4 col-lg-4 col-xs-12 col-sm-12 cardMargin selectMobile2"
+          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 cardMargin selectMobile2"
           style="align-self: center; text-align: center"
         >
           <q-select
@@ -752,6 +752,7 @@
             label="Agencia Origen"
             @update:model-value="
               this.agentes = [];
+              this.selectedAgente = null;
               this.$refs.methods.getData(`/agentes`, 'setData', 'agentes', {
                 headers: {
                   Authorization: ``,
@@ -776,7 +777,52 @@
           </q-select>
         </div>
         <div
-          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-6 cardMargin selectMobile2"
+          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-12 cardMargin selectMobile2"
+          style="align-self: center; text-align: center"
+        >
+          <q-select
+            rounded
+            dense
+            clearable
+            transition-show="flip-up"
+            transition-hide="flip-down"
+            :options="agentesFiltro"
+            @filter="
+              (val, update) =>
+                filterArray(
+                  val,
+                  update,
+                  'agentesFiltro',
+                  'agentes',
+                  'persona_responsable'
+                )
+            "
+            use-input
+            hide-selected
+            fill-input
+            input-debounce="0"
+            option-label="persona_responsable"
+            option-value="id"
+            v-model="selectedAgente"
+            outlined
+            standout
+            label="Agente"
+            :disable="!selectedAgencia.id"
+            @update:model-value="getDataTable()"
+            ><template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  Sin resultados
+                </q-item-section>
+              </q-item>
+            </template>
+            <template v-slot:prepend>
+              <q-icon name="person" />
+            </template>
+          </q-select>
+        </div>
+        <div
+          class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-6 cardMargin selectMobile2"
           style="align-self: center; text-align: center"
         >
           <q-input
@@ -814,7 +860,7 @@
           </q-input>
         </div>
         <div
-          class="col-md-3 col-xl-3 col-lg-3 col-xs-12 col-sm-6 cardMargin selectMobile2"
+          class="col-md-2 col-xl-2 col-lg-2 col-xs-12 col-sm-6 cardMargin selectMobile2"
           style="align-self: center; text-align: center"
         >
           <q-input
@@ -1731,7 +1777,9 @@ export default {
       selectedIndex: [],
       agencias: [],
       agentes: [],
-      unidades: [],
+      agentesFiltro: [],
+      selectedAgente: null,
+unidades: [],
       ayudantes: [],
       proveedores: [],
       costos: [],
@@ -1876,6 +1924,7 @@ export default {
       this.$refs.methods.getData(`/costos`, "setDataTable", "costos", {
         headers: {
           agencia: this.selectedAgencia.id ? this.selectedAgencia.id : "",
+          agente: this.selectedAgente?.id ? this.selectedAgente.id : "",
           desde: moment(this.fecha_desde, "DD/MM/YYYY").format("YYYY-MM-DD"),
           hasta: moment(this.fecha_hasta, "DD/MM/YYYY").format("YYYY-MM-DD"),
           order_doc: "S",
@@ -2434,6 +2483,7 @@ export default {
     // Metodo para resetaer la data de los filtros
     resetFilters() {
       this.selectedAgencia = [];
+      this.selectedAgente = null;
       this.fecha_desde = moment().format("DD/MM/YYYY");
       this.fecha_hasta = moment().format("DD/MM/YYYY");
       this.getDataTable();
@@ -2590,6 +2640,7 @@ export default {
             hasta: this.fecha_hasta,
             neta: this.selectedNeta,
             dolar: this.selectedDolar,
+            agente: this.selectedAgente?.id ? this.selectedAgente.id : "",
           },
         })
         .then((res) => {
@@ -2632,6 +2683,7 @@ export default {
             hasta: this.fecha_hasta,
             neta: this.selectedNeta,
             dolar: this.selectedDolar,
+            agente: this.selectedAgente?.id ? this.selectedAgente.id : "",
           },
         })
         .then((res) => {
