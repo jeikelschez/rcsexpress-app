@@ -1634,6 +1634,7 @@ export default {
       fpago: [],
       pagos: [],
       pagosClone: [],
+      montosOriginales: null,
       idPago: "",
       beneficiario: "",
       form: {
@@ -1644,6 +1645,9 @@ export default {
         monto_imp_nacional: "0,00",
         monto_imp_intern: "0,00",
         base_imponible_retencion: "0,00",
+        saldo_retenido: "0,00",
+        total_documento: "0,00",
+        saldo_documento: "0,00",
       },
       columnsGastos: [
         {
@@ -1940,6 +1944,12 @@ export default {
           return;
         }
         this.form = ctaPagar;
+        this.montosOriginales = {
+          base_nac: Number(ctaPagar.monto_base_nacional) || 0,
+          base_int: Number(ctaPagar.monto_base_intern) || 0,
+          total: Number(ctaPagar.total_documento) || 0,
+          saldo: Number(ctaPagar.saldo_documento) || 0,
+        };
         var agenciaIndex = this.agencias.findIndex(
           (item) => item.id == ctaPagar.cod_agencia
         );
@@ -2093,15 +2103,7 @@ export default {
         monto_base_nac +
         monto_base_inter
       ).toFixed(2);
-      let mto_doc = this.parseFloatN(
-        this.curReplace(this.form.total_documento)
-      );
-      let saldo_doc = this.parseFloatN(
-        this.curReplace(this.form.saldo_documento)
-      );
-      let monto_ret = this.parseFloatN(
-        this.curReplace(this.form.saldo_retenido)
-      );
+      const { mto_doc, saldo_doc, monto_ret } = this.recalcularMontos();
 
       if (this.form.selectedTipoConcepto.value == "P") {
         // Validamos que el de distrib de gastos sea igual a Monto Exento + Monto Base Nac. + Monto Base Int.
@@ -2654,7 +2656,21 @@ export default {
     },
     // Metodo para setear el monto impúesto nacional
     async setImpuesto(tipo) {
-      if (!this.form.id) {
+      // Al editar, solo se recalcula si la base cambio respecto a la guardada
+      // (evita recalcular cuando el formato de moneda reescribe el campo al cargar)
+      let recalcular = !this.form.id;
+      if (this.form.id && this.montosOriginales) {
+        const base =
+          tipo == 1 ? this.form.monto_base_nacional : this.form.monto_base_intern;
+        const original =
+          tipo == 1
+            ? this.montosOriginales.base_nac
+            : this.montosOriginales.base_int;
+        recalcular =
+          this.parseFloatN(this.curReplace(String(base))) !=
+          this.parseFloatN(original);
+      }
+      if (recalcular) {
         if (tipo == 1) {
           this.form.monto_imp_nacional = (
             (this.parseFloatN(this.curReplace(this.form.monto_base_nacional)) *
@@ -2666,6 +2682,9 @@ export default {
               parseFloat(this.iva)) /
             10
           ).toFixed(2);
+          // El campo Base Imponible Ret. es de solo lectura: no hay que
+          // depender de su evento para recalcular el monto a retener
+          this.setBaseRetencion();
         } else {
           this.form.monto_imp_intern = (
             (this.parseFloatN(this.curReplace(this.form.monto_base_intern)) *
@@ -2697,18 +2716,60 @@ export default {
         100
       ).toFixed(2);
     },
+    // Recalcula total, saldo y monto a retener a partir de los montos del
+    // documento. Los campos de solo lectura (v-money) pueden quedar con el
+    // valor de la cuenta registrada anteriormente en la misma pantalla, por eso
+    // al guardar o pagar no se leen de ellos sino que se calculan aqui
+    recalcularMontos() {
+      const n = (v) => this.parseFloatN(this.curReplace(String(v ?? "0")));
+      const mto_doc = this.parseFloatN(
+        n(this.form.monto_exento) +
+          n(this.form.monto_base_nacional) +
+          n(this.form.monto_base_intern) +
+          n(this.form.monto_imp_nacional) +
+          n(this.form.monto_imp_intern)
+      );
+      let saldo_doc = mto_doc;
+      if (this.form.id) {
+        // Una cuenta ya cobrada conserva su saldo guardado
+        saldo_doc =
+          this.montosOriginales && this.form.estatus_documento != "Cobrado"
+          ? this.parseFloatN(
+              Math.abs(this.montosOriginales.saldo) +
+                (mto_doc - Math.abs(this.montosOriginales.total))
+            )
+          : n(this.form.saldo_documento);
+      }
+      const monto_ret = this.parseFloatN(
+        (n(this.form.base_imponible_retencion) *
+          this.form.selectedPorc.value) /
+          100
+      );
+      this.form.total_documento = mto_doc.toFixed(2);
+      this.form.saldo_documento = saldo_doc.toFixed(2);
+      this.form.saldo_retenido = monto_ret.toFixed(2);
+      return { mto_doc, saldo_doc, monto_ret };
+    },
     // Metodo para calcular los totales
     async calculaTotales() {
+      const total = this.parseFloatN(
+        this.parseFloatN(this.curReplace(String(this.form.monto_exento))) +
+          this.parseFloatN(this.curReplace(String(this.form.monto_base_nacional))) +
+          this.parseFloatN(this.curReplace(String(this.form.monto_base_intern))) +
+          this.parseFloatN(this.curReplace(String(this.form.monto_imp_nacional))) +
+          this.parseFloatN(this.curReplace(String(this.form.monto_imp_intern)))
+      );
       if (!this.form.id) {
-        this.form.total_documento = await (
-          this.parseFloatN(this.curReplace(this.form.monto_exento)) +
-          this.parseFloatN(this.curReplace(this.form.monto_base_nacional)) +
-          this.parseFloatN(this.curReplace(this.form.monto_base_intern)) +
-          this.parseFloatN(this.curReplace(this.form.monto_imp_nacional)) +
-          this.parseFloatN(this.curReplace(this.form.monto_imp_intern))
-        ).toFixed(2);
-        this.form.saldo_documento = await this.parseFloatN(
-          this.curReplace(this.form.total_documento)
+        this.form.total_documento = total.toFixed(2);
+        this.form.saldo_documento = total.toFixed(2);
+      } else if (this.montosOriginales) {
+        // Al editar, el saldo se ajusta por la diferencia del total para no
+        // perder los abonos ya registrados
+        const totalOrig = Math.abs(this.montosOriginales.total);
+        if (total == this.parseFloatN(totalOrig)) return;
+        this.form.total_documento = total.toFixed(2);
+        this.form.saldo_documento = this.parseFloatN(
+          Math.abs(this.montosOriginales.saldo) + (total - totalOrig)
         ).toFixed(2);
       }
     },
@@ -3002,12 +3063,7 @@ export default {
     },
     // Metodo para editar el pago de Contado
     async editPago() {
-      let mto_doc = this.parseFloatN(
-        this.curReplace(this.form.total_documento)
-      );
-      let monto_ret = this.parseFloatN(
-        this.curReplace(this.form.saldo_retenido)
-      );
+      const { mto_doc, monto_ret } = this.recalcularMontos();
       let monto_pago = mto_doc - monto_ret;
       this.fpago.monto_doc = mto_doc.toFixed(2);
       this.fpago.monto_pagado = monto_pago.toFixed(2);
@@ -3083,6 +3139,7 @@ export default {
     },
     // Metodo para resetaer la data de los filtros
     resetFilters() {
+      this.montosOriginales = null;
       this.form = {
         id: "",
         monto_exento: "0,00",
@@ -3091,6 +3148,9 @@ export default {
         monto_imp_nacional: "0,00",
         monto_imp_intern: "0,00",
         base_imponible_retencion: "0,00",
+        saldo_retenido: "0,00",
+        total_documento: "0,00",
+        saldo_documento: "0,00",
       };
       this.form.selectedForma = this.formaPago[1];
       this.form.selectedTipoConcepto = this.tipoConcepto[1];
