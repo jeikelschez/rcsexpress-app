@@ -300,18 +300,20 @@
           </q-banner>
 
           <!-- Resultado del último escaneo -->
-          <q-banner
-            v-if="ultimo"
-            dense
-            class="q-mt-sm text-white"
-            :class="ultimoClass"
-          >
-            <template v-slot:avatar>
-              <q-icon :name="ultimoIcon" color="white" />
-            </template>
-            <div class="text-weight-bold">{{ ultimo.titulo }}</div>
-            <div class="text-caption">{{ ultimo.detalle }}</div>
-          </q-banner>
+          <transition name="fugaz">
+            <q-banner
+              v-if="ultimo"
+              dense
+              class="q-mt-sm text-white"
+              :class="ultimoClass"
+            >
+              <template v-slot:avatar>
+                <q-icon :name="ultimoIcon" color="white" />
+              </template>
+              <div class="text-weight-bold">{{ ultimo.titulo }}</div>
+              <div class="text-caption">{{ ultimo.detalle }}</div>
+            </q-banner>
+          </transition>
         </q-card-section>
 
         <!-- Entrada manual (respaldo, oculta por defecto) -->
@@ -328,18 +330,35 @@
             />
           </div>
           <template v-else>
-            <div class="text-caption text-grey-7 q-mb-xs">
-              Entrada manual (si la cámara no está disponible)
-            </div>
             <q-input
               v-model="manualCodigo"
-              label="Código (ej. RCS-440515731-03)"
+              label="Guía (ej. 440515731) o guía-bulto"
+              inputmode="decimal"
               outlined
               dense
               autofocus
               @keyup.enter="registrarManual"
             >
               <template v-slot:append>
+                <!-- Ayuda: hover en PC, toque en el teléfono -->
+                <q-icon
+                  name="help_outline"
+                  size="20px"
+                  color="grey-6"
+                  class="cursor-pointer"
+                  @click="ayudaManual = !ayudaManual"
+                >
+                  <q-tooltip
+                    v-model="ayudaManual"
+                    anchor="top end"
+                    self="bottom end"
+                    max-width="260px"
+                    class="text-body2"
+                  >
+                    Solo el nº de guía marca todos sus bultos.<br />
+                    Guía-bulto (ej. 440515731-03 o 440515731.3) marca uno.
+                  </q-tooltip>
+                </q-icon>
                 <q-btn
                   flat
                   dense
@@ -362,21 +381,47 @@
         </q-card-section>
         <template v-else>
           <q-list>
-            <template v-for="(items, dest) in grupos" :key="dest">
+            <template v-for="(guias, dest) in grupos" :key="dest">
               <q-item-label header class="text-weight-bold text-primary">
-                {{ dest }} · {{ items.length }}
+                {{ dest }} · {{ contarEsc(guias) }}
               </q-item-label>
+              <!-- Una fila por guía: su check marca/desmarca todo el lote -->
+              <q-expansion-item
+                v-for="gu in guias"
+                :key="gu.nro"
+                dense
+                dense-toggle
+                expand-separator
+              >
+                <template v-slot:header>
+                  <q-item-section avatar @click.stop>
+                    <q-checkbox
+                      :model-value="checkGuia(gu)"
+                      :toggle-indeterminate="false"
+                      color="positive"
+                      @update:model-value="toggleGuia(gu)"
+                    />
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label class="text-mono">Guía {{ gu.nro }}</q-item-label>
+                    <q-item-label caption>
+                      {{ gu.esc }} de {{ gu.total }} bulto(s)
+                    </q-item-label>
+                  </q-item-section>
+                </template>
               <q-item
-                v-for="b in items"
+                v-for="b in gu.bultos"
                 :key="b.id"
                 dense
                 clickable
+                class="q-pl-lg"
                 @click="verDetalle(b)"
               >
-                <q-item-section avatar>
-                  <q-icon
-                    :name="b.escaneado ? 'check_circle' : 'radio_button_unchecked'"
-                    :color="b.escaneado ? 'positive' : 'grey-5'"
+                <q-item-section avatar @click.stop>
+                  <q-checkbox
+                    :model-value="!!b.escaneado"
+                    color="positive"
+                    @update:model-value="toggleBulto(b)"
                   />
                 </q-item-section>
                 <q-item-section>
@@ -406,6 +451,7 @@
                   </q-btn>
                 </q-item-section>
               </q-item>
+              </q-expansion-item>
             </template>
           </q-list>
         </template>
@@ -465,6 +511,8 @@ export default {
       manualVisible: false,
       ultimo: null,
       ultimoStatus: "",
+      piezas: {},
+      ayudaManual: false,
       lastDecoded: { codigo: "", ts: 0 },
       aviso: null,
       zoom: 1,
@@ -474,13 +522,34 @@ export default {
     };
   },
   computed: {
+    // Destino -> guías -> bultos. El total de una guía es su set esperado
+    // (vía oficina) o sus piezas (vía almacén, donde solo están los escaneados)
     grupos() {
+      const conSet = this.carga && (this.carga.via === "OFICINA" || this.carga.cod_costo);
       const g = {};
+      const porGuia = {};
       for (const b of this.bultos) {
         const d = b.destino || "SIN DESTINO";
+        const k = d + "|" + b.nro_documento;
         if (!g[d]) g[d] = [];
-        g[d].push(b);
+        if (!porGuia[k]) {
+          porGuia[k] = {
+            nro: String(b.nro_documento),
+            movId: b.cod_movimiento,
+            bultos: [],
+            esc: 0,
+            total: 0,
+          };
+          g[d].push(porGuia[k]);
+        }
+        porGuia[k].bultos.push(b);
+        if (b.escaneado) porGuia[k].esc += 1;
       }
+      Object.values(porGuia).forEach((gu) => {
+        gu.bultos.sort((a, b) => (a.nro_bulto || 0) - (b.nro_bulto || 0));
+        const p = this.piezas[gu.movId];
+        gu.total = conSet ? gu.bultos.length : Math.max(p || 0, gu.bultos.length);
+      });
       return g;
     },
     totalBultos() {
@@ -551,6 +620,16 @@ export default {
     if (actual) this.cargarCarga(actual);
   },
   watch: {
+    // El resultado OK (verde) es fugaz; los errores quedan hasta el próximo
+    // escaneo para que el almacenista alcance a leerlos
+    ultimo(v) {
+      clearTimeout(this._ultimoTimer);
+      if (v && this.ultimoStatus === "OK") {
+        this._ultimoTimer = setTimeout(() => {
+          this.ultimo = null;
+        }, 3000);
+      }
+    },
     // "Atrás" del teléfono dentro de una carga vuelve a la lista de cargas
     "$route.query.cc"(cc) {
       if (!cc && this.carga) this.cerrarVistaCarga();
@@ -558,6 +637,7 @@ export default {
   },
   beforeUnmount() {
     clearTimeout(this._avisoTimer);
+    clearTimeout(this._ultimoTimer);
     this.detenerDetectorNativo();
     this.stopCamera();
   },
@@ -647,6 +727,7 @@ export default {
         const res = await api.get(`/controlcarga/${id}`, this.headers());
         this.carga = res.data;
         this.bultos = res.data.bultos || [];
+        this.piezas = res.data.piezas || {};
         LocalStorage.set("ccActual", this.carga.id);
         this.marcarHistorial();
         this.autoEscaneo();
@@ -907,11 +988,242 @@ export default {
       this.lastDecoded = { codigo: decodedText, ts: now };
       this.registrarCodigo(decodedText);
     },
+    contarEsc(guias) {
+      const esc = guias.reduce((s, g) => s + g.esc, 0);
+      const tot = guias.reduce((s, g) => s + g.total, 0);
+      return esc === tot ? String(tot) : `${esc}/${tot}`;
+    },
+    // Check de la guía: lleno (todos), vacío (ninguno), parcial (null)
+    checkGuia(gu) {
+      if (gu.esc === 0) return false;
+      return gu.esc >= gu.total ? true : null;
+    },
+    toggleGuia(gu) {
+      const marcar = gu.esc < gu.total;
+      const bultos = gu.bultos.slice();
+      if (marcar) {
+        // Faltan bultos: el check cambia ya y el API marca los que faltan
+        // (mismas validaciones del escaneo); si algo se rechaza, se resincroniza
+        bultos.forEach((b) => (b.escaneado = true));
+        this.encolar(async () => {
+          const d = await this.registrarGuiaCompleta(gu.nro, true);
+          if (!d || d.rechazados.length) await this.recargarBultos();
+        });
+        return;
+      }
+      this.$q
+        .dialog({
+          title: `Guía ${gu.nro}`,
+          message: `¿Desmarcar los ${gu.esc} bulto(s) de esta guía?`,
+          cancel: true,
+          persistent: true,
+          ok: { label: "Desmarcar", color: "warning" },
+        })
+        .onOk(() => {
+          bultos.forEach((b) => this.aplicarDesmarcado(b));
+          this.encolar(async () => {
+            try {
+              await api.put(
+                `/controlcarga/${this.carga.id}/guia-desmarcar`,
+                { nroGuia: gu.nro },
+                this.headers()
+              );
+            } catch (e) {
+              await this.recargarBultos();
+              throw e;
+            }
+          });
+        });
+    },
+    toggleBulto(b) {
+      if (!b.escaneado) {
+        b.escaneado = true;
+        this.encolar(async () => {
+          const st = await this.registrarCodigo(b.codigo, true);
+          if (st !== "OK" && st !== "DUPLICADO") b.escaneado = false;
+        });
+        return;
+      }
+      const copia = { ...b };
+      this.aplicarDesmarcado(b);
+      this.encolar(async () => {
+        try {
+          await api.put(
+            `/controlcarga/${this.carga.id}/bulto/${b.id}/desmarcar`,
+            {},
+            this.headers()
+          );
+        } catch (e) {
+          // Revertir: volver a ponerlo como estaba
+          const idx = this.bultos.findIndex((x) => x.id === copia.id);
+          if (idx >= 0) this.bultos.splice(idx, 1, copia);
+          else this.bultos.push(copia);
+          this.ajustarEstado();
+          throw e;
+        }
+      });
+    },
+    // Desmarcado local inmediato: vía oficina vuelve a pendiente; vía
+    // almacén el bulto sale de la lista (solo existe si se escaneó)
+    aplicarDesmarcado(b) {
+      const conSet = this.carga.via === "OFICINA" || this.carga.cod_costo;
+      if (conSet) {
+        b.escaneado = false;
+        b.fecha_hora = null;
+      } else {
+        this.bultos = this.bultos.filter((x) => x.id !== b.id);
+      }
+      this.ajustarEstado();
+    },
+    ajustarEstado() {
+      const hay = this.bultos.some((x) => x.escaneado);
+      if (!hay && this.carga.estado === "EN PROCESO") this.carga.estado = "ABIERTA";
+      if (hay && this.carga.estado === "ABIERTA") this.carga.estado = "EN PROCESO";
+    },
+    // Las peticiones de los checks van en fila (una tras otra) para que
+    // varios toques seguidos no choquen en el servidor; la pantalla no espera
+    encolar(fn) {
+      this._cola = (this._cola || Promise.resolve())
+        .then(fn)
+        .catch((e) => this.notificarError(e));
+      return this._cola;
+    },
+    // Refresca bultos y estado sin reiniciar la cámara
+    async recargarBultos() {
+      const res = await api.get(`/controlcarga/${this.carga.id}`, this.headers());
+      this.carga = res.data;
+      this.bultos = res.data.bultos || [];
+      this.piezas = res.data.piezas || {};
+    },
     registrarManual() {
-      const c = (this.manualCodigo || "").trim();
+      // El "RCS-" es opcional; "440515731 3", "440515731.3" o "440515731,3"
+      // valen como "440515731-3" (el teclado numérico del teléfono no trae guion)
+      const c = (this.manualCodigo || "")
+        .trim()
+        .toUpperCase()
+        .replace(/^RCS-?/, "")
+        .replace(/[\s.,]+/g, "-");
       if (!c) return;
-      this.registrarCodigo(c);
       this.manualCodigo = "";
+      // Solo el número de guía: ofrecer marcar todos sus bultos.
+      // (Las etiquetas de Hidroca son de 46 dígitos y van por el flujo normal)
+      if (/^\d{1,12}$/.test(c)) this.confirmarGuiaCompleta(c);
+      else this.registrarCodigo(c);
+    },
+    async confirmarGuiaCompleta(nro) {
+      if (!this.carga) return;
+      let g;
+      try {
+        const res = await api.get(
+          `/controlcarga/resolver/${encodeURIComponent(nro)}`,
+          this.headers()
+        );
+        g = res.data.guia;
+      } catch (e) {
+        this.notificarError(e);
+        return;
+      }
+      if (!g) {
+        this.ultimoStatus = "RECHAZADO";
+        this.ultimo = {
+          titulo: "No registrado",
+          detalle: `La guía ${nro} no existe en el sistema`,
+        };
+        this.senal("error", "cancel", this.ultimo);
+        return;
+      }
+      const tot = g.total_piezas || 0;
+      if (!tot) {
+        this.$q.notify({
+          color: "negative",
+          message: `La guía ${nro} no tiene número de piezas cargado`,
+        });
+        return;
+      }
+      const ya = this.bultos.filter(
+        (x) => x.escaneado && String(x.nro_documento) === String(nro)
+      ).length;
+      if (ya >= tot) {
+        this.ultimoStatus = "DUPLICADO";
+        this.ultimo = {
+          titulo: "Ya escaneada",
+          detalle: `Los ${tot} bulto(s) de la guía ${nro} ya están verificados`,
+        };
+        this.senal("dup", "replay", this.ultimo);
+        return;
+      }
+      const fila = (k, v) =>
+        `<div style="margin:2px 0"><b>${k}:</b> ${v || "—"}</div>`;
+      const message =
+        fila("Destino", g.destino) +
+        fila("Destinatario", g.destinatario) +
+        fila("Bultos", tot + (ya ? ` (${ya} ya verificado(s))` : "")) +
+        `<div class="q-mt-sm">¿Marcar ${ya ? "los que faltan" : "los " + tot + " bultos"} como verificados?</div>`;
+      this.$q
+        .dialog({
+          title: `Guía ${nro}`,
+          message,
+          html: true,
+          cancel: true,
+          persistent: true,
+          ok: { label: `Marcar ${tot - ya}`, color: "positive" },
+        })
+        .onOk(() => this.registrarGuiaCompleta(nro));
+    },
+    async registrarGuiaCompleta(nro, deCheck = false) {
+      try {
+        const res = await api.post(
+          `/controlcarga/${this.carga.id}/guia-completa`,
+          { nroGuia: nro },
+          this.headers()
+        );
+        const d = res.data;
+        if (d.guia && d.guia.total_piezas)
+          this.piezas = { ...this.piezas, [d.guia.cod_movimiento]: d.guia.total_piezas };
+        d.ok.forEach((b) => {
+          const idx = this.bultos.findIndex((x) => x.id === b.id);
+          if (idx >= 0) this.bultos.splice(idx, 1, b);
+          else this.bultos.push(b);
+        });
+        const destino = d.guia && d.guia.destino ? " · " + d.guia.destino : "";
+        if (d.ok.length && this.carga.estado === "ABIERTA")
+          this.carga.estado = "EN PROCESO";
+        if (d.rechazados.length === 0) {
+          if (deCheck) this.pitidoOk();
+          else {
+            this.ultimoStatus = "OK";
+            this.ultimo = {
+              titulo: `OK · ${d.ok.length} bulto(s)${destino}`,
+              detalle:
+                `Guía ${nro}` +
+                (d.duplicados ? ` · ${d.duplicados} ya estaban escaneados` : ""),
+            };
+            this.senal("ok", "check_circle", this.ultimo);
+          }
+        } else {
+          const r = d.rechazados[0];
+          this.ultimoStatus = r.status;
+          this.ultimo = {
+            titulo: d.ok.length
+              ? `${d.ok.length} OK · ${d.rechazados.length} no registrado(s)`
+              : "No registrado",
+            detalle: r.motivo || `Guía ${nro}`,
+          };
+          this.senal("error", "report_problem", this.ultimo);
+        }
+        if (
+          this.carga.via === "OFICINA" &&
+          d.ok.length &&
+          this.cierreCompleta
+        )
+          this.confirmarCierre();
+        return d;
+      } catch (e) {
+        this.ultimoStatus = "ERROR";
+        this.ultimo = { titulo: "No registrado", detalle: this.mensajeError(e) };
+        this.senal("error", "wifi_off", this.ultimo);
+        return null;
+      }
     },
     agregarEsperada() {
       this.$q
@@ -997,7 +1309,13 @@ export default {
         this.notificarError(e);
       }
     },
-    async registrarCodigo(codigo) {
+    // Pitido + vibración de OK sin aviso (lo usan los checks)
+    pitidoOk() {
+      this.beep("ok");
+      this.vibrar("ok");
+    },
+    // deCheck: viene de tocar un check (OK solo pita, sin aviso)
+    async registrarCodigo(codigo, deCheck = false) {
       if (!this.carga) return;
       try {
         const res = await api.post(
@@ -1008,6 +1326,10 @@ export default {
         const data = res.data;
         this.ultimoStatus = data.status;
         if (data.status === "DUPLICADO") {
+          if (deCheck) {
+            this.pitidoOk();
+            return data.status;
+          }
           this.ultimo = {
             titulo: "Ya escaneado",
             detalle: data.bulto.codigo,
@@ -1040,6 +1362,8 @@ export default {
           if (idx >= 0) this.bultos.splice(idx, 1, data.bulto);
           else this.bultos.push(data.bulto);
           const g = data.guia;
+          if (g && g.total_piezas)
+            this.piezas = { ...this.piezas, [g.cod_movimiento]: g.total_piezas };
           this.ultimo = {
             titulo: "OK · " + (g ? g.destino || "" : ""),
             detalle:
@@ -1052,10 +1376,13 @@ export default {
             (x) => x.escaneado && x.nro_documento === nro
           ).length;
           const tot = g && g.total_piezas ? " de " + g.total_piezas : "";
-          this.senal("ok", "check_circle", {
-            titulo: `Bulto ${van}${tot}` + (g && g.destino ? " · " + g.destino : ""),
-            detalle: "Guía " + nro,
-          });
+          // Desde un check basta el pitido: el check marcado ya es el aviso
+          if (deCheck) this.pitidoOk();
+          else
+            this.senal("ok", "check_circle", {
+              titulo: `Bulto ${van}${tot}` + (g && g.destino ? " · " + g.destino : ""),
+              detalle: "Guía " + nro,
+            });
           if (this.carga.estado === "ABIERTA")
             this.carga.estado = "EN PROCESO";
           // Vía oficina: al escanear el último bulto esperado se sugiere cerrar
@@ -1063,12 +1390,14 @@ export default {
           if (this.carga.via === "OFICINA" && idx >= 0 && this.cierreCompleta)
             this.confirmarCierre();
         }
+        return data.status;
       } catch (e) {
         // En pleno escaneo el error va al aviso grande: si no, el almacenista
         // cree que el bulto quedó registrado
         this.ultimoStatus = "ERROR";
         this.ultimo = { titulo: "No registrado", detalle: this.mensajeError(e) };
         this.senal("error", "wifi_off", this.ultimo);
+        return "ERROR";
       }
     },
     // Respuesta de cada escaneo: pitido + vibración + aviso grande arriba
@@ -1231,6 +1560,14 @@ export default {
 </script>
 
 <style scoped>
+.fugaz-enter-active,
+.fugaz-leave-active {
+  transition: opacity 0.4s ease;
+}
+.fugaz-enter-from,
+.fugaz-leave-to {
+  opacity: 0;
+}
 .aviso-scan {
   position: fixed;
   top: 0;
